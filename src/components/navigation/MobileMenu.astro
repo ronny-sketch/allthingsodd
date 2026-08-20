@@ -194,6 +194,13 @@ const { nav, social, footerTag } = site.data;
     color: var(--color-ink);
     outline: none;
   }
+  /* iOS Safari auto-zooms the viewport on focus for any input under 16px —
+     genuinely likely to matter here, since this is the mobile menu itself. */
+  @media (max-width: 640px) {
+    .menu-newsletter input {
+      font-size: 16px;
+    }
+  }
   .menu-newsletter button {
     border: none;
     background: var(--color-ink);

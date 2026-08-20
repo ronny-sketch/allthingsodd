@@ -4,6 +4,12 @@ collections_config:
     path: src/content/pages
     name: Pages
     icon: description
+    # index.json -> "" (Astro's own home-route convention, matched here) ->
+    # "/". Every other file's name already equals its real route
+    # (oddfest.json -> /oddfest/, etc.) — see astro.config.mjs's default
+    # build.format: "directory", which is why every route needs the
+    # trailing slash.
+    url: '/[slug]/'
     disable_url: false
     include_developer_files: false
     preview:
@@ -29,8 +35,7 @@ collections_config:
         type: array
         label: News filmstrip photos
         options:
-          structures:
-            - news_item
+          structures: _structures.news_item
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -53,8 +58,7 @@ collections_config:
         label: Program cards (ODDfest / ODDference / ODDspace / ODDagency)
         comment: Homepage-only. The four large photo cards.
         options:
-          structures:
-            - program_card
+          structures: _structures.program_card
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -64,8 +68,7 @@ collections_config:
         type: array
         label: '"Ways to participate" cards'
         options:
-          structures:
-            - cta
+          structures: _structures.cta
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -76,8 +79,7 @@ collections_config:
         label: Three-column feature grid
         comment: Subpages only (ODDfest / ODDference / ODDagency) — not on Home or About.
         options:
-          structures:
-            - feature_card
+          structures: _structures.feature_card
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -115,10 +117,7 @@ collections_config:
         type: array
         label: About page panels
         options:
-          structures:
-            - about_panel_media
-            - about_panel_model
-            - about_panel_text
+          structures: _structures.about_panels
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -144,7 +143,9 @@ collections_config:
     name: Global
     singular_name: Global content
     icon: public
-    disable_url: false
+    # Pure data — nav/footer/social links — not a page. No route to open in
+    # the Visual Editor.
+    disable_url: true
     include_developer_files: false
     _inputs:
       nav:
@@ -185,6 +186,8 @@ _structures:
         preview:
           text:
             - key: caption
+          icon:
+            - image
           image:
             - key: image
         place_groups_below: false
@@ -201,6 +204,8 @@ _structures:
         preview:
           text:
             - key: title
+          icon:
+            - image
           image:
             - key: image
         place_groups_below: false
@@ -220,6 +225,8 @@ _structures:
         preview:
           text:
             - key: title
+          icon:
+            - ads_click
         place_groups_below: false
         tabbed: false
         value:
@@ -235,13 +242,21 @@ _structures:
         preview:
           text:
             - key: title
+          icon:
+            - star
         place_groups_below: false
         tabbed: false
         value:
           number: '01'
           title: ''
           body: ''
-  about_panel_media:
+  # One structure with three selectable values — not three separate
+  # structures — per CloudCannon's own documented pattern for a single array
+  # that offers a choice of shapes (a page-builder-style field). Confirmed
+  # against github.com/CloudCannon/agent-skills' structures.md: a
+  # multi-shape array is one _structures.<name> entry with multiple
+  # `values:`, referenced as a single string, not a list of structure names.
+  about_panels:
     style: select
     values:
       - label: Photo panel
@@ -249,6 +264,8 @@ _structures:
         preview:
           text:
             - key: title
+          icon:
+            - image
         place_groups_below: false
         tabbed: false
         value:
@@ -258,14 +275,12 @@ _structures:
           eyebrow: ''
           title: ''
           body: ''
-  about_panel_model:
-    style: select
-    values:
       - label: '"Four ways in" program list panel'
-        default: false
         preview:
           text:
             - key: title
+          icon:
+            - list
         place_groups_below: false
         tabbed: false
         value:
@@ -273,14 +288,12 @@ _structures:
           eyebrow: ''
           title: ''
           items: []
-  about_panel_text:
-    style: select
-    values:
       - label: Text-only panel
-        default: false
         preview:
           text:
             - key: title
+          icon:
+            - article
         place_groups_below: false
         tabbed: false
         value:

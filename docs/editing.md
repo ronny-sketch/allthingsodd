@@ -11,12 +11,17 @@ CloudCannon input per `cloudcannon.config.yml`.
    check this in the Site dashboard's build settings; adjust if it guessed
    wrong.
 3. `cloudcannon.config.yml` at the repo root defines the editing experience
-   below. It's a strong starting point based on CloudCannon's documented
-   schema, but **walk through the actual Collections view once after
-   connecting** and confirm the array "add new" buttons (news photos, program
-   cards, feature cards, about panels) produce sensible blank templates —
-   that's the one thing that's genuinely easier to verify live than to get
-   perfectly right from documentation alone.
+   below. It's checked against CloudCannon's own real JSON schema — run
+   `npx @cloudcannon/cli validate` after any change to it (see
+   `.cloudcannon/migration/`, gitignored, re-download with the two `curl`
+   commands in [CloudCannon's `cloudcannon-configuration` skill][cc-skill] if
+   missing). Still worth **walking through the actual Collections view once
+   after connecting** to confirm the array "add new" buttons (news photos,
+   program cards, feature cards, about panels) produce sensible blank
+   templates — the one thing genuinely easier to verify live than from a
+   schema alone.
+
+[cc-skill]: https://github.com/CloudCannon/agent-skills/blob/main/skills/cloudcannon-configuration/SKILL.md
 
 ## What you can edit
 

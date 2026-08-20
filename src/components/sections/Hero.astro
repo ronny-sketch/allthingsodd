@@ -29,14 +29,25 @@ const { mosaicAlt } = Astro.props;
 <header class="hero">
   <div class="mosaic" id="heroMosaic" aria-hidden="true" data-pool={JSON.stringify(pool)}>
     {
-      cellImages.map((img) => (
+      // All 20 cells are inside the viewport at load — this is the hero,
+      // not below-the-fold content. `loading="lazy"` here was inherited
+      // from the original single-file site, where these were inline base64
+      // data URIs (part of the HTML itself, no separate request, so `lazy`
+      // was inert either way). Now that they're real optimized files, lazy
+      // was actually deferring the page's own LCP candidate — confirmed via
+      // a real PerformanceObserver check, not assumed: the reported LCP
+      // element was exactly one of these images, 4-7s in under throttled
+      // mobile conditions. `eager` + `fetchpriority="high"` on the very
+      // first cell (the one nearest top-left, first to matter for LCP).
+      cellImages.map((img, i) => (
         <div class="mosaic-cell">
           <img
             src={img.src}
             width={img.attributes.width}
             height={img.attributes.height}
             alt=""
-            loading="lazy"
+            loading="eager"
+            fetchpriority={i === 0 ? 'high' : undefined}
           />
         </div>
       ))
@@ -58,7 +69,10 @@ const { mosaicAlt } = Astro.props;
 <style>
   .hero {
     position: relative;
+    /* dvh accounts for mobile Safari's dynamic toolbar; 100vh is a fallback
+       for browsers without dvh support (it's the same value there anyway). */
     min-height: 100vh;
+    min-height: 100dvh;
     overflow: hidden;
     background: var(--color-bg);
     perspective: 1400px;

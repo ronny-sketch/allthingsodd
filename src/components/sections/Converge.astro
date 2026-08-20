@@ -116,6 +116,16 @@ const { intro, business, creative } = Astro.props;
     .converge-col {
       padding: 0;
     }
+    /* .converge-col--creative's grid-column:2 (set unconditionally above,
+       for the 2-column desktop layout) was never reset here — with only one
+       explicit track at this width, Grid was placing it in a phantom
+       implicit second column, pushing it off the right edge of the
+       viewport and causing real horizontal page scroll on every mobile
+       width. Found via an actual document.scrollWidth check, not visible
+       just eyeballing a resized browser window. */
+    .converge-col--creative {
+      grid-column: 1;
+    }
     .converge-col--business {
       border-right: none;
       border-bottom: 1px solid var(--color-paper-12);

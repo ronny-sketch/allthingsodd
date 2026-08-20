@@ -1,5 +1,6 @@
 ---
 import { getEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/sections/Hero.astro';
 import OpeningLine from '../components/sections/OpeningLine.astro';
@@ -10,13 +11,32 @@ import ProgramGrid from '../components/sections/ProgramGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import Aftermovie from '../components/sections/Aftermovie.astro';
 
-const entry = await getEntry('pages', 'home');
+// Content file is named index.json (not home.json) so CloudCannon's
+// filename-based [slug] URL placeholder resolves to "" for it, matching the
+// real "/" route — see cloudcannon.config.yml's pages.url and
+// docs/architecture.md#content-file-naming.
+const entry = await getEntry('pages', 'index');
 if (!entry || entry.data._template !== 'home')
-  throw new Error('home.json content entry missing or malformed');
+  throw new Error('index.json content entry missing or malformed');
 const page = entry.data;
+
+// The hero mosaic's first cell is the page's real LCP element (confirmed via
+// a PerformanceObserver check against production, not assumed) — preloading
+// it lets the browser start fetching before it's parsed HTML deep enough to
+// discover the <img> tag itself, same file Hero.astro resolves internally.
+const archiveModules = import.meta.glob<{ default: ImageMetadata }>('../assets/hero/*.jpg', {
+  eager: true,
+});
+const firstArchiveImage = Object.values(archiveModules)[0].default;
+const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format: 'webp' });
 ---
 
-<Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
+<Layout
+  title={page.seo.title}
+  description={page.seo.description}
+  ogImage={page.seo.ogImage}
+  preloadImage={preloadImage.src}
+>
   <Hero mosaicAlt={page.hero.mosaicAlt} />
   <OpeningLine line={page.openingLine} />
 

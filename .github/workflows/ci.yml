@@ -24,6 +24,7 @@ jobs:
       - run: npm run check
       - run: npm run lint
       - run: npm run format:check
+      - run: npm run cc:validate
       - run: npm run build
 
   visual:

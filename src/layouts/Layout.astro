@@ -11,8 +11,11 @@ interface Props {
   title: string;
   description: string;
   ogImage?: string;
+  /** URL of this page's real LCP candidate, if it has an image-heavy hero
+   * worth preloading — see index.astro for how the home page computes it. */
+  preloadImage?: string;
 }
-const { title, description, ogImage } = Astro.props;
+const { title, description, ogImage, preloadImage } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -25,6 +28,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />}
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />

@@ -163,6 +163,14 @@ const { nav, social, contact, footerAddress, newsletterLabel } = site.data;
     color: var(--color-paper);
     outline: none;
   }
+  /* iOS Safari auto-zooms the viewport on focus for any input under 16px —
+     the 0.8rem above is a deliberate desktop size, kept there; this
+     mobile-only override just avoids the zoom, not a visual redesign. */
+  @media (max-width: 640px) {
+    .nl-form input {
+      font-size: 16px;
+    }
+  }
   .nl-form button {
     border: none;
     background: var(--color-paper);
@@ -221,6 +229,13 @@ const { nav, social, contact, footerAddress, newsletterLabel } = site.data;
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Icon itself stays 22px (below); this is the tap target — WCAG 2.2's
+       24px AA minimum, rounded up to Apple's 44px HIG recommendation since
+       it costs nothing visually (invisible box, icon still centered at its
+       original size). */
+    min-width: 44px;
+    min-height: 44px;
+    margin: -11px;
     color: var(--color-paper-40);
     text-decoration: none;
     transition:

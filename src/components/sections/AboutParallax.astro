@@ -148,12 +148,18 @@ const marqueeLoop = [...marqueeItems, ...marqueeItems];
 <style>
   .about-pin-wrap {
     position: relative;
+    /* dvh matches what src/scripts/about-scroll.ts already measures via
+       window.innerHeight for its scroll-progress math; plain vh (kept as
+       the pre-dvh-support fallback) can run taller than the real visible
+       viewport on mobile Safari when its toolbar is showing. */
     height: calc(var(--panels, 5) * 100vh);
+    height: calc(var(--panels, 5) * 100dvh);
   }
   .about-scroll {
     position: sticky;
     top: var(--nav-h, 65px);
     height: calc(100vh - var(--nav-h, 65px));
+    height: calc(100dvh - var(--nav-h, 65px));
     overflow: hidden;
     background: var(--color-bg);
     display: flex;
