@@ -8,7 +8,7 @@ import SocialIcon from '../primitives/SocialIcon.astro';
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { nav, social, footerTag } = site.data;
+const { nav, social, footerTag, newsletterHref } = site.data;
 ---
 
 <div class="menu-overlay" id="menuOverlay">
@@ -30,8 +30,13 @@ const { nav, social, footerTag } = site.data;
     }
   </nav>
   <div class="menu-bottom">
-    <form class="menu-newsletter" onsubmit="return false;">
-      <input type="email" placeholder="Sign up for the newsletter" aria-label="Email address" />
+    <form class="menu-newsletter" action={newsletterHref} method="get" target="_blank">
+      <input
+        type="email"
+        name="email"
+        placeholder="Sign up for the newsletter"
+        aria-label="Email address"
+      />
       <button type="submit">Sign up</button>
     </form>
     <div class="menu-social">

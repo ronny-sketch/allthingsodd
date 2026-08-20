@@ -5,7 +5,7 @@ import { test, expect } from '@playwright/test';
 // see docs/architecture.md#visual-regression for how to update them
 // deliberately (`npx playwright test --update-snapshots`) vs. catching an
 // accidental regression (a failing `npx playwright test`).
-const ROUTES = ['/', '/oddfest', '/oddference', '/oddagency', '/about'];
+const ROUTES = ['/', '/oddfest', '/oddference', '/oddagency', '/about', '/media', '/contact'];
 
 for (const route of ROUTES) {
   test(`${route || 'home'} — full page`, async ({ page }) => {

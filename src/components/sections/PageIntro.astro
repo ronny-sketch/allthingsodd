@@ -1,0 +1,54 @@
+---
+// Shared top-of-page header — eyebrow/title/intro — for pages that don't use
+// SplitHero/FullbleedVideoHero's media-panel layout (Contact, Media). See
+// docs/architecture.md#hero-variants for why those two are separate.
+interface Props {
+  eyebrow: string;
+  title: string;
+  intro: string;
+}
+const { eyebrow, title, intro } = Astro.props;
+---
+
+<section class="page-intro">
+  <div class="wrap">
+    <div class="page-intro-head reveal">
+      <span class="eyebrow">{eyebrow}</span>
+      <h1>{title}</h1>
+      <p>{intro}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .page-intro {
+    padding: calc(var(--nav-h) + var(--space-20)) 0 var(--space-12);
+  }
+  .page-intro-head {
+    max-width: 40rem;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .page-intro-head .eyebrow {
+    color: var(--color-paper-60);
+  }
+  .page-intro-head h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--color-paper);
+    font-size: clamp(2.2rem, 5.5vw, 4rem);
+    line-height: 1.08;
+    margin: 0.9rem 0 0;
+  }
+  .page-intro-head p {
+    max-width: 38ch;
+    margin: 1.6rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-paper-60);
+  }
+</style>

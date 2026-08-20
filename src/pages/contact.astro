@@ -1,0 +1,16 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import PageIntro from '../components/sections/PageIntro.astro';
+import ContactForm from '../components/sections/ContactForm.astro';
+
+const entry = await getEntry('pages', 'contact');
+if (!entry || entry.data._template !== 'contact')
+  throw new Error('contact.json content entry missing or malformed');
+const page = entry.data;
+---
+
+<Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
+  <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
+  <ContactForm accessKey={page.formAccessKey} />
+</Layout>

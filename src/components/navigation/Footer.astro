@@ -5,7 +5,7 @@ import SocialIcon from '../primitives/SocialIcon.astro';
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { nav, social, contact, footerAddress, newsletterLabel } = site.data;
+const { nav, social, contact, footerAddress, newsletterLabel, newsletterHref } = site.data;
 ---
 
 <footer>
@@ -26,8 +26,8 @@ const { nav, social, contact, footerAddress, newsletterLabel } = site.data;
     </nav>
     <div class="foot-nl">
       <span class="foot-nl-label">{newsletterLabel}</span>
-      <form class="nl-form" onsubmit="return false;">
-        <input type="email" placeholder="you@example.com" aria-label="Email address" />
+      <form class="nl-form" action={newsletterHref} method="get" target="_blank">
+        <input type="email" name="email" placeholder="you@example.com" aria-label="Email address" />
         <button type="submit">Sign up</button>
       </form>
     </div>

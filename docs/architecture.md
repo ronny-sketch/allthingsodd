@@ -24,8 +24,8 @@ CloudCannon (edits content through the same git history)
 src/
   content.config.ts       Zod schemas for every content collection
   content/
-    site/global.json      Nav, footer, social, contact — shared everywhere
-    pages/*.json           5 fixed pages: home, oddfest, oddference, oddagency, about
+    site/global.json      Nav, footer, social, contact, partner/press logos — shared everywhere
+    pages/*.json           7 fixed pages: home, oddfest, oddference, oddagency, about, media, contact
   styles/
     tokens.css             Color, spacing, motion tokens (with provenance)
     typography.css         Fluid type-scale roles (display-xl → caption)
@@ -49,15 +49,21 @@ sections" model — an editor drags a Hero, then a Quote, then a Gallery, in any
 order, onto any page. That's the right call for a blog or a marketing site
 with many similar landing pages.
 
-It's the wrong call here. ODD has **five pages, and every one has a
-genuinely different, bespoke layout**: the home page's photo mosaic hero and
-filmstrip don't exist anywhere else; the three subpages share a rail+hero+grid
-shape but each hero is a different variant (video split, image split,
-full-bleed video); the about page is a scroll-pinned horizontal parallax
-unlike anything else on the site. Forcing these into a generic "sections"
-abstraction would mean either (a) building generic components that can't
-actually express this site's real layouts, or (b) building one generic
-section type per page anyway, which is a composer in name only.
+It's the wrong call here. ODD has **seven pages, and most have a genuinely
+different, bespoke layout**: the home page's photo mosaic hero and filmstrip
+don't exist anywhere else; the three subpages share a rail+hero+grid shape but
+each hero is a different variant (video split, image split, full-bleed
+video); the about page is a scroll-pinned horizontal parallax unlike anything
+else on the site. Forcing these into a generic "sections" abstraction would
+mean either (a) building generic components that can't actually express this
+site's real layouts, or (b) building one generic section type per page
+anyway, which is a composer in name only.
+
+Media and Contact are the exception that proves the rule, not a contradiction
+of it: they're genuinely simple pages (an intro + a logo strip; an intro + a
+form), so they get a plain shared `PageIntro` header component instead of
+each inventing bespoke hero markup — reuse where the content is actually
+generic, bespoke schemas where it isn't.
 
 Instead, each page has a **fixed schema** (see `src/content.config.ts`'s
 discriminated union on `template`) with named, real fields — and the
@@ -85,7 +91,7 @@ its structure genuinely doesn't overlap.
 
 ## Visual regression
 
-`tests/visual/pages.spec.ts` screenshots all 5 routes at 5 viewports
+`tests/visual/pages.spec.ts` screenshots all 7 routes at 5 viewports
 (mobile/tablet/laptop/desktop/wide) against committed baselines in
 `tests/visual/pages.spec.ts-snapshots/`.
 

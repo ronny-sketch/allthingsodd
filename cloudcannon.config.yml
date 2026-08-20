@@ -91,6 +91,14 @@ collections_config:
         comment: The solid "Buy your ticket"-style button in the hero. Home, ODDfest, ODDagency and About don't use this field.
         options:
           subtype: object
+      formAccessKey:
+        type: text
+        label: Web3Forms access key (Contact page only)
+        comment: >-
+          Free key from web3forms.com — paste it here to make the Contact
+          page's form actually send. Leave blank and the form still shows,
+          but tells visitors it isn't connected yet instead of silently
+          discarding what they type.
       heroMedia:
         type: object
         label: Hero video/image
@@ -169,15 +177,62 @@ collections_config:
       footerAddress:
         type: text
         label: Footer address line
+      newsletterHref:
+        type: text
+        label: Newsletter sign-up link
+        comment: >-
+          Where the footer and menu "Sign up" forms send visitors — the
+          publication's real hosted subscribe page (e.g. a Beehiiv URL).
       preRegister:
         type: object
         label: '"Pre-register" button (top right of every page)'
         options:
           subtype: object
+      partners:
+        type: array
+        label: Partner logos
+        comment: Shown in the "Partners" logo strip on the homepage.
+        options:
+          structures: _structures.logo_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      featuredIn:
+        type: array
+        label: '"Featured in" logos (press)'
+        comment: >-
+          Shown identically in the "Featured in" strip on both the homepage
+          and the Media page — one shared list, edited here.
+        options:
+          structures: _structures.logo_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
     disable_add: true
     disable_add_folder: false
     disable_file_actions: true
 _structures:
+  logo_item:
+    style: select
+    values:
+      - label: Logo
+        default: false
+        preview:
+          text:
+            - key: name
+          icon:
+            - image
+          image:
+            - key: logo
+        place_groups_below: false
+        tabbed: false
+        value:
+          name: ''
+          logo:
   news_item:
     style: select
     values:

@@ -10,6 +10,7 @@ import WhatsOn from '../components/sections/WhatsOn.astro';
 import ProgramGrid from '../components/sections/ProgramGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import Aftermovie from '../components/sections/Aftermovie.astro';
+import LogoMarquee from '../components/sections/LogoMarquee.astro';
 
 // Content file is named index.json (not home.json) so CloudCannon's
 // filename-based [slug] URL placeholder resolves to "" for it, matching the
@@ -19,6 +20,10 @@ const entry = await getEntry('pages', 'index');
 if (!entry || entry.data._template !== 'home')
   throw new Error('index.json content entry missing or malformed');
 const page = entry.data;
+
+const site = await getEntry('site', 'global');
+if (!site) throw new Error('Missing site/global.json content entry');
+const { partners, featuredIn } = site.data;
 
 // The hero mosaic's first cell is the page's real LCP element (confirmed via
 // a PerformanceObserver check against production, not assumed) — preloading
@@ -53,4 +58,6 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
   <ProgramGrid title="What ODD is, in practice" cards={page.programGrid} />
   <ParticipateBand items={page.participate} />
   <Aftermovie poster={page.aftermovie.poster} video={page.aftermovie.video} />
+  <LogoMarquee eyebrow="Who we build with" title="Partners" items={partners} />
+  <LogoMarquee eyebrow="Press" title="Featured in" items={featuredIn} />
 </Layout>

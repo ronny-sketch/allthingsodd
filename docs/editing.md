@@ -25,9 +25,9 @@ CloudCannon input per `cloudcannon.config.yml`.
 
 ## What you can edit
 
-**Pages** (home, ODDfest, ODDference, ODDagency, About) — five fixed pages,
-can't be added to or deleted (their filenames are wired to real URLs). Within
-each page:
+**Pages** (home, ODDfest, ODDference, ODDagency, About, Media, Contact) — seven
+fixed pages, can't be added to or deleted (their filenames are wired to real
+URLs). Within each page:
 
 - Headlines, intro paragraphs, eyebrow labels, meta lines — plain text fields.
 - SEO title/description/social image — what shows in a browser tab, a Google
@@ -39,10 +39,30 @@ each page:
   participate CTAs, the hero video/image and its caption.
 - **About**: the five horizontal-scroll panels, in order — each is either a
   photo+text panel, the "four ways in" program list, or a plain text panel.
+- **Media**: eyebrow/title/intro text above the shared "Featured in" press
+  logo strip (edited under Global, see below — it's the same list shown on
+  the homepage).
+- **Contact**: eyebrow/title/intro text above the contact form. See
+  [Contact form setup](#contact-form-setup) below for the one field that
+  actually makes it send.
 
 **Global** (one entry, applies everywhere): top navigation links, footer
-links, social media links, contact emails, footer address, the "Pre-register"
-button's destination.
+links, social media links, contact emails, footer address, the newsletter
+sign-up link, the "Pre-register" button's destination, and the **Partners**
+and **Featured in** press logo lists — each is one shared list, so an edit
+here updates every page that shows it (Featured in appears on both Home and
+Media from the same list, by design — see docs/architecture.md).
+
+## Contact form setup
+
+The Contact page's form submits via [Web3Forms](https://web3forms.com) — a
+free service that emails you a submission, no backend of ours required.
+
+1. Get a free access key at web3forms.com (just an email address, no signup).
+2. Paste it into the Contact page's "Web3Forms access key" field.
+3. Publish. The form starts sending for real; until then it renders normally
+   but tells visitors it isn't connected yet, rather than silently discarding
+   what they type.
 
 ## What you can't edit here (and why)
 
@@ -51,7 +71,7 @@ button's destination.
   CloudCannon fields. See `docs/design-system.md` for why: this keeps every
   page visually coherent and keeps a content edit from ever being able to
   break the layout.
-- **Which pages exist, or their URLs.** Five pages, fixed filenames
+- **Which pages exist, or their URLs.** Seven pages, fixed filenames
   (`disable_add`/`disable_file_actions` in `cloudcannon.config.yml`).
 - **New button/card shapes, custom CSS.** The button and card vocabulary
   (`Pill` variants, program card, feature card, CTA) is fixed by design; a

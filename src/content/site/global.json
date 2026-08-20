@@ -4,7 +4,9 @@
     { "label": "ODDfest", "href": "/oddfest" },
     { "label": "ODDference", "href": "/oddference" },
     { "label": "ODDspace", "href": "https://www.oddspace.co", "external": true },
-    { "label": "ODDagency", "href": "/oddagency" }
+    { "label": "ODDagency", "href": "/oddagency" },
+    { "label": "Media", "href": "/media" },
+    { "label": "Contact", "href": "/contact" }
   ],
   "social": [
     { "platform": "Instagram", "href": "https://www.instagram.com/oddfest.fi" },
@@ -12,7 +14,7 @@
     { "platform": "Facebook", "href": "https://www.facebook.com/oddfest.fi" },
     { "platform": "YouTube", "href": "https://www.youtube.com/@oddfest" },
     { "platform": "TikTok", "href": "https://www.tiktok.com/@oddfest" },
-    { "platform": "Discord", "href": "https://discord.gg/oddfest" }
+    { "platform": "Discord", "href": "https://discord.gg/ZXtkM6FjBw" }
   ],
   "contact": [
     { "label": "Partnerships & press", "email": "ronny@oddfest.co" },
@@ -21,5 +23,67 @@
   "footerAddress": "New Nordic Way rf · Sturenportti 3, Helsinki · #DaretoBeODD",
   "footerTag": "New Nordic Way rf · oddfest.co",
   "newsletterLabel": "Sign up to newsletter",
-  "preRegister": { "label": "Pre-register", "href": "#" }
+  "newsletterHref": "https://oddfest.beehiiv.com",
+  "preRegister": { "label": "Pre-register", "href": "#" },
+  "partners": [
+    { "name": "Moomin", "logo": "../../assets/partners/logo-moomin.svg" },
+    { "name": "Genelec", "logo": "../../assets/partners/logo-genelec.svg" },
+    { "name": "Holvi", "logo": "../../assets/partners/logo-holvi.svg" },
+    { "name": "Tiketti", "logo": "../../assets/partners/logo-tiketti.svg" },
+    {
+      "name": "Suomen Kulttuurirahasto",
+      "logo": "../../assets/partners/logo-suomenkulttuurirahasto.svg"
+    },
+    { "name": "Suomen Yrittäjät", "logo": "../../assets/partners/logo-suomenyrittajat.svg" },
+    {
+      "name": "Suomen Tekstiili & Muoti",
+      "logo": "../../assets/partners/logo-suomentekstiilijamuoti.svg"
+    },
+    {
+      "name": "Yksityisyrittäjäin Säätiö",
+      "logo": "../../assets/partners/logo-yksityisyrittajansaatio.svg"
+    },
+    { "name": "EIT Culture & Creativity", "logo": "../../assets/partners/logo-eit.svg" },
+    {
+      "name": "Lasipalatsin Kortteli",
+      "logo": "../../assets/partners/logo-lasipalatsikortteli.svg"
+    },
+    { "name": "Helsingin Kauppakamari", "logo": "../../assets/partners/logo-kauppakamari.svg" },
+    { "name": "Helsinki Playground", "logo": "../../assets/partners/logo-helsinkiplayground.svg" },
+    { "name": "Helsinki Casting", "logo": "../../assets/partners/logo-helsinkicasting.svg" },
+    { "name": "Radical Creativity", "logo": "../../assets/partners/logo-radicalcreativity.svg" },
+    { "name": "Adventure Club", "logo": "../../assets/partners/logo-adventureclub.svg" },
+    { "name": "Pro DJ Finland", "logo": "../../assets/partners/logo-prodjfinland.svg" },
+    { "name": "Dóttir", "logo": "../../assets/partners/logo-dottir.svg" },
+    { "name": "Liwlig", "logo": "../../assets/partners/logo-liwlig.svg" },
+    { "name": "La Torrefazione", "logo": "../../assets/partners/logo-latorrefazione.svg" },
+    { "name": "Uneton", "logo": "../../assets/partners/logo-uneton.svg" },
+    { "name": "San Francisco", "logo": "../../assets/partners/logo-sanfrancisco.svg" },
+    { "name": "Tres Méder", "logo": "../../assets/partners/logo-tresmeder.svg" }
+  ],
+  "featuredIn": [
+    { "name": "Yle", "logo": "../../assets/press/yle.svg" },
+    { "name": "Helsingin Sanomat", "logo": "../../assets/press/hs.svg" },
+    { "name": "Hufvudstadsbladet", "logo": "../../assets/press/hbl.svg" },
+    { "name": "Kauppalehti", "logo": "../../assets/press/Kauppalehti.svg" },
+    { "name": "Aamulehti", "logo": "../../assets/press/Aamulehti.svg" },
+    { "name": "Rumba", "logo": "../../assets/press/rumba.svg" },
+    { "name": "Soundi", "logo": "../../assets/press/soundi.svg" },
+    { "name": "Radio Helsinki", "logo": "../../assets/press/Radio-Helsinki.svg" },
+    { "name": "Resident Advisor", "logo": "../../assets/press/ra.svg" },
+    { "name": "Helsingin Uutiset", "logo": "../../assets/press/helsingin-uutiset.svg" },
+    { "name": "Töölöläinen", "logo": "../../assets/press/toololainen.svg" },
+    { "name": "Markkinointi & Uutiset", "logo": "../../assets/press/markkinointi-uutiset.svg" },
+    { "name": "Evento", "logo": "../../assets/press/Evento.svg" },
+    { "name": "Salute", "logo": "../../assets/press/salute.svg" },
+    { "name": "Feedi", "logo": "../../assets/press/feedi.svg" },
+    { "name": "Klangi", "logo": "../../assets/press/klangi.svg" },
+    { "name": "Design Forum Finland", "logo": "../../assets/press/Design-Forum-Finland.svg" },
+    { "name": "Creative Lunch Club", "logo": "../../assets/press/creative-lunch-club.svg" },
+    { "name": "Creative Respect", "logo": "../../assets/press/Creative-respect.svg" },
+    { "name": "Artis Dynamics Talks", "logo": "../../assets/press/Artis-Dynamics-Talks.svg" },
+    { "name": "Industry Awards", "logo": "../../assets/press/industry-awards.svg" },
+    { "name": "V2", "logo": "../../assets/press/V2.svg" },
+    { "name": "Kordelin", "logo": "../../assets/press/Kordelin_2.svg" }
+  ]
 }

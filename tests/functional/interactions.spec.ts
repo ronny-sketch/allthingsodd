@@ -27,6 +27,8 @@ test('every internal nav link navigates to a real, matching page', async ({ page
     ['ODDfest', '/oddfest'],
     ['ODDference', '/oddference'],
     ['ODDagency', '/oddagency'],
+    ['Media', '/media'],
+    ['Contact', '/contact'],
   ];
   for (const [label, path] of internalRoutes) {
     await page.goto('/');

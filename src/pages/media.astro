@@ -1,0 +1,29 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import PageIntro from '../components/sections/PageIntro.astro';
+import LogoMarquee from '../components/sections/LogoMarquee.astro';
+import ParticipateBand from '../components/sections/ParticipateBand.astro';
+
+const entry = await getEntry('pages', 'media');
+if (!entry || entry.data._template !== 'media')
+  throw new Error('media.json content entry missing or malformed');
+const page = entry.data;
+
+const site = await getEntry('site', 'global');
+if (!site) throw new Error('Missing site/global.json content entry');
+const { featuredIn, contact } = site.data;
+
+const pressCtas = contact.map((c) => ({
+  eyebrow: c.label,
+  title: 'Send an email',
+  linkLabel: `${c.email} →`,
+  href: `mailto:${c.email}`,
+}));
+---
+
+<Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
+  <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
+  <LogoMarquee eyebrow="Press" title="Featured in" items={featuredIn} />
+  <ParticipateBand title="Press & media contact" items={pressCtas} noPadTop />
+</Layout>

@@ -34,22 +34,29 @@ const seo = z.object({
 
 // One singleton: everything that repeats identically on every page (nav, footer,
 // social links, contact) instead of being duplicated per-page. See docs/design-system.md.
+// "partners" and "featuredIn" live here (not on a page) for the same reason: the
+// user asked for the identical logo set on both Home and Media — one shared list,
+// not two content files that could drift apart.
 const site = defineCollection({
   loader: glob({ pattern: '*.json', base: 'src/content/site' }),
-  schema: z.object({
-    nav: z.array(
-      z.object({ label: z.string(), href: z.string(), external: z.boolean().optional() }),
-    ),
-    social: z.array(z.object({ platform: z.string(), href: z.string() })),
-    contact: z.array(z.object({ label: z.string(), email: z.string() })),
-    footerAddress: z.string(),
-    footerTag: z.string(),
-    newsletterLabel: z.string(),
-    preRegister: z.object({ label: z.string(), href: z.string() }),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      nav: z.array(
+        z.object({ label: z.string(), href: z.string(), external: z.boolean().optional() }),
+      ),
+      social: z.array(z.object({ platform: z.string(), href: z.string() })),
+      contact: z.array(z.object({ label: z.string(), email: z.string() })),
+      footerAddress: z.string(),
+      footerTag: z.string(),
+      newsletterLabel: z.string(),
+      newsletterHref: z.string(),
+      preRegister: z.object({ label: z.string(), href: z.string() }),
+      partners: z.array(z.object({ name: z.string(), logo: image() })),
+      featuredIn: z.array(z.object({ name: z.string(), logo: image() })),
+    }),
 });
 
-// Five fixed pages, each with its own real (not generic) shape — this is a small
+// Seven fixed pages, each with its own real (not generic) shape — this is a small
 // bespoke brand site, not a stack of interchangeable blocks, so each page gets a
 // named schema instead of a generic section composer. See docs/architecture.md.
 const pages = defineCollection({
@@ -158,6 +165,25 @@ const pages = defineCollection({
           ]),
         ),
         marqueeItems: z.array(z.string()),
+      }),
+      z.object({
+        _template: z.literal('contact'),
+        seo,
+        eyebrow: z.string(),
+        title: z.string(),
+        intro: z.string(),
+        // Web3Forms (web3forms.com) needs no backend of ours — just a free
+        // access key pasted here. Left blank until a real key exists; the
+        // form renders either way but only submits once this is set. See
+        // docs/editing.md#contact-form.
+        formAccessKey: z.string().optional(),
+      }),
+      z.object({
+        _template: z.literal('media'),
+        seo,
+        eyebrow: z.string(),
+        title: z.string(),
+        intro: z.string(),
       }),
     ]),
 });

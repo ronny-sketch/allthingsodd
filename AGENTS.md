@@ -27,9 +27,10 @@ GitHub (canonical repo, version history)
   → CloudCannon (edits src/content/**/*.json through the git history)
 ```
 
-- **Content** lives in `src/content/pages/*.json` (5 fixed pages: home, oddfest,
-  oddference, oddagency, about) and `src/content/site/global.json` (nav, footer,
-  social — shared across every page). Schema: `src/content.config.ts`.
+- **Content** lives in `src/content/pages/*.json` (7 fixed pages: home, oddfest,
+  oddference, oddagency, about, media, contact) and `src/content/site/global.json`
+  (nav, footer, social, partner/press logos — shared across every page). Schema:
+  `src/content.config.ts`.
 - **Design system** lives in `src/styles/` — `tokens.css` (color/type/space/motion
   tokens, all with provenance comments — read them before adding a value),
   `typography.css`, `layout.css`, `motion.css`.
