@@ -3,10 +3,10 @@
 The production site for ODD (ODDfest / ODDference / ODDspace / ODDagency) —
 Astro + structured content, edited through CloudCannon.
 
-> This is the in-progress rebuild. The site currently live at
-> **odd-field-guide.surge.sh** is a different, older single-file build — see
-> `../ODD NEW WEBPAGE/README.md`. Nothing here is deployed to production yet;
-> see [docs/deployment.md](docs/deployment.md) for what cutover requires.
+> **This is live** at **odd-field-guide.surge.sh** (cut over 2026-08-20). The
+> old single-file build at `../ODD NEW WEBPAGE/` is no longer deployed — see
+> [docs/deployment.md](docs/deployment.md) for how a change reaches
+> production now.
 
 ## Install and run
 

@@ -8,7 +8,8 @@ is meant to be worked on — not generic Astro advice (that's linked at the bott
 The production rebuild of the ODD website — "Signal & Ember / Field Guide 005," a
 co-creation platform site for New Nordic Way rf (ODDfest, ODDference, ODDspace,
 ODDagency). Migrated 2026-08-19 from a single 13MB hand-authored static
-`index.html` (still live at the time of writing — see `../ODD NEW WEBPAGE/`) into
+`index.html` (see `../ODD NEW WEBPAGE/` — no longer deployed as of 2026-08-20,
+but kept as the visual reference) into
 Astro + structured content + CloudCannon, without losing any of the original's
 visual identity, motion, or interaction design. That original file is the source
 of truth for "does this still look/feel right" — when in doubt, compare against it,
@@ -112,10 +113,13 @@ GitHub (canonical repo, version history)
 
 See `docs/deployment.md`. Short version: GitHub is canonical, CI
 (`.github/workflows/ci.yml`) gates `main`, and CloudCannon commits content
-changes back into the same repo. The _old_ single-file site's `npx surge .`
-deploy method still works and still serves the live domain — cutting the live
-domain over to this Astro build is a deliberate, separate step requiring
-explicit sign-off (DNS/production changes), not something to do casually.
+changes back into the same repo. **This build is live** at
+`odd-field-guide.surge.sh` (cut over 2026-08-20, via `npx surge dist
+odd-field-guide.surge.sh`) — the old single-file site's own deploy path is
+no longer what's serving that domain. Deploys are currently manual, not
+CI-automated; treat `npx surge dist odd-field-guide.surge.sh` as a real
+production action requiring the same care as any other prod deploy, not
+something to run casually as part of routine development.
 
 ## Definition of done
 

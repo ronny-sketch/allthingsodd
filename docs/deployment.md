@@ -1,13 +1,23 @@
 # Deployment
 
-## Current state (as of this migration)
+## Current state
 
-This repo is **not yet deployed anywhere**. The live domain
-(odd-field-guide.surge.sh) is still served by the old single-file site at
-`../ODD NEW WEBPAGE/` via its own `npx surge .` command — untouched by this
-project. Cutting the live domain over to this Astro build is a deliberate,
-explicit-sign-off step (it's a production/DNS change), not something to do as
-part of routine development here.
+**This is production.** `odd-field-guide.surge.sh` served the old single-file
+site (`../ODD NEW WEBPAGE/`) up through 2026-08-20; the domain now serves this
+Astro build instead, deployed via:
+
+```bash
+npm run build
+npx surge dist odd-field-guide.surge.sh
+```
+
+The old single-file site's own files/repo still exist untouched at
+`../ODD NEW WEBPAGE/` — they're just no longer what's live. Don't run its
+`npx surge .` again; that would revert the live domain back to the old site.
+
+A **preview** deployment also exists at `odd-field-guide-astro.surge.sh`
+(same command, different subdomain) — useful for checking a build before
+promoting it to the real domain.
 
 ## Recommended production workflow
 
@@ -18,11 +28,12 @@ commit to main (code, or CloudCannon content commit)
 ```
 
 `main` is the deploy branch. CI (`checks` + `visual` jobs) gates every push
-and PR — see `.github/workflows/ci.yml`. A deploy step needs to be added once
-a hosting target is chosen (Cloudflare Pages, Netlify, Vercel, or `surge`
-again with a static `dist/` upload — any static host works, since this is
-still a fully static Astro build with zero server runtime, same shape as the
-original site).
+and PR — see `.github/workflows/ci.yml`. **Deploys are currently manual**
+(`npx surge dist odd-field-guide.surge.sh`, run by whoever's promoting a
+build) — CI does not yet auto-deploy on green. Wiring that up (surge again,
+or a switch to Cloudflare Pages/Netlify/Vercel — any static host works,
+since this is still a fully static build with zero server runtime) is the
+next real infrastructure step, not yet done.
 
 ## CloudCannon's role
 

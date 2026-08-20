@@ -117,9 +117,10 @@ you can point to.
 
 ## Old site relationship
 
-`../ODD NEW WEBPAGE/index.html` (the single-file build, still live at
-odd-field-guide.surge.sh at the time of writing) is **not modified by this
-project** and its own `npx surge .` deploy path is untouched. This repo is a
-from-scratch parallel build; cutting the live domain over to it is a
-deliberate, separate, explicit-sign-off step — see
-[deployment.md](deployment.md).
+`../ODD NEW WEBPAGE/index.html` (the single-file build) was the site's
+production build through 2026-08-19 and is preserved as the visual reference
+for this migration (see CLAUDE.md's "What this is"). Its own files/repo are
+untouched by this project, but **its `npx surge .` deploy path is no longer
+what serves odd-field-guide.surge.sh** — cutover happened 2026-08-20; running
+that command again would revert the live domain back to the old site, so
+don't. See [deployment.md](deployment.md) for the current deploy path.
