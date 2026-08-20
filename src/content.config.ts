@@ -155,7 +155,12 @@ const site = defineCollection({
       newsletterLabel: z.string(),
       newsletterHref: z.string(),
       preRegister: z.object({ label: z.string(), href: z.string() }),
-      partners: z.array(z.object({ name: z.string(), logo: image() })),
+      // "tier" is optional and unset by default — which named company is a
+      // Partner vs. Supporter vs. Media tier is a real business fact, not
+      // something to invent. PartnerTiers.astro groups by it when present
+      // and falls back to one unlabeled group when it isn't. See
+      // docs/architecture.md#v2.
+      partners: z.array(z.object({ name: z.string(), logo: image(), tier: z.string().optional() })),
       featuredIn: z.array(z.object({ name: z.string(), logo: image() })),
     }),
 });

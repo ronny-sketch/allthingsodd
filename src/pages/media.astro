@@ -2,7 +2,7 @@
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import PageIntro from '../components/sections/PageIntro.astro';
-import LogoMarquee from '../components/sections/LogoMarquee.astro';
+import LogoStrip from '../components/sections/LogoStrip.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 
 const entry = await getEntry('pages', 'media');
@@ -24,6 +24,6 @@ const pressCtas = contact.map((c) => ({
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
-  <LogoMarquee eyebrow="Press" title="Featured in" items={featuredIn} />
+  <LogoStrip eyebrow="Press" title="Featured in" items={featuredIn} />
   <ParticipateBand title="Press & media contact" items={pressCtas} noPadTop />
 </Layout>

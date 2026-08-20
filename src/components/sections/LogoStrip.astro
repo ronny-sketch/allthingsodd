@@ -1,0 +1,72 @@
+---
+// A static (non-scrolling) logo row — Featured In (Home + Media) and the
+// plain partner-network mentions on About/Work with ODD/Membership. Renamed
+// from LogoMarquee: it no longer marquees — the auto-scroll was removed on
+// request, logos just sit still in a wrapped, centered row. For a *grouped*
+// static display (tier labels + logos per tier), see PartnerTiers.astro
+// instead, used for Home's dedicated Partners section.
+import type { ImageMetadata } from 'astro';
+
+interface LogoItem {
+  name: string;
+  logo: ImageMetadata;
+}
+interface Props {
+  eyebrow: string;
+  title: string;
+  items: LogoItem[];
+  size?: 'default' | 'large';
+}
+const { eyebrow, title, items, size = 'default' } = Astro.props;
+---
+
+<section class="logo-strip-section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">{eyebrow}</span>
+      <h2>{title}</h2>
+    </div>
+    <div class={`logo-strip-row ${size === 'large' ? 'is-large' : ''}`}>
+      {items.map((item) => <img src={item.logo.src} alt={item.name} loading="lazy" />)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .logo-strip-section {
+    border-top: 1px solid var(--color-paper-12);
+    padding: var(--space-20) 0 var(--space-16);
+  }
+  .logo-strip-section .section-head {
+    margin-bottom: var(--space-10);
+  }
+  .logo-strip-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2.75rem 3.5rem;
+  }
+  .logo-strip-row img {
+    height: 34px;
+    width: auto;
+    max-width: 150px;
+    object-fit: contain;
+    display: block;
+    opacity: 0.65;
+    /* Source logos arrive in whatever color/contrast their own brand uses —
+       brightness(0) invert(1) normalizes any of them (dark wordmark, colored
+       mark, whatever) into a single clean paper-colored silhouette, the only
+       treatment that reads reliably against --color-ink for an arbitrary,
+       uncurated logo set. */
+    filter: brightness(0) invert(1);
+    transition: opacity var(--duration-fast) ease;
+  }
+  .logo-strip-row.is-large img {
+    height: 52px;
+    max-width: 200px;
+  }
+  .logo-strip-row img:hover {
+    opacity: 1;
+  }
+</style>

@@ -6,7 +6,7 @@ import SectionIntro from '../components/sections/SectionIntro.astro';
 import Timeline from '../components/sections/Timeline.astro';
 import ProofGrid from '../components/sections/ProofGrid.astro';
 import PersonGrid from '../components/sections/PersonGrid.astro';
-import LogoMarquee from '../components/sections/LogoMarquee.astro';
+import LogoStrip from '../components/sections/LogoStrip.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 
 const entry = await getEntry('pages', 'about');
@@ -57,7 +57,7 @@ const { partners } = site.data;
     {page.network.note}
     <a href="/media">See press coverage →</a>
   </p>
-  <LogoMarquee eyebrow={page.network.eyebrow} title={page.network.title} items={partners} />
+  <LogoStrip eyebrow={page.network.eyebrow} title={page.network.title} items={partners} />
 
   {
     page.ambition && (

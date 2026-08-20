@@ -1,0 +1,138 @@
+---
+// Home's dedicated Partners section — grouped by sponsorship tier (Partner /
+// Supporter / Media, or whatever real tiers apply), one continuous divider
+// line under the tier labels, logos static and centered under their own
+// tier. Structure matches a reference screenshot Ronny supplied directly.
+//
+// Real tier assignment (which named company is Partner vs. Supporter vs.
+// Media) isn't something to guess at — it's a real business fact, not a
+// design choice. Until `tier` is set per logo in site/global.json (via
+// CloudCannon), every logo falls into one unlabeled group, which still
+// renders the same static, divider-lined structure, just as one column
+// instead of several.
+import type { ImageMetadata } from 'astro';
+
+interface LogoItem {
+  name: string;
+  logo: ImageMetadata;
+  tier?: string;
+}
+interface Props {
+  eyebrow: string;
+  title: string;
+  items: LogoItem[];
+}
+const { eyebrow, title, items } = Astro.props;
+
+const hasTiers = items.some((item) => item.tier);
+const groups: { label: string; items: LogoItem[] }[] = hasTiers
+  ? Array.from(
+      items.reduce((map, item) => {
+        const key = item.tier || 'Partners';
+        if (!map.has(key)) map.set(key, []);
+        map.get(key)!.push(item);
+        return map;
+      }, new Map<string, LogoItem[]>()),
+    ).map(([label, groupItems]) => ({ label, items: groupItems }))
+  : [{ label: '', items }];
+const columnStyle = `grid-template-columns: repeat(${groups.length}, 1fr)`;
+---
+
+<section class="partner-tiers-section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">{eyebrow}</span>
+      <h2>{title}</h2>
+    </div>
+  </div>
+  <div class="wrap-wide">
+    {
+      hasTiers && (
+        <div class="tier-labels" style={columnStyle}>
+          {groups.map((g) => (
+            <span class="tier-label">{g.label}</span>
+          ))}
+        </div>
+      )
+    }
+    <div class="tier-divider"></div>
+    <div class="tier-columns reveal" style={columnStyle}>
+      {
+        groups.map((g) => (
+          <div class="tier-column">
+            {g.items.map((item) => (
+              <img src={item.logo.src} alt={item.name} loading="lazy" />
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .partner-tiers-section {
+    border-top: 1px solid var(--color-paper-12);
+    padding: var(--space-20) 0 var(--space-16);
+  }
+  .partner-tiers-section .section-head {
+    margin-bottom: var(--space-10);
+  }
+  .tier-labels {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .tier-label {
+    text-align: center;
+    font: var(--text-caption);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .tier-divider {
+    border-top: 1px solid var(--color-paper-20);
+    margin-bottom: 2.25rem;
+  }
+  .tier-columns {
+    display: grid;
+    gap: 2rem;
+  }
+  .tier-column {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem 2.5rem;
+  }
+  .tier-column img {
+    height: 40px;
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
+    display: block;
+    opacity: 0.7;
+    filter: brightness(0) invert(1);
+    transition: opacity var(--duration-fast) ease;
+  }
+  .tier-column img:hover {
+    opacity: 1;
+  }
+  @media (max-width: 820px) {
+    .tier-labels,
+    .tier-columns {
+      grid-template-columns: 1fr !important;
+    }
+    .tier-labels {
+      gap: 2rem;
+    }
+    .tier-column {
+      padding-bottom: 1.75rem;
+      border-bottom: 1px solid var(--color-paper-12);
+    }
+    .tier-column:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+</style>

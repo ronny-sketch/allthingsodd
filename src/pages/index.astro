@@ -12,7 +12,8 @@ import ProofGrid from '../components/sections/ProofGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
 import Aftermovie from '../components/sections/Aftermovie.astro';
-import LogoMarquee from '../components/sections/LogoMarquee.astro';
+import LogoStrip from '../components/sections/LogoStrip.astro';
+import PartnerTiers from '../components/sections/PartnerTiers.astro';
 
 // Content file is named index.json (not home.json) so CloudCannon's
 // filename-based [slug] URL placeholder resolves to "" for it, matching the
@@ -25,7 +26,7 @@ const page = entry.data;
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { partners } = site.data;
+const { partners, featuredIn } = site.data;
 
 // The hero mosaic's first cell is the page's real LCP element (confirmed via
 // a PerformanceObserver check against production, not assumed) — preloading
@@ -45,6 +46,7 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
   preloadImage={preloadImage.src}
 >
   <Hero mosaicAlt={page.hero.mosaicAlt} />
+  <LogoStrip eyebrow="Press" title="Featured in" items={featuredIn} size="large" />
   <OpeningLine
     line={page.opening.headline}
     subline={page.opening.subline}
@@ -105,7 +107,7 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
 
   <Aftermovie poster={page.aftermovie.poster} video={page.aftermovie.video} />
 
-  <LogoMarquee eyebrow="Who we build with" title="Partners" items={partners} />
+  <PartnerTiers eyebrow="Who we build with" title="Partners" items={partners} />
 
   <ParticipateBand items={page.participate} />
 </Layout>

@@ -5,7 +5,7 @@ import PageIntro from '../components/sections/PageIntro.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import ProgramGrid from '../components/sections/ProgramGrid.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
-import LogoMarquee from '../components/sections/LogoMarquee.astro';
+import LogoStrip from '../components/sections/LogoStrip.astro';
 import ContactForm from '../components/sections/ContactForm.astro';
 
 const entry = await getEntry('pages', 'work-with-odd');
@@ -61,7 +61,7 @@ const formAccessKey =
   </section>
 
   <p class="wrap wwo-network-note reveal">{page.network.note}</p>
-  <LogoMarquee eyebrow={page.network.eyebrow} title={page.network.title} items={partners} />
+  <LogoStrip eyebrow={page.network.eyebrow} title={page.network.title} items={partners} />
 
   <section class="wwo-sub">
     <div class="wrap">

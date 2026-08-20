@@ -508,9 +508,13 @@ collections_config:
       partners:
         type: array
         label: Partner logos
-        comment: Shown in the "Partners" logo strip on the homepage.
+        comment: >-
+          Shown on the homepage, grouped by "tier" (e.g. Partner / Supporter /
+          Media — use whatever real tier names apply). Leave "tier" blank on
+          a logo and it falls into one unlabeled group instead of a named
+          column — don't guess a company's real sponsorship tier.
         options:
-          structures: _structures.logo_item
+          structures: _structures.partner_logo_item
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -550,6 +554,25 @@ _structures:
         value:
           name: ''
           logo:
+  partner_logo_item:
+    style: select
+    values:
+      - label: Partner logo
+        default: false
+        preview:
+          text:
+            - key: name
+            - key: tier
+          icon:
+            - image
+          image:
+            - key: logo
+        place_groups_below: false
+        tabbed: false
+        value:
+          name: ''
+          logo:
+          tier: ''
   news_item:
     style: select
     values:
