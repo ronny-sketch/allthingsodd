@@ -28,11 +28,15 @@ commit to main (code, or CloudCannon content commit)
     odd-field-guide.surge.sh automatically
 ```
 
-`main` is the deploy branch. All three jobs — `checks`, `visual`, `deploy` —
-run on every push; `deploy` only runs after both others pass, only on `main`,
-only on an actual push (not a PR). **This is what makes a CloudCannon content
-edit actually go live without anyone running a manual command** — the commit
-CloudCannon makes is a normal push to `main`, same as a code change.
+`main` is the deploy branch. All three jobs — `checks`, `functional`,
+`deploy` — run on every push; `deploy` only runs after both others pass,
+only on `main`, only on an actual push (not a PR). **This is what makes a
+CloudCannon content edit actually go live without anyone running a manual
+command** — the commit CloudCannon makes is a normal push to `main`, same as
+a code change. `functional` runs the cross-browser interaction suite and the
+console-error check, not full visual regression — see
+[docs/architecture.md#visual-regression](architecture.md#visual-regression)
+for why that stays a local pre-commit step instead.
 
 The deploy job needs a `SURGE_TOKEN` repository secret to authenticate
 non-interactively. One-time setup (from a terminal where `gh` is
@@ -112,8 +116,9 @@ npm run preview     # or: npm run preview -- --background, then `astro preview s
 npm test
 ```
 
-In CI, the `visual` job starts `astro preview` in the background explicitly
-and polls until it's reachable before running tests — see the workflow file.
+In CI, the `functional` job starts `astro preview` in the background
+explicitly and polls until it's reachable before running the (non-visual)
+test subset — see the workflow file.
 
 ## Caching
 

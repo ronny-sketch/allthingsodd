@@ -45,8 +45,8 @@ jobs:
       - run: npm run cc:validate
       - run: npm run build
 
-  visual:
-    name: Visual regression + functional + console errors
+  functional:
+    name: Functional + console errors (cross-browser)
     runs-on: ubuntu-latest
     needs: checks
     steps:
@@ -57,8 +57,8 @@ jobs:
           cache: npm
       - run: npm install -g npm@11
       - run: npm ci
-      # chromium + webkit for the visual-regression matrix, firefox added for
-      # the functional cross-browser smoke test — see playwright.config.ts.
+      # chromium + webkit for the functional cross-browser smoke test,
+      # firefox likewise — see playwright.config.ts's functional-* projects.
       - run: npx playwright install --with-deps chromium webkit firefox
       - run: npm run build
       - name: Start preview server
@@ -71,7 +71,19 @@ jobs:
           done
           echo "Preview server did not come up in time" >&2
           exit 1
-      - run: npm test
+      # Deliberately NOT `npm test` (the full suite) — Playwright's default
+      # snapshot filenames bake in the OS (`*-darwin.png`, see
+      # tests/visual/pages.spec.ts-snapshots/), and every baseline in this
+      # repo was generated locally on macOS. Running the full suite here
+      # would fail on every screenshot comparison (Linux looks for
+      # `*-linux.png`, which doesn't exist) for a reason that has nothing to
+      # do with whether the site is actually broken. Visual regression stays
+      # a local pre-commit check (`npm test` / `npm run test:update-snapshots`
+      # before pushing, as this project already does); CI runs everything
+      # else real cross-browser coverage buys — functional interaction tests
+      # plus the console-error check, neither of which compares pixels. See
+      # docs/deployment.md#ci-history.
+      - run: npx playwright test --grep-invert "full page|404 page"
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
@@ -82,7 +94,7 @@ jobs:
   deploy:
     name: Deploy to production
     runs-on: ubuntu-latest
-    needs: [checks, visual]
+    needs: [checks, functional]
     # Only main, and only on an actual push (a green PR doesn't deploy) — a
     # content edit from CloudCannon lands here as a normal push to main, same
     # as a code change, so this is what actually closes the loop from "edit

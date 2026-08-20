@@ -246,6 +246,21 @@ npm run test:update-snapshots
 Review the diffs before committing — a snapshot update should have a reason
 you can point to.
 
+**Local-only, deliberately.** Playwright's default snapshot filenames bake
+in the OS (`*-darwin.png`) — every baseline in this repo was generated on
+macOS. `.github/workflows/ci.yml`'s `functional` job runs everything else
+(`npx playwright test --grep-invert "full page|404 page"`: the full
+cross-browser interaction suite, plus the console-error check, neither of
+which compares pixels) but skips the screenshot comparisons outright —
+running them on the Linux CI runner would fail every single one looking for
+`*-linux.png` files that don't exist, for a reason with nothing to do with
+whether the site actually broke. Maintaining a second Linux baseline set was
+considered and rejected: it doubles the file count with no local dev
+workflow (all work on this project happens on macOS) that would ever
+generate or review a Linux baseline, making it dead weight that goes stale
+silently. Run `npm test` locally before pushing, same as this project always
+has; see docs/deployment.md#ci-history for how this was discovered.
+
 ## Old site relationship
 
 `../ODD NEW WEBPAGE/index.html` (the single-file build) was the site's
