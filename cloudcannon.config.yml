@@ -27,6 +27,7 @@ collections_config:
         cascade: true
       news:
         type: array
+        label: News filmstrip photos
         options:
           structures:
             - news_item
@@ -34,16 +35,23 @@ collections_config:
           disable_remove: false
           disable_reorder: false
           required: false
-        comment: Homepage photo filmstrip — reorder here reorders the live site.
+        comment: Homepage-only. Reorder here reorders the live site.
         cascade: true
       whatsOn:
         type: object
+        label: "What's On"
+        comment: >-
+          The "note" is the small disclaimer line under the two date
+          columns. Each column is its own list of dated entries, top to
+          bottom.
         options:
           subtype: object
           required: false
         cascade: true
       programGrid:
         type: array
+        label: Program cards (ODDfest / ODDference / ODDspace / ODDagency)
+        comment: Homepage-only. The four large photo cards.
         options:
           structures:
             - program_card
@@ -54,6 +62,7 @@ collections_config:
         cascade: true
       participate:
         type: array
+        label: '"Ways to participate" cards'
         options:
           structures:
             - cta
@@ -64,6 +73,8 @@ collections_config:
         cascade: true
       features:
         type: array
+        label: Three-column feature grid
+        comment: Subpages only (ODDfest / ODDference / ODDagency) — not on Home or About.
         options:
           structures:
             - feature_card
@@ -72,8 +83,37 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
+      primaryCta:
+        type: object
+        label: Primary button (ODDference only)
+        comment: The solid "Buy your ticket"-style button in the hero. Home, ODDfest, ODDagency and About don't use this field.
+        options:
+          subtype: object
+      heroMedia:
+        type: object
+        label: Hero video/image
+        comment: >-
+          Which of "video"/"poster"/"image" actually apply depends on the
+          page — ODDfest and ODDference use a video + poster frame,
+          ODDagency uses a single still image instead. Leave the ones the
+          page doesn't use empty.
+        options:
+          subtype: object
+      railLeft:
+        type: array
+        label: Left side ticker (decorative)
+        comment: >-
+          The scrolling logo/word/date strip fixed to the left edge on
+          desktop. Low editorial priority — safe to leave as-is.
+        cascade: true
+      railRight:
+        type: array
+        label: Right side ticker (decorative)
+        comment: Same as the left ticker, mirrored on the right edge.
+        cascade: true
       panels:
         type: array
+        label: About page panels
         options:
           structures:
             - about_panel_media
@@ -83,7 +123,10 @@ collections_config:
           disable_remove: false
           disable_reorder: false
           required: false
-        comment: The five horizontal-scroll panels on the About page, in order.
+        comment: >-
+          The five horizontal-scroll panels on the About page, in this
+          order. Add a "Photo panel" or "Text-only panel" to insert a new
+          one anywhere in the sequence.
         cascade: true
     add_options:
       - name:
@@ -106,16 +149,30 @@ collections_config:
     _inputs:
       nav:
         type: array
+        label: Main navigation
         comment: >-
-          Top nav + footer nav (shared). ODDspace is external — leave
-          external:true.
+          Shared by the top nav and footer — one edit here changes both.
+          ODDspace opens in a new tab, so leave its "external" toggle on;
+          the other four are pages on this site, leave theirs off.
         cascade: true
       social:
         type: array
+        label: Social media links
+        comment: Shown in the footer and the fullscreen menu.
         cascade: true
       contact:
         type: array
+        label: Contact emails
+        comment: Shown in the footer, as "label — email".
         cascade: true
+      footerAddress:
+        type: text
+        label: Footer address line
+      preRegister:
+        type: object
+        label: '"Pre-register" button (top right of every page)'
+        options:
+          subtype: object
     disable_add: true
     disable_add_folder: false
     disable_file_actions: true
@@ -123,7 +180,8 @@ _structures:
   news_item:
     style: select
     values:
-      - default: false
+      - label: News photo
+        default: false
         preview:
           text:
             - key: caption
@@ -138,7 +196,8 @@ _structures:
   program_card:
     style: select
     values:
-      - default: false
+      - label: Program card
+        default: false
         preview:
           text:
             - key: title
@@ -156,7 +215,8 @@ _structures:
   cta:
     style: select
     values:
-      - default: false
+      - label: Call to action
+        default: false
         preview:
           text:
             - key: title
@@ -170,7 +230,8 @@ _structures:
   feature_card:
     style: select
     values:
-      - default: false
+      - label: Feature
+        default: false
         preview:
           text:
             - key: title
@@ -183,14 +244,15 @@ _structures:
   about_panel_media:
     style: select
     values:
-      - default: false
+      - label: Photo panel
+        default: false
         preview:
           text:
             - key: title
         place_groups_below: false
         tabbed: false
         value:
-          kind: media
+          _kind: media
           image:
           alt: ''
           eyebrow: ''
@@ -199,28 +261,30 @@ _structures:
   about_panel_model:
     style: select
     values:
-      - default: false
+      - label: '"Four ways in" program list panel'
+        default: false
         preview:
           text:
             - key: title
         place_groups_below: false
         tabbed: false
         value:
-          kind: model
+          _kind: model
           eyebrow: ''
           title: ''
           items: []
   about_panel_text:
     style: select
     values:
-      - default: false
+      - label: Text-only panel
+        default: false
         preview:
           text:
             - key: title
         place_groups_below: false
         tabbed: false
         value:
-          kind: text
+          _kind: text
           eyebrow: ''
           title: ''
           body: ''

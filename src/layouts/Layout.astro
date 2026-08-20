@@ -5,6 +5,7 @@ import Footer from '../components/navigation/Footer.astro';
 import MobileMenu from '../components/navigation/MobileMenu.astro';
 import Cursor from '../components/media/Cursor.astro';
 import SteamFilters from '../components/media/SteamFilters.astro';
+import StructuredData from '../components/media/StructuredData.astro';
 
 interface Props {
   title: string;
@@ -40,6 +41,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       )
     }
     <meta name="twitter:card" content="summary_large_image" />
+    <StructuredData />
   </head>
   <body>
     <div class="grain" aria-hidden="true"></div>

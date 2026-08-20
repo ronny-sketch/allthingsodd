@@ -1,6 +1,6 @@
 {
-  "template": "subpage",
-  "slug": "oddfest",
+  "_template": "subpage",
+  "_slug": "oddfest",
   "seo": {
     "title": "ODDfest — Helsinki's open Creative Week",
     "description": "A week-long, free and open program built by and for Helsinki's creative community — art, club culture and collective creation across the city's venues.",
@@ -10,7 +10,6 @@
   "title": "Helsinki's open Creative Week.",
   "meta": "Jan 2027 · Helsinki",
   "intro": "A week-long, free and open program built by and for Helsinki's creative community — art, club culture and collective creation across the city's venues, running straight out of ODDference and into the streets.",
-  "heroVariant": "fullbleed-video",
   "heroMedia": {
     "video": "/video/oddfest-hero.mp4",
     "poster": "../../assets/video/oddfest-hero-poster.jpg",

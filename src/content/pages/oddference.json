@@ -1,6 +1,6 @@
 {
-  "template": "subpage",
-  "slug": "oddference",
+  "_template": "subpage",
+  "_slug": "oddference",
   "seo": {
     "title": "ODDference — where business meets the creative sector",
     "description": "A two-day conference for founders, creatives and policymakers who want to learn straight from the source. 11–12 June 2027, Helsinki.",
@@ -11,7 +11,6 @@
   "meta": "11–12 June 2027 · Helsinki",
   "primaryCta": { "label": "Buy your ticket", "href": "#" },
   "intro": "A two-day conference for founders, creatives and policymakers who want to learn straight from the source. Talks, matchmaking and a room full of the people actually building Finland's creative economy — followed by ODDfest, the open program it feeds straight into.",
-  "heroVariant": "split-video",
   "heroMedia": {
     "video": "/video/oddference-hero.mp4",
     "poster": "../../assets/video/oddference-hero-poster.jpg"

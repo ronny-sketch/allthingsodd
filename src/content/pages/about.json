@@ -1,5 +1,5 @@
 {
-  "template": "about",
+  "_template": "about",
   "seo": {
     "title": "About ODD — one platform, two ways in",
     "description": "A co-creation platform built in Helsinki, on a mission to bring creativity and business together — not as opposites politely sharing a stage, but as one working system.",
@@ -7,7 +7,7 @@
   },
   "panels": [
     {
-      "kind": "media",
+      "_kind": "media",
       "image": "../../assets/about/about-1-performance.jpg",
       "alt": "An ODD performance, lit from behind",
       "eyebrow": "About",
@@ -15,7 +15,7 @@
       "body": "A co-creation platform built in Helsinki, on a mission to bring creativity and business together — not as opposites politely sharing a stage, but as one working system."
     },
     {
-      "kind": "media",
+      "_kind": "media",
       "image": "../../assets/about/about-2-crowd.jpg",
       "alt": "Motion-blurred crowd at an ODD event",
       "eyebrow": "Why we exist",
@@ -23,7 +23,7 @@
       "body": "Festivals talk to artists. Conferences talk to founders. Studios talk to whoever's already inside. ODD exists because the most interesting things happen when those rooms are the same room."
     },
     {
-      "kind": "model",
+      "_kind": "model",
       "eyebrow": "How it works",
       "title": "Four ways in, one platform.",
       "items": [
@@ -50,13 +50,13 @@
       ]
     },
     {
-      "kind": "text",
+      "_kind": "text",
       "eyebrow": "Two doors, one building",
       "title": "Business gets in. Creatives get in.\nEveryone ends up in the same place.",
       "body": "Buy a ticket or pitch a project — start on the business side. Join the program or ask about membership — start on the creative side. Either door, same floor: the work happens together, in the open, in Helsinki."
     },
     {
-      "kind": "text",
+      "_kind": "text",
       "eyebrow": "Join in",
       "title": "Helsinki's creative economy, built in public.",
       "body": "Not a festival with a side program. Not a conference with a party after. One platform, run by New Nordic Way rf, growing a little more honest every year it runs.",

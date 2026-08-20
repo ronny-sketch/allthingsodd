@@ -1,0 +1,45 @@
+---
+// JSON-LD structured data — Organization + WebSite only. Deliberately not
+// adding Event schema for the What's On dates: that content is explicitly
+// marked "Illustrative example — not confirmed dates" in home.json, and
+// shipping Event markup with unconfirmed dates is exactly the kind of fake
+// structured data that hurts more than it helps. Add it once real dates
+// exist — see src/content/pages/home.json's whatsOn.note.
+import { getEntry } from 'astro:content';
+
+const site = await getEntry('site', 'global');
+if (!site) throw new Error('Missing site/global.json content entry');
+const { social, contact } = site.data;
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const email = contact[0]?.email;
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'New Nordic Way rf',
+  alternateName: 'ODD',
+  url: siteUrl,
+  logo: `${siteUrl}/logo.png`,
+  ...(email && { email }),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Sturenportti 3',
+    addressLocality: 'Helsinki',
+    addressCountry: 'FI',
+  },
+  sameAs: social.map((s) => s.href),
+};
+
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'ODD',
+  description: 'A co-creation platform bringing creativity and business together in Helsinki.',
+  url: siteUrl,
+  publisher: { '@type': 'Organization', name: 'New Nordic Way rf' },
+};
+---
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify(organization)} />
+<script type="application/ld+json" is:inline set:html={JSON.stringify(website)} />

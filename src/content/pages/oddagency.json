@@ -1,6 +1,6 @@
 {
-  "template": "subpage",
-  "slug": "oddagency",
+  "_template": "subpage",
+  "_slug": "oddagency",
   "seo": {
     "title": "ODDagency — hire ODD, creative production on demand",
     "description": "Creative production, art direction and hands-on making — seasonal programs and residencies rooted in co-creation.",
@@ -10,7 +10,6 @@
   "title": "Hire ODD, creative production on demand.",
   "meta": "Seasonal · Helsinki",
   "intro": "Creative production, art direction and hands-on making — seasonal programs and residencies rooted in co-creation. Bring an idea, or let us help you build one from scratch.",
-  "heroVariant": "split-image",
   "heroMedia": {
     "image": "../../assets/programs/oddagency-card.jpg"
   },

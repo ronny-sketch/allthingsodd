@@ -7,13 +7,13 @@ import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 
 const entry = await getEntry('pages', 'oddagency');
-if (!entry || entry.data.template !== 'subpage')
+if (!entry || entry.data._template !== 'subpage')
   throw new Error('oddagency.json content entry missing or malformed');
 const page = entry.data;
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
-  <SubpageFrame slug={page.slug} railLeft={page.railLeft} railRight={page.railRight}>
+  <SubpageFrame slug={page._slug} railLeft={page.railLeft} railRight={page.railRight}>
     <SplitHero
       variant="split-image"
       image={page.heroMedia.image}

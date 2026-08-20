@@ -55,9 +55,13 @@ const site = defineCollection({
 const pages = defineCollection({
   loader: glob({ pattern: '*.json', base: 'src/content/pages' }),
   schema: ({ image }) =>
-    z.discriminatedUnion('template', [
+    // "_template"/"_slug" (leading underscore) throughout this union are
+    // CloudCannon's hide-from-editor convention — see the "_kind" comment
+    // on the about-page panels below for why: these are routing
+    // discriminants an editor retyping would break, not real content.
+    z.discriminatedUnion('_template', [
       z.object({
-        template: z.literal('home'),
+        _template: z.literal('home'),
         seo,
         hero: z.object({ mosaicAlt: z.string() }),
         openingLine: z.string(),
@@ -95,15 +99,19 @@ const pages = defineCollection({
         aftermovie: z.object({ poster: image(), video: z.string() }),
       }),
       z.object({
-        template: z.literal('subpage'),
+        _template: z.literal('subpage'),
         seo,
-        slug: z.enum(['oddfest', 'oddference', 'oddagency']),
+        _slug: z.enum(['oddfest', 'oddference', 'oddagency']),
         eyebrow: z.string(),
         title: z.string(),
         meta: z.string(),
         primaryCta: z.object({ label: z.string(), href: z.string() }).optional(),
         intro: z.string(),
-        heroVariant: z.enum(['split-video', 'split-image', 'fullbleed-video']),
+        // Which hero layout a subpage uses (split-video/split-image/
+        // fullbleed-video) is fixed per page in the route file itself
+        // (src/pages/odd*.astro's <SplitHero variant="...">), not content —
+        // it's a structural choice, not something an editor would ever
+        // plausibly toggle. See docs/architecture.md#hero-variants.
         heroMedia: z.object({
           video: z.string().optional(),
           poster: image().optional(),
@@ -116,12 +124,18 @@ const pages = defineCollection({
         railRight: z.array(railItem),
       }),
       z.object({
-        template: z.literal('about'),
+        _template: z.literal('about'),
         seo,
         panels: z.array(
-          z.discriminatedUnion('kind', [
+          // "_kind" (not "kind") deliberately — a leading underscore is
+          // CloudCannon's own convention for "hide this field from the
+          // editor UI" (see cloudcannon.config.yml). It's the discriminant
+          // that picks which of the three panel shapes below applies;
+          // letting an editor retype it would desync the panel from its own
+          // content and break rendering, for zero editorial value.
+          z.discriminatedUnion('_kind', [
             z.object({
-              kind: z.literal('media'),
+              _kind: z.literal('media'),
               image: image(),
               alt: z.string(),
               eyebrow: z.string(),
@@ -129,13 +143,13 @@ const pages = defineCollection({
               body: z.string(),
             }),
             z.object({
-              kind: z.literal('model'),
+              _kind: z.literal('model'),
               eyebrow: z.string(),
               title: z.string(),
               items: z.array(z.object({ label: z.string(), meta: z.string(), href: z.string() })),
             }),
             z.object({
-              kind: z.literal('text'),
+              _kind: z.literal('text'),
               eyebrow: z.string(),
               title: z.string(),
               body: z.string(),

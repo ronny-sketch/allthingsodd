@@ -12,7 +12,7 @@ import Pill from '../primitives/Pill.astro';
 
 type Panel =
   | {
-      kind: 'media';
+      _kind: 'media';
       image: ImageMetadata;
       alt: string;
       eyebrow: string;
@@ -20,13 +20,13 @@ type Panel =
       body: string;
     }
   | {
-      kind: 'model';
+      _kind: 'model';
       eyebrow: string;
       title: string;
       items: { label: string; meta: string; href: string }[];
     }
   | {
-      kind: 'text';
+      _kind: 'text';
       eyebrow: string;
       title: string;
       body: string;
@@ -54,7 +54,7 @@ const marqueeLoop = [...marqueeItems, ...marqueeItems];
     <div class="about-track" id="aboutTrack">
       {
         panels.map((panel) => {
-          if (panel.kind === 'media') {
+          if (panel._kind === 'media') {
             return (
               <div class="about-panel about-panel--media">
                 <div class="about-media">
@@ -68,7 +68,7 @@ const marqueeLoop = [...marqueeItems, ...marqueeItems];
               </div>
             );
           }
-          if (panel.kind === 'model') {
+          if (panel._kind === 'model') {
             return (
               <div class="about-panel about-panel--text">
                 <div class="about-mark">
