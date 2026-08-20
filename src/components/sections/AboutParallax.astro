@@ -36,10 +36,18 @@ type Panel =
 interface Props {
   panels: Panel[];
   marqueeItems: string[];
+  pageTitle: string;
 }
-const { panels, marqueeItems } = Astro.props;
+const { panels, marqueeItems, pageTitle } = Astro.props;
 const marqueeLoop = [...marqueeItems, ...marqueeItems];
 ---
+
+{
+  /* Every panel below is an h2 — the page as a whole still needs exactly one
+   h1 for a correct heading hierarchy, even though the design has no visible
+   "page title" moment (it opens straight into the first panel). */
+}
+<h1 class="sr-only">{pageTitle}</h1>
 
 <div class="about-pin-wrap" id="aboutPinWrap" style={`--panels:${panels.length}`}>
   <div class="about-scroll">

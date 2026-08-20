@@ -10,5 +10,5 @@ const page = entry.data;
 ---
 
 <Layout title={page.seo.title} description={page.seo.description}>
-  <AboutParallax panels={page.panels} marqueeItems={page.marqueeItems} />
+  <AboutParallax panels={page.panels} marqueeItems={page.marqueeItems} pageTitle={page.seo.title} />
 </Layout>
