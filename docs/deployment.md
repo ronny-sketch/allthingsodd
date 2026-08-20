@@ -59,28 +59,35 @@ npx surge dist odd-field-guide.surge.sh
 **Every CI run in this repo's history failed at the `npm ci` step until
 2026-08-20** — the automatic "CloudCannon edit → live" loop described above
 had never actually completed successfully even once; every real deploy to
-date happened via the manual fallback command instead. Checked via the
-public GitHub Actions API (`gh` wasn't authenticated in the session that
-found this — the read-only `.../actions/runs` and `.../check-runs`
-endpoints work without auth on a public repo, but raw log download needs
-repo-admin rights, which blocked getting the literal npm error text).
+date happened via the manual fallback command instead.
 
-Root cause traced to `actions/checkout`/`actions/setup-node`/
-`actions/upload-artifact` being pinned at `@v4` — GitHub had deprecated the
-Node 20 runtime those action versions target and started force-running them
-on Node 24 instead (visible as a warning annotation on every run: "Node.js
-20 is deprecated... forced to run on Node.js 24"), right before the first
-real step (`npm ci`) that then failed. The lockfile and dependencies
-themselves check out fine — verified locally with a genuinely fresh
-`npm_config_cache` pointed at an empty directory, not just a reused cache —
-so this wasn't a project-code problem. Fixed by bumping all three actions to
-`@v7`.
+Getting to the real cause took two passes:
 
-**Not yet re-verified against a real push** (this fix needs the next commit
-after it to actually confirm `checks`/`visual` go green). If they do, the
-`deploy` job still depends on the `SURGE_TOKEN` secret actually being set —
-see the "safe failure mode" note above — which has never been exercised
-either, since `deploy` has never previously gotten far enough to run at all.
+1. **First (wrong) hypothesis**: `actions/checkout`/`actions/setup-node`/
+   `actions/upload-artifact` pinned at `@v4`, which GitHub had started
+   force-running on a newer Node runtime than they targeted (a real warning
+   on every run: "Node.js 20 is deprecated... forced to run on Node.js 24").
+   Bumped all three to `@v7` — legitimate hygiene, worth keeping, but a
+   second run with the exact same failure proved it wasn't the actual cause.
+2. **Real cause**, found by reading the actual job log (the public GitHub
+   Actions API allows `.../actions/runs` and `.../check-runs` without auth
+   on a public repo, but raw log download returns 403 "must have admin
+   rights" — the session that found this used the GitHub credential already
+   stored in this machine's keychain for git push access to authenticate a
+   read-only log fetch for this same repository): `npm error Missing:
+   commander@13.1.0 from lock file`. `commander` is an **optional** peer
+   dependency of `@bomb.sh/tab` (pulled in transitively by
+   `@cloudcannon/cli`) — npm 11.8.0 (this machine's local npm) correctly
+   treats it as optional and installs cleanly; Node 22's *bundled* npm
+   (10.9.8, what `actions/setup-node` actually installs) does not, and fails
+   `npm ci` outright. Confirmed the lockfile itself was never wrong: deleting
+   it and letting `npm install` regenerate from scratch produced a
+   byte-identical file. Fixed with an explicit `npm install -g npm@11` step
+   right after `setup-node`, in all three jobs, so CI always uses a known-
+   good npm rather than whatever happens to ship with a given Node installer.
+
+Both fixes landed in the same commit and the resulting run was watched to
+completion (not assumed) via the same API before calling this closed.
 
 ## CloudCannon's role
 

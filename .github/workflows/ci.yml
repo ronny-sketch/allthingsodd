@@ -1,15 +1,21 @@
 name: CI
 
-# actions/checkout, actions/setup-node and actions/upload-artifact are
-# pinned at v7 (not v4) — every run in this repo's history had failed at the
-# very first `npm ci` step, and GitHub Actions had started force-migrating
-# the old v4 pins onto a Node runtime they weren't built for ("Node.js 20 is
-# deprecated... forced to run on Node.js 24", visible in the run annotations)
-# — the exact symptom of a runner-environment problem right after
-# setup-node's own environment setup step. The lockfile/dependencies
-# themselves check out fine locally (including a from-scratch install with
-# an empty cache), so this wasn't a project-code problem. See
-# docs/deployment.md#ci-history if this needs revisiting.
+# Two real, separate bugs fixed here after every run in this repo's history
+# had failed at the very first `npm ci` step — see docs/deployment.md#ci-history
+# for the full story, including the wrong hypothesis (action versions) tried
+# and ruled out before the actual cause was found via the real job log:
+#
+# 1. actions/checkout/setup-node/upload-artifact bumped v4 -> v7 (GitHub was
+#    force-migrating the old v4 pins onto a Node runtime they weren't built
+#    for). Legitimate hygiene fix, but NOT what was breaking npm ci.
+# 2. The actual cause: `npm install -g npm@11` below. Node 22's bundled npm
+#    (10.9.8) fails `npm ci` on this lockfile with "Missing: commander@13.1.0
+#    from lock file" — but that's an *optional* peer dependency of
+#    @bomb.sh/tab (pulled in transitively by @cloudcannon/cli), which npm 11
+#    correctly treats as optional and npm 10.9.8 apparently doesn't. Verified
+#    locally: npm 11.8.0 installs this exact lockfile cleanly, including from
+#    a genuinely empty cache and a from-scratch regenerated lockfile (byte-
+#    identical output) — the lockfile itself was never the problem.
 
 on:
   push:
@@ -31,6 +37,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - run: npm install -g npm@11
       - run: npm ci
       - run: npm run check
       - run: npm run lint
@@ -48,6 +55,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - run: npm install -g npm@11
       - run: npm ci
       # chromium + webkit for the visual-regression matrix, firefox added for
       # the functional cross-browser smoke test — see playwright.config.ts.
@@ -87,6 +95,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - run: npm install -g npm@11
       - run: npm ci
       - run: npm run build
       - run: npx surge dist odd-field-guide.surge.sh
