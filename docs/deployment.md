@@ -54,6 +54,34 @@ npm run build
 npx surge dist odd-field-guide.surge.sh
 ```
 
+## CI history
+
+**Every CI run in this repo's history failed at the `npm ci` step until
+2026-08-20** — the automatic "CloudCannon edit → live" loop described above
+had never actually completed successfully even once; every real deploy to
+date happened via the manual fallback command instead. Checked via the
+public GitHub Actions API (`gh` wasn't authenticated in the session that
+found this — the read-only `.../actions/runs` and `.../check-runs`
+endpoints work without auth on a public repo, but raw log download needs
+repo-admin rights, which blocked getting the literal npm error text).
+
+Root cause traced to `actions/checkout`/`actions/setup-node`/
+`actions/upload-artifact` being pinned at `@v4` — GitHub had deprecated the
+Node 20 runtime those action versions target and started force-running them
+on Node 24 instead (visible as a warning annotation on every run: "Node.js
+20 is deprecated... forced to run on Node.js 24"), right before the first
+real step (`npm ci`) that then failed. The lockfile and dependencies
+themselves check out fine — verified locally with a genuinely fresh
+`npm_config_cache` pointed at an empty directory, not just a reused cache —
+so this wasn't a project-code problem. Fixed by bumping all three actions to
+`@v7`.
+
+**Not yet re-verified against a real push** (this fix needs the next commit
+after it to actually confirm `checks`/`visual` go green). If they do, the
+`deploy` job still depends on the `SURGE_TOKEN` secret actually being set —
+see the "safe failure mode" note above — which has never been exercised
+either, since `deploy` has never previously gotten far enough to run at all.
+
 ## CloudCannon's role
 
 CloudCannon commits content edits (`src/content/**/*.json`) directly to this

@@ -1,5 +1,16 @@
 name: CI
 
+# actions/checkout, actions/setup-node and actions/upload-artifact are
+# pinned at v7 (not v4) — every run in this repo's history had failed at the
+# very first `npm ci` step, and GitHub Actions had started force-migrating
+# the old v4 pins onto a Node runtime they weren't built for ("Node.js 20 is
+# deprecated... forced to run on Node.js 24", visible in the run annotations)
+# — the exact symptom of a runner-environment problem right after
+# setup-node's own environment setup step. The lockfile/dependencies
+# themselves check out fine locally (including a from-scratch install with
+# an empty cache), so this wasn't a project-code problem. See
+# docs/deployment.md#ci-history if this needs revisiting.
+
 on:
   push:
     branches: [main]
@@ -15,8 +26,8 @@ jobs:
     name: Check, lint, build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -32,8 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: checks
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -53,7 +64,7 @@ jobs:
           echo "Preview server did not come up in time" >&2
           exit 1
       - run: npm test
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
@@ -71,8 +82,8 @@ jobs:
     # docs/deployment.md.
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
