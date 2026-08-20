@@ -3,7 +3,8 @@
   "slug": "oddfest",
   "seo": {
     "title": "ODDfest — Helsinki's open Creative Week",
-    "description": "A week-long, free and open program built by and for Helsinki's creative community — art, club culture and collective creation across the city's venues."
+    "description": "A week-long, free and open program built by and for Helsinki's creative community — art, club culture and collective creation across the city's venues.",
+    "ogImage": "/og/oddfest.jpg"
   },
   "eyebrow": "ODDfest · For creatives",
   "title": "Helsinki's open Creative Week.",

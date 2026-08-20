@@ -17,11 +17,12 @@ collections_config:
           subtype: object
           groups:
             - heading: SEO
-              comment: Browser tab title and search-result snippet.
+              comment: Browser tab title, search-result snippet, and social share image.
               collapsed: false
               inputs:
                 - title
                 - description
+                - ogImage
           required: false
         cascade: true
       news:

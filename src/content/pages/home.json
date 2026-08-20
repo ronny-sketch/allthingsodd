@@ -2,7 +2,8 @@
   "template": "home",
   "seo": {
     "title": "ODD — a co-creation platform for creativity and business",
-    "description": "A co-creation platform on a mission to bring creativity and business together to shape a more imaginative world. ODDfest, ODDference, ODDspace, ODDagency — Helsinki."
+    "description": "A co-creation platform on a mission to bring creativity and business together to shape a more imaginative world. ODDfest, ODDference, ODDspace, ODDagency — Helsinki.",
+    "ogImage": "/og/home.jpg"
   },
   "hero": {
     "mosaicAlt": "A live photo mosaic from the ODDfest archive"

@@ -9,6 +9,6 @@ if (!entry || entry.data.template !== 'about')
 const page = entry.data;
 ---
 
-<Layout title={page.seo.title} description={page.seo.description}>
+<Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <AboutParallax panels={page.panels} marqueeItems={page.marqueeItems} pageTitle={page.seo.title} />
 </Layout>

@@ -35,6 +35,20 @@ for (const route of ROUTES) {
   });
 }
 
+test('404 page — real 404 status and branded content', async ({ page }) => {
+  const response = await page.goto('/this-page-does-not-exist');
+  expect(response?.status()).toBe(404);
+  await page.waitForLoadState('networkidle');
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForTimeout(500);
+  await expect(page).toHaveScreenshot('404.png', {
+    fullPage: true,
+    maxDiffPixelRatio: 0.02,
+    animations: 'disabled',
+    timeout: 20_000,
+  });
+});
+
 // WebKit's own native media-controls pipeline logs "Button failed to load,
 // iconName = ...-placard" to the console for autoplay/muted/playsinline video
 // even with no visible controls — benign internal noise, not an app error.

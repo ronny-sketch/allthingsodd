@@ -19,21 +19,40 @@ A **preview** deployment also exists at `odd-field-guide-astro.surge.sh`
 (same command, different subdomain) — useful for checking a build before
 promoting it to the real domain.
 
-## Recommended production workflow
+## Production workflow
 
 ```
 commit to main (code, or CloudCannon content commit)
   → GitHub Actions CI (.github/workflows/ci.yml): check, lint, build, test
-  → on green: deploy job (host-specific, not yet wired up — see below)
+  → on green, on main, on push (not PRs): deploy job publishes to
+    odd-field-guide.surge.sh automatically
 ```
 
-`main` is the deploy branch. CI (`checks` + `visual` jobs) gates every push
-and PR — see `.github/workflows/ci.yml`. **Deploys are currently manual**
-(`npx surge dist odd-field-guide.surge.sh`, run by whoever's promoting a
-build) — CI does not yet auto-deploy on green. Wiring that up (surge again,
-or a switch to Cloudflare Pages/Netlify/Vercel — any static host works,
-since this is still a fully static build with zero server runtime) is the
-next real infrastructure step, not yet done.
+`main` is the deploy branch. All three jobs — `checks`, `visual`, `deploy` —
+run on every push; `deploy` only runs after both others pass, only on `main`,
+only on an actual push (not a PR). **This is what makes a CloudCannon content
+edit actually go live without anyone running a manual command** — the commit
+CloudCannon makes is a normal push to `main`, same as a code change.
+
+The deploy job needs a `SURGE_TOKEN` repository secret to authenticate
+non-interactively. One-time setup (from a terminal where `gh` is
+authenticated — this never needs to touch this repo's history or any AI
+session, since the token goes straight from `surge` to GitHub's secret
+store):
+
+```bash
+npx surge token | gh secret set SURGE_TOKEN --repo ronny-sketch/odd-field-guide
+```
+
+Until that secret exists, the `deploy` job will fail (auth error) while
+`checks`/`visual` still pass — that's a safe failure mode: nothing gets
+published, but nothing breaks either. Fall back to the manual command below
+if needed:
+
+```bash
+npm run build
+npx surge dist odd-field-guide.surge.sh
+```
 
 ## CloudCannon's role
 

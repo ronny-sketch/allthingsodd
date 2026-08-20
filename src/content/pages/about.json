@@ -2,7 +2,8 @@
   "template": "about",
   "seo": {
     "title": "About ODD — one platform, two ways in",
-    "description": "A co-creation platform built in Helsinki, on a mission to bring creativity and business together — not as opposites politely sharing a stage, but as one working system."
+    "description": "A co-creation platform built in Helsinki, on a mission to bring creativity and business together — not as opposites politely sharing a stage, but as one working system.",
+    "ogImage": "/og/about.jpg"
   },
   "panels": [
     {

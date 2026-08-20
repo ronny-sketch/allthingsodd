@@ -25,7 +25,8 @@ can't be added to or deleted (their filenames are wired to real URLs). Within
 each page:
 
 - Headlines, intro paragraphs, eyebrow labels, meta lines — plain text fields.
-- SEO title/description — what shows in a browser tab and a Google result.
+- SEO title/description/social image — what shows in a browser tab, a Google
+  result, and the preview card when the page is shared on social media.
 - **Home page**: the "What's happening" photo filmstrip (reorder, edit
   captions, swap photos), the "What's on" date list, the four program cards,
   the two "Ways to participate" CTAs.

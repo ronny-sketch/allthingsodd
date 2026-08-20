@@ -18,6 +18,7 @@
     "test:update-snapshots": "playwright test --update-snapshots"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
     "astro": "^7.2.4"
   },
   "devDependencies": {
