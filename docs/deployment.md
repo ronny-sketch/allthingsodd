@@ -75,10 +75,10 @@ Getting to the real cause took two passes:
    rights" — the session that found this used the GitHub credential already
    stored in this machine's keychain for git push access to authenticate a
    read-only log fetch for this same repository): `npm error Missing:
-   commander@13.1.0 from lock file`. `commander` is an **optional** peer
+commander@13.1.0 from lock file`. `commander` is an **optional** peer
    dependency of `@bomb.sh/tab` (pulled in transitively by
    `@cloudcannon/cli`) — npm 11.8.0 (this machine's local npm) correctly
-   treats it as optional and installs cleanly; Node 22's *bundled* npm
+   treats it as optional and installs cleanly; Node 22's _bundled_ npm
    (10.9.8, what `actions/setup-node` actually installs) does not, and fails
    `npm ci` outright. Confirmed the lockfile itself was never wrong: deleting
    it and letting `npm install` regenerate from scratch produced a
