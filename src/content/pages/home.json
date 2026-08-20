@@ -9,21 +9,37 @@
   },
   "openingLine": "A co-creation platform on a mission to bring creativity and business together to shape a more imaginative world.",
   "converge": {
-    "intro": "There are two ways in — pick where you start.",
+    "intro": "There are three ways in — pick where you start.",
     "business": {
       "lede": "Buy in. Partner. Hire.",
       "body": "We work with businesses two ways. ODDference puts your team in the room with the people actually building Finland's creative economy — talks, matchmaking, a stage if you want one. ODDagency goes further: commission real creative production, not just a conversation about it.",
       "tracks": [
-        { "label": "ODDference", "meta": "Tickets, program", "href": "/oddference" },
-        { "label": "ODDagency", "meta": "Hire creative production", "href": "/oddagency" }
+        {
+          "label": "ODDference",
+          "meta": "Tickets, program",
+          "href": "/oddference"
+        },
+        {
+          "label": "ODDagency",
+          "meta": "Hire creative production",
+          "href": "/oddagency"
+        }
       ]
     },
     "creative": {
       "lede": "Join. Show up. Belong.",
       "body": "We support creatives two ways. ODDfest is the open program — free to join, shaped by whoever shows up to build it, no gatekeeping. ODDspace is where that continues year-round: a studio, a membership, a home base in Helsinki.",
       "tracks": [
-        { "label": "ODDfest", "meta": "Open program, free", "href": "/oddfest" },
-        { "label": "ODDspace", "meta": "Membership", "href": "https://www.oddspace.co" }
+        {
+          "label": "ODDfest",
+          "meta": "Open program, free",
+          "href": "/oddfest"
+        },
+        {
+          "label": "ODDspace",
+          "meta": "Membership",
+          "href": "https://www.oddspace.co"
+        }
       ]
     }
   },
