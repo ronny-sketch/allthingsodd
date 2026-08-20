@@ -34,7 +34,10 @@ const { title, cards } = Astro.props;
           rel={card.href.startsWith('http') ? 'noreferrer' : undefined}
         >
           {card.image ? (
-            <Image class="four-card-bg" src={card.image} alt="" width={900} />
+            // width 1300, not 900 — .four-grid is full-bleed and each card is
+            // half that width on desktop (up to ~1280px on a wide monitor),
+            // which was upscaling the 900px source.
+            <Image class="four-card-bg" src={card.image} alt="" width={1300} />
           ) : (
             <div class="four-card-bg four-card-bg--empty" />
           )}

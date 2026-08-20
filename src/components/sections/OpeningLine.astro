@@ -72,8 +72,9 @@ const { line, subline, primaryCta, secondaryCta } = Astro.props;
     line-height: 1.04;
     letter-spacing: -0.01em;
     max-width: 20ch;
-    margin: 0;
+    margin: 0 auto;
     color: var(--color-ink);
+    text-align: center;
     text-wrap: balance;
   }
   .opening-line :global(.letter) {
@@ -84,10 +85,11 @@ const { line, subline, primaryCta, secondaryCta } = Astro.props;
   }
   .opening-subline {
     max-width: 42ch;
-    margin: 1.6rem 0 0;
+    margin: 1.6rem auto 0;
     font-family: var(--font-body);
     font-size: 1rem;
     line-height: 1.7;
+    text-align: center;
     /* Ink itself at low opacity, not --color-paper-* (those are calibrated
        against the dark ground everywhere else on the site — this is the one
        band that inverts to the light neutral, so its own secondary text
@@ -97,6 +99,7 @@ const { line, subline, primaryCta, secondaryCta } = Astro.props;
   .opening-ctas {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 0.9rem;
     margin-top: 1.8rem;
   }

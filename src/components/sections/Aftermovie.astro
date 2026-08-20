@@ -25,7 +25,12 @@ const track = [...logos, ...logos, ...logos];
     </div>
   </div>
   <div class="aftermovie-full">
-    <Image src={poster} alt="" width={1600} data-video-poster />
+    {
+      /* width 2200 — .aftermovie-full is full-bleed (100vw), which was
+         upscaling a 1600px source on any wide monitor. See PhotoBreak.astro
+         for the identical reasoning. */
+    }
+    <Image src={poster} alt="" width={2200} data-video-poster />
     <video autoplay muted loop playsinline poster={poster.src} preload="none">
       <source src={video} type="video/mp4" />
     </video>
@@ -74,7 +79,7 @@ const track = [...logos, ...logos, ...logos];
     }
   }
   .logo-marquee-track img {
-    height: 30px;
+    height: 44px;
     width: auto;
     display: block;
     opacity: 0.88;

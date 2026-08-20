@@ -57,7 +57,7 @@ high-level notes:
 - **Membership**: what it is, who it's for, why join, what's included, the
   year-round rhythm, tiers (optional and empty by default — the whole section
   hides itself until pricing exists), the network note, the closing CTA.
-- **About**: the four horizontal-scroll panels that open the page, then
+- **About**: the four stacked panels that open the page, then
   Story/timeline, Proof (optional), People & organisation, the partner
   network note, "The bigger picture" (optional), and the participate band.
 - **Media**: a full press kit — accreditation callout, key facts, ODDfest

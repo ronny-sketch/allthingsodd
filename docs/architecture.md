@@ -36,7 +36,7 @@ src/
     primitives/             Logo, Pill, SocialIcon — dumb, reusable
     navigation/              Nav, Footer, MobileMenu — read from site/global.json
     media/                    Cursor, SteamFilters — page-independent chrome
-    sections/                 Hero, Converge, SubpageRail, AboutParallax, … —
+    sections/                 Hero, Converge, SubpageRail, AboutPanels, … —
                                page-specific, each reads its own content props
   scripts/                  Vanilla-TS client behavior, one file per interaction
   layouts/Layout.astro      <html> shell: fonts, nav, footer, cursor, sitewide scripts
@@ -54,8 +54,8 @@ It's the wrong call here. ODD has **nine pages, and most have a genuinely
 different, bespoke layout**: the home page's photo mosaic hero and filmstrip
 don't exist anywhere else; ODDfest/ODDference/ODDagency share a rail+grid
 shape but each hero is a different variant (video split, image split,
-full-bleed video); the about page opens with a scroll-pinned horizontal
-parallax unlike anything else on the site. Forcing these into a generic
+full-bleed video); the about page opens with a four-panel sequence unlike
+anything else on the site. Forcing these into a generic
 "sections" abstraction would mean either (a) building generic components that
 can't actually express this site's real layouts, or (b) building one generic
 section type per page anyway, which is a composer in name only.
@@ -99,15 +99,15 @@ real decisions worth recording:
    permanent slot in a five-item primary nav — they're reachable from Work
    with ODD's pathway grid and from CTAs throughout the site instead. See
    `src/content/site/global.json`'s `nav` array.
-3. **About's four-panel horizontal scroll-pin stayed exactly what it was**
-   (trimmed from five panels to four, content updated) for the conceptual
-   opening — What is ODD / Why we exist / How it works / One platform. The
-   V2 sections a real About page also needs (Story/timeline, Proof, People,
-   Network, Ambition) continue as a normal vertical page below the pin
-   instead of extending it to ten panels, which would have made the pin
-   unusable as an interaction. Same "reuse where generic, bespoke where not"
-   call as Media/Contact above, just inside a single page instead of across
-   the sitemap.
+3. **About's four-panel opening** (trimmed from five panels to four, content
+   updated) carries the conceptual opening — What is ODD / Why we exist / How
+   it works / One platform — as a plain stacked sequence (`AboutPanels.astro`;
+   see `docs/deployment.md`'s history or git log for the pinned
+   horizontal-scroll version this replaced 2026-08-21, dropped for a more
+   direct page). The V2 sections a real About page also needs (Story/timeline,
+   Proof, People, Network, Ambition) continue as a normal vertical page below
+   it. Same "reuse where generic, bespoke where not" call as Media/Contact
+   above, just inside a single page instead of across the sitemap.
 4. **Primary nav grouped to five items via a one-level "Info" dropdown**
    (About/Media/Contact) instead of growing to seven flat items — see
    `src/content/site/global.json`'s `nav[].children`. `Nav.astro` renders it

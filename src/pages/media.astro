@@ -7,7 +7,9 @@ import ProofGrid from '../components/sections/ProofGrid.astro';
 import ResourceList from '../components/sections/ResourceList.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
+import PhotoBreak from '../components/sections/PhotoBreak.astro';
 import SocialIcon from '../components/primitives/SocialIcon.astro';
+import photoStage from '../assets/hero/archive-30.jpg';
 
 const entry = await getEntry('pages', 'media');
 if (!entry || entry.data._template !== 'media')
@@ -71,6 +73,8 @@ const pressCtas = contact.map((c) => ({
     headline={page.boilerplate.headline}
     body={page.boilerplate.body}
   />
+
+  <PhotoBreak image={photoStage} alt="A production stage from the ODDfest archive" />
 
   <section class="media-sub">
     <div class="wrap">

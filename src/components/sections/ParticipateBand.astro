@@ -63,6 +63,12 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
     background: transparent;
   }
   .p-cta {
+    /* min-width: 0 — a grid item's implicit min-width:auto refuses to shrink
+       narrower than its own content, which left 1fr tracks sized by each
+       card's own text length instead of equally (confirmed via
+       getComputedStyle: 297/270/253/174/211px for 5 supposedly-equal
+       columns). Same fix as ProofGrid's identical bug earlier this session. */
+    min-width: 0;
     background: var(--color-paper);
     color: var(--color-ink);
     padding: 3rem 2.2rem;
@@ -72,7 +78,14 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
     flex-direction: column;
     align-items: center;
     text-align: center;
-    justify-content: center;
+    /* flex-start + .go's margin-top:auto below, not justify-content:center —
+       centering each card's content independently meant cards with a
+       longer, more-wrapped title pushed their eyebrow/link to a different
+       vertical position than shorter cards in the same row (confirmed via
+       screenshot: eyebrows didn't line up across the row). Anchoring the
+       top and pinning the link to the bottom keeps every card's eyebrow and
+       link aligned regardless of how many lines its title wraps to. */
+    justify-content: flex-start;
     gap: 0.4rem;
     min-height: 220px;
     transition:
@@ -87,15 +100,22 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
   .p-cta h3 {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    font-size: clamp(1.3rem, 2.1vw, 1.75rem);
     margin: 1rem 0 0;
+    /* A single long word (e.g. "ODDference") has no space to wrap at, so at
+       an equal (now narrower) column width it overflowed the card instead
+       of wrapping — confirmed via screenshot after the min-width:0 fix
+       above made columns genuinely equal-width for the first time. */
+    overflow-wrap: break-word;
+    max-width: 100%;
   }
   .p-cta .go {
     font-family: var(--font-body);
     font-size: 0.78rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-top: 1.5rem;
+    margin-top: auto;
+    padding-top: 1.5rem;
   }
   .p-cta:hover {
     background: var(--color-bg);

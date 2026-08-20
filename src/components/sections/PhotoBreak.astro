@@ -16,7 +16,14 @@ const { image, alt, tall = false } = Astro.props;
 ---
 
 <div class={`photo-break bleed reveal ${tall ? 'is-tall' : ''}`}>
-  <Image src={image} alt={alt} width={1600} />
+  {
+    /* width 2200, not the site's usual ~900-1600 — .bleed escapes the
+       normal ~1280px content width to span the full viewport, so on any
+       genuinely wide monitor this was being upscaled from a source
+       narrower than its own render width (visible softness, not a
+       hypothetical). */
+  }
+  <Image src={image} alt={alt} width={2200} />
 </div>
 
 <style>

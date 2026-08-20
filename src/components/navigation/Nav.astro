@@ -166,32 +166,53 @@ const path = Astro.url.pathname;
   }
   .nav-dropdown-menu {
     position: absolute;
+    /* top:100% with no margin, plus padding-top instead of a margin gap —
+       the old margin-top left a real dead zone between the trigger and the
+       menu: the instant the pointer crossed that gap it left every element
+       matching .nav-dropdown:hover, so the menu could flicker shut before
+       the pointer ever reached it. Padding keeps the menu's own box (and so
+       its hover area) contiguous with the trigger while still landing the
+       visible card in the same spot. */
     top: 100%;
     left: 50%;
-    transform: translateX(-50%) translateY(2px);
-    min-width: 150px;
-    padding: 0.5rem;
-    margin-top: 0.6rem;
-    background: var(--color-bg);
+    transform: translateX(-50%);
+    min-width: 172px;
+    padding: 1.1rem 0.5rem 0.5rem;
+    background: var(--color-backstage);
     border: 1px solid var(--color-paper-12);
+    border-radius: 10px;
+    box-shadow: 0 12px 28px -8px rgb(0 0 0 / 45%);
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity var(--duration-fast) ease;
+    transform-origin: top center;
+    transition:
+      opacity var(--duration-fast) ease,
+      transform var(--duration-fast) ease;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .nav-dropdown-menu {
+      transform: translateX(-50%) translateY(-4px) scale(0.98);
+    }
   }
   .nav-dropdown:hover .nav-dropdown-menu,
   .nav-dropdown:focus-within .nav-dropdown-menu {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
+    transform: translateX(-50%) translateY(0) scale(1);
   }
   .nav-dropdown-menu a {
-    padding: 0.5rem 0.7rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 6px;
     font-size: 0.92rem;
     white-space: nowrap;
+    transition:
+      color var(--duration-fast) ease,
+      background-color var(--duration-fast) ease;
   }
   .nav-dropdown-menu a::before {
     display: none;
@@ -199,7 +220,7 @@ const path = Astro.url.pathname;
   .nav-dropdown-menu a:hover,
   .nav-dropdown-menu a.is-active {
     color: var(--color-paper);
-    background: var(--color-paper-06);
+    background: var(--color-paper-12);
   }
   .nav-buttons {
     display: flex;

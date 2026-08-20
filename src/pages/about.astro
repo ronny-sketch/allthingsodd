@@ -1,7 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import AboutParallax from '../components/sections/AboutParallax.astro';
+import AboutPanels from '../components/sections/AboutPanels.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
 import Timeline from '../components/sections/Timeline.astro';
 import ProofGrid from '../components/sections/ProofGrid.astro';
@@ -22,11 +22,11 @@ const { partners } = site.data;
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
-  <!-- The four-panel horizontal scroll-pin carries the conceptual opening
-       (What is ODD / Why we exist / How it works / One platform) — see
-       docs/architecture.md#v2 for why the deeper sections below continue as
-       a normal page instead of extending the pin. -->
-  <AboutParallax panels={page.panels} marqueeItems={page.marqueeItems} pageTitle={page.seo.title} />
+  <!-- The four-panel opening (What is ODD / Why we exist / How it works /
+       One platform) — plain stacked panels, one per section (see
+       AboutPanels.astro; this used to be a pinned horizontal-scroll version
+       of the same content, dropped 2026-08-21). -->
+  <AboutPanels panels={page.panels} marqueeItems={page.marqueeItems} pageTitle={page.seo.title} />
 
   <section class="about-story">
     <div class="wrap">

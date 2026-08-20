@@ -48,9 +48,9 @@ GitHub (canonical repo, version history)
   `typography.css`, `layout.css`, `motion.css`.
 - **Components** follow `src/components/{primitives,navigation,media,sections}/`.
   Primitives are dumb and reusable (Logo, Pill, SocialIcon). Sections are
-  page-specific composition (Hero, Converge, SubpageRail, AboutParallax, …).
+  page-specific composition (Hero, Converge, SubpageRail, AboutPanels, …).
 - **Client-side interaction** (mosaic Ken Burns, custom cursor, filmstrip drift,
-  about-page scroll-pin, magnetic buttons) lives in `src/scripts/*.ts` as small
+  magnetic buttons) lives in `src/scripts/*.ts` as small
   vanilla-JS modules, each imported via a `<script src="...">` tag from the
   component that needs it. No framework, no bundler abstraction beyond what
   Astro/Vite already does.
