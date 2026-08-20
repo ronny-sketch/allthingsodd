@@ -10,6 +10,7 @@ import ProofGrid from '../components/sections/ProofGrid.astro';
 import FAQList from '../components/sections/FAQList.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
+import WarpingText from '../components/media/WarpingText.astro';
 import Pill from '../components/primitives/Pill.astro';
 import photoPerformance from '../assets/hero/archive-27.jpg';
 import photoCrowd from '../assets/hero/archive-15.jpg';
@@ -32,7 +33,13 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     />
     <div class="oddf-head reveal">
       <div class="eyebrow">{page.eyebrow}</div>
-      <h1>{page.title}</h1>
+      <WarpingText
+        as="h1"
+        text={page.title}
+        class="oddf-warping-title"
+        color="paper"
+        align="center"
+      />
       <div class="oddf-meta">{page.meta}</div>
     </div>
     <p class="oddf-body reveal">{page.intro}</p>
@@ -154,7 +161,12 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
   .oddf-head .eyebrow {
     color: var(--color-paper-60);
   }
-  .oddf-head h1 {
+  /* WarpingText renders its <h1> inside its own component file, so Astro's
+     scoped-CSS attribute doesn't carry over from this file — the bare `h1`
+     selector below would silently stop matching. :global() on the class the
+     component's `class` prop applies is the same cross-component-styling
+     pattern already used for Pill overrides elsewhere (see OpeningLine.astro). */
+  .oddf-head :global(.oddf-warping-title) {
     font-family: var(--font-display);
     font-weight: 400;
     color: var(--color-paper);

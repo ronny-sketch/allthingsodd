@@ -20,7 +20,18 @@ const ROUTES = [
 for (const route of ROUTES) {
   test(`${route || 'home'} — full page`, async ({ page }) => {
     await page.goto(route);
-    await page.waitForLoadState('networkidle');
+    // Not 'networkidle': WarpingText's per-frame canvas.toDataURL() call (see
+    // src/scripts/warping-text.ts) is heavy enough that on a page carrying an
+    // active instance (oddfest/oddagency/membership), it starves the main
+    // thread enough to keep pushing the cursor's own repeating (harmless)
+    // image requests past networkidle's 500ms-quiet window — confirmed via a
+    // direct A/B: reduced-motion (WarpingText inactive) reaches networkidle
+    // in ~500ms, normal motion never reaches it at all. 'load' isn't affected
+    // by legitimate ongoing background activity the way networkidle is (this
+    // is Playwright's own documented guidance for pages with continuous
+    // animation/polling), and document.fonts.ready + the settle wait below
+    // already cover what networkidle was otherwise being used as a proxy for.
+    await page.waitForLoadState('load');
     await page.evaluate(() => document.fonts.ready);
     // Let entrance animations (mosaic fly-in, reveal-on-scroll) settle before
     // capturing, so the baseline isn't flaky against animation timing.
@@ -73,7 +84,8 @@ test('no console errors on any route', async ({ page }) => {
   });
   for (const route of ROUTES) {
     await page.goto(route);
-    await page.waitForLoadState('networkidle');
+    // 'load', not 'networkidle' — see the full-page test above.
+    await page.waitForLoadState('load');
   }
   expect(errors, `console/page errors: ${errors.join('; ')}`).toEqual([]);
 });

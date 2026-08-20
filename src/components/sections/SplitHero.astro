@@ -5,6 +5,7 @@
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Pill from '../primitives/Pill.astro';
+import WarpingText from '../media/WarpingText.astro';
 
 interface Props {
   variant: 'split-video' | 'split-image';
@@ -16,8 +17,24 @@ interface Props {
   meta: string;
   intro: string;
   primaryCta?: { label: string; href: string };
+  // Opt-in per caller (default off) — ODDference and ODDagency share this
+  // component, and the living-warping treatment is meant for a couple of
+  // real headings for variation, not applied blanket to every hero that
+  // happens to reuse this markup.
+  warpTitle?: boolean;
 }
-const { variant, video, poster, image, eyebrow, title, meta, intro, primaryCta } = Astro.props;
+const {
+  variant,
+  video,
+  poster,
+  image,
+  eyebrow,
+  title,
+  meta,
+  intro,
+  primaryCta,
+  warpTitle = false,
+} = Astro.props;
 ---
 
 <div class="oddf-hero">
@@ -34,7 +51,19 @@ const { variant, video, poster, image, eyebrow, title, meta, intro, primaryCta }
   <div class="oddf-hero-text reveal">
     <div class="oddf-head">
       <div class="eyebrow">{eyebrow}</div>
-      <h1>{title}</h1>
+      {
+        warpTitle ? (
+          <WarpingText
+            as="h1"
+            text={title}
+            class="oddf-warping-title"
+            color="paper"
+            align="center"
+          />
+        ) : (
+          <h1>{title}</h1>
+        )
+      }
       <div class="oddf-meta">{meta}</div>
       {
         primaryCta && (
@@ -110,7 +139,12 @@ const { variant, video, poster, image, eyebrow, title, meta, intro, primaryCta }
   .oddf-head .eyebrow {
     color: var(--color-paper-60);
   }
-  .oddf-head h1 {
+  /* :global() on the warping variant's class — WarpingText renders its <h1>
+     inside its own component file, so this file's scoped-CSS attribute
+     doesn't carry over to it; the bare `h1` selector still covers the
+     non-warped (default) case. */
+  .oddf-head h1,
+  .oddf-head :global(.oddf-warping-title) {
     font-family: var(--font-display);
     font-weight: 400;
     color: var(--color-paper);

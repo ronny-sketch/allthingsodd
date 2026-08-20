@@ -1,0 +1,145 @@
+---
+// Living, warping Forta display type — ported from the ODDfest marketing
+// site's WarpingText component (oddfest-front-main). The engine lives in
+// src/scripts/warping-text.ts; this component only lays out the accessible
+// fallback heading and hands the script its config via data-* attributes,
+// same division of labour as Hero.astro/mosaic.ts.
+//
+// The `text` prop renders as real, visible, styled markup below — that's
+// what search engines, screen readers, no-JS visits, and
+// prefers-reduced-motion visits all get. The script only *adds* the animated
+// SVG replacement on top when motion is allowed; it never becomes the only
+// copy of the words. See warping-text.ts's file comment for the reduced-motion
+// reasoning (CLAUDE.md requires a real static branch, not a paused one).
+interface Props {
+  text: string;
+  as?: 'h1' | 'h2' | 'h3' | 'p' | 'div';
+  class?: string;
+  color?: 'ink' | 'paper';
+  align?: 'left' | 'center' | 'right';
+  blurStrength?: number;
+  displacementStrength?: number;
+  distort?: boolean;
+}
+
+const {
+  text,
+  as: Tag = 'h2',
+  class: className,
+  color = 'paper',
+  align = 'left',
+  blurStrength = 1,
+  displacementStrength = 1,
+  distort = true,
+} = Astro.props;
+---
+
+<div
+  class="warping-text"
+  data-warping-text
+  data-color={color}
+  data-align={align}
+  data-blur={blurStrength}
+  data-displacement={displacementStrength}
+  data-distort={distort ? '1' : '0'}
+>
+  <Tag class:list={['warping-fallback', className]} data-warping-fallback>{text}</Tag>
+</div>
+
+<script src="../../scripts/warping-text.ts"></script>
+
+<style>
+  .warping-text {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+  .warping-text :global(.warping-fallback) {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+  .warping-text[data-color='paper'] :global(.warping-fallback) {
+    color: var(--color-paper);
+  }
+  .warping-text[data-color='ink'] :global(.warping-fallback) {
+    color: var(--color-ink);
+  }
+  .warping-text[data-align='center'] :global(.warping-fallback) {
+    text-align: center;
+  }
+  .warping-text[data-align='right'] :global(.warping-fallback) {
+    text-align: right;
+  }
+  /* The script hides the real heading and reveals the SVG once it has
+     something to show — never the other way round, so a slow/failed script
+     load leaves the real, styled heading visible rather than a blank one. */
+  .warping-text :global(.warping-fallback--hidden) {
+    opacity: 0;
+  }
+  .warping-text :global(.warping-fallback--hidden)::selection {
+    background: transparent;
+  }
+
+  .warping-text :global(.warping-measure) {
+    /* font/letter-spacing are set inline by warping-text.ts, copied from the
+       fallback heading's computed style — it's a sibling, not a descendant,
+       so it can't just inherit the type-scale class. */
+    display: block;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* Plain block + text-align, not flex+gap — each word span's text already
+     carries its own trailing space (see splitWords in warping-text.ts), so a
+     flex `gap` on top of that double-spaces every word boundary. That doesn't
+     just look off — it measurably rewraps the line count for center/right
+     text (confirmed via getBoundingClientRect: a 7-word centered heading
+     measured ~130px/48% taller than the real heading it's replacing), which
+     is what let the animated SVG replacement overflow past its own container
+     into the next section. Matching the default (left) case's plain-block
+     approach keeps the measured wrap identical to the real heading's wrap at
+     every alignment. */
+  .warping-text :global(.warping-measure-line) {
+    display: block;
+    width: 100%;
+  }
+  .warping-text[data-align='center'] :global(.warping-measure-line) {
+    text-align: center;
+  }
+  .warping-text[data-align='right'] :global(.warping-measure-line) {
+    text-align: right;
+  }
+
+  .warping-text :global(.warping-canvas) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .warping-text :global(.warping-svg) {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+  /* Same two filter chains as the source component: crush the SVG's alpha
+     mask to solid black (brightness(0) zeroes RGB but keeps alpha), then
+     either leave it black or invert/tint it to the site's warm paper tone.
+     Approximates --color-paper/--color-ink rather than matching them
+     exactly — the per-word feColorMatrix ahead of this strips color
+     information as part of the "melting" edge effect, so recoloring has to
+     happen at the CSS layer, not via SVG fill. */
+  .warping-text[data-color='paper'] :global(.warping-svg) {
+    filter: brightness(0) saturate(100%) invert(96%) sepia(2%) saturate(542%) hue-rotate(354deg)
+      brightness(102%) contrast(84%);
+  }
+  .warping-text[data-color='ink'] :global(.warping-svg) {
+    filter: brightness(0) saturate(100%) invert(0%);
+  }
+</style>

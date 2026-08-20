@@ -4,6 +4,7 @@
 // (Contact, Media, and V2's Work with ODD / Membership gateway pages). See
 // docs/architecture.md#hero-variants for why those two are separate.
 import Pill from '../primitives/Pill.astro';
+import WarpingText from '../media/WarpingText.astro';
 
 interface LinkCta {
   label: string;
@@ -16,15 +17,32 @@ interface Props {
   intro: string;
   primaryCta?: LinkCta;
   secondaryCta?: LinkCta;
+  // Opt-in per caller (default off) — Contact, Media, Work with ODD and
+  // Membership all share this component; the living-warping treatment is
+  // meant for a couple of real headings for variation, not every page that
+  // happens to reuse this shape (a utility page like Contact doesn't want it).
+  warpTitle?: boolean;
 }
-const { eyebrow, title, intro, primaryCta, secondaryCta } = Astro.props;
+const { eyebrow, title, intro, primaryCta, secondaryCta, warpTitle = false } = Astro.props;
 ---
 
 <section class="page-intro">
   <div class="wrap">
     <div class="page-intro-head reveal">
       <span class="eyebrow">{eyebrow}</span>
-      <h1>{title}</h1>
+      {
+        warpTitle ? (
+          <WarpingText
+            as="h1"
+            text={title}
+            class="page-intro-warping-title"
+            color="paper"
+            align="center"
+          />
+        ) : (
+          <h1>{title}</h1>
+        )
+      }
       <p>{intro}</p>
       {
         (primaryCta || secondaryCta) && (
@@ -71,7 +89,12 @@ const { eyebrow, title, intro, primaryCta, secondaryCta } = Astro.props;
   .page-intro-head .eyebrow {
     color: var(--color-paper-60);
   }
-  .page-intro-head h1 {
+  /* :global() on the warping variant's class — WarpingText renders its <h1>
+     inside its own component file, so this file's scoped-CSS attribute
+     doesn't carry over to it; the bare `h1` selector still covers the
+     non-warped (default) case. */
+  .page-intro-head h1,
+  .page-intro-head :global(.page-intro-warping-title) {
     font-family: var(--font-display);
     font-weight: 400;
     color: var(--color-paper);
