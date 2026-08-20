@@ -7,6 +7,8 @@ import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
+import PhotoBreak from '../components/sections/PhotoBreak.astro';
+import photoBassist from '../assets/hero/archive-05.jpg';
 
 const entry = await getEntry('pages', 'oddagency');
 if (!entry || entry.data._template !== 'oddagency')
@@ -62,6 +64,8 @@ const page = entry.data;
         <FeatureGrid cards={page.howItWorks} />
       </div>
     </section>
+
+    <PhotoBreak image={photoBassist} alt="A live performance from the ODD archive" />
 
     <section class="odda-sub">
       <div class="wrap">

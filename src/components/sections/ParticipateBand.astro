@@ -20,7 +20,7 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
 >
   <div class="wrap">
     <div class="section-head"><h2>{title}</h2></div>
-    <div class="participate reveal">
+    <div class="participate reveal" style={`--cols: ${items.length}`}>
       {
         items.map((item) => (
           <a class="p-cta" href={item.href}>
@@ -49,11 +49,16 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
 
   .participate {
     display: grid;
-    /* Responsive to item count (2-5 CTAs) rather than a hardcoded two
-       columns — see docs/architecture.md#v2's "Participate" section. Two
-       items still renders as two columns (each ≥240px comfortably fits half
-       the contained width); more items wrap naturally. */
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    /* --cols (set inline, per instance) drives the column count — always
+       exactly one row on desktop (2-5 CTAs in practice) instead of auto-fit
+       occasionally stranding one item alone on its own row when N × 240px
+       doesn't divide evenly into the container width. A custom property, not
+       an inline grid-template-columns directly — the mobile media query
+       below still needs to be able to override it, and a real inline style
+       would beat any stylesheet rule regardless of media query. Real bug,
+       not hypothetical: Home's 5-item band did exactly this. See
+       docs/architecture.md#v2. */
+    grid-template-columns: repeat(var(--cols), 1fr);
     gap: 1.5rem;
     background: transparent;
   }

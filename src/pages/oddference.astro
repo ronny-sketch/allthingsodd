@@ -11,6 +11,9 @@ import ProofGrid from '../components/sections/ProofGrid.astro';
 import PricingGrid from '../components/sections/PricingGrid.astro';
 import FAQList from '../components/sections/FAQList.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
+import PhotoBreak from '../components/sections/PhotoBreak.astro';
+import photoStage from '../assets/hero/archive-20.jpg';
+import photoDecks from '../assets/hero/archive-24.jpg';
 
 const entry = await getEntry('pages', 'oddference');
 if (!entry || entry.data._template !== 'oddference')
@@ -57,6 +60,8 @@ const audienceCards = page.whoItsFor.map((a, i) => ({
         <FeatureGrid cards={page.whyAttend} />
       </div>
     </section>
+
+    <PhotoBreak image={photoStage} alt="A solo performer on stage from the ODD archive" />
 
     <section class="oddc-sub">
       <div class="wrap">
@@ -110,6 +115,8 @@ const audienceCards = page.whoItsFor.map((a, i) => ({
         </section>
       )
     }
+
+    <PhotoBreak image={photoDecks} alt="A DJ set from the ODD archive" />
 
     <SectionIntro
       eyebrow={page.connection.eyebrow}

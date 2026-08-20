@@ -7,6 +7,8 @@ import ProgramGrid from '../components/sections/ProgramGrid.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
 import ContactForm from '../components/sections/ContactForm.astro';
+import PhotoBreak from '../components/sections/PhotoBreak.astro';
+import photoCollab from '../assets/hero/archive-12.jpg';
 
 const entry = await getEntry('pages', 'work-with-odd');
 if (!entry || entry.data._template !== 'work-with-odd')
@@ -39,6 +41,8 @@ const formAccessKey =
   </section>
 
   <ProgramGrid title="Four ways to work with ODD" cards={page.pathways} />
+
+  <PhotoBreak image={photoCollab} alt="A collaborative performance from the ODD archive" />
 
   <section class="wwo-sub">
     <div class="wrap">

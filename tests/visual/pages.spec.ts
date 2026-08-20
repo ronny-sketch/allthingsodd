@@ -38,7 +38,7 @@ for (const route of ROUTES) {
       // structural/layout changes, not photo re-compression noise.
       mask: [
         page.locator(
-          '.mosaic, .news-panel img, .four-card-bg, .about-media img, .aftermovie-full, .oddfest-hero video, .oddfest-hero img, .oddf-hero-video video, .oddf-hero-video img',
+          '.mosaic, .news-panel img, .four-card-bg, .about-media img, .aftermovie-full, .oddfest-hero video, .oddfest-hero img, .oddf-hero-video video, .oddf-hero-video img, .photo-break img',
         ),
       ],
     });

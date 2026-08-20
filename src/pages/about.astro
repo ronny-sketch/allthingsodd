@@ -8,6 +8,8 @@ import ProofGrid from '../components/sections/ProofGrid.astro';
 import PersonGrid from '../components/sections/PersonGrid.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
+import PhotoBreak from '../components/sections/PhotoBreak.astro';
+import photoCrowdEnergy from '../assets/hero/archive-08.jpg';
 
 const entry = await getEntry('pages', 'about');
 if (!entry || entry.data._template !== 'about')
@@ -35,6 +37,8 @@ const { partners } = site.data;
       <Timeline items={page.story.milestones} />
     </div>
   </section>
+
+  <PhotoBreak image={photoCrowdEnergy} alt="A crowd at an ODD event" />
 
   {
     page.proof && (

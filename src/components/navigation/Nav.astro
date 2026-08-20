@@ -245,7 +245,13 @@ const path = Astro.url.pathname;
       transform: translateY(-2%);
     }
   }
-  @media (max-width: 760px) {
+  /* 1024px (not 760px) — V2's nav grew a genuinely long label ("Work with
+     ODD"), and at anything narrower the 5-item nav collided with the
+     Pre-register button (caught via an actual tablet-width screenshot, not
+     assumed — it was silently baked into the visual-regression baseline
+     itself). This range covers every common tablet portrait width
+     (iPad Mini/Air/Pro all 768-1024px), not just phones. */
+  @media (max-width: 1024px) {
     .nav-links {
       display: none;
     }

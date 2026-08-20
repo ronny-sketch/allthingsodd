@@ -8,9 +8,13 @@ interface Props {
   cards: Card[];
 }
 const { cards } = Astro.props;
+// A wider cap for 4+ cards (was a flat 60rem, tuned for the original
+// fixed-3-column grid) — otherwise a 4- or 5-card row gets squeezed
+// narrower than it needs to be relative to the page's own .wrap container.
+const maxWidth = cards.length <= 3 ? '60rem' : '72rem';
 ---
 
-<div class="oddf-grid reveal">
+<div class="oddf-grid reveal" style={`--cols: ${cards.length}; max-width: ${maxWidth}`}>
   {
     cards.map((c) => (
       <div>
@@ -24,10 +28,15 @@ const { cards } = Astro.props;
 
 <style>
   .oddf-grid {
-    max-width: 60rem;
     margin: 4rem auto 0;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    /* --cols (set inline, per instance, along with max-width above) — was a
+       hardcoded repeat(3, 1fr) regardless of actual card count, which
+       stranded a lone 4th/5th card alone on its own row whenever a page
+       passed more than 3 cards (real cases: ODDfest's 4-step "How it
+       works", ODDagency's 4 capabilities / 5 process steps, ODDference's
+       5 audience cards). See docs/architecture.md#v2. */
+    grid-template-columns: repeat(var(--cols), 1fr);
     gap: 1px;
     background: var(--color-paper-12);
   }
@@ -82,6 +91,12 @@ const { cards } = Astro.props;
     }
     .oddf-grid.in > div:nth-child(3) {
       transition-delay: 0.2s;
+    }
+    .oddf-grid.in > div:nth-child(4) {
+      transition-delay: 0.3s;
+    }
+    .oddf-grid.in > div:nth-child(5) {
+      transition-delay: 0.4s;
     }
   }
 </style>

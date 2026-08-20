@@ -1,6 +1,8 @@
 // Marquees breathe with scroll — a quick kick of speed each time the page moves.
 const tracks = Array.from(
-  document.querySelectorAll<HTMLElement>('.logo-marquee-track, .about-marquee-track'),
+  document.querySelectorAll<HTMLElement>(
+    '.logo-marquee-track, .about-marquee-track, .logo-strip-track',
+  ),
 );
 if (tracks.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const baseDur = tracks.map((t) => parseFloat(getComputedStyle(t).animationDuration) || 20);

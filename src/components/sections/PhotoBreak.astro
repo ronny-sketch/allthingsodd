@@ -1,0 +1,47 @@
+---
+// A full-bleed editorial photo interlude — real ODD archive photography
+// used as pure breathing room between text-heavy sections on the now much
+// longer V2 subpages. Deliberately no caption/text overlay: the site's
+// design is minimal specifically so a real photo can be the whole moment,
+// not a graphic with copy on it. See docs/architecture.md#v2.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  image: ImageMetadata;
+  alt: string;
+  tall?: boolean;
+}
+const { image, alt, tall = false } = Astro.props;
+---
+
+<div class={`photo-break bleed reveal ${tall ? 'is-tall' : ''}`}>
+  <Image src={image} alt={alt} width={1600} />
+</div>
+
+<style>
+  .photo-break {
+    position: relative;
+    overflow: hidden;
+    height: min(52vh, 480px);
+    margin-top: var(--space-24);
+    margin-bottom: var(--space-24);
+  }
+  .photo-break.is-tall {
+    height: min(74vh, 640px);
+  }
+  .photo-break :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: contrast(1.05) saturate(1.15) brightness(0.9);
+  }
+  @media (max-width: 700px) {
+    .photo-break {
+      height: min(40vh, 360px);
+      margin-top: var(--space-16);
+      margin-bottom: var(--space-16);
+    }
+  }
+</style>

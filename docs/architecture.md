@@ -123,6 +123,51 @@ real decisions worth recording:
    named press contact, social. All of it is real content pulled directly
    from the live oddfest.co press page, not invented — see `media.json`.
 
+**Nav breakpoint: 1024px, not 760px.** "Work with ODD" is a genuinely long
+label next to the site's other single-word nav items — at anything narrower
+than 1024px, the 5-item desktop nav collided with the Pre-register button,
+and that broken state got baked straight into the visual-regression baseline
+without anyone noticing (a pixel-diff test only catches _changes_ from a
+baseline, not whether the baseline itself is good — caught here by an actual
+tablet-width screenshot, not assumed). `Nav.astro`'s `.nav-links` now switches
+to the mobile hamburger menu at 1024px, covering every common tablet
+portrait width (iPad Mini/Air/Pro: 768–1024px), not just phones.
+
+**Featured In's infinite scroll direction.** `LogoStrip`'s `scroll` mode
+uses `marquee-right` (see motion.css) with `animation-direction: reverse` —
+plain `marquee-right` on this component's doubled track empirically reads as
+right-to-left content motion (verified by screenshotting the same named
+logos at two points in time and comparing their pixel position, not assumed
+from the keyframe's name/math). `reverse` is what actually produces
+left-to-right, which is what was asked for.
+
+**Grids that orphan a lone item onto their own row.** `FeatureGrid` was a
+hardcoded `repeat(3, 1fr)` and `ParticipateBand` was `repeat(auto-fit,
+minmax(240px, 1fr))` — both strand a lone item alone on a second row whenever
+the real item count doesn't divide evenly (ODDfest's 4-step "How it works",
+Home's 5-item "Ways to participate", ODDagency's 5-step process, and more).
+Both now size to `repeat(var(--cols), 1fr)` with `--cols` set inline per
+instance to the real item count, via a CSS custom property rather than a
+direct inline `grid-template-columns` — the latter would out-rank the mobile
+media query's single-column override regardless of viewport, since an inline
+style always beats a stylesheet rule. `ProofGrid`/`CaseGrid`/`PersonGrid`
+deliberately keep `auto-fit` wrapping instead — those can legitimately hold
+many items (Media's 8-stat highlight grid, a large speaker roster), where
+forcing one row would recreate the very overflow bug documented above instead
+of fixing anything.
+
+**Photo interludes on the subpages.** `PhotoBreak.astro` — a full-bleed,
+uncaptioned image, real ODD archive photography (`src/assets/hero/`), used as
+breathing room between text-heavy sections on ODDfest/ODDference/ODDagency/
+Work with ODD/Membership/About. No overlay text by design: the site's
+minimal layout exists specifically to leave room for a photo to be the whole
+moment. Works cleanly inside `SubpageFrame`'s fixed side rails too (the
+`.bleed` full-viewport-width pattern renders under the rails, which sit at a
+higher z-index) — verified via an actual `document.documentElement.
+scrollWidth` check across all six pages, not assumed, given `.bleed`'s
+`calc(50% - 50vw)` centering trick has a real history of producing horizontal
+overflow when used carelessly (see `Converge.astro`'s own comment).
+
 **Field-name collisions across templates.** CloudCannon's `_inputs` are keyed
 by field name across the whole `pages` collection, not per-template — so two
 templates using the same key for a _different_ shape (e.g. an early draft had

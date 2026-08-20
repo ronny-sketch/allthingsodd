@@ -9,7 +9,10 @@ import ProgrammeList from '../components/sections/ProgrammeList.astro';
 import ProofGrid from '../components/sections/ProofGrid.astro';
 import FAQList from '../components/sections/FAQList.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
+import PhotoBreak from '../components/sections/PhotoBreak.astro';
 import Pill from '../components/primitives/Pill.astro';
+import photoPerformance from '../assets/hero/archive-27.jpg';
+import photoCrowd from '../assets/hero/archive-15.jpg';
 
 const entry = await getEntry('pages', 'oddfest');
 if (!entry || entry.data._template !== 'oddfest')
@@ -66,6 +69,8 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
         </div>
       </div>
     </section>
+
+    <PhotoBreak image={photoPerformance} alt="A live performance from the ODDfest archive" />
 
     <SectionIntro
       eyebrow={page.organiserOwnership.eyebrow}
@@ -124,6 +129,8 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
         </section>
       )
     }
+
+    <PhotoBreak image={photoCrowd} alt="ODDfest performers on stage" />
 
     <section class="oddf-sub">
       <div class="wrap">
