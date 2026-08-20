@@ -1,0 +1,118 @@
+---
+// Titled, dated, linked-out resource rows — Media page's Press Releases,
+// Info Packs and Assets & Photos all use this. See content.config.ts's
+// `resourceLink`.
+interface Item {
+  title: string;
+  date?: string;
+  description?: string;
+  href: string;
+}
+interface Props {
+  items: Item[];
+}
+const { items } = Astro.props;
+---
+
+<div class="resource-list reveal">
+  {
+    items.map((item) => (
+      <a
+        class="resource-row"
+        href={item.href}
+        target={item.href.startsWith('http') ? '_blank' : undefined}
+        rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+      >
+        <div class="resource-body">
+          <span class="resource-title">{item.title}</span>
+          {item.description && <p class="resource-desc">{item.description}</p>}
+        </div>
+        <div class="resource-meta">
+          {item.date && <span class="resource-date">{item.date}</span>}
+          <span class="resource-go">Open ↗</span>
+        </div>
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .resource-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .resource-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.3rem 0;
+    border-top: 1px solid var(--color-paper-12);
+    text-decoration: none;
+    color: inherit;
+  }
+  .resource-list .resource-row:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .resource-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    color: var(--color-paper);
+    transition: color var(--duration-fast) ease;
+  }
+  .resource-row:hover .resource-title {
+    color: var(--color-amber-bright);
+  }
+  .resource-desc {
+    margin: 0.4rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-paper-60);
+    max-width: 56ch;
+  }
+  .resource-meta {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  .resource-date {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--color-paper-40);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .resource-go {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+    white-space: nowrap;
+  }
+  @media (max-width: 640px) {
+    .resource-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .resource-list .resource-row {
+      opacity: 0;
+      transform: translateY(10px);
+      transition:
+        opacity 0.5s ease,
+        transform 0.5s ease;
+    }
+    .resource-list.in .resource-row {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

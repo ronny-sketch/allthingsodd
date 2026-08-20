@@ -39,9 +39,18 @@ const { eyebrow, title, items } = Astro.props;
 <style>
   .proof-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    /* A wider minimum (was 180px) — a real value like "€400K" is wider at
+       this font size than a short one like "83", and a grid item's implicit
+       min-width:auto refuses to shrink narrower than its own content, which
+       let a wide value overflow visually into the next column (caught via
+       an actual screenshot, not assumed — see docs/architecture.md#v2's
+       narrow-column-placeholder note; same failure mode, this time from a
+       real long value rather than placeholder text). min-width: 0 below is
+       the actual fix; the wider minimum just keeps columns comfortable. */
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   }
   .proof-item {
+    min-width: 0;
     padding: 0 2rem;
     border-left: 1px solid var(--color-paper-12);
     text-align: center;
@@ -52,10 +61,11 @@ const { eyebrow, title, items } = Astro.props;
   .proof-value {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    font-size: clamp(2rem, 4vw, 3.2rem);
     line-height: 1;
     color: var(--color-paper);
     font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
   }
   .proof-label {
     margin-top: 0.7rem;

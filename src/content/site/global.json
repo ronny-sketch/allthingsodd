@@ -4,7 +4,15 @@
     { "label": "ODDference", "href": "/oddference" },
     { "label": "ODDspace", "href": "https://www.oddspace.co", "external": true },
     { "label": "Work with ODD", "href": "/work-with-odd" },
-    { "label": "About", "href": "/about" }
+    {
+      "label": "Info",
+      "href": "/about",
+      "children": [
+        { "label": "About", "href": "/about" },
+        { "label": "Media", "href": "/media" },
+        { "label": "Contact", "href": "/contact" }
+      ]
+    }
   ],
   "social": [
     { "platform": "Instagram", "href": "https://www.instagram.com/oddfest.fi" },

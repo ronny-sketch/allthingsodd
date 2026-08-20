@@ -2,9 +2,119 @@
   "_template": "media",
   "seo": {
     "title": "Media — ODD",
-    "description": "Press coverage, media contact, and the outlets that have covered ODDfest, ODDference and the ODD platform."
+    "description": "Accreditation, key facts, press releases, assets and everything else you need to cover ODD — plus the outlets who already have."
   },
   "eyebrow": "Media",
-  "title": "Featured in.",
-  "intro": "From daily papers to club culture magazines — a running list of the outlets that have covered ODD. For press inquiries, interviews or media assets, reach out below."
+  "title": "Press & media.",
+  "intro": "Accreditation, key facts, press releases, assets and everything else you need to cover ODD — plus the outlets who already have.",
+  "accreditation": {
+    "eyebrow": "Accreditation",
+    "headline": "Media accreditation is open.",
+    "body": "Media accreditation for ODDfest and ODDference is now open. Submit your application to be considered.",
+    "cta": {
+      "label": "Submit your application",
+      "href": "https://www.tiketti.fi/oddfest-2026-media-akkreditointi/2514179",
+      "external": true
+    }
+  },
+  "keyFacts": [
+    {
+      "label": "Time",
+      "value": "ODDfest Fri–Sat, June 12–13, 2026 · ODDference Thu–Fri, June 11–12, 2026 · Creative Week Mon–Sun, June 8–14, 2026"
+    },
+    {
+      "label": "Location",
+      "value": "Multiple iconic locations across central Helsinki, including Lasipalatsi, Kulttuurikasarmi, Tavastia Club, Semifinal, Kamppi Chapel, and Vanha Ylioppilastalo"
+    },
+    { "label": "2026 theme", "value": "Bravery" },
+    {
+      "label": "Program curators",
+      "value": "Minna Tervamäki, Suvi Honkanen, Otto Kylmälä, Pihla Viitala, Johanna Oras, Jonas Verwijnen, Ukko-Pekka Itäpelto, Emmi Kärnä, Karoliina Jarenko, and Elisabet Lahti"
+    },
+    {
+      "label": "Mission",
+      "value": "To make creative economy the next big engine of sustainable growth in Finland, put local creativity on the map, and celebrate global oddity"
+    }
+  ],
+  "highlights": {
+    "eyebrow": "ODDfest 2025 highlights",
+    "title": "The last edition, in numbers.",
+    "items": [
+      { "value": "2,600", "label": "Attendees", "context": "1,900+ signups" },
+      { "value": "83", "label": "Sessions", "context": "Across 8 stages, 7+ creative sectors" },
+      { "value": "150+", "label": "Speakers & artists", "context": "20+ nationalities" },
+      {
+        "value": "350+",
+        "label": "Contributors",
+        "context": "Partners, speakers, artists, staff, volunteers"
+      },
+      {
+        "value": "€400K",
+        "label": "Direct economic impact",
+        "context": "€320K invested into the creative economy"
+      },
+      { "value": "20+", "label": "Collaborative projects", "context": "Sparked within two months" },
+      { "value": "1M", "label": "Total audience reach" },
+      { "value": "20+", "label": "Countries reached" }
+    ]
+  },
+  "boilerplate": {
+    "eyebrow": "Boilerplate",
+    "headline": "ODDfest, in one paragraph.",
+    "body": "Dubbed the festival of cultural relevance and creative growth, ODDfest is a fresh take on an industry event designed to inspire, teach, showcase, accelerate, and unite across disciplines, communities, and country lines."
+  },
+  "pressReleases": [
+    {
+      "title": "ODDfest Press Release (FI)",
+      "date": "June 9, 2026",
+      "href": "https://docs.google.com/document/d/101UDyCFxqV8pvFsVIs3PP_hsK-vY-bXV/edit?usp=sharing&ouid=105453556049928542928&rtpof=true&sd=true"
+    }
+  ],
+  "infoPacks": [
+    {
+      "title": "Event Formats Explained",
+      "href": "https://drive.google.com/file/d/1VxcygxFTBO_dxMDkUYEGQjA_kUPSQNf8/view?usp=drive_link"
+    },
+    {
+      "title": "ODDfest 2025 Impact Report",
+      "href": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ"
+    }
+  ],
+  "assets": {
+    "eyebrow": "Assets & photos",
+    "title": "Photos, video and logos",
+    "usageNote": "Pictures are free to use in editorial content related to ODDfest. Please credit \"ODDfest / photographer's name\".",
+    "items": [
+      {
+        "title": "ODDfest 2026 Photobank",
+        "description": "Flickr",
+        "href": "https://www.flickr.com/photos/204686183@N06/"
+      },
+      {
+        "title": "ODDfest 2025 Photobank",
+        "description": "Flickr",
+        "href": "https://www.flickr.com/photos/202979718@N07/"
+      },
+      {
+        "title": "ODDfest 2026 Lineup Images",
+        "description": "Google Drive",
+        "href": "https://drive.google.com/drive/folders/1hjN_7EIuRJ_EeGXqABoM2QdBvCw-vjwW?usp=sharing"
+      },
+      {
+        "title": "ODDfest 2025 Aftermovie",
+        "description": "YouTube",
+        "href": "https://www.youtube.com/watch?v=lBM1Lc3noQE"
+      },
+      {
+        "title": "Logos",
+        "description": "Google Drive",
+        "href": "https://drive.google.com/drive/folders/12zlmz0BqDUkOE5cLeM8moLx3EcLaW67I?usp=sharing"
+      }
+    ]
+  },
+  "pressContact": {
+    "name": "Laura Fuentes",
+    "role": "Head of PR, ODDfest",
+    "email": "laura@oddfest.co"
+  }
 }

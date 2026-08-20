@@ -106,6 +106,15 @@ const faqItem = z.object({
   answer: z.string(),
 });
 
+// A titled, dated, linked-out resource — Media page's Press Releases, Info
+// Packs and Assets & Photos all share this exact shape.
+const resourceLink = z.object({
+  title: z.string(),
+  date: z.string().optional(),
+  description: z.string().optional(),
+  href: z.string(),
+});
+
 const activityItem = z.object({
   date: z.string(),
   category: z.string(),
@@ -145,8 +154,27 @@ const site = defineCollection({
   loader: glob({ pattern: '*.json', base: 'src/content/site' }),
   schema: ({ image }) =>
     z.object({
+      // "children" is optional — a normal flat nav item omits it. An item
+      // that has children (currently just "Info", grouping About/Media/
+      // Contact) renders as a hover/focus dropdown on desktop (Nav.astro)
+      // and as a small labeled group in the mobile menu; Footer.astro
+      // flattens it back into ordinary footer links since a footer doesn't
+      // need a dropdown. See docs/architecture.md#v2.
       nav: z.array(
-        z.object({ label: z.string(), href: z.string(), external: z.boolean().optional() }),
+        z.object({
+          label: z.string(),
+          href: z.string(),
+          external: z.boolean().optional(),
+          children: z
+            .array(
+              z.object({
+                label: z.string(),
+                href: z.string(),
+                external: z.boolean().optional(),
+              }),
+            )
+            .optional(),
+        }),
       ),
       social: z.array(z.object({ platform: z.string(), href: z.string() })),
       contact: z.array(z.object({ label: z.string(), email: z.string() })),
@@ -454,6 +482,19 @@ const pages = defineCollection({
         eyebrow: z.string(),
         title: z.string(),
         intro: z.string(),
+        accreditation: sectionIntro,
+        keyFacts: z.array(z.object({ label: z.string(), value: z.string() })),
+        highlights: proofSection.optional(),
+        boilerplate: sectionIntro,
+        pressReleases: z.array(resourceLink),
+        infoPacks: z.array(resourceLink),
+        assets: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          usageNote: z.string().optional(),
+          items: z.array(resourceLink),
+        }),
+        pressContact: z.object({ name: z.string(), role: z.string(), email: z.string() }),
       }),
     ]);
   },

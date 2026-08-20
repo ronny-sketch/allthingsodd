@@ -17,16 +17,38 @@ const path = Astro.url.pathname;
       </a>
       <div class="nav-links">
         {
-          nav.map((item) => (
-            <a
-              href={item.href}
-              target={item.external ? '_blank' : undefined}
-              rel={item.external ? 'noreferrer' : undefined}
-              class={!item.external && path === item.href ? 'is-active' : undefined}
-            >
-              {item.label}
-            </a>
-          ))
+          nav.map((item) => {
+            const isActive =
+              !item.external && (path === item.href || item.children?.some((c) => path === c.href));
+            return item.children ? (
+              <div class="nav-dropdown">
+                <a href={item.href} class={isActive ? 'is-active' : undefined}>
+                  {item.label}
+                </a>
+                <div class="nav-dropdown-menu">
+                  {item.children.map((child) => (
+                    <a
+                      href={child.href}
+                      target={child.external ? '_blank' : undefined}
+                      rel={child.external ? 'noreferrer' : undefined}
+                      class={path === child.href ? 'is-active' : undefined}
+                    >
+                      {child.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <a
+                href={item.href}
+                target={item.external ? '_blank' : undefined}
+                rel={item.external ? 'noreferrer' : undefined}
+                class={isActive ? 'is-active' : undefined}
+              >
+                {item.label}
+              </a>
+            );
+          })
         }
       </div>
     </div>
@@ -133,6 +155,51 @@ const path = Astro.url.pathname;
   }
   .nav-links a.is-active {
     color: var(--color-paper-60);
+  }
+  /* Dropdown for a nav item with children (currently just "Info" ->
+     About/Media/Contact) — CSS-only hover/focus-within, no JS: a keyboard
+     user tabbing onto the "Info" link is itself inside .nav-dropdown, which
+     is enough to satisfy :focus-within and reveal the menu before Tab moves
+     into it. */
+  .nav-dropdown {
+    position: relative;
+  }
+  .nav-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(2px);
+    min-width: 150px;
+    padding: 0.5rem;
+    margin-top: 0.6rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-paper-12);
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--duration-fast) ease;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown:focus-within .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .nav-dropdown-menu a {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.92rem;
+    white-space: nowrap;
+  }
+  .nav-dropdown-menu a::before {
+    display: none;
+  }
+  .nav-dropdown-menu a:hover,
+  .nav-dropdown-menu a.is-active {
+    color: var(--color-paper);
+    background: var(--color-paper-06);
   }
   .nav-buttons {
     display: flex;

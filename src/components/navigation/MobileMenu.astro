@@ -18,15 +18,33 @@ const { nav, social, footerTag, newsletterHref } = site.data;
   </div>
   <nav class="menu-links">
     {
-      nav.map((item) => (
-        <a
-          href={item.href}
-          target={item.external ? '_blank' : undefined}
-          rel={item.external ? 'noreferrer' : undefined}
-        >
-          {item.label}
-        </a>
-      ))
+      nav.map((item) =>
+        item.children ? (
+          <div class="menu-group">
+            <a href={item.href}>{item.label}</a>
+            <div class="menu-subgroup">
+              {item.children.map((child) => (
+                <a
+                  href={child.href}
+                  class="menu-sublink"
+                  target={child.external ? '_blank' : undefined}
+                  rel={child.external ? 'noreferrer' : undefined}
+                >
+                  {child.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <a
+            href={item.href}
+            target={item.external ? '_blank' : undefined}
+            rel={item.external ? 'noreferrer' : undefined}
+          >
+            {item.label}
+          </a>
+        ),
+      )
     }
   </nav>
   <div class="menu-bottom">
@@ -168,6 +186,34 @@ const { nav, social, footerTag, newsletterHref } = site.data;
     background: var(--color-ink);
     color: var(--color-paper);
     padding-left: 1.4rem;
+  }
+  .menu-group {
+    display: flex;
+    flex-direction: column;
+  }
+  .menu-subgroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1.2rem;
+    margin: 0.2rem 0 1rem 0.6rem;
+  }
+  .menu-subgroup .menu-sublink {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 600;
+    text-transform: none;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: rgb(36 34 32 / 65%);
+    text-decoration: none;
+    padding: 0.1rem 0.4rem;
+    margin: 0;
+    transition: color var(--duration-fast) ease;
+  }
+  .menu-subgroup .menu-sublink:hover {
+    background: transparent;
+    color: var(--color-ink);
+    padding-left: 0.4rem;
   }
   .menu-bottom {
     border-top: 1px solid rgb(36 34 32 / 15%);

@@ -2,8 +2,12 @@
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import PageIntro from '../components/sections/PageIntro.astro';
+import SectionIntro from '../components/sections/SectionIntro.astro';
+import ProofGrid from '../components/sections/ProofGrid.astro';
+import ResourceList from '../components/sections/ResourceList.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
+import SocialIcon from '../components/primitives/SocialIcon.astro';
 
 const entry = await getEntry('pages', 'media');
 if (!entry || entry.data._template !== 'media')
@@ -12,7 +16,7 @@ const page = entry.data;
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { featuredIn, contact } = site.data;
+const { featuredIn, contact, social } = site.data;
 
 const pressCtas = contact.map((c) => ({
   eyebrow: c.label,
@@ -24,6 +28,212 @@ const pressCtas = contact.map((c) => ({
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
+
+  <SectionIntro
+    eyebrow={page.accreditation.eyebrow}
+    headline={page.accreditation.headline}
+    body={page.accreditation.body}
+    cta={page.accreditation.cta}
+  />
+
+  <section class="media-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Key facts</h2>
+      </div>
+      <dl class="key-facts reveal">
+        {
+          page.keyFacts.map((f) => (
+            <div class="key-fact-row">
+              <dt>{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  {
+    page.highlights && (
+      <ProofGrid
+        eyebrow={page.highlights.eyebrow}
+        title={page.highlights.title}
+        items={page.highlights.items}
+      />
+    )
+  }
+
   <LogoStrip eyebrow="Press" title="Featured in" items={featuredIn} />
-  <ParticipateBand title="Press & media contact" items={pressCtas} noPadTop />
+
+  <SectionIntro
+    eyebrow={page.boilerplate.eyebrow}
+    headline={page.boilerplate.headline}
+    body={page.boilerplate.body}
+  />
+
+  <section class="media-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Press kit</span>
+        <h2>Press releases</h2>
+      </div>
+      <ResourceList items={page.pressReleases} />
+    </div>
+  </section>
+
+  <section class="media-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Info packs</h2>
+      </div>
+      <ResourceList items={page.infoPacks} />
+    </div>
+  </section>
+
+  <section class="media-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">{page.assets.eyebrow}</span>
+        <h2>{page.assets.title}</h2>
+      </div>
+      {page.assets.usageNote && <p class="assets-usage-note reveal">{page.assets.usageNote}</p>}
+      <ResourceList items={page.assets.items} />
+    </div>
+  </section>
+
+  <section class="media-sub media-contact">
+    <div class="wrap">
+      <span class="eyebrow">Press contact</span>
+      <h2>{page.pressContact.name}</h2>
+      <p class="media-contact-role">{page.pressContact.role}</p>
+      <a class="media-contact-email" href={`mailto:${page.pressContact.email}`}>
+        {page.pressContact.email}
+      </a>
+    </div>
+  </section>
+
+  <section class="media-sub media-social">
+    <div class="wrap">
+      <span class="eyebrow">Social media</span>
+      <div class="media-social-icons">
+        {
+          social.map((s) => (
+            <a href={s.href} target="_blank" rel="noreferrer" aria-label={s.platform}>
+              <SocialIcon platform={s.platform} />
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <ParticipateBand title="Other ways to reach us" items={pressCtas} noPadTop />
 </Layout>
+
+<style>
+  .media-sub {
+    padding: var(--space-24) 0;
+  }
+  .key-facts {
+    max-width: 50rem;
+    margin: 0 auto;
+  }
+  .key-fact-row {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    gap: 1.5rem;
+    padding: 1.1rem 0;
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .key-facts .key-fact-row:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .key-fact-row dt {
+    margin: 0;
+    font: var(--text-caption);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .key-fact-row dd {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-paper-80);
+  }
+  @media (max-width: 640px) {
+    .key-fact-row {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+  }
+  .assets-usage-note {
+    max-width: 46rem;
+    margin: -1.5rem auto 2rem;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-paper-40);
+  }
+  .media-contact,
+  .media-social {
+    text-align: center;
+  }
+  .media-contact h2 {
+    font: var(--text-heading-md);
+    color: var(--color-paper);
+    margin: 0.8rem 0 0;
+  }
+  .media-contact-role {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-40);
+  }
+  .media-contact-email {
+    display: inline-block;
+    margin-top: 1.1rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-paper-80);
+    text-decoration: underline;
+    text-decoration-color: var(--color-paper-20);
+    text-underline-offset: 3px;
+  }
+  .media-contact-email:hover {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
+  }
+  .media-social-icons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.3rem;
+    margin-top: 1.4rem;
+  }
+  .media-social-icons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    margin: -11px;
+    color: var(--color-paper-40);
+    text-decoration: none;
+    transition:
+      color var(--duration-fast) ease,
+      transform var(--duration-fast) ease;
+  }
+  .media-social-icons a:hover {
+    color: var(--color-paper);
+    transform: translateY(-2px);
+  }
+  .media-social-icons a :global(svg) {
+    width: 22px;
+    height: 22px;
+    display: block;
+  }
+</style>

@@ -108,6 +108,20 @@ real decisions worth recording:
    unusable as an interaction. Same "reuse where generic, bespoke where not"
    call as Media/Contact above, just inside a single page instead of across
    the sitemap.
+4. **Primary nav grouped to five items via a one-level "Info" dropdown**
+   (About/Media/Contact) instead of growing to seven flat items — see
+   `src/content/site/global.json`'s `nav[].children`. `Nav.astro` renders it
+   as a CSS-only hover/focus-within dropdown (no JS — a keyboard user tabbing
+   onto the "Info" link is itself inside `.nav-dropdown`, which satisfies
+   `:focus-within` before Tab moves into the menu). `Footer.astro` flattens
+   `children` back into ordinary links (a footer doesn't need a dropdown);
+   `MobileMenu.astro` renders the parent as a normal link with its children
+   as a smaller indented group beneath it. Any nav item can get `children`
+   the same way — it's not special-cased to "Info".
+5. **Media became a real press kit**, not just a logo strip — accreditation,
+   key facts, highlights, boilerplate, press releases, info packs, assets,
+   named press contact, social. All of it is real content pulled directly
+   from the live oddfest.co press page, not invented — see `media.json`.
 
 **Field-name collisions across templates.** CloudCannon's `_inputs` are keyed
 by field name across the whole `pages` collection, not per-template — so two
@@ -129,6 +143,14 @@ screenshot, not assumed). Convention: those specific fields get a short
 placeholder (`—`, `TBD`) with the descriptive `[PLACEHOLDER — ...]` text
 living in the field next to them instead; every other text field is safe to
 use the full bracketed description in. See each page's JSON for the pattern.
+The same failure mode recurred later with a genuinely real, non-placeholder
+value (`ProofGrid`'s "€400K" on the Media page overflowed into its neighbor
+the same way) — the durable fix landed in `ProofGrid.astro` itself: grid items
+default to `min-width: auto`, which refuses to shrink narrower than their own
+content, so a value wider than its column overflows into the next one
+regardless of what the text says. `min-width: 0` on `.proof-item` plus a wider
+column minimum is the actual fix; short placeholders were only ever a
+workaround for content wide enough to trigger the same underlying bug.
 
 ## Hero variants
 

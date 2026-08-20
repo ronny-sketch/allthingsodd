@@ -60,9 +60,12 @@ high-level notes:
 - **About**: the four horizontal-scroll panels that open the page, then
   Story/timeline, Proof (optional), People & organisation, the partner
   network note, "The bigger picture" (optional), and the participate band.
-- **Media**: eyebrow/title/intro text above the shared "Featured in" press
-  logo strip (edited under Global, see below — it's the same list shown on
-  the homepage).
+- **Media**: a full press kit — accreditation callout, key facts, ODDfest
+  highlights (optional — a stats grid, same "leave it out rather than invent
+  numbers" rule as everywhere else), the shared "Featured in" press logo
+  strip (edited under Global — same list shown on the homepage), boilerplate,
+  press releases, info packs, assets & photos (with a photo-credit usage
+  note), a named press contact, and social media.
 - **Contact**: eyebrow/title/intro text above the contact form. See
   [Contact form setup](#contact-form-setup) below for the one field that
   actually makes it send.
@@ -78,7 +81,10 @@ links, social media links, contact emails, footer address, the newsletter
 sign-up link, the "Pre-register" button's destination, and the **Partners**
 and **Featured in** press logo lists — each is one shared list, so an edit
 here updates every page that shows it (Featured in appears on both Home and
-Media from the same list, by design — see docs/architecture.md).
+Media from the same list, by design — see docs/architecture.md). Navigation
+links can be grouped: give a link "children" (see the real example already
+set up on "Info") and it becomes a hover dropdown on desktop, a labeled group
+on mobile, and flattens into plain links in the footer.
 
 ## Contact form setup
 

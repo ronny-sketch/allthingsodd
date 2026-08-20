@@ -452,6 +452,70 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
+      accreditation:
+        type: object
+        label: Accreditation (Media only)
+        comment: The media-accreditation callout and its application link.
+        options:
+          subtype: object
+      keyFacts:
+        type: array
+        label: Key facts (Media only)
+        options:
+          structures: _structures.key_fact_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      highlights:
+        type: object
+        label: Highlights (Media only)
+        comment: >-
+          The "last edition, in numbers" stat grid. Leave this field out
+          entirely rather than filling it with invented figures — same rule
+          as the "proof" field elsewhere on the site.
+        options:
+          subtype: object
+          required: false
+      boilerplate:
+        type: object
+        label: Boilerplate (Media only)
+        comment: The one-paragraph company description journalists can lift directly.
+        options:
+          subtype: object
+      pressReleases:
+        type: array
+        label: Press releases (Media only)
+        options:
+          structures: _structures.resource_link_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      infoPacks:
+        type: array
+        label: Info packs (Media only)
+        options:
+          structures: _structures.resource_link_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      assets:
+        type: object
+        label: Assets & photos (Media only)
+        comment: '"usageNote" is the photo-credit line shown above the list of links.'
+        options:
+          subtype: object
+      pressContact:
+        type: object
+        label: Press contact (Media only)
+        comment: The named press/PR contact — separate from the general "Contact emails" under Global, which stays partnerships-focused.
+        options:
+          subtype: object
     add_options:
       - name:
         icon:
@@ -477,9 +541,13 @@ collections_config:
         type: array
         label: Main navigation
         comment: >-
-          Shared by the top nav and footer — one edit here changes both.
-          ODDspace opens in a new tab, so leave its "external" toggle on;
-          the other four are pages on this site, leave theirs off.
+          Drives the top nav, the footer links and the mobile menu — one edit
+          here changes all three. ODDspace opens in a new tab, so leave its
+          "external" toggle on. "Info" has "children" (About/Media/Contact) —
+          it shows as a hover dropdown on desktop, a labeled group on mobile,
+          and flattens into plain links in the footer. Add "children" to any
+          other item the same way to group it instead of adding a new
+          top-level item.
         cascade: true
       social:
         type: array
@@ -874,4 +942,38 @@ _structures:
           partner: ''
           summary: ''
           href: '/contact'
+  resource_link_item:
+    style: select
+    values:
+      - label: Resource link
+        default: false
+        preview:
+          text:
+            - key: title
+            - key: date
+          icon:
+            - link
+        place_groups_below: false
+        tabbed: false
+        value:
+          title: ''
+          date: ''
+          description: ''
+          href: '#'
+  key_fact_item:
+    style: select
+    values:
+      - label: Key fact
+        default: false
+        preview:
+          text:
+            - key: label
+            - key: value
+          icon:
+            - fact_check
+        place_groups_below: false
+        tabbed: false
+        value:
+          label: ''
+          value: ''
 timezone: Etc/UTC

@@ -18,23 +18,52 @@ test('logo link returns to home from a subpage', async ({ page }) => {
   await expect(page).toHaveURL('/');
 });
 
-test('every internal nav link navigates to a real, matching page', async ({ page }) => {
+test('every flat internal nav link navigates to a real, matching page', async ({ page }) => {
   await page.goto('/');
-  // Real DOM text is mixed-case ("About") — it only *renders* uppercase via
-  // the Forta display font's glyph design, not CSS text-transform or content.
   const internalRoutes: [string, string][] = [
     ['ODDfest', '/oddfest'],
     ['ODDference', '/oddference'],
     ['Work with ODD', '/work-with-odd'],
-    ['About', '/about'],
   ];
   for (const [label, path] of internalRoutes) {
     await page.goto('/');
-    await page.locator('.nav-links a', { hasText: label }).click();
+    await page.locator('.nav-links > a', { hasText: label }).click();
     await expect(page).toHaveURL(new RegExp(`${path}/?$`));
     // The page we landed on should have exactly one real h1, not a broken/blank route.
     await expect(page.locator('h1').first()).toBeVisible();
   }
+});
+
+test('"Info" nav dropdown reveals About/Media/Contact and each navigates correctly', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const dropdown = page.locator('.nav-dropdown');
+  const menu = dropdown.locator('.nav-dropdown-menu');
+  await expect(menu).not.toBeVisible();
+
+  // Real DOM text is mixed-case ("About") — it only *renders* uppercase via
+  // the Forta display font's glyph design, not CSS text-transform or content.
+  const children: [string, string][] = [
+    ['About', '/about'],
+    ['Media', '/media'],
+    ['Contact', '/contact'],
+  ];
+  for (const [label, path] of children) {
+    await page.goto('/');
+    await page.locator('.nav-dropdown > a').hover();
+    await expect(menu).toBeVisible();
+    await menu.locator('a', { hasText: label }).click();
+    await expect(page).toHaveURL(new RegExp(`${path}/?$`));
+    await expect(page.locator('h1').first()).toBeVisible();
+  }
+});
+
+test('"Info" nav dropdown is also reachable by keyboard (focus-within)', async ({ page }) => {
+  await page.goto('/');
+  const menu = page.locator('.nav-dropdown-menu');
+  await page.locator('.nav-dropdown > a').focus();
+  await expect(menu).toBeVisible();
 });
 
 test('ODDspace link is external, in a new tab, with rel=noreferrer', async ({ page }) => {

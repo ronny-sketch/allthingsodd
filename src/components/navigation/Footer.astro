@@ -6,6 +6,11 @@ import SocialIcon from '../primitives/SocialIcon.astro';
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
 const { nav, social, contact, footerAddress, newsletterLabel, newsletterHref } = site.data;
+// A footer link list doesn't need a dropdown — an item with children (e.g.
+// "Info") flattens straight into its real children instead of showing a
+// grouping label that isn't itself a page. See Nav.astro for the dropdown
+// version of the same data.
+const footerLinks = nav.flatMap((item) => item.children ?? [item]);
 ---
 
 <footer>
@@ -13,7 +18,7 @@ const { nav, social, contact, footerAddress, newsletterLabel, newsletterHref } =
     <a href="/" class="mark foot-mark" aria-label="ODD"><Logo /></a>
     <nav class="foot-nav">
       {
-        nav.map((item) => (
+        footerLinks.map((item) => (
           <a
             href={item.href}
             target={item.external ? '_blank' : undefined}
