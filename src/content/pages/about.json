@@ -1,7 +1,7 @@
 {
   "_template": "about",
   "seo": {
-    "title": "About ODD — one platform, two ways in",
+    "title": "About ODD — one platform, many ways in",
     "description": "A co-creation platform built in Helsinki, on a mission to bring creativity and business together — not as opposites politely sharing a stage, but as one working system.",
     "ogImage": "/og/about.jpg"
   },
@@ -20,50 +20,28 @@
       "alt": "Motion-blurred crowd at an ODD event",
       "eyebrow": "Why we exist",
       "title": "Creative work and business work almost never happen in the same room.",
-      "body": "Festivals talk to artists. Conferences talk to founders. Studios talk to whoever's already inside. ODD exists because the most interesting things happen when those rooms are the same room."
+      "body": "[PLACEHOLDER — 2-3 sentences on the gap/opportunity ODD responds to, in accessible language, without unsupported sweeping claims]"
     },
     {
       "_kind": "model",
       "eyebrow": "How it works",
-      "title": "Four ways in, one platform.",
+      "title": "One platform, several ways in.",
       "items": [
+        { "label": "ODDfest", "meta": "Open creative platform", "href": "/oddfest" },
+        { "label": "ODDference", "meta": "Flagship professional event", "href": "/oddference" },
+        { "label": "ODDspace", "meta": "Year-round home base", "href": "https://www.oddspace.co" },
         {
-          "label": "ODDfest",
-          "meta": "Open program · free",
-          "href": "/oddfest"
-        },
-        {
-          "label": "ODDference",
-          "meta": "Two-day conference · business",
-          "href": "/oddference"
-        },
-        {
-          "label": "ODDspace",
-          "meta": "Year-round home base · membership",
-          "href": "https://www.oddspace.co"
-        },
-        {
-          "label": "ODDagency",
-          "meta": "Hire creative production",
-          "href": "/oddagency"
+          "label": "Work with ODD",
+          "meta": "Membership, agency, partnerships",
+          "href": "/work-with-odd"
         }
       ]
     },
     {
       "_kind": "text",
-      "eyebrow": "Two doors, one building",
-      "title": "Business gets in. Creatives get in.\nEveryone ends up in the same place.",
-      "body": "Buy a ticket or pitch a project — start on the business side. Join the program or ask about membership — start on the creative side. Either door, same floor: the work happens together, in the open, in Helsinki."
-    },
-    {
-      "_kind": "text",
-      "eyebrow": "Join in",
-      "title": "Helsinki's creative economy, built in public.",
-      "body": "Not a festival with a side program. Not a conference with a party after. One platform, run by New Nordic Way rf, growing a little more honest every year it runs.",
-      "cta": {
-        "label": "Pre-register",
-        "href": "#"
-      }
+      "eyebrow": "One platform, different ways to participate",
+      "title": "Creatives, communities, businesses,\ninstitutions, partners, audiences.",
+      "body": "[PLACEHOLDER — 2-3 sentences showing how these groups relate to ODD and each other, without reducing everything to only business vs. creative]"
     }
   ],
   "marqueeItems": [
@@ -74,6 +52,77 @@
     "ODDfest",
     "ODDference",
     "ODDspace",
-    "ODDagency"
+    "Work with ODD"
+  ],
+  "story": {
+    "eyebrow": "Our story",
+    "title": "How ODD got here.",
+    "milestones": [
+      { "year": "—", "title": "[PLACEHOLDER — origin]", "body": "[PLACEHOLDER — 1-2 sentences]" },
+      {
+        "year": "—",
+        "title": "[PLACEHOLDER — first ODDfest]",
+        "body": "[PLACEHOLDER — 1-2 sentences]"
+      },
+      {
+        "year": "—",
+        "title": "[PLACEHOLDER — ODDference launch]",
+        "body": "[PLACEHOLDER — 1-2 sentences]"
+      },
+      {
+        "year": "—",
+        "title": "[PLACEHOLDER — ODDspace opens]",
+        "body": "[PLACEHOLDER — 1-2 sentences]"
+      },
+      {
+        "year": "2027",
+        "title": "[PLACEHOLDER — Creative Week pivot]",
+        "body": "[PLACEHOLDER — 1-2 sentences on the 2027 evolution]"
+      }
+    ]
+  },
+  "proof": {
+    "eyebrow": "Proof",
+    "title": "[PLACEHOLDER — proof/impact section title]",
+    "items": [
+      { "value": "—", "label": "[PLACEHOLDER — activity/participation figure]" },
+      { "value": "—", "label": "[PLACEHOLDER — partners/members figure]" }
+    ]
+  },
+  "people": {
+    "eyebrow": "People & organisation",
+    "title": "Who's behind ODD.",
+    "orgDescription": "ODD is the public-facing platform operated by New Nordic Way rf. [PLACEHOLDER — 1-2 further sentences on New Nordic Way rf's role, kept brief since ODD, not the legal entity, is the user-facing brand]",
+    "team": []
+  },
+  "network": {
+    "eyebrow": "Partners & network",
+    "title": "Built with, not just for.",
+    "note": "[PLACEHOLDER — short framing line before the shared partner logo strip below; more partners to be added]"
+  },
+  "ambition": {
+    "eyebrow": "The bigger picture",
+    "headline": "[PLACEHOLDER — longer-term ambition headline]",
+    "body": "[PLACEHOLDER — optional short section for longer-term thinking (e.g. State of Arrival) to be introduced later; context, not the main website proposition]"
+  },
+  "participate": [
+    {
+      "eyebrow": "Business",
+      "title": "Work with ODD",
+      "linkLabel": "Explore →",
+      "href": "/work-with-odd"
+    },
+    {
+      "eyebrow": "Creative",
+      "title": "Join ODDfest",
+      "linkLabel": "Find out how →",
+      "href": "/oddfest"
+    },
+    {
+      "eyebrow": "Stay in touch",
+      "title": "Join the mailing list",
+      "linkLabel": "Sign up →",
+      "href": "#newsletter"
+    }
   ]
 }

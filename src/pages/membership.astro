@@ -1,0 +1,168 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import PageIntro from '../components/sections/PageIntro.astro';
+import SectionIntro from '../components/sections/SectionIntro.astro';
+import FeatureGrid from '../components/sections/FeatureGrid.astro';
+import PricingGrid from '../components/sections/PricingGrid.astro';
+import LogoMarquee from '../components/sections/LogoMarquee.astro';
+import ParticipateBand from '../components/sections/ParticipateBand.astro';
+
+const entry = await getEntry('pages', 'membership');
+if (!entry || entry.data._template !== 'membership')
+  throw new Error('membership.json content entry missing or malformed');
+const page = entry.data;
+
+const site = await getEntry('site', 'global');
+if (!site) throw new Error('Missing site/global.json content entry');
+const { partners } = site.data;
+
+const audienceCards = page.whoItsFor.map((a, i) => ({
+  number: String(i + 1).padStart(2, '0'),
+  title: a.label,
+  body: a.description,
+}));
+---
+
+<Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
+  <PageIntro
+    eyebrow={page.eyebrow}
+    title={page.title}
+    intro={page.intro}
+    primaryCta={{ label: page.finalCta.title, href: page.finalCta.href }}
+  />
+
+  <SectionIntro
+    eyebrow={page.whatItIs.eyebrow}
+    headline={page.whatItIs.headline}
+    body={page.whatItIs.body}
+  />
+
+  <section class="mem-sub">
+    <div class="wrap">
+      <div class="section-head"><h2>Who it's for</h2></div>
+      <FeatureGrid cards={audienceCards} />
+    </div>
+  </section>
+
+  <section class="mem-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Member value</span>
+        <h2>Why join</h2>
+      </div>
+      <FeatureGrid cards={page.whyJoin} />
+    </div>
+  </section>
+
+  <section class="mem-sub">
+    <div class="wrap">
+      <div class="section-head"><h2>What membership includes</h2></div>
+      <div class="mem-includes reveal">
+        {
+          page.includes.map((i) => (
+            <div class="mem-include">
+              <h3>{i.title}</h3>
+              <p>{i.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="mem-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">What to expect</span>
+        <h2>Year-round rhythm</h2>
+      </div>
+      <ul class="mem-rhythm reveal">
+        {page.rhythm.map((r) => <li>{r}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  {
+    page.tiers && page.tiers.length > 0 && (
+      <section class="mem-sub">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="eyebrow">Options</span>
+            <h2>Membership tiers</h2>
+          </div>
+          <PricingGrid items={page.tiers} />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    page.network && (
+      <>
+        <p class="wrap mem-proof-note reveal">{page.network.note}</p>
+        <LogoMarquee eyebrow={page.network.eyebrow} title={page.network.title} items={partners} />
+      </>
+    )
+  }
+
+  <ParticipateBand items={[page.finalCta]} noPadTop />
+</Layout>
+
+<style>
+  .mem-sub {
+    padding: var(--space-24) 0;
+  }
+  .mem-includes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--color-paper-12);
+  }
+  .mem-include {
+    background: var(--color-backstage);
+    padding: 1.8rem;
+  }
+  .mem-include h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.15rem;
+    color: var(--color-paper);
+    margin: 0;
+  }
+  .mem-include p {
+    margin: 0.7rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-paper-60);
+  }
+  .mem-rhythm {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+  .mem-rhythm li {
+    padding: 1rem 0;
+    border-top: 1px solid var(--color-paper-12);
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    color: var(--color-paper-80);
+  }
+  .mem-rhythm li:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .mem-proof-note {
+    padding-top: var(--space-16);
+    text-align: center;
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-60);
+  }
+</style>

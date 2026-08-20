@@ -53,10 +53,25 @@ collections_config:
           subtype: object
           required: false
         cascade: true
-      programGrid:
+      platforms:
         type: array
-        label: Program cards (ODDfest / ODDference / ODDspace / ODDagency)
-        comment: Homepage-only. The four large photo cards.
+        label: The ODD platform (Home only)
+        comment: >-
+          The large photo cards for ODDfest / ODDference / ODDspace / Work
+          with ODD. Not fixed at four — add or remove a card and the grid
+          reflows; a card can also skip its photo (falls back to a plain
+          surface) if none is set.
+        options:
+          structures: _structures.program_card
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      pathways:
+        type: array
+        label: Four ways to work with ODD (Work with ODD only)
+        comment: The large link-out cards for ODDference / Membership / Agency / Partnerships.
         options:
           structures: _structures.program_card
           disable_add: false
@@ -123,7 +138,7 @@ collections_config:
         cascade: true
       panels:
         type: array
-        label: About page panels
+        label: About page panels (opening scroll)
         options:
           structures: _structures.about_panels
           disable_add: false
@@ -131,9 +146,311 @@ collections_config:
           disable_reorder: false
           required: false
         comment: >-
-          The five horizontal-scroll panels on the About page, in this
-          order. Add a "Photo panel" or "Text-only panel" to insert a new
-          one anywhere in the sequence.
+          The four horizontal-scroll panels that open the About page (What is
+          ODD / Why we exist / How it works / One platform), in this order.
+          Add a "Photo panel" or "Text-only panel" to insert a new one
+          anywhere in the sequence. The deeper sections further down the page
+          (Story, Proof, People, Network, Ambition) are separate fields
+          below, not part of this scroll.
+        cascade: true
+      opening:
+        type: object
+        label: Proposition (Home only)
+        comment: >-
+          The big statement right under the hero, with up to two buttons —
+          this is the page's real "what is ODD" moment; the mosaic hero
+          above it stays purely visual, no text.
+        options:
+          subtype: object
+      whatOddIs:
+        type: object
+        label: '"What ODD is" (Home only)'
+        options:
+          subtype: object
+      whatItIs:
+        type: object
+        label: '"What it is" intro'
+        comment: Appears on ODDfest, ODDagency and Membership — each page's own short explainer section.
+        options:
+          subtype: object
+      twoWaysIn:
+        type: object
+        label: '"Two ways in" (Home only)'
+        comment: The business/creative dual-entry section. Keep the framing reciprocal, not "business buys, creatives belong".
+        options:
+          subtype: object
+      whatsHappening:
+        type: object
+        label: '"What''s happening" (Home only)'
+        comment: >-
+          "note" is the small disclaimer line under the activity list.
+          "items" is the flat, editable list of current activity — mix
+          ODDfest/ODDference/ODDspace/member items freely, each with its own
+          category tag.
+        options:
+          subtype: object
+      proof:
+        type: object
+        label: Proof / traction
+        comment: >-
+          Appears on Home, About and ODDference. Leave this field out of the
+          page entirely (delete it) rather than filling it with invented
+          numbers — the page renders fine without it. ODDference's version
+          can also carry an optional attendee quote.
+        options:
+          subtype: object
+          required: false
+      workWithOdd:
+        type: object
+        label: '"Work with ODD" teaser (Home only)'
+        options:
+          subtype: object
+      caseTeaser:
+        type: object
+        label: Case/story teaser (Home only)
+        comment: A single case, member story or ODDfest/ODDference highlight. Leave the field out entirely until a real one exists.
+        options:
+          subtype: object
+          required: false
+      organiserOwnership:
+        type: object
+        label: '"What participating organisers own" (ODDfest only)'
+        options:
+          subtype: object
+      openCall:
+        type: object
+        label: Open call (ODDfest only)
+        comment: Leave this field out entirely when there's no open call running.
+        options:
+          subtype: object
+          required: false
+      forPartners:
+        type: object
+        label: '"For partners" (ODDfest only)'
+        options:
+          subtype: object
+      previousEdition:
+        type: object
+        label: Previous edition / proof (ODDfest only)
+        comment: Leave this field out entirely until there's a real previous edition to reference.
+        options:
+          subtype: object
+          required: false
+      bigQuestion:
+        type: object
+        label: The big question (ODDference only)
+        comment: 'The framing section built around: "what can business and the rest of society learn from creative expertise?"'
+        options:
+          subtype: object
+      connection:
+        type: object
+        label: Connection & networking (ODDference only)
+        options:
+          subtype: object
+      partnershipCta:
+        type: object
+        label: Partnership callout (ODDference only)
+        comment: Routes business partners to Work with ODD.
+        options:
+          subtype: object
+      network:
+        type: object
+        label: Partners / network note
+        comment: >-
+          Appears on About, Work with ODD and Membership, right above the
+          shared partner logo strip (edited under Global → Partner logos —
+          the same list everywhere it's shown).
+        options:
+          subtype: object
+      ambition:
+        type: object
+        label: The bigger picture (About only)
+        comment: Optional — for longer-term thinking introduced later. Leave the field out entirely until there's real content for it.
+        options:
+          subtype: object
+          required: false
+      people:
+        type: object
+        label: People & organisation (About only)
+        options:
+          subtype: object
+      story:
+        type: object
+        label: Our story / timeline (About only)
+        options:
+          subtype: object
+      contact:
+        type: object
+        label: Contact intro (Work with ODD only)
+        comment: The short prompt shown above the embedded inquiry form.
+        options:
+          subtype: object
+      finalCta:
+        type: object
+        label: Closing CTA (Membership only)
+        options:
+          subtype: object
+      howItWorks:
+        type: array
+        label: How it works
+        comment: Appears on ODDfest and ODDagency, each with its own steps.
+        options:
+          structures: _structures.feature_card
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      whyOdd:
+        type: array
+        label: Why ODD
+        comment: Appears on ODDagency and Work with ODD.
+        options:
+          structures: _structures.feature_card
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      howWeWork:
+        type: array
+        label: How we work (Work with ODD only)
+        options:
+          structures: _structures.feature_card
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      whyAttend:
+        type: array
+        label: Why attend (ODDference only)
+        options:
+          structures: _structures.feature_card
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      whyJoin:
+        type: array
+        label: Why join (Membership only)
+        options:
+          structures: _structures.feature_card
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      capabilities:
+        type: array
+        label: Capabilities (ODDagency only)
+        options:
+          structures: _structures.feature_card
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      programme:
+        type: array
+        label: Programme / schedule
+        comment: Appears on ODDfest and (optionally) ODDference.
+        options:
+          structures: _structures.programme_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      faq:
+        type: array
+        label: Practical / FAQ
+        comment: Appears on ODDfest and ODDference. Uses a real accordion — no HTML allowed in the answer text.
+        options:
+          structures: _structures.faq_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      whoItsFor:
+        type: array
+        label: Who it's for
+        comment: Appears on ODDference and Membership.
+        options:
+          structures: _structures.audience_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      themes:
+        type: array
+        label: Themes (ODDference only)
+        options:
+          structures: _structures.title_body_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      includes:
+        type: array
+        label: What membership includes (Membership only)
+        options:
+          structures: _structures.title_body_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      speakers:
+        type: array
+        label: Speakers (ODDference only)
+        comment: Leave empty until real speakers are confirmed — no placeholder names.
+        options:
+          structures: _structures.person_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      tickets:
+        type: array
+        label: Tickets (ODDference only)
+        comment: No invented prices — leave "price" as an explicit placeholder until real pricing exists.
+        options:
+          structures: _structures.pricing_tier
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      tiers:
+        type: array
+        label: Membership tiers (Membership only)
+        comment: >-
+          Leave this empty (the default) until pricing/tiers are ready — the
+          page skips the whole section when it's empty rather than showing
+          invented pricing.
+        options:
+          structures: _structures.pricing_tier
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      cases:
+        type: array
+        label: Case studies
+        comment: Appears on ODDagency and Work with ODD — the same real case can be listed on both.
+        options:
+          structures: _structures.case_study
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
         cascade: true
     add_options:
       - name:
@@ -356,4 +673,182 @@ _structures:
           eyebrow: ''
           title: ''
           body: ''
+  proof_item:
+    style: select
+    values:
+      - label: Proof figure
+        default: false
+        preview:
+          text:
+            - key: label
+            - key: value
+          icon:
+            - bar_chart
+        place_groups_below: false
+        tabbed: false
+        value:
+          value: '—'
+          label: ''
+  activity_item:
+    style: select
+    values:
+      - label: Activity
+        default: false
+        preview:
+          text:
+            - key: title
+            - key: category
+          icon:
+            - event
+        place_groups_below: false
+        tabbed: false
+        value:
+          date: 'TBD'
+          category: ''
+          title: ''
+          description: ''
+          href: '#'
+  milestone_item:
+    style: select
+    values:
+      - label: Milestone
+        default: false
+        preview:
+          text:
+            - key: title
+            - key: year
+          icon:
+            - flag
+        place_groups_below: false
+        tabbed: false
+        value:
+          year: '—'
+          title: ''
+          body: ''
+  title_body_item:
+    style: select
+    values:
+      - label: Item
+        default: false
+        preview:
+          text:
+            - key: title
+          icon:
+            - article
+        place_groups_below: false
+        tabbed: false
+        value:
+          title: ''
+          body: ''
+  programme_item:
+    style: select
+    values:
+      - label: Programme item
+        default: false
+        preview:
+          text:
+            - key: title
+            - key: category
+          icon:
+            - event
+        place_groups_below: false
+        tabbed: false
+        value:
+          title: ''
+          organiser: ''
+          category: ''
+          date: 'TBD'
+          time: 'TBD'
+          venue: ''
+          description: ''
+          href: '#'
+  faq_item:
+    style: select
+    values:
+      - label: Question
+        default: false
+        preview:
+          text:
+            - key: question
+          icon:
+            - help
+        place_groups_below: false
+        tabbed: false
+        value:
+          question: ''
+          answer: ''
+  audience_item:
+    style: select
+    values:
+      - label: Audience
+        default: false
+        preview:
+          text:
+            - key: label
+          icon:
+            - group
+        place_groups_below: false
+        tabbed: false
+        value:
+          label: ''
+          description: ''
+  person_item:
+    style: select
+    values:
+      - label: Person
+        default: false
+        preview:
+          text:
+            - key: name
+            - key: role
+          icon:
+            - person
+        place_groups_below: false
+        tabbed: false
+        value:
+          name: ''
+          role: ''
+          organisation: ''
+          bio: ''
+  pricing_tier:
+    style: select
+    values:
+      - label: Pricing option
+        default: false
+        preview:
+          text:
+            - key: name
+            - key: price
+          icon:
+            - sell
+        place_groups_below: false
+        tabbed: false
+        value:
+          name: ''
+          audience: ''
+          description: ''
+          price: '[PLACEHOLDER — price]'
+          status: ''
+          benefits: []
+          ctaLabel: 'Get in touch'
+          href: '/contact'
+  case_study:
+    style: select
+    values:
+      - label: Case study
+        default: false
+        preview:
+          text:
+            - key: title
+            - key: category
+          icon:
+            - work
+        place_groups_below: false
+        tabbed: false
+        value:
+          category: ''
+          title: ''
+          partner: ''
+          summary: ''
+          href: '/contact'
 timezone: Etc/UTC

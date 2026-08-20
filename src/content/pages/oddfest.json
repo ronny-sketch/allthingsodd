@@ -1,51 +1,159 @@
 {
-  "_template": "subpage",
+  "_template": "oddfest",
   "_slug": "oddfest",
   "seo": {
-    "title": "ODDfest — Helsinki's open Creative Week",
-    "description": "A week-long, free and open program built by and for Helsinki's creative community — art, club culture and collective creation across the city's venues.",
+    "title": "ODDfest — Helsinki's open creative platform",
+    "description": "A distributed, open creative platform across Helsinki — independent creators, collectives, venues and organisations hosting programme under one shared umbrella.",
     "ogImage": "/og/oddfest.jpg"
   },
   "eyebrow": "ODDfest · For creatives",
-  "title": "Helsinki's open Creative Week.",
-  "meta": "Jan 2027 · Helsinki",
-  "intro": "A week-long, free and open program built by and for Helsinki's creative community — art, club culture and collective creation across the city's venues, running straight out of ODDference and into the streets.",
+  "title": "Helsinki's open creative platform.",
+  "meta": "[PLACEHOLDER — date] · Helsinki",
+  "intro": "[PLACEHOLDER — 2-3 sentences: ODDfest is an open, distributed creative platform across Helsinki, developing from the model tested as Creative Week in 2026 — not a centrally curated, centrally produced festival]",
   "heroMedia": {
     "video": "/video/oddfest-hero.mp4",
     "poster": "../../assets/video/oddfest-hero-poster.jpg",
-    "sub": "Helsinki's Creative Week"
+    "sub": "Helsinki's open creative platform"
   },
   "features": [
     {
       "number": "01",
       "title": "Art & Performance",
-      "body": "Installations, live shows and everything in between, spread across Helsinki's creative venues."
+      "body": "[PLACEHOLDER — installations, live shows and everything in between, hosted by independent venues and organisers across the city]"
     },
     {
       "number": "02",
       "title": "Club Culture",
-      "body": "Nights that don't end when the program does — DJs, collectives, and the city after dark."
+      "body": "[PLACEHOLDER — nights hosted by independent collectives and venues under the shared ODDfest umbrella]"
     },
     {
       "number": "03",
       "title": "Collective Creation",
-      "body": "Open calls, co-created works, and space for anyone with something to bring."
+      "body": "[PLACEHOLDER — open calls, co-created works, and space for anyone with something to bring]"
+    }
+  ],
+  "whatItIs": {
+    "eyebrow": "What ODDfest is",
+    "headline": "An open platform, not a booked showcase.",
+    "body": "[PLACEHOLDER — 2-3 sentences: independent creators, collectives, venues, organisations, communities and companies create and host their own programme under the wider ODDfest umbrella; ODD provides connective infrastructure rather than centrally producing every event]"
+  },
+  "howItWorks": [
+    {
+      "number": "01",
+      "title": "Create or host something",
+      "body": "[PLACEHOLDER — how an organiser proposes/registers programme]"
+    },
+    {
+      "number": "02",
+      "title": "Join the shared programme",
+      "body": "[PLACEHOLDER — how programme becomes part of the wider ODDfest listing]"
+    },
+    {
+      "number": "03",
+      "title": "ODD connects and amplifies",
+      "body": "[PLACEHOLDER — what ODD's platform role actually does for an organiser]"
+    },
+    {
+      "number": "04",
+      "title": "Helsinki experiences it together",
+      "body": "[PLACEHOLDER — the shared city-wide moment this adds up to]"
+    }
+  ],
+  "whoCanTakePart": [
+    "Artists",
+    "Collectives",
+    "Venues",
+    "Organisations",
+    "Communities",
+    "Companies"
+  ],
+  "whatOddProvides": [
+    "A common umbrella and identity",
+    "Visibility and discovery",
+    "Shared communications",
+    "Connections across the programme",
+    "Partnership opportunities"
+  ],
+  "organiserOwnership": {
+    "eyebrow": "What participating organisers own",
+    "headline": "Your programme stays yours.",
+    "body": "[PLACEHOLDER — 2-3 sentences explaining that participating organisations retain ownership/responsibility for their own programme rather than ODD centrally producing everything; exact terms not yet finalised]"
+  },
+  "programme": [
+    {
+      "title": "[PLACEHOLDER — programme item]",
+      "organiser": "[PLACEHOLDER — organiser]",
+      "category": "[PLACEHOLDER — category]",
+      "date": "TBD",
+      "venue": "[PLACEHOLDER — venue]",
+      "description": "[PLACEHOLDER — short description]"
+    },
+    {
+      "title": "[PLACEHOLDER — programme item]",
+      "organiser": "[PLACEHOLDER — organiser]",
+      "category": "[PLACEHOLDER — category]",
+      "date": "TBD",
+      "venue": "[PLACEHOLDER — venue]",
+      "description": "[PLACEHOLDER — short description]"
+    }
+  ],
+  "openCall": {
+    "status": "[PLACEHOLDER — status, e.g. Opening soon]",
+    "headline": "[PLACEHOLDER — open call headline]",
+    "body": "[PLACEHOLDER — explanation of how to apply/register programme]",
+    "deadline": "[PLACEHOLDER — deadline]",
+    "cta": { "label": "Pitch an idea", "href": "/contact" },
+    "eligibilityHref": "/contact"
+  },
+  "forPartners": {
+    "eyebrow": "For partners",
+    "headline": "Partner with the platform.",
+    "body": "[PLACEHOLDER — 1-2 sentences for organisations interested in partnering with the distributed ODDfest platform]",
+    "cta": { "label": "Talk to us about partnering", "href": "/work-with-odd" }
+  },
+  "previousEdition": {
+    "eyebrow": "Creative Week 2026",
+    "title": "The model this builds on.",
+    "body": "[PLACEHOLDER — short description of the 2026 Creative Week test that ODDfest 2027 develops from]",
+    "proof": [{ "value": "—", "label": "[PLACEHOLDER — key figure]" }]
+  },
+  "faq": [
+    { "question": "[PLACEHOLDER — question about attending]", "answer": "[PLACEHOLDER — answer]" },
+    {
+      "question": "[PLACEHOLDER — question about hosting programme]",
+      "answer": "[PLACEHOLDER — answer]"
+    },
+    { "question": "[PLACEHOLDER — question about ticketing]", "answer": "[PLACEHOLDER — answer]" },
+    {
+      "question": "[PLACEHOLDER — question about accessibility]",
+      "answer": "[PLACEHOLDER — answer]"
     }
   ],
   "participate": [
     {
       "eyebrow": "Creative",
-      "title": "Apply to the program",
+      "title": "Apply to the programme",
       "linkLabel": "Pitch an idea →",
-      "href": "#"
+      "href": "/contact"
     },
-    { "eyebrow": "Creative", "title": "Volunteer with us", "linkLabel": "Sign up →", "href": "#" }
+    {
+      "eyebrow": "Business",
+      "title": "Partner with ODDfest",
+      "linkLabel": "Talk to us →",
+      "href": "/work-with-odd"
+    },
+    {
+      "eyebrow": "Stay in touch",
+      "title": "Join the mailing list",
+      "linkLabel": "Sign up →",
+      "href": "#newsletter"
+    }
   ],
   "railLeft": [
     { "kind": "logo" },
     { "kind": "word", "text": "ODDfest" },
-    { "kind": "meta", "text": "Jan 2027" },
-    { "kind": "meta", "text": "Free to join" }
+    { "kind": "meta", "text": "Open platform" },
+    { "kind": "meta", "text": "Helsinki" }
   ],
   "railRight": [
     { "kind": "word", "text": "Helsinki" },

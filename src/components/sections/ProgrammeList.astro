@@ -1,0 +1,132 @@
+---
+// Scalable programme/schedule scaffold — ODDfest's Programme/Discovery and
+// ODDference's Programme sections both use this. See content.config.ts's
+// `programmeItem`: title/organiser/category/date/time/venue/description/href,
+// enough to grow into a real listing later without a schema change.
+interface Item {
+  title: string;
+  organiser?: string;
+  category: string;
+  date?: string;
+  time?: string;
+  venue?: string;
+  description: string;
+  href?: string;
+}
+interface Props {
+  items: Item[];
+}
+const { items } = Astro.props;
+---
+
+<div class="programme-list reveal">
+  {
+    items.map((item) => {
+      const Tag = item.href ? 'a' : 'div';
+      const meta = [item.organiser, item.venue].filter(Boolean).join(' · ');
+      return (
+        <Tag class="programme-row" href={item.href}>
+          <div class="programme-when">
+            {item.date && <span class="programme-date">{item.date}</span>}
+            {item.time && <span class="programme-time">{item.time}</span>}
+          </div>
+          <div class="programme-body">
+            <span class="programme-category">{item.category}</span>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+            {meta && <span class="programme-meta">{meta}</span>}
+          </div>
+        </Tag>
+      );
+    })
+  }
+</div>
+
+<style>
+  .programme-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .programme-row {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 1.5rem;
+    padding: 1.6rem 0;
+    border-top: 1px solid var(--color-paper-12);
+    text-decoration: none;
+    color: inherit;
+  }
+  .programme-list .programme-row:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .programme-when {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .programme-date {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--color-paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .programme-time {
+    font-family: var(--font-body);
+    font-size: 0.76rem;
+    color: var(--color-paper-40);
+    font-variant-numeric: tabular-nums;
+  }
+  .programme-category {
+    font: var(--text-caption);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .programme-body h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+    color: var(--color-paper);
+    margin: 0.4rem 0 0;
+    transition: color var(--duration-fast) ease;
+  }
+  a.programme-row:hover h3 {
+    color: var(--color-amber-bright);
+  }
+  .programme-body p {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-paper-60);
+    max-width: 56ch;
+  }
+  .programme-meta {
+    display: block;
+    margin-top: 0.6rem;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    color: var(--color-paper-40);
+  }
+  @media (max-width: 640px) {
+    .programme-row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .programme-list .programme-row {
+      opacity: 0;
+      transform: translateY(10px);
+      transition:
+        opacity 0.5s ease,
+        transform 0.5s ease;
+    }
+    .programme-list.in .programme-row {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,89 @@
+---
+// A single-column editorial intro block — eyebrow/headline/body/optional
+// link. The shape of "What ODD is", ODDference's "Big question", ODDagency's
+// "What it is", Membership's "What it is", and several other single-idea
+// sections across V2 — one component, many pages. See content.config.ts's
+// `sectionIntro` fragment.
+interface LinkCta {
+  label: string;
+  href: string;
+  external?: boolean;
+}
+interface Props {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  cta?: LinkCta;
+}
+const { eyebrow, headline, body, cta } = Astro.props;
+---
+
+<section class="section-intro">
+  <div class="wrap">
+    <div class="section-intro-inner reveal">
+      <span class="eyebrow">{eyebrow}</span>
+      <h2>{headline}</h2>
+      <p>{body}</p>
+      {
+        cta && (
+          <a
+            class="section-intro-link"
+            href={cta.href}
+            target={cta.external ? '_blank' : undefined}
+            rel={cta.external ? 'noreferrer' : undefined}
+          >
+            {cta.label}
+          </a>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-intro-inner {
+    max-width: 42rem;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .section-intro-inner .eyebrow {
+    color: var(--color-paper-60);
+  }
+  .section-intro-inner h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--color-paper);
+    font-size: clamp(1.9rem, 4vw, 2.9rem);
+    line-height: 1.1;
+    margin: 0.9rem 0 0;
+    text-wrap: balance;
+  }
+  .section-intro-inner p {
+    max-width: 44ch;
+    margin: 1.4rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    line-height: 1.8;
+    color: var(--color-paper-60);
+  }
+  .section-intro-link {
+    display: inline-block;
+    margin-top: 1.4rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--color-paper-80);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--color-paper-20);
+    transition: color var(--duration-fast) ease;
+  }
+  .section-intro-link:hover {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
+  }
+</style>

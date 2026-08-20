@@ -1,0 +1,102 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import PageIntro from '../components/sections/PageIntro.astro';
+import FeatureGrid from '../components/sections/FeatureGrid.astro';
+import ProgramGrid from '../components/sections/ProgramGrid.astro';
+import CaseGrid from '../components/sections/CaseGrid.astro';
+import LogoMarquee from '../components/sections/LogoMarquee.astro';
+import ContactForm from '../components/sections/ContactForm.astro';
+
+const entry = await getEntry('pages', 'work-with-odd');
+if (!entry || entry.data._template !== 'work-with-odd')
+  throw new Error('work-with-odd.json content entry missing or malformed');
+const page = entry.data;
+
+const site = await getEntry('site', 'global');
+if (!site) throw new Error('Missing site/global.json content entry');
+const { partners } = site.data;
+
+// Reuses the Contact page's Web3Forms key rather than asking for a second
+// one — one key, set once, activates both inquiry forms. See
+// docs/editing.md#contact-form-setup.
+const contactEntry = await getEntry('pages', 'contact');
+const formAccessKey =
+  contactEntry?.data._template === 'contact' ? contactEntry.data.formAccessKey : undefined;
+---
+
+<Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
+  <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
+
+  <section class="wwo-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Why ODD</span>
+        <h2>What makes this different</h2>
+      </div>
+      <FeatureGrid cards={page.whyOdd} />
+    </div>
+  </section>
+
+  <ProgramGrid title="Four ways to work with ODD" cards={page.pathways} />
+
+  <section class="wwo-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Selected work</span>
+        <h2>Cases</h2>
+      </div>
+      <CaseGrid items={page.cases} />
+    </div>
+  </section>
+
+  <section class="wwo-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Process</span>
+        <h2>How we work</h2>
+      </div>
+      <FeatureGrid cards={page.howWeWork} />
+    </div>
+  </section>
+
+  <p class="wrap wwo-network-note reveal">{page.network.note}</p>
+  <LogoMarquee eyebrow={page.network.eyebrow} title={page.network.title} items={partners} />
+
+  <section class="wwo-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">{page.contact.eyebrow}</span>
+        <h2>{page.contact.title}</h2>
+      </div>
+      <p class="wwo-contact-body reveal">{page.contact.body}</p>
+    </div>
+  </section>
+
+  <ContactForm accessKey={formAccessKey} />
+</Layout>
+
+<style>
+  .wwo-sub {
+    padding: var(--space-24) 0;
+  }
+  .wwo-network-note {
+    padding-top: var(--space-16);
+    text-align: center;
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-60);
+  }
+  .wwo-contact-body {
+    max-width: 40rem;
+    margin: -1.5rem auto 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-paper-60);
+  }
+</style>

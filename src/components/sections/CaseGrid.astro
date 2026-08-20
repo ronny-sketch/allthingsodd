@@ -1,0 +1,145 @@
+---
+// Reusable case/story card grid — Work with ODD "Selected work", ODDagency
+// "Selected cases", and Home's single-case teaser (via CaseGrid with one
+// item) all use this. No image field: this site has no real case photography
+// yet, so these read as strong typographic editorial cards instead of
+// forcing a stock/placeholder image — see content.config.ts's `caseStudy`.
+interface Metric {
+  value: string;
+  label: string;
+}
+interface CaseItem {
+  category: string;
+  title: string;
+  partner?: string;
+  summary: string;
+  metrics?: Metric[];
+  href: string;
+}
+interface Props {
+  items: CaseItem[];
+}
+const { items } = Astro.props;
+---
+
+<div class="case-grid reveal">
+  {
+    items.map((c) => (
+      <a class="case-card" href={c.href}>
+        <span class="case-category">
+          {c.category}
+          {c.partner && ` · ${c.partner}`}
+        </span>
+        <h3>{c.title}</h3>
+        <p>{c.summary}</p>
+        {c.metrics && c.metrics.length > 0 && (
+          <div class="case-metrics">
+            {c.metrics.map((m) => (
+              <div class="case-metric">
+                <b>{m.value}</b>
+                <span>{m.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        <span class="case-go">Read more →</span>
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .case-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--color-paper-12);
+  }
+  .case-card {
+    background: var(--color-backstage);
+    padding: 2.4rem;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color var(--duration-fast) ease;
+  }
+  .case-card:hover {
+    background: color-mix(in srgb, var(--color-backstage) 85%, var(--color-paper) 15%);
+  }
+  .case-category {
+    font: var(--text-caption);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .case-card h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+    color: var(--color-paper);
+    margin: 0.7rem 0 0;
+  }
+  .case-card p {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--color-paper-60);
+    margin: 0.9rem 0 0;
+    flex: 1;
+  }
+  .case-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+    margin: 1.4rem 0 0;
+  }
+  .case-metric {
+    display: flex;
+    flex-direction: column;
+  }
+  .case-metric b {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.3rem;
+    color: var(--color-paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .case-metric span {
+    font: var(--text-caption);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .case-go {
+    display: inline-block;
+    width: fit-content;
+    margin-top: 1.6rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-paper);
+    border-bottom: 1px solid var(--color-paper-40);
+    padding-bottom: 0.15rem;
+    transition: border-color var(--duration-fast) ease;
+  }
+  .case-card:hover .case-go {
+    border-color: var(--color-paper);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .case-grid .case-card {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity 0.55s ease,
+        transform 0.55s ease;
+    }
+    .case-grid.in .case-card {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

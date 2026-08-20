@@ -4,11 +4,13 @@ import { getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/sections/Hero.astro';
 import OpeningLine from '../components/sections/OpeningLine.astro';
+import SectionIntro from '../components/sections/SectionIntro.astro';
 import Converge from '../components/sections/Converge.astro';
-import NewsFilmstrip from '../components/sections/NewsFilmstrip.astro';
 import WhatsOn from '../components/sections/WhatsOn.astro';
 import ProgramGrid from '../components/sections/ProgramGrid.astro';
+import ProofGrid from '../components/sections/ProofGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
+import CaseGrid from '../components/sections/CaseGrid.astro';
 import Aftermovie from '../components/sections/Aftermovie.astro';
 import LogoMarquee from '../components/sections/LogoMarquee.astro';
 
@@ -23,7 +25,7 @@ const page = entry.data;
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { partners, featuredIn } = site.data;
+const { partners } = site.data;
 
 // The hero mosaic's first cell is the page's real LCP element (confirmed via
 // a PerformanceObserver check against production, not assumed) — preloading
@@ -43,21 +45,132 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
   preloadImage={preloadImage.src}
 >
   <Hero mosaicAlt={page.hero.mosaicAlt} />
-  <OpeningLine line={page.openingLine} />
+  <OpeningLine
+    line={page.opening.headline}
+    subline={page.opening.subline}
+    primaryCta={page.opening.primaryCta}
+    secondaryCta={page.opening.secondaryCta}
+  />
+
+  <SectionIntro
+    eyebrow={page.whatOddIs.eyebrow}
+    headline={page.whatOddIs.headline}
+    body={page.whatOddIs.body}
+    cta={page.whatOddIs.cta}
+  />
 
   <section id="business" class="converge-wrap">
     <Converge
-      intro={page.converge.intro}
-      business={page.converge.business}
-      creative={page.converge.creative}
+      intro={page.twoWaysIn.intro}
+      business={page.twoWaysIn.business}
+      creative={page.twoWaysIn.creative}
     />
   </section>
 
-  <NewsFilmstrip items={page.news} />
-  <WhatsOn columns={page.whatsOn.columns} note={page.whatsOn.note} />
-  <ProgramGrid title="What ODD is, in practice" cards={page.programGrid} />
-  <ParticipateBand items={page.participate} />
+  <WhatsOn items={page.whatsHappening.items} note={page.whatsHappening.note} />
+
+  <ProgramGrid title="The ODD platform" cards={page.platforms} />
+
+  {
+    page.proof && (
+      <ProofGrid eyebrow={page.proof.eyebrow} title={page.proof.title} items={page.proof.items} />
+    )
+  }
+
+  <section class="work-with-odd-teaser">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">{page.workWithOdd.eyebrow}</span>
+        <h2>{page.workWithOdd.title}</h2>
+      </div>
+      <p class="wwo-intro reveal">{page.workWithOdd.intro}</p>
+      <div class="wwo-cards reveal">
+        {
+          page.workWithOdd.cards.map((c) => (
+            <a class="wwo-card" href={c.href}>
+              <span class="eyebrow">{c.eyebrow}</span>
+              <h3>{c.title}</h3>
+              <span class="wwo-go">{c.linkLabel}</span>
+            </a>
+          ))
+        }
+      </div>
+      <div class="wwo-cta">
+        <a class="wwo-cta-link" href={page.workWithOdd.ctaHref}>{page.workWithOdd.ctaLabel} →</a>
+      </div>
+    </div>
+  </section>
+
+  {page.caseTeaser && <CaseGrid items={[page.caseTeaser]} />}
+
   <Aftermovie poster={page.aftermovie.poster} video={page.aftermovie.video} />
+
   <LogoMarquee eyebrow="Who we build with" title="Partners" items={partners} />
-  <LogoMarquee eyebrow="Press" title="Featured in" items={featuredIn} />
+
+  <ParticipateBand items={page.participate} />
 </Layout>
+
+<style>
+  .work-with-odd-teaser {
+    background: var(--color-bg);
+  }
+  .wwo-intro {
+    max-width: 42rem;
+    margin: -2rem auto 3rem;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-paper-60);
+  }
+  .wwo-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--color-paper-12);
+  }
+  .wwo-card {
+    background: var(--color-backstage);
+    padding: 2rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    transition: background-color var(--duration-fast) ease;
+  }
+  .wwo-card:hover {
+    background: color-mix(in srgb, var(--color-backstage) 85%, var(--color-paper) 15%);
+  }
+  .wwo-card h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--color-paper);
+    margin: 0;
+  }
+  .wwo-go {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .wwo-cta {
+    text-align: center;
+    margin-top: 2.5rem;
+  }
+  .wwo-cta-link {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--color-paper);
+    text-decoration: underline;
+    text-decoration-color: var(--color-paper-40);
+    text-underline-offset: 4px;
+  }
+  .wwo-cta-link:hover {
+    text-decoration-color: var(--color-paper);
+  }
+</style>

@@ -3,15 +3,58 @@
 // left-set. Each letter gets its own archive-palette color on hover (src/scripts/
 // letter-hover.ts); the original sentence stays as a real text node for SEO/SR,
 // the per-letter spans are generated client-side and marked aria-hidden.
+//
+// This is deliberately the site's proposition moment, not the mosaic hero
+// above it (which stays pure visual impact, no text) — it's the very next
+// section, so a visitor never scrolls a full viewport without a clue what
+// ODD is. subline/CTAs are optional so this component still works unchanged
+// on any page that only wants the single big line.
+import Pill from '../primitives/Pill.astro';
+
+interface LinkCta {
+  label: string;
+  href: string;
+  external?: boolean;
+}
 interface Props {
   line: string;
+  subline?: string;
+  primaryCta?: LinkCta;
+  secondaryCta?: LinkCta;
 }
-const { line } = Astro.props;
+const { line, subline, primaryCta, secondaryCta } = Astro.props;
 ---
 
 <section class="opening">
   <div class="wrap">
     <h1 class="opening-line reveal" data-text={line}>{line}</h1>
+    {subline && <p class="opening-subline reveal">{subline}</p>}
+    {
+      (primaryCta || secondaryCta) && (
+        <div class="opening-ctas reveal">
+          {primaryCta && (
+            <Pill
+              href={primaryCta.href}
+              variant="solid"
+              magnetic
+              target={primaryCta.external ? '_blank' : undefined}
+            >
+              {primaryCta.label}
+            </Pill>
+          )}
+          {secondaryCta && (
+            <Pill
+              href={secondaryCta.href}
+              variant="outline"
+              magnetic
+              target={secondaryCta.external ? '_blank' : undefined}
+            >
+              {secondaryCta.label}
+            </Pill>
+          )}
+        </div>
+      )
+    }
   </div>
 </section>
 
@@ -38,6 +81,41 @@ const { line } = Astro.props;
     transition:
       color 0.15s ease,
       transform 0.15s ease;
+  }
+  .opening-subline {
+    max-width: 42ch;
+    margin: 1.6rem 0 0;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.7;
+    /* Ink itself at low opacity, not --color-paper-* (those are calibrated
+       against the dark ground everywhere else on the site — this is the one
+       band that inverts to the light neutral, so its own secondary text
+       needs an ink-based reading instead). */
+    color: rgb(36 34 32 / 68%);
+  }
+  .opening-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1.8rem;
+  }
+  /* Pill's solid/outline variants are calibrated for the dark ground used
+     everywhere else on the site; this is the one inverted (light) band, so
+     both need their colors flipped here rather than a fourth global variant
+     that would only ever apply in this one spot. */
+  .opening-ctas :global(.pill-solid) {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border-color: var(--color-ink);
+  }
+  .opening-ctas :global(.pill-outline) {
+    background: transparent;
+    color: var(--color-ink);
+    border-color: rgb(36 34 32 / 35%);
+  }
+  .opening-ctas :global(.pill-outline:hover) {
+    border-color: var(--color-ink);
   }
   @media (hover: hover) {
     .opening-line :global(.letter:hover) {

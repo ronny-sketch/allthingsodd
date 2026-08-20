@@ -23,12 +23,10 @@ test('every internal nav link navigates to a real, matching page', async ({ page
   // Real DOM text is mixed-case ("About") — it only *renders* uppercase via
   // the Forta display font's glyph design, not CSS text-transform or content.
   const internalRoutes: [string, string][] = [
-    ['About', '/about'],
     ['ODDfest', '/oddfest'],
     ['ODDference', '/oddference'],
-    ['ODDagency', '/oddagency'],
-    ['Media', '/media'],
-    ['Contact', '/contact'],
+    ['Work with ODD', '/work-with-odd'],
+    ['About', '/about'],
   ];
   for (const [label, path] of internalRoutes) {
     await page.goto('/');
@@ -107,4 +105,35 @@ test('subpage side rail renders at desktop width', async ({ page }) => {
   // viewports (see playwright.config.ts).
   await page.goto('/oddfest');
   await expect(page.locator('.oddf-rail.left')).toBeVisible();
+});
+
+test('FAQ accordion opens and closes on click (native details/summary)', async ({ page }) => {
+  await page.goto('/oddfest');
+  const firstItem = page.locator('.faq-item').first();
+  await expect(firstItem).not.toHaveAttribute('open', '');
+  await firstItem.locator('summary').click();
+  await expect(firstItem).toHaveAttribute('open', '');
+  await firstItem.locator('summary').click();
+  await expect(firstItem).not.toHaveAttribute('open', '');
+});
+
+test('Work with ODD and Membership pages load with a real h1 and working nav', async ({ page }) => {
+  for (const path of ['/work-with-odd', '/membership']) {
+    const response = await page.goto(path);
+    expect(response?.status()).toBe(200);
+    await expect(page.locator('h1').first()).toBeVisible();
+  }
+});
+
+test('ODDagency, Media and Contact are reachable even though they left primary nav', async ({
+  page,
+}) => {
+  // V2 trimmed the top nav to five items (see docs/architecture.md#v2) — these
+  // three pages are still real, live routes, just reached via in-content CTAs
+  // instead of the nav bar. Confirms they still resolve correctly.
+  for (const path of ['/oddagency', '/media', '/contact']) {
+    const response = await page.goto(path);
+    expect(response?.status()).toBe(200);
+    await expect(page.locator('h1').first()).toBeVisible();
+  }
 });

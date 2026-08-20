@@ -1,0 +1,86 @@
+{
+  "_template": "work-with-odd",
+  "seo": {
+    "title": "Work with ODD — membership, agency & partnerships",
+    "description": "Several ways for organisations to build a relationship with ODD — attend ODDference, join as a member, commission ODDagency, or build a partnership.",
+    "ogImage": "/og/work-with-odd.jpg"
+  },
+  "eyebrow": "For business & institutions",
+  "title": "Work with ODD.",
+  "intro": "[PLACEHOLDER — 2-3 sentences: there are several ways for an organisation to build a relationship with ODD, from a single ticket to a year-round partnership]",
+  "whyOdd": [
+    {
+      "number": "01",
+      "title": "Access to creative expertise",
+      "body": "[PLACEHOLDER — the network ODD gives access to]"
+    },
+    {
+      "number": "02",
+      "title": "Cross-sector capability",
+      "body": "[PLACEHOLDER — what makes ODD's model distinctive vs. a conventional consultancy/agency]"
+    },
+    {
+      "number": "03",
+      "title": "Real communities & platforms",
+      "body": "[PLACEHOLDER — connection to ODDfest/ODDspace/ODDference, not theoretical]"
+    }
+  ],
+  "pathways": [
+    {
+      "meta": "Attend, bring a team, partner",
+      "title": "ODDference",
+      "body": "[PLACEHOLDER — one-line description of this pathway]",
+      "goLabel": "Explore ODDference →",
+      "href": "/oddference"
+    },
+    {
+      "meta": "A year-round relationship",
+      "title": "ODDmembership",
+      "body": "[PLACEHOLDER — one-line description of this pathway]",
+      "goLabel": "Explore Membership →",
+      "href": "/membership"
+    },
+    {
+      "meta": "Bring us a brief",
+      "title": "ODDagency",
+      "body": "[PLACEHOLDER — one-line description of this pathway]",
+      "goLabel": "Explore Agency →",
+      "href": "/oddagency"
+    },
+    {
+      "meta": "Build something together",
+      "title": "Partnerships",
+      "body": "[PLACEHOLDER — one-line description of this pathway]",
+      "goLabel": "Get in touch →",
+      "href": "/contact"
+    }
+  ],
+  "cases": [
+    {
+      "category": "[PLACEHOLDER — case category]",
+      "title": "[PLACEHOLDER — case title]",
+      "partner": "[PLACEHOLDER — partner/client name]",
+      "summary": "[PLACEHOLDER — 2-3 sentence case summary]",
+      "href": "/oddagency"
+    }
+  ],
+  "howWeWork": [
+    { "number": "01", "title": "Start a conversation", "body": "[PLACEHOLDER — first step]" },
+    {
+      "number": "02",
+      "title": "Find the right pathway",
+      "body": "[PLACEHOLDER — matching to ODDference/Membership/Agency/Partnerships]"
+    },
+    { "number": "03", "title": "Build together", "body": "[PLACEHOLDER — what happens next]" }
+  ],
+  "network": {
+    "eyebrow": "Who we work with",
+    "title": "Organisations building with ODD",
+    "note": "[PLACEHOLDER — short framing line before the shared partner logo strip below; more partners to be added]"
+  },
+  "contact": {
+    "eyebrow": "Get in touch",
+    "title": "Tell us what you're working on.",
+    "body": "[PLACEHOLDER — short prompt encouraging a project inquiry, kept simple; see the Contact page for the actual form]"
+  }
+}

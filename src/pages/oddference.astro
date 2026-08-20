@@ -4,12 +4,24 @@ import Layout from '../layouts/Layout.astro';
 import SubpageFrame from '../components/sections/SubpageFrame.astro';
 import SplitHero from '../components/sections/SplitHero.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
+import SectionIntro from '../components/sections/SectionIntro.astro';
+import ProgrammeList from '../components/sections/ProgrammeList.astro';
+import PersonGrid from '../components/sections/PersonGrid.astro';
+import ProofGrid from '../components/sections/ProofGrid.astro';
+import PricingGrid from '../components/sections/PricingGrid.astro';
+import FAQList from '../components/sections/FAQList.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 
 const entry = await getEntry('pages', 'oddference');
-if (!entry || entry.data._template !== 'subpage')
+if (!entry || entry.data._template !== 'oddference')
   throw new Error('oddference.json content entry missing or malformed');
 const page = entry.data;
+
+const audienceCards = page.whoItsFor.map((a, i) => ({
+  number: String(i + 1).padStart(2, '0'),
+  title: a.label,
+  body: a.description,
+}));
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
@@ -25,6 +37,208 @@ const page = entry.data;
       primaryCta={page.primaryCta}
     />
     <FeatureGrid cards={page.features} />
+
+    <SectionIntro
+      eyebrow={page.bigQuestion.eyebrow}
+      headline={page.bigQuestion.headline}
+      body={page.bigQuestion.body}
+    />
+
+    <section class="oddc-sub">
+      <div class="wrap">
+        <div class="section-head"><h2>Who it's for</h2></div>
+        <FeatureGrid cards={audienceCards} />
+      </div>
+    </section>
+
+    <section class="oddc-sub">
+      <div class="wrap">
+        <div class="section-head"><h2>Why attend</h2></div>
+        <FeatureGrid cards={page.whyAttend} />
+      </div>
+    </section>
+
+    <section class="oddc-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Content</span>
+          <h2>Themes</h2>
+        </div>
+        <div class="oddc-themes reveal">
+          {
+            page.themes.map((t) => (
+              <div class="oddc-theme">
+                <h3>{t.title}</h3>
+                <p>{t.body}</p>
+              </div>
+            ))
+          }
+        </div>
+        <div class="oddc-formats reveal">
+          <span class="oddc-formats-label">Format</span>
+          <div class="oddc-formats-list">
+            {page.formats.map((f) => <span class="oddc-format-tag">{f}</span>)}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {
+      page.speakers && page.speakers.length > 0 && (
+        <section class="oddc-sub">
+          <div class="wrap">
+            <div class="section-head">
+              <span class="eyebrow">Line-up</span>
+              <h2>Speakers</h2>
+            </div>
+            <PersonGrid items={page.speakers} />
+          </div>
+        </section>
+      )
+    }
+
+    {
+      page.programme && page.programme.length > 0 && (
+        <section class="oddc-sub">
+          <div class="wrap">
+            <div class="section-head">
+              <span class="eyebrow">Schedule</span>
+              <h2>Programme</h2>
+            </div>
+            <ProgrammeList items={page.programme} />
+          </div>
+        </section>
+      )
+    }
+
+    <SectionIntro
+      eyebrow={page.connection.eyebrow}
+      headline={page.connection.headline}
+      body={page.connection.body}
+    />
+
+    {
+      page.proof && (
+        <section class="oddc-sub">
+          <ProofGrid
+            eyebrow={page.proof.eyebrow}
+            title={page.proof.title}
+            items={page.proof.items}
+          />
+          {page.proof.quote && (
+            <div class="wrap">
+              <blockquote class="oddc-quote reveal">
+                <p>&ldquo;{page.proof.quote.text}&rdquo;</p>
+                <cite>{page.proof.quote.attribution}</cite>
+              </blockquote>
+            </div>
+          )}
+        </section>
+      )
+    }
+
+    {
+      page.tickets && page.tickets.length > 0 && (
+        <section class="oddc-sub" id="tickets">
+          <div class="wrap">
+            <div class="section-head">
+              <span class="eyebrow">Tickets</span>
+              <h2>Get your ticket</h2>
+            </div>
+            <PricingGrid items={page.tickets} />
+          </div>
+        </section>
+      )
+    }
+
+    <ParticipateBand title="Partner with ODDference" items={[page.partnershipCta]} />
+
+    <section class="oddc-sub">
+      <div class="wrap">
+        <div class="section-head"><h2>Practical / FAQ</h2></div>
+        <FAQList items={page.faq} />
+      </div>
+    </section>
+
     <ParticipateBand items={page.participate} noPadTop />
   </SubpageFrame>
 </Layout>
+
+<style>
+  .oddc-sub {
+    padding: var(--space-24) 0;
+  }
+  .oddc-themes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--color-paper-12);
+  }
+  .oddc-theme {
+    background: var(--color-backstage);
+    padding: 1.8rem;
+  }
+  .oddc-theme h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.2rem;
+    color: var(--color-paper);
+    margin: 0;
+  }
+  .oddc-theme p {
+    margin: 0.7rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-paper-60);
+  }
+  .oddc-formats {
+    margin-top: 2.5rem;
+    text-align: center;
+  }
+  .oddc-formats-label {
+    display: block;
+    font: var(--text-caption);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+    margin-bottom: 1rem;
+  }
+  .oddc-formats-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+  .oddc-format-tag {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-paper-80);
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    border-radius: 999px;
+    padding: 0.5rem 1.1rem;
+  }
+  .oddc-quote {
+    max-width: 40rem;
+    margin: 2.5rem auto 0;
+    text-align: center;
+    padding: 0;
+  }
+  .oddc-quote p {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+    line-height: 1.4;
+    color: var(--color-paper);
+    margin: 0;
+  }
+  .oddc-quote cite {
+    display: block;
+    margin-top: 1rem;
+    font-style: normal;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--color-paper-40);
+  }
+</style>

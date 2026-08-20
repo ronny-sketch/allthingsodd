@@ -1,0 +1,97 @@
+---
+// The site's proof/traction module — Section 6 in docs/architecture.md#v2.
+// Deliberately optional at the page-schema level (see content.config.ts's
+// `proofSection`), so a page can omit this component entirely rather than
+// render fabricated numbers.
+interface ProofItem {
+  value: string;
+  label: string;
+  context?: string;
+}
+interface Props {
+  eyebrow: string;
+  title?: string;
+  items: ProofItem[];
+}
+const { eyebrow, title, items } = Astro.props;
+---
+
+<section class="proof-section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">{eyebrow}</span>
+      {title && <h2>{title}</h2>}
+    </div>
+    <div class="proof-grid reveal">
+      {
+        items.map((item) => (
+          <div class="proof-item">
+            <div class="proof-value">{item.value}</div>
+            <div class="proof-label">{item.label}</div>
+            {item.context && <div class="proof-context">{item.context}</div>}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+  .proof-item {
+    padding: 0 2rem;
+    border-left: 1px solid var(--color-paper-12);
+    text-align: center;
+  }
+  .proof-item:first-child {
+    border-left: none;
+  }
+  .proof-value {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    line-height: 1;
+    color: var(--color-paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .proof-label {
+    margin-top: 0.7rem;
+    font: var(--text-caption);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .proof-context {
+    margin-top: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--color-paper-40);
+  }
+  @media (max-width: 700px) {
+    .proof-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem 0;
+    }
+    .proof-item {
+      border-left: none;
+      padding: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .proof-grid .proof-item {
+      opacity: 0;
+      transform: translateY(14px);
+      transition:
+        opacity 0.55s ease,
+        transform 0.55s ease;
+    }
+    .proof-grid.in .proof-item {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

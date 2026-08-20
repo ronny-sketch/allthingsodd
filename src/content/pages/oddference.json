@@ -1,16 +1,16 @@
 {
-  "_template": "subpage",
+  "_template": "oddference",
   "_slug": "oddference",
   "seo": {
-    "title": "ODDference — where business meets the creative sector",
-    "description": "A two-day conference for founders, creatives and policymakers who want to learn straight from the source. 11–12 June 2027, Helsinki.",
+    "title": "ODDference — what business can learn from creative expertise",
+    "description": "ODD's flagship professional event, built around one question: what can business and the rest of society learn from creative expertise?",
     "ogImage": "/og/oddference.jpg"
   },
-  "eyebrow": "ODDference · For business",
-  "title": "Where business meets the creative sector.",
-  "meta": "11–12 June 2027 · Helsinki",
-  "primaryCta": { "label": "Buy your ticket", "href": "#" },
-  "intro": "A two-day conference for founders, creatives and policymakers who want to learn straight from the source. Talks, matchmaking and a room full of the people actually building Finland's creative economy — followed by ODDfest, the open program it feeds straight into.",
+  "eyebrow": "ODDference · Flagship event",
+  "title": "What can business learn from creative expertise?",
+  "meta": "[PLACEHOLDER — date] · Helsinki",
+  "primaryCta": { "label": "Get tickets", "href": "#tickets" },
+  "intro": "[PLACEHOLDER — 2-3 sentences introducing ODDference as a centrally produced flagship event built around what business and the rest of society can learn from creative expertise, methods and ways of working]",
   "heroMedia": {
     "video": "/video/oddference-hero.mp4",
     "poster": "../../assets/video/oddference-hero-poster.jpg"
@@ -19,28 +19,162 @@
     {
       "number": "01",
       "title": "Talks & panels",
-      "body": "Founders, creatives and policymakers on the same stage — not separate tracks."
+      "body": "[PLACEHOLDER — founders, creatives and policymakers on the same stage, not separate tracks]"
     },
     {
       "number": "02",
       "title": "Matchmaking",
-      "body": "Structured time to meet the people worth meeting, not just business cards."
+      "body": "[PLACEHOLDER — structured time to meet the people worth meeting]"
     },
     {
       "number": "03",
       "title": "Straight into ODDfest",
-      "body": "ODDference ends, ODDfest begins — same city, same crowd, open to everyone."
+      "body": "[PLACEHOLDER — ODDference's relationship to the open ODDfest programme that follows it]"
+    }
+  ],
+  "bigQuestion": {
+    "eyebrow": "The big question",
+    "headline": "What can business and the rest of society learn from creative expertise?",
+    "body": "[PLACEHOLDER — 2-3 sentences positioning creative professionals as people with relevant expertise, methods and perspectives — not entertainment or decoration around a business conference]"
+  },
+  "whoItsFor": [
+    {
+      "label": "Business leaders",
+      "description": "[PLACEHOLDER — why ODDference is relevant to this audience]"
+    },
+    {
+      "label": "Organisational leaders",
+      "description": "[PLACEHOLDER — why ODDference is relevant to this audience]"
+    },
+    {
+      "label": "Entrepreneurs",
+      "description": "[PLACEHOLDER — why ODDference is relevant to this audience]"
+    },
+    {
+      "label": "Policymakers",
+      "description": "[PLACEHOLDER — why ODDference is relevant to this audience]"
+    },
+    {
+      "label": "Creative leaders",
+      "description": "[PLACEHOLDER — why ODDference is relevant to this audience]"
+    }
+  ],
+  "whyAttend": [
+    {
+      "number": "01",
+      "title": "New perspectives",
+      "body": "[PLACEHOLDER — outcome, not generic conference feature]"
+    },
+    {
+      "number": "02",
+      "title": "Relevant connections",
+      "body": "[PLACEHOLDER — outcome, not generic conference feature]"
+    },
+    {
+      "number": "03",
+      "title": "Practical ideas",
+      "body": "[PLACEHOLDER — outcome, not generic conference feature]"
+    }
+  ],
+  "themes": [
+    { "title": "[PLACEHOLDER — theme]", "body": "[PLACEHOLDER — short description]" },
+    { "title": "[PLACEHOLDER — theme]", "body": "[PLACEHOLDER — short description]" },
+    { "title": "[PLACEHOLDER — theme]", "body": "[PLACEHOLDER — short description]" }
+  ],
+  "formats": [
+    "Conversations",
+    "Talks",
+    "Workshops",
+    "Facilitated sessions",
+    "Encounters & networking",
+    "Creative interventions"
+  ],
+  "speakers": [],
+  "programme": [
+    {
+      "title": "[PLACEHOLDER — session title]",
+      "category": "[PLACEHOLDER — track/theme]",
+      "date": "TBD",
+      "time": "TBD",
+      "venue": "[PLACEHOLDER — stage/room]",
+      "description": "[PLACEHOLDER — short description]"
+    },
+    {
+      "title": "[PLACEHOLDER — session title]",
+      "category": "[PLACEHOLDER — track/theme]",
+      "date": "TBD",
+      "time": "TBD",
+      "venue": "[PLACEHOLDER — stage/room]",
+      "description": "[PLACEHOLDER — short description]"
+    }
+  ],
+  "connection": {
+    "eyebrow": "Connection & networking",
+    "headline": "Built for meaningful encounters, not passive stage time.",
+    "body": "[PLACEHOLDER — 2-3 sentences on how ODDference creates real connection rather than relying only on the stage]"
+  },
+  "proof": {
+    "eyebrow": "Previous editions",
+    "title": "[PLACEHOLDER — proof section title]",
+    "items": [
+      { "value": "—", "label": "[PLACEHOLDER — attendee figure]" },
+      { "value": "—", "label": "[PLACEHOLDER — organisations figure]" },
+      { "value": "—", "label": "[PLACEHOLDER — speakers figure]" }
+    ],
+    "quote": {
+      "text": "[PLACEHOLDER — attendee feedback quote]",
+      "attribution": "[PLACEHOLDER — attribution]"
+    }
+  },
+  "tickets": [
+    {
+      "name": "[PLACEHOLDER — ticket name]",
+      "audience": "[PLACEHOLDER — audience]",
+      "price": "[PLACEHOLDER — price]",
+      "status": "[PLACEHOLDER — status]",
+      "benefits": ["[PLACEHOLDER — benefit]", "[PLACEHOLDER — benefit]"],
+      "ctaLabel": "Get this ticket",
+      "href": "/contact"
+    },
+    {
+      "name": "[PLACEHOLDER — ticket name]",
+      "audience": "[PLACEHOLDER — audience]",
+      "price": "[PLACEHOLDER — price]",
+      "status": "[PLACEHOLDER — status]",
+      "benefits": ["[PLACEHOLDER — benefit]", "[PLACEHOLDER — benefit]", "[PLACEHOLDER — benefit]"],
+      "ctaLabel": "Get this ticket",
+      "href": "/contact",
+      "recommended": true,
+      "note": "[PLACEHOLDER — note]"
+    }
+  ],
+  "partnershipCta": {
+    "eyebrow": "For business partners",
+    "title": "Bring your organisation to ODDference",
+    "linkLabel": "Explore Work with ODD →",
+    "href": "/work-with-odd"
+  },
+  "faq": [
+    { "question": "[PLACEHOLDER — dates/venue question]", "answer": "[PLACEHOLDER — answer]" },
+    {
+      "question": "[PLACEHOLDER — arrival/accessibility question]",
+      "answer": "[PLACEHOLDER — answer]"
+    },
+    { "question": "[PLACEHOLDER — tickets question]", "answer": "[PLACEHOLDER — answer]" },
+    {
+      "question": "[PLACEHOLDER — programme/networking question]",
+      "answer": "[PLACEHOLDER — answer]"
     }
   ],
   "participate": [
-    { "eyebrow": "Business", "title": "Buy a ticket", "linkLabel": "Get yours →", "href": "#" },
-    { "eyebrow": "Speaking", "title": "Pitch a talk", "linkLabel": "Enquire →", "href": "#" }
+    { "eyebrow": "Business", "title": "Get tickets", "linkLabel": "Explore →", "href": "#tickets" },
+    { "eyebrow": "Speaking", "title": "Pitch a talk", "linkLabel": "Enquire →", "href": "/contact" }
   ],
   "railLeft": [
     { "kind": "logo" },
     { "kind": "word", "text": "ODDference" },
-    { "kind": "meta", "text": "11–12 Jun 2027" },
-    { "kind": "meta", "text": "Tickets open" }
+    { "kind": "meta", "text": "Flagship event" },
+    { "kind": "meta", "text": "Tickets" }
   ],
   "railRight": [
     { "kind": "word", "text": "Helsinki" },

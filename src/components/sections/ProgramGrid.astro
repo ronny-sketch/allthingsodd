@@ -8,7 +8,10 @@ interface Card {
   body: string;
   goLabel: string;
   href: string;
-  image: ImageMetadata;
+  // Optional — this grid isn't fixed to exactly four equal photo cards
+  // anymore (see docs/architecture.md#v2); a card with no photo yet gets a
+  // plain backstage-colored surface instead of forcing a placeholder image.
+  image?: ImageMetadata;
 }
 interface Props {
   title: string;
@@ -30,7 +33,11 @@ const { title, cards } = Astro.props;
           target={card.href.startsWith('http') ? '_blank' : undefined}
           rel={card.href.startsWith('http') ? 'noreferrer' : undefined}
         >
-          <Image class="four-card-bg" src={card.image} alt="" width={900} />
+          {card.image ? (
+            <Image class="four-card-bg" src={card.image} alt="" width={900} />
+          ) : (
+            <div class="four-card-bg four-card-bg--empty" />
+          )}
           <div class="four-card-scrim" />
           <div class="four-card-body">
             <div class="meta">{card.meta}</div>
@@ -78,6 +85,11 @@ const { title, cards } = Astro.props;
   .four-card:hover :global(.four-card-bg) {
     transform: scale(1.06);
     filter: brightness(0.92) contrast(1.08) saturate(1.35);
+  }
+  .four-card-bg--empty {
+    background:
+      radial-gradient(ellipse 70% 70% at 30% 20%, rgb(226 223 222 / 6%) 0%, transparent 60%),
+      var(--color-backstage);
   }
   .four-card-scrim {
     position: absolute;

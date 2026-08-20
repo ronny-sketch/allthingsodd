@@ -10,6 +10,7 @@ interface Props {
   class?: string;
   ariaLabel?: string;
   id?: string;
+  target?: '_blank';
 }
 const {
   href,
@@ -19,6 +20,7 @@ const {
   class: className,
   ariaLabel,
   id,
+  target,
 } = Astro.props;
 const classes = ['pill', `pill-${variant}`, magnetic && 'magnetic', className]
   .filter(Boolean)
@@ -32,6 +34,8 @@ const Tag = href ? 'a' : 'button';
   href={href}
   type={!href ? (type ?? 'button') : undefined}
   aria-label={ariaLabel}
+  target={target}
+  rel={target === '_blank' ? 'noreferrer' : undefined}
 >
   <slot />
 </Tag>

@@ -25,7 +25,8 @@ src/
   content.config.ts       Zod schemas for every content collection
   content/
     site/global.json      Nav, footer, social, contact, partner/press logos — shared everywhere
-    pages/*.json           7 fixed pages: home, oddfest, oddference, oddagency, about, media, contact
+    pages/*.json           9 fixed pages: home, oddfest, oddference, oddagency,
+                            work-with-odd, membership, about, media, contact
   styles/
     tokens.css             Color, spacing, motion tokens (with provenance)
     typography.css         Fluid type-scale roles (display-xl → caption)
@@ -49,21 +50,27 @@ sections" model — an editor drags a Hero, then a Quote, then a Gallery, in any
 order, onto any page. That's the right call for a blog or a marketing site
 with many similar landing pages.
 
-It's the wrong call here. ODD has **seven pages, and most have a genuinely
+It's the wrong call here. ODD has **nine pages, and most have a genuinely
 different, bespoke layout**: the home page's photo mosaic hero and filmstrip
-don't exist anywhere else; the three subpages share a rail+hero+grid shape but
-each hero is a different variant (video split, image split, full-bleed
-video); the about page is a scroll-pinned horizontal parallax unlike anything
-else on the site. Forcing these into a generic "sections" abstraction would
-mean either (a) building generic components that can't actually express this
-site's real layouts, or (b) building one generic section type per page
-anyway, which is a composer in name only.
+don't exist anywhere else; ODDfest/ODDference/ODDagency share a rail+grid
+shape but each hero is a different variant (video split, image split,
+full-bleed video); the about page opens with a scroll-pinned horizontal
+parallax unlike anything else on the site. Forcing these into a generic
+"sections" abstraction would mean either (a) building generic components that
+can't actually express this site's real layouts, or (b) building one generic
+section type per page anyway, which is a composer in name only.
 
-Media and Contact are the exception that proves the rule, not a contradiction
-of it: they're genuinely simple pages (an intro + a logo strip; an intro + a
-form), so they get a plain shared `PageIntro` header component instead of
-each inventing bespoke hero markup — reuse where the content is actually
-generic, bespoke schemas where it isn't.
+Media, Contact, Work with ODD and Membership are the exception that proves
+the rule, not a contradiction of it: they're genuinely simpler, more
+informational pages, so they get a plain shared `PageIntro` header component
+instead of each inventing bespoke hero markup — reuse where the content is
+actually generic, bespoke schemas where it isn't. Within those (and within
+ODDfest/ODDference/ODDagency's now much longer pages), the same logic repeats
+one level down: `FeatureGrid`, `ProgramGrid`, `SectionIntro`, `CaseGrid`,
+`ParticipateBand` and the other V2 section components (see
+[V2](#v2) below) are reused wherever the
+content genuinely has the same shape, and left page-specific where it
+doesn't.
 
 Instead, each page has a **fixed schema** (see `src/content.config.ts`'s
 discriminated union on `template`) with named, real fields — and the
@@ -71,6 +78,57 @@ _repeating_ content within a page (news items, program cards, feature grids,
 participate CTAs, about-page panels) _is_ an editable array with an "add new"
 structure in CloudCannon. That's real editing power scoped to where the site
 actually repeats, not a composer pretending everything is generic.
+
+## V2
+
+2026-08-20 → present: a content-and-architecture rebuild, not a redesign — the
+visual system (tokens, mosaic hero, cursor, rails, motion) is untouched. Three
+real decisions worth recording:
+
+1. **The old shared "subpage" template split into three real templates**
+   (`oddfest`/`oddference`/`oddagency` in `src/content.config.ts`). V1 gave
+   all three the same schema because their content genuinely overlapped at
+   the time; V2 gives each real, distinct sections (ODDfest's programme/open
+   call, ODDference's speakers/tickets, ODDagency's cases/capabilities), and
+   forcing those into one shared bag of `.optional()` fields would have
+   violated the same "named schema over generic composer" rule this doc
+   argues for above. They still share a `subpageBase` (rail + hero + features
+   - participate) via Zod's `.extend()`, since that part is genuinely common.
+2. **"Work with ODD" is the one B2B gateway**, not two competing nav items.
+   ODDmembership and ODDagency both need real pages, but neither needed a
+   permanent slot in a five-item primary nav — they're reachable from Work
+   with ODD's pathway grid and from CTAs throughout the site instead. See
+   `src/content/site/global.json`'s `nav` array.
+3. **About's four-panel horizontal scroll-pin stayed exactly what it was**
+   (trimmed from five panels to four, content updated) for the conceptual
+   opening — What is ODD / Why we exist / How it works / One platform. The
+   V2 sections a real About page also needs (Story/timeline, Proof, People,
+   Network, Ambition) continue as a normal vertical page below the pin
+   instead of extending it to ten panels, which would have made the pin
+   unusable as an interaction. Same "reuse where generic, bespoke where not"
+   call as Media/Contact above, just inside a single page instead of across
+   the sitemap.
+
+**Field-name collisions across templates.** CloudCannon's `_inputs` are keyed
+by field name across the whole `pages` collection, not per-template — so two
+templates using the same key for a _different_ shape (e.g. an early draft had
+both Home's single case teaser and About's milestone timeline named `story`)
+silently break the CloudCannon editing UI for one of them. Home's is
+`caseTeaser`; About's stays `story`. Membership's closing CTA is `finalCta`
+(not `contact`, which Work with ODD uses for its embedded-form intro), and
+its pre-logo-strip note is `network` (not `proof`, which means a stats grid —
+`proofSection` — everywhere else it's used). Adding a new field name: grep
+`src/content.config.ts` for it first.
+
+**Narrow-column placeholder text.** A few components lay real content into a
+fixed-width slot designed for short values — `ProofGrid`'s big stat number,
+`Timeline`'s year column, `ProgrammeList`/`WhatsOn`'s date column. A long
+`[PLACEHOLDER — description]` string in one of those overflows its column and
+visually collides with the next one (caught during V2 build via an actual
+screenshot, not assumed). Convention: those specific fields get a short
+placeholder (`—`, `TBD`) with the descriptive `[PLACEHOLDER — ...]` text
+living in the field next to them instead; every other text field is safe to
+use the full bracketed description in. See each page's JSON for the pattern.
 
 ## Hero variants
 
@@ -91,7 +149,7 @@ its structure genuinely doesn't overlap.
 
 ## Visual regression
 
-`tests/visual/pages.spec.ts` screenshots all 7 routes at 5 viewports
+`tests/visual/pages.spec.ts` screenshots all 9 routes at 5 viewports
 (mobile/tablet/laptop/desktop/wide) against committed baselines in
 `tests/visual/pages.spec.ts-snapshots/`.
 

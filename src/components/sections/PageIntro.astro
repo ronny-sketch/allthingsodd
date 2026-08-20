@@ -1,13 +1,23 @@
 ---
-// Shared top-of-page header — eyebrow/title/intro — for pages that don't use
-// SplitHero/FullbleedVideoHero's media-panel layout (Contact, Media). See
+// Shared top-of-page header — eyebrow/title/intro(+optional CTAs) — for
+// pages that don't use SplitHero/FullbleedVideoHero's media-panel layout
+// (Contact, Media, and V2's Work with ODD / Membership gateway pages). See
 // docs/architecture.md#hero-variants for why those two are separate.
+import Pill from '../primitives/Pill.astro';
+
+interface LinkCta {
+  label: string;
+  href: string;
+  external?: boolean;
+}
 interface Props {
   eyebrow: string;
   title: string;
   intro: string;
+  primaryCta?: LinkCta;
+  secondaryCta?: LinkCta;
 }
-const { eyebrow, title, intro } = Astro.props;
+const { eyebrow, title, intro, primaryCta, secondaryCta } = Astro.props;
 ---
 
 <section class="page-intro">
@@ -16,6 +26,32 @@ const { eyebrow, title, intro } = Astro.props;
       <span class="eyebrow">{eyebrow}</span>
       <h1>{title}</h1>
       <p>{intro}</p>
+      {
+        (primaryCta || secondaryCta) && (
+          <div class="page-intro-ctas">
+            {primaryCta && (
+              <Pill
+                href={primaryCta.href}
+                variant="solid"
+                magnetic
+                target={primaryCta.external ? '_blank' : undefined}
+              >
+                {primaryCta.label}
+              </Pill>
+            )}
+            {secondaryCta && (
+              <Pill
+                href={secondaryCta.href}
+                variant="outline"
+                magnetic
+                target={secondaryCta.external ? '_blank' : undefined}
+              >
+                {secondaryCta.label}
+              </Pill>
+            )}
+          </div>
+        )
+      }
     </div>
   </div>
 </section>
@@ -50,5 +86,12 @@ const { eyebrow, title, intro } = Astro.props;
     font-size: 0.95rem;
     line-height: 1.8;
     color: var(--color-paper-60);
+  }
+  .page-intro-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.9rem;
+    margin-top: 1.8rem;
   }
 </style>

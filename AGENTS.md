@@ -7,7 +7,7 @@ is meant to be worked on — not generic Astro advice (that's linked at the bott
 
 The production rebuild of the ODD website — "Signal & Ember / Field Guide 005," a
 co-creation platform site for New Nordic Way rf (ODDfest, ODDference, ODDspace,
-ODDagency). Migrated 2026-08-19 from a single 13MB hand-authored static
+Work with ODD). Migrated 2026-08-19 from a single 13MB hand-authored static
 `index.html` (see `../ODD NEW WEBPAGE/` — no longer deployed as of 2026-08-20,
 but kept as the visual reference) into
 Astro + structured content + CloudCannon, without losing any of the original's
@@ -19,6 +19,18 @@ not against a generic Astro sensibility.
 site on Next.js + headless WordPress, wired to the wrong app entirely, and it was
 scrapped. WordPress is not part of this stack. CloudCannon is the CMS.
 
+**V2 (2026-08-20 → present) rebuilt the site's architecture and content
+scaffold** — not a redesign, the visual identity above is unchanged — around
+what ODD is actually becoming: ODDfest as a distributed/open Creative Week
+platform (not a centrally booked festival), ODDference as a flagship event
+built on "what can business learn from creative expertise," and a new **Work
+with ODD** B2B gateway covering ODDference/Membership/Agency/Partnerships so
+those don't compete for one nav slot. See `docs/architecture.md#v2` for the
+full reasoning and `docs/editing.md` for what's now editable. Most page
+content is intentionally still `[PLACEHOLDER — ...]` text, not final copy —
+see the V2 delivery report for the page-by-page list of what still needs
+real content.
+
 ## Architecture
 
 ```
@@ -27,10 +39,10 @@ GitHub (canonical repo, version history)
   → CloudCannon (edits src/content/**/*.json through the git history)
 ```
 
-- **Content** lives in `src/content/pages/*.json` (7 fixed pages: home, oddfest,
-  oddference, oddagency, about, media, contact) and `src/content/site/global.json`
-  (nav, footer, social, partner/press logos — shared across every page). Schema:
-  `src/content.config.ts`.
+- **Content** lives in `src/content/pages/*.json` (9 fixed pages: home, oddfest,
+  oddference, oddagency, work-with-odd, membership, about, media, contact) and
+  `src/content/site/global.json` (nav, footer, social, partner/press logos —
+  shared across every page). Schema: `src/content.config.ts`.
 - **Design system** lives in `src/styles/` — `tokens.css` (color/type/space/motion
   tokens, all with provenance comments — read them before adding a value),
   `typography.css`, `layout.css`, `motion.css`.
@@ -42,10 +54,13 @@ GitHub (canonical repo, version history)
   vanilla-JS modules, each imported via a `<script src="...">` tag from the
   component that needs it. No framework, no bundler abstraction beyond what
   Astro/Vite already does.
-- **Why not a generic page composer:** this is a 5-page bespoke brand site where
-  every page's layout is genuinely different (home ≠ subpage ≠ about). A
+- **Why not a generic page composer:** this is a small bespoke brand site where
+  most pages' layouts are genuinely different (home ≠ subpage ≠ about). A
   CloudCannon "drag-and-drop sections" composer would be over-engineering for
-  content that doesn't actually recombine. See `docs/architecture.md`.
+  content that doesn't actually recombine — though several section components
+  (`FeatureGrid`, `ProgramGrid`, `ParticipateBand`, `SectionIntro`, `CaseGrid`,
+  …) are deliberately reused across many pages where the content really is the
+  same shape. See `docs/architecture.md`.
 
 ## Design-system rules
 

@@ -1,15 +1,15 @@
 {
-  "_template": "subpage",
+  "_template": "oddagency",
   "_slug": "oddagency",
   "seo": {
-    "title": "ODDagency — hire ODD, creative production on demand",
-    "description": "Creative production, art direction and hands-on making — seasonal programs and residencies rooted in co-creation.",
+    "title": "ODDagency — hire ODD for project-based creative work",
+    "description": "ODD's network, creative professionals, cultural understanding and production capability, applied to real client assignments.",
     "ogImage": "/og/oddagency.jpg"
   },
   "eyebrow": "ODDagency · For business",
-  "title": "Hire ODD, creative production on demand.",
-  "meta": "Seasonal · Helsinki",
-  "intro": "Creative production, art direction and hands-on making — seasonal programs and residencies rooted in co-creation. Bring an idea, or let us help you build one from scratch.",
+  "title": "Hire ODD for project-based creative work.",
+  "meta": "Project-based · Helsinki",
+  "intro": "[PLACEHOLDER — 2-3 sentences: ODDagency turns ODD's network, creative professionals, cultural understanding and production capability into project-specific work for organisations. This is real, active commercial work, not a future idea]",
   "heroMedia": {
     "image": "../../assets/programs/oddagency-card.jpg"
   },
@@ -17,38 +17,115 @@
     {
       "number": "01",
       "title": "Production",
-      "body": "From concept to install, we build what the idea needs."
+      "body": "[PLACEHOLDER — from concept to install]"
     },
     {
       "number": "02",
-      "title": "Residencies",
-      "body": "Seasonal space and support for creative work in progress."
+      "title": "Co-creation",
+      "body": "[PLACEHOLDER — bring a brief, or bring nothing at all]"
     },
     {
       "number": "03",
-      "title": "Co-creation",
-      "body": "Bring a brief, or bring nothing at all — we can start there too."
+      "title": "Cultural understanding",
+      "body": "[PLACEHOLDER — access to creative specialists and perspective]"
     }
+  ],
+  "whatItIs": {
+    "eyebrow": "What ODDagency is",
+    "headline": "ODD's network, applied to your project.",
+    "body": "[PLACEHOLDER — 2-3 sentences on how ODDagency assembles project-specific teams from ODD's network of creative professionals, rather than being a fixed in-house team]"
+  },
+  "capabilities": [
+    {
+      "number": "01",
+      "title": "Creative production",
+      "body": "[PLACEHOLDER — capability description]"
+    },
+    {
+      "number": "02",
+      "title": "Cultural strategy",
+      "body": "[PLACEHOLDER — capability description]"
+    },
+    {
+      "number": "03",
+      "title": "Community activation",
+      "body": "[PLACEHOLDER — capability description]"
+    },
+    {
+      "number": "04",
+      "title": "Co-creation & concept work",
+      "body": "[PLACEHOLDER — capability description]"
+    }
+  ],
+  "whyOdd": [
+    {
+      "number": "01",
+      "title": "Network model",
+      "body": "[PLACEHOLDER — not a fixed agency roster]"
+    },
+    {
+      "number": "02",
+      "title": "Project-specific teams",
+      "body": "[PLACEHOLDER — assembled for the actual brief]"
+    },
+    {
+      "number": "03",
+      "title": "Real communities & platforms",
+      "body": "[PLACEHOLDER — connection to ODDfest/ODDspace, not theoretical]"
+    }
+  ],
+  "howItWorks": [
+    {
+      "number": "01",
+      "title": "Challenge / brief",
+      "body": "[PLACEHOLDER — how a project starts]"
+    },
+    { "number": "02", "title": "Framing", "body": "[PLACEHOLDER — how the brief is shaped]" },
+    {
+      "number": "03",
+      "title": "Team",
+      "body": "[PLACEHOLDER — how the project-specific team is assembled]"
+    },
+    {
+      "number": "04",
+      "title": "Creation / production",
+      "body": "[PLACEHOLDER — how the work gets made]"
+    },
+    { "number": "05", "title": "Delivery / learning", "body": "[PLACEHOLDER — how it wraps up]" }
+  ],
+  "cases": [
+    {
+      "category": "[PLACEHOLDER — case category]",
+      "title": "[PLACEHOLDER — Mylly case summary]",
+      "partner": "Mylly Production",
+      "summary": "[PLACEHOLDER — short summary of the kind of work this case represents; details not yet confirmed for publication]",
+      "href": "/contact"
+    }
+  ],
+  "projectTypes": [
+    "[PLACEHOLDER — project type]",
+    "[PLACEHOLDER — project type]",
+    "[PLACEHOLDER — project type]"
   ],
   "participate": [
     {
       "eyebrow": "Business",
-      "title": "Pitch a project",
-      "linkLabel": "Get in touch →",
-      "href": "#"
+      "title": "Bring us a brief",
+      "linkLabel": "Start a project →",
+      "href": "/contact"
     },
     {
-      "eyebrow": "Creative",
-      "title": "Apply for a residency",
-      "linkLabel": "Tell us more →",
-      "href": "#"
+      "eyebrow": "Business",
+      "title": "Talk to us first",
+      "linkLabel": "Get in touch →",
+      "href": "/contact"
     }
   ],
   "railLeft": [
     { "kind": "logo" },
     { "kind": "word", "text": "ODDagency" },
-    { "kind": "meta", "text": "Seasonal" },
-    { "kind": "meta", "text": "Residencies" }
+    { "kind": "meta", "text": "Project-based" },
+    { "kind": "meta", "text": "Helsinki" }
   ],
   "railRight": [
     { "kind": "word", "text": "Helsinki" },

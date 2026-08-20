@@ -1,0 +1,85 @@
+---
+// Speaker/team grid — ODDference's Speakers section and About's People
+// section. No image field: no real photos exist yet for either, so this
+// stays a clean typographic card rather than a placeholder-avatar grid.
+interface Person {
+  name: string;
+  role: string;
+  organisation?: string;
+  bio?: string;
+  href?: string;
+}
+interface Props {
+  items: Person[];
+}
+const { items } = Astro.props;
+---
+
+<div class="person-grid reveal">
+  {
+    items.map((p) => {
+      const Tag = p.href ? 'a' : 'div';
+      return (
+        <Tag class="person-card" href={p.href}>
+          <span class="person-name">{p.name}</span>
+          <span class="person-role">
+            {p.role}
+            {p.organisation && ` — ${p.organisation}`}
+          </span>
+          {p.bio && <p class="person-bio">{p.bio}</p>}
+        </Tag>
+      );
+    })
+  }
+</div>
+
+<style>
+  .person-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--color-paper-12);
+  }
+  .person-card {
+    background: var(--color-backstage);
+    padding: 1.8rem;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .person-name {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.25rem;
+    color: var(--color-paper);
+  }
+  .person-role {
+    display: block;
+    margin-top: 0.35rem;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--color-paper-40);
+  }
+  .person-bio {
+    margin: 0.9rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-paper-60);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .person-grid .person-card {
+      opacity: 0;
+      transform: translateY(14px);
+      transition:
+        opacity 0.5s ease,
+        transform 0.5s ease;
+    }
+    .person-grid.in .person-card {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

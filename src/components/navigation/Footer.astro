@@ -24,7 +24,7 @@ const { nav, social, contact, footerAddress, newsletterLabel, newsletterHref } =
         ))
       }
     </nav>
-    <div class="foot-nl">
+    <div class="foot-nl" id="newsletter">
       <span class="foot-nl-label">{newsletterLabel}</span>
       <form class="nl-form" action={newsletterHref} method="get" target="_blank">
         <input type="email" name="email" placeholder="you@example.com" aria-label="Email address" />
@@ -137,6 +137,7 @@ const { nav, social, contact, footerAddress, newsletterLabel, newsletterHref } =
     gap: 0.6rem;
     align-items: flex-start;
     flex-shrink: 0;
+    scroll-margin-top: var(--nav-h);
   }
   .foot-nl-label {
     font: var(--text-caption);

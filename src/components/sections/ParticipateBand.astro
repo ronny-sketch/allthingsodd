@@ -49,7 +49,11 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
 
   .participate {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* Responsive to item count (2-5 CTAs) rather than a hardcoded two
+       columns — see docs/architecture.md#v2's "Participate" section. Two
+       items still renders as two columns (each ≥240px comfortably fits half
+       the contained width); more items wrap naturally. */
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.5rem;
     background: transparent;
   }

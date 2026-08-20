@@ -4,10 +4,12 @@ import Layout from '../layouts/Layout.astro';
 import SubpageFrame from '../components/sections/SubpageFrame.astro';
 import SplitHero from '../components/sections/SplitHero.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
+import SectionIntro from '../components/sections/SectionIntro.astro';
+import CaseGrid from '../components/sections/CaseGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 
 const entry = await getEntry('pages', 'oddagency');
-if (!entry || entry.data._template !== 'subpage')
+if (!entry || entry.data._template !== 'oddagency')
   throw new Error('oddagency.json content entry missing or malformed');
 const page = entry.data;
 ---
@@ -24,6 +26,88 @@ const page = entry.data;
       primaryCta={page.primaryCta}
     />
     <FeatureGrid cards={page.features} />
+
+    <SectionIntro
+      eyebrow={page.whatItIs.eyebrow}
+      headline={page.whatItIs.headline}
+      body={page.whatItIs.body}
+    />
+
+    <section class="odda-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Capabilities</span>
+          <h2>What ODDagency can do</h2>
+        </div>
+        <FeatureGrid cards={page.capabilities} />
+      </div>
+    </section>
+
+    <section class="odda-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Why ODD</span>
+          <h2>Not a conventional agency</h2>
+        </div>
+        <FeatureGrid cards={page.whyOdd} />
+      </div>
+    </section>
+
+    <section class="odda-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Process</span>
+          <h2>How a project works</h2>
+        </div>
+        <FeatureGrid cards={page.howItWorks} />
+      </div>
+    </section>
+
+    <section class="odda-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Selected work</span>
+          <h2>Cases</h2>
+        </div>
+        <CaseGrid items={page.cases} />
+      </div>
+    </section>
+
+    <section class="odda-sub odda-types">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Types of project</h2>
+        </div>
+        <div class="odda-type-list reveal">
+          {page.projectTypes.map((t) => <span class="odda-type-tag">{t}</span>)}
+        </div>
+      </div>
+    </section>
+
     <ParticipateBand items={page.participate} noPadTop />
   </SubpageFrame>
 </Layout>
+
+<style>
+  .odda-sub {
+    padding: var(--space-24) 0;
+  }
+  .odda-types {
+    text-align: center;
+  }
+  .odda-type-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+  .odda-type-tag {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-80);
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    border-radius: 999px;
+    padding: 0.55rem 1.2rem;
+  }
+</style>

@@ -2,13 +2,105 @@
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import AboutParallax from '../components/sections/AboutParallax.astro';
+import SectionIntro from '../components/sections/SectionIntro.astro';
+import Timeline from '../components/sections/Timeline.astro';
+import ProofGrid from '../components/sections/ProofGrid.astro';
+import PersonGrid from '../components/sections/PersonGrid.astro';
+import LogoMarquee from '../components/sections/LogoMarquee.astro';
+import ParticipateBand from '../components/sections/ParticipateBand.astro';
 
 const entry = await getEntry('pages', 'about');
 if (!entry || entry.data._template !== 'about')
   throw new Error('about.json content entry missing or malformed');
 const page = entry.data;
+
+const site = await getEntry('site', 'global');
+if (!site) throw new Error('Missing site/global.json content entry');
+const { partners } = site.data;
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
+  <!-- The four-panel horizontal scroll-pin carries the conceptual opening
+       (What is ODD / Why we exist / How it works / One platform) — see
+       docs/architecture.md#v2 for why the deeper sections below continue as
+       a normal page instead of extending the pin. -->
   <AboutParallax panels={page.panels} marqueeItems={page.marqueeItems} pageTitle={page.seo.title} />
+
+  <section class="about-story">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">{page.story.eyebrow}</span>
+        <h2>{page.story.title}</h2>
+      </div>
+      <Timeline items={page.story.milestones} />
+    </div>
+  </section>
+
+  {
+    page.proof && (
+      <ProofGrid eyebrow={page.proof.eyebrow} title={page.proof.title} items={page.proof.items} />
+    )
+  }
+
+  <section class="about-people">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">{page.people.eyebrow}</span>
+        <h2>{page.people.title}</h2>
+      </div>
+      <p class="about-people-org reveal">{page.people.orgDescription}</p>
+      {page.people.team && page.people.team.length > 0 && <PersonGrid items={page.people.team} />}
+    </div>
+  </section>
+
+  <p class="wrap about-network-note reveal">
+    {page.network.note}
+    <a href="/media">See press coverage →</a>
+  </p>
+  <LogoMarquee eyebrow={page.network.eyebrow} title={page.network.title} items={partners} />
+
+  {
+    page.ambition && (
+      <SectionIntro
+        eyebrow={page.ambition.eyebrow}
+        headline={page.ambition.headline}
+        body={page.ambition.body}
+        cta={page.ambition.cta}
+      />
+    )
+  }
+
+  <ParticipateBand title="Get involved" items={page.participate} />
 </Layout>
+
+<style>
+  .about-people-org {
+    max-width: 42rem;
+    margin: -1.5rem auto 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-paper-60);
+  }
+  .about-network-note {
+    padding-top: var(--space-16);
+    text-align: center;
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-60);
+  }
+  .about-network-note a {
+    color: var(--color-paper-80);
+    text-decoration: underline;
+    text-decoration-color: var(--color-paper-20);
+    text-underline-offset: 3px;
+  }
+  .about-network-note a:hover {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
+  }
+</style>

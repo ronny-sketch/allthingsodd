@@ -4,10 +4,15 @@ import Layout from '../layouts/Layout.astro';
 import SubpageFrame from '../components/sections/SubpageFrame.astro';
 import FullbleedVideoHero from '../components/sections/FullbleedVideoHero.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
+import SectionIntro from '../components/sections/SectionIntro.astro';
+import ProgrammeList from '../components/sections/ProgrammeList.astro';
+import ProofGrid from '../components/sections/ProofGrid.astro';
+import FAQList from '../components/sections/FAQList.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
+import Pill from '../components/primitives/Pill.astro';
 
 const entry = await getEntry('pages', 'oddfest');
-if (!entry || entry.data._template !== 'subpage')
+if (!entry || entry.data._template !== 'oddfest')
   throw new Error('oddfest.json content entry missing or malformed');
 const page = entry.data;
 if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
@@ -29,6 +34,106 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     </div>
     <p class="oddf-body reveal">{page.intro}</p>
     <FeatureGrid cards={page.features} />
+
+    <SectionIntro
+      eyebrow={page.whatItIs.eyebrow}
+      headline={page.whatItIs.headline}
+      body={page.whatItIs.body}
+    />
+
+    <section class="oddf-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>How it works</h2>
+        </div>
+        <FeatureGrid cards={page.howItWorks} />
+      </div>
+    </section>
+
+    <section class="oddf-sub oddf-sub--tags">
+      <div class="wrap oddf-tag-cols">
+        <div>
+          <h2>Who can take part</h2>
+          <ul class="oddf-tag-list">
+            {page.whoCanTakePart.map((t) => <li>{t}</li>)}
+          </ul>
+        </div>
+        <div>
+          <h2>What ODD provides</h2>
+          <ul class="oddf-tag-list">
+            {page.whatOddProvides.map((t) => <li>{t}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <SectionIntro
+      eyebrow={page.organiserOwnership.eyebrow}
+      headline={page.organiserOwnership.headline}
+      body={page.organiserOwnership.body}
+    />
+
+    <section class="oddf-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Programme</span>
+          <h2>Discover what's on</h2>
+        </div>
+        <ProgrammeList items={page.programme} />
+      </div>
+    </section>
+
+    {
+      page.openCall && (
+        <section class="oddf-sub oddf-opencall">
+          <div class="wrap">
+            <span class="eyebrow">{page.openCall.status}</span>
+            <h2>{page.openCall.headline}</h2>
+            <p>{page.openCall.body}</p>
+            {page.openCall.deadline && (
+              <p class="oddf-deadline">Deadline: {page.openCall.deadline}</p>
+            )}
+            <Pill href={page.openCall.cta.href} variant="solid" magnetic>
+              {page.openCall.cta.label}
+            </Pill>
+          </div>
+        </section>
+      )
+    }
+
+    <SectionIntro
+      eyebrow={page.forPartners.eyebrow}
+      headline={page.forPartners.headline}
+      body={page.forPartners.body}
+      cta={page.forPartners.cta}
+    />
+
+    {
+      page.previousEdition && (
+        <section class="oddf-sub">
+          <div class="wrap">
+            <div class="section-head">
+              <span class="eyebrow">{page.previousEdition.eyebrow}</span>
+              <h2>{page.previousEdition.title}</h2>
+            </div>
+            <p class="oddf-prev-body reveal">{page.previousEdition.body}</p>
+            {page.previousEdition.proof && page.previousEdition.proof.length > 0 && (
+              <ProofGrid eyebrow="In numbers" title="" items={page.previousEdition.proof} />
+            )}
+          </div>
+        </section>
+      )
+    }
+
+    <section class="oddf-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Practical / FAQ</h2>
+        </div>
+        <FAQList items={page.faq} />
+      </div>
+    </section>
+
     <ParticipateBand items={page.participate} noPadTop />
   </SubpageFrame>
 </Layout>
@@ -63,6 +168,80 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     font-family: var(--font-body);
     font-size: 0.95rem;
     line-height: 1.8;
+    color: var(--color-paper-60);
+  }
+  .oddf-sub {
+    padding: var(--space-24) 0;
+  }
+  .oddf-tag-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+  .oddf-tag-cols h2 {
+    font: var(--text-heading-md);
+    color: var(--color-paper);
+    margin: 0 0 1.2rem;
+  }
+  .oddf-tag-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .oddf-tag-list li {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-paper-80);
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    border-radius: 999px;
+    padding: 0.5rem 1.1rem;
+  }
+  @media (max-width: 700px) {
+    .oddf-tag-cols {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+  .oddf-opencall {
+    text-align: center;
+    background: var(--color-backstage);
+  }
+  .oddf-opencall .wrap {
+    max-width: 40rem;
+  }
+  .oddf-opencall .eyebrow {
+    color: var(--color-amber-bright);
+  }
+  .oddf-opencall h2 {
+    font: var(--text-heading-md);
+    color: var(--color-paper);
+    margin: 0.7rem 0 0;
+  }
+  .oddf-opencall p {
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--color-paper-60);
+    margin: 1.1rem 0 0;
+  }
+  .oddf-deadline {
+    font-weight: 600;
+    color: var(--color-paper-80) !important;
+  }
+  .oddf-opencall :global(.pill) {
+    margin-top: 1.5rem;
+  }
+  .oddf-prev-body {
+    max-width: 42rem;
+    margin: -1.5rem auto 2rem;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.7;
     color: var(--color-paper-60);
   }
 </style>

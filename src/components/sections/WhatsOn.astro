@@ -1,50 +1,55 @@
 ---
+// "What's happening" — V2 reworks this from two hand-authored, manually
+// balanced columns into one flat, category-tagged collection (see
+// content.config.ts's `activityItem`), so it can actually hold ODDfest,
+// ODDference, ODDspace, member events, open calls, etc. side by side without
+// an editor having to decide which fixed column a new item goes in. The
+// paper-band identity and underlined-title link treatment are unchanged.
 import Pill from '../primitives/Pill.astro';
 
-interface Row {
+interface Item {
   date: string;
+  category: string;
   title: string;
-  href: string;
   description: string;
-  ticketLabel?: string;
+  href: string;
 }
 interface Props {
-  columns: Row[][];
+  items: Item[];
   note: string;
 }
-const { columns, note } = Astro.props;
+const { items, note } = Astro.props;
 ---
 
-<div class="whats-on">
-  <div class="wrap whats-on-grid">
-    <div class="whats-on-eyebrow">What&rsquo;s on</div>
-    {
-      columns.map((col) => (
-        <div class="whats-on-col">
-          {col.map((row) => (
-            <div class="whats-on-row">
-              <div class="whats-on-date">{row.date}</div>
-              <div class="whats-on-body">
-                <a
-                  class="whats-on-title"
-                  href={row.href}
-                  target={row.href.startsWith('http') ? '_blank' : undefined}
-                  rel={row.href.startsWith('http') ? 'noreferrer' : undefined}
-                >
-                  {row.title}
-                </a>
-                <p class="whats-on-desc">{row.description}</p>
-                {row.ticketLabel && (
-                  <Pill href="#" variant="ticket" magnetic>
-                    {row.ticketLabel}
-                  </Pill>
-                )}
-              </div>
+<div class="whats-on" id="whats-happening">
+  <div class="wrap">
+    <div class="whats-on-eyebrow">What&rsquo;s happening</div>
+    <div class="whats-on-grid reveal">
+      {
+        items.map((item) => (
+          <div class="whats-on-row">
+            <div class="whats-on-when">
+              <span class="whats-on-category">{item.category}</span>
+              <span class="whats-on-date">{item.date}</span>
             </div>
-          ))}
-        </div>
-      ))
-    }
+            <div class="whats-on-body">
+              <a
+                class="whats-on-title"
+                href={item.href}
+                target={item.href.startsWith('http') ? '_blank' : undefined}
+                rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+              >
+                {item.title}
+              </a>
+              <p class="whats-on-desc">{item.description}</p>
+              <Pill href={item.href} variant="ticket" magnetic>
+                Find out more →
+              </Pill>
+            </div>
+          </div>
+        ))
+      }
+    </div>
     <p class="whats-on-note">{note}</p>
   </div>
 </div>
@@ -54,33 +59,40 @@ const { columns, note } = Astro.props;
     background: var(--color-paper);
     color: var(--color-ink);
     padding: 3rem 0 3.5rem;
-  }
-  .whats-on-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0 3rem;
+    /* The nav is position:sticky — without this, an in-page anchor jump
+       (e.g. the homepage hero's "See what's on" CTA) lands with the section
+       head hidden under it. */
+    scroll-margin-top: var(--nav-h);
   }
   .whats-on-eyebrow {
-    grid-column: 1 / -1;
     font: var(--text-caption);
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: rgb(36 34 32 / 50%);
     margin-bottom: 1.6rem;
   }
-  .whats-on-col {
-    display: flex;
-    flex-direction: column;
+  .whats-on-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0 3rem;
   }
   .whats-on-row {
     display: grid;
-    grid-template-columns: 5.5rem 1fr;
+    grid-template-columns: 6.5rem 1fr;
     gap: 1rem;
     padding: 1.1rem 0;
     border-top: 1px solid rgb(36 34 32 / 14%);
   }
-  .whats-on-col .whats-on-row:first-child {
-    border-top: none;
+  .whats-on-when {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .whats-on-category {
+    font: var(--text-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(36 34 32 / 55%);
   }
   .whats-on-date {
     font-family: var(--font-body);
@@ -121,15 +133,23 @@ const { columns, note } = Astro.props;
     margin-top: 1.1rem;
   }
   .whats-on-note {
-    grid-column: 1 / -1;
     margin: 1.8rem 0 0;
     font-family: var(--font-body);
     font-size: 0.72rem;
     color: rgb(36 34 32 / 45%);
   }
-  @media (max-width: 700px) {
-    .whats-on-grid {
-      grid-template-columns: 1fr;
+
+  @media (prefers-reduced-motion: no-preference) {
+    .whats-on-grid .whats-on-row {
+      opacity: 0;
+      transform: translateY(10px);
+      transition:
+        opacity 0.5s ease,
+        transform 0.5s ease;
+    }
+    .whats-on-grid.in .whats-on-row {
+      opacity: 1;
+      transform: none;
     }
   }
 </style>

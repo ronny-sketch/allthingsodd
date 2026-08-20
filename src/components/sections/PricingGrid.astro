@@ -1,0 +1,167 @@
+---
+// Shared by ODDference's Tickets and Membership's Tiers — same real shape
+// (name/price/benefits/CTA), no invented prices (see content.config.ts's
+// `pricingTier` and each page's JSON for the explicit placeholder text).
+import Pill from '../primitives/Pill.astro';
+
+interface Tier {
+  name: string;
+  audience?: string;
+  description?: string;
+  price: string;
+  status?: string;
+  benefits: string[];
+  ctaLabel: string;
+  href: string;
+  recommended?: boolean;
+  note?: string;
+}
+interface Props {
+  items: Tier[];
+}
+const { items } = Astro.props;
+---
+
+<div class="pricing-grid reveal">
+  {
+    items.map((t) => (
+      <div class={`pricing-card ${t.recommended ? 'is-recommended' : ''}`}>
+        {t.recommended && <span class="pricing-badge">Recommended</span>}
+        <span class="pricing-name">{t.name}</span>
+        {t.audience && <span class="pricing-audience">{t.audience}</span>}
+        <div class="pricing-price">{t.price}</div>
+        {t.status && <span class="pricing-status">{t.status}</span>}
+        {t.description && <p class="pricing-desc">{t.description}</p>}
+        <ul class="pricing-benefits">
+          {t.benefits.map((b) => (
+            <li>{b}</li>
+          ))}
+        </ul>
+        <Pill href={t.href} variant={t.recommended ? 'solid' : 'outline'} magnetic>
+          {t.ctaLabel}
+        </Pill>
+        {t.note && <p class="pricing-note">{t.note}</p>}
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+    align-items: stretch;
+  }
+  .pricing-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    padding: 2.2rem;
+  }
+  .pricing-card.is-recommended {
+    border-color: var(--color-paper-40);
+  }
+  .pricing-badge {
+    position: absolute;
+    top: -0.7rem;
+    left: 2.2rem;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+  }
+  .pricing-name {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.4rem;
+    color: var(--color-paper);
+  }
+  .pricing-audience {
+    display: block;
+    margin-top: 0.3rem;
+    font: var(--text-caption);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .pricing-price {
+    margin-top: 1.2rem;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.6rem;
+    color: var(--color-paper);
+  }
+  .pricing-status {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    color: var(--color-amber-bright);
+  }
+  .pricing-desc {
+    margin: 0.9rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-paper-60);
+  }
+  .pricing-benefits {
+    list-style: none;
+    margin: 1.4rem 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    flex: 1;
+  }
+  .pricing-benefits li {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--color-paper-80);
+    padding-left: 1.1rem;
+    position: relative;
+  }
+  .pricing-benefits li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--color-paper-40);
+  }
+  .pricing-card :global(.pill) {
+    align-self: flex-start;
+    margin-top: 0.4rem;
+  }
+  .pricing-note {
+    margin: 0.8rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    color: var(--color-paper-40);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pricing-grid .pricing-card {
+      opacity: 0;
+      transform: translateY(14px);
+      transition:
+        opacity 0.5s ease,
+        transform 0.5s ease;
+    }
+    .pricing-grid.in .pricing-card {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,69 @@
+{
+  "_template": "membership",
+  "seo": {
+    "title": "ODDmembership — a year-round relationship with ODD",
+    "description": "ODD's year-round relationship for organisations that want ongoing access to the wider creative network, not just a single ticket or project.",
+    "ogImage": "/og/membership.jpg"
+  },
+  "eyebrow": "ODDmembership · Work with ODD",
+  "title": "A year-round relationship with ODD.",
+  "intro": "[PLACEHOLDER — 2-3 sentences: organisations that want an ongoing relationship with ODD and access to the wider creative network can participate throughout the year, not only by buying a ticket or commissioning a single project. \"ODDmembership\" is a provisional working name]",
+  "whatItIs": {
+    "eyebrow": "What it is",
+    "headline": "Not a ticket. Not a project. A relationship.",
+    "body": "[PLACEHOLDER — 2-3 sentences explaining the year-round nature of membership, distinct from ODDagency's project-based work]"
+  },
+  "whoItsFor": [
+    {
+      "label": "[PLACEHOLDER — organisation type]",
+      "description": "[PLACEHOLDER — why membership fits]"
+    },
+    {
+      "label": "[PLACEHOLDER — organisation type]",
+      "description": "[PLACEHOLDER — why membership fits]"
+    },
+    {
+      "label": "[PLACEHOLDER — organisation type]",
+      "description": "[PLACEHOLDER — why membership fits]"
+    }
+  ],
+  "whyJoin": [
+    {
+      "number": "01",
+      "title": "[PLACEHOLDER — value proposition]",
+      "body": "[PLACEHOLDER — no invented promises]"
+    },
+    {
+      "number": "02",
+      "title": "[PLACEHOLDER — value proposition]",
+      "body": "[PLACEHOLDER — no invented promises]"
+    },
+    {
+      "number": "03",
+      "title": "[PLACEHOLDER — value proposition]",
+      "body": "[PLACEHOLDER — no invented promises]"
+    }
+  ],
+  "includes": [
+    { "title": "[PLACEHOLDER — inclusion]", "body": "[PLACEHOLDER — description]" },
+    { "title": "[PLACEHOLDER — inclusion]", "body": "[PLACEHOLDER — description]" },
+    { "title": "[PLACEHOLDER — inclusion]", "body": "[PLACEHOLDER — description]" }
+  ],
+  "rhythm": [
+    "[PLACEHOLDER — recurring touchpoint, e.g. quarterly gathering]",
+    "[PLACEHOLDER — recurring touchpoint, e.g. member updates]",
+    "[PLACEHOLDER — recurring touchpoint, e.g. introductions/invitations]"
+  ],
+  "tiers": [],
+  "network": {
+    "eyebrow": "Members",
+    "title": "Organisations already building with ODD",
+    "note": "[PLACEHOLDER — short framing line before the shared partner logo strip below; no member names confirmed for publication yet]"
+  },
+  "finalCta": {
+    "eyebrow": "Interested?",
+    "title": "Ask about membership",
+    "linkLabel": "Get in touch →",
+    "href": "/contact"
+  }
+}
