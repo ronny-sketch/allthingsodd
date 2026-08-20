@@ -110,7 +110,10 @@ const { columns, note } = Astro.props;
     margin: 0.4rem 0 0;
     font-family: var(--font-body);
     font-size: 0.85rem;
-    color: rgb(36 34 32 / 65%);
+    /* Archive value (65%) measured 4.43:1 on the light band background —
+       just under WCAG AA. Lightened to 68% (4.83:1), same reasoning as
+       --color-paper-40 in tokens.css. */
+    color: rgb(36 34 32 / 68%);
     line-height: 1.5;
   }
   .whats-on-body :global(.pill) {

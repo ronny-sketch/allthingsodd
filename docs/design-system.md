@@ -41,6 +41,18 @@ variant="...">`, not a new button component. A new headline size is a
 it should trace back to the same photo-archive study the rest of the palette
 came from, or be explicitly called out as a deliberate, documented departure.
 
+**Check contrast before shipping a new opacity value.** Several of the
+archive-measured opacity steps (`--color-paper-40`, and the light-band
+`whats-on-desc` text) originally fell just under WCAG AA's 4.5:1 for the text
+they're used on — found by actually computing contrast on the composited
+(alpha-blended) color, not the token's face value, since a translucent color
+reads differently depending on what's behind it. Both were nudged up just
+enough to clear 4.5:1, with the reasoning left as a comment at the point of
+change — same pattern the original design already used once for
+`.foot-bottom`'s reading of `--color-clay`. Do the same check (composite
+the actual rgba against its real background, not eyeball it) before adding a
+new low-opacity text color.
+
 ## Typography
 
 Two font families: `--font-display` (Forta — headlines) and `--font-body`

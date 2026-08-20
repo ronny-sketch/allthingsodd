@@ -101,13 +101,21 @@ GitHub (canonical repo, version history)
 
 - `npm run check` (Astro + TypeScript), `npm run lint` (ESLint), and
   `npm run build` must all pass before considering a change done.
-- `npm test` runs the Playwright visual-regression + console-error suite
-  against a running preview server (`npm run preview` first — see
-  `docs/deployment.md#local-preview`, this project's dev/preview servers are
-  managed background daemons, not foreground processes, so Playwright doesn't
-  own their lifecycle). A layout/structure change that intentionally changes a
-  page's appearance needs `npm run test:update-snapshots` and the new
-  screenshots committed alongside it — see `docs/architecture.md#visual-regression`.
+- `npm test` runs the full Playwright suite against a running preview server
+  (`npm run preview` first — see `docs/deployment.md#local-preview`, this
+  project's dev/preview servers are managed background daemons, not
+  foreground processes, so Playwright doesn't own their lifecycle). Two
+  suites, eight browser projects total:
+  - `tests/visual/pages.spec.ts` — full-page screenshot regression + a
+    per-route console-error check, one engine per breakpoint (mobile →
+    wide). A layout/structure change that intentionally changes a page's
+    appearance needs `npm run test:update-snapshots` and the new screenshots
+    committed alongside it — see `docs/architecture.md#visual-regression`.
+  - `tests/functional/interactions.spec.ts` — real interaction QA (nav
+    clicks, mobile menu open/close/Escape, external-link attributes, 404
+    routing) run across chromium, firefox, _and_ webkit — see
+    `playwright.config.ts`'s `functional-*` projects. This is what actually
+    catches a cross-browser interaction bug; the visual suite alone can't.
 
 ## Deployment workflow
 

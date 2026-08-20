@@ -24,7 +24,13 @@
   --color-paper: #e2dfde;
   --color-paper-80: rgb(226 223 222 / 80%);
   --color-paper-60: rgb(226 223 222 / 60%);
-  --color-paper-40: rgb(226 223 222 / 40%);
+  /* The literal archive value here (40%) measures 3.1:1 on --color-ink —
+     under WCAG AA for the small uppercase labels (.eyebrow etc.) this token
+     is used for sitewide. Lightened to 55% (4.97:1) — same treatment
+     already applied to --clay in the footer, see Footer.astro's own
+     comment. Name kept as "-40" since callers reference it by that name;
+     only the value moved. */
+  --color-paper-40: rgb(226 223 222 / 55%);
   --color-paper-20: rgb(226 223 222 / 20%);
   --color-paper-12: rgb(226 223 222 / 12%);
   --color-paper-06: rgb(226 223 222 / 6%);

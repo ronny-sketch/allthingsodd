@@ -22,16 +22,16 @@ on the maintainer's machine (`astro dev --background`, then `astro dev stop` /
 
 ## Scripts
 
-| Command                           | What it does                                                                               |
-| --------------------------------- | ------------------------------------------------------------------------------------------ |
-| `npm run dev`                     | Local dev server with HMR                                                                  |
-| `npm run build`                   | Production build to `dist/`                                                                |
-| `npm run preview`                 | Serve the built `dist/` locally                                                            |
-| `npm run check`                   | Astro + TypeScript diagnostics                                                             |
-| `npm run lint`                    | ESLint                                                                                     |
-| `npm run format` / `format:check` | Prettier (write / check)                                                                   |
-| `npm test`                        | Playwright visual-regression + console-error suite (needs `npm run preview` running first) |
-| `npm run test:update-snapshots`   | Regenerate visual-regression baselines after an intentional design change                  |
+| Command                           | What it does                                                                                                 |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `npm run dev`                     | Local dev server with HMR                                                                                    |
+| `npm run build`                   | Production build to `dist/`                                                                                  |
+| `npm run preview`                 | Serve the built `dist/` locally                                                                              |
+| `npm run check`                   | Astro + TypeScript diagnostics                                                                               |
+| `npm run lint`                    | ESLint                                                                                                       |
+| `npm run format` / `format:check` | Prettier (write / check)                                                                                     |
+| `npm test`                        | Full Playwright suite — visual regression + functional/cross-browser (needs `npm run preview` running first) |
+| `npm run test:update-snapshots`   | Regenerate visual-regression baselines after an intentional design change                                    |
 
 ## Documentation
 

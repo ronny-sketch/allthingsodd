@@ -24,10 +24,44 @@ export default defineConfig({
   // before `npm test` — see docs/deployment.md#local-preview. CI starts and
   // stops it explicitly as separate workflow steps instead of via this config.
   projects: [
-    { name: 'mobile', use: { ...devices['iPhone 13'] } },
-    { name: 'tablet', use: { viewport: { width: 834, height: 1194 } } },
-    { name: 'laptop', use: { viewport: { width: 1366, height: 900 } } },
-    { name: 'desktop', use: { viewport: { width: 1920, height: 1080 } } },
-    { name: 'wide', use: { viewport: { width: 2560, height: 1440 } } },
+    // Visual regression + per-route console-error check — one representative
+    // engine per breakpoint (see tests/visual/pages.spec.ts).
+    { name: 'mobile', testDir: './tests/visual', use: { ...devices['iPhone 13'] } },
+    {
+      name: 'tablet',
+      testDir: './tests/visual',
+      use: { viewport: { width: 834, height: 1194 } },
+    },
+    {
+      name: 'laptop',
+      testDir: './tests/visual',
+      use: { viewport: { width: 1366, height: 900 } },
+    },
+    {
+      name: 'desktop',
+      testDir: './tests/visual',
+      use: { viewport: { width: 1920, height: 1080 } },
+    },
+    { name: 'wide', testDir: './tests/visual', use: { viewport: { width: 2560, height: 1440 } } },
+
+    // Functional/interaction smoke test — real cross-browser QA (nav, mobile
+    // menu, keyboard, 404 routing) across all three engines, separate from
+    // the visual matrix above since these don't screenshot-compare and only
+    // need one viewport each (see tests/functional/interactions.spec.ts).
+    {
+      name: 'functional-chromium',
+      testDir: './tests/functional',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'functional-firefox',
+      testDir: './tests/functional',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'functional-webkit',
+      testDir: './tests/functional',
+      use: { ...devices['Desktop Safari'] },
+    },
   ],
 });

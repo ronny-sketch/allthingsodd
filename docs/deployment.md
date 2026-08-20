@@ -79,3 +79,17 @@ npm test
 
 In CI, the `visual` job starts `astro preview` in the background explicitly
 and polls until it's reachable before running tests — see the workflow file.
+
+## Caching
+
+Surge applies the same policy to every asset — HTML and fingerprinted
+`/_astro/*` files alike — `Cache-Control: public, max-age=0, must-revalidate`
+with an ETag. There's no per-file-type override available on Surge (verified
+against its own docs: "no cache configuration on Surge at all"). In practice
+this means every request does a cheap conditional revalidation (a 304 if
+unchanged) rather than a fingerprinted asset being cached for a year — a
+small, constant cost, not a growing one. For a CMS-driven site this is
+arguably the _safer_ default (a CloudCannon publish can never be masked by a
+stale long-lived cache) — if it becomes a real bottleneck, the fix is
+fronting Surge with a CDN that supports per-path headers (Cloudflare, etc.),
+not something fixable from this repo alone.
