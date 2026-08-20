@@ -1,34 +1,11 @@
-# CloudCannon editing configuration for the ODD Field Guide site.
-#
-# What this does: maps the real content this site has (5 pages, each with a
-# fixed real shape — this is a small bespoke brand site, not a generic block
-# composer, see docs/architecture.md#why-not-a-page-composer) to CloudCannon
-# collections, so editing in CloudCannon edits src/content/**/*.json and
-# nothing else. Astro rebuilds the static site from that content on every
-# commit — see docs/deployment.md.
-#
-# CloudCannon has official Astro support and auto-detects the build command
-# (`npm run build`) and output directory (`dist/`) for a standard Astro
-# project — not hand-specified here. Verify on first connection; adjust in
-# the Site dashboard if it guesses wrong.
-#
-# Plain text/textarea fields are left for CloudCannon's own auto-detection
-# from the JSON shape (a real, documented CloudCannon behavior) rather than
-# hand-declared here field-by-field — only the things that need explicit
-# configuration (images, repeatable arrays with an "add new" template) are
-# declared below. Verify this config against the live CloudCannon site setup
-# on first connection — see docs/editing.md#first-time-setup.
-
 source: .
-
 collections_config:
   pages:
     path: src/content/pages
     name: Pages
     icon: description
-    disable_add: true # exactly 5 pages exist; editors edit content, not routes
-    disable_add_folder: true
-    disable_file_actions: true # renaming a file would break its route
+    disable_url: false
+    include_developer_files: false
     preview:
       text:
         - key: title
@@ -41,139 +18,209 @@ collections_config:
           groups:
             - heading: SEO
               comment: Browser tab title and search-result snippet.
+              collapsed: false
               inputs:
                 - title
                 - description
+          required: false
+        cascade: true
       news:
         type: array
-        comment: Homepage photo filmstrip — reorder here reorders the live site.
         options:
           structures:
             - news_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        comment: Homepage photo filmstrip — reorder here reorders the live site.
+        cascade: true
       whatsOn:
         type: object
         options:
           subtype: object
+          required: false
+        cascade: true
       programGrid:
         type: array
         options:
           structures:
             - program_card
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
       participate:
         type: array
         options:
           structures:
             - cta
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
       features:
         type: array
         options:
           structures:
             - feature_card
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
       panels:
         type: array
-        comment: The five horizontal-scroll panels on the About page, in order.
         options:
           structures:
             - about_panel_media
             - about_panel_model
             - about_panel_text
-
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        comment: The five horizontal-scroll panels on the About page, in order.
+        cascade: true
+    add_options:
+      - name:
+        icon:
+        editor:
+        base_path:
+        collection:
+        schema:
+        default_content_file:
+    disable_add: true
+    disable_add_folder: true
+    disable_file_actions: true
   site:
     path: src/content/site
     name: Global
-    icon: public
     singular_name: Global content
-    disable_add: true
-    disable_file_actions: true
+    icon: public
+    disable_url: false
+    include_developer_files: false
     _inputs:
       nav:
         type: array
-        comment: Top nav + footer nav (shared). ODDspace is external — leave external:true.
+        comment: >-
+          Top nav + footer nav (shared). ODDspace is external — leave
+          external:true.
+        cascade: true
       social:
         type: array
+        cascade: true
       contact:
         type: array
-
+        cascade: true
+    disable_add: true
+    disable_add_folder: false
+    disable_file_actions: true
 _structures:
   news_item:
+    style: select
     values:
-      - value:
-          image:
-          caption: ''
-          href: '#'
+      - default: false
         preview:
           text:
             - key: caption
           image:
             - key: image
-
+        place_groups_below: false
+        tabbed: false
+        value:
+          image:
+          caption: ''
+          href: '#'
   program_card:
+    style: select
     values:
-      - value:
+      - default: false
+        preview:
+          text:
+            - key: title
+          image:
+            - key: image
+        place_groups_below: false
+        tabbed: false
+        value:
           meta: ''
           title: ''
           body: ''
           goLabel: ''
           href: '#'
           image:
+  cta:
+    style: select
+    values:
+      - default: false
         preview:
           text:
             - key: title
-          image:
-            - key: image
-
-  cta:
-    values:
-      - value:
+        place_groups_below: false
+        tabbed: false
+        value:
           eyebrow: ''
           title: ''
           linkLabel: ''
           href: '#'
+  feature_card:
+    style: select
+    values:
+      - default: false
         preview:
           text:
             - key: title
-
-  feature_card:
-    values:
-      - value:
+        place_groups_below: false
+        tabbed: false
+        value:
           number: '01'
           title: ''
           body: ''
+  about_panel_media:
+    style: select
+    values:
+      - default: false
         preview:
           text:
             - key: title
-
-  about_panel_media:
-    values:
-      - value:
+        place_groups_below: false
+        tabbed: false
+        value:
           kind: media
           image:
           alt: ''
           eyebrow: ''
           title: ''
           body: ''
+  about_panel_model:
+    style: select
+    values:
+      - default: false
         preview:
           text:
             - key: title
-
-  about_panel_model:
-    values:
-      - value:
+        place_groups_below: false
+        tabbed: false
+        value:
           kind: model
           eyebrow: ''
           title: ''
           items: []
+  about_panel_text:
+    style: select
+    values:
+      - default: false
         preview:
           text:
             - key: title
-
-  about_panel_text:
-    values:
-      - value:
+        place_groups_below: false
+        tabbed: false
+        value:
           kind: text
           eyebrow: ''
           title: ''
           body: ''
-        preview:
-          text:
-            - key: title
+timezone: Etc/UTC

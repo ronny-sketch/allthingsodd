@@ -26,14 +26,26 @@
       "eyebrow": "How it works",
       "title": "Four ways in, one platform.",
       "items": [
-        { "label": "ODDfest", "meta": "Open program · free", "href": "/oddfest" },
-        { "label": "ODDference", "meta": "Two-day conference · business", "href": "/oddference" },
+        {
+          "label": "ODDfest",
+          "meta": "Open program · free",
+          "href": "/oddfest"
+        },
+        {
+          "label": "ODDference",
+          "meta": "Two-day conference · business",
+          "href": "/oddference"
+        },
         {
           "label": "ODDspace",
           "meta": "Year-round home base · membership",
           "href": "https://www.oddspace.co"
         },
-        { "label": "ODDagency", "meta": "Hire creative production", "href": "/oddagency" }
+        {
+          "label": "ODDagency",
+          "meta": "Hire creative production",
+          "href": "/oddagency"
+        }
       ]
     },
     {
@@ -47,7 +59,10 @@
       "eyebrow": "Join in",
       "title": "Helsinki's creative economy, built in public.",
       "body": "Not a festival with a side program. Not a conference with a party after. One platform, run by New Nordic Way rf, growing a little more honest every year it runs.",
-      "cta": { "label": "Pre-register", "href": "#" }
+      "cta": {
+        "label": "Pre-register",
+        "href": "#"
+      }
     }
   ],
   "marqueeItems": [
@@ -58,6 +73,7 @@
     "ODDfest",
     "ODDference",
     "ODDspace",
-    "ODDagency"
+    "ODDagency",
+    "aa"
   ]
 }
