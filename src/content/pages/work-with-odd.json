@@ -31,28 +31,32 @@
       "title": "ODDference",
       "body": "[PLACEHOLDER — one-line description of this pathway]",
       "goLabel": "Explore ODDference →",
-      "href": "/oddference"
+      "href": "/oddference",
+      "image": "../../assets/programs/oddference-card.jpg"
     },
     {
       "meta": "A year-round relationship",
       "title": "ODDmembership",
       "body": "[PLACEHOLDER — one-line description of this pathway]",
       "goLabel": "Explore Membership →",
-      "href": "/membership"
+      "href": "/membership",
+      "image": "../../assets/programs/oddmembership-card.jpg"
     },
     {
       "meta": "Bring us a brief",
       "title": "ODDagency",
       "body": "[PLACEHOLDER — one-line description of this pathway]",
       "goLabel": "Explore Agency →",
-      "href": "/oddagency"
+      "href": "/oddagency",
+      "image": "../../assets/programs/oddagency-card.jpg"
     },
     {
       "meta": "Build something together",
       "title": "Partnerships",
       "body": "[PLACEHOLDER — one-line description of this pathway]",
       "goLabel": "Get in touch →",
-      "href": "/contact"
+      "href": "/contact",
+      "image": "../../assets/programs/partnerships-card.jpg"
     }
   ],
   "cases": [

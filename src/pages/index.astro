@@ -86,7 +86,7 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
         <h2>{page.workWithOdd.title}</h2>
       </div>
       <p class="wwo-intro reveal">{page.workWithOdd.intro}</p>
-      <div class="wwo-cards reveal">
+      <div class="wwo-cards reveal" style={`--cols: ${page.workWithOdd.cards.length}`}>
         {
           page.workWithOdd.cards.map((c) => (
             <a class="wwo-card" href={c.href}>
@@ -127,9 +127,17 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
   }
   .wwo-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    /* --cols (set inline, per instance) — always one row instead of auto-fit
+       stranding the last of the 4 cards alone at tablet width (confirmed via
+       screenshot: 3-then-1 at 834px). Same fix as ProofGrid/ParticipateBand. */
+    grid-template-columns: repeat(var(--cols), 1fr);
     gap: 1px;
     background: var(--color-paper-12);
+  }
+  @media (max-width: 700px) {
+    .wwo-cards {
+      grid-template-columns: 1fr;
+    }
   }
   .wwo-card {
     background: var(--color-backstage);

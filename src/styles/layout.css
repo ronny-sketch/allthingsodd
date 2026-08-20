@@ -22,6 +22,19 @@
 section {
   padding: var(--space-24) 0;
 }
+/* Sections that don't set their own padding (SectionIntro, and any other
+   default-rhythm section) still need to shrink on mobile — 6rem top+bottom
+   never scaled down for small viewports, leaving a proportionally huge dead
+   gap between short stacked sections (confirmed via screenshot, not just
+   eyeballed: ~190px of empty space between two single-paragraph blocks on a
+   390px-wide screen). Components with their own explicit padding override
+   this rule and need their own matching mobile reduction — see
+   Converge/ParticipateBand/mem-includes etc. */
+@media (max-width: 640px) {
+  section {
+    padding: var(--space-12) 0;
+  }
+}
 
 .section-head {
   display: flex;

@@ -107,9 +107,16 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
     color: var(--color-paper-60);
   }
   @media (max-width: 760px) {
+    .participate-band {
+      padding: 3.25rem 0;
+    }
     .participate {
       grid-template-columns: 1fr;
       gap: 1rem;
+    }
+    .p-cta {
+      padding: 2.2rem 1.8rem;
+      min-height: 0;
     }
   }
 

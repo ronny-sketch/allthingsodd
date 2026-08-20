@@ -62,7 +62,7 @@ const audienceCards = page.whoItsFor.map((a, i) => ({
   <section class="mem-sub">
     <div class="wrap">
       <div class="section-head"><h2>What membership includes</h2></div>
-      <div class="mem-includes reveal">
+      <div class="mem-includes reveal" style={`--cols: ${page.includes.length}`}>
         {
           page.includes.map((i) => (
             <div class="mem-include">
@@ -119,9 +119,17 @@ const audienceCards = page.whoItsFor.map((a, i) => ({
   }
   .mem-includes {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    /* --cols (set inline, per instance) — see ProofGrid/wwo-cards for the
+       same fix and why: auto-fit strands a fixed small count unevenly at
+       some widths instead of always filling one row. */
+    grid-template-columns: repeat(var(--cols), 1fr);
     gap: 1px;
     background: var(--color-paper-12);
+  }
+  @media (max-width: 700px) {
+    .mem-includes {
+      grid-template-columns: 1fr;
+    }
   }
   .mem-include {
     background: var(--color-backstage);

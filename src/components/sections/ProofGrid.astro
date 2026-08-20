@@ -22,7 +22,7 @@ const { eyebrow, title, items } = Astro.props;
       <span class="eyebrow">{eyebrow}</span>
       {title && <h2>{title}</h2>}
     </div>
-    <div class="proof-grid reveal">
+    <div class="proof-grid reveal" style={`--cols: ${items.length}`}>
       {
         items.map((item) => (
           <div class="proof-item">
@@ -39,15 +39,12 @@ const { eyebrow, title, items } = Astro.props;
 <style>
   .proof-grid {
     display: grid;
-    /* A wider minimum (was 180px) — a real value like "€400K" is wider at
-       this font size than a short one like "83", and a grid item's implicit
-       min-width:auto refuses to shrink narrower than its own content, which
-       let a wide value overflow visually into the next column (caught via
-       an actual screenshot, not assumed — see docs/architecture.md#v2's
-       narrow-column-placeholder note; same failure mode, this time from a
-       real long value rather than placeholder text). min-width: 0 below is
-       the actual fix; the wider minimum just keeps columns comfortable. */
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    /* --cols (set inline, per instance) — always exactly one row instead of
+       auto-fit stranding a lone item on its own row when the count (2 or 3
+       across pages) doesn't fill a full row at a given width. See
+       ParticipateBand's identical comment/fix; same failure mode, found here
+       too via a real screenshot (3 stats, 2-then-1 at tablet width). */
+    grid-template-columns: repeat(var(--cols), 1fr);
   }
   .proof-item {
     min-width: 0;
@@ -82,7 +79,7 @@ const { eyebrow, title, items } = Astro.props;
   }
   @media (max-width: 700px) {
     .proof-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: 2rem 0;
     }
     .proof-item {

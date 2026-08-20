@@ -69,7 +69,7 @@ const audienceCards = page.whoItsFor.map((a, i) => ({
           <span class="eyebrow">Content</span>
           <h2>Themes</h2>
         </div>
-        <div class="oddc-themes reveal">
+        <div class="oddc-themes reveal" style={`--cols: ${page.themes.length}`}>
           {
             page.themes.map((t) => (
               <div class="oddc-theme">
@@ -177,9 +177,17 @@ const audienceCards = page.whoItsFor.map((a, i) => ({
   }
   .oddc-themes {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    /* --cols (set inline, per instance) — same fix as ProofGrid/wwo-cards:
+       auto-fit strands a fixed small count unevenly at some widths instead
+       of always filling one row. */
+    grid-template-columns: repeat(var(--cols), 1fr);
     gap: 1px;
     background: var(--color-paper-12);
+  }
+  @media (max-width: 700px) {
+    .oddc-themes {
+      grid-template-columns: 1fr;
+    }
   }
   .oddc-theme {
     background: var(--color-backstage);
