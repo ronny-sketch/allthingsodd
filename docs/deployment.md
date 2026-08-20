@@ -90,8 +90,24 @@ commander@13.1.0 from lock file`. `commander` is an **optional** peer
    right after `setup-node`, in all three jobs, so CI always uses a known-
    good npm rather than whatever happens to ship with a given Node installer.
 
-Both fixes landed in the same commit and the resulting run was watched to
-completion (not assumed) via the same API before calling this closed.
+That fix got `checks` fully green (first time ever) but `functional` (then
+still named `visual`) failed at `npm test` — a third, separate, structural
+issue: Playwright's default snapshot filenames bake in the OS
+(`*-darwin.png`), and every baseline in this repo was generated locally on
+macOS, so every screenshot comparison fails on Linux CI looking for
+`*-linux.png` files that don't exist. Fixed by scoping CI to
+`playwright test --grep-invert "full page|404 page"` — real cross-browser
+functional coverage, no pixel comparisons — and keeping full visual
+regression as the local pre-commit step it's actually been used as all
+along. See docs/architecture.md#visual-regression for the reasoning.
+
+**Confirmed end-to-end, not assumed**: the run after that third fix
+(commit `70e6e7d`) was watched to completion via the API and all three jobs
+— `checks`, `functional`, and `deploy` — passed, including a real automatic
+publish to `odd-field-guide.surge.sh` (`SURGE_TOKEN` was already configured
+correctly; it had simply never gotten the chance to run before, since
+`deploy` depends on both other jobs passing first). The "CloudCannon edit →
+live" loop this doc describes above is real and working as of that run.
 
 ## CloudCannon's role
 
