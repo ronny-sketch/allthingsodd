@@ -1,0 +1,25 @@
+{
+  "nav": [
+    { "label": "About", "href": "/about" },
+    { "label": "ODDfest", "href": "/oddfest" },
+    { "label": "ODDference", "href": "/oddference" },
+    { "label": "ODDspace", "href": "https://www.oddspace.co", "external": true },
+    { "label": "ODDagency", "href": "/oddagency" }
+  ],
+  "social": [
+    { "platform": "Instagram", "href": "https://www.instagram.com/oddfest.fi" },
+    { "platform": "LinkedIn", "href": "https://www.linkedin.com/company/oddfest" },
+    { "platform": "Facebook", "href": "https://www.facebook.com/oddfest.fi" },
+    { "platform": "YouTube", "href": "https://www.youtube.com/@oddfest" },
+    { "platform": "TikTok", "href": "https://www.tiktok.com/@oddfest" },
+    { "platform": "Discord", "href": "https://discord.gg/oddfest" }
+  ],
+  "contact": [
+    { "label": "Partnerships & press", "email": "ronny@oddfest.co" },
+    { "label": "Volunteer", "email": "kevin@oddfest.co" }
+  ],
+  "footerAddress": "New Nordic Way rf · Sturenportti 3, Helsinki · #DaretoBeODD",
+  "footerTag": "New Nordic Way rf · oddfest.co",
+  "newsletterLabel": "Sign up to newsletter",
+  "preRegister": { "label": "Pre-register", "href": "#" }
+}

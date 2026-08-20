@@ -1,0 +1,131 @@
+---
+// The fixed side rails on every subpage — a truly infinite vertical ticker (list
+// duplicated once, animated -50%) made of the page's own logo/word/meta beats.
+import { Image } from 'astro:assets';
+import Logo from '../primitives/Logo.astro';
+import oddfestWordmark from '../../assets/logos/oddfest-wordmark.svg';
+import oddferenceMark from '../../assets/logos/oddference-mark.png';
+
+interface RailItem {
+  kind: 'logo' | 'word' | 'meta';
+  text?: string;
+}
+interface Props {
+  items: RailItem[];
+  side: 'left' | 'right';
+  slug: 'oddfest' | 'oddference' | 'oddagency';
+}
+const { items, side, slug } = Astro.props;
+const looped = [...items, ...items];
+---
+
+<div class={`oddf-rail ${side}`} aria-hidden="true">
+  <div class="rail-track">
+    {
+      looped.map((item) => (
+        <div class="rail-item">
+          {item.kind === 'logo' &&
+            (slug === 'oddfest' ? (
+              <img src={oddfestWordmark.src} alt="" />
+            ) : slug === 'oddference' ? (
+              <Image src={oddferenceMark} alt="" width={52} />
+            ) : (
+              <Logo ariaHidden />
+            ))}
+          {item.kind === 'word' && <span class="rail-word">{item.text}</span>}
+          {item.kind === 'meta' && <span class="rail-meta">{item.text}</span>}
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .oddf-rail {
+    position: fixed;
+    top: var(--nav-h, 65px);
+    bottom: 0;
+    width: 68px;
+    z-index: 30;
+    overflow: hidden;
+    background: var(--color-bg);
+    pointer-events: none;
+  }
+  .oddf-rail.left {
+    left: 0;
+    border-right: 1px solid var(--color-paper-12);
+  }
+  .oddf-rail.right {
+    right: 0;
+    border-left: 1px solid var(--color-paper-12);
+  }
+  .rail-track {
+    position: absolute;
+    inset: 0 0 auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.6rem;
+    padding: 2rem 0;
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .rail-track {
+      animation: rail-up 20s linear infinite;
+    }
+  }
+  @keyframes rail-up {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-50%);
+    }
+  }
+  .rail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .rail-item img,
+  .rail-item :global(img) {
+    width: 26px;
+    height: auto;
+    display: block;
+    opacity: 0.92;
+    transform: rotate(90deg);
+  }
+  .rail-item :global(svg) {
+    width: 24px;
+    height: auto;
+    display: block;
+    color: var(--color-paper);
+    opacity: 0.85;
+  }
+  .rail-word {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.35rem;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--color-paper);
+    white-space: nowrap;
+  }
+  .rail-meta {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font: var(--text-caption);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+    white-space: nowrap;
+  }
+  @media (max-width: 820px) {
+    .oddf-rail {
+      display: none;
+    }
+  }
+</style>

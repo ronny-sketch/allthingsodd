@@ -1,0 +1,123 @@
+---
+interface Item {
+  eyebrow: string;
+  title: string;
+  linkLabel: string;
+  href: string;
+}
+interface Props {
+  title?: string;
+  items: Item[];
+  inverted?: boolean;
+  noPadTop?: boolean;
+}
+const { title = 'Ways to participate', items, inverted = false, noPadTop = false } = Astro.props;
+---
+
+<section
+  class={`participate-band ${inverted ? 'is-inverted' : ''}`}
+  style={noPadTop ? 'padding-top:0' : undefined}
+>
+  <div class="wrap">
+    <div class="section-head"><h2>{title}</h2></div>
+    <div class="participate reveal">
+      {
+        items.map((item) => (
+          <a class="p-cta" href={item.href}>
+            <span class="eyebrow">{item.eyebrow}</span>
+            <h3>{item.title}</h3>
+            <span class="go">{item.linkLabel}</span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .participate-band {
+    background: var(--color-bg);
+    padding: 5.5rem 0;
+    margin: 0;
+  }
+  .participate-band .section-head {
+    border-bottom-color: var(--color-paper-12);
+  }
+  .participate-band .section-head h2 {
+    color: var(--color-paper);
+  }
+
+  .participate {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    background: transparent;
+  }
+  .p-cta {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    padding: 3rem 2.2rem;
+    border: 1px solid transparent;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 220px;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      transform 0.25s ease,
+      border-color 0.25s ease;
+  }
+  .p-cta .eyebrow {
+    color: rgb(36 34 32 / 55%);
+  }
+  .p-cta h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    margin: 1rem 0 0;
+  }
+  .p-cta .go {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 1.5rem;
+  }
+  .p-cta:hover {
+    background: var(--color-bg);
+    color: var(--color-paper);
+    border-color: var(--color-paper);
+    transform: translateY(-3px);
+  }
+  .p-cta:hover .eyebrow {
+    color: var(--color-paper-60);
+  }
+  @media (max-width: 760px) {
+    .participate {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .participate .p-cta {
+      opacity: 0;
+      transform: translateY(14px);
+      transition:
+        opacity 0.55s ease,
+        transform 0.55s ease;
+    }
+    .participate.in .p-cta {
+      opacity: 1;
+      transform: none;
+    }
+    .participate.in .p-cta:last-child {
+      transition-delay: 0.1s;
+    }
+  }
+</style>

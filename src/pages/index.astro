@@ -1,0 +1,36 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/sections/Hero.astro';
+import OpeningLine from '../components/sections/OpeningLine.astro';
+import Converge from '../components/sections/Converge.astro';
+import NewsFilmstrip from '../components/sections/NewsFilmstrip.astro';
+import WhatsOn from '../components/sections/WhatsOn.astro';
+import ProgramGrid from '../components/sections/ProgramGrid.astro';
+import ParticipateBand from '../components/sections/ParticipateBand.astro';
+import Aftermovie from '../components/sections/Aftermovie.astro';
+
+const entry = await getEntry('pages', 'home');
+if (!entry || entry.data.template !== 'home')
+  throw new Error('home.json content entry missing or malformed');
+const page = entry.data;
+---
+
+<Layout title={page.seo.title} description={page.seo.description}>
+  <Hero mosaicAlt={page.hero.mosaicAlt} />
+  <OpeningLine line={page.openingLine} />
+
+  <section id="business" class="converge-wrap">
+    <Converge
+      intro={page.converge.intro}
+      business={page.converge.business}
+      creative={page.converge.creative}
+    />
+  </section>
+
+  <NewsFilmstrip items={page.news} />
+  <WhatsOn columns={page.whatsOn.columns} note={page.whatsOn.note} />
+  <ProgramGrid title="What ODD is, in practice" cards={page.programGrid} />
+  <ParticipateBand items={page.participate} />
+  <Aftermovie poster={page.aftermovie.poster} video={page.aftermovie.video} />
+</Layout>

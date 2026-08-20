@@ -1,0 +1,53 @@
+---
+// The light-grey band right after the hero — the one inverted moment, huge and
+// left-set. Each letter gets its own archive-palette color on hover (src/scripts/
+// letter-hover.ts); the original sentence stays as a real text node for SEO/SR,
+// the per-letter spans are generated client-side and marked aria-hidden.
+interface Props {
+  line: string;
+}
+const { line } = Astro.props;
+---
+
+<section class="opening">
+  <div class="wrap">
+    <h1 class="opening-line reveal" data-text={line}>{line}</h1>
+  </div>
+</section>
+
+<script src="../../scripts/letter-hover.ts"></script>
+
+<style>
+  .opening {
+    background: var(--color-paper);
+    padding: 5rem 0 4.5rem;
+  }
+  .opening-line {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.3rem, 6vw, 5.2rem);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    max-width: 20ch;
+    margin: 0;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .opening-line :global(.letter) {
+    display: inline-block;
+    transition:
+      color 0.15s ease,
+      transform 0.15s ease;
+  }
+  @media (hover: hover) {
+    .opening-line :global(.letter:hover) {
+      color: var(--lc, var(--color-ink));
+      transform: translateY(-0.05em) scale(1.08);
+    }
+  }
+  @media (max-width: 640px) {
+    .opening {
+      padding: 3.25rem 0;
+    }
+  }
+</style>

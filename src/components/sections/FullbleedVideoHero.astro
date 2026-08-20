@@ -1,0 +1,77 @@
+---
+import type { ImageMetadata } from 'astro';
+import Logo from '../primitives/Logo.astro';
+
+interface Props {
+  video: string;
+  poster: ImageMetadata;
+  sub: string;
+}
+const { video, poster, sub } = Astro.props;
+---
+
+<header class="oddfest-hero reveal">
+  <video autoplay muted loop playsinline poster={poster.src}>
+    <source src={video} type="video/mp4" />
+  </video>
+  <div class="oddfest-hero-scrim"></div>
+  <div class="oddfest-hero-overlay">
+    <div class="oddfest-hero-logo"><Logo ariaHidden /></div>
+    <p class="oddfest-hero-sub">{sub}</p>
+  </div>
+</header>
+
+<style>
+  .oddfest-hero {
+    position: relative;
+    height: 92vh;
+    min-height: 540px;
+    overflow: hidden;
+    background: #000;
+    margin-bottom: 4.5rem;
+  }
+  .oddfest-hero video,
+  .oddfest-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: contrast(1.05) saturate(1.15) brightness(0.8);
+  }
+  .oddfest-hero-scrim {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 45% 55% at 84% 14%, rgb(130 36 212 / 16%) 0%, transparent 60%),
+      linear-gradient(
+        to top,
+        rgb(14 9 11 / 78%) 0%,
+        rgb(14 9 11 / 10%) 42%,
+        rgb(14 9 11 / 50%) 100%
+      );
+  }
+  .oddfest-hero-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1.1rem;
+    padding: 2rem;
+  }
+  .oddfest-hero-logo {
+    width: min(440px, 62vw);
+    filter: drop-shadow(0 4px 30px rgb(0 0 0 / 50%));
+    color: var(--color-paper);
+  }
+  .oddfest-hero-sub {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.15rem, 2.4vw, 1.7rem);
+    color: var(--color-paper);
+    letter-spacing: 0.01em;
+  }
+</style>

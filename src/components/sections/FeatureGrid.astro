@@ -1,0 +1,87 @@
+---
+interface Card {
+  number: string;
+  title: string;
+  body: string;
+}
+interface Props {
+  cards: Card[];
+}
+const { cards } = Astro.props;
+---
+
+<div class="oddf-grid reveal">
+  {
+    cards.map((c) => (
+      <div>
+        <div class="band-meta">{c.number}</div>
+        <h2>{c.title}</h2>
+        <p>{c.body}</p>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .oddf-grid {
+    max-width: 60rem;
+    margin: 4rem auto 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--color-paper-12);
+  }
+  .oddf-grid > div {
+    background: var(--color-backstage);
+    padding: 2.2rem;
+    text-align: center;
+  }
+  .band-meta {
+    font: var(--text-caption);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .oddf-grid h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.25rem, 2vw, 1.55rem);
+    color: var(--color-paper);
+    margin: 0.7rem 0 0;
+  }
+  .oddf-grid p {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-60);
+    margin: 0.7rem 0 0;
+    line-height: 1.6;
+  }
+  @media (max-width: 700px) {
+    .oddf-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .oddf-grid > div {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity 0.55s ease,
+        transform 0.55s ease;
+    }
+    .oddf-grid.in > div {
+      opacity: 1;
+      transform: none;
+    }
+    .oddf-grid.in > div:nth-child(1) {
+      transition-delay: 0s;
+    }
+    .oddf-grid.in > div:nth-child(2) {
+      transition-delay: 0.1s;
+    }
+    .oddf-grid.in > div:nth-child(3) {
+      transition-delay: 0.2s;
+    }
+  }
+</style>

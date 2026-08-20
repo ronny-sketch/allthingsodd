@@ -1,0 +1,98 @@
+---
+// Two independently-animated turbulence layers, composited, then used to displace
+// a shape's own path — the sauna-steam idea, tuned once at hero scale (#steam-hero)
+// and again gentler for the tiny nav/footer mark (#steam-nav) so it doesn't read as
+// broken noise at that size. Lives outside any page content so both can reference it
+// regardless of route.
+---
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="steam-hero" x="-40%" y="-40%" width="180%" height="180%">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.008 0.02"
+        numOctaves="2"
+        seed="7"
+        result="n1"
+      >
+        <animate
+          attributeName="baseFrequency"
+          values="0.008 0.02;0.011 0.024;0.008 0.02"
+          dur="11s"
+          repeatCount="indefinite"></animate>
+      </feTurbulence>
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.02 0.05"
+        numOctaves="2"
+        seed="3"
+        result="n2"
+      >
+        <animate
+          attributeName="baseFrequency"
+          values="0.02 0.05;0.026 0.045;0.02 0.05"
+          dur="7s"
+          repeatCount="indefinite"></animate>
+      </feTurbulence>
+      <feComposite
+        in="n1"
+        in2="n2"
+        operator="arithmetic"
+        k1="0"
+        k2="0.6"
+        k3="0.6"
+        k4="0"
+        result="noise"></feComposite>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="noise"
+        scale="34"
+        xChannelSelector="R"
+        yChannelSelector="G"></feDisplacementMap>
+    </filter>
+    <filter id="steam-nav" x="-60%" y="-60%" width="220%" height="220%">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.03 0.07"
+        numOctaves="2"
+        seed="7"
+        result="n1"
+      >
+        <animate
+          attributeName="baseFrequency"
+          values="0.03 0.07;0.04 0.085;0.03 0.07"
+          dur="11s"
+          repeatCount="indefinite"></animate>
+      </feTurbulence>
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.07 0.16"
+        numOctaves="2"
+        seed="3"
+        result="n2"
+      >
+        <animate
+          attributeName="baseFrequency"
+          values="0.07 0.16;0.09 0.18;0.07 0.16"
+          dur="7s"
+          repeatCount="indefinite"></animate>
+      </feTurbulence>
+      <feComposite
+        in="n1"
+        in2="n2"
+        operator="arithmetic"
+        k1="0"
+        k2="0.6"
+        k3="0.6"
+        k4="0"
+        result="noise"></feComposite>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="noise"
+        scale="5"
+        xChannelSelector="R"
+        yChannelSelector="G"></feDisplacementMap>
+    </filter>
+  </defs>
+</svg>

@@ -1,0 +1,254 @@
+---
+// The fullscreen menu overlay. The original built this via innerHTML JS purely
+// because it was one hand-authored file; as real markup it's just another
+// component, which also means its links are indexable/accessible without JS.
+import { getEntry } from 'astro:content';
+import Logo from '../primitives/Logo.astro';
+import SocialIcon from '../primitives/SocialIcon.astro';
+
+const site = await getEntry('site', 'global');
+if (!site) throw new Error('Missing site/global.json content entry');
+const { nav, social, footerTag } = site.data;
+---
+
+<div class="menu-overlay" id="menuOverlay">
+  <div class="menu-topbar">
+    <a href="/" class="mark-ink" aria-label="ODD"><Logo /></a>
+    <button type="button" class="menu-close" id="menuClose">Close</button>
+  </div>
+  <nav class="menu-links">
+    {
+      nav.map((item) => (
+        <a
+          href={item.href}
+          target={item.external ? '_blank' : undefined}
+          rel={item.external ? 'noreferrer' : undefined}
+        >
+          {item.label}
+        </a>
+      ))
+    }
+  </nav>
+  <div class="menu-bottom">
+    <form class="menu-newsletter" onsubmit="return false;">
+      <input type="email" placeholder="Sign up for the newsletter" aria-label="Email address" />
+      <button type="submit">Sign up</button>
+    </form>
+    <div class="menu-social">
+      {
+        social.map((s) => (
+          <a href={s.href} target="_blank" rel="noreferrer" aria-label={s.platform}>
+            <SocialIcon platform={s.platform} />
+          </a>
+        ))
+      }
+    </div>
+    <span class="menu-tag">{footerTag}</span>
+  </div>
+</div>
+
+<script>
+  const toggle = document.getElementById('menuToggle');
+  const overlay = document.getElementById('menuOverlay');
+  const closeBtn = document.getElementById('menuClose');
+  const toggleLabel = document.getElementById('menuToggleLabel');
+  if (toggle && overlay && closeBtn && toggleLabel) {
+    let open = false;
+    const setOpen = (v: boolean) => {
+      open = v;
+      overlay.classList.toggle('is-open', open);
+      document.body.classList.toggle('menu-open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggleLabel.textContent = open ? 'Close' : 'Menu';
+    };
+    toggle.addEventListener('click', () => setOpen(!open));
+    closeBtn.addEventListener('click', () => setOpen(false));
+    overlay
+      .querySelectorAll('.menu-links a')
+      .forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && open) setOpen(false);
+    });
+  }
+</script>
+
+<style>
+  .menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease,
+      visibility 0s linear 0.3s;
+  }
+  .menu-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+  :global(body.menu-open) {
+    overflow: hidden;
+  }
+  .menu-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 2rem;
+    border-bottom: 1px solid rgb(36 34 32 / 15%);
+    flex-shrink: 0;
+  }
+  .menu-topbar .mark-ink {
+    color: var(--color-ink);
+    display: flex;
+    align-items: center;
+  }
+  .menu-topbar .mark-ink :global(svg) {
+    height: 1.35rem;
+    width: auto;
+    display: block;
+  }
+  .menu-close {
+    border: 1px solid rgb(36 34 32 / 35%);
+    background: transparent;
+    color: var(--color-ink);
+    border-radius: 999px;
+    padding: 0.5rem 1.1rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color var(--duration-fast) ease;
+  }
+  .menu-close:hover {
+    border-color: var(--color-ink);
+  }
+  .menu-links {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem 2.5rem;
+  }
+  .menu-links a {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: clamp(2.1rem, 6.5vw, 4.6rem);
+    line-height: 1.22;
+    color: var(--color-ink);
+    text-decoration: none;
+    padding: 0.15rem 0.6rem;
+    margin: 0 -0.6rem;
+    transition:
+      background var(--duration-fast) ease,
+      color var(--duration-fast) ease,
+      padding-left 0.25s ease;
+  }
+  .menu-links a:hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    padding-left: 1.4rem;
+  }
+  .menu-bottom {
+    border-top: 1px solid rgb(36 34 32 / 15%);
+    padding: 1.8rem 2.5rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.6rem 2.5rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .menu-newsletter {
+    display: flex;
+    border: 1px solid var(--color-ink);
+    border-radius: 999px;
+    max-width: 320px;
+    flex: 1;
+    min-width: 240px;
+    overflow: hidden;
+  }
+  .menu-newsletter input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    padding: 0.7rem 0 0.7rem 1.1rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-ink);
+    outline: none;
+  }
+  .menu-newsletter button {
+    border: none;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    padding: 0 1.2rem;
+    margin: 3px;
+    white-space: nowrap;
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: opacity var(--duration-fast) ease;
+  }
+  .menu-newsletter button:hover {
+    opacity: 0.8;
+  }
+  .menu-social {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+  }
+  .menu-social a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-ink);
+    opacity: 0.55;
+    text-decoration: none;
+    transition:
+      opacity var(--duration-fast) ease,
+      transform var(--duration-fast) ease;
+  }
+  .menu-social a :global(svg) {
+    width: 22px;
+    height: 22px;
+  }
+  .menu-social a:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+  .menu-tag {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    color: rgb(36 34 32 / 55%);
+    white-space: nowrap;
+  }
+  @media (max-width: 640px) {
+    .menu-links {
+      padding: 1.5rem;
+    }
+    .menu-bottom {
+      padding: 1.5rem;
+    }
+  }
+</style>

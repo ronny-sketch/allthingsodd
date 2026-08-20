@@ -1,0 +1,179 @@
+# CloudCannon editing configuration for the ODD Field Guide site.
+#
+# What this does: maps the real content this site has (5 pages, each with a
+# fixed real shape — this is a small bespoke brand site, not a generic block
+# composer, see docs/architecture.md#why-not-a-page-composer) to CloudCannon
+# collections, so editing in CloudCannon edits src/content/**/*.json and
+# nothing else. Astro rebuilds the static site from that content on every
+# commit — see docs/deployment.md.
+#
+# CloudCannon has official Astro support and auto-detects the build command
+# (`npm run build`) and output directory (`dist/`) for a standard Astro
+# project — not hand-specified here. Verify on first connection; adjust in
+# the Site dashboard if it guesses wrong.
+#
+# Plain text/textarea fields are left for CloudCannon's own auto-detection
+# from the JSON shape (a real, documented CloudCannon behavior) rather than
+# hand-declared here field-by-field — only the things that need explicit
+# configuration (images, repeatable arrays with an "add new" template) are
+# declared below. Verify this config against the live CloudCannon site setup
+# on first connection — see docs/editing.md#first-time-setup.
+
+source: .
+
+collections_config:
+  pages:
+    path: src/content/pages
+    name: Pages
+    icon: description
+    disable_add: true # exactly 5 pages exist; editors edit content, not routes
+    disable_add_folder: true
+    disable_file_actions: true # renaming a file would break its route
+    preview:
+      text:
+        - key: title
+        - key: eyebrow
+    _inputs:
+      seo:
+        type: object
+        options:
+          subtype: object
+          groups:
+            - heading: SEO
+              comment: Browser tab title and search-result snippet.
+              inputs:
+                - title
+                - description
+      news:
+        type: array
+        comment: Homepage photo filmstrip — reorder here reorders the live site.
+        options:
+          structures:
+            - news_item
+      whatsOn:
+        type: object
+        options:
+          subtype: object
+      programGrid:
+        type: array
+        options:
+          structures:
+            - program_card
+      participate:
+        type: array
+        options:
+          structures:
+            - cta
+      features:
+        type: array
+        options:
+          structures:
+            - feature_card
+      panels:
+        type: array
+        comment: The five horizontal-scroll panels on the About page, in order.
+        options:
+          structures:
+            - about_panel_media
+            - about_panel_model
+            - about_panel_text
+
+  site:
+    path: src/content/site
+    name: Global
+    icon: public
+    singular_name: Global content
+    disable_add: true
+    disable_file_actions: true
+    _inputs:
+      nav:
+        type: array
+        comment: Top nav + footer nav (shared). ODDspace is external — leave external:true.
+      social:
+        type: array
+      contact:
+        type: array
+
+_structures:
+  news_item:
+    values:
+      - value:
+          image:
+          caption: ''
+          href: '#'
+        preview:
+          text:
+            - key: caption
+          image:
+            - key: image
+
+  program_card:
+    values:
+      - value:
+          meta: ''
+          title: ''
+          body: ''
+          goLabel: ''
+          href: '#'
+          image:
+        preview:
+          text:
+            - key: title
+          image:
+            - key: image
+
+  cta:
+    values:
+      - value:
+          eyebrow: ''
+          title: ''
+          linkLabel: ''
+          href: '#'
+        preview:
+          text:
+            - key: title
+
+  feature_card:
+    values:
+      - value:
+          number: '01'
+          title: ''
+          body: ''
+        preview:
+          text:
+            - key: title
+
+  about_panel_media:
+    values:
+      - value:
+          kind: media
+          image:
+          alt: ''
+          eyebrow: ''
+          title: ''
+          body: ''
+        preview:
+          text:
+            - key: title
+
+  about_panel_model:
+    values:
+      - value:
+          kind: model
+          eyebrow: ''
+          title: ''
+          items: []
+        preview:
+          text:
+            - key: title
+
+  about_panel_text:
+    values:
+      - value:
+          kind: text
+          eyebrow: ''
+          title: ''
+          body: ''
+        preview:
+          text:
+            - key: title

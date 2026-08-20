@@ -1,0 +1,31 @@
+---
+// The six social glyphs, each pasted twice in the original (footer + fullscreen
+// menu) — keyed by platform name so Nav/Footer/MobileMenu all share one source.
+interface Props {
+  platform: string;
+  class?: string;
+}
+const { platform, class: className } = Astro.props;
+
+const ICONS: Record<string, string> = {
+  Instagram: `<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="0.9" fill="currentColor" stroke="none"/>`,
+  LinkedIn: `<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="7.5" cy="8" r="0.9" fill="currentColor" stroke="none"/><path d="M7.5 11v6M11 11v6M11 13.6c0-1.6 1-2.6 2.3-2.6s2.2 1 2.2 2.6V17"/>`,
+  Facebook: `<path d="M14.5 21v-7.2h2.4l.4-2.8h-2.8v-1.8c0-.8.2-1.3 1.4-1.3h1.5V5.4A20 20 0 0 0 15 5.3c-2.1 0-3.5 1.3-3.5 3.6v2H9v2.8h2.5V21"/>`,
+  YouTube: `<rect x="2.5" y="6" width="19" height="12" rx="4"/><path d="M10.3 9.3v5.4l5-2.7-5-2.7Z" fill="currentColor" stroke="none"/>`,
+  TikTok: `<path d="M13.5 3.5v11.2a3.3 3.3 0 1 1-2.8-3.26"/><path d="M13.5 3.5c.45 2.4 2.15 4 4.3 4.2"/>`,
+  Discord: `<path d="M6.5 8.2C8.4 6.9 15.6 6.9 17.5 8.2c1.2 2.8 1.2 6.4 0 8.6-1.6 1.2-3.3 1.7-3.3 1.7l-.7-1.3c1-.3 1.9-.9 1.9-.9-1.6.9-3.3 1.3-4.4 1.3s-2.8-.4-4.4-1.3c0 0 .9.6 1.9.9l-.7 1.3s-1.7-.5-3.3-1.7c-1.2-2.2-1.2-5.8 0-8.6Z"/><circle cx="9.6" cy="12.6" r="1" fill="currentColor" stroke="none"/><circle cx="14.4" cy="12.6" r="1" fill="currentColor" stroke="none"/>`,
+};
+
+const inner = ICONS[platform] ?? '';
+---
+
+<svg
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.6"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  set:html={inner}
+/>

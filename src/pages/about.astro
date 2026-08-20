@@ -1,0 +1,14 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import AboutParallax from '../components/sections/AboutParallax.astro';
+
+const entry = await getEntry('pages', 'about');
+if (!entry || entry.data.template !== 'about')
+  throw new Error('about.json content entry missing or malformed');
+const page = entry.data;
+---
+
+<Layout title={page.seo.title} description={page.seo.description}>
+  <AboutParallax panels={page.panels} marqueeItems={page.marqueeItems} />
+</Layout>

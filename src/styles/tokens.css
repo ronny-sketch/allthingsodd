@@ -1,0 +1,83 @@
+/*
+  Design tokens — "Signal & Ember", the archive-derived palette this site is built on.
+
+  Not invented: measured from a full census of all 1,478 public photos in the ODDfest
+  Flickr archive (K-means clustered, weighted by pixel coverage). --bg/--ink use "Ink"
+  (#0E090B), the single most common color in the archive (32.7% coverage) — a
+  rose-tinted near-black, not print black. --paper is the one true light neutral,
+  reserved for the daytime/conference moments (opening band, What's-on band, menu,
+  Ways to participate). Two accents split the site's two-sided story: --signal is the
+  archive's "Signal Blue" — the lighting desk's own house color, cool and controlled,
+  used on ODDference/business-facing moments; --amber is "Amber", the warm stage-light
+  color, used on ODDfest/festival moments. --backstage lifts cards a step off the page;
+  --clay is the quiet secondary-text neutral; --indigo tints the hero scrims. Ultraviolet
+  appears once, as a literal value, on the ODDfest page only — the study's own rarest
+  color, "always a wash, never fill." Do not add new brand colors without this kind of
+  provenance — see docs/design-system.md.
+*/
+:root {
+  /* ---------- color: ink (dark ground) ---------- */
+  --color-ink: #0e090b;
+  --color-bg: var(--color-ink);
+
+  /* paper (light neutral) and opacity ramp against ink */
+  --color-paper: #e2dfde;
+  --color-paper-80: rgb(226 223 222 / 80%);
+  --color-paper-60: rgb(226 223 222 / 60%);
+  --color-paper-40: rgb(226 223 222 / 40%);
+  --color-paper-20: rgb(226 223 222 / 20%);
+  --color-paper-12: rgb(226 223 222 / 12%);
+  --color-paper-06: rgb(226 223 222 / 6%);
+  --color-paper-03: rgb(226 223 222 / 3%);
+
+  /* accents */
+  --color-signal: #507aaf; /* business / ODDference */
+  --color-amber: #9a432b; /* creative / ODDfest */
+  --color-backstage: #232028; /* raised card surface on ink */
+  --color-clay: #89706b; /* quiet secondary text */
+  --color-indigo: #1c2b66; /* hero scrim tint */
+  --color-ultraviolet: #8224d4; /* rarest archive color — wash only, never fill, ODDfest page only */
+
+  /* accent tints used inline at full saturation in a few high-contrast spots
+     (converge lede text, hover states) — same hues as --signal/--amber, brighter read */
+  --color-signal-bright: #5081b3;
+  --color-amber-bright: #ae6855;
+  --color-ticket-blue: #40618c;
+
+  /* letter-hover palette (opening line hover scrub) — the archive's six accents */
+  --palette-letter-hover: #5081b3, #ae6855, #ce8942, #8224d4, #1436c4, #50241a;
+
+  /* ---------- typography ---------- */
+  --font-display: 'Forta', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Gabarito', ui-sans-serif, system-ui, sans-serif;
+
+  /* ---------- spacing scale (rem, 4px base) ---------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ---------- layout ---------- */
+  --width-contained: 1180px;
+  --width-wide: 1280px;
+  --gutter: 1.75rem;
+  --gutter-wide: clamp(2.5rem, 8vw, 7.5rem);
+  --nav-h: 65px; /* JS overwrites this at runtime with the nav's real measured height */
+
+  /* ---------- motion ---------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 0.2s;
+  --duration-base: 0.35s;
+  --duration-slow: 0.6s;
+  --duration-reveal: 0.7s;
+}

@@ -1,0 +1,154 @@
+{
+  "template": "home",
+  "seo": {
+    "title": "ODD — a co-creation platform for creativity and business",
+    "description": "A co-creation platform on a mission to bring creativity and business together to shape a more imaginative world. ODDfest, ODDference, ODDspace, ODDagency — Helsinki."
+  },
+  "hero": {
+    "mosaicAlt": "A live photo mosaic from the ODDfest archive"
+  },
+  "openingLine": "A co-creation platform on a mission to bring creativity and business together to shape a more imaginative world.",
+  "converge": {
+    "intro": "There are two ways in — pick where you start.",
+    "business": {
+      "lede": "Buy in. Partner. Hire.",
+      "body": "We work with businesses two ways. ODDference puts your team in the room with the people actually building Finland's creative economy — talks, matchmaking, a stage if you want one. ODDagency goes further: commission real creative production, not just a conversation about it.",
+      "tracks": [
+        { "label": "ODDference", "meta": "Tickets, program", "href": "/oddference" },
+        { "label": "ODDagency", "meta": "Hire creative production", "href": "/oddagency" }
+      ]
+    },
+    "creative": {
+      "lede": "Join. Show up. Belong.",
+      "body": "We support creatives two ways. ODDfest is the open program — free to join, shaped by whoever shows up to build it, no gatekeeping. ODDspace is where that continues year-round: a studio, a membership, a home base in Helsinki.",
+      "tracks": [
+        { "label": "ODDfest", "meta": "Open program, free", "href": "/oddfest" },
+        { "label": "ODDspace", "meta": "Membership", "href": "https://www.oddspace.co" }
+      ]
+    }
+  },
+  "news": [
+    {
+      "image": "../../assets/news/news-1.jpg",
+      "caption": "Three days, five venues, one wild weekend.",
+      "href": "#"
+    },
+    {
+      "image": "../../assets/news/news-2.jpg",
+      "caption": "Where business met the creative sector.",
+      "href": "#"
+    },
+    {
+      "image": "../../assets/news/news-3.jpg",
+      "caption": "The open program, in photos.",
+      "href": "#"
+    },
+    {
+      "image": "../../assets/news/news-4.jpg",
+      "caption": "Tickets are open — get yours.",
+      "href": "#"
+    },
+    {
+      "image": "../../assets/news/news-5.jpg",
+      "caption": "Join the next member night.",
+      "href": "#"
+    },
+    {
+      "image": "../../assets/news/news-6.jpg",
+      "caption": "Pre-register — be first to know.",
+      "href": "#"
+    }
+  ],
+  "whatsOn": {
+    "note": "Illustrative example — not confirmed dates.",
+    "columns": [
+      [
+        {
+          "date": "Sep 12",
+          "title": "ODDspace — member night",
+          "href": "https://www.oddspace.co",
+          "description": "Creative track — open to members and friends."
+        },
+        {
+          "date": "Oct 03",
+          "title": "ODDference — early bird closes",
+          "href": "#",
+          "description": "Business track — last chance for early pricing."
+        },
+        {
+          "date": "Nov 21",
+          "title": "ODDfest — open call closes",
+          "href": "#",
+          "description": "Creative track — apply to the open program."
+        }
+      ],
+      [
+        {
+          "date": "Jan 15",
+          "title": "ODDference 2027",
+          "href": "#",
+          "description": "Business track — Lasipalatsi, Helsinki.",
+          "ticketLabel": "Tickets →"
+        },
+        {
+          "date": "Jan 18–22",
+          "title": "ODDfest 2027",
+          "href": "#",
+          "description": "Creative track — the open program returns, free to join."
+        }
+      ]
+    ]
+  },
+  "programGrid": [
+    {
+      "meta": "Creative",
+      "title": "ODDfest",
+      "body": "Helsinki's Creative Week. Free to join, shaped by collective creation — art, club culture, and everything creative Helsinki brings to the table.",
+      "goLabel": "See the program →",
+      "href": "/oddfest",
+      "image": "../../assets/programs/oddfest-card.jpg"
+    },
+    {
+      "meta": "Business",
+      "title": "ODDference",
+      "body": "Where business meets the creative sector — talks, matchmaking, and a ticket that gets you in the room.",
+      "goLabel": "Visit the ODDference page →",
+      "href": "/oddference",
+      "image": "../../assets/programs/oddference-card.jpg"
+    },
+    {
+      "meta": "Creative",
+      "title": "ODDspace",
+      "body": "ODD's home base. Studio, membership and a growing community of creatives, social initiatives and start-ups — its own site.",
+      "goLabel": "Ask about membership ↗",
+      "href": "https://www.oddspace.co",
+      "image": "../../assets/programs/oddspace-card.jpg"
+    },
+    {
+      "meta": "Business",
+      "title": "ODDagency",
+      "body": "Hire ODD. Creative production and expertise — seasonal programs and residencies rooted in co-creation.",
+      "goLabel": "Pitch a project →",
+      "href": "/oddagency",
+      "image": "../../assets/programs/oddagency-card.jpg"
+    }
+  ],
+  "participate": [
+    {
+      "eyebrow": "Business",
+      "title": "Buy a ticket",
+      "linkLabel": "ODDference →",
+      "href": "/oddference"
+    },
+    {
+      "eyebrow": "Creative",
+      "title": "Bring your skills into the program",
+      "linkLabel": "Apply to ODDfest →",
+      "href": "#"
+    }
+  ],
+  "aftermovie": {
+    "poster": "../../assets/video/home-aftermovie-poster.jpg",
+    "video": "/video/home-aftermovie.mp4"
+  }
+}

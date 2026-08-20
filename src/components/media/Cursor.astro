@@ -1,0 +1,40 @@
+---
+// Playful custom cursor: a hand-drawn pointer that flips through 8 material frames.
+// Frames are optimized via astro:assets at the one display size this ever renders at,
+// then handed to the client script as a JSON array of URLs (see src/scripts/cursor.ts).
+import { getImage } from 'astro:assets';
+import f1 from '../../assets/cursor/frame-1.png';
+import f2 from '../../assets/cursor/frame-2.png';
+import f3 from '../../assets/cursor/frame-3.png';
+import f4 from '../../assets/cursor/frame-4.png';
+import f5 from '../../assets/cursor/frame-5.png';
+import f6 from '../../assets/cursor/frame-6.png';
+import f7 from '../../assets/cursor/frame-7.png';
+import f8 from '../../assets/cursor/frame-8.png';
+
+const sources = await Promise.all(
+  [f1, f2, f3, f4, f5, f6, f7, f8].map((src) => getImage({ src, width: 68, format: 'webp' })),
+);
+const frames = sources.map((s) => s.src);
+---
+
+<img class="cursor-img" alt="" aria-hidden="true" data-frames={JSON.stringify(frames)} />
+
+<script src="../../scripts/cursor.ts"></script>
+
+<style>
+  .cursor-img {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    pointer-events: none;
+    width: 34px;
+    height: auto;
+    display: none;
+    filter: drop-shadow(0 2px 6px rgb(0 0 0 / 55%));
+  }
+  :global(body.cursor-ready) .cursor-img {
+    display: block;
+  }
+</style>

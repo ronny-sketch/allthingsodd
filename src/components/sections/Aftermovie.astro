@@ -1,0 +1,108 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import oddfestWordmark from '../../assets/logos/oddfest-wordmark.svg';
+import oddferenceMark from '../../assets/logos/oddference-mark.png';
+import oddspaceWordmark from '../../assets/logos/oddspace-wordmark.svg';
+
+interface Props {
+  poster: ImageMetadata;
+  video: string;
+}
+const { poster, video } = Astro.props;
+const logos = [
+  { src: oddfestWordmark.src, alt: 'ODDFEST' },
+  { src: oddferenceMark.src, alt: 'ODDference' },
+  { src: oddspaceWordmark.src, alt: 'ODDspace' },
+];
+const track = [...logos, ...logos, ...logos];
+---
+
+<section class="logo-train">
+  <div class="logo-marquee" aria-hidden="true">
+    <div class="logo-marquee-track">
+      {track.map((l) => <img src={l.src} alt={l.alt} />)}
+    </div>
+  </div>
+  <div class="aftermovie-full">
+    <Image src={poster} alt="" width={1600} data-video-poster />
+    <video autoplay muted loop playsinline poster={poster.src} preload="none">
+      <source src={video} type="video/mp4" />
+    </video>
+  </div>
+</section>
+
+<script>
+  // Swap the static poster <img> (used for LCP / no-JS) for the real <video> once
+  // the browser can actually play it — avoids shipping/decoding the video for
+  // crawlers and no-JS visitors, who only ever see the poster frame. Skipped
+  // entirely under prefers-reduced-motion: those visitors keep the static
+  // poster rather than an autoplaying video, same as src/scripts/reduced-motion-video.ts.
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<HTMLElement>('.aftermovie-full').forEach((wrap) => {
+      const poster = wrap.querySelector('img[data-video-poster]');
+      const video = wrap.querySelector('video');
+      if (poster && video instanceof HTMLVideoElement) {
+        poster.remove();
+        video.style.display = 'block';
+        video.load();
+      }
+    });
+  }
+</script>
+
+<style>
+  .logo-train {
+    border-top: 1px solid var(--color-paper-12);
+    padding: 1.5rem 0 0;
+    overflow: hidden;
+  }
+  .logo-marquee {
+    overflow: hidden;
+    width: 100%;
+    padding: 0.25rem 0;
+  }
+  .logo-marquee-track {
+    display: flex;
+    align-items: center;
+    gap: 4.5rem;
+    width: max-content;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .logo-marquee-track {
+      animation: marquee-left 13s linear infinite;
+    }
+  }
+  .logo-marquee-track img {
+    height: 30px;
+    width: auto;
+    display: block;
+    opacity: 0.88;
+    flex-shrink: 0;
+  }
+
+  .aftermovie-full {
+    margin-top: 3rem;
+    position: relative;
+    background: #000;
+  }
+  .aftermovie-full :global(img[data-video-poster]) {
+    width: 100%;
+    height: min(78vh, 680px);
+    object-fit: cover;
+    display: block;
+  }
+  .aftermovie-full video {
+    width: 100%;
+    height: min(78vh, 680px);
+    display: none;
+    object-fit: cover;
+  }
+  .aftermovie-full::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to top, rgb(0 0 0 / 35%) 0%, transparent 18%);
+  }
+</style>

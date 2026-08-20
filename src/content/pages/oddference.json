@@ -1,0 +1,51 @@
+{
+  "template": "subpage",
+  "slug": "oddference",
+  "seo": {
+    "title": "ODDference — where business meets the creative sector",
+    "description": "A two-day conference for founders, creatives and policymakers who want to learn straight from the source. 11–12 June 2027, Helsinki."
+  },
+  "eyebrow": "ODDference · For business",
+  "title": "Where business meets the creative sector.",
+  "meta": "11–12 June 2027 · Helsinki",
+  "primaryCta": { "label": "Buy your ticket", "href": "#" },
+  "intro": "A two-day conference for founders, creatives and policymakers who want to learn straight from the source. Talks, matchmaking and a room full of the people actually building Finland's creative economy — followed by ODDfest, the open program it feeds straight into.",
+  "heroVariant": "split-video",
+  "heroMedia": {
+    "video": "/video/oddference-hero.mp4",
+    "poster": "../../assets/video/oddference-hero-poster.jpg"
+  },
+  "features": [
+    {
+      "number": "01",
+      "title": "Talks & panels",
+      "body": "Founders, creatives and policymakers on the same stage — not separate tracks."
+    },
+    {
+      "number": "02",
+      "title": "Matchmaking",
+      "body": "Structured time to meet the people worth meeting, not just business cards."
+    },
+    {
+      "number": "03",
+      "title": "Straight into ODDfest",
+      "body": "ODDference ends, ODDfest begins — same city, same crowd, open to everyone."
+    }
+  ],
+  "participate": [
+    { "eyebrow": "Business", "title": "Buy a ticket", "linkLabel": "Get yours →", "href": "#" },
+    { "eyebrow": "Speaking", "title": "Pitch a talk", "linkLabel": "Enquire →", "href": "#" }
+  ],
+  "railLeft": [
+    { "kind": "logo" },
+    { "kind": "word", "text": "ODDference" },
+    { "kind": "meta", "text": "11–12 Jun 2027" },
+    { "kind": "meta", "text": "Tickets open" }
+  ],
+  "railRight": [
+    { "kind": "word", "text": "Helsinki" },
+    { "kind": "meta", "text": "For business" },
+    { "kind": "logo" },
+    { "kind": "word", "text": "ODDference" }
+  ]
+}

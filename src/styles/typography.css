@@ -1,0 +1,61 @@
+/*
+  Typography roles — fluid clamp() sizes lifted directly from the real site (opening
+  line, converge headings, card titles, body copy) and given names so new components
+  reuse a role instead of inventing a new clamp(). See docs/design-system.md.
+*/
+:root {
+  --text-display-xl: 400 clamp(2.3rem, 6vw, 5.2rem) / 1.04 var(--font-display);
+  --text-display-lg: 400 clamp(2.2rem, 5.5vw, 4.6rem) / 1 var(--font-display);
+  --text-heading-lg: 400 clamp(1.7rem, 3.2vw, 2.4rem) / 1.08 var(--font-display);
+  --text-heading-md: 400 clamp(1.6rem, 2.6vw, 2.1rem) / 1.15 var(--font-display);
+  --text-heading-sm: 400 clamp(1.25rem, 2vw, 1.55rem) / 1.2 var(--font-display);
+  --text-body-lg: 400 clamp(1.15rem, 2.2vw, 1.55rem) / 1.35 var(--font-display);
+  --text-body: 400 0.95rem / 1.7 var(--font-body);
+  --text-small: 400 0.85rem / 1.6 var(--font-body);
+  --text-utility: 600 0.72rem / 1.4 var(--font-body);
+  --text-caption: 600 0.64rem / 1.4 var(--font-body);
+}
+
+.text-display-xl {
+  font: var(--text-display-xl);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.text-display-lg {
+  font: var(--text-display-lg);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.text-heading-lg {
+  font: var(--text-heading-lg);
+}
+.text-heading-md {
+  font: var(--text-heading-md);
+}
+.text-heading-sm {
+  font: var(--text-heading-sm);
+}
+.text-body-lg {
+  font: var(--text-body-lg);
+}
+.text-body {
+  font: var(--text-body);
+  color: var(--color-paper-60);
+}
+.text-small {
+  font: var(--text-small);
+  color: var(--color-paper-60);
+}
+.text-utility {
+  font: var(--text-utility);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* eyebrow: the small uppercase label above every headline on the site */
+.eyebrow {
+  font: var(--text-caption);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-paper-40);
+}

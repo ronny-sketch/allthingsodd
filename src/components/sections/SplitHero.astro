@@ -1,0 +1,136 @@
+---
+// Shared hero for ODDference (video) and ODDagency (image) — a media panel on one
+// side, headline + intro on the other. ODDfest uses FullbleedVideoHero instead;
+// see docs/architecture.md#hero-variants for why these aren't one component.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Pill from '../primitives/Pill.astro';
+
+interface Props {
+  variant: 'split-video' | 'split-image';
+  video?: string;
+  poster?: ImageMetadata;
+  image?: ImageMetadata;
+  eyebrow: string;
+  title: string;
+  meta: string;
+  intro: string;
+  primaryCta?: { label: string; href: string };
+}
+const { variant, video, poster, image, eyebrow, title, meta, intro, primaryCta } = Astro.props;
+---
+
+<div class="oddf-hero">
+  <div class="oddf-hero-video reveal">
+    {
+      variant === 'split-video' && video && poster && (
+        <video autoplay muted loop playsinline poster={poster.src}>
+          <source src={video} type="video/mp4" />
+        </video>
+      )
+    }
+    {variant === 'split-image' && image && <Image src={image} alt="" width={900} />}
+  </div>
+  <div class="oddf-hero-text reveal">
+    <div class="oddf-head">
+      <div class="eyebrow">{eyebrow}</div>
+      <h1>{title}</h1>
+      <div class="oddf-meta">{meta}</div>
+      {
+        primaryCta && (
+          <div class="oddf-hero-cta">
+            <Pill href={primaryCta.href} variant="solid">
+              {primaryCta.label}
+            </Pill>
+          </div>
+        )
+      }
+    </div>
+    <p class="oddf-body">{intro}</p>
+  </div>
+</div>
+
+<style>
+  .oddf-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    max-width: 70rem;
+    margin: 0 auto 4.5rem;
+  }
+  .oddf-hero-video {
+    position: relative;
+    overflow: hidden;
+    background: #000;
+    aspect-ratio: 4 / 5;
+  }
+  .oddf-hero-video video,
+  .oddf-hero-video :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: contrast(1.05) saturate(1.15);
+  }
+  .oddf-hero-text {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .oddf-hero-text .oddf-head {
+    max-width: none;
+    margin: 0;
+    text-align: center;
+  }
+  .oddf-hero-text .oddf-body {
+    text-align: center;
+    max-width: 36ch;
+    margin: 1.6rem 0 0;
+  }
+  .oddf-hero-cta {
+    margin-top: 1.6rem;
+  }
+  @media (max-width: 820px) {
+    .oddf-hero {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .oddf-hero-video {
+      aspect-ratio: 16 / 9;
+    }
+  }
+
+  .oddf-head {
+    max-width: 44rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .oddf-head .eyebrow {
+    color: var(--color-paper-60);
+  }
+  .oddf-head h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--color-paper);
+    font-size: clamp(2.2rem, 5.5vw, 4rem);
+    line-height: 1.08;
+    margin: 0.9rem 0 0;
+  }
+  .oddf-meta {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-60);
+    margin-top: 1rem;
+  }
+  .oddf-body {
+    max-width: 42rem;
+    margin: 2.2rem auto 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-paper-60);
+  }
+</style>

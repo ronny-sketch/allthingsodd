@@ -1,0 +1,49 @@
+---
+import '../styles/global.css';
+import Nav from '../components/navigation/Nav.astro';
+import Footer from '../components/navigation/Footer.astro';
+import MobileMenu from '../components/navigation/MobileMenu.astro';
+import Cursor from '../components/media/Cursor.astro';
+import SteamFilters from '../components/media/SteamFilters.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+}
+const { title, description, ogImage } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <SteamFilters />
+    <Nav />
+    <slot />
+    <Footer />
+    <MobileMenu />
+    <Cursor />
+    <script src="../scripts/reduced-motion-video.ts"></script>
+    <script src="../scripts/reveal.ts"></script>
+    <script src="../scripts/magnetic.ts"></script>
+    <script src="../scripts/nav-height.ts"></script>
+    <script src="../scripts/marquee-breathe.ts"></script>
+  </body>
+</html>

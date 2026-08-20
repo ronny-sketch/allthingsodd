@@ -1,0 +1,29 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import SubpageFrame from '../components/sections/SubpageFrame.astro';
+import SplitHero from '../components/sections/SplitHero.astro';
+import FeatureGrid from '../components/sections/FeatureGrid.astro';
+import ParticipateBand from '../components/sections/ParticipateBand.astro';
+
+const entry = await getEntry('pages', 'oddagency');
+if (!entry || entry.data.template !== 'subpage')
+  throw new Error('oddagency.json content entry missing or malformed');
+const page = entry.data;
+---
+
+<Layout title={page.seo.title} description={page.seo.description}>
+  <SubpageFrame slug={page.slug} railLeft={page.railLeft} railRight={page.railRight}>
+    <SplitHero
+      variant="split-image"
+      image={page.heroMedia.image}
+      eyebrow={page.eyebrow}
+      title={page.title}
+      meta={page.meta}
+      intro={page.intro}
+      primaryCta={page.primaryCta}
+    />
+    <FeatureGrid cards={page.features} />
+    <ParticipateBand items={page.participate} noPadTop />
+  </SubpageFrame>
+</Layout>

@@ -1,0 +1,59 @@
+{
+  "template": "subpage",
+  "slug": "oddagency",
+  "seo": {
+    "title": "ODDagency — hire ODD, creative production on demand",
+    "description": "Creative production, art direction and hands-on making — seasonal programs and residencies rooted in co-creation."
+  },
+  "eyebrow": "ODDagency · For business",
+  "title": "Hire ODD, creative production on demand.",
+  "meta": "Seasonal · Helsinki",
+  "intro": "Creative production, art direction and hands-on making — seasonal programs and residencies rooted in co-creation. Bring an idea, or let us help you build one from scratch.",
+  "heroVariant": "split-image",
+  "heroMedia": {
+    "image": "../../assets/programs/oddagency-card.jpg"
+  },
+  "features": [
+    {
+      "number": "01",
+      "title": "Production",
+      "body": "From concept to install, we build what the idea needs."
+    },
+    {
+      "number": "02",
+      "title": "Residencies",
+      "body": "Seasonal space and support for creative work in progress."
+    },
+    {
+      "number": "03",
+      "title": "Co-creation",
+      "body": "Bring a brief, or bring nothing at all — we can start there too."
+    }
+  ],
+  "participate": [
+    {
+      "eyebrow": "Business",
+      "title": "Pitch a project",
+      "linkLabel": "Get in touch →",
+      "href": "#"
+    },
+    {
+      "eyebrow": "Creative",
+      "title": "Apply for a residency",
+      "linkLabel": "Tell us more →",
+      "href": "#"
+    }
+  ],
+  "railLeft": [
+    { "kind": "logo" },
+    { "kind": "word", "text": "ODDagency" },
+    { "kind": "meta", "text": "Seasonal" },
+    { "kind": "meta", "text": "Residencies" }
+  ],
+  "railRight": [
+    { "kind": "word", "text": "Helsinki" },
+    { "kind": "meta", "text": "For business" },
+    { "kind": "logo" },
+    { "kind": "word", "text": "ODDagency" }
+  ]
+}

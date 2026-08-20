@@ -1,0 +1,56 @@
+{
+  "template": "subpage",
+  "slug": "oddfest",
+  "seo": {
+    "title": "ODDfest — Helsinki's open Creative Week",
+    "description": "A week-long, free and open program built by and for Helsinki's creative community — art, club culture and collective creation across the city's venues."
+  },
+  "eyebrow": "ODDfest · For creatives",
+  "title": "Helsinki's open Creative Week.",
+  "meta": "Jan 2027 · Helsinki",
+  "intro": "A week-long, free and open program built by and for Helsinki's creative community — art, club culture and collective creation across the city's venues, running straight out of ODDference and into the streets.",
+  "heroVariant": "fullbleed-video",
+  "heroMedia": {
+    "video": "/video/oddfest-hero.mp4",
+    "poster": "../../assets/video/oddfest-hero-poster.jpg",
+    "sub": "Helsinki's Creative Week"
+  },
+  "features": [
+    {
+      "number": "01",
+      "title": "Art & Performance",
+      "body": "Installations, live shows and everything in between, spread across Helsinki's creative venues."
+    },
+    {
+      "number": "02",
+      "title": "Club Culture",
+      "body": "Nights that don't end when the program does — DJs, collectives, and the city after dark."
+    },
+    {
+      "number": "03",
+      "title": "Collective Creation",
+      "body": "Open calls, co-created works, and space for anyone with something to bring."
+    }
+  ],
+  "participate": [
+    {
+      "eyebrow": "Creative",
+      "title": "Apply to the program",
+      "linkLabel": "Pitch an idea →",
+      "href": "#"
+    },
+    { "eyebrow": "Creative", "title": "Volunteer with us", "linkLabel": "Sign up →", "href": "#" }
+  ],
+  "railLeft": [
+    { "kind": "logo" },
+    { "kind": "word", "text": "ODDfest" },
+    { "kind": "meta", "text": "Jan 2027" },
+    { "kind": "meta", "text": "Free to join" }
+  ],
+  "railRight": [
+    { "kind": "word", "text": "Helsinki" },
+    { "kind": "meta", "text": "Creative Week" },
+    { "kind": "logo" },
+    { "kind": "word", "text": "ODDfest" }
+  ]
+}

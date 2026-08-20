@@ -1,0 +1,132 @@
+---
+import Pill from '../primitives/Pill.astro';
+
+interface Row {
+  date: string;
+  title: string;
+  href: string;
+  description: string;
+  ticketLabel?: string;
+}
+interface Props {
+  columns: Row[][];
+  note: string;
+}
+const { columns, note } = Astro.props;
+---
+
+<div class="whats-on">
+  <div class="wrap whats-on-grid">
+    <div class="whats-on-eyebrow">What&rsquo;s on</div>
+    {
+      columns.map((col) => (
+        <div class="whats-on-col">
+          {col.map((row) => (
+            <div class="whats-on-row">
+              <div class="whats-on-date">{row.date}</div>
+              <div class="whats-on-body">
+                <a
+                  class="whats-on-title"
+                  href={row.href}
+                  target={row.href.startsWith('http') ? '_blank' : undefined}
+                  rel={row.href.startsWith('http') ? 'noreferrer' : undefined}
+                >
+                  {row.title}
+                </a>
+                <p class="whats-on-desc">{row.description}</p>
+                {row.ticketLabel && (
+                  <Pill href="#" variant="ticket" magnetic>
+                    {row.ticketLabel}
+                  </Pill>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      ))
+    }
+    <p class="whats-on-note">{note}</p>
+  </div>
+</div>
+
+<style>
+  .whats-on {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    padding: 3rem 0 3.5rem;
+  }
+  .whats-on-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+  }
+  .whats-on-eyebrow {
+    grid-column: 1 / -1;
+    font: var(--text-caption);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgb(36 34 32 / 50%);
+    margin-bottom: 1.6rem;
+  }
+  .whats-on-col {
+    display: flex;
+    flex-direction: column;
+  }
+  .whats-on-row {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 1rem;
+    padding: 1.1rem 0;
+    border-top: 1px solid rgb(36 34 32 / 14%);
+  }
+  .whats-on-col .whats-on-row:first-child {
+    border-top: none;
+  }
+  .whats-on-date {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .whats-on-title {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.25rem, 2vw, 1.55rem);
+    line-height: 1.2;
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    text-decoration-color: rgb(36 34 32 / 35%);
+    transition: text-decoration-color var(--duration-fast) ease;
+  }
+  .whats-on-title:hover {
+    color: var(--color-ticket-blue);
+    text-decoration-color: var(--color-ticket-blue);
+  }
+  .whats-on-desc {
+    margin: 0.4rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: rgb(36 34 32 / 65%);
+    line-height: 1.5;
+  }
+  .whats-on-body :global(.pill) {
+    display: inline-block;
+    margin-top: 1.1rem;
+  }
+  .whats-on-note {
+    grid-column: 1 / -1;
+    margin: 1.8rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    color: rgb(36 34 32 / 45%);
+  }
+  @media (max-width: 700px) {
+    .whats-on-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

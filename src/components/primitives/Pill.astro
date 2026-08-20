@@ -1,0 +1,88 @@
+---
+// Pill: the site's one button shape. `variant` and `tone` are the only knobs a
+// content editor gets — see docs/design-system.md#buttons for why raw CSS values
+// aren't exposed here.
+interface Props {
+  href?: string;
+  variant?: 'outline' | 'solid' | 'ticket';
+  magnetic?: boolean;
+  type?: 'button' | 'submit';
+  class?: string;
+  ariaLabel?: string;
+  id?: string;
+}
+const {
+  href,
+  variant = 'solid',
+  magnetic = false,
+  type,
+  class: className,
+  ariaLabel,
+  id,
+} = Astro.props;
+const classes = ['pill', `pill-${variant}`, magnetic && 'magnetic', className]
+  .filter(Boolean)
+  .join(' ');
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  id={id}
+  class={classes}
+  href={href}
+  type={!href ? (type ?? 'button') : undefined}
+  aria-label={ariaLabel}
+>
+  <slot />
+</Tag>
+
+<style>
+  .pill {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 0.55rem 1.25rem;
+    white-space: nowrap;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition:
+      opacity var(--duration-fast) ease,
+      border-color var(--duration-fast) ease,
+      box-shadow var(--duration-fast) ease,
+      transform var(--duration-fast) ease;
+  }
+  .pill-outline {
+    background: transparent;
+    color: var(--color-paper);
+    border-color: rgb(226 223 222 / 35%);
+  }
+  .pill-outline:hover {
+    border-color: var(--color-paper);
+  }
+  .pill-solid {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    border-color: var(--color-paper);
+  }
+  .pill-solid:hover {
+    opacity: 0.85;
+  }
+  .pill-ticket {
+    background: var(--color-ticket-blue);
+    color: #fff;
+    border-color: var(--color-ticket-blue);
+    box-shadow: 0 6px 18px rgb(64 97 140 / 35%);
+  }
+  .pill-ticket:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgb(64 97 140 / 45%);
+  }
+  .pill:focus-visible {
+    outline-offset: 2px;
+  }
+</style>

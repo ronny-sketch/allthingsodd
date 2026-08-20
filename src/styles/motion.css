@@ -1,0 +1,47 @@
+/*
+  Motion tokens + the site's two shared animation hooks: `.reveal` (scroll-triggered
+  fade-up, driven by an IntersectionObserver in src/scripts/reveal.ts) and the marquee
+  keyframes used by the logo train and about-page ticker. Everything here is gated by
+  prefers-reduced-motion — see docs/design-system.md#motion.
+*/
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity var(--duration-reveal) ease,
+      transform var(--duration-reveal) ease;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.3333%);
+  }
+}
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.magnetic {
+  transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
