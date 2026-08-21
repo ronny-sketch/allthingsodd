@@ -22,7 +22,16 @@ const { eyebrow, title, items } = Astro.props;
       <span class="eyebrow">{eyebrow}</span>
       {title && <h2>{title}</h2>}
     </div>
-    <div class="proof-grid reveal" style={`--cols: ${items.length}`}>
+    {
+      /* --cols capped at 4 — forcing every item into one row (items.length
+         directly) was fine for the 2-3 item case this was designed around,
+         but Media's 8-stat highlights grid squeezed each column so narrow
+         that overflow-wrap:anywhere on .proof-value fractured numbers
+         mid-character ("2,600" → "2," / "600", confirmed via screenshot).
+         Capping at 4 wraps to a second row instead — every real usage today
+         (1/2/3/8 items) divides cleanly with no orphaned row. */
+    }
+    <div class="proof-grid reveal" style={`--cols: ${Math.min(items.length, 4)}`}>
       {
         items.map((item) => (
           <div class="proof-item">
@@ -45,6 +54,7 @@ const { eyebrow, title, items } = Astro.props;
        ParticipateBand's identical comment/fix; same failure mode, found here
        too via a real screenshot (3 stats, 2-then-1 at tablet width). */
     grid-template-columns: repeat(var(--cols), 1fr);
+    row-gap: 2.5rem;
   }
   .proof-item {
     min-width: 0;
@@ -53,6 +63,12 @@ const { eyebrow, title, items } = Astro.props;
     text-align: center;
   }
   .proof-item:first-child {
+    border-left: none;
+  }
+  /* Every row-start item needs its left border dropped, not just the very
+     first item overall — with --cols capped at 4, that's every 4th item
+     starting the count over. */
+  .proof-item:nth-child(4n + 1) {
     border-left: none;
   }
   .proof-value {

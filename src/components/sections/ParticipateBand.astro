@@ -71,7 +71,12 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
     min-width: 0;
     background: var(--color-paper);
     color: var(--color-ink);
-    padding: 3rem 2.2rem;
+    /* 1.4rem horizontal, not 2.2rem — at 5 equal columns (real instances run
+       2-5 items) there wasn't enough width left for a single long word like
+       "ODDference" to fit without breaking mid-word even after the h3
+       font-size below was already reduced once; freeing up padding was the
+       other half of the fix (see h3's own comment). */
+    padding: 3rem 1.4rem;
     border: 1px solid transparent;
     text-decoration: none;
     display: flex;
@@ -100,12 +105,13 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
   .p-cta h3 {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(1.3rem, 2.1vw, 1.75rem);
+    /* Small enough that the longest realistic single word ("ODDference",
+       "something") fits the available card width without needing to wrap —
+       confirmed via getComputedStyle at 1440px: 133px available at the old
+       1.75rem cap wasn't enough for a 10-character word in this display
+       font, so it broke mid-word instead of wrapping at a space. */
+    font-size: clamp(1.05rem, 1.5vw, 1.35rem);
     margin: 1rem 0 0;
-    /* A single long word (e.g. "ODDference") has no space to wrap at, so at
-       an equal (now narrower) column width it overflowed the card instead
-       of wrapping — confirmed via screenshot after the min-width:0 fix
-       above made columns genuinely equal-width for the first time. */
     overflow-wrap: break-word;
     max-width: 100%;
   }

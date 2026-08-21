@@ -14,6 +14,13 @@ import CaseGrid from '../components/sections/CaseGrid.astro';
 import Aftermovie from '../components/sections/Aftermovie.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
 import PartnerTiers from '../components/sections/PartnerTiers.astro';
+import FloatingCloud from '../components/media/FloatingCloud.astro';
+import cloudPhoto1 from '../assets/hero/archive-03.jpg';
+import cloudPhoto2 from '../assets/hero/archive-04.jpg';
+import cloudPhoto3 from '../assets/hero/archive-06.jpg';
+import cloudPhoto4 from '../assets/hero/archive-09.jpg';
+import cloudPhoto5 from '../assets/hero/archive-11.jpg';
+import cloudPhoto6 from '../assets/hero/archive-14.jpg';
 
 // Content file is named index.json (not home.json) so CloudCannon's
 // filename-based [slug] URL placeholder resolves to "" for it, matching the
@@ -27,6 +34,8 @@ const page = entry.data;
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
 const { partners, featuredIn } = site.data;
+
+const cloudPhotos = [cloudPhoto1, cloudPhoto2, cloudPhoto3, cloudPhoto4, cloudPhoto5, cloudPhoto6];
 
 // The hero mosaic's first cell is the page's real LCP element (confirmed via
 // a PerformanceObserver check against production, not assumed) — preloading
@@ -54,12 +63,15 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
     secondaryCta={page.opening.secondaryCta}
   />
 
-  <SectionIntro
-    eyebrow={page.whatOddIs.eyebrow}
-    headline={page.whatOddIs.headline}
-    body={page.whatOddIs.body}
-    cta={page.whatOddIs.cta}
-  />
+  <div class="whatoddis-wrap">
+    <FloatingCloud images={cloudPhotos} />
+    <SectionIntro
+      eyebrow={page.whatOddIs.eyebrow}
+      headline={page.whatOddIs.headline}
+      body={page.whatOddIs.body}
+      cta={page.whatOddIs.cta}
+    />
+  </div>
 
   <section id="business" class="converge-wrap">
     <Converge
@@ -113,6 +125,9 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
 </Layout>
 
 <style>
+  .whatoddis-wrap {
+    position: relative;
+  }
   .work-with-odd-teaser {
     background: var(--color-bg);
   }

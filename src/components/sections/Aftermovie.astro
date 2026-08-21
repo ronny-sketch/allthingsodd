@@ -11,18 +11,22 @@ interface Props {
 }
 const { poster, video } = Astro.props;
 const logos = [
-  { src: oddfestWordmark.src, alt: 'ODDFEST' },
-  { src: oddferenceMark.src, alt: 'ODDference' },
-  { src: oddspaceWordmark.src, alt: 'ODDspace' },
+  { src: oddfestWordmark.src, alt: 'ODDFEST', class: '' },
+  { src: oddferenceMark.src, alt: 'ODDference', class: 'is-oddference' },
+  { src: oddspaceWordmark.src, alt: 'ODDspace', class: '' },
 ];
-const track = [...logos, ...logos, ...logos];
 ---
 
 <section class="logo-train">
-  <div class="logo-marquee" aria-hidden="true">
-    <div class="logo-marquee-track">
-      {track.map((l) => <img src={l.src} alt={l.alt} />)}
-    </div>
+  {
+    /* A plain centered row, not a scrolling marquee — only 3 logos, so
+       there was nothing for a ticker to actually accomplish, and scrolling
+       meant the outer two were always partially clipped by the row's own
+       edges (confirmed via screenshot: "FEST"/"FERENC[E]" cut off left and
+       right). Centering a static row removes that entirely. */
+  }
+  <div class="logo-row">
+    {logos.map((l) => <img src={l.src} alt={l.alt} class={l.class} />)}
   </div>
   <div class="aftermovie-full">
     {
@@ -59,31 +63,29 @@ const track = [...logos, ...logos, ...logos];
 <style>
   .logo-train {
     border-top: 1px solid var(--color-paper-12);
-    padding: 1.5rem 0 0;
-    overflow: hidden;
+    padding: 2rem 0;
   }
-  .logo-marquee {
-    overflow: hidden;
-    width: 100%;
-    padding: 0.25rem 0;
-  }
-  .logo-marquee-track {
+  .logo-row {
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 4.5rem;
-    width: max-content;
   }
-  @media (prefers-reduced-motion: no-preference) {
-    .logo-marquee-track {
-      animation: marquee-left 13s linear infinite;
-    }
-  }
-  .logo-marquee-track img {
+  .logo-row img {
     height: 44px;
     width: auto;
     display: block;
     opacity: 0.88;
-    flex-shrink: 0;
+  }
+  /* oddference-mark.png's "OOO" glyph sits noticeably taller within its own
+     canvas than the other two marks' equivalent glyph does within theirs, so
+     equal img height doesn't read as equal mark size (confirmed via
+     screenshot, side by side). A source-asset proportion difference, not
+     fixable via height alone — scaled down slightly as the practical fix
+     without new export files. */
+  .logo-row img.is-oddference {
+    height: 38px;
   }
 
   .aftermovie-full {
