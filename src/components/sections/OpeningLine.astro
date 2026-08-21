@@ -77,6 +77,12 @@ const { line, subline, primaryCta, secondaryCta } = Astro.props;
     text-align: center;
     text-wrap: balance;
   }
+  /* white-space: nowrap keeps a word's letters from being individually
+     rewrapped — see letter-hover.ts's file comment. */
+  .opening-line :global(.word) {
+    display: inline-block;
+    white-space: nowrap;
+  }
   .opening-line :global(.letter) {
     display: inline-block;
     transition:

@@ -8,9 +8,9 @@
   },
   "eyebrow": "ODDference · Flagship event",
   "title": "What can business learn from creative expertise?",
-  "meta": "[PLACEHOLDER — date] · Helsinki",
+  "meta": "TBD · Helsinki",
   "primaryCta": { "label": "Get tickets", "href": "#tickets" },
-  "intro": "[PLACEHOLDER — 2-3 sentences introducing ODDference as a centrally produced flagship event built around what business and the rest of society can learn from creative expertise, methods and ways of working]",
+  "intro": "ODDference is ODD's flagship, centrally produced event — built entirely around one question: what can business and the rest of society learn from creative expertise? Creative professionals aren't the entertainment here; their ways of working are the actual content.",
   "heroMedia": {
     "video": "/video/oddference-hero.mp4",
     "poster": "../../assets/video/oddference-hero-poster.jpg"
@@ -19,67 +19,76 @@
     {
       "number": "01",
       "title": "Talks & panels",
-      "body": "[PLACEHOLDER — founders, creatives and policymakers on the same stage, not separate tracks]"
+      "body": "Founders, creative leaders and policymakers on the same stage, addressing the same questions — not separate tracks that never meet."
     },
     {
       "number": "02",
       "title": "Matchmaking",
-      "body": "[PLACEHOLDER — structured time to meet the people worth meeting]"
+      "body": "Structured time built into the day to meet people you wouldn't otherwise cross paths with."
     },
     {
       "number": "03",
       "title": "Straight into ODDfest",
-      "body": "[PLACEHOLDER — ODDference's relationship to the open ODDfest programme that follows it]"
+      "body": "ODDference runs straight into the wider ODDfest programme — the conversation continues past the closing session."
     }
   ],
   "bigQuestion": {
     "eyebrow": "The big question",
     "headline": "What can business and the rest of society learn from creative expertise?",
-    "body": "[PLACEHOLDER — 2-3 sentences positioning creative professionals as people with relevant expertise, methods and perspectives — not entertainment or decoration around a business conference]"
+    "body": "Creative professionals work daily with uncertainty, cultural relevance, storytelling, community and ambiguity — the same problems most organisations are quietly struggling with. ODDference treats that expertise as the main event, not the warm-up act to a business conference."
   },
   "whoItsFor": [
     {
       "label": "Business leaders",
-      "description": "[PLACEHOLDER — why ODDference is relevant to this audience]"
+      "description": "Facing decisions that don't have a playbook yet — creative process has more to offer here than another case study."
     },
     {
       "label": "Organisational leaders",
-      "description": "[PLACEHOLDER — why ODDference is relevant to this audience]"
+      "description": "Managing culture and change that need more than an org chart to actually move."
     },
     {
       "label": "Entrepreneurs",
-      "description": "[PLACEHOLDER — why ODDference is relevant to this audience]"
+      "description": "Building something new, with the same uncertainty a creative practice deals with every day."
     },
     {
       "label": "Policymakers",
-      "description": "[PLACEHOLDER — why ODDference is relevant to this audience]"
+      "description": "Shaping the conditions creative and cultural work actually happens in — worth hearing directly from the people working inside them."
     },
     {
       "label": "Creative leaders",
-      "description": "[PLACEHOLDER — why ODDference is relevant to this audience]"
+      "description": "Looking for a room where creative expertise is treated as the expertise it is, not decoration."
     }
   ],
   "whyAttend": [
     {
       "number": "01",
       "title": "New perspectives",
-      "body": "[PLACEHOLDER — outcome, not generic conference feature]"
+      "body": "Leave with a genuinely different way of thinking about a problem you brought in, not just a stack of slides."
     },
     {
       "number": "02",
       "title": "Relevant connections",
-      "body": "[PLACEHOLDER — outcome, not generic conference feature]"
+      "body": "Meet people solving adjacent problems from a completely different discipline."
     },
     {
       "number": "03",
       "title": "Practical ideas",
-      "body": "[PLACEHOLDER — outcome, not generic conference feature]"
+      "body": "Talks and sessions built to translate into something you can actually use, not just admire."
     }
   ],
   "themes": [
-    { "title": "[PLACEHOLDER — theme]", "body": "[PLACEHOLDER — short description]" },
-    { "title": "[PLACEHOLDER — theme]", "body": "[PLACEHOLDER — short description]" },
-    { "title": "[PLACEHOLDER — theme]", "body": "[PLACEHOLDER — short description]" }
+    {
+      "title": "Creative leadership",
+      "body": "What organisational leadership can learn from how creative teams actually make decisions under uncertainty."
+    },
+    {
+      "title": "Culture & attention",
+      "body": "How cultural relevance, storytelling and audience attention actually work — and what that means for brands, cities and institutions."
+    },
+    {
+      "title": "Creative economy & technology",
+      "body": "Where creative practice, new technology and economic models are colliding right now, and what's worth paying attention to."
+    }
   ],
   "formats": [
     "Conversations",
@@ -90,64 +99,13 @@
     "Creative interventions"
   ],
   "speakers": [],
-  "programme": [
-    {
-      "title": "[PLACEHOLDER — session title]",
-      "category": "[PLACEHOLDER — track/theme]",
-      "date": "TBD",
-      "time": "TBD",
-      "venue": "[PLACEHOLDER — stage/room]",
-      "description": "[PLACEHOLDER — short description]"
-    },
-    {
-      "title": "[PLACEHOLDER — session title]",
-      "category": "[PLACEHOLDER — track/theme]",
-      "date": "TBD",
-      "time": "TBD",
-      "venue": "[PLACEHOLDER — stage/room]",
-      "description": "[PLACEHOLDER — short description]"
-    }
-  ],
+  "programme": [],
   "connection": {
     "eyebrow": "Connection & networking",
     "headline": "Built for meaningful encounters, not passive stage time.",
-    "body": "[PLACEHOLDER — 2-3 sentences on how ODDference creates real connection rather than relying only on the stage]"
+    "body": "Talks and panels are half of ODDference. The rest is built-in time and structure — matchmaking, facilitated conversations, shared meals — designed to turn a room of strangers into working relationships."
   },
-  "proof": {
-    "eyebrow": "Previous editions",
-    "title": "[PLACEHOLDER — proof section title]",
-    "items": [
-      { "value": "—", "label": "[PLACEHOLDER — attendee figure]" },
-      { "value": "—", "label": "[PLACEHOLDER — organisations figure]" },
-      { "value": "—", "label": "[PLACEHOLDER — speakers figure]" }
-    ],
-    "quote": {
-      "text": "[PLACEHOLDER — attendee feedback quote]",
-      "attribution": "[PLACEHOLDER — attribution]"
-    }
-  },
-  "tickets": [
-    {
-      "name": "[PLACEHOLDER — ticket name]",
-      "audience": "[PLACEHOLDER — audience]",
-      "price": "[PLACEHOLDER — price]",
-      "status": "[PLACEHOLDER — status]",
-      "benefits": ["[PLACEHOLDER — benefit]", "[PLACEHOLDER — benefit]"],
-      "ctaLabel": "Get this ticket",
-      "href": "/contact"
-    },
-    {
-      "name": "[PLACEHOLDER — ticket name]",
-      "audience": "[PLACEHOLDER — audience]",
-      "price": "[PLACEHOLDER — price]",
-      "status": "[PLACEHOLDER — status]",
-      "benefits": ["[PLACEHOLDER — benefit]", "[PLACEHOLDER — benefit]", "[PLACEHOLDER — benefit]"],
-      "ctaLabel": "Get this ticket",
-      "href": "/contact",
-      "recommended": true,
-      "note": "[PLACEHOLDER — note]"
-    }
-  ],
+  "tickets": [],
   "partnershipCta": {
     "eyebrow": "For business partners",
     "title": "Bring your organisation to ODDference",
@@ -155,15 +113,21 @@
     "href": "/work-with-odd"
   },
   "faq": [
-    { "question": "[PLACEHOLDER — dates/venue question]", "answer": "[PLACEHOLDER — answer]" },
     {
-      "question": "[PLACEHOLDER — arrival/accessibility question]",
-      "answer": "[PLACEHOLDER — answer]"
+      "question": "When and where is the next ODDference?",
+      "answer": "Dates and venue for the next edition are still being finalised — join the mailing list and we'll let you know as soon as they're confirmed."
     },
-    { "question": "[PLACEHOLDER — tickets question]", "answer": "[PLACEHOLDER — answer]" },
     {
-      "question": "[PLACEHOLDER — programme/networking question]",
-      "answer": "[PLACEHOLDER — answer]"
+      "question": "Is the venue accessible?",
+      "answer": "Accessibility details will be published alongside the venue once it's confirmed."
+    },
+    {
+      "question": "How do tickets work?",
+      "answer": "Ticket types and pricing aren't set yet — check back here or get in touch and we'll keep you posted."
+    },
+    {
+      "question": "Is there time built in to actually meet people?",
+      "answer": "Yes — structured networking and matchmaking time is built into the day alongside the stage programme, not left to chance."
     }
   ],
   "participate": [

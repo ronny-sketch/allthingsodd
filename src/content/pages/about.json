@@ -8,8 +8,8 @@
   "panels": [
     {
       "_kind": "media",
-      "image": "../../assets/about/about-1-performance.jpg",
-      "alt": "An ODD performance, lit from behind",
+      "image": "../../assets/hero/archive-11.jpg",
+      "alt": "Two people talking at a creative exhibition",
       "eyebrow": "About",
       "title": "This is ODD.",
       "body": "A co-creation platform built in Helsinki, on a mission to bring creativity and business together — not as opposites politely sharing a stage, but as one working system."
@@ -20,7 +20,7 @@
       "alt": "Motion-blurred crowd at an ODD event",
       "eyebrow": "Why we exist",
       "title": "Creative work and business work almost never happen in the same room.",
-      "body": "[PLACEHOLDER — 2-3 sentences on the gap/opportunity ODD responds to, in accessible language, without unsupported sweeping claims]"
+      "body": "Most creative work is organised project by project — a show, a production, a grant cycle — and the relationships and momentum it builds tend to dissolve once it's over. Businesses, institutions and other sectors rarely get a real, ongoing way in either. ODD exists to build the connective structures — events, spaces, programmes — that let that work and those relationships continue."
     },
     {
       "_kind": "model",
@@ -41,7 +41,7 @@
       "_kind": "text",
       "eyebrow": "One platform, different ways to participate",
       "title": "Creatives, communities, businesses,\ninstitutions, partners, audiences.",
-      "body": "[PLACEHOLDER — 2-3 sentences showing how these groups relate to ODD and each other, without reducing everything to only business vs. creative]"
+      "body": "None of these groups sit on opposite sides of a table here. A festival organiser might also be an ODDspace member; a company at ODDference might end up commissioning ODDagency; a creative collective might become a Work with ODD partner. ODD is built for people to move between these roles, not stay fixed in one."
     }
   ],
   "marqueeItems": [
@@ -58,52 +58,58 @@
     "eyebrow": "Our story",
     "title": "How ODD got here.",
     "milestones": [
-      { "year": "—", "title": "[PLACEHOLDER — origin]", "body": "[PLACEHOLDER — 1-2 sentences]" },
       {
-        "year": "—",
-        "title": "[PLACEHOLDER — first ODDfest]",
-        "body": "[PLACEHOLDER — 1-2 sentences]"
+        "year": "2023",
+        "title": "New Nordic Way rf founded",
+        "body": "The non-profit behind ODD is founded in Helsinki to build stronger structures around Finland's creative economy."
       },
       {
-        "year": "—",
-        "title": "[PLACEHOLDER — ODDference launch]",
-        "body": "[PLACEHOLDER — 1-2 sentences]"
+        "year": "2024",
+        "title": "Finding the gap",
+        "body": "A year of research and concept work into what was actually missing for creative professionals in Finland, leading toward a shared, cross-sector gathering."
       },
       {
-        "year": "—",
-        "title": "[PLACEHOLDER — ODDspace opens]",
-        "body": "[PLACEHOLDER — 1-2 sentences]"
+        "year": "2025",
+        "title": "ODDfest pilots",
+        "body": "The first ODDfest launches in Helsinki — around 2,600 participants, 350+ contributors and 70+ partners, reaching over a million people in total."
+      },
+      {
+        "year": "2026",
+        "title": "Creative Week, ODDference and ODDspace",
+        "body": "ODDfest expands into a wider Creative Week, ODDference launches as a standalone flagship event, and the first ODDspace opens its doors in Vallila."
       },
       {
         "year": "2027",
-        "title": "[PLACEHOLDER — Creative Week pivot]",
-        "body": "[PLACEHOLDER — 1-2 sentences on the 2027 evolution]"
+        "title": "Toward an open platform",
+        "body": "ODDfest moves toward a more distributed, open model, building on the Creative Week test — with year-round activity through ODDspace and ODDference continuing alongside it."
       }
     ]
   },
   "proof": {
     "eyebrow": "Proof",
-    "title": "[PLACEHOLDER — proof/impact section title]",
+    "title": "The first ODDfest, in numbers.",
     "items": [
-      { "value": "—", "label": "[PLACEHOLDER — activity/participation figure]" },
-      { "value": "—", "label": "[PLACEHOLDER — partners/members figure]" }
+      { "value": "2,600", "label": "Participants", "context": "1,900+ signups" },
+      { "value": "70+", "label": "Partners" },
+      { "value": "350+", "label": "Contributors" },
+      { "value": "1M+", "label": "Total reach" }
     ]
   },
   "people": {
     "eyebrow": "People & organisation",
     "title": "Who's behind ODD.",
-    "orgDescription": "ODD is the public-facing platform operated by New Nordic Way rf. [PLACEHOLDER — 1-2 further sentences on New Nordic Way rf's role, kept brief since ODD, not the legal entity, is the user-facing brand]",
+    "orgDescription": "ODD is the public-facing platform operated by New Nordic Way rf, a Finnish non-profit founded to strengthen the structures around Finland's creative economy. New Nordic Way runs ODDfest, ODDference, ODDspace and the wider Work with ODD activity — ODD is the name you'll see; New Nordic Way rf is who's behind it.",
     "team": []
   },
   "network": {
     "eyebrow": "Partners & network",
     "title": "Built with, not just for.",
-    "note": "[PLACEHOLDER — short framing line before the shared partner logo strip below; more partners to be added]"
+    "note": "Built together with the partners, venues and institutions below — with more joining as ODD grows."
   },
   "ambition": {
     "eyebrow": "The bigger picture",
-    "headline": "[PLACEHOLDER — longer-term ambition headline]",
-    "body": "[PLACEHOLDER — optional short section for longer-term thinking (e.g. State of Arrival) to be introduced later; context, not the main website proposition]"
+    "headline": "A stronger place for creative work in Finland.",
+    "body": "The longer ambition behind ODD is a Finland where creative work has better infrastructure, more continuity, and closer relationships with the rest of society — not because ODD builds all of that alone, but because events, spaces and programmes like these are practical, working parts of it."
   },
   "participate": [
     {

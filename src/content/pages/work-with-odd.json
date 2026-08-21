@@ -7,29 +7,29 @@
   },
   "eyebrow": "For business & institutions",
   "title": "Work with ODD.",
-  "intro": "[PLACEHOLDER — 2-3 sentences: there are several ways for an organisation to build a relationship with ODD, from a single ticket to a year-round partnership]",
+  "intro": "There are several ways to build a relationship with ODD — from a single ticket to a year-round partnership. Wherever you start, you're working with the same network of creative professionals and platforms.",
   "whyOdd": [
     {
       "number": "01",
       "title": "Access to creative expertise",
-      "body": "[PLACEHOLDER — the network ODD gives access to]"
+      "body": "A real network of creative professionals across disciplines, not a directory."
     },
     {
       "number": "02",
       "title": "Cross-sector capability",
-      "body": "[PLACEHOLDER — what makes ODD's model distinctive vs. a conventional consultancy/agency]"
+      "body": "ODD moves between creative, business and public-sector contexts by design — most consultancies or agencies only really work in one."
     },
     {
       "number": "03",
       "title": "Real communities & platforms",
-      "body": "[PLACEHOLDER — connection to ODDfest/ODDspace/ODDference, not theoretical]"
+      "body": "Connected directly to ODDfest, ODDference and ODDspace, not a service built on top of nothing."
     }
   ],
   "pathways": [
     {
       "meta": "Attend, bring a team, partner",
       "title": "ODDference",
-      "body": "[PLACEHOLDER — one-line description of this pathway]",
+      "body": "Attend, bring a team, or partner with ODD's flagship professional event.",
       "goLabel": "Explore ODDference →",
       "href": "/oddference",
       "image": "../../assets/programs/oddference-card.jpg"
@@ -37,7 +37,7 @@
     {
       "meta": "A year-round relationship",
       "title": "ODDmembership",
-      "body": "[PLACEHOLDER — one-line description of this pathway]",
+      "body": "A year-round relationship with ODD and its wider network — still being defined.",
       "goLabel": "Explore Membership →",
       "href": "/membership",
       "image": "../../assets/programs/oddmembership-card.jpg"
@@ -45,7 +45,7 @@
     {
       "meta": "Bring us a brief",
       "title": "ODDagency",
-      "body": "[PLACEHOLDER — one-line description of this pathway]",
+      "body": "Bring us a brief and we'll assemble the right creative team for it.",
       "goLabel": "Explore Agency →",
       "href": "/oddagency",
       "image": "../../assets/programs/oddagency-card.jpg"
@@ -53,38 +53,38 @@
     {
       "meta": "Build something together",
       "title": "Partnerships",
-      "body": "[PLACEHOLDER — one-line description of this pathway]",
+      "body": "Co-create something across ODD's events, spaces or wider activity.",
       "goLabel": "Get in touch →",
       "href": "/contact",
       "image": "../../assets/programs/partnerships-card.jpg"
     }
   ],
-  "cases": [
-    {
-      "category": "[PLACEHOLDER — case category]",
-      "title": "[PLACEHOLDER — case title]",
-      "partner": "[PLACEHOLDER — partner/client name]",
-      "summary": "[PLACEHOLDER — 2-3 sentence case summary]",
-      "href": "/oddagency"
-    }
-  ],
+  "cases": [],
   "howWeWork": [
-    { "number": "01", "title": "Start a conversation", "body": "[PLACEHOLDER — first step]" },
+    {
+      "number": "01",
+      "title": "Start a conversation",
+      "body": "Tell us what you're working on — there's no wrong way in."
+    },
     {
       "number": "02",
       "title": "Find the right pathway",
-      "body": "[PLACEHOLDER — matching to ODDference/Membership/Agency/Partnerships]"
+      "body": "Together we work out whether that's ODDference, membership, an agency project, or a partnership."
     },
-    { "number": "03", "title": "Build together", "body": "[PLACEHOLDER — what happens next]" }
+    {
+      "number": "03",
+      "title": "Build together",
+      "body": "We shape the specifics from there — the exact form depends on what you actually need."
+    }
   ],
   "network": {
     "eyebrow": "Who we work with",
     "title": "Organisations building with ODD",
-    "note": "[PLACEHOLDER — short framing line before the shared partner logo strip below; more partners to be added]"
+    "note": "A growing list of organisations already building with ODD — see the partners below, with more joining as the network grows."
   },
   "contact": {
     "eyebrow": "Get in touch",
     "title": "Tell us what you're working on.",
-    "body": "[PLACEHOLDER — short prompt encouraging a project inquiry, kept simple; see the Contact page for the actual form]"
+    "body": "Tell us what you're working on, or what you're trying to figure out — the form below goes straight to the team."
   }
 }

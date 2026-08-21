@@ -22,10 +22,7 @@
     { "platform": "TikTok", "href": "https://www.tiktok.com/@oddfest" },
     { "platform": "Discord", "href": "https://discord.gg/ZXtkM6FjBw" }
   ],
-  "contact": [
-    { "label": "Partnerships & press", "email": "ronny@oddfest.co" },
-    { "label": "Volunteer", "email": "kevin@oddfest.co" }
-  ],
+  "contact": [{ "label": "Say hello", "email": "hello@oddfest.co" }],
   "footerAddress": "New Nordic Way rf · Sturenportti 3, Helsinki · #DaretoBeODD",
   "footerTag": "New Nordic Way rf · oddfest.co",
   "newsletterLabel": "Sign up to newsletter",

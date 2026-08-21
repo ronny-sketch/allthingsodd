@@ -12,7 +12,7 @@ import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
 import WarpingText from '../components/media/WarpingText.astro';
 import Pill from '../components/primitives/Pill.astro';
-import photoPerformance from '../assets/hero/archive-27.jpg';
+import photoLineup from '../assets/hero/archive-19.jpg';
 import photoCrowd from '../assets/hero/archive-15.jpg';
 
 const entry = await getEntry('pages', 'oddfest');
@@ -77,7 +77,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       </div>
     </section>
 
-    <PhotoBreak image={photoPerformance} alt="A live performance from the ODDfest archive" />
+    <PhotoBreak image={photoLineup} alt="A full band on stage with the crowd at ODDfest" />
 
     <SectionIntro
       eyebrow={page.organiserOwnership.eyebrow}
@@ -85,15 +85,19 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       body={page.organiserOwnership.body}
     />
 
-    <section class="oddf-sub">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="eyebrow">Programme</span>
-          <h2>Discover what's on</h2>
-        </div>
-        <ProgrammeList items={page.programme} />
-      </div>
-    </section>
+    {
+      page.programme.length > 0 && (
+        <section class="oddf-sub">
+          <div class="wrap">
+            <div class="section-head">
+              <span class="eyebrow">Programme</span>
+              <h2>Discover what's on</h2>
+            </div>
+            <ProgrammeList items={page.programme} />
+          </div>
+        </section>
+      )
+    }
 
     {
       page.openCall && (
@@ -233,7 +237,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     max-width: 40rem;
   }
   .oddf-opencall .eyebrow {
-    color: var(--color-amber-bright);
+    color: var(--color-paper-60);
   }
   .oddf-opencall h2 {
     font: var(--text-heading-md);

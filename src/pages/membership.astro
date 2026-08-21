@@ -8,7 +8,7 @@ import PricingGrid from '../components/sections/PricingGrid.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
-import photoSinger from '../assets/hero/archive-33.jpg';
+import photoTeam from '../assets/hero/archive-39.jpg';
 
 const entry = await getEntry('pages', 'membership');
 if (!entry || entry.data._template !== 'membership')
@@ -58,7 +58,7 @@ const audienceCards = page.whoItsFor.map((a, i) => ({
     </div>
   </section>
 
-  <PhotoBreak image={photoSinger} alt="A live performance from the ODD archive" />
+  <PhotoBreak image={photoTeam} alt="The ODD team backstage at an event" />
 
   <section class="mem-sub">
     <div class="wrap">

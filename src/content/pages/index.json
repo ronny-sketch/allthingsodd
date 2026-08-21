@@ -1,30 +1,30 @@
 {
   "_template": "home",
   "seo": {
-    "title": "ODD — a co-creation platform for creativity and business",
-    "description": "A co-creation platform on a mission to bring creativity and business together to shape a more imaginative world. ODDfest, ODDference, ODDspace — Helsinki.",
+    "title": "ODD — creative expertise, put to wider use",
+    "description": "ODD brings creative expertise into culture, business and society — through ODDfest, ODDference, ODDspace and Work with ODD, in Helsinki.",
     "ogImage": "/og/home.jpg"
   },
   "hero": {
     "mosaicAlt": "A live photo mosaic from the ODDfest archive"
   },
   "opening": {
-    "headline": "[PLACEHOLDER — one-sentence master proposition: what ODD is, in plain language]",
-    "subline": "[PLACEHOLDER — one supporting sentence: why it's relevant right now, what ODD actually does]",
+    "headline": "ODD brings creative expertise into wider use — across culture, business and society.",
+    "subline": "We build events, spaces and programmes where creative professionals, organisations and communities meet, learn from each other and make things together.",
     "primaryCta": { "label": "Explore Work with ODD", "href": "/work-with-odd" },
     "secondaryCta": { "label": "See what's on", "href": "#whats-happening" }
   },
   "whatOddIs": {
     "eyebrow": "What ODD is",
     "headline": "More than one event.",
-    "body": "[PLACEHOLDER — 2-3 sentences establishing that ODD connects creative expertise, people and activity with business and society, and that it operates through multiple formats (ODDfest, ODDference, ODDspace, Work with ODD) rather than being a single show]",
+    "body": "ODDfest, ODDference and ODDspace are three different doors into the same idea: creative work gets stronger, and more useful to everyone else, when it has real structures to grow inside rather than one show a year. ODD builds those structures — an open festival platform, a flagship business event, a year-round space, and a handful of ways to work with us directly.",
     "cta": { "label": "Read more about ODD", "href": "/about" }
   },
   "twoWaysIn": {
-    "intro": "[PLACEHOLDER — one sentence framing the exchange between business and creative sides as reciprocal, not a one-way transaction]",
+    "intro": "Business and creative professionals don't usually meet as equals. ODD is built so both sides bring something the other needs.",
     "business": {
       "lede": "Learn from creative expertise.",
-      "body": "[PLACEHOLDER — 2-3 sentences on what businesses, institutions and organisational leaders get from ODD]",
+      "body": "Creative professionals think about uncertainty, culture, attention and meaning for a living — knowledge that's directly useful to how you lead, build and communicate. ODDference puts that expertise on the agenda; Work with ODD gets you closer to it year-round.",
       "tracks": [
         { "label": "ODDference", "meta": "Flagship professional event", "href": "/oddference" },
         {
@@ -36,7 +36,7 @@
     },
     "creative": {
       "lede": "Build, show and belong.",
-      "body": "[PLACEHOLDER — 2-3 sentences on what creative professionals and communities get from ODD]",
+      "body": "A place to show your work, meet people outside your usual circle, and build something that outlasts one production. ODDfest gives your programme a wider stage; ODDspace gives you somewhere to work between events.",
       "tracks": [
         { "label": "ODDfest", "meta": "Open creative platform", "href": "/oddfest" },
         { "label": "ODDspace", "meta": "Year-round home base", "href": "https://www.oddspace.co" }
@@ -44,27 +44,27 @@
     }
   },
   "whatsHappening": {
-    "note": "[PLACEHOLDER — illustrative example structure, not confirmed dates]",
+    "note": "A running list of what's on across ODDfest, ODDference and ODDspace — updated as things are confirmed.",
     "items": [
       {
         "date": "TBD",
         "category": "ODDfest",
-        "title": "[PLACEHOLDER — open call or programme item]",
-        "description": "[PLACEHOLDER — one-line description]",
+        "title": "Hosting opens for the 2027 programme",
+        "description": "Independent artists, collectives, venues and organisations will soon be able to register to host something under the ODDfest umbrella.",
         "href": "/oddfest"
       },
       {
         "date": "TBD",
         "category": "ODDference",
-        "title": "[PLACEHOLDER — programme item]",
-        "description": "[PLACEHOLDER — one-line description]",
+        "title": "Planning for the next edition is underway",
+        "description": "ODDference returns with the same big question: what can business learn from creative expertise.",
         "href": "/oddference"
       },
       {
-        "date": "TBD",
+        "date": "Weekly",
         "category": "ODDspace",
-        "title": "[PLACEHOLDER — member event]",
-        "description": "[PLACEHOLDER — one-line description]",
+        "title": "Coffee on the House",
+        "description": "A standing open meetup for ODDspace members and friends, most weeks, in Vallila.",
         "href": "https://www.oddspace.co"
       }
     ]
@@ -73,7 +73,7 @@
     {
       "meta": "Creative · Open platform",
       "title": "ODDfest",
-      "body": "[PLACEHOLDER — distributed/open creative platform description, Creative Week model]",
+      "body": "An open, distributed creative platform across Helsinki — independent artists, collectives, venues and organisations hosting their own programme under one shared identity, building on the Creative Week model piloted in 2026.",
       "goLabel": "See ODDfest →",
       "href": "/oddfest",
       "image": "../../assets/programs/oddfest-card.jpg"
@@ -81,7 +81,7 @@
     {
       "meta": "Business · Flagship event",
       "title": "ODDference",
-      "body": "[PLACEHOLDER — flagship professional event description]",
+      "body": "ODD's flagship professional event: a day built entirely around what business and the rest of society can learn from creative expertise.",
       "goLabel": "Visit ODDference →",
       "href": "/oddference",
       "image": "../../assets/programs/oddference-card.jpg"
@@ -89,7 +89,7 @@
     {
       "meta": "Year-round · Home base",
       "title": "ODDspace",
-      "body": "[PLACEHOLDER — year-round home/community/space description]",
+      "body": "A year-round base in Vallila where creative professionals and the organisations working with them meet, work and build things between events.",
       "goLabel": "Ask about ODDspace ↗",
       "href": "https://www.oddspace.co",
       "image": "../../assets/programs/oddspace-card.jpg"
@@ -97,7 +97,7 @@
     {
       "meta": "Business · Get involved",
       "title": "Work with ODD",
-      "body": "[PLACEHOLDER — membership, agency and partnership routes description]",
+      "body": "Membership, agency projects and partnerships — the ways an organisation builds an ongoing relationship with ODD.",
       "goLabel": "Explore Work with ODD →",
       "href": "/work-with-odd",
       "image": "../../assets/programs/work-with-odd-card.jpg"
@@ -105,17 +105,25 @@
   ],
   "proof": {
     "eyebrow": "Proof",
-    "title": "[PLACEHOLDER — proof/traction section title]",
+    "title": "ODDfest, in numbers.",
     "items": [
-      { "value": "—", "label": "[PLACEHOLDER — ODD activity / participation figure]" },
-      { "value": "—", "label": "[PLACEHOLDER — paid partners / members figure]" },
-      { "value": "—", "label": "[PLACEHOLDER — number of events/programmes enabled]" }
+      { "value": "2,600", "label": "Attendees", "context": "1,900+ signups" },
+      {
+        "value": "350+",
+        "label": "Contributors",
+        "context": "Partners, speakers, artists, staff, volunteers"
+      },
+      {
+        "value": "€400K",
+        "label": "Direct economic impact",
+        "context": "€320K invested into the creative economy"
+      }
     ]
   },
   "workWithOdd": {
     "eyebrow": "For business & institutions",
     "title": "Several ways to work with ODD.",
-    "intro": "[PLACEHOLDER — one paragraph: organisations can build a relationship with ODD in several different ways, from a single ticket to a year-round partnership]",
+    "intro": "Every organisation starts somewhere different — a ticket, a project, a standing relationship. These are the four ways in.",
     "cards": [
       {
         "eyebrow": "Attend",
@@ -144,13 +152,6 @@
     ],
     "ctaLabel": "Explore Work with ODD",
     "ctaHref": "/work-with-odd"
-  },
-  "caseTeaser": {
-    "category": "[PLACEHOLDER — case category, e.g. Agency]",
-    "title": "[PLACEHOLDER — short case/story title]",
-    "summary": "[PLACEHOLDER — 2-3 sentence case or story summary]",
-    "metrics": [{ "value": "—", "label": "[PLACEHOLDER — metric label]" }],
-    "href": "/oddagency"
   },
   "participate": [
     {

@@ -7,58 +7,67 @@
   },
   "eyebrow": "ODDmembership · Work with ODD",
   "title": "A year-round relationship with ODD.",
-  "intro": "[PLACEHOLDER — 2-3 sentences: organisations that want an ongoing relationship with ODD and access to the wider creative network can participate throughout the year, not only by buying a ticket or commissioning a single project. \"ODDmembership\" is a provisional working name]",
+  "intro": "Some organisations want more than a single ticket or a one-off project — an ongoing relationship with ODD and its wider network, across the year. \"ODDmembership\" is a working name for that relationship, still being defined.",
   "whatItIs": {
     "eyebrow": "What it is",
     "headline": "Not a ticket. Not a project. A relationship.",
-    "body": "[PLACEHOLDER — 2-3 sentences explaining the year-round nature of membership, distinct from ODDagency's project-based work]"
+    "body": "Where ODDagency is project-based and ODDference is a single event, membership is meant to be a standing relationship — regular contact with ODD's network and activity rather than a one-time engagement. The exact shape of what that includes is still being developed."
   },
   "whoItsFor": [
     {
-      "label": "[PLACEHOLDER — organisation type]",
-      "description": "[PLACEHOLDER — why membership fits]"
+      "label": "Organisations wanting an ongoing creative connection",
+      "description": "Companies and institutions that want more than a single touchpoint with ODD's network."
     },
     {
-      "label": "[PLACEHOLDER — organisation type]",
-      "description": "[PLACEHOLDER — why membership fits]"
+      "label": "Partners already working with ODD",
+      "description": "Organisations already collaborating with ODD who want that relationship formalised year-round."
     },
     {
-      "label": "[PLACEHOLDER — organisation type]",
-      "description": "[PLACEHOLDER — why membership fits]"
+      "label": "Organisations exploring the creative economy",
+      "description": "Teams who want a standing way to stay close to what's happening in Finland's creative scene."
     }
   ],
   "whyJoin": [
     {
       "number": "01",
-      "title": "[PLACEHOLDER — value proposition]",
-      "body": "[PLACEHOLDER — no invented promises]"
+      "title": "An ongoing connection",
+      "body": "Regular contact with ODD's activity and network, not a single event or project."
     },
     {
       "number": "02",
-      "title": "[PLACEHOLDER — value proposition]",
-      "body": "[PLACEHOLDER — no invented promises]"
+      "title": "Early access",
+      "body": "First look at ODD's programme, events and opportunities as they're announced."
     },
     {
       "number": "03",
-      "title": "[PLACEHOLDER — value proposition]",
-      "body": "[PLACEHOLDER — no invented promises]"
+      "title": "A direct line",
+      "body": "A standing point of contact into ODD's wider creative network, being developed alongside our first members."
     }
   ],
   "includes": [
-    { "title": "[PLACEHOLDER — inclusion]", "body": "[PLACEHOLDER — description]" },
-    { "title": "[PLACEHOLDER — inclusion]", "body": "[PLACEHOLDER — description]" },
-    { "title": "[PLACEHOLDER — inclusion]", "body": "[PLACEHOLDER — description]" }
+    {
+      "title": "Access to the network",
+      "body": "Introductions and conversations across ODD's wider creative and business network."
+    },
+    {
+      "title": "Events & gatherings",
+      "body": "Participation in ODD activity throughout the year — not just a single ticket."
+    },
+    {
+      "title": "A closer connection",
+      "body": "A more direct, ongoing relationship with ODD than a one-off event or project allows."
+    }
   ],
   "rhythm": [
-    "[PLACEHOLDER — recurring touchpoint, e.g. quarterly gathering]",
-    "[PLACEHOLDER — recurring touchpoint, e.g. member updates]",
-    "[PLACEHOLDER — recurring touchpoint, e.g. introductions/invitations]"
+    "Regular contact from the ODD team",
+    "Invitations to ODD events and gatherings",
+    "Introductions across the network as relevant opportunities come up"
   ],
   "tiers": [],
   "network": {
     "eyebrow": "Members",
     "title": "Organisations already building with ODD",
-    "note": "[PLACEHOLDER — short framing line before the shared partner logo strip below; no member names confirmed for publication yet]"
+    "note": "ODDmembership is new — the first member organisations will be listed here as they join."
   },
   "finalCta": {
     "eyebrow": "Interested?",

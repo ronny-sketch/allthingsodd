@@ -28,7 +28,7 @@ const formAccessKey =
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
-  <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
+  <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} warpTitle />
 
   <section class="wwo-sub">
     <div class="wrap">
@@ -44,15 +44,19 @@ const formAccessKey =
 
   <PhotoBreak image={photoCollab} alt="A collaborative performance from the ODD archive" />
 
-  <section class="wwo-sub">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Selected work</span>
-        <h2>Cases</h2>
-      </div>
-      <CaseGrid items={page.cases} />
-    </div>
-  </section>
+  {
+    page.cases.length > 0 && (
+      <section class="wwo-sub">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="eyebrow">Selected work</span>
+            <h2>Cases</h2>
+          </div>
+          <CaseGrid items={page.cases} />
+        </div>
+      </section>
+    )
+  }
 
   <section class="wwo-sub">
     <div class="wrap">

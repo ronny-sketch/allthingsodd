@@ -9,7 +9,7 @@
   "eyebrow": "ODDagency · For business",
   "title": "Hire ODD for project-based creative work.",
   "meta": "Project-based · Helsinki",
-  "intro": "[PLACEHOLDER — 2-3 sentences: ODDagency turns ODD's network, creative professionals, cultural understanding and production capability into project-specific work for organisations. This is real, active commercial work, not a future idea]",
+  "intro": "ODDagency turns ODD's network — creative professionals, cultural understanding and production capability — into project-specific work for organisations. This is active commercial work already happening, not a future idea.",
   "heroMedia": {
     "image": "../../assets/programs/oddagency-card.jpg"
   },
@@ -17,95 +17,97 @@
     {
       "number": "01",
       "title": "Production",
-      "body": "[PLACEHOLDER — from concept to install]"
+      "body": "From first concept through to a finished, installed result."
     },
     {
       "number": "02",
       "title": "Co-creation",
-      "body": "[PLACEHOLDER — bring a brief, or bring nothing at all]"
+      "body": "Bring a fully formed brief, or bring a problem and figure out the brief together."
     },
     {
       "number": "03",
       "title": "Cultural understanding",
-      "body": "[PLACEHOLDER — access to creative specialists and perspective]"
+      "body": "Direct access to creative specialists and perspective most agencies don't have on staff."
     }
   ],
   "whatItIs": {
     "eyebrow": "What ODDagency is",
     "headline": "ODD's network, applied to your project.",
-    "body": "[PLACEHOLDER — 2-3 sentences on how ODDagency assembles project-specific teams from ODD's network of creative professionals, rather than being a fixed in-house team]"
+    "body": "Instead of keeping a fixed in-house team, ODDagency assembles the right people from ODD's wider network for each specific project — the mix changes depending on what the work actually needs."
   },
   "capabilities": [
     {
       "number": "01",
       "title": "Creative production",
-      "body": "[PLACEHOLDER — capability description]"
+      "body": "Concept, design and production for physical and digital work, end to end."
     },
     {
       "number": "02",
       "title": "Cultural strategy",
-      "body": "[PLACEHOLDER — capability description]"
+      "body": "Reading what's culturally relevant right now, and what that means for your organisation or brand."
     },
     {
       "number": "03",
       "title": "Community activation",
-      "body": "[PLACEHOLDER — capability description]"
+      "body": "Real access to ODD's creative and cultural communities, not a cold outreach list."
     },
     {
       "number": "04",
       "title": "Co-creation & concept work",
-      "body": "[PLACEHOLDER — capability description]"
+      "body": "Workshops and facilitated sessions that turn an open brief into a concrete direction."
     }
   ],
   "whyOdd": [
     {
       "number": "01",
       "title": "Network model",
-      "body": "[PLACEHOLDER — not a fixed agency roster]"
+      "body": "No fixed roster — every project draws on whoever's actually right for it, across ODD's full network."
     },
     {
       "number": "02",
       "title": "Project-specific teams",
-      "body": "[PLACEHOLDER — assembled for the actual brief]"
+      "body": "Assembled around the brief, not the other way around."
     },
     {
       "number": "03",
       "title": "Real communities & platforms",
-      "body": "[PLACEHOLDER — connection to ODDfest/ODDspace, not theoretical]"
+      "body": "Connected to ODDfest and ODDspace directly — not a theoretical creative network."
     }
   ],
   "howItWorks": [
     {
       "number": "01",
       "title": "Challenge / brief",
-      "body": "[PLACEHOLDER — how a project starts]"
+      "body": "You bring a problem, a brief, or just a rough idea of what you're trying to do."
     },
-    { "number": "02", "title": "Framing", "body": "[PLACEHOLDER — how the brief is shaped]" },
+    {
+      "number": "02",
+      "title": "Framing",
+      "body": "We work through what the project actually needs before assembling anyone."
+    },
     {
       "number": "03",
       "title": "Team",
-      "body": "[PLACEHOLDER — how the project-specific team is assembled]"
+      "body": "The right creative professionals are pulled together from ODD's network for this specific project."
     },
     {
       "number": "04",
       "title": "Creation / production",
-      "body": "[PLACEHOLDER — how the work gets made]"
+      "body": "The team builds, tests and produces the work."
     },
-    { "number": "05", "title": "Delivery / learning", "body": "[PLACEHOLDER — how it wraps up]" }
-  ],
-  "cases": [
     {
-      "category": "[PLACEHOLDER — case category]",
-      "title": "[PLACEHOLDER — Mylly case summary]",
-      "partner": "Mylly Production",
-      "summary": "[PLACEHOLDER — short summary of the kind of work this case represents; details not yet confirmed for publication]",
-      "href": "/contact"
+      "number": "05",
+      "title": "Delivery / learning",
+      "body": "The work is delivered, and what's learned feeds back into ODD's wider network."
     }
   ],
+  "cases": [],
   "projectTypes": [
-    "[PLACEHOLDER — project type]",
-    "[PLACEHOLDER — project type]",
-    "[PLACEHOLDER — project type]"
+    "Brand collaborations",
+    "Event & experience production",
+    "Cultural strategy projects",
+    "Community activations",
+    "Concept development"
   ],
   "participate": [
     {

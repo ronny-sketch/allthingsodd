@@ -9,7 +9,7 @@ import PersonGrid from '../components/sections/PersonGrid.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
-import photoCrowdEnergy from '../assets/hero/archive-08.jpg';
+import photoCommunity from '../assets/hero/archive-40.jpg';
 
 const entry = await getEntry('pages', 'about');
 if (!entry || entry.data._template !== 'about')
@@ -38,7 +38,7 @@ const { partners } = site.data;
     </div>
   </section>
 
-  <PhotoBreak image={photoCrowdEnergy} alt="A crowd at an ODD event" />
+  <PhotoBreak image={photoCommunity} alt="People connecting at an ODD event" />
 
   {
     page.proof && (

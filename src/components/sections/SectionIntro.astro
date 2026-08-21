@@ -4,6 +4,8 @@
 // "What it is", Membership's "What it is", and several other single-idea
 // sections across V2 — one component, many pages. See content.config.ts's
 // `sectionIntro` fragment.
+import WarpingText from '../media/WarpingText.astro';
+
 interface LinkCta {
   label: string;
   href: string;
@@ -14,15 +16,33 @@ interface Props {
   headline: string;
   body: string;
   cta?: LinkCta;
+  // Opt-in per caller (default off) — SectionIntro is reused across most
+  // pages on the site; the living-warping treatment is meant for a couple
+  // of real headings for variation, not applied blanket to every section
+  // that happens to reuse this shape. Same convention as PageIntro/
+  // SplitHero's warpTitle prop.
+  warpHeadline?: boolean;
 }
-const { eyebrow, headline, body, cta } = Astro.props;
+const { eyebrow, headline, body, cta, warpHeadline = false } = Astro.props;
 ---
 
 <section class="section-intro">
   <div class="wrap">
     <div class="section-intro-inner reveal">
       <span class="eyebrow">{eyebrow}</span>
-      <h2>{headline}</h2>
+      {
+        warpHeadline ? (
+          <WarpingText
+            as="h2"
+            text={headline}
+            class="section-intro-warping-headline"
+            color="paper"
+            align="center"
+          />
+        ) : (
+          <h2>{headline}</h2>
+        )
+      }
       <p>{body}</p>
       {
         cta && (
@@ -52,7 +72,11 @@ const { eyebrow, headline, body, cta } = Astro.props;
   .section-intro-inner .eyebrow {
     color: var(--color-paper-60);
   }
-  .section-intro-inner h2 {
+  /* :global() on the warping variant — WarpingText renders its heading
+     inside its own component file, so this file's scoped-CSS attribute
+     doesn't carry over to it (same pattern as PageIntro/SplitHero). */
+  .section-intro-inner h2,
+  .section-intro-inner :global(.section-intro-warping-headline) {
     font-family: var(--font-display);
     font-weight: 400;
     color: var(--color-paper);

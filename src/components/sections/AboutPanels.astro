@@ -9,6 +9,7 @@ import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Logo from '../primitives/Logo.astro';
 import Pill from '../primitives/Pill.astro';
+import WarpingText from '../media/WarpingText.astro';
 
 type Panel =
   | {
@@ -51,7 +52,7 @@ const marqueeLoop = [...marqueeItems, ...marqueeItems];
 
 <div class="about-panels">
   {
-    panels.map((panel) => {
+    panels.map((panel, i) => {
       if (panel._kind === 'media') {
         return (
           <div class="about-panel about-panel--media reveal">
@@ -60,7 +61,15 @@ const marqueeLoop = [...marqueeItems, ...marqueeItems];
             </div>
             <div class="about-copy">
               <div class="eyebrow">{panel.eyebrow}</div>
-              <h2>{panel.title}</h2>
+              {/* Only the very first panel — the page's opening line ("This
+                  is ODD.") — gets the living-warping treatment; the rest of
+                  the panels stay plain, same "opt-in per real heading, not
+                  blanket" rule as PageIntro/SplitHero's warpTitle prop. */}
+              {i === 0 ? (
+                <WarpingText as="h2" text={panel.title} class="about-warping-title" color="paper" />
+              ) : (
+                <h2>{panel.title}</h2>
+              )}
               <p>{panel.body}</p>
             </div>
           </div>
@@ -166,7 +175,11 @@ const marqueeLoop = [...marqueeItems, ...marqueeItems];
   .about-copy .eyebrow {
     margin-bottom: 1.2rem;
   }
+  /* :global() on the warping variant — WarpingText renders its heading
+     inside its own component file, so this file's scoped-CSS attribute
+     doesn't carry over to it (same pattern as PageIntro/SplitHero). */
   .about-copy h2,
+  .about-copy :global(.about-warping-title),
   .about-panel--text h2 {
     font-family: var(--font-display);
     font-weight: 400;

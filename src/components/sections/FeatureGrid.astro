@@ -14,7 +14,7 @@ const { cards } = Astro.props;
 const maxWidth = cards.length <= 3 ? '60rem' : '72rem';
 ---
 
-<div class="oddf-grid reveal" style={`--cols: ${cards.length}; max-width: ${maxWidth}`}>
+<div class="oddf-grid reveal" style={`max-width: ${maxWidth}`}>
   {
     cards.map((c) => (
       <div>
@@ -30,17 +30,39 @@ const maxWidth = cards.length <= 3 ? '60rem' : '72rem';
   .oddf-grid {
     margin: 4rem auto 0;
     display: grid;
-    /* --cols (set inline, per instance, along with max-width above) — was a
-       hardcoded repeat(3, 1fr) regardless of actual card count, which
-       stranded a lone 4th/5th card alone on its own row whenever a page
-       passed more than 3 cards (real cases: ODDfest's 4-step "How it
-       works", ODDagency's 4 capabilities / 5 process steps, ODDference's
-       5 audience cards). See docs/architecture.md#v2. */
-    grid-template-columns: repeat(var(--cols), 1fr);
+    /* auto-fit + minmax(240px, 1fr), not a fixed repeat(var(--cols), 1fr) —
+       a fixed N-column count was tried first (matching --cols, set inline
+       per instance) but a card's longest single word ("Organisational",
+       "Entrepreneurs") needs ~250px to avoid overflowing its own cell, and
+       no single fixed-column count is safe at every viewport: the
+       container's real width varies a lot (SubpageFrame's rails add a
+       constant 176px regardless of viewport; the font-size clamp below
+       also hits its own max well before typical desktop widths), so a
+       column count safe at one width overflowed at another (confirmed via
+       screenshots at 834/1100/1440/1920px, not assumed — "Organisational"
+       silently lost letters at both a "narrow desktop" and a "wide desktop"
+       width with a fixed 5-column layout). auto-fit sidesteps the whole
+       problem: it always uses as many ≥240px columns as actually fit,
+       at any width, so a card is never forced narrower than its own
+       longest word needs. A lone last card on its own row (5 cards, 4 fit
+       per row) reads fine here — see docs/architecture.md's note on the
+       original "stranded card" bug this replaces; that was about a
+       hardcoded repeat(3, 1fr) never adapting to real card counts at all,
+       not about an uneven final row, which this design already uses
+       elsewhere (ProofGrid/CaseGrid's own auto-fit grids). */
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1px;
     background: var(--color-paper-12);
   }
   .oddf-grid > div {
+    /* overflow: hidden — a safety net, not the primary fix (that's the
+       240px auto-fit floor below): without it, a single long word that
+       still doesn't fit its cell doesn't get clipped, it bleeds into the
+       next cell and renders invisibly underneath that cell's own opaque
+       background (DOM-order paint stacking) — confirmed via an actual
+       tablet screenshot where "Organisational Leaders" silently lost its
+       "L" this way, not assumed. */
+    overflow: hidden;
     background: var(--color-backstage);
     padding: 2.2rem;
     text-align: center;
@@ -65,12 +87,6 @@ const maxWidth = cards.length <= 3 ? '60rem' : '72rem';
     margin: 0.7rem 0 0;
     line-height: 1.6;
   }
-  @media (max-width: 700px) {
-    .oddf-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
   @media (prefers-reduced-motion: no-preference) {
     .oddf-grid > div {
       opacity: 0;

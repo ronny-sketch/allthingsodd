@@ -113,8 +113,29 @@
     ]
   },
   "pressContact": {
-    "name": "Laura Fuentes",
-    "role": "Head of PR, ODDfest",
-    "email": "laura@oddfest.co"
+    "name": "Ronny Eriksson",
+    "role": "Partnerships & Press, ODD",
+    "email": "ronny@oddfest.co"
+  },
+  "photobank": {
+    "eyebrow": "Photobank",
+    "title": "Browse the archive.",
+    "note": "The full public photo archive — browse and download directly from Flickr.",
+    "items": [
+      {
+        "label": "ODDfest 2025 Photobank",
+        "href": "https://www.flickr.com/photos/oddfest/",
+        "photo": "https://live.staticflickr.com/65535/54623635325_3b9e33349c_c.jpg",
+        "photoWidth": 799,
+        "photoHeight": 533
+      },
+      {
+        "label": "ODDfest 2026 Photobank",
+        "href": "https://www.flickr.com/photos/204686183@N06/",
+        "photo": "https://live.staticflickr.com/65535/55345176214_93b8bdb822_z.jpg",
+        "photoWidth": 640,
+        "photoHeight": 427
+      }
+    ]
   }
 }

@@ -8,8 +8,8 @@
   },
   "eyebrow": "ODDfest · For creatives",
   "title": "Helsinki's open creative platform.",
-  "meta": "[PLACEHOLDER — date] · Helsinki",
-  "intro": "[PLACEHOLDER — 2-3 sentences: ODDfest is an open, distributed creative platform across Helsinki, developing from the model tested as Creative Week in 2026 — not a centrally curated, centrally produced festival]",
+  "meta": "2027 · Helsinki",
+  "intro": "ODDfest is becoming an open, distributed creative platform across Helsinki — independent artists, collectives, venues and organisations hosting their own programme under one shared identity. It's not a centrally curated, centrally produced festival; it's the model tested as Creative Week in 2026, opened up further.",
   "heroMedia": {
     "video": "/video/oddfest-hero.mp4",
     "poster": "../../assets/video/oddfest-hero-poster.jpg",
@@ -19,44 +19,44 @@
     {
       "number": "01",
       "title": "Art & Performance",
-      "body": "[PLACEHOLDER — installations, live shows and everything in between, hosted by independent venues and organisers across the city]"
+      "body": "Installations, live shows and everything in between, hosted by independent venues and organisers across the city."
     },
     {
       "number": "02",
       "title": "Club Culture",
-      "body": "[PLACEHOLDER — nights hosted by independent collectives and venues under the shared ODDfest umbrella]"
+      "body": "Club nights hosted by independent collectives and venues, all part of the same shared ODDfest week."
     },
     {
       "number": "03",
       "title": "Collective Creation",
-      "body": "[PLACEHOLDER — open calls, co-created works, and space for anyone with something to bring]"
+      "body": "Open calls, co-created works and space for anyone with something to bring, not just established names."
     }
   ],
   "whatItIs": {
     "eyebrow": "What ODDfest is",
     "headline": "An open platform, not a booked showcase.",
-    "body": "[PLACEHOLDER — 2-3 sentences: independent creators, collectives, venues, organisations, communities and companies create and host their own programme under the wider ODDfest umbrella; ODD provides connective infrastructure rather than centrally producing every event]"
+    "body": "Independent creators, collectives, venues, organisations, communities and companies create and host their own programme, and ODD connects it under one shared identity. Instead of producing every event centrally, ODD provides the platform, the visibility and the connections that make a distributed programme read as one shared moment."
   },
   "howItWorks": [
     {
       "number": "01",
       "title": "Create or host something",
-      "body": "[PLACEHOLDER — how an organiser proposes/registers programme]"
+      "body": "Register your event, show, night or project as part of ODDfest — you keep full control of what you make and how."
     },
     {
       "number": "02",
       "title": "Join the shared programme",
-      "body": "[PLACEHOLDER — how programme becomes part of the wider ODDfest listing]"
+      "body": "Once confirmed, your programme appears in the shared ODDfest listing alongside everyone else's."
     },
     {
       "number": "03",
       "title": "ODD connects and amplifies",
-      "body": "[PLACEHOLDER — what ODD's platform role actually does for an organiser]"
+      "body": "ODD promotes the programme as a whole, and connects organisers to partners, audiences and each other."
     },
     {
       "number": "04",
       "title": "Helsinki experiences it together",
-      "body": "[PLACEHOLDER — the shared city-wide moment this adds up to]"
+      "body": "For one week, dozens of independent events read as a single citywide moment — Helsinki's creative scene, visible together."
     }
   ],
   "whoCanTakePart": [
@@ -77,56 +77,44 @@
   "organiserOwnership": {
     "eyebrow": "What participating organisers own",
     "headline": "Your programme stays yours.",
-    "body": "[PLACEHOLDER — 2-3 sentences explaining that participating organisations retain ownership/responsibility for their own programme rather than ODD centrally producing everything; exact terms not yet finalised]"
+    "body": "Taking part in ODDfest doesn't mean handing your event over. You keep creative control, your own budget and your own relationships — ODD's role is to connect what you're doing to a bigger shared platform, not to run it for you. The exact terms of participation for 2027 are still being finalised."
   },
-  "programme": [
-    {
-      "title": "[PLACEHOLDER — programme item]",
-      "organiser": "[PLACEHOLDER — organiser]",
-      "category": "[PLACEHOLDER — category]",
-      "date": "TBD",
-      "venue": "[PLACEHOLDER — venue]",
-      "description": "[PLACEHOLDER — short description]"
-    },
-    {
-      "title": "[PLACEHOLDER — programme item]",
-      "organiser": "[PLACEHOLDER — organiser]",
-      "category": "[PLACEHOLDER — category]",
-      "date": "TBD",
-      "venue": "[PLACEHOLDER — venue]",
-      "description": "[PLACEHOLDER — short description]"
-    }
-  ],
+  "programme": [],
   "openCall": {
-    "status": "[PLACEHOLDER — status, e.g. Opening soon]",
-    "headline": "[PLACEHOLDER — open call headline]",
-    "body": "[PLACEHOLDER — explanation of how to apply/register programme]",
-    "deadline": "[PLACEHOLDER — deadline]",
+    "status": "Details being finalised",
+    "headline": "Want to host something at ODDfest 2027?",
+    "body": "The process for registering programme is still being set up. If you've got an idea — a show, a night, an installation, an open call of your own — get in touch now and we'll keep you posted as it opens.",
     "cta": { "label": "Pitch an idea", "href": "/contact" },
     "eligibilityHref": "/contact"
   },
   "forPartners": {
     "eyebrow": "For partners",
     "headline": "Partner with the platform.",
-    "body": "[PLACEHOLDER — 1-2 sentences for organisations interested in partnering with the distributed ODDfest platform]",
+    "body": "Organisations that want to sponsor, host space for, or otherwise back the distributed ODDfest programme can partner with the platform as a whole rather than a single event.",
     "cta": { "label": "Talk to us about partnering", "href": "/work-with-odd" }
   },
   "previousEdition": {
     "eyebrow": "Creative Week 2026",
     "title": "The model this builds on.",
-    "body": "[PLACEHOLDER — short description of the 2026 Creative Week test that ODDfest 2027 develops from]",
-    "proof": [{ "value": "—", "label": "[PLACEHOLDER — key figure]" }]
+    "body": "In 2026, ODDfest ran as part of a wider Creative Week (June 8–14) — with ODDference on June 11–12 and ODDfest's own core programme on June 12–13, across venues including Lasipalatsi, Kulttuurikasarmi, Tavastia Club and more. ODDfest 2027 builds on that same distributed spirit, opened up further to more independent organisers across the city.",
+    "archiveHref": "/media"
   },
   "faq": [
-    { "question": "[PLACEHOLDER — question about attending]", "answer": "[PLACEHOLDER — answer]" },
     {
-      "question": "[PLACEHOLDER — question about hosting programme]",
-      "answer": "[PLACEHOLDER — answer]"
+      "question": "Can I attend without pre-registering?",
+      "answer": "Most ODDfest programme is open to the public — check each event's own listing for specifics once the 2027 programme goes live."
     },
-    { "question": "[PLACEHOLDER — question about ticketing]", "answer": "[PLACEHOLDER — answer]" },
     {
-      "question": "[PLACEHOLDER — question about accessibility]",
-      "answer": "[PLACEHOLDER — answer]"
+      "question": "How do I host something at ODDfest?",
+      "answer": "Register interest through the open call above. Once the process opens fully, you'll register your event directly and it'll join the shared programme."
+    },
+    {
+      "question": "Is there one ticket for all of ODDfest?",
+      "answer": "No — ODDfest is a distributed programme, so ticketing (where it exists at all) is set by each individual host, not centrally by ODD."
+    },
+    {
+      "question": "Is ODDfest accessible?",
+      "answer": "Accessibility varies by venue and host, since programme is organised independently across the city — check with individual organisers, or contact us if you need help finding accessible options."
     }
   ],
   "participate": [

@@ -495,6 +495,33 @@ const pages = defineCollection({
           items: z.array(resourceLink),
         }),
         pressContact: z.object({ name: z.string(), role: z.string(), email: z.string() }),
+        // A visual Flickr photobank — each item renders via Flickr's own
+        // official embed widget (a `data-flickr-embed` anchor + the
+        // embedr.flickr.com script), not a raw iframe pointed at flickr.com
+        // itself: flickr.com's own pages send `X-Frame-Options: SAMEORIGIN`
+        // (confirmed via a real header check, not assumed), which blocks
+        // embedding outright; embedr.flickr.com is Flickr's dedicated,
+        // iframe-friendly embed service and is what the "Embed" button on
+        // flickr.com itself generates. `photo`/`photoWidth`/`photoHeight` are
+        // just the placeholder image shown before that script upgrades it
+        // into the real interactive widget. Optional at the object level,
+        // same "omit rather than invent" rule as the rest of this page.
+        photobank: z
+          .object({
+            eyebrow: z.string(),
+            title: z.string(),
+            note: z.string().optional(),
+            items: z.array(
+              z.object({
+                label: z.string(),
+                href: z.string(),
+                photo: z.string(),
+                photoWidth: z.number(),
+                photoHeight: z.number(),
+              }),
+            ),
+          })
+          .optional(),
       }),
     ]);
   },

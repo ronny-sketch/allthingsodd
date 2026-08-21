@@ -15,12 +15,18 @@ import Aftermovie from '../components/sections/Aftermovie.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
 import PartnerTiers from '../components/sections/PartnerTiers.astro';
 import FloatingCloud from '../components/media/FloatingCloud.astro';
+import WarpingText from '../components/media/WarpingText.astro';
 import cloudPhoto1 from '../assets/hero/archive-03.jpg';
 import cloudPhoto2 from '../assets/hero/archive-04.jpg';
 import cloudPhoto3 from '../assets/hero/archive-06.jpg';
 import cloudPhoto4 from '../assets/hero/archive-09.jpg';
 import cloudPhoto5 from '../assets/hero/archive-11.jpg';
 import cloudPhoto6 from '../assets/hero/archive-14.jpg';
+import cloudPhoto7 from '../assets/hero/archive-01.jpg';
+import cloudPhoto8 from '../assets/hero/archive-02.jpg';
+import cloudPhoto9 from '../assets/hero/archive-07.jpg';
+import cloudPhoto10 from '../assets/hero/archive-17.jpg';
+import cloudPhoto11 from '../assets/hero/archive-21.jpg';
 
 // Content file is named index.json (not home.json) so CloudCannon's
 // filename-based [slug] URL placeholder resolves to "" for it, matching the
@@ -35,7 +41,19 @@ const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
 const { partners, featuredIn } = site.data;
 
-const cloudPhotos = [cloudPhoto1, cloudPhoto2, cloudPhoto3, cloudPhoto4, cloudPhoto5, cloudPhoto6];
+const cloudPhotos = [
+  cloudPhoto1,
+  cloudPhoto2,
+  cloudPhoto3,
+  cloudPhoto4,
+  cloudPhoto5,
+  cloudPhoto6,
+  cloudPhoto7,
+  cloudPhoto8,
+  cloudPhoto9,
+  cloudPhoto10,
+  cloudPhoto11,
+];
 
 // The hero mosaic's first cell is the page's real LCP element (confirmed via
 // a PerformanceObserver check against production, not assumed) — preloading
@@ -70,6 +88,7 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
       headline={page.whatOddIs.headline}
       body={page.whatOddIs.body}
       cta={page.whatOddIs.cta}
+      warpHeadline
     />
   </div>
 
@@ -95,7 +114,7 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">{page.workWithOdd.eyebrow}</span>
-        <h2>{page.workWithOdd.title}</h2>
+        <WarpingText as="h2" text={page.workWithOdd.title} align="center" color="paper" />
       </div>
       <p class="wwo-intro reveal">{page.workWithOdd.intro}</p>
       <div class="wwo-cards reveal" style={`--cols: ${page.workWithOdd.cards.length}`}>

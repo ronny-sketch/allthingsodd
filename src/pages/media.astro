@@ -117,6 +117,41 @@ const pressCtas = contact.map((c) => ({
     </div>
   </section>
 
+  {
+    page.photobank && (
+      <section class="media-sub">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="eyebrow">{page.photobank.eyebrow}</span>
+            <h2>{page.photobank.title}</h2>
+          </div>
+          {page.photobank.note && <p class="assets-usage-note reveal">{page.photobank.note}</p>}
+          <div class="photobank-grid reveal">
+            {page.photobank.items.map((item) => (
+              <a
+                data-flickr-embed="true"
+                href={item.href}
+                title={item.label}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src={item.photo}
+                  width={item.photoWidth}
+                  height={item.photoHeight}
+                  alt={item.label}
+                  loading="lazy"
+                />
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+  <script is:inline async src="https://embedr.flickr.com/assets/client-code.js" charset="utf-8"
+  ></script>
+
   <section class="media-sub media-social">
     <div class="wrap">
       <span class="eyebrow">Social media</span>
@@ -180,6 +215,28 @@ const pressCtas = contact.map((c) => ({
     font-family: var(--font-body);
     font-size: 0.82rem;
     color: var(--color-paper-40);
+  }
+  .photobank-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    max-width: 60rem;
+    margin: 0 auto;
+  }
+  .photobank-grid a {
+    display: block;
+    line-height: 0;
+  }
+  .photobank-grid :global(img) {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--color-paper-12);
+  }
+  @media (max-width: 700px) {
+    .photobank-grid {
+      grid-template-columns: 1fr;
+    }
   }
   .media-contact,
   .media-social {

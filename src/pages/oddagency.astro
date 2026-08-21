@@ -8,7 +8,7 @@ import SectionIntro from '../components/sections/SectionIntro.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
-import photoBassist from '../assets/hero/archive-05.jpg';
+import photoCraft from '../assets/hero/archive-09.jpg';
 
 const entry = await getEntry('pages', 'oddagency');
 if (!entry || entry.data._template !== 'oddagency')
@@ -66,17 +66,21 @@ const page = entry.data;
       </div>
     </section>
 
-    <PhotoBreak image={photoBassist} alt="A live performance from the ODD archive" />
+    <PhotoBreak image={photoCraft} alt="Musicians performing together at an ODD event" />
 
-    <section class="odda-sub">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="eyebrow">Selected work</span>
-          <h2>Cases</h2>
-        </div>
-        <CaseGrid items={page.cases} />
-      </div>
-    </section>
+    {
+      page.cases.length > 0 && (
+        <section class="odda-sub">
+          <div class="wrap">
+            <div class="section-head">
+              <span class="eyebrow">Selected work</span>
+              <h2>Cases</h2>
+            </div>
+            <CaseGrid items={page.cases} />
+          </div>
+        </section>
+      )
+    }
 
     <section class="odda-sub odda-types">
       <div class="wrap">

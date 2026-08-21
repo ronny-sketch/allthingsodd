@@ -516,6 +516,17 @@ collections_config:
         comment: The named press/PR contact — separate from the general "Contact emails" under Global, which stays partnerships-focused.
         options:
           subtype: object
+      photobank:
+        type: object
+        label: Photobank (Media only)
+        comment: >-
+          Visual Flickr embeds — real, live photo galleries, not just links
+          (those already live under "Assets & photos"). Each item needs a
+          representative placeholder photo (url/width/height) shown before
+          Flickr's own embed script upgrades it into the full gallery widget.
+          Optional: leave the whole field out rather than invent a link.
+        options:
+          subtype: object
     add_options:
       - name:
         icon:

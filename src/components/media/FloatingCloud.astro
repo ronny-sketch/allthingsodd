@@ -16,13 +16,24 @@ const { images } = Astro.props;
 
 // top/left as % of the wrapping container, rotate in deg, size in px, depth
 // as the parallax multiplier (smaller = drifts less, reads as "further back").
+// Positions sit along a half-moon arc (an ellipse swept from ~202° to ~-22°,
+// so it wraps slightly past horizontal on both ends rather than stopping
+// dead at the equator — reads as a full crescent, not a thin one) with a
+// small fixed per-point offset layered on top so it doesn't look like a
+// mechanically perfect curve. Still hand-set, not runtime-random — see the
+// file comment above on why.
 const slots = [
-  { top: 4, left: 10, rotate: -8, size: 92, depth: 0.5 },
-  { top: 8, left: 84, rotate: 6, size: 78, depth: 0.8 },
-  { top: 34, left: 2, rotate: 5, size: 68, depth: 1.1 },
-  { top: 30, left: 92, rotate: -6, size: 100, depth: 0.6 },
-  { top: 68, left: 8, rotate: 7, size: 84, depth: 0.9 },
-  { top: 72, left: 88, rotate: -5, size: 72, depth: 1.2 },
+  { top: 55, left: 6.4, rotate: -8, size: 92, depth: 0.5 },
+  { top: 42.2, left: 1.5, rotate: 6, size: 68, depth: 0.8 },
+  { top: 23, left: 8.7, rotate: 5, size: 84, depth: 1.1 },
+  { top: 14.6, left: 16.9, rotate: -6, size: 60, depth: 0.6 },
+  { top: 4, left: 29.6, rotate: 7, size: 96, depth: 0.9 },
+  { top: 2, left: 51.5, rotate: -5, size: 72, depth: 1.2 },
+  { top: 5, left: 67.9, rotate: 8, size: 88, depth: 0.7 },
+  { top: 10.6, left: 85.1, rotate: -7, size: 64, depth: 1.0 },
+  { top: 26, left: 92.3, rotate: 4, size: 100, depth: 0.5 },
+  { top: 37.2, left: 97, rotate: -9, size: 76, depth: 0.85 },
+  { top: 56, left: 91.6, rotate: 6, size: 82, depth: 0.65 },
 ];
 ---
 
@@ -76,7 +87,9 @@ const slots = [
        duration instead of tracking the cursor, reading as laggy chase
        rather than a live-following drift. */
     transform: rotate(var(--rotate)) translate(var(--driftX, 0px), var(--driftY, 0px));
-    border-radius: 50%;
+    /* Square, not circular — matches the sharp-cornered photo treatment used
+       everywhere else on the site (PhotoBreak, ProgramGrid); circles were
+       this component's own one-off. */
     overflow: hidden;
     box-shadow: 0 10px 24px -8px rgb(0 0 0 / 55%);
     border: 1px solid var(--color-paper-12);

@@ -3,7 +3,6 @@
 // because it was one hand-authored file; as real markup it's just another
 // component, which also means its links are indexable/accessible without JS.
 import { getEntry } from 'astro:content';
-import Logo from '../primitives/Logo.astro';
 import SocialIcon from '../primitives/SocialIcon.astro';
 
 const site = await getEntry('site', 'global');
@@ -13,7 +12,7 @@ const { nav, social, footerTag, newsletterHref } = site.data;
 
 <div class="menu-overlay" id="menuOverlay">
   <div class="menu-topbar">
-    <a href="/" class="mark-ink" aria-label="ODD"><Logo /></a>
+    <a href="/" class="mark-ink" aria-label="ODD">ODD</a>
     <button type="button" class="menu-close" id="menuClose">Close</button>
   </div>
   <nav class="menu-links">
@@ -136,11 +135,11 @@ const { nav, social, footerTag, newsletterHref } = site.data;
     color: var(--color-ink);
     display: flex;
     align-items: center;
-  }
-  .menu-topbar .mark-ink :global(svg) {
-    height: 1.35rem;
-    width: auto;
-    display: block;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.4rem;
+    letter-spacing: 0.02em;
+    text-decoration: none;
   }
   .menu-close {
     border: 1px solid rgb(36 34 32 / 35%);
