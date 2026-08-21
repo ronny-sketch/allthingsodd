@@ -258,11 +258,14 @@ const pages = defineCollection({
         hero: z.object({ mosaicAlt: z.string() }),
         // The mosaic hero stays pure visual impact (no text over it, by
         // design — see docs/architecture.md#v2). This is the actual
-        // proposition moment: it's the very next section, so a visitor never
-        // scrolls a full viewport without a clue what ODD is.
+        // proposition moment: a shortened hero flows straight into it, so a
+        // visitor never scrolls without a clue what ODD is. Only a headline
+        // now — the old "subline" was a second, overlapping description of
+        // what ODD builds; that idea now lives, unified with "whatOddIs"'s
+        // own body, in the "More than one event" section below, where
+        // primaryCta/secondaryCta also render (not here) — see index.astro.
         opening: z.object({
           headline: z.string(),
-          subline: z.string().optional(),
           primaryCta: linkCta.optional(),
           secondaryCta: linkCta.optional(),
         }),

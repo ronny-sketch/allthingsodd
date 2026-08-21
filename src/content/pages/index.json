@@ -10,14 +10,13 @@
   },
   "opening": {
     "headline": "ODD brings creative expertise into wider use — across culture, business and society.",
-    "subline": "We build events, spaces and programmes where creative professionals, organisations and communities meet, learn from each other and make things together.",
     "primaryCta": { "label": "Explore Work with ODD", "href": "/work-with-odd" },
     "secondaryCta": { "label": "See what's on", "href": "#whats-happening" }
   },
   "whatOddIs": {
     "eyebrow": "What ODD is",
     "headline": "More than one event.",
-    "body": "ODDfest, ODDference and ODDspace are three different doors into the same idea: creative work gets stronger, and more useful to everyone else, when it has real structures to grow inside rather than one show a year. ODD builds those structures — an open festival platform, a flagship business event, a year-round space, and a handful of ways to work with us directly.",
+    "body": "We build events, spaces and programmes where creative professionals, organisations and communities meet, learn from each other and make things together — ODDfest, ODDference and ODDspace are three different doors into the same idea. Creative work gets stronger, and more useful to everyone else, when it has real structures to grow inside rather than one show a year: an open festival platform, a flagship business event, a year-round space, and a handful of ways to work with us directly.",
     "cta": { "label": "Read more about ODD", "href": "/about" }
   },
   "twoWaysIn": {

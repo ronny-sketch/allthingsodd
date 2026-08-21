@@ -69,10 +69,16 @@ const { mosaicAlt } = Astro.props;
 <style>
   .hero {
     position: relative;
-    /* dvh accounts for mobile Safari's dynamic toolbar; 100vh is a fallback
-       for browsers without dvh support (it's the same value there anyway). */
-    min-height: 100vh;
-    min-height: 100dvh;
+    /* 62dvh, not a full 100dvh — the mosaic is pure visual impact with no
+       text of its own (see OpeningLine's comment), so its job is to read
+       as a strong opening beat, not fill the whole first screen; a shorter
+       hero lets the proposition line sit visible (or nearly so) on the
+       same first scroll instead of requiring a full viewport of scrolling
+       before any words appear. dvh accounts for mobile Safari's dynamic
+       toolbar; 62vh is a fallback for browsers without dvh support (same
+       value there anyway). */
+    min-height: 62vh;
+    min-height: 62dvh;
     overflow: hidden;
     background: var(--color-bg);
     perspective: 1400px;
