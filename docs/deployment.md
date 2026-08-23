@@ -149,3 +149,21 @@ arguably the _safer_ default (a CloudCannon publish can never be masked by a
 stale long-lived cache) — if it becomes a real bottleneck, the fix is
 fronting Surge with a CDN that supports per-path headers (Cloudflare, etc.),
 not something fixable from this repo alone.
+
+## Cloudflare migration (in progress, 2026-08-21 →)
+
+Production is moving from Surge to a single Cloudflare Worker — Workers
+Static Assets serving this same `dist/` build, plus `/api/business-enquiry`
+and `/api/newsletter` routes for the ODD Growth OS (business CRM/newsletter
+integrations; see the repo's `ops/` and `worker/` directories — that's a
+commercial-systems layer, not part of this website's own architecture, so
+it isn't documented further here). Astro's build is unchanged: still
+static, no adapter.
+
+This migration is staged and Surge stays production until every step in
+`ops/DECISIONS.md` D1 passes, including a full parity check against this
+document's own concerns (caching, redirects, the visual-regression
+baseline, 404 handling). Config lives in `wrangler.toml` at the repo root.
+Do not point DNS at Cloudflare or repoint the CI `deploy` job until that
+migration is explicitly signed off — see `ops/SETUP_STATUS.md` for current
+status.

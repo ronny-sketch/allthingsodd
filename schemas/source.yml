@@ -1,0 +1,17 @@
+version: 1
+values:
+  - founder
+  - referral
+  - partner
+  - event
+  - linkedin
+  - instagram
+  - beehiiv
+  - organic_search
+  - pr
+  - direct
+  - paid_search
+  - meta
+  - institution
+  - website_form # the default when nothing more specific is known
+  - other

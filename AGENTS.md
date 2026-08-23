@@ -138,12 +138,25 @@ GitHub (canonical repo, version history)
 See `docs/deployment.md`. Short version: GitHub is canonical, CI
 (`.github/workflows/ci.yml`) gates `main`, and CloudCannon commits content
 changes back into the same repo. **This build is live** at
-`odd-field-guide.surge.sh` (cut over 2026-08-20, via `npx surge dist
-odd-field-guide.surge.sh`) — the old single-file site's own deploy path is
-no longer what's serving that domain. Deploys are currently manual, not
-CI-automated; treat `npx surge dist odd-field-guide.surge.sh` as a real
-production action requiring the same care as any other prod deploy, not
-something to run casually as part of routine development.
+`odd-field-guide.surge.sh` (cut over 2026-08-20) — the old single-file
+site's own deploy path is no longer what's serving that domain.
+
+**Corrected 2026-08-21:** deploy is CI-automated, not manual — the `deploy`
+job in `.github/workflows/ci.yml` runs `npx surge dist
+odd-field-guide.surge.sh` automatically on every push to `main` that passes
+`checks`/`functional` (this is what makes a CloudCannon content commit go
+live with no one running a manual command). A prior version of this file
+said deploys were manual; that was stale. Treat any push to `main` as a real
+production action — it deploys automatically, there's no separate manual
+step to forget.
+
+**Cloudflare migration in progress** (`ops/DECISIONS.md` D1): production
+hosting is moving from Surge to a single Cloudflare Worker (Workers Static
+Assets serving Astro's build + `/api/*` routes for the two Growth OS forms).
+Astro itself is not changing — still a static build, no adapter. See
+`wrangler.toml` and `worker/`. Until that migration's acceptance criteria
+pass (`ops/DECISIONS.md` D1's step list), **Surge remains production** —
+don't point DNS or the CI `deploy` job at Cloudflare yet.
 
 ## Definition of done
 
@@ -165,6 +178,45 @@ astro dev --background
 
 Manage with `astro dev stop`, `astro dev status`, `astro dev logs` (same
 pattern for `astro preview`).
+
+## ODD Growth OS (commercial systems, separate from the website build above)
+
+Everything above this section is about the Astro/CloudCannon website itself.
+This section is about the commercial operating system ODD is layering on top
+of it — CRM, newsletter, Notion, analytics — tracked in `ops/` and
+`schemas/`, not in `docs/` (that prefix stays reserved for the website).
+Full spec: `ops/GROWTH_OS_GUIDE.md`. Live status:
+`ops/SETUP_STATUS.md` — read it before doing any Growth OS work, it has the
+current real state, not the guide's assumed state.
+
+- **Source-of-truth boundaries:** Google = identity/email/calendar; Notion =
+  human strategy/SOPs/projects; GitHub = code + canonical schemas
+  (`schemas/*.yml`); Attio = B2B/B2G people/companies/deals; beehiiv =
+  editorial subscribers; ticketing (Tiketti/Venga) = transactions; GA4/Search
+  Console = web measurement. Never build a second authoritative copy of the
+  same data in another system.
+- **MCP is the control plane, not the data plane.** Claude may use MCP to
+  search/analyze/summarize/prepare drafts/update approved fields
+  interactively. Deterministic production data movement (a website form
+  reaching a CRM) must go through real server code, never through an LLM
+  deciding what record to create.
+- **No new SaaS without a documented reason.** Don't add HubSpot, Brevo,
+  Mailchimp, Make/Zapier/n8n, Airtable, or similar just because a workflow
+  would be one step shorter — see guide §60 for the required justification
+  format.
+- **This repo's production is Surge, not Cloudflare** — static Astro build,
+  auto-deployed on push to `main` (see Deployment workflow above). The Growth
+  OS guide assumes Cloudflare Workers/Pages as the server runtime for
+  form → CRM/newsletter integrations; that assumption does not hold here yet.
+  Do not add Cloudflare-dependent code until `ops/SETUP_STATUS.md` shows
+  Decision D1 resolved.
+- **No autonomous strategic outreach.** Claude may draft partner/sales
+  emails and CRM next-actions; a human sends them. Never send, never change
+  deal value/consent fields from inference, never bulk-delete CRM records.
+- **No destructive production actions without explicit approval** —
+  this includes DNS changes, deploying to `main` (which auto-publishes to
+  the live site), and any Attio/beehiiv write beyond a clearly-labeled TEST
+  record.
 
 ## Further reading
 

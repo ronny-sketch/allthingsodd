@@ -6,7 +6,7 @@ import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import ProgramGrid from '../components/sections/ProgramGrid.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
-import ContactForm from '../components/sections/ContactForm.astro';
+import WorkEnquiryForm from '../components/sections/WorkEnquiryForm.astro';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
 import photoCollab from '../assets/hero/archive-12.jpg';
 
@@ -18,13 +18,6 @@ const page = entry.data;
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
 const { partners } = site.data;
-
-// Reuses the Contact page's Web3Forms key rather than asking for a second
-// one — one key, set once, activates both inquiry forms. See
-// docs/editing.md#contact-form-setup.
-const contactEntry = await getEntry('pages', 'contact');
-const formAccessKey =
-  contactEntry?.data._template === 'contact' ? contactEntry.data.formAccessKey : undefined;
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
@@ -81,7 +74,11 @@ const formAccessKey =
     </div>
   </section>
 
-  <ContactForm accessKey={formAccessKey} />
+  <section class="wwo-sub">
+    <div class="wrap">
+      <WorkEnquiryForm />
+    </div>
+  </section>
 </Layout>
 
 <style>

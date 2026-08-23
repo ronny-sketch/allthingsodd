@@ -1,0 +1,16 @@
+# Canonical Attio deal-stage values. See ops/GROWTH_OS_GUIDE.md §13 for the
+# entry/exit definition of each stage. A form submission always lands a new
+# lead at "target" or "engaged" — nothing later than that is ever set by
+# code; everything past "engaged" is a human sales action in Attio.
+version: 1
+values:
+  - target
+  - engaged
+  - qualified
+  - discovery
+  - opportunity
+  - proposal
+  - procurement
+  - won
+  - lost
+  - renewal_expansion

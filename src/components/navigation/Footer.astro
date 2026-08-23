@@ -31,10 +31,31 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     </nav>
     <div class="foot-nl" id="newsletter">
       <span class="foot-nl-label">{newsletterLabel}</span>
-      <form class="nl-form" action={newsletterHref} method="get" target="_blank">
-        <input type="email" name="email" placeholder="you@example.com" aria-label="Email address" />
+      <form
+        class="nl-form"
+        id="newsletterForm"
+        action={newsletterHref}
+        method="get"
+        target="_blank"
+      >
+        <input
+          type="text"
+          name="botcheck"
+          class="nl-botcheck"
+          tabindex="-1"
+          autocomplete="off"
+          aria-hidden="true"
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="you@example.com"
+          aria-label="Email address"
+          required
+        />
         <button type="submit">Sign up</button>
       </form>
+      <p class="nl-status" role="status" aria-live="polite"></p>
     </div>
   </div>
   <div class="wrap foot-mid">
@@ -70,6 +91,8 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     <a href="https://oddfest.co">oddfest.co</a>
   </div>
 </footer>
+
+<script src="../../scripts/newsletter-form.ts"></script>
 
 <style>
   footer {
@@ -195,6 +218,19 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
   }
   .nl-form button:hover {
     opacity: 0.85;
+  }
+  .nl-botcheck {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+  .nl-status {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    color: var(--color-paper-40);
   }
 
   .foot-mid {

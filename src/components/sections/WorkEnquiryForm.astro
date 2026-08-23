@@ -1,0 +1,155 @@
+---
+// The "Work with ODD" business-enquiry form — separate from the generic
+// ContactForm.astro on /contact. This one captures what the guide's account
+// scoring/pipeline actually needs (organisation, interest, goal, timing,
+// UTM/source) and posts to the Worker's /api/business-enquiry route, which
+// upserts Person/Company/Deal in Attio. See worker/src/index.ts and
+// ops/GROWTH_OS_GUIDE.md §28-29.
+//
+// Interest options are the canonical product list (schemas/products.yml) —
+// kept here as UI copy, not in CloudCannon content, per AGENTS.md's CMS
+// rule that implementation-level enums stay out of the editing contract.
+import Pill from '../primitives/Pill.astro';
+
+const PRODUCTS = [
+  { value: 'oddference_corporate', label: 'ODDference — attend or bring a team' },
+  { value: 'oddmembership', label: 'ODDmembership' },
+  { value: 'oddagency', label: 'ODDagency — bring us a brief' },
+  { value: 'strategic_partnership', label: 'A partnership' },
+  { value: 'other', label: 'Something else' },
+];
+---
+
+<form class="enquiry-form" id="workEnquiryForm">
+  <input
+    type="text"
+    name="botcheck"
+    class="botcheck"
+    tabindex="-1"
+    autocomplete="off"
+    aria-hidden="true"
+  />
+  <div class="field-row">
+    <div class="field">
+      <label for="we-name">Name</label>
+      <input id="we-name" name="name" type="text" required autocomplete="name" />
+    </div>
+    <div class="field">
+      <label for="we-email">Work email</label>
+      <input id="we-email" name="work_email" type="email" required autocomplete="email" />
+    </div>
+  </div>
+  <div class="field-row">
+    <div class="field">
+      <label for="we-org">Organisation</label>
+      <input id="we-org" name="organisation" type="text" required autocomplete="organization" />
+    </div>
+    <div class="field">
+      <label for="we-interest">What are you interested in?</label>
+      <select id="we-interest" name="interest" required>
+        <option value="" disabled selected>Choose one</option>
+        {PRODUCTS.map((p) => <option value={p.value}>{p.label}</option>)}
+      </select>
+    </div>
+  </div>
+  <div class="field">
+    <label for="we-goal">What are you trying to achieve?</label>
+    <textarea id="we-goal" name="goal" rows="4" required></textarea>
+  </div>
+  <div class="field">
+    <label for="we-timing">Approximate timing <span class="optional">(optional)</span></label>
+    <input id="we-timing" name="timing" type="text" placeholder="e.g. this quarter, 2027" />
+  </div>
+  <div class="field-submit">
+    <Pill type="submit" variant="solid">Send enquiry</Pill>
+    <p class="form-status" role="status" aria-live="polite"></p>
+  </div>
+</form>
+
+<script src="../../scripts/work-enquiry-form.ts"></script>
+
+<style>
+  .enquiry-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.6rem;
+  }
+  @media (max-width: 640px) {
+    .field-row {
+      grid-template-columns: 1fr;
+    }
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .field label {
+    font: var(--text-caption);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .optional {
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 0.7;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-paper-20);
+    padding: 0.6rem 0;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-paper);
+    outline: none;
+    resize: vertical;
+    transition: border-color var(--duration-fast) ease;
+  }
+  .field select {
+    color-scheme: dark;
+  }
+  /* iOS Safari auto-zooms the viewport on focus for any input under 16px —
+     same fix as Footer.astro's newsletter field. */
+  @media (max-width: 640px) {
+    .field input,
+    .field select,
+    .field textarea {
+      font-size: 16px;
+    }
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--color-paper);
+  }
+  .botcheck {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+  .field-submit {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-top: 0.4rem;
+  }
+  .form-status {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-paper-60);
+  }
+</style>
