@@ -29,7 +29,7 @@
       "items": [
         { "label": "ODDfest", "meta": "Open creative platform", "href": "/oddfest" },
         { "label": "ODDference", "meta": "Flagship professional event", "href": "/oddference" },
-        { "label": "ODDspace", "meta": "Year-round home base", "href": "https://www.oddspace.co" },
+        { "label": "ODDspace", "meta": "Year-round home base", "href": "/oddspace" },
         {
           "label": "Work with ODD",
           "meta": "Membership, agency, partnerships",

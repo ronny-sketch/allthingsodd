@@ -13,7 +13,7 @@ interface RailItem {
 interface Props {
   items: RailItem[];
   side: 'left' | 'right';
-  slug: 'oddfest' | 'oddference' | 'oddagency';
+  slug: 'oddfest' | 'oddference' | 'oddagency' | 'oddspace';
 }
 const { items, side, slug } = Astro.props;
 const looped = [...items, ...items];

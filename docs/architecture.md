@@ -25,8 +25,9 @@ src/
   content.config.ts       Zod schemas for every content collection
   content/
     site/global.json      Nav, footer, social, contact, partner/press logos — shared everywhere
-    pages/*.json           9 fixed pages: home, oddfest, oddference, oddagency,
-                            work-with-odd, membership, about, media, contact
+    pages/*.json           10 fixed pages: home, oddfest, oddference, oddagency,
+                            oddspace, work-with-odd, membership, about, media,
+                            contact
   styles/
     tokens.css             Color, spacing, motion tokens (with provenance)
     typography.css         Fluid type-scale roles (display-xl → caption)
@@ -50,7 +51,7 @@ sections" model — an editor drags a Hero, then a Quote, then a Gallery, in any
 order, onto any page. That's the right call for a blog or a marketing site
 with many similar landing pages.
 
-It's the wrong call here. ODD has **nine pages, and most have a genuinely
+It's the wrong call here. ODD has **ten pages, and most have a genuinely
 different, bespoke layout**: the home page's photo mosaic hero and filmstrip
 don't exist anywhere else; ODDfest/ODDference/ODDagency share a rail+grid
 shape but each hero is a different variant (video split, image split,
@@ -216,7 +217,7 @@ its structure genuinely doesn't overlap.
 
 ## Visual regression
 
-`tests/visual/pages.spec.ts` screenshots all 9 routes at 5 viewports
+`tests/visual/pages.spec.ts` screenshots all 10 routes at 5 viewports
 (mobile/tablet/laptop/desktop/wide) against committed baselines in
 `tests/visual/pages.spec.ts-snapshots/`.
 

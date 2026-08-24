@@ -1,0 +1,204 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import SubpageFrame from '../components/sections/SubpageFrame.astro';
+import SplitHero from '../components/sections/SplitHero.astro';
+import FeatureGrid from '../components/sections/FeatureGrid.astro';
+import SectionIntro from '../components/sections/SectionIntro.astro';
+import ProofGrid from '../components/sections/ProofGrid.astro';
+import PricingGrid from '../components/sections/PricingGrid.astro';
+import FAQList from '../components/sections/FAQList.astro';
+import ParticipateBand from '../components/sections/ParticipateBand.astro';
+import PhotoBreak from '../components/sections/PhotoBreak.astro';
+import photoCommunity from '../assets/hero/archive-16.jpg';
+
+const entry = await getEntry('pages', 'oddspace');
+if (!entry || entry.data._template !== 'oddspace')
+  throw new Error('oddspace.json content entry missing or malformed');
+const page = entry.data;
+---
+
+<Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
+  <SubpageFrame slug={page._slug} railLeft={page.railLeft} railRight={page.railRight}>
+    <SplitHero
+      variant="split-image"
+      image={page.heroMedia.image}
+      eyebrow={page.eyebrow}
+      title={page.title}
+      meta={page.meta}
+      intro={page.intro}
+      primaryCta={page.primaryCta}
+      warpTitle
+    />
+    <FeatureGrid cards={page.features} />
+
+    <SectionIntro
+      eyebrow={page.whatItIs.eyebrow}
+      headline={page.whatItIs.headline}
+      body={page.whatItIs.body}
+    />
+
+    {
+      page.proof && (
+        <ProofGrid eyebrow={page.proof.eyebrow} title={page.proof.title} items={page.proof.items} />
+      )
+    }
+
+    <SectionIntro
+      eyebrow={page.community.eyebrow}
+      headline={page.community.headline}
+      body={page.community.body}
+    />
+
+    <PhotoBreak image={photoCommunity} alt="People meeting and talking at an ODD event" />
+
+    <section class="odds-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Membership</span>
+          <h2>What you get</h2>
+        </div>
+        <FeatureGrid cards={page.whatYouGet} />
+      </div>
+    </section>
+
+    <section class="odds-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Join</span>
+          <h2>One membership, full access</h2>
+        </div>
+        <PricingGrid items={[page.membership]} />
+      </div>
+    </section>
+
+    <section class="odds-sub odds-rates">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Rent the space</span>
+          <h2>Event space rates</h2>
+        </div>
+        <div class="odds-rates-list reveal">
+          {
+            page.rentalRates.map((r) => (
+              <div class="odds-rate-row">
+                <span class="odds-rate-name">{r.name}</span>
+                <span class="odds-rate-price">{r.price}</span>
+                {r.note && <span class="odds-rate-note">{r.note}</span>}
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="odds-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">How to join</span>
+          <h2>How it works</h2>
+        </div>
+        <FeatureGrid cards={page.howItWorks} />
+      </div>
+    </section>
+
+    <SectionIntro
+      eyebrow={page.location.eyebrow}
+      headline={page.location.headline}
+      body={page.location.body}
+    />
+
+    {
+      page.calendar && (
+        <section class="odds-sub">
+          <div class="wrap">
+            <div class="section-head">
+              <span class="eyebrow">{page.calendar.eyebrow}</span>
+              <h2>{page.calendar.title}</h2>
+            </div>
+            {page.calendar.note && <p class="odds-calendar-note reveal">{page.calendar.note}</p>}
+            <div class="odds-calendar-embed reveal">
+              <iframe
+                src={page.calendar.embedUrl}
+                title="ODDspace events calendar"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    <section class="odds-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Practical / FAQ</h2>
+        </div>
+        <FAQList items={page.faq} />
+      </div>
+    </section>
+
+    <ParticipateBand items={page.participate} noPadTop />
+  </SubpageFrame>
+</Layout>
+
+<style>
+  .odds-sub {
+    padding: var(--space-24) 0;
+  }
+  .odds-rates-list {
+    max-width: 40rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .odds-rate-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 0.4rem 1.5rem;
+    padding: 1.1rem 0;
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .odds-rates-list .odds-rate-row:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .odds-rate-name {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-paper-80);
+  }
+  .odds-rate-price {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.2rem;
+    color: var(--color-paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .odds-rate-note {
+    grid-column: 1 / -1;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--color-paper-40);
+  }
+  .odds-calendar-note {
+    max-width: 42rem;
+    margin: -1.5rem auto 2rem;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-60);
+  }
+  .odds-calendar-embed {
+    max-width: 56rem;
+    margin: 0 auto;
+    border: 1px solid var(--color-paper-12);
+    background: var(--color-paper);
+  }
+  .odds-calendar-embed iframe {
+    display: block;
+    width: 100%;
+    height: min(70vh, 620px);
+    border: 0;
+  }
+</style>

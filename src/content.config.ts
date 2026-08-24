@@ -235,7 +235,7 @@ const pages = defineCollection({
     // all three carrying every other page's optional fields.
     const subpageBase = z.object({
       seo,
-      _slug: z.enum(['oddfest', 'oddference', 'oddagency']),
+      _slug: z.enum(['oddfest', 'oddference', 'oddagency', 'oddspace']),
       eyebrow: z.string(),
       title: z.string(),
       meta: z.string(),
@@ -375,6 +375,44 @@ const pages = defineCollection({
         howItWorks: z.array(featureCard),
         cases: z.array(caseStudy),
         projectTypes: z.array(z.string()),
+      }),
+
+      // ODDspace used to be an external link (oddspace.co) from the nav and
+      // every card that mentioned it — now a real subpage, on the same
+      // subpageBase shape as ODDfest/ODDference/ODDagency, so it can host a
+      // real membership pitch, event-space rental rates and a live events
+      // calendar instead of sending visitors off-site.
+      subpageBase.extend({
+        _template: z.literal('oddspace'),
+        whatItIs: sectionIntro,
+        community: sectionIntro,
+        proof: proofSection,
+        whatYouGet: z.array(featureCard),
+        // A single tier, not an array like ODDference's tickets/Membership's
+        // tiers — ODDspace's real pricing is deliberately one flat rate
+        // ("one membership, full access, no tiers"), so this reuses the
+        // same pricingTier shape as a single object instead of forcing an
+        // N=1 array just for consistency with those other pages.
+        membership: pricingTier,
+        // Event-space rental rates (member pricing) — a plain price list,
+        // not the fuller pricingTier shape (no benefits list/CTA per row
+        // needed here, just name/price/note).
+        rentalRates: z.array(
+          z.object({ name: z.string(), price: z.string(), note: z.string().optional() }),
+        ),
+        howItWorks: z.array(featureCard),
+        location: sectionIntro,
+        // Optional — the live Google Calendar embed. Omit rather than embed
+        // a broken/placeholder calendar if the real one isn't available.
+        calendar: z
+          .object({
+            eyebrow: z.string(),
+            title: z.string(),
+            note: z.string().optional(),
+            embedUrl: z.string(),
+          })
+          .optional(),
+        faq: z.array(faqItem),
       }),
 
       z.object({

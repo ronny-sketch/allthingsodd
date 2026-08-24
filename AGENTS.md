@@ -39,8 +39,9 @@ GitHub (canonical repo, version history)
   → CloudCannon (edits src/content/**/*.json through the git history)
 ```
 
-- **Content** lives in `src/content/pages/*.json` (9 fixed pages: home, oddfest,
-  oddference, oddagency, work-with-odd, membership, about, media, contact) and
+- **Content** lives in `src/content/pages/*.json` (10 fixed pages: home,
+  oddfest, oddference, oddagency, oddspace, work-with-odd, membership, about,
+  media, contact) and
   `src/content/site/global.json` (nav, footer, social, partner/press logos —
   shared across every page). Schema: `src/content.config.ts`.
 - **Design system** lives in `src/styles/` — `tokens.css` (color/type/space/motion
@@ -87,7 +88,7 @@ GitHub (canonical repo, version history)
   variants, technical config), it stays out of CloudCannon on purpose — see
   `docs/design-system.md` and cloudcannon.config.yml's own comments on why raw
   CSS values are never exposed to editors.
-- The `pages` collection's five files are fixed (`disable_add: true` in
+- The `pages` collection's ten files are fixed (`disable_add: true` in
   cloudcannon.config.yml) — the routes in `src/pages/*.astro` depend on those
   exact filenames.
 

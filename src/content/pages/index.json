@@ -38,7 +38,7 @@
       "body": "A place to show your work, meet people outside your usual circle, and build something that outlasts one production. ODDfest gives your programme a wider stage; ODDspace gives you somewhere to work between events.",
       "tracks": [
         { "label": "ODDfest", "meta": "Open creative platform", "href": "/oddfest" },
-        { "label": "ODDspace", "meta": "Year-round home base", "href": "https://www.oddspace.co" }
+        { "label": "ODDspace", "meta": "Year-round home base", "href": "/oddspace" }
       ]
     }
   },
@@ -50,7 +50,7 @@
         "category": "ODDspace",
         "title": "Coffee on the House",
         "description": "A standing open meetup for ODDspace members and friends, most weeks, in Vallila.",
-        "href": "https://www.oddspace.co"
+        "href": "/oddspace"
       }
     ]
   },
@@ -75,8 +75,8 @@
       "meta": "Year-round · Home base",
       "title": "ODDspace",
       "body": "A year-round base in Vallila where creative professionals and the organisations working with them meet, work and build things between events.",
-      "goLabel": "Ask about ODDspace ↗",
-      "href": "https://www.oddspace.co",
+      "goLabel": "Explore ODDspace →",
+      "href": "/oddspace",
       "image": "../../assets/programs/oddspace-card.jpg"
     },
     {
@@ -154,8 +154,8 @@
     {
       "eyebrow": "Creative",
       "title": "Join ODDspace",
-      "linkLabel": "Ask about it ↗",
-      "href": "https://www.oddspace.co"
+      "linkLabel": "Explore →",
+      "href": "/oddspace"
     },
     {
       "eyebrow": "Business",

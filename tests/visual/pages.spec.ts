@@ -10,6 +10,7 @@ const ROUTES = [
   '/oddfest',
   '/oddference',
   '/oddagency',
+  '/oddspace',
   '/work-with-odd',
   '/membership',
   '/about',
@@ -49,7 +50,12 @@ for (const route of ROUTES) {
       // structural/layout changes, not photo re-compression noise.
       mask: [
         page.locator(
-          '.mosaic, .news-panel img, .four-card-bg, .about-media img, .aftermovie-full, .oddfest-hero video, .oddfest-hero img, .oddf-hero-video video, .oddf-hero-video img, .photo-break img',
+          // .odds-calendar-embed: a live, embedded Google Calendar (real
+          // ODDspace bookings) — its content changes day to day (today's
+          // date highlight, new events), so it's masked for the same
+          // "real noise, not a layout regression" reason as the
+          // photographic regions below.
+          '.mosaic, .news-panel img, .four-card-bg, .about-media img, .aftermovie-full, .oddfest-hero video, .oddfest-hero img, .oddf-hero-video video, .oddf-hero-video img, .photo-break img, .odds-calendar-embed',
         ),
       ],
     });
