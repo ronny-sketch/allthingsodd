@@ -9,17 +9,12 @@
   "intro": "Accreditation, key facts, press releases, assets and everything else you need to cover ODD — plus the outlets who already have.",
   "accreditation": {
     "eyebrow": "Accreditation",
-    "headline": "Media accreditation is open.",
-    "body": "Media accreditation for ODDfest and ODDference is now open. Submit your application to be considered.",
-    "cta": {
-      "label": "Submit your application",
-      "href": "https://www.tiketti.fi/oddfest-2026-media-akkreditointi/2514179",
-      "external": true
-    }
+    "headline": "Press accreditation.",
+    "body": "Media accreditation opens ahead of each ODDfest and ODDference edition. Get in touch with press below to be notified when the next round opens."
   },
   "keyFacts": [
     {
-      "label": "Time",
+      "label": "2026 event dates",
       "value": "ODDfest Fri–Sat, June 12–13, 2026 · ODDference Thu–Fri, June 11–12, 2026 · Creative Week Mon–Sun, June 8–14, 2026"
     },
     {
@@ -60,8 +55,8 @@
   },
   "boilerplate": {
     "eyebrow": "Boilerplate",
-    "headline": "ODDfest, in one paragraph.",
-    "body": "Dubbed the festival of cultural relevance and creative growth, ODDfest is a fresh take on an industry event designed to inspire, teach, showcase, accelerate, and unite across disciplines, communities, and country lines."
+    "headline": "ODD, in one paragraph.",
+    "body": "ODD is a Helsinki-based platform working to strengthen Finland's creative economy by connecting creative professionals, organisations and communities through events, spaces and projects. Its work includes ODDfest, ODDference, ODDspace and project-based collaborations. ODD is operated by New Nordic Way rf."
   },
   "pressReleases": [
     {

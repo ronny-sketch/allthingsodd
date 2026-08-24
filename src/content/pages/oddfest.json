@@ -9,7 +9,7 @@
   "eyebrow": "ODDfest · For creatives",
   "title": "Helsinki's open creative platform.",
   "meta": "2027 · Helsinki",
-  "intro": "ODDfest is becoming an open, distributed creative platform across Helsinki — independent artists, collectives, venues and organisations hosting their own programme under one shared identity. It's not a centrally curated, centrally produced festival; it's the model tested as Creative Week in 2026, opened up further.",
+  "intro": "ODDfest is an open, distributed creative platform across Helsinki — independent artists, collectives, venues and organisations hosting their own programme under one shared identity, the same model Creative Week ran in 2026, opened up further for 2027.",
   "heroMedia": {
     "video": "/video/oddfest-hero.mp4",
     "poster": "../../assets/video/oddfest-hero-poster.jpg",
@@ -81,10 +81,10 @@
   },
   "programme": [],
   "openCall": {
-    "status": "Details being finalised",
+    "status": "Registration details coming soon",
     "headline": "Want to host something at ODDfest 2027?",
-    "body": "The process for registering programme is still being set up. If you've got an idea — a show, a night, an installation, an open call of your own — get in touch now and we'll keep you posted as it opens.",
-    "cta": { "label": "Pitch an idea", "href": "/contact" },
+    "body": "The exact registration process, dates and deadlines are still being confirmed. Register your interest now and we'll tell you as soon as it opens.",
+    "cta": { "label": "Register your interest", "href": "/contact" },
     "eligibilityHref": "/contact"
   },
   "forPartners": {
@@ -106,7 +106,7 @@
     },
     {
       "question": "How do I host something at ODDfest?",
-      "answer": "Register interest through the open call above. Once the process opens fully, you'll register your event directly and it'll join the shared programme."
+      "answer": "Register your interest above. Once the 2027 registration process is confirmed, we'll be in touch with next steps and your event joins the shared programme."
     },
     {
       "question": "Is there one ticket for all of ODDfest?",
@@ -120,8 +120,8 @@
   "participate": [
     {
       "eyebrow": "Creative",
-      "title": "Apply to the programme",
-      "linkLabel": "Pitch an idea →",
+      "title": "Host programme at ODDfest",
+      "linkLabel": "Register your interest →",
       "href": "/contact"
     },
     {

@@ -2,7 +2,7 @@
   "_template": "about",
   "seo": {
     "title": "About ODD — one platform, many ways in",
-    "description": "A co-creation platform built in Helsinki, on a mission to bring creativity and business together — not as opposites politely sharing a stage, but as one working system.",
+    "description": "ODD brings creative expertise into wider use across culture, business and society, through events, spaces and programmes built in Helsinki.",
     "ogImage": "/og/about.jpg"
   },
   "panels": [
@@ -12,15 +12,15 @@
       "alt": "Two people talking at a creative exhibition",
       "eyebrow": "About",
       "title": "This is ODD.",
-      "body": "A co-creation platform built in Helsinki, on a mission to bring creativity and business together — not as opposites politely sharing a stage, but as one working system."
+      "body": "ODD brings creative expertise into wider use across culture, business and society — by building the structures that let creative professionals, organisations and communities meet, learn from each other and work together, again and again, not just once."
     },
     {
       "_kind": "media",
       "image": "../../assets/about/about-2-crowd.jpg",
       "alt": "Motion-blurred crowd at an ODD event",
       "eyebrow": "Why we exist",
-      "title": "Creative work and business work almost never happen in the same room.",
-      "body": "Most creative work is organised project by project — a show, a production, a grant cycle — and the relationships and momentum it builds tend to dissolve once it's over. Businesses, institutions and other sectors rarely get a real, ongoing way in either. ODD exists to build the connective structures — events, spaces, programmes — that let that work and those relationships continue."
+      "title": "Finland has the creative talent. It doesn't have enough structure around it.",
+      "body": "Most creative work happens project by project — a show, a production, a grant cycle — and the relationships and momentum it builds tend to dissolve once it's over. Cross-disciplinary exchange stays occasional, and regular contact between creative professionals and other sectors is rarer than it should be. ODD exists to build the connective structures — events, spaces, programmes — that let that work and those relationships continue."
     },
     {
       "_kind": "model",
@@ -80,8 +80,8 @@
       },
       {
         "year": "2027",
-        "title": "Toward an open platform",
-        "body": "ODDfest moves toward a more distributed, open model, building on the Creative Week test — with year-round activity through ODDspace and ODDference continuing alongside it."
+        "title": "ODDfest opens up further",
+        "body": "ODDfest continues as a distributed, open platform — the model Creative Week ran in 2026 — with year-round activity through ODDspace and ODDference continuing alongside it."
       }
     ]
   },

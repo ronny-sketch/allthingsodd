@@ -30,32 +30,32 @@
   "whyJoin": [
     {
       "number": "01",
-      "title": "An ongoing connection",
-      "body": "Regular contact with ODD's activity and network, not a single event or project."
+      "title": "An ongoing relationship, not a one-off",
+      "body": "For organisations that keep coming back to ODD in different ways — membership is meant to bring that into one standing relationship instead of starting over each time."
     },
     {
       "number": "02",
-      "title": "Early access",
-      "body": "First look at ODD's programme, events and opportunities as they're announced."
+      "title": "Built with real organisations",
+      "body": "The model is being shaped together with the first organisations joining it, not decided in isolation and handed down."
     },
     {
       "number": "03",
-      "title": "A direct line",
-      "body": "A standing point of contact into ODD's wider creative network, being developed alongside our first members."
+      "title": "One point of contact",
+      "body": "A single relationship with ODD, instead of a separate conversation for every event or project."
     }
   ],
   "includes": [
     {
-      "title": "Access to the network",
-      "body": "Introductions and conversations across ODD's wider creative and business network."
+      "title": "Ongoing contact",
+      "body": "Regular contact with ODD across the year, in one standing relationship."
     },
     {
-      "title": "Events & gatherings",
-      "body": "Participation in ODD activity throughout the year — not just a single ticket."
+      "title": "Participation across the year",
+      "body": "A way to take part in ODD's activity over time, beyond any single event."
     },
     {
-      "title": "A closer connection",
-      "body": "A more direct, ongoing relationship with ODD than a one-off event or project allows."
+      "title": "A closer relationship",
+      "body": "More direct contact with ODD than a one-off event or project."
     }
   ],
   "rhythm": [
@@ -64,11 +64,6 @@
     "Introductions across the network as relevant opportunities come up"
   ],
   "tiers": [],
-  "network": {
-    "eyebrow": "Members",
-    "title": "Organisations already building with ODD",
-    "note": "ODDmembership is new — the first member organisations will be listed here as they join."
-  },
   "finalCta": {
     "eyebrow": "Interested?",
     "title": "Ask about membership",

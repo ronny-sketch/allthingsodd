@@ -27,7 +27,7 @@
   "footerTag": "New Nordic Way rf · oddfest.co",
   "newsletterLabel": "Sign up to newsletter",
   "newsletterHref": "https://oddfest.beehiiv.com",
-  "preRegister": { "label": "Pre-register", "href": "#" },
+  "preRegister": { "label": "Newsletter", "href": "#newsletter" },
   "partners": [
     { "name": "Moomin", "logo": "../../assets/partners/logo-moomin.svg" },
     { "name": "Genelec", "logo": "../../assets/partners/logo-genelec.svg" },

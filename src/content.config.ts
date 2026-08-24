@@ -182,6 +182,13 @@ const site = defineCollection({
       footerTag: z.string(),
       newsletterLabel: z.string(),
       newsletterHref: z.string(),
+      // Field name kept as "preRegister" (its original purpose) rather than
+      // renamed, but it currently points at the newsletter signup — there's
+      // no real pre-registration destination yet, and a top-nav button
+      // linking to "#" was a real launch blocker (a CTA visible on every
+      // page that goes nowhere). Point this back to an actual
+      // pre-registration URL, and give it its own honest field name, once
+      // one exists.
       preRegister: z.object({ label: z.string(), href: z.string() }),
       // "tier" is optional and unset by default — which named company is a
       // Partner vs. Supporter vs. Media tier is a real business fact, not
@@ -398,12 +405,14 @@ const pages = defineCollection({
         // Optional so tiers can be dropped from the page entirely until
         // pricing is final — see PricingGrid.astro.
         tiers: z.array(pricingTier).optional(),
-        // Same {eyebrow,title,note} shape as About's and Work with ODD's
-        // "network" field (a note ahead of the shared partner logo strip) —
-        // named "network" here too, deliberately, rather than "proof" (which
-        // means a stats grid — proofSection — elsewhere in this same
-        // collection; see caseTeaser's comment above for why that matters).
-        network: z.object({ eyebrow: z.string(), title: z.string(), note: z.string() }).optional(),
+        // No "network" field here (unlike About's/Work with ODD's) — this
+        // page's own shared-partner-logo-strip section used to reuse the
+        // sitewide sponsor list under a "members" heading, which is
+        // misleading before any real member organisations exist (a
+        // launch-readiness pass caught this: don't present ODD's ODDfest
+        // partners as ODDmembership members). Removed rather than left
+        // empty — re-add it, and its rendering in membership.astro, once
+        // real members exist to show under it honestly.
         // Named "finalCta" (not "contact") — this is a single cta-shaped
         // closing CTA, a different shape from Work with ODD's "contact"
         // (an eyebrow/title/body intro above an embedded form).

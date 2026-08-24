@@ -581,7 +581,12 @@ collections_config:
           publication's real hosted subscribe page (e.g. a Beehiiv URL).
       preRegister:
         type: object
-        label: '"Pre-register" button (top right of every page)'
+        label: Top-right nav button (top right of every page)
+        comment: >-
+          Currently points at the newsletter signup — there's no real
+          pre-registration destination yet, so this is filled in with the
+          most useful honest CTA available rather than a dead link. Point
+          it at a real pre-registration URL when one exists.
         options:
           subtype: object
       partners:

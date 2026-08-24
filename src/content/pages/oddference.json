@@ -9,7 +9,7 @@
   "eyebrow": "ODDference · Flagship event",
   "title": "What can business learn from creative expertise?",
   "meta": "TBD · Helsinki",
-  "primaryCta": { "label": "Get tickets", "href": "#tickets" },
+  "primaryCta": { "label": "Join the mailing list", "href": "#newsletter" },
   "intro": "ODDference is ODD's flagship, centrally produced event — built entirely around one question: what can business and the rest of society learn from creative expertise? Creative professionals aren't the entertainment here; their ways of working are the actual content.",
   "heroMedia": {
     "video": "/video/oddference-hero.mp4",
@@ -35,7 +35,7 @@
   "bigQuestion": {
     "eyebrow": "The big question",
     "headline": "What can business and the rest of society learn from creative expertise?",
-    "body": "Creative professionals work daily with uncertainty, cultural relevance, storytelling, community and ambiguity — the same problems most organisations are quietly struggling with. ODDference treats that expertise as the main event, not the warm-up act to a business conference."
+    "body": "Creative professionals work daily with uncertainty, cultural relevance, storytelling, community and ambiguity — skills that are directly useful well beyond the creative industries. ODDference treats that expertise as the main event, not the warm-up act to a business conference."
   },
   "whoItsFor": [
     {
@@ -131,14 +131,19 @@
     }
   ],
   "participate": [
-    { "eyebrow": "Business", "title": "Get tickets", "linkLabel": "Explore →", "href": "#tickets" },
+    {
+      "eyebrow": "Business",
+      "title": "Join the mailing list",
+      "linkLabel": "Sign up →",
+      "href": "#newsletter"
+    },
     { "eyebrow": "Speaking", "title": "Pitch a talk", "linkLabel": "Enquire →", "href": "/contact" }
   ],
   "railLeft": [
     { "kind": "logo" },
     { "kind": "word", "text": "ODDference" },
     { "kind": "meta", "text": "Flagship event" },
-    { "kind": "meta", "text": "Tickets" }
+    { "kind": "meta", "text": "Helsinki" }
   ],
   "railRight": [
     { "kind": "word", "text": "Helsinki" },

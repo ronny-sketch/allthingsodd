@@ -46,20 +46,6 @@
     "note": "A running list of what's on across ODDfest, ODDference and ODDspace — updated as things are confirmed.",
     "items": [
       {
-        "date": "TBD",
-        "category": "ODDfest",
-        "title": "Hosting opens for the 2027 programme",
-        "description": "Independent artists, collectives, venues and organisations will soon be able to register to host something under the ODDfest umbrella.",
-        "href": "/oddfest"
-      },
-      {
-        "date": "TBD",
-        "category": "ODDference",
-        "title": "Planning for the next edition is underway",
-        "description": "ODDference returns with the same big question: what can business learn from creative expertise.",
-        "href": "/oddference"
-      },
-      {
         "date": "Weekly",
         "category": "ODDspace",
         "title": "Coffee on the House",
