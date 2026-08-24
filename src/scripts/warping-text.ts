@@ -6,9 +6,9 @@
 //   - reads its font-size from the rendered heading (whatever type-scale
 //     class the caller passed in) instead of a container-width ratio, so it
 //     stays on the fluid clamp() type scale like everything else on the site;
-//   - follows letter-hover.ts's pattern of keeping the real text as the
-//     accessible, SSR'd node and layering a client-built, aria-hidden visual
-//     replacement on top — never own the only copy of the words;
+//   - keeps the real text as the accessible, SSR'd node and layers a
+//     client-built, aria-hidden visual replacement on top — never owns the
+//     only copy of the words;
 //   - `prefers-reduced-motion: reduce` no-ops the whole module. The plain
 //     heading already in the markup is what renders — nothing to pause, per
 //     the reduced-motion rule in CLAUDE.md.

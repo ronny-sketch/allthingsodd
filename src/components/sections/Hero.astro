@@ -22,8 +22,14 @@ const pool = poolImages.map((i) => i.src);
 
 interface Props {
   mosaicAlt: string;
+  // The page's real proposition line — rendered as the actual <h1>, directly
+  // under the logo mark. Used to sit in its own light band below the hero
+  // (OpeningLine.astro, since removed); moved back onto the hero itself at
+  // Ronny's direct request, so it's optional here rather than assumed —
+  // Hero is still usable text-free if a future caller wants that.
+  headline?: string;
 }
-const { mosaicAlt } = Astro.props;
+const { mosaicAlt, headline } = Astro.props;
 ---
 
 <header class="hero">
@@ -60,6 +66,7 @@ const { mosaicAlt } = Astro.props;
 
   <div class="hero-logo" id="heroLogo">
     <Logo ariaHidden />
+    {headline && <h1 class="hero-headline">{headline}</h1>}
   </div>
 </header>
 
@@ -69,16 +76,14 @@ const { mosaicAlt } = Astro.props;
 <style>
   .hero {
     position: relative;
-    /* 46dvh, not a full 100dvh — the mosaic is pure visual impact with no
-       text of its own (see OpeningLine's comment), so its job is to read
-       as a strong opening beat, not fill the whole first screen; a short
-       hero plus a compact proposition line (see OpeningLine's own sizing)
-       means both fit within roughly one viewport, no scroll required to
-       reach the words. dvh accounts for mobile Safari's dynamic toolbar;
-       46vh is a fallback for browsers without dvh support (same value
-       there anyway). */
-    min-height: 46vh;
-    min-height: 46dvh;
+    /* Full-viewport again (was shrunk to 46dvh with the proposition line
+       moved into its own light band below — that band's gone now, the line
+       lives on the hero itself instead, so the hero is back to its
+       original full-screen size). dvh accounts for mobile Safari's dynamic
+       toolbar; 100vh is a fallback for browsers without dvh support (same
+       value there anyway). */
+    min-height: 100vh;
+    min-height: 100dvh;
     overflow: hidden;
     background: var(--color-bg);
     perspective: 1400px;
@@ -193,8 +198,11 @@ const { mosaicAlt } = Astro.props;
     inset: 0;
     z-index: 3;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: clamp(1.25rem, 3vw, 2.25rem);
+    padding: 0 1.5rem;
     pointer-events: none;
   }
   .hero-logo :global(svg) {
@@ -203,6 +211,21 @@ const { mosaicAlt } = Astro.props;
     color: var(--color-paper);
     opacity: 1;
     filter: url(#steam-hero) drop-shadow(0 0 70px rgb(226 223 222 / 18%));
+  }
+  .hero-headline {
+    margin: 0;
+    max-width: 62ch;
+    text-align: center;
+    font-size: clamp(1.6rem, 3vw, 2.6rem);
+    line-height: 1.25;
+    color: var(--color-paper);
+    text-shadow: 0 2px 24px rgb(14 9 11 / 55%);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-headline {
+      opacity: 0;
+      animation: hero-logo-in 1.2s 0.55s var(--ease-out-expo) both;
+    }
   }
   @media (prefers-reduced-motion: no-preference) {
     .hero-logo :global(svg) {
