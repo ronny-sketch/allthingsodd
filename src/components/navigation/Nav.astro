@@ -1,5 +1,6 @@
 ---
 import { getEntry } from 'astro:content';
+import Logo from '../primitives/Logo.astro';
 import Pill from '../primitives/Pill.astro';
 
 const site = await getEntry('site', 'global');
@@ -11,7 +12,9 @@ const path = Astro.url.pathname;
 <nav>
   <div class="nav-wrap nav-row">
     <div class="nav-left">
-      <a href="/" class="mark" aria-label="ODD"> ODD </a>
+      <a href="/" class="mark" aria-label="ODD">
+        <Logo />
+      </a>
       <div class="nav-links">
         {
           nav.map((item) => {
@@ -89,19 +92,34 @@ const path = Astro.url.pathname;
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.4rem;
-    letter-spacing: 0.02em;
-    text-decoration: none;
+  }
+  .mark :global(svg) {
+    height: 1.35rem;
+    width: auto;
+    display: block;
+    filter: url(#steam-nav);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .mark :global(svg) {
+      animation: hero-float 10s ease-in-out infinite;
+    }
   }
   @media (prefers-reduced-motion: no-preference) {
     .mark {
-      transition: color var(--duration-fast) ease;
+      transition: transform 0.4s var(--ease-spring);
+    }
+    .mark:hover {
+      transform: rotate(-4deg) scale(1.06);
     }
   }
-  .mark:hover {
-    color: var(--color-amber-bright);
+  @keyframes hero-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-2%);
+    }
   }
   .nav-links {
     display: flex;
