@@ -214,12 +214,24 @@ const { mosaicAlt, headline } = Astro.props;
   }
   .hero-headline {
     margin: 0;
-    max-width: 62ch;
+    max-width: 48ch;
     text-align: center;
-    font-size: clamp(1.6rem, 3vw, 2.6rem);
-    line-height: 1.25;
+    /* --text-heading-lg, not the huge --text-display-* roles the same
+       sentence used in its old OpeningLine placement — this now sits under
+       the logo mark over busy photography, so it reads as a companion line
+       to the mark rather than competing with it for the same visual weight. */
+    font: var(--text-heading-lg);
+    letter-spacing: -0.01em;
+    text-wrap: balance;
     color: var(--color-paper);
-    text-shadow: 0 2px 24px rgb(14 9 11 / 55%);
+    /* Two layers: a tight near-black pass for edge contrast against bright
+       mosaic cells directly behind the glyphs, plus a soft wide falloff so
+       the line still reads as sitting in the scene, not pasted on top of
+       it — the hero-scrim gradient alone is quite light at dead-center
+       (see .hero-scrim's radial-gradient), so this text can't lean on it. */
+    text-shadow:
+      0 1px 3px rgb(14 9 11 / 75%),
+      0 8px 32px rgb(14 9 11 / 50%);
   }
   @media (prefers-reduced-motion: no-preference) {
     .hero-headline {
