@@ -170,9 +170,61 @@ collections_config:
       whatItIs:
         type: object
         label: '"What it is" intro'
-        comment: Appears on ODDfest, ODDagency and Membership — each page's own short explainer section.
+        comment: >-
+          Appears on ODDfest, ODDagency, ODDspace and Membership — each
+          page's own short explainer section.
         options:
           subtype: object
+      community:
+        type: object
+        label: '"Who it''s for" (ODDspace only)'
+        options:
+          subtype: object
+      whatYouGet:
+        type: array
+        label: What you get (ODDspace only)
+        comment: The membership benefits list.
+        options:
+          structures: _structures.feature_card
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      membership:
+        type: object
+        label: Membership (ODDspace only)
+        comment: >-
+          One flat membership tier (not an array like ODDference's tickets
+          or Membership's tiers) — ODDspace's real pricing is deliberately
+          one rate, no tiers.
+        options:
+          subtype: object
+      rentalRates:
+        type: array
+        label: Event space rental rates (ODDspace only)
+        comment: >-
+          Member pricing for renting the gallery/auditorium. No invented
+          prices — these are real, current rates.
+        options:
+          required: false
+        cascade: true
+      location:
+        type: object
+        label: Location (ODDspace only)
+        options:
+          subtype: object
+      calendar:
+        type: object
+        label: Events calendar embed (ODDspace only)
+        comment: >-
+          "embedUrl" must be a real Google Calendar /calendar/embed?src=...
+          URL (not the "view calendar" share link) — see docs/editing.md.
+          Optional: leave the whole field out rather than embed a broken or
+          placeholder calendar.
+        options:
+          subtype: object
+          required: false
       twoWaysIn:
         type: object
         label: '"Two ways in" (Home only)'
@@ -193,10 +245,11 @@ collections_config:
         type: object
         label: Proof / traction
         comment: >-
-          Appears on Home, About and ODDference. Leave this field out of the
-          page entirely (delete it) rather than filling it with invented
-          numbers — the page renders fine without it. ODDference's version
-          can also carry an optional attendee quote.
+          Appears on Home, About, ODDference and ODDspace (required on
+          ODDspace — its pilot-phase numbers are the whole point of the
+          section). Elsewhere, leave this field out of the page entirely
+          (delete it) rather than filling it with invented numbers.
+          ODDference's version can also carry an optional attendee quote.
         options:
           subtype: object
           required: false
@@ -293,7 +346,7 @@ collections_config:
       howItWorks:
         type: array
         label: How it works
-        comment: Appears on ODDfest and ODDagency, each with its own steps.
+        comment: Appears on ODDfest, ODDagency and ODDspace, each with its own steps.
         options:
           structures: _structures.feature_card
           disable_add: false
@@ -366,7 +419,9 @@ collections_config:
       faq:
         type: array
         label: Practical / FAQ
-        comment: Appears on ODDfest and ODDference. Uses a real accordion — no HTML allowed in the answer text.
+        comment: >-
+          Appears on ODDfest, ODDference and ODDspace. Uses a real accordion
+          — no HTML allowed in the answer text.
         options:
           structures: _structures.faq_item
           disable_add: false

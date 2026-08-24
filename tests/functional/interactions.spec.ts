@@ -23,6 +23,7 @@ test('every flat internal nav link navigates to a real, matching page', async ({
   const internalRoutes: [string, string][] = [
     ['ODDfest', '/oddfest'],
     ['ODDference', '/oddference'],
+    ['ODDspace', '/oddspace'],
     ['Work with ODD', '/work-with-odd'],
   ];
   for (const [label, path] of internalRoutes) {
@@ -66,12 +67,16 @@ test('"Info" nav dropdown is also reachable by keyboard (focus-within)', async (
   await expect(menu).toBeVisible();
 });
 
-test('ODDspace link is external, in a new tab, with rel=noreferrer', async ({ page }) => {
+test('ODDspace is a real subpage, not an external link', async ({ page }) => {
+  // ODDspace used to point at oddspace.co in a new tab — now a real page on
+  // this site (see content.config.ts's oddspace template), same as
+  // ODDfest/ODDference, so it gets the same same-tab, no-rel-noreferrer
+  // treatment as any other internal nav link.
   await page.goto('/');
   const oddspace = page.locator('.nav-links a', { hasText: 'ODDspace' });
-  await expect(oddspace).toHaveAttribute('href', 'https://www.oddspace.co');
-  await expect(oddspace).toHaveAttribute('target', '_blank');
-  await expect(oddspace).toHaveAttribute('rel', 'noreferrer');
+  await expect(oddspace).toHaveAttribute('href', '/oddspace');
+  await expect(oddspace).not.toHaveAttribute('target', '_blank');
+  await expect(oddspace).not.toHaveAttribute('rel', 'noreferrer');
 });
 
 test('mobile menu opens on click, closes on the close button', async ({ page }) => {

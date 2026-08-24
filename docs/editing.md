@@ -25,8 +25,8 @@ CloudCannon input per `cloudcannon.config.yml`.
 
 ## What you can edit
 
-**Pages** (Home, ODDfest, ODDference, ODDagency, Work with ODD, Membership,
-About, Media, Contact) — nine fixed pages, can't be added to or deleted
+**Pages** (Home, ODDfest, ODDference, ODDagency, ODDspace, Work with ODD,
+Membership, About, Media, Contact) — ten fixed pages, can't be added to or deleted
 (their filenames are wired to real URLs). Within each page, every section
 below is a real editable field — headlines, intro paragraphs, eyebrow labels,
 and every repeatable list (features, cases, speakers, programme items, FAQ,
@@ -51,6 +51,10 @@ high-level notes:
   can carry an attendee quote), tickets (optional — no invented prices), FAQ.
 - **ODDagency**: what it is, capabilities, why ODD, how a project works,
   cases, types of project.
+- **ODDspace**: why it exists, who it's for, proof numbers, membership
+  benefits, the single membership tier (no invented pricing), event-space
+  rental rates, how it works, location, an optional live events-calendar
+  embed, FAQ.
 - **Work with ODD**: why ODD, the four pathways (ODDference/Membership/
   Agency/Partnerships), cases, how we work, the partner network note, the
   contact intro above the embedded inquiry form.
@@ -104,7 +108,7 @@ free service that emails you a submission, no backend of ours required.
   CloudCannon fields. See `docs/design-system.md` for why: this keeps every
   page visually coherent and keeps a content edit from ever being able to
   break the layout.
-- **Which pages exist, or their URLs.** Nine pages, fixed filenames
+- **Which pages exist, or their URLs.** Ten pages, fixed filenames
   (`disable_add`/`disable_file_actions` in `cloudcannon.config.yml`).
 - **New button/card shapes, custom CSS.** The button and card vocabulary
   (`Pill` variants, program card, feature card, CTA) is fixed by design; a
