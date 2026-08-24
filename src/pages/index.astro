@@ -3,7 +3,6 @@ import { getEntry } from 'astro:content';
 import { getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/sections/Hero.astro';
-import OpeningLine from '../components/sections/OpeningLine.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
 import Converge from '../components/sections/Converge.astro';
 import WhatsOn from '../components/sections/WhatsOn.astro';
@@ -73,8 +72,7 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
   ogImage={page.seo.ogImage}
   preloadImage={preloadImage.src}
 >
-  <Hero mosaicAlt={page.hero.mosaicAlt} />
-  <OpeningLine line={page.opening.headline} />
+  <Hero mosaicAlt={page.hero.mosaicAlt} headline={page.opening.headline} />
   <LogoStrip eyebrow="Press" title="Featured in" items={featuredIn} size="large" scroll />
 
   <div class="whatoddis-wrap">

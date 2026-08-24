@@ -157,9 +157,10 @@ collections_config:
         type: object
         label: Proposition (Home only)
         comment: >-
-          The big statement right under the hero, with up to two buttons —
-          this is the page's real "what is ODD" moment; the mosaic hero
-          above it stays purely visual, no text.
+          The headline that renders directly under the ODD logo inside the
+          hero mosaic itself — this is the page's real "what is ODD" moment.
+          Its two optional buttons render further down the page instead, in
+          the "More than one event" section (see index.astro).
         options:
           subtype: object
       whatOddIs:

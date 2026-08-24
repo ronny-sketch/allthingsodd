@@ -50,9 +50,6 @@
   --color-amber-bright: #ae6855;
   --color-ticket-blue: #40618c;
 
-  /* letter-hover palette (opening line hover scrub) — the archive's six accents */
-  --palette-letter-hover: #5081b3, #ae6855, #ce8942, #8224d4, #1436c4, #50241a;
-
   /* ---------- typography ---------- */
   --font-display: 'Forta', ui-sans-serif, system-ui, sans-serif;
   --font-body: 'Gabarito', ui-sans-serif, system-ui, sans-serif;

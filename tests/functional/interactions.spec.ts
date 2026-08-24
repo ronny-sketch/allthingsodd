@@ -9,7 +9,7 @@ test('homepage loads with the right title and hero', async ({ page }) => {
   const response = await page.goto('/');
   expect(response?.status()).toBe(200);
   await expect(page).toHaveTitle(/ODD/);
-  await expect(page.locator('h1.opening-line')).toBeVisible();
+  await expect(page.locator('h1.hero-headline')).toBeVisible();
 });
 
 test('logo link returns to home from a subpage', async ({ page }) => {
@@ -115,7 +115,7 @@ test('404 route returns real 404 status and its link goes home', async ({ page }
   expect(response?.status()).toBe(404);
   await page.locator('a', { hasText: 'Back to home' }).click();
   await expect(page).toHaveURL('/');
-  await expect(page.locator('h1.opening-line')).toBeVisible();
+  await expect(page.locator('h1.hero-headline')).toBeVisible();
 });
 
 test('footer social links are external with rel=noreferrer', async ({ page }) => {
