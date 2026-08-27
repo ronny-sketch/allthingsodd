@@ -103,6 +103,31 @@ input:focus-visible {
   outline-offset: 3px;
 }
 
+/* Skip-to-content link — was entirely missing sitewide (there was also no
+   <main> landmark at all until this pass), so a keyboard/screen-reader user
+   had no way to bypass Nav on every single page load. Visually hidden until
+   focused, same off-screen technique as .sr-only but reversible on :focus. */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 300;
+  padding: 0.7rem 1.2rem;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  border-radius: 0 0 6px 6px;
+  transition: top var(--duration-fast) ease;
+}
+.skip-link:focus-visible {
+  top: 0;
+  outline: 2px solid var(--color-ink);
+  outline-offset: -2px;
+}
+
 /* visually hidden but present for screen readers/heading hierarchy —
    shared by Hero's mosaic caption and AboutParallax's page h1 */
 .sr-only {

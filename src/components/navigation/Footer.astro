@@ -181,6 +181,13 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     flex-shrink: 0;
     overflow: hidden;
   }
+  /* The input's own outline is suppressed below (it'd be clipped by this
+     pill's overflow:hidden/rounded corners anyway) — :focus-within on the
+     container itself is the visible replacement, since there was none at
+     all before. */
+  .nl-form:focus-within {
+    border-color: var(--color-paper);
+  }
   .nl-form input {
     flex: 1;
     min-width: 0;

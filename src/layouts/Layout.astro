@@ -54,10 +54,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <StructuredData />
   </head>
   <body class={theme === 'light' ? 'theme-light' : undefined}>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="grain" aria-hidden="true"></div>
     <SteamFilters />
     <Nav />
-    <slot />
+    <main id="main-content">
+      <slot />
+    </main>
     <Footer />
     <MobileMenu />
     <Cursor />

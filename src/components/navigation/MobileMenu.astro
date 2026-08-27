@@ -241,6 +241,15 @@ const { nav, social, footerTag, newsletterHref } = site.data;
     min-width: 240px;
     overflow: hidden;
   }
+  /* The input's own outline is suppressed below (it'd be clipped by this
+     pill's overflow:hidden/rounded corners anyway) — :focus-within on the
+     container itself is the visible replacement, since there was none at
+     all before. A box-shadow ring, not a border-color change: the border is
+     already --color-ink (max contrast already), so only an added ring is
+     visible as a distinct focus state. */
+  .menu-newsletter:focus-within {
+    box-shadow: 0 0 0 3px var(--color-ink);
+  }
   .menu-newsletter input {
     flex: 1;
     min-width: 0;
