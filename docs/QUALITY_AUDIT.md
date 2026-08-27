@@ -58,7 +58,9 @@ Status: **Open** · **Fixed** (this pass) · **Backlog** (logged, not fixed this
 | ASSET-1 | P2 | Assets | "Helsinki Casting" partner logo (`logo-helsinkicasting.svg`) renders as garbled vertically-stacked letters at any size — the source SVG itself appears corrupted/malformed, not a CSS sizing issue | Confirmed visually live on `/` at 1440px after the PartnerTiers logo-size increase made it more noticeable; same file, unrelated to any change this pass | Needs a re-exported SVG from the partner or ODD's own brand assets — an asset problem, not a code fix | None once supplied | **CONTENT REQUIRED — human review** |
 | FMT-1 | P3 | Formatting | `npm run format:check` flags 10 files, all under `data/raw/**` (Growth OS raw data exports) | `data/` is gitignored and out of scope for a website-quality pass | No action — out of scope | None | Not fixed (out of scope) |
 
-## Baseline check results (before this pass's fixes)
+## Baseline check results
+
+**Before this pass:**
 
 | Command | Result |
 | --- | --- |
@@ -69,7 +71,18 @@ Status: **Open** · **Fixed** (this pass) · **Backlog** (logged, not fixed this
 | `npm run cc:validate` | Valid |
 | `npm run worker:check` | Clean (not modified this pass) |
 | `npm run worker:test` | 19/19 passed (not modified this pass) |
-| `npm test` (full parallel) | 80 passed, 25 failed — investigated: 2 real pages (`/`, `/oddspace`) had stale baselines from an already-merged, intentional redesign (updated deliberately, see below); the rest were pure resource-contention flakiness (confirmed via isolated re-run, see CI-1) |
-| `npm test` (isolated re-runs, `--workers=1`) | All pass after the snapshot update below |
+| `npm test` (full parallel) | 80 passed, 25 failed — investigated: 2 real pages (`/`, `/oddspace`) had stale baselines from an already-merged, intentional redesign; the rest was pure resource-contention flakiness (confirmed via isolated re-run at `--workers=1`, all passed — see CI-1) |
 
-**Snapshot update performed (deliberate, not blind):** `home-*.png` and `oddspace-*.png` (5 breakpoints each) were regenerated. Both were investigated first — home shows the already-approved "More than one event" redesign, hidden What's-happening/proof sections, and relocated Featured In (page height changed 9612px→8968px at `wide`, ~33% pixel diff); oddspace shows the already-approved dark→light theme flip (91% pixel diff, exactly matching a full ground-color inversion). No other page's baseline was touched.
+**Snapshot updates performed this pass (each investigated first, never blind):**
+1. `home-*.png` + `oddspace-*.png` (5 breakpoints each) — already-approved redesign predating this pass: home's "More than one event" rebuild, hidden What's-happening/proof, relocated Featured In (page height 9612px→8968px at `wide`, ~33% pixel diff); oddspace's dark→light theme flip (91% pixel diff, a full ground-color inversion).
+2. `*-tablet-darwin.png` (all 10 routes + 404) — direct, intended consequence of the RESP-1 fix: the old baselines were captured at 845px wide (834px viewport + the 11px sitewide overflow bug), the new ones correctly at 834px. Confirmed via the exact Playwright error before updating (`Expected an image 845px by 8324px, received 834px...`), not assumed.
+
+**After this pass, full suite (`npx playwright test`, 111 tests):**
+
+| Run | Result |
+| --- | --- |
+| `--workers=4` | 107 passed, 4 failed (`laptop` project, oddfest/oddference/oddagency/oddspace — all 4 carry an active `WarpingText` instance) |
+| Same 4 tests isolated, `--workers=1` | 4/4 passed — confirmed resource-contention flakiness (CI-1), not a regression |
+| `npm run check` / `npm run lint` / `npm run build` / `npm run cc:validate` | All clean, re-verified after every batch |
+
+Net: the suite is genuinely green; the only failure mode observed is the pre-existing local-parallelism flakiness logged as CI-1, reproduced and explained, not newly introduced.
