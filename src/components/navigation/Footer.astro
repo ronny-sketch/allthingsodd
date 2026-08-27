@@ -284,6 +284,16 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
       color var(--duration-fast) ease,
       transform var(--duration-fast) ease;
   }
+  /* The last badge's own -11px right margin has nothing after it to
+     encroach into, so it instead pushed the page's real scrollWidth 11px
+     past the viewport whenever this row lands flush against it — confirmed
+     live at 768–1024px (every page, Footer is global). Zeroing only that
+     one side, on only the last badge, keeps the tap-target expansion (and
+     its symmetric hover) everywhere else while removing the actual
+     overflow — confirmed via a direct before/after scrollWidth check. */
+  .social-badge:last-child {
+    margin-right: 0;
+  }
   .social-badge:hover {
     color: var(--color-paper);
     transform: translateY(-2px);

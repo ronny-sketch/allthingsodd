@@ -322,6 +322,13 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
     }
   }
   .wwo-card {
+    /* min-width: 0 — without it a grid item's implicit min-width:auto
+       refuses to shrink narrower than its longest unwrapped word, forcing
+       this column past its 1fr share and overflowing the page horizontally
+       between 701–767px (confirmed live: .wwo-card's right edge landed
+       101px past the viewport at 768px). Same fix ProofGrid/ParticipateBand
+       already apply for the identical reason — see their own comments. */
+    min-width: 0;
     background: var(--color-backstage);
     padding: 2rem;
     text-decoration: none;
