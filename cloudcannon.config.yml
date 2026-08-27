@@ -31,28 +31,6 @@ collections_config:
                 - ogImage
           required: false
         cascade: true
-      news:
-        type: array
-        label: News filmstrip photos
-        options:
-          structures: _structures.news_item
-          disable_add: false
-          disable_remove: false
-          disable_reorder: false
-          required: false
-        comment: Homepage-only. Reorder here reorders the live site.
-        cascade: true
-      whatsOn:
-        type: object
-        label: "What's On"
-        comment: >-
-          The "note" is the small disclaimer line under the two date
-          columns. Each column is its own list of dated entries, top to
-          bottom.
-        options:
-          subtype: object
-          required: false
-        cascade: true
       platforms:
         type: array
         label: The ODD platform (Home only)
@@ -713,24 +691,6 @@ _structures:
           name: ''
           logo:
           tier: ''
-  news_item:
-    style: select
-    values:
-      - label: News photo
-        default: false
-        preview:
-          text:
-            - key: caption
-          icon:
-            - image
-          image:
-            - key: image
-        place_groups_below: false
-        tabbed: false
-        value:
-          image:
-          caption: ''
-          href: '#'
   program_card:
     style: select
     values:
