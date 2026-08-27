@@ -9,11 +9,19 @@ The production rebuild of the ODD website — "Signal & Ember / Field Guide 005,
 co-creation platform site for New Nordic Way rf (ODDfest, ODDference, ODDspace,
 Work with ODD). Migrated 2026-08-19 from a single 13MB hand-authored static
 `index.html` (see `../ODD NEW WEBPAGE/` — no longer deployed as of 2026-08-20,
-but kept as the visual reference) into
-Astro + structured content + CloudCannon, without losing any of the original's
-visual identity, motion, or interaction design. That original file is the source
-of truth for "does this still look/feel right" — when in doubt, compare against it,
-not against a generic Astro sensibility.
+kept only as historical reference) into
+Astro + structured content + CloudCannon, without losing the original's visual
+identity, motion, or interaction design at migration time.
+
+**The site has kept evolving since — deliberately.** Preserve the current
+approved ODD design system (`src/styles/`, `docs/design-system.md`) and
+intentional design decisions as they stand today; the old hand-authored file
+is historical/provenance reference for *why* something looks the way it does,
+not an unconditional visual-parity requirement. A later, deliberate redesign
+(a new homepage section, a page flipped to a light theme, a component
+reworked) is not a regression to "fix" back toward the old file — when in
+doubt, compare against the current live site and this repo's own commit
+history, not against the pre-migration single-file build.
 
 **Do not repeat the WordPress detour.** An earlier session built a _different_
 site on Next.js + headless WordPress, wired to the wrong app entirely, and it was
@@ -26,10 +34,10 @@ platform (not a centrally booked festival), ODDference as a flagship event
 built on "what can business learn from creative expertise," and a new **Work
 with ODD** B2B gateway covering ODDference/Membership/Agency/Partnerships so
 those don't compete for one nav slot. See `docs/architecture.md#v2` for the
-full reasoning and `docs/editing.md` for what's now editable. Most page
-content is intentionally still `[PLACEHOLDER — ...]` text, not final copy —
-see the V2 delivery report for the page-by-page list of what still needs
-real content.
+full reasoning and `docs/editing.md` for what's now editable. Page content
+is real, launch-ready copy across every page as of the editorial pass
+following V2 — check `src/content/pages/*.json` directly for the current
+state of any given field, not this file, if in doubt.
 
 ## Architecture
 
@@ -155,18 +163,22 @@ step to forget.
 hosting is moving from Surge to a single Cloudflare Worker (Workers Static
 Assets serving Astro's build + `/api/*` routes for the two Growth OS forms).
 Astro itself is not changing — still a static build, no adapter. See
-`wrangler.toml` and `worker/`. Until that migration's acceptance criteria
-pass (`ops/DECISIONS.md` D1's step list), **Surge remains production** —
-don't point DNS or the CI `deploy` job at Cloudflare yet.
+`wrangler.toml` and `worker/`. A second CI job, `deploy-cloudflare-preview`,
+already runs `npx wrangler deploy` on every push to `main` alongside the
+Surge `deploy` job — it only publishes to the default `*.workers.dev`
+preview subdomain, not production. Until D1's acceptance criteria pass
+(`ops/DECISIONS.md` D1's step list), **Surge remains production** — don't
+point DNS or the Surge `deploy` job at Cloudflare yet.
 
 ## Definition of done
 
 A change is done when: `npm run check`, `npm run lint`, `npm run build`, and
 `npm test` all pass; new/changed editorial content is in `src/content/`, not
 hardcoded; new CMS-relevant fields are reflected in `cloudcannon.config.yml`;
-and the visual result has been compared against the original
-`../ODD NEW WEBPAGE/index.html` (or the current live site) for parity, not just
-"looks fine in isolation."
+and the visual result has been checked against the current live site — not
+just "looks fine in isolation," and not against the old pre-migration file
+(see "What this is" above on why that's provenance reference, not a
+parity requirement).
 
 ## Development server
 
@@ -206,11 +218,14 @@ current real state, not the guide's assumed state.
   would be one step shorter — see guide §60 for the required justification
   format.
 - **This repo's production is Surge, not Cloudflare** — static Astro build,
-  auto-deployed on push to `main` (see Deployment workflow above). The Growth
-  OS guide assumes Cloudflare Workers/Pages as the server runtime for
-  form → CRM/newsletter integrations; that assumption does not hold here yet.
-  Do not add Cloudflare-dependent code until `ops/SETUP_STATUS.md` shows
-  Decision D1 resolved.
+  auto-deployed on push to `main` (see Deployment workflow above).
+  Cloudflare-dependent code (`worker/`, `wrangler.toml`) already exists as a
+  staged migration per `ops/DECISIONS.md` D1, with real Attio/beehiiv
+  integrations tested (`worker:check`/`worker:test`, both CI gates) and
+  live in preview — extending it is fine. What's still gated on D1 is the
+  **production DNS cutover**: don't point DNS or the Surge `deploy` job at
+  Cloudflare, and don't treat the `deploy-cloudflare-preview` job's output
+  as production, until D1's acceptance steps pass.
 - **No autonomous strategic outreach.** Claude may draft partner/sales
   emails and CRM next-actions; a human sends them. Never send, never change
   deal value/consent fields from inference, never bulk-delete CRM records.
