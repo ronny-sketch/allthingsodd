@@ -22,6 +22,13 @@ interface Props {
   // real headings for variation, not applied blanket to every hero that
   // happens to reuse this markup.
   warpTitle?: boolean;
+  // WarpingText's animated SVG replacement is recolored via a hardcoded
+  // filter chain per color, not a CSS variable (see WarpingText.astro) — it
+  // doesn't auto-invert under tokens.css's .theme-light the way the rest of
+  // this component does. ODDspace (the one light-theme page using
+  // warpTitle) passes 'ink' explicitly; every dark-ground page keeps the
+  // default.
+  warpColor?: 'paper' | 'ink';
 }
 const {
   variant,
@@ -34,6 +41,7 @@ const {
   intro,
   primaryCta,
   warpTitle = false,
+  warpColor = 'paper',
 } = Astro.props;
 ---
 
@@ -57,7 +65,7 @@ const {
             as="h1"
             text={title}
             class="oddf-warping-title"
-            color="paper"
+            color={warpColor}
             align="center"
           />
         ) : (

@@ -10,8 +10,7 @@
   },
   "opening": {
     "headline": "ODD brings creative expertise into wider use — across culture, business and society.",
-    "primaryCta": { "label": "Explore Work with ODD", "href": "/work-with-odd" },
-    "secondaryCta": { "label": "See what's on", "href": "#whats-happening" }
+    "primaryCta": { "label": "Explore Work with ODD", "href": "/work-with-odd" }
   },
   "whatOddIs": {
     "eyebrow": "What ODD is",
@@ -88,23 +87,6 @@
       "image": "../../assets/programs/work-with-odd-card.jpg"
     }
   ],
-  "proof": {
-    "eyebrow": "Proof",
-    "title": "ODDfest, in numbers.",
-    "items": [
-      { "value": "2,600", "label": "Attendees", "context": "1,900+ signups" },
-      {
-        "value": "350+",
-        "label": "Contributors",
-        "context": "Partners, speakers, artists, staff, volunteers"
-      },
-      {
-        "value": "€400K",
-        "label": "Direct economic impact",
-        "context": "€320K invested into the creative economy"
-      }
-    ]
-  },
   "workWithOdd": {
     "eyebrow": "For business & institutions",
     "title": "Several ways to work with ODD.",

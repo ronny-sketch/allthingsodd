@@ -308,12 +308,21 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     font-size: 0.72rem;
     color: #967e79;
   }
+  /* The lightened clay above is tuned for a dark ground; under .theme-light
+     (ODDspace) the footer sits on the light ground instead, so it needs the
+     darkened reading of the same clay hue for equivalent contrast. */
+  :global(.theme-light) .foot-bottom {
+    color: #6b5551;
+  }
   .foot-bottom p {
     margin: 0;
   }
   .foot-bottom a {
     color: #967e79;
     text-decoration: none;
+  }
+  :global(.theme-light) .foot-bottom a {
+    color: #6b5551;
   }
   .foot-bottom a:hover {
     color: var(--color-paper);

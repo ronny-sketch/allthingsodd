@@ -85,33 +85,41 @@ const columnStyle = `grid-template-columns: repeat(${groups.length}, 1fr)`;
   }
   .tier-label {
     text-align: center;
-    font: var(--text-caption);
-    letter-spacing: 0.22em;
+    font: var(--text-utility);
+    font-weight: 700;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: var(--color-paper-60);
+    color: var(--color-paper-80);
   }
   .tier-divider {
     border-top: 1px solid var(--color-paper-20);
-    margin-bottom: 2.25rem;
+    margin-bottom: 2.75rem;
   }
   .tier-columns {
     display: grid;
-    gap: 2rem;
+    gap: 2.5rem;
   }
   .tier-column {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 2rem 2.5rem;
+    gap: 2.5rem 3.5rem;
   }
+  /* Fixed height + object-fit:contain (not a fixed width) is what actually
+     gives "optical" rather than "CSS" equality here — a wide wordmark and a
+     compact symbol mark both read as the same visual weight at a shared
+     height, each keeping its own real aspect ratio, rather than being
+     force-stretched or letterboxed into equal boxes. Sized up from 40px so
+     these read as legitimate participants, not footer-sponsor afterthoughts
+     — see the task's "Way Out West" reference for the target scale. */
   .tier-column img {
-    height: 40px;
+    height: 52px;
     width: auto;
-    max-width: 160px;
+    max-width: 220px;
     object-fit: contain;
     display: block;
-    opacity: 0.7;
+    opacity: 0.75;
     filter: brightness(0) invert(1);
     transition: opacity var(--duration-fast) ease;
   }

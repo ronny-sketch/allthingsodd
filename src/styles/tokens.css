@@ -16,12 +16,25 @@
   provenance — see docs/design-system.md.
 */
 :root {
+  /* ---------- fixed swatches (never reassigned — the two role tokens
+     below and the .theme-light inversion scope both build from these) ---------- */
+  --swatch-ink: #0e090b;
+  --swatch-paper: #e2dfde;
+  --swatch-backstage-dark: #232028;
+  /* Elevated card surface for the light/inverse theme — ODDspace only (see
+     .theme-light below). Not measured from the archive census like the rest
+     of this file (there's no "light elevated surface" in 1,478 dark-venue
+     photos to measure) — a warm off-white a step down from --swatch-paper,
+     same relationship --swatch-backstage-dark has to --swatch-ink, so a
+     card still reads as "lifted" against the light page. */
+  --swatch-backstage-light: #d3cdc9;
+
   /* ---------- color: ink (dark ground) ---------- */
-  --color-ink: #0e090b;
+  --color-ink: var(--swatch-ink);
   --color-bg: var(--color-ink);
 
   /* paper (light neutral) and opacity ramp against ink */
-  --color-paper: #e2dfde;
+  --color-paper: var(--swatch-paper);
   --color-paper-80: rgb(226 223 222 / 80%);
   --color-paper-60: rgb(226 223 222 / 60%);
   /* The literal archive value here (40%) measures 3.1:1 on --color-ink —
@@ -36,10 +49,23 @@
   --color-paper-06: rgb(226 223 222 / 6%);
   --color-paper-03: rgb(226 223 222 / 3%);
 
+  /* ink opacity ramp — the --color-paper-NN ramp's mirror image, for muted
+     dark-on-light text. Unused in the default dark theme (nothing needs a
+     dark tint against a dark ground); exists so .theme-light below can swap
+     --color-paper-NN into these instead of hand-rolling new rgb() literals
+     per component, per CLAUDE.md's "tokens first" rule. */
+  --color-ink-80: rgb(14 9 11 / 80%);
+  --color-ink-60: rgb(14 9 11 / 60%);
+  --color-ink-40: rgb(14 9 11 / 55%);
+  --color-ink-20: rgb(14 9 11 / 20%);
+  --color-ink-12: rgb(14 9 11 / 12%);
+  --color-ink-06: rgb(14 9 11 / 6%);
+  --color-ink-03: rgb(14 9 11 / 3%);
+
   /* accents */
   --color-signal: #507aaf; /* business / ODDference */
   --color-amber: #9a432b; /* creative / ODDfest */
-  --color-backstage: #232028; /* raised card surface on ink */
+  --color-backstage: var(--swatch-backstage-dark); /* raised card surface on ink */
   --color-clay: #89706b; /* quiet secondary text */
   --color-indigo: #1c2b66; /* hero scrim tint */
   --color-ultraviolet: #8224d4; /* rarest archive color — wash only, never fill, ODDfest page only */
@@ -83,4 +109,28 @@
   --duration-base: 0.35s;
   --duration-slow: 0.6s;
   --duration-reveal: 0.7s;
+}
+
+/*
+  ODDspace's inverse identity — the rest of the site is dark-ground; ODDspace,
+  the physical/daylight/year-round home of the ecosystem, deliberately flips
+  to light. Applied once, as a class on <body> (see Layout.astro's `theme`
+  prop), so every shared component below it (Nav, Footer, every section) just
+  re-resolves the same --color-* tokens it already uses — no component needs
+  its own light-mode branch. Only the role tokens flip; --color-signal/
+  --color-amber/--color-clay/--color-indigo/--color-ultraviolet stay put,
+  they're accents, not ground/figure.
+*/
+.theme-light {
+  --color-bg: var(--swatch-paper);
+  --color-ink: var(--swatch-paper);
+  --color-paper: var(--swatch-ink);
+  --color-paper-80: var(--color-ink-80);
+  --color-paper-60: var(--color-ink-60);
+  --color-paper-40: var(--color-ink-40);
+  --color-paper-20: var(--color-ink-20);
+  --color-paper-12: var(--color-ink-12);
+  --color-paper-06: var(--color-ink-06);
+  --color-paper-03: var(--color-ink-03);
+  --color-backstage: var(--swatch-backstage-light);
 }

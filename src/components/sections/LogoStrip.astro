@@ -23,18 +23,32 @@ interface Props {
   items: LogoItem[];
   size?: 'default' | 'large';
   scroll?: boolean;
+  // Home's "Featured in" sits directly under "The ODD platform" now — proof
+  // supporting that section, not a new chapter of its own. `compact` drops
+  // the bordered section-head/h2 in favour of one small inline label, and
+  // tightens the rhythm so it reads as a continuation, not a fresh section.
+  // Media's own "Featured in" keeps the default (non-compact) full treatment.
+  compact?: boolean;
 }
-const { eyebrow, title, items, size = 'default', scroll = false } = Astro.props;
+const { eyebrow, title, items, size = 'default', scroll = false, compact = false } = Astro.props;
 const track = scroll ? [...items, ...items] : items;
 const sizeClass = size === 'large' ? 'is-large' : '';
 ---
 
-<section class="logo-strip-section">
+<section class={`logo-strip-section ${compact ? 'is-compact' : ''}`}>
   <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">{eyebrow}</span>
-      <h2>{title}</h2>
-    </div>
+    {
+      compact ? (
+        <p class="logo-strip-label">
+          <span class="eyebrow">{eyebrow}</span> — {title}
+        </p>
+      ) : (
+        <div class="section-head">
+          <span class="eyebrow">{eyebrow}</span>
+          <h2>{title}</h2>
+        </div>
+      )
+    }
   </div>
   {
     scroll ? (
@@ -67,6 +81,23 @@ const sizeClass = size === 'large' ? 'is-large' : '';
   }
   .logo-strip-section .section-head {
     margin-bottom: var(--space-10);
+  }
+  /* Compact — no border-top (this isn't a new chapter, it's proof under the
+     platform section above it), no bordered section-head, one quiet label
+     line instead of an h2, generous but tighter top/bottom rhythm. */
+  .logo-strip-section.is-compact {
+    border-top: none;
+    padding: var(--space-4) 0 var(--space-20);
+  }
+  .logo-strip-label {
+    text-align: center;
+    margin: 0 0 var(--space-8);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-40);
+  }
+  .logo-strip-label .eyebrow {
+    color: var(--color-paper-40);
   }
   .sr-only {
     position: absolute;

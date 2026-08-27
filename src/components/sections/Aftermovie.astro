@@ -15,18 +15,22 @@ const logos = [
   { src: oddferenceMark.src, alt: 'ODDference', class: 'is-oddference' },
   { src: oddspaceWordmark.src, alt: 'ODDspace', class: '' },
 ];
+// The old static centered row clipped the outer marks against its own edges
+// the moment it scrolled — fixed here not by going back to static, but by
+// repeating the 3-mark sequence enough times that the track is always full:
+// nothing to clip, because there's no gap between one lap and the next. See
+// LogoStrip.astro's `scroll` mode / motion.css for the same doubled-track
+// convention this reuses.
+const reps = 6;
+const track = Array.from({ length: reps }, () => logos).flat();
 ---
 
 <section class="logo-train">
-  {
-    /* A plain centered row, not a scrolling marquee — only 3 logos, so
-       there was nothing for a ticker to actually accomplish, and scrolling
-       meant the outer two were always partially clipped by the row's own
-       edges (confirmed via screenshot: "FEST"/"FERENC[E]" cut off left and
-       right). Centering a static row removes that entirely. */
-  }
-  <div class="logo-row">
-    {logos.map((l) => <img src={l.src} alt={l.alt} class={l.class} />)}
+  <div class="brand-marquee">
+    <div class="brand-marquee-track" aria-hidden="true">
+      {track.map((l) => <img src={l.src} alt="" class={l.class} loading="lazy" />)}
+    </div>
+    <p class="sr-only">ODDfest, ODDference, ODDspace</p>
   </div>
   <div class="aftermovie-full">
     {
@@ -63,20 +67,40 @@ const logos = [
 <style>
   .logo-train {
     border-top: 1px solid var(--color-paper-12);
-    padding: 2rem 0;
+    border-bottom: 1px solid var(--color-paper-12);
+    padding: 2.75rem 0;
+    overflow: hidden;
   }
-  .logo-row {
+  .brand-marquee {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    overflow: hidden;
+  }
+  .brand-marquee-track {
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 4.5rem;
+    width: max-content;
+    gap: 5.5rem;
   }
-  .logo-row img {
-    height: 44px;
+  @media (prefers-reduced-motion: no-preference) {
+    .brand-marquee-track {
+      /* reverse — same empirically-verified convention as LogoStrip.astro's
+         scroll mode: plain marquee-right on a repeated track reads
+         right-to-left, reversing it is what actually moves left → right. */
+      animation: marquee-right 42s linear infinite reverse;
+      will-change: transform;
+    }
+  }
+  .brand-marquee img {
+    height: 56px;
     width: auto;
     display: block;
-    opacity: 0.88;
+    flex-shrink: 0;
+    opacity: 0.85;
+    /* Same monochrome normalization as LogoStrip/PartnerTiers — a graphic,
+       architectural field of marks reads more like brand signage than a
+       colored logo carousel. */
+    filter: brightness(0) invert(1);
   }
   /* oddference-mark.png's "OOO" glyph sits noticeably taller within its own
      canvas than the other two marks' equivalent glyph does within theirs, so
@@ -84,8 +108,22 @@ const logos = [
      screenshot, side by side). A source-asset proportion difference, not
      fixable via height alone — scaled down slightly as the practical fix
      without new export files. */
-  .logo-row img.is-oddference {
-    height: 38px;
+  .brand-marquee img.is-oddference {
+    height: 47px;
+  }
+  @media (max-width: 700px) {
+    .logo-train {
+      padding: 2rem 0;
+    }
+    .brand-marquee-track {
+      gap: 3.25rem;
+    }
+    .brand-marquee img {
+      height: 38px;
+    }
+    .brand-marquee img.is-oddference {
+      height: 32px;
+    }
   }
 
   .aftermovie-full {

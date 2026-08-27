@@ -18,7 +18,12 @@ if (!entry || entry.data._template !== 'oddspace')
 const page = entry.data;
 ---
 
-<Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
+<Layout
+  title={page.seo.title}
+  description={page.seo.description}
+  ogImage={page.seo.ogImage}
+  theme="light"
+>
   <SubpageFrame slug={page._slug} railLeft={page.railLeft} railRight={page.railRight}>
     <SplitHero
       variant="split-image"
@@ -29,6 +34,7 @@ const page = entry.data;
       intro={page.intro}
       primaryCta={page.primaryCta}
       warpTitle
+      warpColor="ink"
     />
     <FeatureGrid cards={page.features} />
 
@@ -193,7 +199,10 @@ const page = entry.data;
     max-width: 56rem;
     margin: 0 auto;
     border: 1px solid var(--color-paper-12);
-    background: var(--color-paper);
+    /* Fixed, not var(--color-paper) — Google's calendar embed renders on a
+       white surface regardless of page theme, so the frame around it should
+       stay light too rather than following ODDspace's own light/dark swap. */
+    background: var(--swatch-paper);
   }
   .odds-calendar-embed iframe {
     display: block;
