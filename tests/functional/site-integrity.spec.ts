@@ -82,7 +82,8 @@ test('every internal link on every route resolves to a real page or in-page anch
         await page.goto(path);
         await page.waitForLoadState('load');
         const exists = await page.evaluate((id) => !!document.getElementById(id), hash);
-        if (!exists) brokenLinks.push(`${route}: href "${href}" -> #${hash} has no matching id on ${path}`);
+        if (!exists)
+          brokenLinks.push(`${route}: href "${href}" -> #${hash} has no matching id on ${path}`);
         await page.goto(route);
         await page.waitForLoadState('load');
       }
