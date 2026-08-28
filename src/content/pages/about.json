@@ -1,8 +1,8 @@
 {
   "_template": "about",
   "seo": {
-    "title": "About ODD — one platform, many ways in",
-    "description": "ODD brings creative expertise into wider use across culture, business and society, through events, spaces and programmes built in Helsinki.",
+    "title": "About ODD — why we exist and what we do",
+    "description": "ODD exists to connect Finland's creative and cultural fields with business and wider society through events, spaces and projects.",
     "ogImage": "/og/about.jpg"
   },
   "panels": [
@@ -12,36 +12,40 @@
       "alt": "Two people talking at a creative exhibition",
       "eyebrow": "About",
       "title": "This is ODD.",
-      "body": "ODD brings creative expertise into wider use across culture, business and society — by building the structures that let creative professionals, organisations and communities meet, learn from each other and work together, again and again, not just once."
+      "body": "ODD exists to bring Finland's creative and cultural fields closer to business and wider society — while building better conditions for creative work itself. We do it through events, spaces and projects where people can meet, make, learn and build together."
     },
     {
       "_kind": "media",
       "image": "../../assets/about/about-2-crowd.jpg",
       "alt": "Motion-blurred crowd at an ODD event",
       "eyebrow": "Why we exist",
-      "title": "Finland has the creative talent. It doesn't have enough structure around it.",
-      "body": "Most creative work happens project by project — a show, a production, a grant cycle — and the relationships and momentum it builds tend to dissolve once it's over. Cross-disciplinary exchange stays occasional, and regular contact between creative professionals and other sectors is rarer than it should be. ODD exists to build the connective structures — events, spaces, programmes — that let that work and those relationships continue."
+      "title": "Finland doesn't lack creativity. Too much of it still happens in separate rooms.",
+      "body": "Creative work is often built project by project, grant by grant and production by production. The work can be brilliant while the spaces, relationships and continuity around it remain fragile. At the same time, business and institutions too rarely spend real time with the people shaping culture. ODD works on both problems at once: more room for creative work to grow, and more contact between the worlds around it."
     },
     {
       "_kind": "model",
       "eyebrow": "How it works",
-      "title": "One platform, several ways in.",
+      "title": "Different ways to make the same idea real.",
       "items": [
         { "label": "ODDfest", "meta": "Open creative platform", "href": "/oddfest" },
-        { "label": "ODDference", "meta": "Flagship professional event", "href": "/oddference" },
+        {
+          "label": "ODDference",
+          "meta": "Creative expertise meets business",
+          "href": "/oddference"
+        },
         { "label": "ODDspace", "meta": "Year-round home base", "href": "/oddspace" },
         {
           "label": "Work with ODD",
-          "meta": "Membership, agency, partnerships",
+          "meta": "Network, projects, partnerships",
           "href": "/work-with-odd"
         }
       ]
     },
     {
       "_kind": "text",
-      "eyebrow": "One platform, different ways to participate",
+      "eyebrow": "Different starting points. Same side.",
       "title": "Creatives, communities, businesses,\ninstitutions, partners, audiences.",
-      "body": "None of these groups sit on opposite sides of a table here. A festival organiser might also be an ODDspace member; a company at ODDference might end up commissioning ODDagency; a creative collective might become a Work with ODD partner. ODD is built for people to move between these roles, not stay fixed in one."
+      "body": "People arrive at ODD from different places, but they do not need to stay in separate boxes. An artist can come to ODDference. A company can host something at ODDfest. An ODDspace member can build a project with an organisation they met through ODD. The point is not to protect the boundaries between these worlds. It is to make crossing them normal."
     }
   ],
   "marqueeItems": [
@@ -61,12 +65,12 @@
       {
         "year": "2023",
         "title": "New Nordic Way rf founded",
-        "body": "The non-profit behind ODD is founded in Helsinki to build stronger structures around Finland's creative economy."
+        "body": "New Nordic Way rf is founded in Helsinki, creating the organisational home for what would later become ODD."
       },
       {
         "year": "2024",
         "title": "Finding the gap",
-        "body": "A year of research and concept work into what was actually missing for creative professionals in Finland, leading toward a shared, cross-sector gathering."
+        "body": "The idea starts taking shape around a gap that keeps showing up: strong creative work, but too few lasting places and relationships connecting it across fields and with the rest of society."
       },
       {
         "year": "2025",
@@ -76,12 +80,12 @@
       {
         "year": "2026",
         "title": "Creative Week, ODDference and ODDspace",
-        "body": "ODDfest expands into a wider Creative Week, ODDference launches as a standalone flagship event, and the first ODDspace opens its doors in Vallila."
+        "body": "Creative Week tests a distributed, city-wide model; ODDference launches as its own professional event; and the first ODDspace opens in Vallila, giving the work a year-round home."
       },
       {
         "year": "2027",
         "title": "ODDfest opens up further",
-        "body": "ODDfest continues as a distributed, open platform — the model Creative Week ran in 2026 — with year-round activity through ODDspace and ODDference continuing alongside it."
+        "body": "The Creative Week model becomes ODDfest: an open, city-wide week made by independent organisers across Helsinki, alongside year-round ODDspace and ODDference."
       }
     ]
   },
@@ -97,29 +101,29 @@
   },
   "people": {
     "eyebrow": "People & organisation",
-    "title": "Who's behind ODD.",
-    "orgDescription": "ODD is the public-facing platform operated by New Nordic Way rf, a Finnish non-profit founded to strengthen the structures around Finland's creative economy. New Nordic Way runs ODDfest, ODDference, ODDspace and the wider Work with ODD activity — ODD is the name you'll see; New Nordic Way rf is who's behind it.",
+    "title": "The people and organisation behind ODD.",
+    "orgDescription": "ODD is operated by New Nordic Way rf, a Finnish non-profit based in Helsinki. ODD is the public name for the events, spaces and projects we build; New Nordic Way rf is the organisation behind them.",
     "team": []
   },
   "network": {
     "eyebrow": "Partners & network",
-    "title": "Built with, not just for.",
+    "title": "Built with.",
     "note": "Built together with the partners, venues and institutions below — with more joining as ODD grows."
   },
   "ambition": {
     "eyebrow": "The bigger picture",
-    "headline": "A stronger place for creative work in Finland.",
-    "body": "The longer ambition behind ODD is a Finland where creative work has better infrastructure, more continuity, and closer relationships with the rest of society — not because ODD builds all of that alone, but because events, spaces and programmes like these are practical, working parts of it."
+    "headline": "A more creative Finland.",
+    "body": "A more creative Finland is better for the people making culture, better for the organisations trying to build what comes next, and simply a more interesting place to live. ODD cannot build that alone. Our part is practical: create more places for creative work to happen, more ways for it to be seen and supported, and more contact between the people making culture and the rest of society."
   },
   "participate": [
     {
-      "eyebrow": "Business",
+      "eyebrow": "",
       "title": "Work with ODD",
       "linkLabel": "Explore →",
       "href": "/work-with-odd"
     },
     {
-      "eyebrow": "Creative",
+      "eyebrow": "",
       "title": "Join ODDfest",
       "linkLabel": "Find out how →",
       "href": "/oddfest"

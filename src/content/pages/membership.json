@@ -1,61 +1,61 @@
 {
   "_template": "membership",
   "seo": {
-    "title": "ODDmembership — a year-round relationship with ODD",
-    "description": "ODD's year-round relationship for organisations that want ongoing access to the wider creative network, not just a single ticket or project.",
+    "title": "ODDnetwork — stay involved throughout the year",
+    "description": "A developing year-round network for organisations that want to stay involved with ODD, learn across sectors and help move the same things forward.",
     "ogImage": "/og/membership.jpg"
   },
-  "eyebrow": "ODDmembership · Work with ODD",
-  "title": "A year-round relationship with ODD.",
-  "intro": "Some organisations want more than a single ticket or a one-off project — an ongoing relationship with ODD and its wider network, across the year. \"ODDmembership\" is a working name for that relationship, still being defined.",
+  "eyebrow": "ODDnetwork · Work with ODD",
+  "title": "Stay involved beyond a single event.",
+  "intro": "Some organisations want to stay involved after the event or project is over. ODDnetwork is the working model for that: a year-round group of organisations that want to learn from each other, stay close to ODD's activity and help build stronger connections between creative fields, business and society. The exact model is still being shaped with the first organisations involved.",
   "whatItIs": {
     "eyebrow": "What it is",
-    "headline": "Not a ticket. Not a project. A relationship.",
-    "body": "Where ODDagency is project-based and ODDference is a single event, membership is meant to be a standing relationship — regular contact with ODD's network and activity rather than a one-time engagement. The exact shape of what that includes is still being developed."
+    "headline": "A network you take part in, not a membership card.",
+    "body": "ODDnetwork is meant for organisations that want continuity: regular contact, shared conversations and useful ways to take part across the year. It should grow from what the organisations in it actually want to do together, rather than from a fixed benefits list invented in advance."
   },
   "whoItsFor": [
     {
       "label": "Organisations wanting an ongoing creative connection",
-      "description": "Companies and institutions that want more than a single touchpoint with ODD's network."
+      "description": "Companies and institutions that want an ongoing way to meet people outside their usual field and keep learning from the creative world."
     },
     {
       "label": "Partners already working with ODD",
-      "description": "Organisations already collaborating with ODD who want that relationship formalised year-round."
+      "description": "Partners and collaborators who want to keep the relationship active beyond one event or project."
     },
     {
       "label": "Organisations exploring the creative economy",
-      "description": "Teams who want a standing way to stay close to what's happening in Finland's creative scene."
+      "description": "Teams that believe creative work should have a stronger place in business and society — and want to contribute, not just observe."
     }
   ],
   "whyJoin": [
     {
       "number": "01",
       "title": "An ongoing relationship, not a one-off",
-      "body": "For organisations that keep coming back to ODD in different ways — membership is meant to bring that into one standing relationship instead of starting over each time."
+      "body": "Stay in touch across the year instead of starting a new relationship from zero every time something happens."
     },
     {
       "number": "02",
       "title": "Built with real organisations",
-      "body": "The model is being shaped together with the first organisations joining it, not decided in isolation and handed down."
+      "body": "The network is being built with the organisations taking part. If something would make it more useful, that is part of the conversation."
     },
     {
       "number": "03",
       "title": "One point of contact",
-      "body": "A single relationship with ODD, instead of a separate conversation for every event or project."
+      "body": "The point is not another newsletter or logo list. The network should create practical ways to meet, contribute, build and take ideas back into your own organisation."
     }
   ],
   "includes": [
     {
       "title": "Ongoing contact",
-      "body": "Regular contact with ODD across the year, in one standing relationship."
+      "body": "A simple, ongoing relationship with the ODD team and the other organisations involved."
     },
     {
       "title": "Participation across the year",
-      "body": "A way to take part in ODD's activity over time, beyond any single event."
+      "body": "Small gatherings, conversations and invitations around the questions the network actually cares about."
     },
     {
       "title": "A closer relationship",
-      "body": "More direct contact with ODD than a one-off event or project."
+      "body": "Connections across the network when there is a real reason for people to meet — not networking for its own sake."
     }
   ],
   "rhythm": [
@@ -66,7 +66,7 @@
   "tiers": [],
   "finalCta": {
     "eyebrow": "Interested?",
-    "title": "Ask about membership",
+    "title": "Ask about ODDnetwork",
     "linkLabel": "Get in touch →",
     "href": "/contact"
   }

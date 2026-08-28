@@ -2,11 +2,11 @@
   "_template": "media",
   "seo": {
     "title": "Media — ODD",
-    "description": "Accreditation, key facts, press releases, assets and everything else you need to cover ODD — plus the outlets who already have."
+    "description": "Key facts, press releases, accreditation, photos, logos and contacts for covering ODD."
   },
   "eyebrow": "Media",
-  "title": "Press & media.",
-  "intro": "Accreditation, key facts, press releases, assets and everything else you need to cover ODD — plus the outlets who already have.",
+  "title": "Media.",
+  "intro": "Key facts, press releases, accreditation, photos, logos and contacts for covering ODD.",
   "accreditation": {
     "eyebrow": "Accreditation",
     "headline": "Press accreditation.",
@@ -28,12 +28,12 @@
     },
     {
       "label": "Mission",
-      "value": "To make creative economy the next big engine of sustainable growth in Finland, put local creativity on the map, and celebrate global oddity"
+      "value": "ODD exists to connect Finland's creative and cultural fields with business and wider society, while building better conditions for creative work itself."
     }
   ],
   "highlights": {
     "eyebrow": "ODDfest 2025 highlights",
-    "title": "The last edition, in numbers.",
+    "title": "ODDfest 2025, in numbers.",
     "items": [
       { "value": "2,600", "label": "Attendees", "context": "1,900+ signups" },
       { "value": "83", "label": "Sessions", "context": "Across 8 stages, 7+ creative sectors" },
@@ -55,8 +55,8 @@
   },
   "boilerplate": {
     "eyebrow": "Boilerplate",
-    "headline": "ODD, in one paragraph.",
-    "body": "ODD is a Helsinki-based platform working to strengthen Finland's creative economy by connecting creative professionals, organisations and communities through events, spaces and projects. Its work includes ODDfest, ODDference, ODDspace and project-based collaborations. ODD is operated by New Nordic Way rf."
+    "headline": "ODD in one paragraph.",
+    "body": "ODD is a Helsinki-based initiative connecting Finland's creative and cultural fields with business and wider society. It creates events, spaces and projects that strengthen the conditions for creative work and bring people from different fields into closer contact. ODD's work includes ODDfest, ODDference, ODDspace, networks, partnerships and project-based collaborations. ODD is operated by the Finnish non-profit New Nordic Way rf."
   },
   "pressReleases": [
     {
