@@ -28,7 +28,11 @@
       "title": "Different ways to make the same idea real.",
       "items": [
         { "label": "ODDfest", "meta": "Open creative platform", "href": "/oddfest" },
-        { "label": "ODDference", "meta": "Creative expertise meets business", "href": "/oddference" },
+        {
+          "label": "ODDference",
+          "meta": "Creative expertise meets business",
+          "href": "/oddference"
+        },
         { "label": "ODDspace", "meta": "Year-round home base", "href": "/oddspace" },
         {
           "label": "Work with ODD",
