@@ -55,7 +55,15 @@
       "title": "Partnerships",
       "body": "Co-create something across ODD's events, spaces or wider activity.",
       "goLabel": "Get in touch →",
-      "href": "/contact",
+      "href": "/work-with-odd?interest=strategic_partnership#enquiry-form",
+      "image": "../../assets/programs/partnerships-card.jpg"
+    },
+    {
+      "meta": "Cities, museums, public institutions",
+      "title": "Cities & Institutions",
+      "body": "A programme or partnership shaped around your institution's own goals.",
+      "goLabel": "Get in touch →",
+      "href": "/work-with-odd?interest=city_institution_programme#enquiry-form",
       "image": "../../assets/programs/partnerships-card.jpg"
     }
   ],

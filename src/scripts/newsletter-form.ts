@@ -1,6 +1,6 @@
 // Progressive-enhancement submit for the footer newsletter form. Replaces
 // the old bare `GET .../beehiiv-hosted-page` redirect with a same-origin
-// POST to /api/newsletter (worker/src/index.ts), which calls beehiiv's API
+// POST to /api/newsletter (../odd-growth-os's worker/src/index.ts), which calls beehiiv's API
 // server-side and preserves UTM/source data the redirect never captured.
 //
 // If JS fails to load or the fetch throws, the form's own `action`/`method`

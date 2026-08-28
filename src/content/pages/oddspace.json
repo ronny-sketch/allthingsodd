@@ -9,7 +9,10 @@
   "eyebrow": "ODDspace · Year-round home base",
   "title": "A year-round home for creative work.",
   "meta": "Sture697 · Teollisuuskatu 9D, Helsinki",
-  "primaryCta": { "label": "Become a member", "href": "/contact" },
+  "primaryCta": {
+    "label": "Become a member",
+    "href": "/work-with-odd?interest=oddspace#enquiry-form"
+  },
   "intro": "ODDspace is ODD's pilot creative hub in Vallila — co-working, studios, a gallery and event space, and a community of artists, founders and cultural builders working under one roof, all year round.",
   "heroMedia": {
     "image": "../../assets/programs/oddspace-card.jpg"
@@ -98,7 +101,7 @@
       "Community, programming and events"
     ],
     "ctaLabel": "Become a member",
-    "href": "/contact",
+    "href": "/work-with-odd?interest=oddspace#enquiry-form",
     "note": "Accepted on a rolling basis as space becomes available during the pilot."
   },
   "rentalRates": [
@@ -148,7 +151,7 @@
   "faq": [
     {
       "question": "How do I become a member?",
-      "answer": "Apply through the contact form below with a note on how you'd like to use the space. Memberships are accepted on a rolling basis as space becomes available during the pilot."
+      "answer": "Apply through the enquiry form below with a note on how you'd like to use the space. Memberships are accepted on a rolling basis as space becomes available during the pilot."
     },
     {
       "question": "Is there a minimum commitment?",
@@ -176,13 +179,13 @@
       "eyebrow": "Creative",
       "title": "Become a member",
       "linkLabel": "Apply now →",
-      "href": "/contact"
+      "href": "/work-with-odd?interest=oddspace#enquiry-form"
     },
     {
       "eyebrow": "Business",
       "title": "Rent the space",
       "linkLabel": "Enquire →",
-      "href": "/contact"
+      "href": "/work-with-odd?interest=oddspace#enquiry-form"
     },
     {
       "eyebrow": "Stay in touch",

@@ -1,5 +1,22 @@
 # ODD Field Guide — project constitution
 
+```
+THIS REPOSITORY IS THE ODD PUBLIC WEBSITE.
+
+Do not implement CRM systems, marketing automation,
+cross-system integrations, commercial schemas or Growth OS
+infrastructure here.
+
+If a request requires Growth OS work:
+1. identify that it belongs to ../odd-growth-os;
+2. do not start implementing it in this repository;
+3. tell the user the work belongs to Growth OS;
+4. switch project/repository before implementation.
+
+Website integrations must stop at a documented API boundary — see
+"Growth OS integration" below.
+```
+
 Read this before making changes. It's the load-bearing context for how this repo
 is meant to be worked on — not generic Astro advice (that's linked at the bottom).
 
@@ -151,13 +168,15 @@ said deploys were manual; that was stale. Treat any push to `main` as a real
 production action — it deploys automatically, there's no separate manual
 step to forget.
 
-**Cloudflare migration in progress** (`ops/DECISIONS.md` D1): production
-hosting is moving from Surge to a single Cloudflare Worker (Workers Static
-Assets serving Astro's build + `/api/*` routes for the two Growth OS forms).
-Astro itself is not changing — still a static build, no adapter. See
-`wrangler.toml` and `worker/`. Until that migration's acceptance criteria
-pass (`ops/DECISIONS.md` D1's step list), **Surge remains production** —
-don't point DNS or the CI `deploy` job at Cloudflare yet.
+**Hosting migration status** (full history: `../odd-growth-os/ops/DECISIONS.md`
+D1/D13): production is still Surge. A Cloudflare cutover was explored while
+Growth OS's Worker lived in this repo; as of the 2026-08-28 repo split that
+Worker moved to `../odd-growth-os` and now deploys independently, reached
+via `/api/*` (see "Growth OS integration" below). This repo no longer
+contains any Cloudflare/Worker code or config — Astro is a plain static
+build deploying to Surge. If a future DNS/hosting cutover changes how this
+repo's own build is served, that decision and its config belong here; the
+Growth OS side of it belongs in `../odd-growth-os`.
 
 ## Definition of done
 
@@ -180,44 +199,61 @@ astro dev --background
 Manage with `astro dev stop`, `astro dev status`, `astro dev logs` (same
 pattern for `astro preview`).
 
-## ODD Growth OS (commercial systems, separate from the website build above)
+## Growth OS integration (the API boundary — read before touching the two forms)
 
-Everything above this section is about the Astro/CloudCannon website itself.
-This section is about the commercial operating system ODD is layering on top
-of it — CRM, newsletter, Notion, analytics — tracked in `ops/` and
-`schemas/`, not in `docs/` (that prefix stays reserved for the website).
-Full spec: `ops/GROWTH_OS_GUIDE.md`. Live status:
-`ops/SETUP_STATUS.md` — read it before doing any Growth OS work, it has the
-current real state, not the guide's assumed state.
+The website has two forms that reach ODD's commercial operating system —
+`src/components/sections/WorkEnquiryForm.astro` (via
+`src/scripts/work-enquiry-form.ts`) POSTs to `/api/business-enquiry`, and
+the newsletter form POSTs to `/api/newsletter`. **That's the entire
+contract.** Both are plain same-origin `fetch()` calls to a relative path;
+neither file imports any Growth OS code, and neither should ever start to.
 
-- **Source-of-truth boundaries:** Google = identity/email/calendar; Notion =
-  human strategy/SOPs/projects; GitHub = code + canonical schemas
-  (`schemas/*.yml`); Attio = B2B/B2G people/companies/deals; beehiiv =
-  editorial subscribers; ticketing (Tiketti/Venga) = transactions; GA4/Search
-  Console = web measurement. Never build a second authoritative copy of the
-  same data in another system.
-- **MCP is the control plane, not the data plane.** Claude may use MCP to
-  search/analyze/summarize/prepare drafts/update approved fields
-  interactively. Deterministic production data movement (a website form
-  reaching a CRM) must go through real server code, never through an LLM
-  deciding what record to create.
-- **No new SaaS without a documented reason.** Don't add HubSpot, Brevo,
-  Mailchimp, Make/Zapier/n8n, Airtable, or similar just because a workflow
-  would be one step shorter — see guide §60 for the required justification
-  format.
-- **This repo's production is Surge, not Cloudflare** — static Astro build,
-  auto-deployed on push to `main` (see Deployment workflow above). The Growth
-  OS guide assumes Cloudflare Workers/Pages as the server runtime for
-  form → CRM/newsletter integrations; that assumption does not hold here yet.
-  Do not add Cloudflare-dependent code until `ops/SETUP_STATUS.md` shows
-  Decision D1 resolved.
-- **No autonomous strategic outreach.** Claude may draft partner/sales
-  emails and CRM next-actions; a human sends them. Never send, never change
-  deal value/consent fields from inference, never bulk-delete CRM records.
-- **No destructive production actions without explicit approval** —
-  this includes DNS changes, deploying to `main` (which auto-publishes to
-  the live site), and any Attio/beehiiv write beyond a clearly-labeled TEST
-  record.
+As of the 2026-08-28 repo split, `/api/*` is served by an independent
+Cloudflare Worker living in `../odd-growth-os` (not by this repo) — see
+that repo's `AGENTS.md`/`ops/ARCHITECTURE.md` for how it works. This repo
+does not know or care what's on the other side of that boundary; it only
+needs the request/response shape (field names, success/error JSON) to keep
+matching what `../odd-growth-os/worker/src/validate.ts` expects.
+
+**The one real cross-repo coupling to know about:**
+`WorkEnquiryForm.astro`'s hardcoded `PRODUCTS` array (UI copy, kept out of
+CloudCannon per the CMS rules above) must match
+`../odd-growth-os/schemas/products.yml`'s enum by hand — there's no shared
+package or codegen yet (a deliberate scope decision at split time). If you
+change one, check the other. Same applies, with smaller blast radius, to
+any `?interest=` deep-link value in `src/content/pages/*.json` — it must be
+a value `products.yml` actually defines.
+
+**If a request needs anything beyond that boundary** — a new CRM field, a
+new integration, adapter/schema changes, Growth OS operational docs — it
+belongs in `../odd-growth-os`, not here. Don't start implementing it in
+this repo; tell the user it belongs to Growth OS and stop.
+
+## Scope-creep guardrail
+
+Before implementing a newly discovered requirement, classify it:
+
+```
+A. same task + same system (website)   → continue
+B. prerequisite inside this system     → continue only if required
+C. related but independent task        → record as a follow-up, don't derail
+D. belongs to ../odd-growth-os         → stop here, route to that repo
+```
+
+Never implement a new independent system simply because it was discovered
+while implementing a website feature.
+
+## Git workflow rules
+
+1. One branch = one coherent objective.
+2. Never use a website branch to develop Growth OS, or vice versa.
+3. Never mix unrelated dirty work.
+4. Run `git status` before starting a task; if unrelated modifications
+   exist, stop and classify them before continuing.
+5. Don't silently stash unrelated work and continue.
+6. Never deploy from a dirty tree.
+7. Prefer PR → main for production changes — a push to `main` auto-deploys,
+   see Deployment workflow above.
 
 ## Further reading
 

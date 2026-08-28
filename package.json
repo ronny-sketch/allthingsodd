@@ -16,11 +16,7 @@
     "format:check": "prettier --check .",
     "test": "playwright test",
     "test:update-snapshots": "playwright test --update-snapshots",
-    "cc:validate": "cloudcannon validate",
-    "worker:check": "tsc -p worker/tsconfig.json",
-    "worker:test": "vitest run --config worker/vitest.config.ts",
-    "worker:dev": "wrangler dev",
-    "deploy:cloudflare": "npm run build && wrangler deploy"
+    "cc:validate": "cloudcannon validate"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
@@ -29,15 +25,12 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@cloudcannon/cli": "^0.0.19",
-    "@cloudflare/workers-types": "^5",
     "@playwright/test": "^1.62.1",
     "@typescript-eslint/parser": "^8.67.0",
     "eslint": "^10.8.1",
     "eslint-plugin-astro": "^1.7.0",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.11",
-    "wrangler": "^4"
+    "typescript": "^6.0.3"
   }
 }

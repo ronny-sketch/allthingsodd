@@ -1,12 +1,23 @@
 // Progressive-enhancement submit for the "Work with ODD" business-enquiry
 // form, posting to the same-origin Worker route /api/business-enquiry (see
-// worker/src/index.ts). No API key or vendor SDK here — this is a plain
+// ../odd-growth-os's worker/src/index.ts). No API key or vendor SDK here — this is a plain
 // fetch to our own endpoint, which is what actually holds the Attio secret.
 import { captureFirstTouch } from './utm';
 
 const form = document.getElementById('workEnquiryForm');
 if (form instanceof HTMLFormElement) {
   const status = form.querySelector<HTMLElement>('.form-status');
+
+  // Product-specific pages (ODDagency, Membership, ...) link here with
+  // ?interest=<../odd-growth-os/schemas/products.yml value> so a visitor coming from "Bring
+  // us a brief" lands with the right option already selected, instead of a
+  // blank dropdown that loses the context they arrived with.
+  const interestSelect = form.querySelector<HTMLSelectElement>('#we-interest');
+  const requestedInterest = new URLSearchParams(window.location.search).get('interest');
+  if (interestSelect && requestedInterest) {
+    const match = Array.from(interestSelect.options).find((o) => o.value === requestedInterest);
+    if (match) interestSelect.value = requestedInterest;
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
