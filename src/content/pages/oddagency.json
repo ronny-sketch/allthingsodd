@@ -61,7 +61,7 @@
     {
       "number": "01",
       "title": "Network model",
-      "body": "No fixed roster — every project draws on whoever's actually right for it, across ODD's full network."
+      "body": "No fixed roster. The team changes with the problem, and people join because their practice is relevant to the work."
     },
     {
       "number": "02",
@@ -71,7 +71,7 @@
     {
       "number": "03",
       "title": "Real communities & platforms",
-      "body": "Connected to ODDfest and ODDspace directly, where the people we work with already are."
+      "body": "ODD also runs real events and spaces. When it genuinely helps the project, that gives the work a route into wider creative communities and public contexts — without treating those communities as a resource to mine."
     }
   ],
   "howItWorks": [
@@ -88,7 +88,7 @@
     {
       "number": "03",
       "title": "Team",
-      "body": "The right creative professionals are pulled together from ODD's network for this specific project."
+      "body": "We invite the people whose practice and perspective fit the work, agree the roles clearly and build the project team."
     },
     {
       "number": "04",
@@ -98,7 +98,7 @@
     {
       "number": "05",
       "title": "Delivery / learning",
-      "body": "The work is delivered, and what's learned feeds back into ODD's wider network."
+      "body": "We deliver the work, review what happened and decide what is worth carrying into the next project."
     }
   ],
   "cases": [],
@@ -111,13 +111,13 @@
   ],
   "participate": [
     {
-      "eyebrow": "Business",
+      "eyebrow": "",
       "title": "Bring us a brief",
       "linkLabel": "Start a project →",
       "href": "/contact"
     },
     {
-      "eyebrow": "Business",
+      "eyebrow": "",
       "title": "Talk to us first",
       "linkLabel": "Get in touch →",
       "href": "/contact"
