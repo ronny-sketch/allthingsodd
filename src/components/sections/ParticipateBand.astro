@@ -100,7 +100,14 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
       border-color 0.25s ease;
   }
   .p-cta .eyebrow {
+    /* Assumes .p-cta's own light --color-paper card background (true in the
+       default dark theme). Under .theme-light (ODDspace), --color-paper
+       swaps to the dark role, so the card itself goes dark — this literal
+       dark-tinted label would nearly disappear against it. */
     color: rgb(36 34 32 / 55%);
+  }
+  :global(.theme-light) .p-cta .eyebrow {
+    color: rgb(226 223 222 / 55%);
   }
   .p-cta h3 {
     font-family: var(--font-display);

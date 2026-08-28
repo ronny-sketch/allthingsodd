@@ -65,6 +65,13 @@ const Tag = href ? 'a' : 'button';
     color: var(--color-paper);
     border-color: rgb(226 223 222 / 35%);
   }
+  /* Literal above assumes a dark ground (paper-tinted border at 35%) — under
+     .theme-light (ODDspace) the ground is light, so the border needs the
+     ink-tinted mirror at the same opacity, not the inherited (now-dark)
+     --color-paper value reused as a border tint. */
+  :global(.theme-light) .pill-outline {
+    border-color: rgb(14 9 11 / 35%);
+  }
   .pill-outline:hover {
     border-color: var(--color-paper);
   }

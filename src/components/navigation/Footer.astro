@@ -181,6 +181,13 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     flex-shrink: 0;
     overflow: hidden;
   }
+  /* The input's own outline is suppressed below (it'd be clipped by this
+     pill's overflow:hidden/rounded corners anyway) — :focus-within on the
+     container itself is the visible replacement, since there was none at
+     all before. */
+  .nl-form:focus-within {
+    border-color: var(--color-paper);
+  }
   .nl-form input {
     flex: 1;
     min-width: 0;
@@ -284,6 +291,16 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
       color var(--duration-fast) ease,
       transform var(--duration-fast) ease;
   }
+  /* The last badge's own -11px right margin has nothing after it to
+     encroach into, so it instead pushed the page's real scrollWidth 11px
+     past the viewport whenever this row lands flush against it — confirmed
+     live at 768–1024px (every page, Footer is global). Zeroing only that
+     one side, on only the last badge, keeps the tap-target expansion (and
+     its symmetric hover) everywhere else while removing the actual
+     overflow — confirmed via a direct before/after scrollWidth check. */
+  .social-badge:last-child {
+    margin-right: 0;
+  }
   .social-badge:hover {
     color: var(--color-paper);
     transform: translateY(-2px);
@@ -308,12 +325,21 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     font-size: 0.72rem;
     color: #967e79;
   }
+  /* The lightened clay above is tuned for a dark ground; under .theme-light
+     (ODDspace) the footer sits on the light ground instead, so it needs the
+     darkened reading of the same clay hue for equivalent contrast. */
+  :global(.theme-light) .foot-bottom {
+    color: #6b5551;
+  }
   .foot-bottom p {
     margin: 0;
   }
   .foot-bottom a {
     color: #967e79;
     text-decoration: none;
+  }
+  :global(.theme-light) .foot-bottom a {
+    color: #6b5551;
   }
   .foot-bottom a:hover {
     color: var(--color-paper);

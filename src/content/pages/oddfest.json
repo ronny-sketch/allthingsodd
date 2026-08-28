@@ -2,61 +2,61 @@
   "_template": "oddfest",
   "_slug": "oddfest",
   "seo": {
-    "title": "ODDfest — Helsinki's open creative platform",
-    "description": "A distributed, open creative platform across Helsinki — independent creators, collectives, venues and organisations hosting programme under one shared umbrella.",
+    "title": "ODDfest 2027 — Helsinki's open city-wide creative week",
+    "description": "ODDfest is a city-wide week of independently hosted events, exhibitions, performances, gatherings and experiments — brought together into one shared programme across Helsinki.",
     "ogImage": "/og/oddfest.jpg"
   },
-  "eyebrow": "ODDfest · For creatives",
-  "title": "Helsinki's open creative platform.",
+  "eyebrow": "ODDfest · Across Helsinki",
+  "title": "A creative week made across Helsinki.",
   "meta": "2027 · Helsinki",
-  "intro": "ODDfest is an open, distributed creative platform across Helsinki — independent artists, collectives, venues and organisations hosting their own programme under one shared identity, the same model Creative Week ran in 2026, opened up further for 2027.",
+  "intro": "ODDfest is a city-wide week made by the people taking part in it. Artists, collectives, venues, organisations, communities and companies host their own programme; ODD brings it together into one shared week across Helsinki. It is the continuation of the Creative Week model first tested in 2026.",
   "heroMedia": {
     "video": "/video/oddfest-hero.mp4",
     "poster": "../../assets/video/oddfest-hero-poster.jpg",
-    "sub": "ODDfest · For creatives"
+    "sub": "ODDfest · Across Helsinki"
   },
   "features": [
     {
       "number": "01",
       "title": "Art & Performance",
-      "body": "Installations, live shows and everything in between, hosted by independent venues and organisers across the city."
+      "body": "An exhibition, gig, workshop, screening, dinner, club night, open studio, conversation — if it belongs in Helsinki's creative life, bring it."
     },
     {
       "number": "02",
       "title": "Club Culture",
-      "body": "Club nights hosted by independent collectives and venues, all part of the same shared ODDfest week."
+      "body": "The programme lives wherever its hosts do: venues, studios, galleries, offices, streets and unexpected spaces across Helsinki."
     },
     {
       "number": "03",
       "title": "Collective Creation",
-      "body": "Open calls, co-created works and space for anyone with something to bring, not just established names."
+      "body": "Every host keeps their own programme. ODD connects the pieces so people can discover the city's creative life as one shared moment."
     }
   ],
   "whatItIs": {
     "eyebrow": "What ODDfest is",
-    "headline": "An open platform, not a booked showcase.",
-    "body": "Independent creators, collectives, venues, organisations, communities and companies create and host their own programme, and ODD connects it under one shared identity. Instead of producing every event centrally, ODD provides the platform, the visibility and the connections that make a distributed programme read as one shared moment."
+    "headline": "ODDfest is made by the people taking part.",
+    "body": "ODD does not book one central line-up. Independent artists, collectives, venues, organisations, communities and companies create and host their own programme. ODD connects it through a shared calendar, identity, communications and relationships across the week."
   },
   "howItWorks": [
     {
       "number": "01",
       "title": "Create or host something",
-      "body": "Register your event, show, night or project as part of ODDfest — you keep full control of what you make and how."
+      "body": "Bring something you are making or hosting. You keep control of the idea, production, budget and how it happens."
     },
     {
       "number": "02",
       "title": "Join the shared programme",
-      "body": "Once confirmed, your programme appears in the shared ODDfest listing alongside everyone else's."
+      "body": "Once confirmed, your programme joins the shared ODDfest calendar alongside everyone else's."
     },
     {
       "number": "03",
       "title": "ODD connects and amplifies",
-      "body": "ODD promotes the programme as a whole, and connects organisers to partners, audiences and each other."
+      "body": "ODD brings the week together, helps people discover what is happening and connects organisers with each other, audiences and partners where useful."
     },
     {
       "number": "04",
       "title": "Helsinki experiences it together",
-      "body": "For one week, dozens of independent events read as a single citywide moment — Helsinki's creative scene, visible together."
+      "body": "Then Helsinki gets to experience what is already here — all at once, across the city."
     }
   ],
   "whoCanTakePart": [
@@ -68,16 +68,16 @@
     "Companies"
   ],
   "whatOddProvides": [
-    "A common umbrella and identity",
+    "A shared programme and identity",
     "Visibility and discovery",
     "Shared communications",
-    "Connections across the programme",
-    "Partnership opportunities"
+    "Connections between organisers",
+    "Help finding useful partners and collaborators"
   ],
   "organiserOwnership": {
-    "eyebrow": "What participating organisers own",
-    "headline": "Your programme stays yours.",
-    "body": "Taking part in ODDfest doesn't mean handing your event over. You keep creative control, your own budget and your own relationships — ODD's role is to connect what you're doing to a bigger shared platform, not to run it for you. The exact terms of participation for 2027 are still being finalised."
+    "eyebrow": "Your thing, your call",
+    "headline": "Your thing stays yours.",
+    "body": "Taking part does not mean handing your event to ODD. You keep creative control, your own production, budget and relationships. Our job is to connect what you are doing to the shared week and help more people find it. The exact participation terms for 2027 are still being finalised."
   },
   "programme": [],
   "openCall": {
@@ -89,14 +89,14 @@
   },
   "forPartners": {
     "eyebrow": "For partners",
-    "headline": "Partner with the platform.",
-    "body": "Organisations that want to sponsor, host space for, or otherwise back the distributed ODDfest programme can partner with the platform as a whole rather than a single event.",
+    "headline": "Help make the week possible.",
+    "body": "There are plenty of useful ways for organisations to take part: fund the shared programme, open a space, contribute resources, host something of your own or build an idea with us and the people making the week.",
     "cta": { "label": "Talk to us about partnering", "href": "/work-with-odd" }
   },
   "previousEdition": {
     "eyebrow": "Creative Week 2026",
-    "title": "The model this builds on.",
-    "body": "In 2026, ODDfest ran as part of a wider Creative Week (June 8–14) — with ODDference on June 11–12 and ODDfest's own core programme on June 12–13, across venues including Lasipalatsi, Kulttuurikasarmi, Tavastia Club and more. ODDfest 2027 builds on that same distributed spirit, opened up further to more independent organisers across the city.",
+    "title": "Where this model started.",
+    "body": "Creative Week 2026 was the first version of this model: a week of independently made activity across Helsinki, connected under one shared programme. In 2027, that model becomes ODDfest.",
     "archiveHref": "/media"
   },
   "faq": [
@@ -119,13 +119,13 @@
   ],
   "participate": [
     {
-      "eyebrow": "Creative",
+      "eyebrow": "",
       "title": "Host programme at ODDfest",
       "linkLabel": "Register your interest →",
       "href": "/contact"
     },
     {
-      "eyebrow": "Business",
+      "eyebrow": "",
       "title": "Partner with ODDfest",
       "linkLabel": "Talk to us →",
       "href": "/work-with-odd"

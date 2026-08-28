@@ -26,9 +26,17 @@ const { title, cards } = Astro.props;
   </div>
   <div class="four-grid bleed reveal">
     {
-      cards.map((card) => (
+      /* An odd card count (Work with ODD's 5 pathways) otherwise strands a
+         lone card next to an empty grid cell in the last row — with no
+         element there, the grid container's own translucent background
+         still fills that cell, showing as a bare grey box (confirmed via
+         screenshot). Spanning the last card full-width instead turns the
+         leftover into a deliberate closing statement, not a gap. */
+    }
+    {
+      cards.map((card, i) => (
         <a
-          class="four-card"
+          class={`four-card ${cards.length % 2 === 1 && i === cards.length - 1 ? 'four-card--wide' : ''}`}
           href={card.href}
           target={card.href.startsWith('http') ? '_blank' : undefined}
           rel={card.href.startsWith('http') ? 'noreferrer' : undefined}
@@ -152,9 +160,16 @@ const { title, cards } = Astro.props;
   .four-card:hover .four-card-body .go {
     border-color: var(--color-paper);
   }
+  .four-card--wide {
+    grid-column: 1 / -1;
+    min-height: 60vh;
+  }
   @media (max-width: 760px) {
     .four-grid {
       grid-template-columns: 1fr;
+    }
+    .four-card--wide {
+      min-height: 58vh;
     }
   }
 

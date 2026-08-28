@@ -5,7 +5,13 @@ const mosaic = document.getElementById('heroMosaic');
 const spotlight = document.getElementById('heroSpotlight');
 const logo = document.getElementById('heroLogo');
 
-if (hero && mosaic && spotlight && !window.matchMedia('(hover: none)').matches) {
+if (
+  hero &&
+  mosaic &&
+  spotlight &&
+  !window.matchMedia('(hover: none)').matches &&
+  !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+) {
   let tiltX = 0;
   let tiltY = 0;
   let tgtTX = 0;

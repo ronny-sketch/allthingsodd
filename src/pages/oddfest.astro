@@ -252,9 +252,14 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     color: var(--color-paper-60);
     margin: 1.1rem 0 0;
   }
-  .oddf-deadline {
+  /* .oddf-opencall p — not just .oddf-deadline — since the markup is
+     <p class="oddf-deadline">: a compound-selector rule always beats a
+     single-class one regardless of source order, so the !important this
+     used to need was masking a specificity mismatch rather than expressing
+     a real override. */
+  .oddf-opencall .oddf-deadline {
     font-weight: 600;
-    color: var(--color-paper-80) !important;
+    color: var(--color-paper-80);
   }
   .oddf-opencall :global(.pill) {
     margin-top: 1.5rem;

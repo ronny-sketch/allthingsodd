@@ -265,8 +265,9 @@ has; see docs/deployment.md#ci-history for how this was discovered.
 ## Old site relationship
 
 `../ODD NEW WEBPAGE/index.html` (the single-file build) was the site's
-production build through 2026-08-19 and is preserved as the visual reference
-for this migration (see CLAUDE.md's "What this is"). Its own files/repo are
+production build through 2026-08-19 and is preserved as historical/provenance
+reference for this migration (see CLAUDE.md's "What this is") — not a
+design-parity requirement for changes made since. Its own files/repo are
 untouched by this project, but **its `npx surge .` deploy path is no longer
 what serves odd-field-guide.surge.sh** — cutover happened 2026-08-20; running
 that command again would revert the live domain back to the old site, so

@@ -15,8 +15,14 @@ interface Props {
   /** URL of this page's real LCP candidate, if it has an image-heavy hero
    * worth preloading — see index.astro for how the home page computes it. */
   preloadImage?: string;
+  /** 'light' flips the whole page — Nav/Footer/MobileMenu included, via the
+   * `.theme-light` token scope in tokens.css — to ODDspace's inverse
+   * identity. Every other page omits this and stays the sitewide dark
+   * ground. See tokens.css's own comment on `.theme-light` for why this is
+   * a single class on <body> rather than a per-component light variant. */
+  theme?: 'light';
 }
-const { title, description, ogImage, preloadImage } = Astro.props;
+const { title, description, ogImage, preloadImage, theme } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -48,11 +54,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:card" content="summary_large_image" />
     <StructuredData />
   </head>
-  <body>
+  <body class={theme === 'light' ? 'theme-light' : undefined}>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="grain" aria-hidden="true"></div>
     <SteamFilters />
     <Nav />
-    <slot />
+    <main id="main-content">
+      <slot />
+    </main>
     <Footer />
     <MobileMenu />
     <ConsentBanner />

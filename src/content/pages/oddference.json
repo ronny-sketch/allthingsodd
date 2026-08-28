@@ -2,15 +2,18 @@
   "_template": "oddference",
   "_slug": "oddference",
   "seo": {
-    "title": "ODDference — what business can learn from creative expertise",
-    "description": "ODD's flagship professional event, built around one question: what can business and the rest of society learn from creative expertise?",
+    "title": "ODDference — where creative expertise meets business and society",
+    "description": "A professional conference built around one question: what can business and wider society learn from creative expertise?",
     "ogImage": "/og/oddference.jpg"
   },
-  "eyebrow": "ODDference · Flagship event",
+  "eyebrow": "ODDference · Creative expertise meets business",
   "title": "What can business learn from creative expertise?",
-  "meta": "TBD · Helsinki",
-  "primaryCta": { "label": "Join the mailing list", "href": "#newsletter" },
-  "intro": "ODDference is ODD's flagship, centrally produced event — built entirely around one question: what can business and the rest of society learn from creative expertise? Creative professionals aren't the entertainment here; their ways of working are the actual content.",
+  "meta": "TBD · TBD",
+  "primaryCta": {
+    "label": "Join the mailing list",
+    "href": "#newsletter"
+  },
+  "intro": "ODDference is a professional conference built around one question: what can business and wider society learn from creative expertise? The programme starts from knowledge developed through creative practice and puts the people behind that work in conversation with leaders, organisations and decision-makers from elsewhere.",
   "heroMedia": {
     "video": "/video/oddference-hero.mp4",
     "poster": "../../assets/video/oddference-hero-poster.jpg"
@@ -19,7 +22,7 @@
     {
       "number": "01",
       "title": "Talks & panels",
-      "body": "Founders, creative leaders and policymakers on the same stage, addressing the same questions — not separate tracks that never meet."
+      "body": "Creative practitioners, business leaders, founders, researchers and policymakers looking at the same questions from different directions."
     },
     {
       "number": "02",
@@ -35,28 +38,28 @@
   "bigQuestion": {
     "eyebrow": "The big question",
     "headline": "What can business and the rest of society learn from creative expertise?",
-    "body": "Creative professionals work daily with uncertainty, cultural relevance, storytelling, community and ambiguity — skills that are directly useful well beyond the creative industries. ODDference treats that expertise as the main event, not the warm-up act to a business conference."
+    "body": "Creative professionals spend their careers working with uncertainty, attention, culture, meaning, aesthetics, audiences and ideas that do not have a playbook yet. Those questions increasingly matter far beyond the creative fields. ODDference is a place to examine what that expertise can teach the rest of us — and what happens when the people carrying it are in the room."
   },
   "whoItsFor": [
     {
       "label": "Business leaders",
-      "description": "Facing decisions that don't have a playbook yet — creative process has more to offer here than another case study."
+      "description": "For people making decisions where there is no ready-made playbook — and who want perspectives from outside the usual business circuit."
     },
     {
       "label": "Organisational leaders",
-      "description": "Managing culture and change that need more than an org chart to actually move."
+      "description": "For people working on culture, change and organisations where human behaviour matters as much as process."
     },
     {
       "label": "Entrepreneurs",
-      "description": "Building something new, with the same uncertainty a creative practice deals with every day."
+      "description": "For people building something that does not exist yet and looking for better ways to work with uncertainty."
     },
     {
       "label": "Policymakers",
-      "description": "Shaping the conditions creative and cultural work actually happens in — worth hearing directly from the people working inside them."
+      "description": "For people shaping cities, funding, regulation and institutions — and who need direct contact with the people affected by those decisions."
     },
     {
       "label": "Creative leaders",
-      "description": "Looking for a room where creative expertise is treated as the expertise it is, not decoration."
+      "description": "For creative leaders who want to take part in the wider conversations where culture, business and society are being shaped."
     }
   ],
   "whyAttend": [
@@ -102,15 +105,15 @@
   "programme": [],
   "connection": {
     "eyebrow": "Connection & networking",
-    "headline": "Built for meaningful encounters, not passive stage time.",
-    "body": "Talks and panels are half of ODDference. The rest is built-in time and structure — matchmaking, facilitated conversations, shared meals — designed to turn a room of strangers into working relationships."
+    "headline": "The people in the room are part of the programme.",
+    "body": "The stage is only part of the day. ODDference leaves real time for introductions, small-group conversations, shared meals and the kind of unplanned encounter that is hard to manufacture once everyone goes home."
   },
   "tickets": [],
   "partnershipCta": {
-    "eyebrow": "For business partners",
-    "title": "Bring your organisation to ODDference",
-    "linkLabel": "Explore Work with ODD →",
-    "href": "/work-with-odd"
+    "eyebrow": "For organisations",
+    "title": "Bring your organisation into the conversation",
+    "linkLabel": "See what we do →",
+    "href": "/#four"
   },
   "faq": [
     {
@@ -132,23 +135,50 @@
   ],
   "participate": [
     {
-      "eyebrow": "Business",
+      "eyebrow": "",
       "title": "Join the mailing list",
       "linkLabel": "Sign up →",
       "href": "#newsletter"
     },
-    { "eyebrow": "Speaking", "title": "Pitch a talk", "linkLabel": "Enquire →", "href": "/contact" }
+    {
+      "eyebrow": "Speaking",
+      "title": "Pitch a talk",
+      "linkLabel": "Enquire →",
+      "href": "/contact"
+    }
   ],
   "railLeft": [
-    { "kind": "logo" },
-    { "kind": "word", "text": "ODDference" },
-    { "kind": "meta", "text": "Flagship event" },
-    { "kind": "meta", "text": "Helsinki" }
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDference"
+    },
+    {
+      "kind": "meta",
+      "text": "Creative expertise"
+    },
+    {
+      "kind": "meta",
+      "text": "Helsinki"
+    }
   ],
   "railRight": [
-    { "kind": "word", "text": "Helsinki" },
-    { "kind": "meta", "text": "For business" },
-    { "kind": "logo" },
-    { "kind": "word", "text": "ODDference" }
+    {
+      "kind": "word",
+      "text": "Helsinki"
+    },
+    {
+      "kind": "meta",
+      "text": "For business"
+    },
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDference"
+    }
   ]
 }

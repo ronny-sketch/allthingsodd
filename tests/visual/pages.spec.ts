@@ -37,6 +37,23 @@ for (const route of ROUTES) {
     // Let entrance animations (mosaic fly-in, reveal-on-scroll) settle before
     // capturing, so the baseline isn't flaky against animation timing.
     await page.waitForTimeout(1200);
+    // A future regression adding a second heading, or removing the only one,
+    // would still pass every other assertion in this file — this is the only
+    // place that would catch it.
+    await expect(page.locator('h1')).toHaveCount(1);
+    // Checked per-route at every registered breakpoint (this project runs
+    // mobile through wide) since horizontal overflow is viewport-dependent —
+    // this is exactly the check that caught two real sitewide/homepage
+    // overflow bugs at 768-1024px during the 2026-08-27 quality pass (see
+    // docs/QUALITY_AUDIT.md RESP-1/RESP-2), which no prior test covered.
+    const { scrollWidth, clientWidth } = await page.evaluate(() => ({
+      scrollWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth,
+    }));
+    expect(
+      scrollWidth,
+      `horizontal overflow: document is ${scrollWidth}px wide, viewport is ${clientWidth}px`,
+    ).toBeLessThanOrEqual(clientWidth);
     await expect(page).toHaveScreenshot(`${route === '/' ? 'home' : route.slice(1)}.png`, {
       fullPage: true,
       maxDiffPixelRatio: 0.02,

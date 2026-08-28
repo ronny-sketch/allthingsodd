@@ -2,14 +2,14 @@
   "_template": "oddagency",
   "_slug": "oddagency",
   "seo": {
-    "title": "ODDagency — hire ODD for project-based creative work",
-    "description": "ODD's network, creative professionals, cultural understanding and production capability, applied to real client assignments.",
+    "title": "ODD Projects — creative work built around the problem",
+    "description": "Project-based work for organisations that need creative thinking, cultural understanding or the right people around a problem.",
     "ogImage": "/og/oddagency.jpg"
   },
-  "eyebrow": "ODDagency · For business",
-  "title": "Hire ODD for project-based creative work.",
+  "eyebrow": "ODD Projects · For organisations",
+  "title": "Bring us something worth figuring out.",
   "meta": "Project-based · Helsinki",
-  "intro": "ODDagency turns ODD's network — creative professionals, cultural understanding and production capability — into project-specific work for organisations. This is active commercial work already happening, not a future idea.",
+  "intro": "Some questions need a different mix of people around the table. ODD builds project teams around the work itself — drawing on creative practice, cultural understanding, strategy and production as needed. This is commercial work, shaped project by project.",
   "heroMedia": {
     "image": "../../assets/programs/oddagency-card.jpg"
   },
@@ -27,13 +27,13 @@
     {
       "number": "03",
       "title": "Cultural understanding",
-      "body": "Direct access to creative specialists and perspective most agencies don't have on staff."
+      "body": "Bring in the perspectives and disciplines the work actually needs, rather than forcing every brief through the same fixed team."
     }
   ],
   "whatItIs": {
     "eyebrow": "What ODDagency is",
-    "headline": "ODD's network, applied to your project.",
-    "body": "Instead of keeping a fixed in-house team, ODDagency assembles the right people from ODD's wider network for each specific project — the mix changes depending on what the work actually needs."
+    "headline": "The team follows the work.",
+    "body": "We do not start with a fixed roster and squeeze the brief into it. We start with what you are trying to make, change or understand, then build the right team around that."
   },
   "capabilities": [
     {
@@ -44,12 +44,12 @@
     {
       "number": "02",
       "title": "Cultural strategy",
-      "body": "Reading what's culturally relevant right now, and what that means for your organisation or brand."
+      "body": "Understanding the cultural context around a question — what people care about, what is changing and what that might mean for the work."
     },
     {
       "number": "03",
       "title": "Community activation",
-      "body": "ODD can identify and bring in the practitioners and communities whose expertise is actually relevant to the project — not a cold outreach list."
+      "body": "Projects can bring organisations and creative practitioners together around real work, with clear roles, fair expectations and a reason for everyone to be there."
     },
     {
       "number": "04",
@@ -61,7 +61,7 @@
     {
       "number": "01",
       "title": "Network model",
-      "body": "No fixed roster — every project draws on whoever's actually right for it, across ODD's full network."
+      "body": "No fixed roster. The team changes with the problem, and people join because their practice is relevant to the work."
     },
     {
       "number": "02",
@@ -71,7 +71,7 @@
     {
       "number": "03",
       "title": "Real communities & platforms",
-      "body": "Connected to ODDfest and ODDspace directly, where the people we work with already are."
+      "body": "ODD also runs real events and spaces. When it genuinely helps the project, that gives the work a route into wider creative communities and public contexts — without treating those communities as a resource to mine."
     }
   ],
   "howItWorks": [
@@ -88,7 +88,7 @@
     {
       "number": "03",
       "title": "Team",
-      "body": "The right creative professionals are pulled together from ODD's network for this specific project."
+      "body": "We invite the people whose practice and perspective fit the work, agree the roles clearly and build the project team."
     },
     {
       "number": "04",
@@ -98,7 +98,7 @@
     {
       "number": "05",
       "title": "Delivery / learning",
-      "body": "The work is delivered, and what's learned feeds back into ODD's wider network."
+      "body": "We deliver the work, review what happened and decide what is worth carrying into the next project."
     }
   ],
   "cases": [],
@@ -111,13 +111,13 @@
   ],
   "participate": [
     {
-      "eyebrow": "Business",
+      "eyebrow": "",
       "title": "Bring us a brief",
       "linkLabel": "Start a project →",
       "href": "/work-with-odd?interest=oddagency#enquiry-form"
     },
     {
-      "eyebrow": "Business",
+      "eyebrow": "",
       "title": "Talk to us first",
       "linkLabel": "Get in touch →",
       "href": "/work-with-odd?interest=oddagency#enquiry-form"

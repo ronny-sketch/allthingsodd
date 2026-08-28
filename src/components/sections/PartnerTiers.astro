@@ -35,7 +35,11 @@ const groups: { label: string; items: LogoItem[] }[] = hasTiers
       }, new Map<string, LogoItem[]>()),
     ).map(([label, groupItems]) => ({ label, items: groupItems }))
   : [{ label: '', items }];
-const columnStyle = `grid-template-columns: repeat(${groups.length}, 1fr)`;
+// A --cols custom property, not an inline grid-template-columns directly —
+// an inline style always outranks a stylesheet media query, which is what
+// forced the mobile breakpoint below into using !important. Same fix as
+// ProofGrid.astro/ParticipateBand.astro's identical --cols pattern.
+const columnStyle = `--cols: ${groups.length}`;
 ---
 
 <section class="partner-tiers-section">
@@ -80,38 +84,48 @@ const columnStyle = `grid-template-columns: repeat(${groups.length}, 1fr)`;
   }
   .tier-labels {
     display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
     gap: 1.5rem;
     margin-bottom: 1rem;
   }
   .tier-label {
     text-align: center;
-    font: var(--text-caption);
-    letter-spacing: 0.22em;
+    font: var(--text-utility);
+    font-weight: 700;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: var(--color-paper-60);
+    color: var(--color-paper-80);
   }
   .tier-divider {
     border-top: 1px solid var(--color-paper-20);
-    margin-bottom: 2.25rem;
+    margin-bottom: 2.75rem;
   }
   .tier-columns {
     display: grid;
-    gap: 2rem;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    gap: 2.5rem;
   }
   .tier-column {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 2rem 2.5rem;
+    gap: 2.5rem 3.5rem;
   }
+  /* Fixed height + object-fit:contain (not a fixed width) is what actually
+     gives "optical" rather than "CSS" equality here — a wide wordmark and a
+     compact symbol mark both read as the same visual weight at a shared
+     height, each keeping its own real aspect ratio, rather than being
+     force-stretched or letterboxed into equal boxes. Sized up from 40px so
+     these read as legitimate participants, not footer-sponsor afterthoughts
+     — see the task's "Way Out West" reference for the target scale. */
   .tier-column img {
-    height: 40px;
+    height: 52px;
     width: auto;
-    max-width: 160px;
+    max-width: 220px;
     object-fit: contain;
     display: block;
-    opacity: 0.7;
+    opacity: 0.75;
     filter: brightness(0) invert(1);
     transition: opacity var(--duration-fast) ease;
   }
@@ -121,7 +135,7 @@ const columnStyle = `grid-template-columns: repeat(${groups.length}, 1fr)`;
   @media (max-width: 820px) {
     .tier-labels,
     .tier-columns {
-      grid-template-columns: 1fr !important;
+      grid-template-columns: 1fr;
     }
     .tier-labels {
       gap: 2rem;

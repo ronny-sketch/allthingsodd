@@ -52,7 +52,7 @@ const { nav, social, footerTag, newsletterHref } = site.data;
       <input
         type="email"
         name="email"
-        placeholder="Sign up for the newsletter"
+        placeholder="Your email"
         aria-label="Email address"
       />
       <button type="submit">Sign up</button>
@@ -97,6 +97,13 @@ const { nav, social, footerTag, newsletterHref } = site.data;
 
 <style>
   .menu-overlay {
+    /* Pinned to the true light/dark swatches, not the inherited
+       --color-paper/--color-ink — this overlay is always a light panel
+       regardless of the underlying page's theme (see tokens.css's
+       .theme-light), so on ODDspace it must NOT inherit the inverted
+       tokens the rest of that page uses. */
+    --color-paper: var(--swatch-paper);
+    --color-ink: var(--swatch-ink);
     position: fixed;
     inset: 0;
     z-index: 200;
@@ -233,6 +240,15 @@ const { nav, social, footerTag, newsletterHref } = site.data;
     flex: 1;
     min-width: 240px;
     overflow: hidden;
+  }
+  /* The input's own outline is suppressed below (it'd be clipped by this
+     pill's overflow:hidden/rounded corners anyway) — :focus-within on the
+     container itself is the visible replacement, since there was none at
+     all before. A box-shadow ring, not a border-color change: the border is
+     already --color-ink (max contrast already), so only an added ring is
+     visible as a distinct focus state. */
+  .menu-newsletter:focus-within {
+    box-shadow: 0 0 0 3px var(--color-ink);
   }
   .menu-newsletter input {
     flex: 1;

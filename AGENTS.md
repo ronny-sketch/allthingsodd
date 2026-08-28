@@ -26,11 +26,19 @@ The production rebuild of the ODD website — "Signal & Ember / Field Guide 005,
 co-creation platform site for New Nordic Way rf (ODDfest, ODDference, ODDspace,
 Work with ODD). Migrated 2026-08-19 from a single 13MB hand-authored static
 `index.html` (see `../ODD NEW WEBPAGE/` — no longer deployed as of 2026-08-20,
-but kept as the visual reference) into
-Astro + structured content + CloudCannon, without losing any of the original's
-visual identity, motion, or interaction design. That original file is the source
-of truth for "does this still look/feel right" — when in doubt, compare against it,
-not against a generic Astro sensibility.
+kept only as historical reference) into
+Astro + structured content + CloudCannon, without losing the original's visual
+identity, motion, or interaction design at migration time.
+
+**The site has kept evolving since — deliberately.** Preserve the current
+approved ODD design system (`src/styles/`, `docs/design-system.md`) and
+intentional design decisions as they stand today; the old hand-authored file
+is historical/provenance reference for _why_ something looks the way it does,
+not an unconditional visual-parity requirement. A later, deliberate redesign
+(a new homepage section, a page flipped to a light theme, a component
+reworked) is not a regression to "fix" back toward the old file — when in
+doubt, compare against the current live site and this repo's own commit
+history, not against the pre-migration single-file build.
 
 **Do not repeat the WordPress detour.** An earlier session built a _different_
 site on Next.js + headless WordPress, wired to the wrong app entirely, and it was
@@ -43,10 +51,10 @@ platform (not a centrally booked festival), ODDference as a flagship event
 built on "what can business learn from creative expertise," and a new **Work
 with ODD** B2B gateway covering ODDference/Membership/Agency/Partnerships so
 those don't compete for one nav slot. See `docs/architecture.md#v2` for the
-full reasoning and `docs/editing.md` for what's now editable. Most page
-content is intentionally still `[PLACEHOLDER — ...]` text, not final copy —
-see the V2 delivery report for the page-by-page list of what still needs
-real content.
+full reasoning and `docs/editing.md` for what's now editable. Page content
+is real, launch-ready copy across every page as of the editorial pass
+following V2 — check `src/content/pages/*.json` directly for the current
+state of any given field, not this file, if in doubt.
 
 ## Architecture
 
@@ -183,9 +191,10 @@ Growth OS side of it belongs in `../odd-growth-os`.
 A change is done when: `npm run check`, `npm run lint`, `npm run build`, and
 `npm test` all pass; new/changed editorial content is in `src/content/`, not
 hardcoded; new CMS-relevant fields are reflected in `cloudcannon.config.yml`;
-and the visual result has been compared against the original
-`../ODD NEW WEBPAGE/index.html` (or the current live site) for parity, not just
-"looks fine in isolation."
+and the visual result has been checked against the current live site — not
+just "looks fine in isolation," and not against the old pre-migration file
+(see "What this is" above on why that's provenance reference, not a
+parity requirement).
 
 ## Development server
 
@@ -282,6 +291,19 @@ while implementing a website feature.
 6. Never deploy from a dirty tree.
 7. Prefer PR → main for production changes — a push to `main` auto-deploys,
    see Deployment workflow above.
+
+## Doctrine
+
+- **No autonomous strategic outreach.** Claude may draft partner/sales
+  copy; a human sends it. This repo has no CRM writes of its own (see
+  "Growth OS integration" above) — that rule lives fully in
+  `../odd-growth-os/CLAUDE.md` now, this is the website-side echo of it.
+- **No destructive production actions without explicit approval** — this
+  includes DNS changes and deploying to `main` (which auto-publishes to
+  the live site, see Deployment workflow above).
+- The broader source-of-truth/MCP-control-plane/no-new-SaaS doctrine that
+  used to live here pre-split now lives in `../odd-growth-os/CLAUDE.md`,
+  where the systems it governs (Attio, beehiiv, Notion) actually live.
 
 ## Further reading
 
