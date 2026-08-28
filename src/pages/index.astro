@@ -105,12 +105,10 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
     /* "What's happening" is hidden for now — not enough confirmed content
        to justify showing it (see AGENTS.md/task notes). Component + content
        field are both kept as-is for when there's real programme to show;
-       just not rendered. The hero's own "See what's on" CTA below is
-       repointed to "The ODD platform" section instead of the now-hidden
-       #whats-happening anchor, so it isn't a dead link. */
+       just not rendered. */
   }
 
-  <ProgramGrid title="The ODD platform" cards={page.platforms} />
+  <ProgramGrid title="What we do" cards={page.platforms} />
 
   <LogoStrip eyebrow="Press" title="Featured in" items={featuredIn} compact scroll />
 
@@ -150,7 +148,7 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
 
   <PartnerTiers eyebrow="Who we build with" title="Partners" items={partners} />
 
-  <ParticipateBand items={page.participate} />
+  <ParticipateBand title="The way in is by participation." items={page.participate} />
 </Layout>
 
 <style>
