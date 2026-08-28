@@ -16,7 +16,7 @@ identity, motion, or interaction design at migration time.
 **The site has kept evolving since — deliberately.** Preserve the current
 approved ODD design system (`src/styles/`, `docs/design-system.md`) and
 intentional design decisions as they stand today; the old hand-authored file
-is historical/provenance reference for *why* something looks the way it does,
+is historical/provenance reference for _why_ something looks the way it does,
 not an unconditional visual-parity requirement. A later, deliberate redesign
 (a new homepage section, a page flipped to a light theme, a component
 reworked) is not a regression to "fix" back toward the old file — when in
