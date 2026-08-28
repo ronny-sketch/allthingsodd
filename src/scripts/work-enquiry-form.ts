@@ -6,6 +6,7 @@
 // what actually holds the Attio secret.
 import { captureFirstTouch } from './utm';
 import { API_BASE } from './api-base';
+import { trackEvent } from './analytics';
 
 const form = document.getElementById('workEnquiryForm');
 if (form instanceof HTMLFormElement) {
@@ -40,7 +41,12 @@ if (form instanceof HTMLFormElement) {
       });
       const data = (await res.json()) as { ok: boolean; message: string };
       status.textContent = data.message;
-      if (data.ok) form.reset();
+      if (data.ok) {
+        trackEvent('business_enquiry_submit', {
+          product_interest: (payload as { interest?: string }).interest,
+        });
+        form.reset();
+      }
     } catch {
       status.textContent =
         "We couldn't submit this right now. Please try again or email us directly.";

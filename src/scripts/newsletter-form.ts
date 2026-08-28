@@ -11,6 +11,7 @@
 // leaves a visitor with a dead button.
 import { captureFirstTouch } from './utm';
 import { API_BASE } from './api-base';
+import { trackEvent } from './analytics';
 
 const form = document.getElementById('newsletterForm');
 if (form instanceof HTMLFormElement) {
@@ -37,7 +38,10 @@ if (form instanceof HTMLFormElement) {
       });
       const data = (await res.json()) as { ok: boolean; message: string };
       status.textContent = data.message;
-      if (data.ok) form.reset();
+      if (data.ok) {
+        trackEvent('newsletter_signup', { source: 'footer_newsletter' });
+        form.reset();
+      }
     } catch {
       status.textContent = "We couldn't sign you up right now — try again shortly.";
     } finally {

@@ -6,6 +6,7 @@ import MobileMenu from '../components/navigation/MobileMenu.astro';
 import Cursor from '../components/media/Cursor.astro';
 import SteamFilters from '../components/media/SteamFilters.astro';
 import StructuredData from '../components/media/StructuredData.astro';
+import ConsentBanner from '../components/navigation/ConsentBanner.astro';
 
 interface Props {
   title: string;
@@ -54,6 +55,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <slot />
     <Footer />
     <MobileMenu />
+    <ConsentBanner />
     <Cursor />
     <script src="../scripts/reduced-motion-video.ts"></script>
     <script src="../scripts/reveal.ts"></script>

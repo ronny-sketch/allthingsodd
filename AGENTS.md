@@ -240,6 +240,23 @@ new integration, adapter/schema changes, Growth OS operational docs — it
 belongs in `../odd-growth-os`, not here. Don't start implementing it in
 this repo; tell the user it belongs to Growth OS and stop.
 
+## Analytics (GA4)
+
+Added 2026-08-28. `src/scripts/analytics-config.ts` holds the single
+`GA_MEASUREMENT_ID` constant — `null` until a real GA4 property exists,
+which keeps the consent banner and gtag.js request fully off (nothing
+renders, nothing loads) so this shipped safely ahead of that decision.
+`src/components/navigation/ConsentBanner.astro` gates everything on an
+explicit Accept/Reject (GDPR/ePrivacy applies — ODD is a Finnish
+association, GA4 cookies aren't "strictly necessary" — see that file's
+header comment for why this is a simpler "don't request gtag.js until
+accepted" pattern rather than Google's Consent Mode default-denied one).
+`src/scripts/analytics.ts` exports `trackEvent()`, called from
+`work-enquiry-form.ts`/`newsletter-form.ts` on a real successful
+submission — a safe no-op whenever consent hasn't been granted. To turn
+analytics on: set the real Measurement ID in `analytics-config.ts` and
+redeploy — no other code changes needed.
+
 ## Scope-creep guardrail
 
 Before implementing a newly discovered requirement, classify it:
