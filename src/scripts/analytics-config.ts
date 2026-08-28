@@ -1,7 +1,8 @@
 // Single source of truth for the GA4 property this site reports to.
-// Ronny: replace with the real Measurement ID from
-// analytics.google.com → Admin → Data Streams → (this site) → Measurement ID
-// (format "G-XXXXXXXXXX"). Leaving this as null keeps analytics fully off —
-// the consent banner still won't appear, and no gtag.js request is ever
-// made — so this is safe to ship before the real ID exists.
-export const GA_MEASUREMENT_ID: string | null = null;
+// Stream "ODDpage" (stream ID 15519249031), URL set to
+// https://odd-field-guide.surge.sh — the current production host. NOTE:
+// this is a placeholder domain; a real production domain is coming later
+// (ops/DECISIONS.md D1/D13 in ../odd-growth-os). When that cutover happens,
+// update this GA4 web stream's URL (and the Search Console property) to
+// match — see docs/deployment.md.
+export const GA_MEASUREMENT_ID: string | null = 'G-9Q90CQMBK8';
