@@ -1,8 +1,11 @@
 // Progressive-enhancement submit for the "Work with ODD" business-enquiry
-// form, posting to the same-origin Worker route /api/business-enquiry (see
-// ../odd-growth-os's worker/src/index.ts). No API key or vendor SDK here — this is a plain
-// fetch to our own endpoint, which is what actually holds the Attio secret.
+// form, posting to /api/business-enquiry on the Growth OS Worker (see
+// ../odd-growth-os's worker/src/index.ts and this repo's api-base.ts for
+// why it's a cross-origin absolute URL, not same-origin). No API key or
+// vendor SDK here — this is a plain fetch to our own endpoint, which is
+// what actually holds the Attio secret.
 import { captureFirstTouch } from './utm';
+import { API_BASE } from './api-base';
 
 const form = document.getElementById('workEnquiryForm');
 if (form instanceof HTMLFormElement) {
@@ -30,7 +33,7 @@ if (form instanceof HTMLFormElement) {
     const payload = { ...Object.fromEntries(new FormData(form)), ...captureFirstTouch() };
 
     try {
-      const res = await fetch('/api/business-enquiry', {
+      const res = await fetch(`${API_BASE}/api/business-enquiry`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

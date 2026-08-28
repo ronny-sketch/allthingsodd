@@ -205,8 +205,19 @@ The website has two forms that reach ODD's commercial operating system —
 `src/components/sections/WorkEnquiryForm.astro` (via
 `src/scripts/work-enquiry-form.ts`) POSTs to `/api/business-enquiry`, and
 the newsletter form POSTs to `/api/newsletter`. **That's the entire
-contract.** Both are plain same-origin `fetch()` calls to a relative path;
-neither file imports any Growth OS code, and neither should ever start to.
+contract.** Neither file imports any Growth OS code, and neither should
+ever start to.
+
+**Corrected 2026-08-28:** these are cross-origin `fetch()` calls to the
+Worker's own `workers.dev` URL, not same-origin relative paths. Production
+here is Surge, which has no Cloudflare zone in front of it, so a same-origin
+Cloudflare Route was never actually possible until a real DNS cutover
+happens — the relative-path version deployed to production 404'd on every
+submission (confirmed live 2026-08-28; see `../odd-growth-os/ops/DECISIONS.md`
+for the fix). Both scripts now import the target URL from
+`src/scripts/api-base.ts` — that's the one file to change at DNS cutover
+time (back to `''`, i.e. relative), alongside adding the Worker's
+`[[routes]]` entry in `../odd-growth-os/wrangler.toml`.
 
 As of the 2026-08-28 repo split, `/api/*` is served by an independent
 Cloudflare Worker living in `../odd-growth-os` (not by this repo) — see
