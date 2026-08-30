@@ -188,7 +188,9 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
       page.partners && page.partners.length > 0 && (
         <section class="oddc-sub">
           <div class="wrap">
-            <div class="section-head"><h2>Built with</h2></div>
+            <div class="section-head">
+              <h2>Built with</h2>
+            </div>
             <div class="oddc-partners reveal">
               {page.partners.map((p) => (
                 <Image src={p.logo} alt={p.name} width={200} />
