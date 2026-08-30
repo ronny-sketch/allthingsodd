@@ -1,0 +1,137 @@
+---
+// ODDfest's "Last year, this looked like…" grid — real, named 2026
+// Creative Week examples across varied formats. Page-specific (not reused
+// elsewhere) because none of the site's existing card grids fit this shape:
+// CaseGrid has no image field, ProgramGrid's cards are full-height link-outs
+// sized for exactly the four ODD platforms. This one is a compact photo/
+// typographic card, image optional — see content.config.ts's
+// `creativeWeekExample` and ProgramGrid's own "card can skip its photo"
+// convention, reused here.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface ExampleItem {
+  category: string;
+  title: string;
+  host?: string;
+  body: string;
+  image?: ImageMetadata;
+  href?: string;
+}
+interface Props {
+  items: ExampleItem[];
+}
+const { items } = Astro.props;
+---
+
+<div class="examples-grid reveal">
+  {
+    items.map((item) => {
+      const Tag = item.href ? 'a' : 'div';
+      const linkProps = item.href ? { href: item.href } : {};
+      return (
+        <Tag class="example-card" {...linkProps}>
+          <div class={`example-media ${item.image ? '' : 'example-media--empty'}`}>
+            {item.image && <Image class="example-media-img" src={item.image} alt="" width={640} />}
+          </div>
+          <div class="example-body">
+            <span class="example-category">{item.category}</span>
+            <h3>{item.title}</h3>
+            {item.host && <span class="example-host">{item.host}</span>}
+            <p>{item.body}</p>
+          </div>
+        </Tag>
+      );
+    })
+  }
+</div>
+
+<style>
+  .examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--color-paper-12);
+  }
+  .example-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-backstage);
+    text-decoration: none;
+    color: inherit;
+    transition: background-color var(--duration-fast) ease;
+  }
+  a.example-card:hover {
+    background: color-mix(in srgb, var(--color-backstage) 85%, var(--color-paper) 15%);
+  }
+  .example-media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--color-backstage);
+  }
+  .example-media :global(.example-media-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: contrast(1.05) saturate(1.15) brightness(0.92);
+    transition: transform 0.6s ease;
+  }
+  a.example-card:hover .example-media :global(.example-media-img) {
+    transform: scale(1.05);
+  }
+  .example-media--empty {
+    background:
+      radial-gradient(ellipse 70% 70% at 30% 20%, rgb(226 223 222 / 6%) 0%, transparent 60%),
+      var(--color-backstage);
+  }
+  .example-body {
+    padding: 1.6rem 1.8rem 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .example-category {
+    font: var(--text-caption);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .example-body h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.2rem, 2vw, 1.45rem);
+    color: var(--color-paper);
+    margin: 0.6rem 0 0;
+  }
+  .example-host {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--color-paper-60);
+    margin-top: 0.3rem;
+  }
+  .example-body p {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: var(--color-paper-60);
+    margin: 0.8rem 0 0;
+    flex: 1;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .examples-grid .example-card {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity 0.55s ease,
+        transform 0.55s ease;
+    }
+    .examples-grid.in .example-card {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
