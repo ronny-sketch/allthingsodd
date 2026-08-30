@@ -1,21 +1,23 @@
-// Progressive-enhancement submit for the footer newsletter form. Replaces
-// the old bare `GET .../beehiiv-hosted-page` redirect with a
-// POST to /api/newsletter on the Growth OS Worker (../odd-growth-os's
-// worker/src/index.ts; see api-base.ts for why this is a cross-origin
-// absolute URL, not same-origin), which calls beehiiv's API server-side and
-// preserves UTM/source data the redirect never captured.
+// Progressive-enhancement submit for every newsletter form on the page
+// (footer + the timed popup share this one script via NewsletterForm.astro —
+// see docs/architecture.md). Replaces the old bare
+// `GET .../beehiiv-hosted-page` redirect with a POST to /api/newsletter on
+// the Growth OS Worker (../odd-growth-os's worker/src/index.ts; see
+// api-base.ts for why this is a cross-origin absolute URL, not same-origin),
+// which calls beehiiv's API server-side and preserves UTM/source data the
+// redirect never captured.
 //
-// If JS fails to load or the fetch throws, the form's own `action`/`method`
+// If JS fails to load or the fetch throws, each form's own `action`/`method`
 // attributes are untouched, so a native submit still falls through to the
-// original beehiiv-hosted subscribe page (see Footer.astro) — this never
-// leaves a visitor with a dead button.
+// original beehiiv-hosted subscribe page — this never leaves a visitor with
+// a dead button.
 import { captureFirstTouch } from './utm';
 import { API_BASE } from './api-base';
 import { trackEvent } from './analytics';
 
-const form = document.getElementById('newsletterForm');
-if (form instanceof HTMLFormElement) {
+document.querySelectorAll<HTMLFormElement>('[data-newsletter-form]').forEach((form) => {
   const status = form.parentElement?.querySelector<HTMLElement>('.nl-status');
+  const source = form.dataset.source || 'newsletter';
 
   form.addEventListener('submit', async (e) => {
     const emailInput = form.querySelector<HTMLInputElement>('input[name="email"]');
@@ -28,7 +30,7 @@ if (form instanceof HTMLFormElement) {
     submitBtn?.setAttribute('disabled', 'true');
     status.textContent = 'Signing up…';
 
-    const payload = { ...Object.fromEntries(new FormData(form)), source: 'footer_newsletter' };
+    const payload = { ...Object.fromEntries(new FormData(form)), source };
 
     try {
       const res = await fetch(`${API_BASE}/api/newsletter`, {
@@ -48,6 +50,6 @@ if (form instanceof HTMLFormElement) {
       submitBtn?.removeAttribute('disabled');
     }
   });
-}
+});
 
 export {};

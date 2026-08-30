@@ -332,11 +332,6 @@ collections_config:
         options:
           subtype: object
           required: false
-      workWithOdd:
-        type: object
-        label: '"Work with ODD" teaser (Home only)'
-        options:
-          subtype: object
       caseTeaser:
         type: object
         label: Case/story teaser (Home only)
@@ -822,12 +817,16 @@ collections_config:
           publication's real hosted subscribe page (e.g. a Beehiiv URL).
       preRegister:
         type: object
-        label: Top-right nav button (top right of every page)
+        label: Pre-registration CTA (not currently shown anywhere)
         comment: >-
-          Currently points at the newsletter signup — there's no real
-          pre-registration destination yet, so this is filled in with the
-          most useful honest CTA available rather than a dead link. Point
-          it at a real pre-registration URL when one exists.
+          Not rendered anywhere as of the 2026-08-30 homepage revision — it
+          used to be the header's top-right nav button, but that slot is now
+          the "Info" dropdown (About/Media/Contact) instead, and persistent
+          newsletter UI moved to the footer only. Kept, not deleted, since
+          the field still has a real future purpose (a genuine
+          pre-registration CTA once one exists) and nothing currently reads
+          this field's value — wire it up wherever that CTA should live when
+          it's needed.
         options:
           subtype: object
       partners:
@@ -851,6 +850,32 @@ collections_config:
         comment: >-
           Shown identically in the "Featured in" strip on both the homepage
           and the Media page — one shared list, edited here.
+        options:
+          structures: _structures.logo_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      logoWall:
+        type: object
+        label: Grouped logo wall (Partners / Media / Supported by / Collaborators)
+        comment: >-
+          Prepared for a future homepage section — NOT the live "Partners"
+          section above (that keeps using the "Partner logos" list until
+          this is switched on). Toggle "visible" on only once every logo in
+          every group below has been confirmed for that specific category —
+          don't guess which organisation belongs in which group.
+        options:
+          subtype: object
+      supportedBy:
+        type: array
+        label: Footer "Supported by" logos
+        comment: >-
+          A small, quiet footer row — visually much quieter than the logo
+          wall above. Only add a logo here once it's confirmed as a real
+          foundation/funder, not a general partner — leave empty otherwise;
+          the footer renders nothing when this list is empty.
         options:
           structures: _structures.logo_item
           disable_add: false
@@ -1029,6 +1054,7 @@ _structures:
           title: ''
           linkLabel: ''
           href: '#'
+          audience: ''
   feature_card:
     style: select
     values:

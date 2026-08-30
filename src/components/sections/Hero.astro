@@ -1,16 +1,42 @@
 ---
 // Interactive live photo mosaic: 20 cells fly in and Ken-Burns pan, then quietly
-// self-swap on a randomized loop from a 40-photo Flickr-archive pool, with a
+// self-swap on a randomized loop from a curated ODD-archive photo pool, with a
 // cursor-driven 3D tilt + spotlight. All timing/randomization lives in
 // src/scripts/mosaic.ts and src/scripts/hero-tilt.ts — this component only lays
 // out the optimized images and hands the pool URLs to the client script.
+//
+// Pool sources (2026-08-30 homepage revision — "50-image living ODD
+// archive" brief): src/assets/hero/*.jpg (40 images, ODDfest/ODDference/
+// ODDspace archive photography, already the pool before this change) plus
+// src/assets/news/*.jpg (6) — the only other genuinely distinct, non-logo
+// ODD photographs in the repo. src/assets/about/*.jpg was investigated and
+// deliberately excluded: `about-1-performance.jpg` and `about-2-crowd.jpg`
+// are byte-identical copies of `archive-06.jpg`/`archive-01.jpg` (confirmed
+// via sha256, not assumed) — including them would have silently duplicated
+// two already-pooled photos under second filenames just to inflate the
+// count, which the brief explicitly rules out. 46 distinct source photos
+// total, short of the ~50 asked for — see the homepage revision's final
+// report for the exact count and what would close the gap; this
+// deliberately does NOT duplicate a file under a second name or pull in
+// stock photography to force the number to 50.
 import { getImage } from 'astro:assets';
 import Logo from '../primitives/Logo.astro';
 
-const archiveModules = import.meta.glob<{ default: ImageMetadata }>('../../assets/hero/*.jpg', {
+const heroModules = import.meta.glob<{ default: ImageMetadata }>('../../assets/hero/*.jpg', {
   eager: true,
 });
-const archive = Object.values(archiveModules).map((m) => m.default);
+const newsModules = import.meta.glob<{ default: ImageMetadata }>('../../assets/news/*.jpg', {
+  eager: true,
+});
+// Hero images first (unchanged from before this change — keeps the same
+// real LCP candidate as cell 0), news images appended after, so the initial
+// 20 visible cells keep using the same archive photography that was already
+// tuned/cropped for this mosaic; the news addition widens the pool of what
+// the ambient self-swap can rotate in over time.
+const archive = [
+  ...Object.values(heroModules).map((m) => m.default),
+  ...Object.values(newsModules).map((m) => m.default),
+];
 
 const cellImages = await Promise.all(
   archive.slice(0, 20).map((src) => getImage({ src, width: 500, format: 'webp' })),

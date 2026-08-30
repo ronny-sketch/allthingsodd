@@ -8,8 +8,16 @@ import oddspaceWordmark from '../../assets/logos/oddspace-wordmark.svg';
 interface Props {
   poster: ImageMetadata;
   video: string;
+  // The scrolling ODDfest/ODDference/ODDspace brand-mark banner above the
+  // video — on by default (this component's original shape), off on Home as
+  // of the 2026-08-30 homepage revision: those three names are already the
+  // "What we do" cards a few sections above, so the banner repeated the same
+  // information again immediately before the aftermovie. Kept configurable,
+  // not deleted, in case another page wants the banner treatment without the
+  // aftermovie repetition problem Home had.
+  showBrandMarquee?: boolean;
 }
-const { poster, video } = Astro.props;
+const { poster, video, showBrandMarquee = true } = Astro.props;
 const logos = [
   { src: oddfestWordmark.src, alt: 'ODDFEST', class: '' },
   { src: oddferenceMark.src, alt: 'ODDference', class: 'is-oddference' },
@@ -25,13 +33,21 @@ const reps = 6;
 const track = Array.from({ length: reps }, () => logos).flat();
 ---
 
-<section class="logo-train">
-  <div class="brand-marquee">
-    <div class="brand-marquee-track" aria-hidden="true">
-      {track.map((l) => <img src={l.src} alt="" class={l.class} loading="lazy" />)}
-    </div>
-    <p class="sr-only">ODDfest, ODDference, ODDspace</p>
-  </div>
+{
+  showBrandMarquee && (
+    <section class="logo-train">
+      <div class="brand-marquee">
+        <div class="brand-marquee-track" aria-hidden="true">
+          {track.map((l) => (
+            <img src={l.src} alt="" class={l.class} loading="lazy" />
+          ))}
+        </div>
+        <p class="sr-only">ODDfest, ODDference, ODDspace</p>
+      </div>
+    </section>
+  )
+}
+<section class={`aftermovie-section ${showBrandMarquee ? '' : 'is-standalone'}`}>
   <div class="aftermovie-full">
     {
       /* width 2200 — .aftermovie-full is full-bleed (100vw), which was
@@ -67,7 +83,6 @@ const track = Array.from({ length: reps }, () => logos).flat();
 <style>
   .logo-train {
     border-top: 1px solid var(--color-paper-12);
-    border-bottom: 1px solid var(--color-paper-12);
     padding: 2.75rem 0;
     overflow: hidden;
   }
@@ -126,8 +141,19 @@ const track = Array.from({ length: reps }, () => logos).flat();
     }
   }
 
+  .aftermovie-section {
+    /* Base rhythm assumes the marquee sits directly above it (which already
+       carries its own top border/padding) — `.is-standalone` (no marquee,
+       Home as of 2026-08-30) gets its own top border + a smaller top padding
+       instead, so the video doesn't inherit a large gap or a doubled border
+       meant for a banner that isn't there. */
+    padding: var(--space-16) 0;
+  }
+  .aftermovie-section.is-standalone {
+    padding-top: var(--space-10);
+    border-top: 1px solid var(--color-paper-12);
+  }
   .aftermovie-full {
-    margin-top: 3rem;
     position: relative;
     background: #000;
   }

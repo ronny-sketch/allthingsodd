@@ -29,3 +29,9 @@ pnpm-debug.log*
 /blob-report/
 /playwright/.cache/
 .cloudcannon/migration/*.schema.json
+
+# ad-hoc visual QA screenshots (chrome-devtools MCP scratch captures)
+/.qa-screenshots/
+
+# Claude Code agent worktrees/session state — never part of site history
+/.claude/

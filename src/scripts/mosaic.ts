@@ -33,7 +33,19 @@ if (mosaic) {
     // Source of truth for "what's showing (or about to show) in each cell" — reserved
     // the instant a swap is decided, not scanned from the DOM, so two swaps landing
     // back to back can never both grab the same photo.
-    const assigned = cells.map((cell) => cell.querySelector('img')?.src ?? '');
+    //
+    // getAttribute('src'), not the .src IDL property — a real bug caught by
+    // an actual duplicate-detection test, not assumed: .src always returns
+    // the browser-resolved ABSOLUTE URL (e.g. "http://host/_astro/x.webp"),
+    // but `pool` (parsed from the data-pool JSON attribute) holds the
+    // root-relative form Astro wrote into the HTML (e.g. "/_astro/x.webp").
+    // Comparing those two formats in swap()'s `pool.filter((u) =>
+    // !assigned.includes(u))` never matched, so every cell's initial image
+    // was invisible to the "already showing" check until that exact cell
+    // had itself been swapped at least once — letting the same photo get
+    // assigned to two cells at once. getAttribute('src') returns the
+    // literal, unresolved attribute value, matching `pool`'s format exactly.
+    const assigned = cells.map((cell) => cell.querySelector('img')?.getAttribute('src') ?? '');
 
     function swap(cellIndex: number) {
       const cell = cells[cellIndex];
@@ -45,9 +57,28 @@ if (mosaic) {
 
       const newImg = document.createElement('img');
       newImg.alt = '';
-      newImg.loading = 'lazy';
+      // NOT loading="lazy" — a real bug caught by an actual instrumented
+      // reproduction, not assumed: this element is created detached (not
+      // yet in the DOM) and immediately decode()'d below; lazy-loading's
+      // viewport-proximity check doesn't apply to a detached node, so
+      // Chrome/Firefox/WebKit can leave its fetch (and so its decode()
+      // promise) stalled indefinitely. When that happened, `assigned[]`
+      // above had already moved on (correct in isolation), but reveal()
+      // below never ran — the old image stayed visually on screen while
+      // the bookkeeping considered its slot filled by something else,
+      // eventually freeing the OLD image's own src to be handed to a
+      // different cell too. Confirmed by instrumenting swap() and the
+      // actual DOM: only a fraction of logged swaps ever produced a
+      // corresponding appendChild. This element is swapped in deliberately
+      // and immediately — "lazy" was never the right loading mode for it.
       newImg.style.opacity = '0';
-      newImg.style.transition = 'opacity 2.2s ease';
+      // 1.4s, not the original 2.2s — tuned down alongside the faster swap
+      // cadence below (roughly the same crossfade-to-interval ratio as
+      // before) so a cell's own fade still reads as smooth/continuous
+      // rather than still resolving when its neighbors are already several
+      // swaps ahead — see the 2026-08-30 homepage revision's "hero feels
+      // alive" brief.
+      newImg.style.transition = 'opacity 1.4s ease';
       randomKenBurns(newImg);
       newImg.src = next;
 
@@ -59,9 +90,9 @@ if (mosaic) {
         requestAnimationFrame(() => {
           newImg.style.opacity = '1';
           if (oldImg) {
-            oldImg.style.transition = 'opacity 2.2s ease';
+            oldImg.style.transition = 'opacity 1.4s ease';
             oldImg.style.opacity = '0';
-            setTimeout(() => oldImg.remove(), 2300);
+            setTimeout(() => oldImg.remove(), 1500);
           }
         });
       };
@@ -78,7 +109,13 @@ if (mosaic) {
     function scheduleTick() {
       swap(order[oi % order.length]);
       oi++;
-      setTimeout(scheduleTick, 2600 + Math.random() * 900);
+      // 1.6–2.2s between swaps (was 2.6–3.5s) — the hero read as slightly
+      // too quiet/slow at the old cadence; see the 2026-08-30 homepage
+      // revision brief. The shared-timer/shuffled-order/one-swap-per-tick
+      // structure above is unchanged, so the "no two cells ever show the
+      // same source image at once" invariant (the `assigned` reservation in
+      // swap()) still holds at the faster rate.
+      setTimeout(scheduleTick, 1600 + Math.random() * 600);
     }
     setTimeout(scheduleTick, 4000);
   }

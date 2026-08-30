@@ -4,6 +4,12 @@ interface Item {
   title: string;
   linkLabel: string;
   href: string;
+  // Optional — groups this CTA under an audience label (e.g. "Business" /
+  // "Creative" / "Stay in touch") instead of one flat row. See
+  // content.config.ts's `cta` fragment and Home's "The way in is by
+  // participation" band (2026-08-30 homepage revision). Any page whose items
+  // don't set this renders exactly as before — one flat, ungrouped row.
+  audience?: string;
 }
 interface Props {
   title?: string;
@@ -12,6 +18,23 @@ interface Props {
   noPadTop?: boolean;
 }
 const { title = 'Ways to participate', items, inverted = false, noPadTop = false } = Astro.props;
+
+// Group by first-appearance order of `audience`, preserving each group's own
+// item order — content-driven grouping, not nth-child CSS or a hardcoded
+// array-position assumption. A "Stay in touch" (or any single-item) group
+// renders visually smaller/secondary via `.is-secondary` below, since it's a
+// different kind of action (mailing list) from the audience-facing CTAs.
+const hasAudience = items.some((i) => i.audience);
+const groups: { label: string; items: Item[] }[] = hasAudience
+  ? Array.from(
+      items.reduce((map, item) => {
+        const key = item.audience || '';
+        if (!map.has(key)) map.set(key, []);
+        map.get(key)!.push(item);
+        return map;
+      }, new Map<string, Item[]>()),
+    ).map(([label, groupItems]) => ({ label, items: groupItems }))
+  : [{ label: '', items }];
 ---
 
 <section
@@ -20,17 +43,36 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
 >
   <div class="wrap">
     <div class="section-head"><h2>{title}</h2></div>
-    <div class="participate reveal" style={`--cols: ${items.length}`}>
-      {
-        items.map((item) => (
-          <a class="p-cta" href={item.href}>
-            <span class="eyebrow">{item.eyebrow}</span>
-            <h3>{item.title}</h3>
-            <span class="go">{item.linkLabel}</span>
-          </a>
-        ))
-      }
-    </div>
+    {
+      hasAudience ? (
+        <div class="participate-groups">
+          {groups.map((g) => (
+            <div class={`participate-group ${g.items.length === 1 ? 'is-secondary' : ''}`}>
+              {g.label && <span class="participate-group-label">{g.label}</span>}
+              <div class="participate reveal" style={`--cols: ${g.items.length}`}>
+                {g.items.map((item) => (
+                  <a class="p-cta" href={item.href}>
+                    {item.eyebrow && <span class="eyebrow">{item.eyebrow}</span>}
+                    <h3>{item.title}</h3>
+                    <span class="go">{item.linkLabel}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="participate reveal" style={`--cols: ${items.length}`}>
+          {items.map((item) => (
+            <a class="p-cta" href={item.href}>
+              <span class="eyebrow">{item.eyebrow}</span>
+              <h3>{item.title}</h3>
+              <span class="go">{item.linkLabel}</span>
+            </a>
+          ))}
+        </div>
+      )
+    }
   </div>
 </section>
 
@@ -47,6 +89,32 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
     color: var(--color-paper);
   }
 
+  .participate-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 2.75rem;
+  }
+  .participate-group-label {
+    display: block;
+    font: var(--text-utility);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+    margin-bottom: 1rem;
+  }
+  /* "Stay in touch" (or any single-CTA group) reads as a smaller, secondary
+     action rather than a third audience-sized card row — same visual
+     language, deliberately quieter. */
+  .participate-group.is-secondary .participate {
+    max-width: 22rem;
+  }
+  .participate-group.is-secondary .p-cta {
+    min-height: 0;
+    padding: 1.6rem 1.4rem;
+  }
+  .participate-group.is-secondary .participate-group-label {
+    color: var(--color-paper-40);
+  }
   .participate {
     display: grid;
     /* --cols (set inline, per instance) drives the column count — always

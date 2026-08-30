@@ -20,21 +20,31 @@ interface LogoItem {
 interface Props {
   eyebrow: string;
   title: string;
-  items: LogoItem[];
+  // Legacy/current mode: one flat logo list, optionally grouped by each
+  // item's own `tier` field (see the file comment above).
+  items?: LogoItem[];
+  // Explicit-groups mode — used by the future grouped logo wall (Partners /
+  // Media / Supported by / Collaborators, see site/global.json's `logoWall`
+  // and docs/editing.md). Takes precedence over `items`/tier-inference when
+  // provided, so a caller doesn't need to flatten pre-grouped CMS data back
+  // into a single tagged array just to reuse this component.
+  groups?: { label: string; items: LogoItem[] }[];
 }
-const { eyebrow, title, items } = Astro.props;
+const { eyebrow, title, items, groups: explicitGroups } = Astro.props;
 
-const hasTiers = items.some((item) => item.tier);
-const groups: { label: string; items: LogoItem[] }[] = hasTiers
-  ? Array.from(
-      items.reduce((map, item) => {
-        const key = item.tier || 'Partners';
-        if (!map.has(key)) map.set(key, []);
-        map.get(key)!.push(item);
-        return map;
-      }, new Map<string, LogoItem[]>()),
-    ).map(([label, groupItems]) => ({ label, items: groupItems }))
-  : [{ label: '', items }];
+const hasTiers = !explicitGroups && (items ?? []).some((item) => item.tier);
+const groups: { label: string; items: LogoItem[] }[] =
+  explicitGroups ??
+  (hasTiers
+    ? Array.from(
+        (items ?? []).reduce((map, item) => {
+          const key = item.tier || 'Partners';
+          if (!map.has(key)) map.set(key, []);
+          map.get(key)!.push(item);
+          return map;
+        }, new Map<string, LogoItem[]>()),
+      ).map(([label, groupItems]) => ({ label, items: groupItems }))
+    : [{ label: '', items: items ?? [] }]);
 // A --cols custom property, not an inline grid-template-columns directly —
 // an inline style always outranks a stylesheet media query, which is what
 // forced the mobile breakpoint below into using !important. Same fix as
@@ -51,7 +61,7 @@ const columnStyle = `--cols: ${groups.length}`;
   </div>
   <div class="wrap-wide">
     {
-      hasTiers && (
+      (hasTiers || explicitGroups) && (
         <div class="tier-labels" style={columnStyle}>
           {groups.map((g) => (
             <span class="tier-label">{g.label}</span>

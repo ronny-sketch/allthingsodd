@@ -5,6 +5,20 @@ import { test, expect } from '@playwright/test';
 // things and asserts on what actually happens, across all three engines
 // (chromium/firefox/webkit — see playwright.config.ts).
 
+// Several tests here do multiple real page loads in sequence, which can run
+// long enough in practice to cross the newsletter popup's real ~15s delay
+// (src/scripts/newsletter-popup.ts) — an accessible modal popping up mid-test
+// then correctly traps focus/blocks the background, which reads as a stuck
+// click here even though the popup itself is working as designed. Pre-seed
+// its "already seen this session" flag so this file's unrelated nav/interaction
+// coverage doesn't depend on wall-clock timing; the popup's own behavior is
+// covered by tests/functional/newsletter-popup.spec.ts.
+test.beforeEach(async ({ context }) => {
+  await context.addInitScript(() => {
+    sessionStorage.setItem('oddNewsletterPopupSeen', '1');
+  });
+});
+
 test('homepage loads with the right title and hero', async ({ page }) => {
   const response = await page.goto('/');
   expect(response?.status()).toBe(200);
@@ -34,7 +48,7 @@ test('every flat internal nav link navigates to a real, matching page', async ({
   }
 });
 
-test('"Info" nav dropdown reveals About/Work with us/Media/Contact and each navigates correctly', async ({
+test('"Info" nav dropdown reveals About/Media/Contact and each navigates correctly', async ({
   page,
 }) => {
   await page.goto('/');
@@ -44,11 +58,8 @@ test('"Info" nav dropdown reveals About/Work with us/Media/Contact and each navi
 
   // Real DOM text is mixed-case ("About") — it only *renders* uppercase via
   // the Forta display font's glyph design, not CSS text-transform or content.
-  // "Work with ODD" moved in here 2026-08-30, relabelled "Work with us" —
-  // the route (/work-with-odd) is unchanged.
   const children: [string, string][] = [
     ['About', '/about'],
-    ['Work with us', '/work-with-odd'],
     ['Media', '/media'],
     ['Contact', '/contact'],
   ];

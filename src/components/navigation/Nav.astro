@@ -1,12 +1,23 @@
 ---
+// Header hierarchy (2026-08-30 revision): the primary left-side nav is only
+// ODD's real products (ODDfest/ODDference/ODDspace/Work with ODD) — "Info"
+// (About/Media/Contact) moved to the right side, where a "Newsletter" pill
+// used to sit, and renders as its own pill-styled dropdown trigger instead
+// of a plain inline link. Newsletter no longer has any persistent nav UI —
+// see Footer.astro (the only persistent newsletter UI left) and
+// NewsletterPopup.astro (the timed exception). Any nav item with `children`
+// is treated as the "Info"-style item, not a hardcoded label match, so this
+// still works if `site/global.json`'s nav array ever reorders things.
 import { getEntry } from 'astro:content';
 import Logo from '../primitives/Logo.astro';
 import Pill from '../primitives/Pill.astro';
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { nav, preRegister } = site.data;
+const { nav } = site.data;
 const path = Astro.url.pathname;
+const primaryItems = nav.filter((item) => !item.children);
+const infoItem = nav.find((item) => item.children);
 ---
 
 <nav>
@@ -17,28 +28,9 @@ const path = Astro.url.pathname;
       </a>
       <div class="nav-links">
         {
-          nav.map((item) => {
-            const isActive =
-              !item.external && (path === item.href || item.children?.some((c) => path === c.href));
-            return item.children ? (
-              <div class="nav-dropdown">
-                <a href={item.href} class={isActive ? 'is-active' : undefined}>
-                  {item.label}
-                </a>
-                <div class="nav-dropdown-menu">
-                  {item.children.map((child) => (
-                    <a
-                      href={child.href}
-                      target={child.external ? '_blank' : undefined}
-                      rel={child.external ? 'noreferrer' : undefined}
-                      class={path === child.href ? 'is-active' : undefined}
-                    >
-                      {child.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            ) : (
+          primaryItems.map((item) => {
+            const isActive = !item.external && path === item.href;
+            return (
               <a
                 href={item.href}
                 target={item.external ? '_blank' : undefined}
@@ -53,7 +45,35 @@ const path = Astro.url.pathname;
       </div>
     </div>
     <div class="nav-buttons">
-      <Pill href={preRegister.href} variant="outline" magnetic>{preRegister.label}</Pill>
+      {
+        infoItem && (
+          <div class="nav-dropdown nav-info">
+            <a
+              href={infoItem.href}
+              class={
+                path === infoItem.href || infoItem.children?.some((c) => path === c.href)
+                  ? 'is-active'
+                  : undefined
+              }
+              aria-haspopup="true"
+            >
+              {infoItem.label}
+            </a>
+            <div class="nav-dropdown-menu">
+              {infoItem.children?.map((child) => (
+                <a
+                  href={child.href}
+                  target={child.external ? '_blank' : undefined}
+                  rel={child.external ? 'noreferrer' : undefined}
+                  class={path === child.href ? 'is-active' : undefined}
+                >
+                  {child.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        )
+      }
       <Pill type="button" variant="solid" ariaLabel="Menu" class="js-menu-toggle" id="menuToggle">
         <span id="menuToggleLabel">Menu</span>
       </Pill>
@@ -79,7 +99,16 @@ const path = Astro.url.pathname;
     align-items: center;
     justify-content: space-between;
     gap: 2.25rem;
-    padding: 0.9rem 0;
+    /* padding-top/bottom only, not the shorthand `padding: 0.9rem 0` this
+       used to be — .nav-wrap and .nav-row are both classes on the SAME
+       element, and the shorthand's implicit `padding-left/right: 0`
+       silently overrode .nav-wrap's own `padding: 0 var(--gutter-wide)`
+       (same specificity, later in source order wins), zeroing out the
+       header's horizontal gutter on every page, at every width — confirmed
+       via getBoundingClientRect showing the logo mark flush against x:0.
+       Longhand here can't clobber a property .nav-wrap doesn't also set. */
+    padding-top: 0.9rem;
+    padding-bottom: 0.9rem;
   }
   .nav-left {
     display: flex;
@@ -97,29 +126,6 @@ const path = Astro.url.pathname;
     height: 1.35rem;
     width: auto;
     display: block;
-    filter: url(#steam-nav);
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .mark :global(svg) {
-      animation: hero-float 10s ease-in-out infinite;
-    }
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .mark {
-      transition: transform 0.4s var(--ease-spring);
-    }
-    .mark:hover {
-      transform: rotate(-4deg) scale(1.06);
-    }
-  }
-  @keyframes hero-float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-2%);
-    }
   }
   .nav-links {
     display: flex;
@@ -227,6 +233,65 @@ const path = Astro.url.pathname;
     color: var(--color-paper);
     background: var(--color-paper-12);
   }
+  /* "Info" trigger reads as a pill button (same visual language as
+     Pill.astro's `outline` variant) now that it sits where the old
+     Newsletter pill did, on the header's right side — a plain text link
+     there would look like a stray nav item, not an intentional control. Not
+     reusing <Pill> itself: this trigger is one half of a CSS-only
+     hover/focus-within dropdown pair (see .nav-dropdown above), which needs
+     to stay a plain <a> so :focus-within on the shared .nav-dropdown parent
+     keeps working. */
+  .nav-info > a {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.55rem 1.25rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-paper);
+    border: 1px solid rgb(226 223 222 / 35%);
+    transition:
+      border-color var(--duration-fast) ease,
+      color var(--duration-fast) ease;
+  }
+  /* Same dark-ground assumption as Pill.astro's .pill-outline (this trigger
+     intentionally matches that variant's look) — under .theme-light
+     (ODDspace) the ground is light, so this needs the ink-tinted mirror at
+     the same opacity, not the inherited (now-dark) --color-paper value
+     reused as a border tint. See Pill.astro's identical comment. */
+  :global(.theme-light) .nav-info > a {
+    border-color: rgb(14 9 11 / 35%);
+  }
+  .nav-info > a::before {
+    display: none;
+  }
+  .nav-info > a:hover,
+  .nav-info > a.is-active {
+    border-color: var(--color-paper);
+    color: var(--color-paper);
+  }
+  /* Right-aligned under the trigger, not centered — .nav-dropdown-menu's
+     default centering (built for a mid-row trigger like the old inline
+     "Info" link) would push the menu card partly past the viewport's own
+     right edge now that the trigger sits flush against it. */
+  .nav-info .nav-dropdown-menu {
+    left: auto;
+    right: 0;
+    transform: none;
+    transform-origin: top right;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .nav-info .nav-dropdown-menu {
+      transform: translateY(-4px) scale(0.98);
+    }
+  }
+  .nav-info:hover .nav-dropdown-menu,
+  .nav-info:focus-within .nav-dropdown-menu {
+    transform: none;
+  }
   .nav-buttons {
     display: flex;
     align-items: center;
@@ -234,17 +299,18 @@ const path = Astro.url.pathname;
     flex-shrink: 0;
   }
 
-  /* 1024px (not 760px) — originally set when V2's flat nav carried a
-     genuinely long label ("Work with ODD"); that item moved into the "Info"
-     dropdown 2026-08-30 (now four flat items: ODDfest/ODDference/ODDspace/
-     Info), but the value is left unchanged rather than tightened on
-     unverified assumption — it was caught via an actual tablet-width
-     screenshot originally (not assumed), and still safely covers every
-     common tablet portrait width (iPad Mini/Air/Pro all 768-1024px), not
-     just phones. Re-tighten only after a real screenshot check confirms
-     there's no longer a collision risk at a narrower width. */
+  /* 1024px (not 760px) — V2's nav grew a genuinely long label ("Work with
+     ODD"), and at anything narrower the 5-item nav collided with the
+     Pre-register button (caught via an actual tablet-width screenshot, not
+     assumed — it was silently baked into the visual-regression baseline
+     itself). This range covers every common tablet portrait width
+     (iPad Mini/Air/Pro all 768-1024px), not just phones. MobileMenu.astro
+     renders About/Media/Contact as direct items below this width, so the
+     header's own Info dropdown hides alongside the primary links rather
+     than offering a second, redundant way to reach the same three pages. */
   @media (max-width: 1024px) {
-    .nav-links {
+    .nav-links,
+    .nav-info {
       display: none;
     }
   }

@@ -1,0 +1,151 @@
+---
+// Timed newsletter popup — the one deliberate exception to "newsletter UI
+// lives only in the footer" (see Footer.astro, Nav.astro, MobileMenu.astro's
+// own comments). Appears ~15s after page load, once per browser session
+// (sessionStorage, not a cookie — see newsletter-popup.ts), reuses the exact
+// same submission logic/endpoint as the footer via NewsletterForm.astro
+// (different `source` tag only), and is mounted sitewide from Layout.astro
+// since the brief asks for "the visitor enters the site", not a homepage-
+// only prompt. See docs/architecture.md and the 2026-08-30 homepage
+// revision brief, section 13.
+import { getEntry } from 'astro:content';
+import NewsletterForm from '../primitives/NewsletterForm.astro';
+
+const site = await getEntry('site', 'global');
+if (!site) throw new Error('Missing site/global.json content entry');
+const { newsletterHref } = site.data;
+---
+
+<div class="nl-popup-backdrop" id="newsletterPopupBackdrop" hidden></div>
+<div
+  class="nl-popup"
+  id="newsletterPopup"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="newsletterPopupTitle"
+  hidden
+>
+  <button type="button" class="nl-popup-close" id="newsletterPopupClose" aria-label="Close">
+    <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+      <path
+        d="M4 4l12 12M16 4L4 16"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        fill="none"></path>
+    </svg>
+  </button>
+  <p class="eyebrow">Stay in touch</p>
+  <h2 id="newsletterPopupTitle">Keep up with ODD</h2>
+  <p class="nl-popup-body">
+    Events, open calls and what's happening across ODDfest, ODDference and ODDspace — straight to
+    your inbox, no spam.
+  </p>
+  <NewsletterForm
+    id="newsletterPopupForm"
+    source="popup_newsletter"
+    newsletterHref={newsletterHref}
+  />
+</div>
+
+<script src="../../scripts/newsletter-popup.ts"></script>
+
+<style>
+  .nl-popup-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 220;
+    background: rgb(14 9 11 / 55%);
+    opacity: 0;
+    transition: opacity var(--duration-base) ease;
+  }
+  .nl-popup-backdrop.is-open {
+    opacity: 1;
+  }
+  .nl-popup {
+    position: fixed;
+    z-index: 221;
+    right: var(--space-6);
+    bottom: var(--space-6);
+    left: var(--space-6);
+    max-width: 380px;
+    margin-left: auto;
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    border-radius: 14px;
+    box-shadow: 0 24px 60px -16px rgb(0 0 0 / 55%);
+    padding: var(--space-8) var(--space-6) var(--space-6);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .nl-popup {
+      transform: translateY(12px);
+      transition:
+        opacity var(--duration-base) ease,
+        transform var(--duration-base) ease,
+        visibility 0s linear var(--duration-base);
+    }
+  }
+  .nl-popup.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+    transition:
+      opacity var(--duration-base) ease,
+      transform var(--duration-base) ease;
+  }
+  .nl-popup .eyebrow {
+    display: block;
+    margin: 0 0 0.4rem;
+  }
+  .nl-popup h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.35rem;
+    color: var(--color-paper);
+  }
+  .nl-popup-body {
+    margin: 0.7rem 0 1.2rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-paper-60);
+    max-width: 34ch;
+  }
+  .nl-popup-close {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-paper-60);
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) ease,
+      color var(--duration-fast) ease;
+  }
+  .nl-popup-close:hover {
+    background: var(--color-paper-12);
+    color: var(--color-paper);
+  }
+
+  @media (max-width: 480px) {
+    .nl-popup {
+      right: var(--space-4);
+      bottom: var(--space-4);
+      left: var(--space-4);
+      max-width: none;
+      padding: var(--space-6) var(--space-5) var(--space-5);
+    }
+  }
+</style>

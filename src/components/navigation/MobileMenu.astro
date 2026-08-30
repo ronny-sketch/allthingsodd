@@ -2,13 +2,22 @@
 // The fullscreen menu overlay. The original built this via innerHTML JS purely
 // because it was one hand-authored file; as real markup it's just another
 // component, which also means its links are indexable/accessible without JS.
+//
+// 2026-08-30 revision: items with `children` (currently just "Info") flatten
+// straight into their real children here instead of showing a grouped
+// "Info" heading that hides About/Media/Contact behind an extra tap — same
+// flattening Footer.astro already does for the identical reason, see its own
+// comment. Newsletter no longer has a form here either — see Footer.astro
+// (the one persistent newsletter UI) and NewsletterPopup.astro (the timed
+// exception) for where it lives instead.
 import { getEntry } from 'astro:content';
 import Logo from '../primitives/Logo.astro';
 import SocialIcon from '../primitives/SocialIcon.astro';
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { nav, social, footerTag, newsletterHref } = site.data;
+const { nav, social, footerTag } = site.data;
+const menuLinks = nav.flatMap((item) => item.children ?? [item]);
 ---
 
 <div class="menu-overlay" id="menuOverlay">
@@ -18,40 +27,18 @@ const { nav, social, footerTag, newsletterHref } = site.data;
   </div>
   <nav class="menu-links">
     {
-      nav.map((item) =>
-        item.children ? (
-          <div class="menu-group">
-            <a href={item.href}>{item.label}</a>
-            <div class="menu-subgroup">
-              {item.children.map((child) => (
-                <a
-                  href={child.href}
-                  class="menu-sublink"
-                  target={child.external ? '_blank' : undefined}
-                  rel={child.external ? 'noreferrer' : undefined}
-                >
-                  {child.label}
-                </a>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <a
-            href={item.href}
-            target={item.external ? '_blank' : undefined}
-            rel={item.external ? 'noreferrer' : undefined}
-          >
-            {item.label}
-          </a>
-        ),
-      )
+      menuLinks.map((item) => (
+        <a
+          href={item.href}
+          target={item.external ? '_blank' : undefined}
+          rel={item.external ? 'noreferrer' : undefined}
+        >
+          {item.label}
+        </a>
+      ))
     }
   </nav>
   <div class="menu-bottom">
-    <form class="menu-newsletter" action={newsletterHref} method="get" target="_blank">
-      <input type="email" name="email" placeholder="Your email" aria-label="Email address" />
-      <button type="submit">Sign up</button>
-    </form>
     <div class="menu-social">
       {
         social.map((s) => (
@@ -189,34 +176,6 @@ const { nav, social, footerTag, newsletterHref } = site.data;
     color: var(--color-paper);
     padding-left: 1.4rem;
   }
-  .menu-group {
-    display: flex;
-    flex-direction: column;
-  }
-  .menu-subgroup {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem 1.2rem;
-    margin: 0.2rem 0 1rem 0.6rem;
-  }
-  .menu-subgroup .menu-sublink {
-    display: block;
-    font-family: var(--font-body);
-    font-weight: 600;
-    text-transform: none;
-    font-size: 1.05rem;
-    line-height: 1.6;
-    color: rgb(36 34 32 / 65%);
-    text-decoration: none;
-    padding: 0.1rem 0.4rem;
-    margin: 0;
-    transition: color var(--duration-fast) ease;
-  }
-  .menu-subgroup .menu-sublink:hover {
-    background: transparent;
-    color: var(--color-ink);
-    padding-left: 0.4rem;
-  }
   .menu-bottom {
     border-top: 1px solid rgb(36 34 32 / 15%);
     padding: 1.8rem 2.5rem;
@@ -226,61 +185,6 @@ const { nav, social, footerTag, newsletterHref } = site.data;
     gap: 1.6rem 2.5rem;
     align-items: center;
     justify-content: space-between;
-  }
-  .menu-newsletter {
-    display: flex;
-    border: 1px solid var(--color-ink);
-    border-radius: 999px;
-    max-width: 320px;
-    flex: 1;
-    min-width: 240px;
-    overflow: hidden;
-  }
-  /* The input's own outline is suppressed below (it'd be clipped by this
-     pill's overflow:hidden/rounded corners anyway) — :focus-within on the
-     container itself is the visible replacement, since there was none at
-     all before. A box-shadow ring, not a border-color change: the border is
-     already --color-ink (max contrast already), so only an added ring is
-     visible as a distinct focus state. */
-  .menu-newsletter:focus-within {
-    box-shadow: 0 0 0 3px var(--color-ink);
-  }
-  .menu-newsletter input {
-    flex: 1;
-    min-width: 0;
-    border: none;
-    background: transparent;
-    padding: 0.7rem 0 0.7rem 1.1rem;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    color: var(--color-ink);
-    outline: none;
-  }
-  /* iOS Safari auto-zooms the viewport on focus for any input under 16px —
-     genuinely likely to matter here, since this is the mobile menu itself. */
-  @media (max-width: 640px) {
-    .menu-newsletter input {
-      font-size: 16px;
-    }
-  }
-  .menu-newsletter button {
-    border: none;
-    background: var(--color-ink);
-    color: var(--color-paper);
-    padding: 0 1.2rem;
-    margin: 3px;
-    white-space: nowrap;
-    border-radius: 999px;
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    cursor: pointer;
-    transition: opacity var(--duration-fast) ease;
-  }
-  .menu-newsletter button:hover {
-    opacity: 0.8;
   }
   .menu-social {
     display: flex;

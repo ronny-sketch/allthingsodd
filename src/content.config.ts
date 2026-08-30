@@ -10,6 +10,13 @@ const cta = z.object({
   title: z.string(),
   linkLabel: z.string(),
   href: z.string(),
+  // Optional, used only by Home's "The way in is by participation" band —
+  // groups CTAs under a Business/Creative/Stay-in-touch label instead of
+  // relying on array order or nth-child CSS. Every other page's participate/
+  // cta arrays simply omit it and render exactly as before (ParticipateBand
+  // falls back to one flat ungrouped row when nothing in the array sets
+  // this) — see docs/architecture.md and ParticipateBand.astro.
+  audience: z.string().optional(),
 });
 
 const linkCta = z.object({
@@ -183,13 +190,14 @@ const site = defineCollection({
       footerTag: z.string(),
       newsletterLabel: z.string(),
       newsletterHref: z.string(),
-      // Field name kept as "preRegister" (its original purpose) rather than
-      // renamed, but it currently points at the newsletter signup — there's
-      // no real pre-registration destination yet, and a top-nav button
-      // linking to "#" was a real launch blocker (a CTA visible on every
-      // page that goes nowhere). Point this back to an actual
-      // pre-registration URL, and give it its own honest field name, once
-      // one exists.
+      // Field name kept as "preRegister" (its original purpose), but as of
+      // the 2026-08-30 homepage revision no component reads this field —
+      // Nav.astro's header used to render it as the top-right "Newsletter"
+      // button; that slot is now the "Info" dropdown instead, and
+      // persistent newsletter UI lives only in the footer. Kept (not
+      // deleted) for a real future pre-registration CTA — wire it up
+      // wherever that should render once one exists, rather than reviving
+      // its old nav placement by default.
       preRegister: z.object({ label: z.string(), href: z.string() }),
       // "tier" is optional and unset by default — which named company is a
       // Partner vs. Supporter vs. Media tier is a real business fact, not
@@ -210,6 +218,31 @@ const site = defineCollection({
       featuredIn: z.array(
         z.object({ name: z.string(), logo: image(), pressCoverage: z.boolean().optional() }),
       ),
+      // The future grouped logo wall (Partners / Media / Supported by /
+      // Collaborators — see the homepage UX brief, 2026-08-30). Deliberately
+      // separate from "partners" above rather than repurposing its "tier"
+      // field: which named organisation belongs in which of these four
+      // categories is a real business fact nobody has confirmed yet, so this
+      // stays optional/hidden (`visible: false`, empty groups) until it is.
+      // See docs/editing.md and LogoWall usage in PartnerTiers.astro (the
+      // `groups` prop) for how this renders once populated + switched on.
+      logoWall: z
+        .object({
+          visible: z.boolean(),
+          groups: z.array(
+            z.object({
+              label: z.string(),
+              items: z.array(z.object({ name: z.string(), logo: image() })),
+            }),
+          ),
+        })
+        .optional(),
+      // Footer "Supported by" — deliberately separate from "partners" for
+      // the same reason as logoWall above: foundation/supporter status isn't
+      // recorded anywhere in this repo yet (no partner currently has
+      // `tier: "Supporter"` set). Optional and left empty until it is — see
+      // Footer.astro, which renders nothing when this is absent/empty.
+      supportedBy: z.array(z.object({ name: z.string(), logo: image() })).optional(),
     }),
 });
 
@@ -338,10 +371,26 @@ const pages = defineCollection({
           secondaryCta: linkCta.optional(),
         }),
         whatOddIs: sectionIntro,
+        // "tracks" (the small ODDference/Work with ODD/ODDfest/ODDspace
+        // destination buttons under each audience blurb) is optional as of
+        // the 2026-08-30 homepage revision — those destinations now live in
+        // "What we do" (ProgramGrid) directly below this section instead of
+        // being duplicated here too. Converge.astro renders nothing extra
+        // when a side's `tracks` is omitted; kept optional (not deleted)
+        // since Converge is a shared component and another page reusing it
+        // may still want the track links. See docs/architecture.md.
         twoWaysIn: z.object({
           intro: z.string(),
-          business: z.object({ lede: z.string(), body: z.string(), tracks: z.array(trackItem) }),
-          creative: z.object({ lede: z.string(), body: z.string(), tracks: z.array(trackItem) }),
+          business: z.object({
+            lede: z.string(),
+            body: z.string(),
+            tracks: z.array(trackItem).optional(),
+          }),
+          creative: z.object({
+            lede: z.string(),
+            body: z.string(),
+            tracks: z.array(trackItem).optional(),
+          }),
         }),
         whatsHappening: z.object({
           note: z.string(),
@@ -353,14 +402,12 @@ const pages = defineCollection({
         // absent from the page until real proof numbers exist — see
         // ProofGrid.astro.
         proof: proofSection.optional(),
-        workWithOdd: z.object({
-          eyebrow: z.string(),
-          title: z.string(),
-          intro: z.string(),
-          cards: z.array(cta),
-          ctaLabel: z.string(),
-          ctaHref: z.string(),
-        }),
+        // "workWithOdd" (the separate "For organisations / Work with ODD."
+        // teaser section, with its own four-card grid) was removed from Home
+        // in the 2026-08-30 homepage revision — it duplicated the "What we
+        // do" platform grid immediately above it, which already includes a
+        // Work with ODD card. The real /work-with-odd page and its content
+        // are untouched. See docs/architecture.md.
         // Named "caseTeaser" (not "story") — this is a single case/proof
         // teaser card, a different shape from About's "story" (a timeline of
         // milestones). CloudCannon's _inputs are keyed by field name across
@@ -596,11 +643,16 @@ const pages = defineCollection({
       z.object({
         _template: z.literal('work-with-odd'),
         seo,
-        // Rebuilt 2026-08-30 around the page's new role: no longer a
-        // top-level nav destination (moved into the Info dropdown as
-        // "Work with us" — see site/global.json), so it no longer needs to
-        // out-argue ODDfest/ODDference/ODDspace for attention. H1 is "Work
-        // with us." — seo.title above keeps "Work with ODD" for continuity.
+        // Rebuilt 2026-08-30 around the page's new role. Note: an earlier
+        // pass on this same day briefly moved this page's nav placement into
+        // the Info dropdown (relabelled "Work with us") — the 2026-08-30
+        // homepage revision brief explicitly requires "Work with ODD" stay a
+        // primary top-level nav item (see site/global.json's `nav`), so that
+        // move was reverted. This page's own H1 still reads "Work with us."
+        // from that pass — left as-is (a copy/positioning call on this page,
+        // not this brief's scope) rather than reverted without confirming
+        // which title is actually wanted; seo.title above keeps
+        // "Work with ODD" for continuity either way.
         eyebrow: z.string(),
         title: z.string(),
         intro: z.string(),

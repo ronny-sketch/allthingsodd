@@ -1,0 +1,127 @@
+---
+// The site's one newsletter subscribe form — used by Footer.astro (the only
+// persistent newsletter UI on the site) and NewsletterPopup.astro (the
+// timed, session-once popup). One component, one submission script
+// (newsletter-form.ts), so the two never drift into duplicate/conflicting
+// implementations — see docs/architecture.md and CLAUDE.md's CMS rules.
+//
+// `id` must be unique per instance (an id collision would break both forms'
+// `document.getElementById` lookups and is invalid HTML) — callers pass a
+// distinct id per placement. `source` tags which surface a signup came from
+// in the same POST payload newsletter-form.ts already sends (see
+// src/scripts/newsletter-form.ts and src/scripts/utm.ts).
+interface Props {
+  id: string;
+  source: string;
+  newsletterHref: string;
+  placeholder?: string;
+  buttonLabel?: string;
+}
+const {
+  id,
+  source,
+  newsletterHref,
+  placeholder = 'you@example.com',
+  buttonLabel = 'Sign up',
+} = Astro.props;
+---
+
+<form
+  class="nl-form"
+  id={id}
+  data-newsletter-form
+  data-source={source}
+  action={newsletterHref}
+  method="get"
+  target="_blank"
+>
+  <input
+    type="text"
+    name="botcheck"
+    class="nl-botcheck"
+    tabindex="-1"
+    autocomplete="off"
+    aria-hidden="true"
+  />
+  <input
+    type="email"
+    name="email"
+    placeholder={placeholder}
+    aria-label="Email address"
+    autocomplete="email"
+    required
+  />
+  <button type="submit">{buttonLabel}</button>
+</form>
+<p class="nl-status" role="status" aria-live="polite"></p>
+
+<script src="../../scripts/newsletter-form.ts"></script>
+
+<style>
+  .nl-form {
+    display: flex;
+    border: 1px solid var(--color-paper-20);
+    border-radius: 999px;
+    max-width: 320px;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  /* The input's own outline is suppressed below (it'd be clipped by this
+     pill's overflow:hidden/rounded corners anyway) — :focus-within on the
+     container itself is the visible replacement, since there was none at
+     all before. */
+  .nl-form:focus-within {
+    border-color: var(--color-paper);
+  }
+  .nl-form input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    padding: 0.7rem 0 0.7rem 1.1rem;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--color-paper);
+    outline: none;
+  }
+  /* iOS Safari auto-zooms the viewport on focus for any input under 16px —
+     the 0.8rem above is a deliberate desktop size, kept there; this
+     mobile-only override just avoids the zoom, not a visual redesign. */
+  @media (max-width: 640px) {
+    .nl-form input {
+      font-size: 16px;
+    }
+  }
+  .nl-form button {
+    border: none;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    padding: 0 1.2rem;
+    margin: 3px;
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity var(--duration-fast) ease;
+  }
+  .nl-form button:hover {
+    opacity: 0.85;
+  }
+  .nl-botcheck {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+  .nl-status {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    color: var(--color-paper-40);
+  }
+</style>
