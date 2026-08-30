@@ -150,20 +150,14 @@ stale long-lived cache) — if it becomes a real bottleneck, the fix is
 fronting Surge with a CDN that supports per-path headers (Cloudflare, etc.),
 not something fixable from this repo alone.
 
-## Cloudflare migration (in progress, 2026-08-21 →)
+## Growth OS's `/api/*` boundary
 
-Production is moving from Surge to a single Cloudflare Worker — Workers
-Static Assets serving this same `dist/` build, plus `/api/business-enquiry`
-and `/api/newsletter` routes for the ODD Growth OS (business CRM/newsletter
-integrations; see the repo's `ops/` and `worker/` directories — that's a
-commercial-systems layer, not part of this website's own architecture, so
-it isn't documented further here). Astro's build is unchanged: still
-static, no adapter.
-
-This migration is staged and Surge stays production until every step in
-`ops/DECISIONS.md` D1 passes, including a full parity check against this
-document's own concerns (caching, redirects, the visual-regression
-baseline, 404 handling). Config lives in `wrangler.toml` at the repo root.
-Do not point DNS at Cloudflare or repoint the CI `deploy` job until that
-migration is explicitly signed off — see `ops/SETUP_STATUS.md` for current
-status.
+This site's two forms (`work-with-odd`'s business enquiry, the newsletter
+signup) POST to `/api/business-enquiry` and `/api/newsletter`. As of the
+2026-08-28 repo split, those routes are served by an independent Cloudflare
+Worker in the sibling `../odd-growth-os` repo — not by anything in this
+repo, and not by this repo's own Surge deploy. This repo has no Cloudflare
+config of its own; production here is, and stays, a plain static Astro
+build on Surge. See `AGENTS.md`'s "Growth OS integration" section for the
+API contract, and `../odd-growth-os/ops/DECISIONS.md` D1/D13 for the full
+history of how that Worker came to exist and its own deploy status.

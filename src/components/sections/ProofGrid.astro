@@ -12,8 +12,21 @@ interface Props {
   eyebrow: string;
   title?: string;
   items: ProofItem[];
+  // A link to the underlying report (e.g. "Read the 2025 Impact Report") —
+  // rendered under the grid when both are set. Omit entirely rather than
+  // link to a report that doesn't exist yet.
+  reportLabel?: string;
+  reportUrl?: string;
+  // Shown instead of the grid when `items` is empty — About's 2026 impact
+  // snapshot, whose real numbers aren't verified yet, uses this rather than
+  // fabricating figures or silently omitting the section. A deliberate,
+  // narrow exception to this component's usual "omit rather than render
+  // fabricated numbers" rule (see the header comment above) — the data is
+  // pending, not nonexistent.
+  placeholder?: string;
 }
-const { eyebrow, title, items } = Astro.props;
+const { eyebrow, title, items, reportLabel, reportUrl, placeholder } = Astro.props;
+const showReport = Boolean(reportLabel && reportUrl);
 ---
 
 <section class="proof-section">
@@ -23,25 +36,37 @@ const { eyebrow, title, items } = Astro.props;
       {title && <h2>{title}</h2>}
     </div>
     {
-      /* --cols capped at 4 — forcing every item into one row (items.length
-         directly) was fine for the 2-3 item case this was designed around,
-         but Media's 8-stat highlights grid squeezed each column so narrow
-         that overflow-wrap:anywhere on .proof-value fractured numbers
-         mid-character ("2,600" → "2," / "600", confirmed via screenshot).
-         Capping at 4 wraps to a second row instead — every real usage today
-         (1/2/3/8 items) divides cleanly with no orphaned row. */
-    }
-    <div class="proof-grid reveal" style={`--cols: ${Math.min(items.length, 4)}`}>
-      {
-        items.map((item) => (
-          <div class="proof-item">
-            <div class="proof-value">{item.value}</div>
-            <div class="proof-label">{item.label}</div>
-            {item.context && <div class="proof-context">{item.context}</div>}
+      items.length > 0 ? (
+        <>
+          {
+            /* --cols capped at 4 — forcing every item into one row
+               (items.length directly) was fine for the 2-3 item case this
+               was designed around, but Media's 8-stat highlights grid
+               squeezed each column so narrow that overflow-wrap:anywhere on
+               .proof-value fractured numbers mid-character ("2,600" → "2," /
+               "600", confirmed via screenshot). Capping at 4 wraps to a
+               second row instead — every real usage today (1/2/3/8 items)
+               divides cleanly with no orphaned row. */
+          }
+          <div class="proof-grid reveal" style={`--cols: ${Math.min(items.length, 4)}`}>
+            {items.map((item) => (
+              <div class="proof-item">
+                <div class="proof-value">{item.value}</div>
+                <div class="proof-label">{item.label}</div>
+                {item.context && <div class="proof-context">{item.context}</div>}
+              </div>
+            ))}
           </div>
-        ))
-      }
-    </div>
+          {showReport && (
+            <a class="proof-report-link" href={reportUrl}>
+              {reportLabel} →
+            </a>
+          )}
+        </>
+      ) : (
+        placeholder && <p class="proof-placeholder">{placeholder}</p>
+      )
+    }
   </div>
 </section>
 
@@ -92,6 +117,35 @@ const { eyebrow, title, items } = Astro.props;
     font-family: var(--font-body);
     font-size: 0.78rem;
     color: var(--color-paper-40);
+  }
+  .proof-report-link {
+    display: block;
+    width: fit-content;
+    margin: 2.4rem auto 0;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--color-paper-80);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--color-paper-20);
+    transition: color var(--duration-fast) ease;
+  }
+  .proof-report-link:hover {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
+  }
+  .proof-placeholder {
+    max-width: 32rem;
+    margin: 0 auto;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--color-paper-40);
+    padding: 2.4rem 2rem;
+    border: 1px dashed var(--color-paper-12);
   }
   @media (max-width: 700px) {
     .proof-grid {

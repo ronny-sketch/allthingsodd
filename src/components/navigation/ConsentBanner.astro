@@ -1,0 +1,150 @@
+---
+// GA4 consent gate — required because ODD is a Finnish association and GA4
+// cookies aren't "strictly necessary" under GDPR/ePrivacy, so consent has
+// to come before the tracking request, not after. See
+// src/scripts/analytics.ts for why this is "don't load gtag.js at all
+// until accepted" rather than Google's Consent Mode default-denied pattern
+// — simpler and unambiguous for a site this size.
+//
+// Renders nothing (server-side) if analytics isn't configured yet — see
+// src/scripts/analytics-config.ts. The client script also re-checks this
+// and bails out, so there's no dead banner if the constant and the render
+// condition ever drift.
+import { GA_MEASUREMENT_ID } from '../../scripts/analytics-config';
+---
+
+{
+  GA_MEASUREMENT_ID && (
+    <div class="consent-banner" id="consentBanner" role="region" aria-label="Cookie consent">
+      <p>
+        We'd like to use privacy-respecting analytics to understand how people find and use this
+        site. No tracking until you say yes.
+      </p>
+      <div class="consent-actions">
+        <button type="button" id="consentReject" class="consent-btn consent-btn-ghost">
+          No thanks
+        </button>
+        <button type="button" id="consentAccept" class="consent-btn consent-btn-solid">
+          Accept
+        </button>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  import { getConsent, setConsent, loadGtag } from '../../scripts/analytics';
+
+  const banner = document.getElementById('consentBanner');
+  const accept = document.getElementById('consentAccept');
+  const reject = document.getElementById('consentReject');
+
+  if (banner && accept && reject) {
+    const existing = getConsent();
+    if (existing === 'granted') {
+      loadGtag();
+    } else if (existing === null) {
+      banner.classList.add('is-visible');
+    }
+    accept.addEventListener('click', () => {
+      setConsent('granted');
+      banner.classList.remove('is-visible');
+    });
+    reject.addEventListener('click', () => {
+      setConsent('denied');
+      banner.classList.remove('is-visible');
+    });
+  }
+</script>
+
+<style>
+  .consent-banner {
+    position: fixed;
+    left: var(--space-4);
+    right: var(--space-4);
+    bottom: var(--space-4);
+    z-index: 300;
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--color-backstage);
+    color: var(--color-paper);
+    border: 1px solid var(--color-paper-12);
+    border-radius: 16px;
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    box-shadow: 0 12px 40px rgb(14 9 11 / 40%);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    transition:
+      opacity 0.3s var(--ease-out-expo),
+      transform 0.3s var(--ease-out-expo),
+      visibility 0s linear 0.3s;
+  }
+  .consent-banner.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition:
+      opacity 0.3s var(--ease-out-expo),
+      transform 0.3s var(--ease-out-expo);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .consent-banner {
+      transition: opacity 0.15s linear, visibility 0s linear 0.15s;
+      transform: none;
+    }
+    .consent-banner.is-visible {
+      transition: opacity 0.15s linear;
+    }
+  }
+  .consent-banner p {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--color-paper-80);
+    margin: 0;
+  }
+  .consent-actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: flex-end;
+  }
+  .consent-btn {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: opacity var(--duration-fast) ease, border-color var(--duration-fast) ease;
+  }
+  .consent-btn-ghost {
+    background: transparent;
+    border: 1px solid var(--color-paper-20);
+    color: var(--color-paper-80);
+  }
+  .consent-btn-ghost:hover {
+    border-color: var(--color-paper-60);
+  }
+  .consent-btn-solid {
+    background: var(--color-signal);
+    border: 1px solid var(--color-signal);
+    color: var(--color-paper);
+  }
+  .consent-btn-solid:hover {
+    opacity: 0.85;
+  }
+  @media (max-width: 640px) {
+    .consent-banner {
+      left: var(--space-3);
+      right: var(--space-3);
+      bottom: var(--space-3);
+      padding: var(--space-4);
+    }
+  }
+</style>

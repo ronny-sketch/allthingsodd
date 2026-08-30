@@ -9,7 +9,7 @@
   "eyebrow": "ODDspace · Vallila",
   "title": "A place to work, meet and make things.",
   "meta": "Sture697 · Teollisuuskatu 9D, Helsinki",
-  "primaryCta": { "label": "Come see the space", "href": "/contact" },
+  "primaryCta": { "label": "Come see the space", "href": "/work-with-odd?interest=oddspace#enquiry-form" },
   "intro": "ODDspace is a shared space in Vallila for people working across art, culture, design, media, business and other creative fields. There are desks, studios, meeting rooms, a gallery and event space — and, more importantly, other people around. It is still a pilot, and the place is meant to keep changing with the people using it.",
   "heroMedia": {
     "image": "../../assets/programs/oddspace-card.jpg"
@@ -98,7 +98,7 @@
       "Community, programming and events"
     ],
     "ctaLabel": "Come see the space",
-    "href": "/contact",
+    "href": "/work-with-odd?interest=oddspace#enquiry-form",
     "note": "Accepted on a rolling basis as space becomes available during the pilot."
   },
   "rentalRates": [
@@ -175,13 +175,13 @@
       "eyebrow": "Work here",
       "title": "Become a member",
       "linkLabel": "Apply now →",
-      "href": "/contact"
+      "href": "/work-with-odd?interest=oddspace#enquiry-form"
     },
     {
       "eyebrow": "Use the space",
       "title": "Rent the space",
       "linkLabel": "Enquire →",
-      "href": "/contact"
+      "href": "/work-with-odd?interest=oddspace#enquiry-form"
     },
     {
       "eyebrow": "Keep up",

@@ -3,10 +3,11 @@
 // ContactForm.astro on /contact. This one captures what the guide's account
 // scoring/pipeline actually needs (organisation, interest, goal, timing,
 // UTM/source) and posts to the Worker's /api/business-enquiry route, which
-// upserts Person/Company/Deal in Attio. See worker/src/index.ts and
-// ops/GROWTH_OS_GUIDE.md §28-29.
+// upserts Person/Company/Deal in Attio. See ../odd-growth-os's
+// worker/src/index.ts and ops/GROWTH_OS_GUIDE.md §28-29.
 //
-// Interest options are the canonical product list (schemas/products.yml) —
+// Interest options are the canonical product list
+// (../odd-growth-os/schemas/products.yml) —
 // kept here as UI copy, not in CloudCannon content, per AGENTS.md's CMS
 // rule that implementation-level enums stay out of the editing contract.
 import Pill from '../primitives/Pill.astro';
@@ -16,6 +17,8 @@ const PRODUCTS = [
   { value: 'oddmembership', label: 'ODDmembership' },
   { value: 'oddagency', label: 'ODDagency — bring us a brief' },
   { value: 'strategic_partnership', label: 'A partnership' },
+  { value: 'oddspace', label: 'ODDspace — membership or renting the space' },
+  { value: 'city_institution_programme', label: 'A city or institution programme' },
   { value: 'other', label: 'Something else' },
 ];
 ---
