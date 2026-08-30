@@ -93,7 +93,9 @@ import { GA_MEASUREMENT_ID } from '../../scripts/analytics-config';
   }
   @media (prefers-reduced-motion: reduce) {
     .consent-banner {
-      transition: opacity 0.15s linear, visibility 0s linear 0.15s;
+      transition:
+        opacity 0.15s linear,
+        visibility 0s linear 0.15s;
       transform: none;
     }
     .consent-banner.is-visible {
@@ -121,7 +123,9 @@ import { GA_MEASUREMENT_ID } from '../../scripts/analytics-config';
     padding: 0.6rem 1.2rem;
     border-radius: 999px;
     cursor: pointer;
-    transition: opacity var(--duration-fast) ease, border-color var(--duration-fast) ease;
+    transition:
+      opacity var(--duration-fast) ease,
+      border-color var(--duration-fast) ease;
   }
   .consent-btn-ghost {
     background: transparent;
