@@ -82,13 +82,9 @@ const caseStudy = z.object({
   href: z.string(),
 });
 
-const personItem = z.object({
-  name: z.string(),
-  role: z.string(),
-  organisation: z.string().optional(),
-  bio: z.string().optional(),
-  href: z.string().optional(),
-});
+// image() is only available inside the `pages` collection's own schema
+// closure (see below) — personItem needs it (ODDference's speakers now
+// carry real photos), so its full definition lives there, not here.
 
 const programmeItem = z.object({
   title: z.string(),
@@ -248,6 +244,21 @@ const pages = defineCollection({
       href: z.string().optional(),
     });
 
+    // Speaker/team grid shape — About's team (no photos yet) and
+    // ODDference's 2026 speaker roster (real, verified photos — see
+    // oddference.json and PersonGrid.astro's photo-led card). `image` needs
+    // this collection's own `image()` helper, which is why this fragment
+    // lives in the closure instead of alongside the other shared fragments
+    // above `pages`.
+    const personItem = z.object({
+      name: z.string(),
+      role: z.string(),
+      organisation: z.string().optional(),
+      bio: z.string().optional(),
+      href: z.string().optional(),
+      image: image().optional(),
+    });
+
     // Shared by ODDfest/ODDference/ODDagency/ODDspace — the rail+hero shape
     // that made them "subpages" in the first place. Each extends this with
     // the fields that are actually different between them, rather than all
@@ -374,25 +385,86 @@ const pages = defineCollection({
         faq: z.array(faqItem),
       }),
 
+      // The 2027 ODDference rebuild: the centrally-produced professional
+      // experience (distinct from ODDfest, the distributed creative week —
+      // see docs/architecture.md's ODDference 2027 rebuild note). Four real
+      // jobs — explain the product, prove 2026 credibility, sell the active
+      // Blind Bird ticket, generate partnership enquiries — replace the old
+      // "Big Question" framing and the Themes/Formats/Why attend/Connection/
+      // generic-FAQ sections that didn't map to any of those jobs.
       subpageBase.extend({
         _template: z.literal('oddference'),
-        intro: z.string(),
-        features: z.array(featureCard),
-        bigQuestion: sectionIntro,
+        // A second hero CTA (ODDfest's FullbleedVideoHero call doesn't pass
+        // one) — declared here, not on subpageBase, since it's genuinely
+        // page-specific: "Buy Blind Bird" + "Partner with ODDference" only
+        // makes sense once there's something to sell and someone to court.
+        secondaryCta: linkCta.optional(),
+        // The one-paragraph concept explainer directly under the hero — same
+        // sectionIntro shape oddfest.whatItIs uses. No separate "Big
+        // Question" section repeats this below.
+        concept: sectionIntro,
+        // "Three reasons to come" — major editorial blocks (Ideas / People /
+        // Experience), not FeatureGrid cards, per the rebuild brief; each can
+        // carry its own photo. Rendered by page-scoped markup in
+        // oddference.astro, not a shared grid component.
+        reasons: z.array(
+          z.object({
+            number: z.string(),
+            eyebrow: z.string().optional(),
+            title: z.string(),
+            body: z.string(),
+            image: image().optional(),
+          }),
+        ),
         whoItsFor: z.array(audienceItem),
-        whyAttend: z.array(featureCard),
-        themes: z.array(z.object({ title: z.string(), body: z.string() })),
-        formats: z.array(z.string()),
+        // ODDference 2026's real, verified speaker roster — social proof,
+        // not a line-up for a not-yet-programmed 2027 edition. Optional at
+        // the object level only in the "ships empty until real names exist"
+        // sense; it's populated for this rebuild (10 confirmed 2026
+        // speakers with real photos).
         speakers: z.array(personItem).optional(),
+        // Kept for a real future 2027 programme (ProgrammeList is exactly
+        // what it'll need) — ships empty, same "don't invent it" rule as
+        // oddfest.examples. Not rendered while empty.
         programme: z.array(programmeItem).optional(),
-        connection: sectionIntro,
-        proof: proofSection
-          .extend({ quote: z.object({ text: z.string(), attribution: z.string() }).optional() })
-          .optional(),
+        // "What changes in 2027" — one section: a sectionIntro-shaped
+        // headline plus 3 featureCard items (More immersive / More
+        // connected / More intentional encounters), same shape
+        // oddfest.whatItIs + oddfest.howItWorks already use split across two
+        // sections, combined here into one.
+        whatsChanging: sectionIntro.extend({ items: z.array(featureCard) }),
+        // The active Blind Bird ticket only — ships with exactly one tier.
+        // No invented checkout URL (see oddference.json's own comment on
+        // each tier's href); the future Early Bird/Standard/Late ladder
+        // stays out of both the content and this array until it's live.
         tickets: z.array(pricingTier).optional(),
         partnershipCta: cta,
-        participate: z.array(cta),
-        faq: z.array(faqItem),
+        // No dedicated ODDference aftermovie exists yet (checked the repo
+        // and the live 2026 oddfest.co/oddference/ page — neither has one).
+        // Ships undefined; the section doesn't render until Ronny supplies
+        // real footage. Deliberately not the homepage's Aftermovie.astro
+        // (a fixed 3-brand marquee built for the generic home-aftermovie.mp4
+        // — reusing it here would either mislabel that generic video as
+        // ODDference's or fork the marquee for no real content to show).
+        aftermovie: z
+          .object({
+            poster: image(),
+            video: z.string(),
+          })
+          .optional(),
+        // No ODDference-specific partner/collaborator list could be
+        // verified (the live 2026 page has no partners section; global
+        // partners/press are sitewide and undated, not attributable to
+        // ODDference specifically) — ships empty, same "don't invent it"
+        // rule as tickets/aftermovie/speakers above. Flagged for Ronny.
+        partners: z
+          .array(
+            z.object({
+              name: z.string(),
+              logo: image(),
+            }),
+          )
+          .optional(),
       }),
 
       subpageBase.extend({

@@ -123,6 +123,51 @@ real decisions worth recording:
    key facts, highlights, boilerplate, press releases, info packs, assets,
    named press contact, social. All of it is real content pulled directly
    from the live oddfest.co press page, not invented — see `media.json`.
+6. **The 2027 ODDference rebuild** (see commit history on
+   `feature/oddference-2027-rebuild`, branched off the ODDfest 2027 rebuild
+   in `feature/oddfest-2027-rebuild`) clarified ODDference's role once
+   ODDfest itself became the distributed, city-wide Creative Week: ODDfest
+   is the open programme across Helsinki; **ODDference is the centrally
+   produced professional experience**, and it's the one that now absorbs
+   the strongest artistic/experiential layer (installations, performances,
+   scenography, spatial design) that used to sit inside the centrally
+   booked ODDfest — not the two events merging, two distinct roles. The
+   rebuilt page (`oddference.astro`/`oddference.json`) drops the old "Big
+   Question"/Themes/Formats/Why attend/Connection/generic-FAQ sections for
+   eight sections built around four real jobs: explain the product, prove
+   2026 credibility, sell the currently active Blind Bird ticket, generate
+   partnership enquiries. Three decisions worth recording:
+   - **No invented ticketing URL.** No Blind Bird checkout integration
+     exists anywhere in this repo. The hero's primary CTA anchors to the
+     page's own ticket section (`#tickets`); the ticket card's own CTA is a
+     real `mailto:ronny@oddfest.co` link (the existing partnerships/press
+     address) as a functional interim path, flagged in `oddference.json`
+     for a real Tiketti/Venga link once one exists — not a fabricated
+     external URL.
+   - **`Aftermovie.astro` was deliberately not reused.** It's a fixed
+     3-brand (ODDfest/ODDference/ODDspace) logo marquee built around the
+     homepage's one shared `home-aftermovie.mp4` — reusing it here would
+     have mislabeled that generic footage as ODDference's. No dedicated
+     ODDference aftermovie exists yet (checked this repo and the live 2026
+     `oddfest.co/oddference/` page), so the new `aftermovie` field ships
+     `undefined` and the section renders nothing until real footage exists
+     — same "don't invent it, ship it empty" rule `oddfest.examples`
+     already established.
+   - **`partners` ships empty for the same reason.** The live 2026 page has
+     no partners section, and `global.json`'s sitewide partner/press logos
+     aren't attributable to ODDference specifically — showing them here
+     would misrepresent them as current ODDference partners. The section
+     (and its own `_structures.logo_item`-based CMS field, distinct from
+     Global → Partner logos) is built and ready; it just needs a real,
+     verified ODDference-specific list.
+
+   Two components changed with blast radius beyond this one page:
+   `FullbleedVideoHero.astro` gained optional `primaryCta`/`secondaryCta`
+   props (additive — ODDfest's existing call, which passes neither, is
+   unaffected), and `PersonGrid.astro` gained an optional per-person
+   `image` (also used by `personItem`, so About's photo-less team keeps its
+   existing plain typographic card; ODDference's real, verified 2026
+   speaker photos render the new photo-led card instead).
 
 **Nav breakpoint: 1024px, not 760px.** "Work with ODD" is a genuinely long
 label next to the site's other single-word nav items — at anything narrower

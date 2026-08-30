@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Logo from '../primitives/Logo.astro';
+import Pill from '../primitives/Pill.astro';
 
 interface Props {
   video: string;
@@ -19,8 +20,14 @@ interface Props {
   // its own real logo asset.
   logo?: ImageMetadata;
   logoAlt?: string;
+  // Optional in-hero CTA pair — ODDfest's hero (the only other caller) has
+  // none; ODDference's does (Buy Blind Bird / Partner with ODDference), so
+  // these stay optional additions rather than forcing every caller to pass
+  // both.
+  primaryCta?: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
 }
-const { video, poster, sub, meta, logo, logoAlt = '' } = Astro.props;
+const { video, poster, sub, meta, logo, logoAlt = '', primaryCta, secondaryCta } = Astro.props;
 ---
 
 <header class="oddfest-hero reveal">
@@ -34,6 +41,22 @@ const { video, poster, sub, meta, logo, logoAlt = '' } = Astro.props;
     </div>
     <h1 class="oddfest-hero-sub">{sub}</h1>
     {meta && <p class="oddfest-hero-meta">{meta}</p>}
+    {
+      (primaryCta || secondaryCta) && (
+        <div class="oddfest-hero-cta">
+          {primaryCta && (
+            <Pill href={primaryCta.href} variant="ticket" magnetic>
+              {primaryCta.label}
+            </Pill>
+          )}
+          {secondaryCta && (
+            <Pill href={secondaryCta.href} variant="outline">
+              {secondaryCta.label}
+            </Pill>
+          )}
+        </div>
+      )
+    }
   </div>
 </header>
 
@@ -111,5 +134,12 @@ const { video, poster, sub, meta, logo, logoAlt = '' } = Astro.props;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-paper-60);
+  }
+  .oddfest-hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.9rem;
+    margin-top: 0.8rem;
   }
 </style>

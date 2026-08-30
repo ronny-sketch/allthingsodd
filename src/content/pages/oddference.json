@@ -3,150 +3,173 @@
   "_slug": "oddference",
   "seo": {
     "title": "ODDference — where creative expertise meets business and society",
-    "description": "A professional conference built around one question: what can business and wider society learn from creative expertise?",
+    "description": "ODDference brings creative practitioners and business leaders into the same room. Blind Bird tickets for 2027 are open now, at €300.",
     "ogImage": "/og/oddference.jpg"
   },
-  "eyebrow": "ODDference · Creative expertise meets business",
-  "title": "What can business learn from creative expertise?",
-  "meta": "TBD · TBD",
+  "eyebrow": "ODDference · 2027",
+  "title": "Where creative expertise meets business and society.",
+  "meta": "Helsinki · 2027",
   "primaryCta": {
-    "label": "Join the mailing list",
-    "href": "#newsletter"
+    "label": "Buy Blind Bird — €300",
+    "href": "#tickets"
   },
-  "intro": "ODDference is a professional conference built around one question: what can business and wider society learn from creative expertise? The programme starts from knowledge developed through creative practice and puts the people behind that work in conversation with leaders, organisations and decision-makers from elsewhere.",
+  "secondaryCta": {
+    "label": "Partner with ODDference",
+    "href": "/contact?interest=oddference_corporate"
+  },
   "heroMedia": {
     "video": "/video/oddference-hero.mp4",
     "poster": "../../assets/video/oddference-hero-poster.jpg"
   },
-  "features": [
+  "concept": {
+    "eyebrow": "What is ODDference",
+    "headline": "Where creative expertise meets business and society.",
+    "body": "ODDference brings creative professionals, business leaders, founders and decision-makers into the same room to explore what creative expertise can teach us about how we build organisations, businesses and society. It combines serious professional content, an unusual mix of people, and an experience shaped by artists and creative practitioners — not a conference that happens to feature creative speakers."
+  },
+  "reasons": [
     {
       "number": "01",
-      "title": "Talks & panels",
-      "body": "Creative practitioners, business leaders, founders, researchers and policymakers looking at the same questions from different directions."
+      "eyebrow": "Ideas",
+      "title": "Ideas worth taking with you",
+      "body": "ODDference brings together creative practitioners, founders, leaders, researchers and thinkers with perspectives that rarely appear in the same professional programme. You will learn something useful and see a familiar question differently.",
+      "image": "../../assets/hero/archive-03.jpg"
     },
     {
       "number": "02",
-      "title": "Matchmaking",
-      "body": "Structured time built into the day to meet people you wouldn't otherwise cross paths with."
+      "eyebrow": "People",
+      "title": "People you would not normally meet",
+      "body": "Creative professionals, business leaders, founders, policymakers, cultural leaders and researchers — deliberately in the same room. The mix is not a side benefit of ODDference. The people in the room are part of the programme."
     },
     {
       "number": "03",
-      "title": "Straight into ODDfest",
-      "body": "ODDference runs straight into the wider ODDfest programme — the conversation continues past the closing session."
+      "eyebrow": "Experience",
+      "title": "A conference you actually experience",
+      "body": "In 2027, the creative work moves into the entire event, not just the stage — installations, performances, scenography, spaces, food, music and unexpected moments. ODDference should demonstrate creative expertise, not only talk about it.",
+      "image": "../../assets/hero/archive-14.jpg"
     }
   ],
-  "bigQuestion": {
-    "eyebrow": "The big question",
-    "headline": "What can business and the rest of society learn from creative expertise?",
-    "body": "Creative professionals spend their careers working with uncertainty, attention, culture, meaning, aesthetics, audiences and ideas that do not have a playbook yet. Those questions increasingly matter far beyond the creative fields. ODDference is a place to examine what that expertise can teach the rest of us — and what happens when the people carrying it are in the room."
-  },
   "whoItsFor": [
     {
       "label": "Business leaders",
-      "description": "For people making decisions where there is no ready-made playbook — and who want perspectives from outside the usual business circuit."
+      "description": "Making decisions with no ready-made playbook, and looking outside the usual business circuit."
     },
     {
       "label": "Organisational leaders",
-      "description": "For people working on culture, change and organisations where human behaviour matters as much as process."
+      "description": "Working on culture and change, where human behaviour matters as much as process."
     },
     {
       "label": "Entrepreneurs",
-      "description": "For people building something that does not exist yet and looking for better ways to work with uncertainty."
+      "description": "Building something that does not exist yet, and working with real uncertainty."
     },
     {
       "label": "Policymakers",
-      "description": "For people shaping cities, funding, regulation and institutions — and who need direct contact with the people affected by those decisions."
+      "description": "Shaping cities, funding and institutions — and wanting direct contact with the people affected."
     },
     {
       "label": "Creative leaders",
-      "description": "For creative leaders who want to take part in the wider conversations where culture, business and society are being shaped."
+      "description": "Bringing creative expertise into conversations about business and society, not just culture."
     }
   ],
-  "whyAttend": [
+  "speakers": [
     {
-      "number": "01",
-      "title": "New perspectives",
-      "body": "Leave with a genuinely different way of thinking about a problem you brought in, not just a stack of slides."
+      "name": "Esa Saarinen",
+      "role": "Philosopher",
+      "image": "../../assets/speakers/esa-saarinen.png"
     },
     {
-      "number": "02",
-      "title": "Relevant connections",
-      "body": "Meet people solving adjacent problems from a completely different discipline."
+      "name": "Perttu Pölönen",
+      "role": "Futurist, Inventor & Author",
+      "image": "../../assets/speakers/perttu-polonen.png"
     },
     {
-      "number": "03",
-      "title": "Practical ideas",
-      "body": "Talks and sessions built to translate into something you can actually use, not just admire."
+      "name": "Sanna-Kaisa Niikko",
+      "role": "CMO",
+      "organisation": "Marimekko",
+      "image": "../../assets/speakers/sanna-kaisa-niikko.png"
+    },
+    {
+      "name": "Tunna Milonoff",
+      "role": "Cultural Architect",
+      "image": "../../assets/speakers/tunna-milonoff.png"
+    },
+    {
+      "name": "Karri \"Paleface\" Miettinen",
+      "role": "Artist, Activist & Cultural Commentator",
+      "image": "../../assets/speakers/karri-paleface-miettinen.png"
+    },
+    {
+      "name": "Galit Ariel",
+      "role": "Techno-Futurist & Author",
+      "image": "../../assets/speakers/galit-ariel.png"
+    },
+    {
+      "name": "Ashley Jex Wagner",
+      "role": "Head of Live Experiences",
+      "organisation": "Supercell",
+      "image": "../../assets/speakers/ashley-jex-wagner.png"
+    },
+    {
+      "name": "Rolf Ekroth",
+      "role": "Fashion Designer",
+      "image": "../../assets/speakers/rolf-ekroth.png"
+    },
+    {
+      "name": "Sonya Lindfors",
+      "role": "Art Director",
+      "organisation": "UrbanApa",
+      "image": "../../assets/speakers/sonya-lindfors.png"
+    },
+    {
+      "name": "Alf Rehn",
+      "role": "Professor of Innovation & Management",
+      "image": "../../assets/speakers/alf-rehn.png"
     }
   ],
-  "themes": [
-    {
-      "title": "Creative leadership",
-      "body": "What organisational leadership can learn from how creative teams actually make decisions under uncertainty."
-    },
-    {
-      "title": "Culture & attention",
-      "body": "How cultural relevance, storytelling and audience attention actually work — and what that means for brands, cities and institutions."
-    },
-    {
-      "title": "Creative economy & technology",
-      "body": "Where creative practice, new technology and economic models are colliding right now, and what's worth paying attention to."
-    }
-  ],
-  "formats": [
-    "Conversations",
-    "Talks",
-    "Workshops",
-    "Facilitated sessions",
-    "Encounters & networking",
-    "Creative interventions"
-  ],
-  "speakers": [],
   "programme": [],
-  "connection": {
-    "eyebrow": "Connection & networking",
-    "headline": "The people in the room are part of the programme.",
-    "body": "The stage is only part of the day. ODDference leaves real time for introductions, small-group conversations, shared meals and the kind of unplanned encounter that is hard to manufacture once everyone goes home."
+  "whatsChanging": {
+    "eyebrow": "ODDference 2027",
+    "headline": "Less like a conference you attend. More like a place you enter.",
+    "body": "The professional programme stays the reason to come. What changes is everything around it: the strongest artistic and experiential work that used to live inside the centrally produced ODDfest now becomes part of ODDference itself, and the conference sits directly alongside the wider ODDfest creative week happening across Helsinki.",
+    "items": [
+      {
+        "number": "01",
+        "title": "More immersive",
+        "body": "The artistic and experiential layer — installations, performances, scenography, spatial design — becomes part of ODDference itself, not entertainment around it."
+      },
+      {
+        "number": "02",
+        "title": "More connected",
+        "body": "ODDference sits directly alongside the wider ODDfest creative week happening across Helsinki, instead of ending when the stage programme does."
+      },
+      {
+        "number": "03",
+        "title": "More intentional encounters",
+        "body": "More structure and space built in for people to actually meet, talk and discover people outside their existing networks."
+      }
+    ]
   },
-  "tickets": [],
+  "tickets": [
+    {
+      "name": "Blind Bird",
+      "audience": "The earliest ticket",
+      "description": "For people who already believe the room and the idea are worth showing up for.",
+      "price": "€300",
+      "status": "Active now",
+      "benefits": [
+        "Full ODDference 2027 access",
+        "The lowest price before Early Bird opens",
+        "First to know the 2027 programme as it's confirmed"
+      ],
+      "ctaLabel": "Buy Blind Bird",
+      "href": "mailto:ronny@oddfest.co?subject=ODDference%202027%20%E2%80%94%20Blind%20Bird%20ticket"
+    }
+  ],
   "partnershipCta": {
     "eyebrow": "For organisations",
-    "title": "Bring your organisation into the conversation",
-    "linkLabel": "See what we do →",
-    "href": "/#four"
+    "title": "Let's talk about what your organisation wants to make possible.",
+    "linkLabel": "Talk to us about partnering →",
+    "href": "/contact?interest=oddference_corporate"
   },
-  "faq": [
-    {
-      "question": "When and where is the next ODDference?",
-      "answer": "Dates and venue for the next edition are still being finalised — join the mailing list and we'll let you know as soon as they're confirmed."
-    },
-    {
-      "question": "Is the venue accessible?",
-      "answer": "Accessibility details will be published alongside the venue once it's confirmed."
-    },
-    {
-      "question": "How do tickets work?",
-      "answer": "Ticket types and pricing aren't set yet — check back here or get in touch and we'll keep you posted."
-    },
-    {
-      "question": "Is there time built in to actually meet people?",
-      "answer": "Yes — structured networking and matchmaking time is built into the day alongside the stage programme, not left to chance."
-    }
-  ],
-  "participate": [
-    {
-      "eyebrow": "",
-      "title": "Join the mailing list",
-      "linkLabel": "Sign up →",
-      "href": "#newsletter"
-    },
-    {
-      "eyebrow": "Speaking",
-      "title": "Pitch a talk",
-      "linkLabel": "Enquire →",
-      "href": "/contact"
-    }
-  ],
   "railLeft": [
     {
       "kind": "logo"
@@ -157,7 +180,7 @@
     },
     {
       "kind": "meta",
-      "text": "Creative expertise"
+      "text": "Blind Bird · €300"
     },
     {
       "kind": "meta",
@@ -171,7 +194,7 @@
     },
     {
       "kind": "meta",
-      "text": "For business"
+      "text": "2027"
     },
     {
       "kind": "logo"

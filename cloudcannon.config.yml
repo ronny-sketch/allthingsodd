@@ -70,7 +70,10 @@ collections_config:
       features:
         type: array
         label: Three-column feature grid
-        comment: ODDference / ODDagency / ODDspace only — not on Home, About or ODDfest.
+        comment: >-
+          ODDagency / ODDspace only — not on Home, About, ODDfest or
+          ODDference (ODDference's "3 reasons to come" is the `reasons`
+          field instead, a larger editorial format, not this grid).
         options:
           structures: _structures.feature_card
           disable_add: false
@@ -81,7 +84,13 @@ collections_config:
       primaryCta:
         type: object
         label: Primary button (ODDference only)
-        comment: The solid "Buy your ticket"-style button in the hero. Home, ODDfest, ODDagency and About don't use this field.
+        comment: The solid "Buy Blind Bird" ticket button in the hero. Home, ODDfest, ODDagency and About don't use this field.
+        options:
+          subtype: object
+      secondaryCta:
+        type: object
+        label: Secondary button (ODDference only)
+        comment: The outline "Partner with ODDference" button next to the primary one in the hero.
         options:
           subtype: object
       formAccessKey:
@@ -227,11 +236,13 @@ collections_config:
         type: object
         label: Proof / traction
         comment: >-
-          Appears on Home, About, ODDference and ODDspace (required on
-          ODDspace — its pilot-phase numbers are the whole point of the
-          section). Elsewhere, leave this field out of the page entirely
-          (delete it) rather than filling it with invented numbers.
-          ODDference's version can also carry an optional attendee quote.
+          Appears on Home, About and ODDspace (required on ODDspace — its
+          pilot-phase numbers are the whole point of the section).
+          Elsewhere, leave this field out of the page entirely (delete it)
+          rather than filling it with invented numbers. ODDference dropped
+          its own proof/quote block in the 2027 rebuild (no verified stats
+          or quote existed to populate it) — its speaker roster carries the
+          social-proof job instead.
         options:
           subtype: object
           required: false
@@ -257,21 +268,19 @@ collections_config:
           populated.
         options:
           subtype: object
-      bigQuestion:
+      concept:
         type: object
-        label: The big question (ODDference only)
-        comment: 'The framing section built around: "what can business and the rest of society learn from creative expertise?"'
-        options:
-          subtype: object
-      connection:
-        type: object
-        label: Connection & networking (ODDference only)
+        label: Concept explainer (ODDference only)
+        comment: >-
+          The one-paragraph "what is ODDference" block directly under the
+          hero. No separate "Big Question" section repeats it further down
+          the page.
         options:
           subtype: object
       partnershipCta:
         type: object
         label: Partnership callout (ODDference only)
-        comment: Routes business partners to Work with ODD.
+        comment: Routes business partners to the Work with ODD contact form (?interest=oddference_corporate).
         options:
           subtype: object
       network:
@@ -343,16 +352,15 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
-      whyAttend:
-        type: array
-        label: Why attend (ODDference only)
+      whatsChanging:
+        type: object
+        label: What changes in 2027 (ODDference only)
+        comment: >-
+          One section: a headline/body explainer plus 3 short items (More
+          immersive / More connected / More intentional encounters). Avoid
+          claiming specific installations, artists or venues until confirmed.
         options:
-          structures: _structures.feature_card
-          disable_add: false
-          disable_remove: false
-          disable_reorder: false
-          required: false
-        cascade: true
+          subtype: object
       whyJoin:
         type: array
         label: Why join (Membership only)
@@ -405,8 +413,10 @@ collections_config:
         type: array
         label: Practical / FAQ
         comment: >-
-          Appears on ODDfest, ODDference and ODDspace. Uses a real accordion
-          — no HTML allowed in the answer text.
+          Appears on ODDfest and ODDspace. Uses a real accordion — no HTML
+          allowed in the answer text. ODDference dropped its own FAQ in the
+          2027 rebuild (no practical info that isn't already on the ticket
+          card) — re-add it there via content.config.ts if that changes.
         options:
           structures: _structures.faq_item
           disable_add: false
@@ -425,11 +435,14 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
-      themes:
+      reasons:
         type: array
-        label: Themes (ODDference only)
+        label: Three reasons to come (ODDference only)
+        comment: >-
+          Major editorial blocks (Ideas / People / Experience), not small
+          feature cards — each can carry its own photo.
         options:
-          structures: _structures.title_body_item
+          structures: _structures.reason_card
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -448,7 +461,10 @@ collections_config:
       speakers:
         type: array
         label: Speakers (ODDference only)
-        comment: Leave empty until real speakers are confirmed — no placeholder names.
+        comment: >-
+          ODDference 2026's confirmed speaker roster (social proof, not a
+          2027 line-up) — real names, roles and photos only. Leave empty
+          rather than adding placeholder names.
         options:
           structures: _structures.person_item
           disable_add: false
@@ -459,7 +475,11 @@ collections_config:
       tickets:
         type: array
         label: Tickets (ODDference only)
-        comment: No invented prices — leave "price" as an explicit placeholder until real pricing exists.
+        comment: >-
+          Only the currently active tier belongs here — right now that's
+          Blind Bird (€300). Don't add Early Bird/Standard/Late until each
+          one actually goes on sale. No invented prices or checkout URLs —
+          see each tier's `href`.
         options:
           structures: _structures.pricing_tier
           disable_add: false
@@ -476,6 +496,32 @@ collections_config:
           invented pricing.
         options:
           structures: _structures.pricing_tier
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      aftermovie:
+        type: object
+        label: Aftermovie (ODDference only)
+        comment: >-
+          No dedicated ODDference aftermovie exists yet — leave this field
+          out entirely (the section doesn't render) rather than reusing the
+          generic homepage aftermovie footage under the ODDference name.
+        options:
+          subtype: object
+          required: false
+      partners:
+        type: array
+        label: Partners & collaborators (ODDference only)
+        comment: >-
+          Organisations verified as ODDference-specific partners or
+          collaborators — not the sitewide Global → Partner logos list
+          (those aren't attributable to any one page/year). Leave empty
+          until a real, verified ODDference list exists; the section
+          doesn't render while it's empty.
+        options:
+          structures: _structures.logo_item
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -939,6 +985,27 @@ _structures:
           role: ''
           organisation: ''
           bio: ''
+          image:
+  reason_card:
+    style: select
+    values:
+      - label: Reason
+        default: false
+        preview:
+          text:
+            - key: title
+          icon:
+            - image
+          image:
+            - key: image
+        place_groups_below: false
+        tabbed: false
+        value:
+          number: '01'
+          eyebrow: ''
+          title: ''
+          body: ''
+          image:
   pricing_tier:
     style: select
     values:
