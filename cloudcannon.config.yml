@@ -651,14 +651,6 @@ collections_config:
           here.
         options:
           subtype: object
-          _inputs:
-            keyFacts:
-              type: array
-              options:
-                structures: _structures.key_fact_item
-                disable_add: false
-                disable_remove: false
-                disable_reorder: false
       background:
         type: array
         label: Background reading (Media only)
@@ -686,38 +678,6 @@ collections_config:
           unless a broader policy is actually confirmed.
         options:
           subtype: object
-          _inputs:
-            logos:
-              type: object
-              options:
-                subtype: object
-                _inputs:
-                  items:
-                    type: array
-                    options:
-                      structures: _structures.logo_asset_item
-                      disable_add: false
-                      disable_remove: false
-                      disable_reorder: false
-                  driveLink:
-                    type: object
-                    options:
-                      subtype: object
-                      required: false
-            photos:
-              type: array
-              options:
-                structures: _structures.resource_link_item
-                disable_add: false
-                disable_remove: false
-                disable_reorder: false
-            video:
-              type: array
-              options:
-                structures: _structures.resource_link_item
-                disable_add: false
-                disable_remove: false
-                disable_reorder: false
       archive:
         type: array
         label: Archive, by year (Media only)
@@ -760,6 +720,48 @@ collections_config:
           can never drift from the real handles.
         options:
           subtype: object
+      # Dotted paths configure inputs nested inside an object field above
+      # (boilerplate, mediaBank) — CloudCannon's object input type doesn't
+      # accept its own `_inputs` key, so structured sub-fields (arrays that
+      # need a specific _structures reference) are configured here instead.
+      boilerplate.keyFacts:
+        type: array
+        label: Key facts (Media only)
+        options:
+          structures: _structures.key_fact_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+      mediaBank.logos.items:
+        type: array
+        label: Logo files (Media only)
+        options:
+          structures: _structures.logo_asset_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+      mediaBank.logos.driveLink:
+        type: object
+        label: Full logo kit link (Media only)
+        options:
+          subtype: object
+          required: false
+      mediaBank.photos:
+        type: array
+        label: Photos (Media only)
+        options:
+          structures: _structures.resource_link_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+      mediaBank.video:
+        type: array
+        label: Video (Media only)
+        options:
+          structures: _structures.resource_link_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
     add_options:
       - name:
         icon:
