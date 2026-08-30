@@ -102,10 +102,15 @@ const faqItem = z.object({
   answer: z.string(),
 });
 
-// A titled, dated, linked-out resource — Media page's Press Releases, Info
-// Packs and Assets & Photos all share this exact shape.
+// A titled, dated, linked-out resource — Media page's whole media bank and
+// archive share this exact shape. `type`/`year` are optional small badges
+// (e.g. "Press release" / "2026") that ResourceList.astro renders next to
+// the title — added for the Media page rebuild rather than forking a new
+// component, per the "reuse before inventing" rule.
 const resourceLink = z.object({
   title: z.string(),
+  type: z.string().optional(),
+  year: z.string().optional(),
   date: z.string().optional(),
   description: z.string().optional(),
   href: z.string(),
@@ -192,7 +197,19 @@ const site = defineCollection({
       // and falls back to one unlabeled group when it isn't. See
       // docs/architecture.md#v2.
       partners: z.array(z.object({ name: z.string(), logo: image(), tier: z.string().optional() })),
-      featuredIn: z.array(z.object({ name: z.string(), logo: image() })),
+      // "pressCoverage" is optional and unset by default — true only on an
+      // item that's a verified real editorial/media outlet that has actually
+      // covered ODD, as opposed to an award body, community, funder or
+      // industry organisation that also gets a "featured in"-style logo slot
+      // for other reasons. Home's own featuredIn render (index.astro) is
+      // unaffected by this flag and keeps showing the full list; the Media
+      // page's "Featured in" filters on it (media.astro) so it never
+      // presents a funder or award body as press coverage. See the Media
+      // page rebuild's featuredIn audit (2026-08-30) for which items were
+      // verified and which were excluded as unconfirmed.
+      featuredIn: z.array(
+        z.object({ name: z.string(), logo: image(), pressCoverage: z.boolean().optional() }),
+      ),
     }),
 });
 
@@ -723,52 +740,100 @@ const pages = defineCollection({
         // docs/editing.md#contact-form.
         formAccessKey: z.string().optional(),
       }),
+      // Media page rebuild (2026-08-30): a public press/asset hub, not a
+      // marketing page — see docs/architecture.md's Media page note. Seven
+      // fixed sections: hero, Featured in, boilerplate (the reusable "what
+      // is ODD" text infrastructure), the media bank (logos/photos/video —
+      // "publish now"), the archive (grouped by year — "research history"),
+      // press contact (+ optional accreditation notice), Follow ODD.
+      // Evergreen facts (what ODD is, the operator, the core products, the
+      // Helsinki base) live only in boilerplate/keyFacts; anything
+      // time-specific (dates, themes, curators, venues, a given year's
+      // numbers) lives only in `archive`, never presented as current truth.
       z.object({
         _template: z.literal('media'),
         seo,
         eyebrow: z.string(),
         title: z.string(),
         intro: z.string(),
-        accreditation: sectionIntro,
-        keyFacts: z.array(z.object({ label: z.string(), value: z.string() })),
-        highlights: proofSection.optional(),
-        boilerplate: sectionIntro,
-        pressReleases: z.array(resourceLink),
-        infoPacks: z.array(resourceLink),
-        assets: z.object({
+        // Optional compact anchor row under the hero (About ODD / Media bank
+        // / Archive / Press contact) — omit entirely to drop it.
+        jumpLinks: z.array(z.object({ label: z.string(), href: z.string() })).optional(),
+        boilerplate: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          // The canonical, copyable "what ODD is" paragraph — must stay
+          // consistent with about.json/work-with-odd.json's own approved
+          // framing of ODD/ODDfest/ODDference/ODDspace, not reinvent it.
+          body: z.string(),
+          // Optional Finnish version for later — leave unset until a real,
+          // approved Finnish press text exists. Never machine-translate a
+          // legal/press description into this field.
+          bodyFi: z.string().optional(),
+          // Genuinely evergreen only (Based in / Operated by / Main
+          // activities) — no event dates, themes or venues here. "Website"
+          // is not stored as data: media.astro derives it from `Astro.site`
+          // the same way StructuredData.astro does, so it can never drift
+          // into a hardcoded domain.
+          keyFacts: z.array(z.object({ label: z.string(), value: z.string() })),
+        }),
+        // Small, undated background reading (e.g. "Event Formats Explained")
+        // — separate from the dated archive because it explains what ODD's
+        // formats/terms mean rather than reporting on one year's edition.
+        // Optional: leave out rather than invent one.
+        background: z.array(resourceLink).optional(),
+        mediaBank: z.object({
           eyebrow: z.string(),
           title: z.string(),
-          usageNote: z.string().optional(),
-          items: z.array(resourceLink),
-        }),
-        pressContact: z.object({ name: z.string(), role: z.string(), email: z.string() }),
-        // A visual Flickr photobank — each item renders via Flickr's own
-        // official embed widget (a `data-flickr-embed` anchor + the
-        // embedr.flickr.com script), not a raw iframe pointed at flickr.com
-        // itself: flickr.com's own pages send `X-Frame-Options: SAMEORIGIN`
-        // (confirmed via a real header check, not assumed), which blocks
-        // embedding outright; embedr.flickr.com is Flickr's dedicated,
-        // iframe-friendly embed service and is what the "Embed" button on
-        // flickr.com itself generates. `photo`/`photoWidth`/`photoHeight` are
-        // just the placeholder image shown before that script upgrades it
-        // into the real interactive widget. Optional at the object level,
-        // same "omit rather than invent" rule as the rest of this page.
-        photobank: z
-          .object({
-            eyebrow: z.string(),
-            title: z.string(),
+          logos: z.object({
             note: z.string().optional(),
+            // Only real, locally-available brand files — no invented
+            // dark/light variants. `format` is a plain display label (SVG/
+            // PNG), not a MIME type.
             items: z.array(
-              z.object({
-                label: z.string(),
-                href: z.string(),
-                photo: z.string(),
-                photoWidth: z.number(),
-                photoHeight: z.number(),
-              }),
+              z.object({ name: z.string(), format: z.string().optional(), logo: image() }),
             ),
+            // Link-out to the fuller/approved logo kit (Drive) rather than
+            // fabricating variants that don't exist locally.
+            driveLink: resourceLink.optional(),
+          }),
+          // Each photo resource carries its own scoped usage/credit note —
+          // deliberately not one blanket site-wide note, since the existing
+          // note is ODDfest-specific and hasn't been confirmed to cover
+          // ODDspace/ODDference collections too.
+          photos: z.array(resourceLink.extend({ usageNote: z.string().optional() })),
+          video: z.array(resourceLink),
+        }),
+        // Grouped by year — "research history", separate from the media
+        // bank above ("publish now"). Each year's stale/time-specific facts
+        // (a given edition's dates, theme, curators, venues, attendance,
+        // press release) live here, never in boilerplate/keyFacts. No
+        // invented years or entries — only real content that already
+        // existed on the page, reorganised.
+        archive: z.array(z.object({ year: z.string(), items: z.array(resourceLink) })),
+        // Optional and off by default — replaces the old permanent
+        // "Press accreditation" section. Only render this when accreditation
+        // is genuinely, currently open; never fabricate an open process.
+        accreditationNotice: z
+          .object({
+            active: z.boolean(),
+            text: z.string().optional(),
+            ctaLabel: z.string().optional(),
+            ctaHref: z.string().optional(),
           })
           .optional(),
+        pressContact: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          body: z.string(),
+          name: z.string(),
+          role: z.string(),
+          email: z.string(),
+        }),
+        // Heading + short supporting line only — the actual platform/href
+        // list is sourced live from site/global.json's `social` (already the
+        // sitewide source of truth), not duplicated here.
+        followSocial: z.object({ title: z.string(), body: z.string() }),
       }),
     ]);
   },

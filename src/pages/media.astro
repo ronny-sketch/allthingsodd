@@ -1,15 +1,19 @@
 ---
+// Media page rebuild (2026-08-30) — the authoritative public press/asset hub
+// for ODD, not a marketing page: journalists, editors, photographers,
+// broadcasters and producers land here for facts, the reusable boilerplate
+// description, real photo/video/logo assets, past press material and a
+// press contact. Least stylised, most information-dense page on the site —
+// no PhotoBreak, no ParticipateBand, no sales CTA. See content.config.ts's
+// media schema comment for the seven-section structure this follows.
 import { getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import PageIntro from '../components/sections/PageIntro.astro';
-import SectionIntro from '../components/sections/SectionIntro.astro';
-import ProofGrid from '../components/sections/ProofGrid.astro';
-import ResourceList from '../components/sections/ResourceList.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
-import ParticipateBand from '../components/sections/ParticipateBand.astro';
-import PhotoBreak from '../components/sections/PhotoBreak.astro';
+import ResourceList from '../components/sections/ResourceList.astro';
+import ArchiveYear from '../components/sections/ArchiveYear.astro';
 import SocialIcon from '../components/primitives/SocialIcon.astro';
-import photoStage from '../assets/hero/archive-30.jpg';
 
 const entry = await getEntry('pages', 'media');
 if (!entry || entry.data._template !== 'media')
@@ -18,34 +22,90 @@ const page = entry.data;
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { featuredIn, contact, social } = site.data;
+const { featuredIn, social } = site.data;
 
-const pressCtas = contact.map((c) => ({
-  eyebrow: c.label,
-  title: 'Send an email',
-  linkLabel: `${c.email} →`,
-  href: `mailto:${c.email}`,
-}));
+// "Featured in" only shows verified real editorial/media coverage — see the
+// `pressCoverage` flag added to content.config.ts's featuredIn item schema.
+// Home's own "Featured in" render is untouched and keeps showing the full
+// list; this filter is Media-page-only.
+const pressLogos = featuredIn.filter((item) => item.pressCoverage);
+
+// Same canonical-URL pattern as StructuredData.astro — never a hardcoded
+// domain in page content.
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteUrl }];
+
+// A profile-style handle derived directly from the real href in
+// site/global.json — never a separately maintained/hardcoded handle that
+// could drift from the actual link. Discord's link is a plain invite (no
+// meaningful "@handle"), so it's shown without one.
+function deriveHandle(platform: string, href: string): string | null {
+  if (platform === 'Discord') return null;
+  try {
+    const url = new URL(href);
+    const segment = url.pathname
+      .replace(/^\/+|\/+$/g, '')
+      .split('/')
+      .pop();
+    return segment ? `@${segment}` : null;
+  } catch {
+    return null;
+  }
+}
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
 
-  <SectionIntro
-    eyebrow={page.accreditation.eyebrow}
-    headline={page.accreditation.headline}
-    body={page.accreditation.body}
-    cta={page.accreditation.cta}
-  />
+  {
+    page.jumpLinks && page.jumpLinks.length > 0 && (
+      <nav class="media-jumplinks reveal" aria-label="Jump to section">
+        <div class="wrap">
+          <ul>
+            {page.jumpLinks.map((link) => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
+    )
+  }
 
-  <section class="media-sub">
+  {
+    pressLogos.length > 0 && (
+      <LogoStrip eyebrow="Press" title="Featured in" items={pressLogos} size="large" scroll />
+    )
+  }
+
+  <section class="media-sub" id="about-odd">
     <div class="wrap">
       <div class="section-head">
-        <h2>Key facts</h2>
+        <span class="eyebrow">{page.boilerplate.eyebrow}</span>
+        <h2>{page.boilerplate.headline}</h2>
       </div>
+      <div class="boilerplate-block reveal">
+        <p data-boilerplate-text>{page.boilerplate.body}</p>
+        <button
+          type="button"
+          class="boilerplate-copy-btn"
+          data-copy-boilerplate
+          aria-label="Copy the ODD boilerplate text to clipboard"
+        >
+          Copy
+        </button>
+      </div>
+      {
+        page.boilerplate.bodyFi && (
+          <div class="boilerplate-block reveal">
+            <p>{page.boilerplate.bodyFi}</p>
+          </div>
+        )
+      }
       <dl class="key-facts reveal">
         {
-          page.keyFacts.map((f) => (
+          keyFacts.map((f) => (
             <div class="key-fact-row">
               <dt>{f.label}</dt>
               <dd>{f.value}</dd>
@@ -53,130 +113,235 @@ const pressCtas = contact.map((c) => ({
           ))
         }
       </dl>
-    </div>
-  </section>
-
-  {
-    page.highlights && (
-      <ProofGrid
-        eyebrow={page.highlights.eyebrow}
-        title={page.highlights.title}
-        items={page.highlights.items}
-      />
-    )
-  }
-
-  <LogoStrip eyebrow="Press" title="Featured in" items={featuredIn} size="large" scroll />
-
-  <SectionIntro
-    eyebrow={page.boilerplate.eyebrow}
-    headline={page.boilerplate.headline}
-    body={page.boilerplate.body}
-  />
-
-  <PhotoBreak image={photoStage} alt="A production stage from the ODDfest archive" />
-
-  <section class="media-sub">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Press kit</span>
-        <h2>Press releases</h2>
-      </div>
-      <ResourceList items={page.pressReleases} />
-    </div>
-  </section>
-
-  <section class="media-sub">
-    <div class="wrap">
-      <div class="section-head">
-        <h2>Info packs</h2>
-      </div>
-      <ResourceList items={page.infoPacks} />
-    </div>
-  </section>
-
-  <section class="media-sub">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">{page.assets.eyebrow}</span>
-        <h2>{page.assets.title}</h2>
-      </div>
-      {page.assets.usageNote && <p class="assets-usage-note reveal">{page.assets.usageNote}</p>}
-      <ResourceList items={page.assets.items} />
-    </div>
-  </section>
-
-  <section class="media-sub media-contact">
-    <div class="wrap">
-      <span class="eyebrow">Press contact</span>
-      <h2>{page.pressContact.name}</h2>
-      <p class="media-contact-role">{page.pressContact.role}</p>
-      <a class="media-contact-email" href={`mailto:${page.pressContact.email}`}>
-        {page.pressContact.email}
-      </a>
-    </div>
-  </section>
-
-  {
-    page.photobank && (
-      <section class="media-sub">
-        <div class="wrap">
-          <div class="section-head">
-            <span class="eyebrow">{page.photobank.eyebrow}</span>
-            <h2>{page.photobank.title}</h2>
+      {
+        page.background && page.background.length > 0 && (
+          <div class="media-background">
+            <p class="media-background-label">Background</p>
+            <ResourceList items={page.background} />
           </div>
-          {page.photobank.note && <p class="assets-usage-note reveal">{page.photobank.note}</p>}
-          <div class="photobank-grid reveal">
-            {page.photobank.items.map((item) => (
-              <a
-                data-flickr-embed="true"
-                href={item.href}
-                title={item.label}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <img
-                  src={item.photo}
-                  width={item.photoWidth}
-                  height={item.photoHeight}
-                  alt={item.label}
-                  loading="lazy"
-                />
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
-  <script is:inline async src="https://embedr.flickr.com/assets/client-code.js" charset="utf-8"
-  ></script>
+        )
+      }
+    </div>
+  </section>
 
-  <section class="media-sub media-social">
+  <section class="media-sub" id="media-bank">
     <div class="wrap">
-      <span class="eyebrow">Social media</span>
-      <div class="media-social-icons">
+      <div class="section-head">
+        <span class="eyebrow">{page.mediaBank.eyebrow}</span>
+        <h2>{page.mediaBank.title}</h2>
+      </div>
+
+      <h3 class="media-bank-heading">Logos</h3>
+      {
+        page.mediaBank.logos.note && (
+          <p class="media-bank-note reveal">{page.mediaBank.logos.note}</p>
+        )
+      }
+      <div class="logo-grid reveal">
         {
-          social.map((s) => (
-            <a href={s.href} target="_blank" rel="noreferrer" aria-label={s.platform}>
-              <SocialIcon platform={s.platform} />
+          page.mediaBank.logos.items.map((item) => (
+            <a
+              class="logo-card"
+              href={item.logo.src}
+              download={`${item.name}${item.format ? `.${item.format.toLowerCase()}` : ''}`}
+            >
+              <span class="logo-card-swatch">
+                <Image src={item.logo} alt="" width={160} />
+              </span>
+              <span class="logo-card-body">
+                <span class="logo-card-name">{item.name}</span>
+                {item.format && <span class="logo-card-format">{item.format}</span>}
+              </span>
             </a>
           ))
         }
       </div>
+      {page.mediaBank.logos.driveLink && <ResourceList items={[page.mediaBank.logos.driveLink]} />}
+
+      {
+        page.mediaBank.photos.length > 0 && (
+          <>
+            <h3 class="media-bank-heading">Photography</h3>
+            <div class="photo-resource-list">
+              {page.mediaBank.photos.map((item) => (
+                <div class="photo-resource-item">
+                  <ResourceList items={[item]} />
+                  {item.usageNote && (
+                    <p class="media-bank-note photo-usage-note">{item.usageNote}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </>
+        )
+      }
+
+      {
+        page.mediaBank.video.length > 0 && (
+          <>
+            <h3 class="media-bank-heading">Video</h3>
+            <ResourceList items={page.mediaBank.video} />
+          </>
+        )
+      }
     </div>
   </section>
 
-  <ParticipateBand title="Other ways to reach us" items={pressCtas} noPadTop />
+  {
+    page.archive.length > 0 && (
+      <section class="media-sub" id="archive">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="eyebrow">Archive</span>
+            <h2>Past editions and press material.</h2>
+          </div>
+          {page.archive.map((entry) => (
+            <ArchiveYear year={entry.year} items={entry.items} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <section class="media-sub media-contact" id="press-contact">
+    <div class="wrap">
+      <span class="eyebrow">{page.pressContact.eyebrow}</span>
+      <h2>{page.pressContact.title}</h2>
+      <p class="media-contact-body">{page.pressContact.body}</p>
+      <p class="media-contact-name">{page.pressContact.name}</p>
+      <p class="media-contact-role">{page.pressContact.role}</p>
+      <a class="media-contact-email" href={`mailto:${page.pressContact.email}`}>
+        {page.pressContact.email}
+      </a>
+      {
+        page.accreditationNotice?.active && page.accreditationNotice.text && (
+          <p class="media-accreditation-notice">
+            {page.accreditationNotice.text}
+            {page.accreditationNotice.ctaHref && page.accreditationNotice.ctaLabel && (
+              <>
+                {' '}
+                <a href={page.accreditationNotice.ctaHref}>{page.accreditationNotice.ctaLabel}</a>
+              </>
+            )}
+          </p>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="media-sub media-social">
+    <div class="wrap">
+      <span class="eyebrow">{page.followSocial.title}</span>
+      <p class="media-social-note">{page.followSocial.body}</p>
+      <ul class="media-social-list">
+        {
+          social.map((s) => {
+            const handle = deriveHandle(s.platform, s.href);
+            return (
+              <li>
+                <a href={s.href} target="_blank" rel="noreferrer">
+                  <SocialIcon platform={s.platform} />
+                  <span class="media-social-platform">{s.platform}</span>
+                  {handle && <span class="media-social-handle">{handle}</span>}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </section>
+
+  <script src="../scripts/copy-boilerplate.ts"></script>
 </Layout>
 
 <style>
   .media-sub {
     padding: var(--space-24) 0;
   }
-  .key-facts {
-    max-width: 50rem;
+  .media-jumplinks {
+    padding-bottom: var(--space-8);
+  }
+  .media-jumplinks ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.6rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .media-jumplinks a {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--color-paper-60);
+    text-decoration: none;
+    padding: 0.3rem 0;
+  }
+  .media-jumplinks a:hover,
+  .media-jumplinks a:focus-visible {
+    color: var(--color-amber-bright);
+  }
+
+  .boilerplate-block {
+    max-width: 46rem;
     margin: 0 auto;
+    padding: 1.6rem 1.8rem;
+    border: 1px solid var(--color-paper-12);
+    background: var(--color-paper-4, rgba(255, 255, 255, 0.03));
+    position: relative;
+  }
+  .boilerplate-block + .boilerplate-block {
+    margin-top: 1rem;
+  }
+  .boilerplate-block p {
+    margin: 0;
+    padding-right: 5.5rem;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-paper-80);
+  }
+  .boilerplate-copy-btn {
+    position: absolute;
+    top: 1.4rem;
+    right: 1.4rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+    background: transparent;
+    border: 1px solid var(--color-paper-20);
+    border-radius: 3px;
+    padding: 0.4rem 0.7rem;
+    cursor: pointer;
+    transition:
+      color var(--duration-fast) ease,
+      border-color var(--duration-fast) ease;
+  }
+  .boilerplate-copy-btn:hover,
+  .boilerplate-copy-btn:focus-visible {
+    color: var(--color-amber-bright);
+    border-color: var(--color-amber-bright);
+  }
+  @media (max-width: 640px) {
+    .boilerplate-block p {
+      padding-right: 0;
+    }
+    .boilerplate-copy-btn {
+      position: static;
+      display: block;
+      margin-top: 1rem;
+    }
+  }
+
+  .key-facts {
+    max-width: 46rem;
+    margin: 1.6rem auto 0;
   }
   .key-fact-row {
     display: grid;
@@ -201,6 +366,7 @@ const pressCtas = contact.map((c) => ({
     font-size: 0.9rem;
     line-height: 1.6;
     color: var(--color-paper-80);
+    word-break: break-word;
   }
   @media (max-width: 640px) {
     .key-fact-row {
@@ -208,36 +374,96 @@ const pressCtas = contact.map((c) => ({
       gap: 0.3rem;
     }
   }
-  .assets-usage-note {
+
+  .media-background {
     max-width: 46rem;
-    margin: -1.5rem auto 2rem;
-    text-align: center;
+    margin: 1.6rem auto 0;
+  }
+  .media-background-label {
+    margin: 0 0 0.4rem;
+    font: var(--text-caption);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+
+  .media-bank-heading {
+    margin: var(--space-16) 0 0.8rem;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    color: var(--color-paper);
+  }
+  .media-bank-heading:first-of-type {
+    margin-top: 0.6rem;
+  }
+  .media-bank-note {
+    max-width: 46rem;
+    margin: 0 0 1.2rem;
     font-family: var(--font-body);
     font-size: 0.82rem;
     color: var(--color-paper-40);
   }
-  .photobank-grid {
+  .photo-usage-note {
+    margin: -0.6rem 0 1.2rem;
+  }
+  .photo-resource-item + .photo-resource-item {
+    margin-top: 0.2rem;
+  }
+
+  .logo-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem;
-    max-width: 60rem;
-    margin: 0 auto;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.4rem;
   }
-  .photobank-grid a {
-    display: block;
-    line-height: 0;
-  }
-  .photobank-grid :global(img) {
-    width: 100%;
-    height: auto;
-    display: block;
+  .logo-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1.1rem;
     border: 1px solid var(--color-paper-12);
+    text-decoration: none;
+    transition: border-color var(--duration-fast) ease;
   }
-  @media (max-width: 700px) {
-    .photobank-grid {
-      grid-template-columns: 1fr;
-    }
+  .logo-card:hover,
+  .logo-card:focus-visible {
+    border-color: var(--color-paper-40);
   }
+  .logo-card-swatch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3.4rem;
+    background: var(--color-paper-4, rgba(255, 255, 255, 0.03));
+  }
+  .logo-card-swatch :global(img) {
+    max-width: 100%;
+    max-height: 2.4rem;
+    width: auto;
+    height: auto;
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+  }
+  .logo-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .logo-card-name {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--color-paper);
+  }
+  .logo-card-format {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+
   .media-contact,
   .media-social {
     text-align: center;
@@ -247,8 +473,23 @@ const pressCtas = contact.map((c) => ({
     color: var(--color-paper);
     margin: 0.8rem 0 0;
   }
+  .media-contact-body {
+    max-width: 34rem;
+    margin: 1rem auto 0;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--color-paper-60);
+  }
+  .media-contact-name {
+    margin: 1.6rem 0 0;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-paper);
+  }
   .media-contact-role {
-    margin: 0.5rem 0 0;
+    margin: 0.3rem 0 0;
     font-family: var(--font-body);
     font-size: 0.85rem;
     color: var(--color-paper-40);
@@ -268,33 +509,69 @@ const pressCtas = contact.map((c) => ({
     color: var(--color-amber-bright);
     text-decoration-color: var(--color-amber-bright);
   }
-  .media-social-icons {
+  .media-accreditation-notice {
+    max-width: 34rem;
+    margin: 1.6rem auto 0;
+    padding: 1rem 1.2rem;
+    border: 1px solid var(--color-paper-12);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--color-paper-60);
+  }
+  .media-accreditation-notice a {
+    color: var(--color-paper-80);
+    text-decoration: underline;
+    text-decoration-color: var(--color-paper-20);
+    text-underline-offset: 3px;
+  }
+  .media-accreditation-notice a:hover {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
+  }
+
+  .media-social-note {
+    max-width: 30rem;
+    margin: 0.6rem auto 0;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    color: var(--color-paper-60);
+  }
+  .media-social-list {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 1.3rem;
-    margin-top: 1.4rem;
+    gap: 0.8rem 1.6rem;
+    margin: 1.6rem 0 0;
+    padding: 0;
+    list-style: none;
   }
-  .media-social-icons a {
+  .media-social-list a {
     display: flex;
     align-items: center;
-    justify-content: center;
-    min-width: 44px;
-    min-height: 44px;
-    margin: -11px;
-    color: var(--color-paper-40);
+    gap: 0.55rem;
+    padding: 0.4rem 0;
+    color: var(--color-paper-60);
     text-decoration: none;
-    transition:
-      color var(--duration-fast) ease,
-      transform var(--duration-fast) ease;
+    transition: color var(--duration-fast) ease;
   }
-  .media-social-icons a:hover {
+  .media-social-list a:hover,
+  .media-social-list a:focus-visible {
     color: var(--color-paper);
-    transform: translateY(-2px);
   }
-  .media-social-icons a :global(svg) {
-    width: 22px;
-    height: 22px;
-    display: block;
+  .media-social-list :global(svg) {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  .media-social-platform {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  .media-social-handle {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--color-paper-40);
   }
 </style>
