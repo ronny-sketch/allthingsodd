@@ -22,27 +22,11 @@
     "intro": "Creative people and businesses often move in different circles. ODD works in both directions: creating better conditions for creative work, and more ways for business to meet, learn from and work with the people behind it.",
     "business": {
       "lede": "Get closer to creative people and creative thinking.",
-      "body": "ODDference brings business leaders into the same room with people working across art, culture and the creative fields. ODDnetwork, projects and partnerships create ways to keep those relationships going beyond the event.",
-      "tracks": [
-        {
-          "label": "ODDference",
-          "meta": "Creative expertise meets business",
-          "href": "/oddference"
-        },
-        {
-          "label": "Work with ODD",
-          "meta": "Network, projects, partnerships",
-          "href": "/work-with-odd"
-        }
-      ]
+      "body": "ODDference brings business leaders into the same room with people working across art, culture and the creative fields. ODDnetwork, projects and partnerships create ways to keep those relationships going beyond the event."
     },
     "creative": {
       "lede": "Work, show and find your people.",
-      "body": "ODDspace gives you a year-round place to work, meet others and shape something together. ODDfest is a way to put what you're already doing on the map — host your own programme, reach new people and discover what others around the city are making.",
-      "tracks": [
-        { "label": "ODDfest", "meta": "Bring your thing", "href": "/oddfest" },
-        { "label": "ODDspace", "meta": "Work, meet, build", "href": "/oddspace" }
-      ]
+      "body": "ODDspace gives you a year-round place to work, meet others and shape something together. ODDfest is a way to put what you're already doing on the map — host your own programme, reach new people and discover what others around the city are making."
     }
   },
   "whatsHappening": {
@@ -91,69 +75,41 @@
       "image": "../../assets/programs/work-with-odd-card.jpg"
     }
   ],
-  "workWithOdd": {
-    "eyebrow": "For organisations",
-    "title": "Work with ODD.",
-    "intro": "Come to ODDference, stay involved through ODDnetwork, bring us a project or build something with us from the start.",
-    "cards": [
-      {
-        "eyebrow": "Attend",
-        "title": "ODDference",
-        "linkLabel": "Explore →",
-        "href": "/oddference"
-      },
-      {
-        "eyebrow": "Stay involved",
-        "title": "Membership",
-        "linkLabel": "Explore →",
-        "href": "/membership"
-      },
-      {
-        "eyebrow": "Bring us a brief",
-        "title": "Agency",
-        "linkLabel": "Explore →",
-        "href": "/oddagency"
-      },
-      {
-        "eyebrow": "Build with us",
-        "title": "Partnerships",
-        "linkLabel": "Get in touch →",
-        "href": "/contact"
-      }
-    ],
-    "ctaLabel": "See what we do",
-    "ctaHref": "#four"
-  },
   "participate": [
     {
       "eyebrow": "",
       "title": "Attend ODDference",
       "linkLabel": "Explore →",
-      "href": "/oddference"
-    },
-    {
-      "eyebrow": "",
-      "title": "Host something at ODDfest",
-      "linkLabel": "Find out how →",
-      "href": "/oddfest"
-    },
-    {
-      "eyebrow": "",
-      "title": "Join ODDspace",
-      "linkLabel": "Explore →",
-      "href": "/oddspace"
+      "href": "/oddference",
+      "audience": "Business"
     },
     {
       "eyebrow": "",
       "title": "Work with ODD",
       "linkLabel": "Explore →",
-      "href": "/work-with-odd"
+      "href": "/work-with-odd",
+      "audience": "Business"
     },
     {
-      "eyebrow": "Stay in touch",
+      "eyebrow": "",
+      "title": "Host something at ODDfest",
+      "linkLabel": "Find out how →",
+      "href": "/oddfest",
+      "audience": "Creative"
+    },
+    {
+      "eyebrow": "",
+      "title": "Join ODDspace",
+      "linkLabel": "Explore →",
+      "href": "/oddspace",
+      "audience": "Creative"
+    },
+    {
+      "eyebrow": "",
       "title": "Join the mailing list",
       "linkLabel": "Sign up →",
-      "href": "#newsletter"
+      "href": "#newsletter",
+      "audience": "Stay in touch"
     }
   ],
   "aftermovie": {

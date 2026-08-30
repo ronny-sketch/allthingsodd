@@ -1,8 +1,9 @@
 ---
 import { getEntry } from 'astro:content';
-import { getImage, Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/sections/Hero.astro';
+import SectionIntro from '../components/sections/SectionIntro.astro';
 import Converge from '../components/sections/Converge.astro';
 import ProgramGrid from '../components/sections/ProgramGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
@@ -10,15 +11,19 @@ import CaseGrid from '../components/sections/CaseGrid.astro';
 import Aftermovie from '../components/sections/Aftermovie.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
 import PartnerTiers from '../components/sections/PartnerTiers.astro';
-import WarpingText from '../components/media/WarpingText.astro';
+import FloatingCloud from '../components/media/FloatingCloud.astro';
 import Pill from '../components/primitives/Pill.astro';
-// "More than one event" editorial pair — a dominant stage/talk photo and a
-// smaller supporting gallery photo, replacing the old 11-photo scattered
-// FloatingCloud (kept in src/components/media/ for reuse elsewhere, just not
-// used here anymore — its arc clipped against the section's own overflow:
-// hidden edge at common desktop widths, confirmed via screenshot).
-import moreThanEventMain from '../assets/hero/archive-03.jpg';
-import moreThanEventSupport from '../assets/hero/archive-11.jpg';
+import cloudPhoto1 from '../assets/hero/archive-03.jpg';
+import cloudPhoto2 from '../assets/hero/archive-04.jpg';
+import cloudPhoto3 from '../assets/hero/archive-06.jpg';
+import cloudPhoto4 from '../assets/hero/archive-09.jpg';
+import cloudPhoto5 from '../assets/hero/archive-11.jpg';
+import cloudPhoto6 from '../assets/hero/archive-14.jpg';
+import cloudPhoto7 from '../assets/hero/archive-01.jpg';
+import cloudPhoto8 from '../assets/hero/archive-02.jpg';
+import cloudPhoto9 from '../assets/hero/archive-07.jpg';
+import cloudPhoto10 from '../assets/hero/archive-17.jpg';
+import cloudPhoto11 from '../assets/hero/archive-21.jpg';
 
 // Content file is named index.json (not home.json) so CloudCannon's
 // filename-based [slug] URL placeholder resolves to "" for it, matching the
@@ -31,7 +36,21 @@ const page = entry.data;
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { partners, featuredIn } = site.data;
+const { partners, featuredIn, logoWall } = site.data;
+
+const cloudPhotos = [
+  cloudPhoto1,
+  cloudPhoto2,
+  cloudPhoto3,
+  cloudPhoto4,
+  cloudPhoto5,
+  cloudPhoto6,
+  cloudPhoto7,
+  cloudPhoto8,
+  cloudPhoto9,
+  cloudPhoto10,
+  cloudPhoto11,
+];
 
 // The hero mosaic's first cell is the page's real LCP element (confirmed via
 // a PerformanceObserver check against production, not assumed) — preloading
@@ -52,54 +71,53 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
 >
   <Hero mosaicAlt={page.hero.mosaicAlt} headline={page.opening.headline} />
 
-  <section class="mte-section">
-    <div class="wrap-wide mte-grid">
-      <div class="mte-media">
-        <div class="mte-media-main reveal">
-          <Image src={moreThanEventMain} alt="" width={800} />
-        </div>
-        <div class="mte-media-support reveal">
-          <Image src={moreThanEventSupport} alt="" width={480} />
-        </div>
-      </div>
-      <div class="mte-text reveal">
-        <span class="eyebrow">{page.whatOddIs.eyebrow}</span>
-        <WarpingText as="h2" text={page.whatOddIs.headline} class="mte-headline" color="paper" />
-        <p class="mte-body">{page.whatOddIs.body}</p>
-        {
-          page.whatOddIs.cta && (
-            <a class="mte-link" href={page.whatOddIs.cta.href}>
-              {page.whatOddIs.cta.label}
-            </a>
-          )
-        }
-        {
-          (page.opening.primaryCta || page.opening.secondaryCta) && (
-            <div class="mte-ctas">
-              {page.opening.primaryCta && (
-                <Pill href={page.opening.primaryCta.href} variant="solid" magnetic>
-                  {page.opening.primaryCta.label}
-                </Pill>
-              )}
-              {page.opening.secondaryCta && (
-                <Pill href={page.opening.secondaryCta.href} variant="outline" magnetic>
-                  {page.opening.secondaryCta.label}
-                </Pill>
-              )}
-            </div>
-          )
-        }
-      </div>
-    </div>
-  </section>
+  <LogoStrip eyebrow="Press" title="Featured in" items={featuredIn} size="large" scroll />
 
-  <section id="business" class="converge-wrap">
+  <div class="whatoddis-wrap">
+    <FloatingCloud images={cloudPhotos} />
+    <SectionIntro
+      eyebrow={page.whatOddIs.eyebrow}
+      headline={page.whatOddIs.headline}
+      body={page.whatOddIs.body}
+      cta={page.whatOddIs.cta}
+      warpHeadline
+    />
+    {
+      (page.opening.primaryCta || page.opening.secondaryCta) && (
+        <div class="whatoddis-ctas reveal">
+          {page.opening.primaryCta && (
+            <Pill href={page.opening.primaryCta.href} variant="solid" magnetic>
+              {page.opening.primaryCta.label}
+            </Pill>
+          )}
+          {page.opening.secondaryCta && (
+            <Pill href={page.opening.secondaryCta.href} variant="outline" magnetic>
+              {page.opening.secondaryCta.label}
+            </Pill>
+          )}
+        </div>
+      )
+    }
+  </div>
+
+  {
+    /* "Who ODD is for" (Converge, audience explanation only — the small
+       per-track destination buttons were removed 2026-08-30, see
+       Converge.astro's own comment) flows directly into "What we do"
+       (ProgramGrid, the real platform destinations) as one composition
+       instead of two separately-padded sections repeating the same four
+       destinations. See docs/architecture.md. */
+  }
+  <div class="who-what-we-do">
     <Converge
+      audienceEyebrow="Who ODD is for"
+      tightBottom
       intro={page.twoWaysIn.intro}
       business={page.twoWaysIn.business}
       creative={page.twoWaysIn.creative}
     />
-  </section>
+    <ProgramGrid title="What we do" cards={page.platforms} />
+  </div>
 
   {
     /* "What's happening" is hidden for now — not enough confirmed content
@@ -108,266 +126,77 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
        just not rendered. */
   }
 
-  <ProgramGrid title="What we do" cards={page.platforms} />
-
-  <LogoStrip eyebrow="Press" title="Featured in" items={featuredIn} compact scroll />
-
   {
     /* "ODDfest, in numbers" is removed from the homepage — ProofGrid itself
        stays in use elsewhere (About, Media, ODDspace, oddfest.astro); only
        this page's `proof` key + guard are gone. */
   }
 
-  <section class="work-with-odd-teaser">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">{page.workWithOdd.eyebrow}</span>
-        <WarpingText as="h2" text={page.workWithOdd.title} align="center" color="paper" />
-      </div>
-      <p class="wwo-intro reveal">{page.workWithOdd.intro}</p>
-      <div class="wwo-cards reveal" style={`--cols: ${page.workWithOdd.cards.length}`}>
-        {
-          page.workWithOdd.cards.map((c) => (
-            <a class="wwo-card" href={c.href}>
-              <span class="eyebrow">{c.eyebrow}</span>
-              <h3>{c.title}</h3>
-              <span class="wwo-go">{c.linkLabel}</span>
-            </a>
-          ))
-        }
-      </div>
-      <div class="wwo-cta">
-        <a class="wwo-cta-link" href={page.workWithOdd.ctaHref}>{page.workWithOdd.ctaLabel} →</a>
-      </div>
-    </div>
-  </section>
+  {
+    /* The grouped Partners/Media/Supported by/Collaborators logo wall stays
+       hidden (`logoWall.visible: false` in site/global.json) until real
+       organisations are confirmed for each category — see
+       site/global.json's `logoWall` and docs/editing.md. Today's live,
+       single-group Partners section renders exactly as before until then;
+       flipping `visible` swaps to the grouped version with no further code
+       change. */
+    logoWall?.visible ? (
+      <PartnerTiers eyebrow="Who we build with" title="Partners" groups={logoWall.groups} />
+    ) : (
+      <PartnerTiers eyebrow="Who we build with" title="Partners" items={partners} />
+    )
+  }
 
   {page.caseTeaser && <CaseGrid items={[page.caseTeaser]} />}
 
-  <Aftermovie poster={page.aftermovie.poster} video={page.aftermovie.video} />
-
-  <PartnerTiers eyebrow="Who we build with" title="Partners" items={partners} />
+  {
+    /* Brand marquee (ODDfest/ODDference/ODDspace banner) is off here — those
+       three names are already the "What we do" cards a few sections above;
+       see Aftermovie.astro's `showBrandMarquee` comment. */
+  }
+  <Aftermovie
+    poster={page.aftermovie.poster}
+    video={page.aftermovie.video}
+    showBrandMarquee={false}
+  />
 
   <ParticipateBand title="The way in is by participation." items={page.participate} />
 </Layout>
 
 <style>
-  /* "More than one event" — a controlled editorial pair (one dominant
-     portrait photo, one smaller landscape photo tucked at its corner) next
-     to a left-aligned text column, instead of the old centered text + a
-     loose 11-photo scatter. Asymmetric on purpose (1.15fr/1fr, images
-     overlapping their own grid cell slightly) — see mte-media-support's
-     comment for how the overlap is built. */
-  .mte-section {
-    padding: var(--space-24) 0;
-  }
-  .mte-grid {
-    display: grid;
-    grid-template-columns: 1.15fr 1fr;
-    gap: var(--gutter-wide);
-    align-items: center;
-  }
-  .mte-media {
+  .whatoddis-wrap {
     position: relative;
   }
-  .mte-media-main {
-    aspect-ratio: 4 / 5;
-    overflow: hidden;
-    border: 1px solid var(--color-paper-12);
-  }
-  .mte-media-main :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* Keeps the lit stage/speaker (the top ~60% of the source frame) in
-       frame, trimming the audience-foreground tables at the bottom rather
-       than centering blindly — chosen by inspecting the actual photo, not a
-       default center crop. */
-    object-position: 50% 22%;
-    display: block;
-    filter: contrast(1.05) saturate(1.15) brightness(0.9);
-  }
-  .mte-media-support {
-    /* Overlapping the main image's own bottom-right corner is the
-       "deliberate asymmetry" — a fixed, hand-placed offset (not a random
-       scatter like the old FloatingCloud), sized so it never exceeds the
-       main image's own edges at this component's min supported width
-       (~460px, this column's floor before the grid drops to 1 column). */
-    position: absolute;
-    right: -9%;
-    bottom: -12%;
-    width: 56%;
-    aspect-ratio: 5 / 4;
-    overflow: hidden;
-    border: 1px solid var(--color-paper-12);
-    box-shadow: 0 20px 40px -14px rgb(0 0 0 / 55%);
-  }
-  .mte-media-support :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* Keeps both people talking and the mask sculptures on the right in
-       frame; the blurred foreground shape is the photo's own intentional
-       shallow-depth-of-field framing, not a crop artifact. */
-    object-position: 58% 42%;
-    display: block;
-    filter: contrast(1.05) saturate(1.15) brightness(0.92);
-  }
-  .mte-text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-  }
-  .mte-text .eyebrow {
-    color: var(--color-paper-60);
-  }
-  .mte-text :global(.mte-headline) {
-    font-family: var(--font-display);
-    font-weight: 400;
-    color: var(--color-paper);
-    font-size: clamp(2rem, 3.4vw, 3rem);
-    line-height: 1.1;
-    margin: 0.9rem 0 0;
-    text-wrap: balance;
-  }
-  .mte-body {
-    max-width: 38ch;
-    margin: 1.4rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.98rem;
-    line-height: 1.8;
-    color: var(--color-paper-60);
-  }
-  .mte-link {
-    display: inline-block;
-    margin-top: 1.3rem;
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 0.82rem;
-    color: var(--color-paper-80);
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
-    text-decoration-color: var(--color-paper-20);
-    transition: color var(--duration-fast) ease;
-  }
-  .mte-link:hover {
-    color: var(--color-amber-bright);
-    text-decoration-color: var(--color-amber-bright);
-  }
-  .mte-ctas {
+  .whatoddis-ctas {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 0.9rem;
-    margin-top: 1.9rem;
+    margin: 1.8rem auto 0;
+    position: relative;
   }
-  @media (max-width: 820px) {
-    .mte-grid {
-      grid-template-columns: 1fr;
-      gap: 2.5rem;
+  /* Home's own reference type scale ("What we do") is --text-heading-md
+     (see layout.css's .section-head h2) — SectionIntro's shared default is
+     larger (used deliberately bigger on most of the pages that reuse it), so
+     this scopes "What ODD is" down to the homepage's own reference size
+     instead of changing the shared component's default for every other page
+     that reuses it. See docs/design-system.md and the 2026-08-30 homepage
+     revision brief, section 2. */
+  .whatoddis-wrap :global(.section-intro-inner h2),
+  .whatoddis-wrap :global(.section-intro-inner .section-intro-warping-headline) {
+    font: var(--text-heading-md);
+  }
+  /* "Who ODD is for" flows straight into "What we do" as one composition —
+     tightening ProgramGrid's own top padding (its default --space-24/6rem
+     assumes it's a standalone section) so the two read as related, not
+     collided or double-gapped. Converge's own bottom padding is reduced via
+     its `tightBottom` prop instead of overridden here — see Converge.astro. */
+  .who-what-we-do :global(#four) {
+    padding-top: var(--space-10);
+  }
+  @media (max-width: 640px) {
+    .who-what-we-do :global(#four) {
+      padding-top: var(--space-6);
     }
-    .mte-media {
-      /* Mobile drops the overlap entirely rather than shrinking it — a
-         floated corner image at this width would either cover the main
-         photo's own subject or shrink past legibility. Two stacked,
-         full-width images read as a clean vertical narrative instead. */
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    .mte-media-support {
-      position: static;
-      width: 100%;
-      aspect-ratio: 16 / 10;
-    }
-    .mte-text {
-      align-items: center;
-      text-align: center;
-    }
-    .mte-body {
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .mte-ctas {
-      justify-content: center;
-    }
-  }
-  .work-with-odd-teaser {
-    background: var(--color-bg);
-  }
-  .wwo-intro {
-    max-width: 42rem;
-    margin: -2rem auto 3rem;
-    text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.8;
-    color: var(--color-paper-60);
-  }
-  .wwo-cards {
-    display: grid;
-    /* --cols (set inline, per instance) — always one row instead of auto-fit
-       stranding the last of the 4 cards alone at tablet width (confirmed via
-       screenshot: 3-then-1 at 834px). Same fix as ProofGrid/ParticipateBand. */
-    grid-template-columns: repeat(var(--cols), 1fr);
-    gap: 1px;
-    background: var(--color-paper-12);
-  }
-  @media (max-width: 700px) {
-    .wwo-cards {
-      grid-template-columns: 1fr;
-    }
-  }
-  .wwo-card {
-    /* min-width: 0 — without it a grid item's implicit min-width:auto
-       refuses to shrink narrower than its longest unwrapped word, forcing
-       this column past its 1fr share and overflowing the page horizontally
-       between 701–767px (confirmed live: .wwo-card's right edge landed
-       101px past the viewport at 768px). Same fix ProofGrid/ParticipateBand
-       already apply for the identical reason — see their own comments. */
-    min-width: 0;
-    background: var(--color-backstage);
-    padding: 2rem;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    transition: background-color var(--duration-fast) ease;
-  }
-  .wwo-card:hover {
-    background: color-mix(in srgb, var(--color-backstage) 85%, var(--color-paper) 15%);
-  }
-  .wwo-card h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.5rem;
-    color: var(--color-paper);
-    margin: 0;
-  }
-  .wwo-go {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-paper-60);
-  }
-  .wwo-cta {
-    text-align: center;
-    margin-top: 2.5rem;
-  }
-  .wwo-cta-link {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: var(--color-paper);
-    text-decoration: underline;
-    text-decoration-color: var(--color-paper-40);
-    text-underline-offset: 4px;
-  }
-  .wwo-cta-link:hover {
-    text-decoration-color: var(--color-paper);
   }
 </style>

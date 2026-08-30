@@ -6,14 +6,25 @@ interface TrackItem {
 }
 interface Props {
   intro: string;
-  business: { lede: string; body: string; tracks: TrackItem[] };
-  creative: { lede: string; body: string; tracks: TrackItem[] };
+  business: { lede: string; body: string; tracks?: TrackItem[] };
+  creative: { lede: string; body: string; tracks?: TrackItem[] };
+  // Small label above the intro paragraph ("Who ODD is for") — optional so
+  // Converge stays usable exactly as before for any future caller that
+  // doesn't want it. See index.astro's merged "Who ODD is for / What we do"
+  // composition (2026-08-30 homepage revision).
+  audienceEyebrow?: string;
+  // Reduces the section's own bottom padding — used only when a caller
+  // stacks something (ProgramGrid, on Home) directly underneath as part of
+  // one continuous composition, so the two don't get double-padded apart.
+  // See docs/architecture.md.
+  tightBottom?: boolean;
 }
-const { intro, business, creative } = Astro.props;
+const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astro.props;
 ---
 
-<section class="converge">
+<section class={`converge ${tightBottom ? 'is-tight-bottom' : ''}`}>
   <div class="wrap">
+    {audienceEyebrow && <p class="converge-eyebrow eyebrow reveal">{audienceEyebrow}</p>}
     <p class="converge-intro reveal">{intro}</p>
     <div class="converge-grid reveal">
       <div class="converge-col converge-col--business">
@@ -21,14 +32,18 @@ const { intro, business, creative } = Astro.props;
         <p class="converge-lede">{business.lede}</p>
         <p class="converge-body">{business.body}</p>
         {
-          business.tracks.map((t) => (
-            <a class="track-item" href={t.href}>
-              <>
-                <span>{t.label}</span>
-                <span>{t.meta}</span>
-              </>
-            </a>
-          ))
+          business.tracks && (
+            <div class="track-list">
+              {business.tracks.map((t) => (
+                <a class="track-item" href={t.href}>
+                  <>
+                    <span>{t.label}</span>
+                    <span>{t.meta}</span>
+                  </>
+                </a>
+              ))}
+            </div>
+          )
         }
       </div>
       <div class="converge-col converge-col--creative">
@@ -36,14 +51,18 @@ const { intro, business, creative } = Astro.props;
         <p class="converge-lede">{creative.lede}</p>
         <p class="converge-body">{creative.body}</p>
         {
-          creative.tracks.map((t) => (
-            <a class="track-item" href={t.href}>
-              <>
-                <span>{t.label}</span>
-                <span>{t.meta}</span>
-              </>
-            </a>
-          ))
+          creative.tracks && (
+            <div class="track-list">
+              {creative.tracks.map((t) => (
+                <a class="track-item" href={t.href}>
+                  <>
+                    <span>{t.label}</span>
+                    <span>{t.meta}</span>
+                  </>
+                </a>
+              ))}
+            </div>
+          )
         }
       </div>
     </div>
@@ -53,6 +72,13 @@ const { intro, business, creative } = Astro.props;
 <style>
   .converge {
     padding: 6rem 0 6.5rem;
+  }
+  .converge.is-tight-bottom {
+    padding-bottom: var(--space-10);
+  }
+  .converge-eyebrow {
+    text-align: center;
+    margin: 0 0 1rem;
   }
   .converge-intro {
     text-align: center;
@@ -110,6 +136,9 @@ const { intro, business, creative } = Astro.props;
     }
     .converge {
       padding: 3.25rem 0 3.75rem;
+    }
+    .converge.is-tight-bottom {
+      padding-bottom: var(--space-8);
     }
     .converge-intro {
       margin-bottom: 2.4rem;

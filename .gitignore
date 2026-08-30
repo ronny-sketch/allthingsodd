@@ -34,3 +34,6 @@ worker/.dev.vars.*
 /blob-report/
 /playwright/.cache/
 .cloudcannon/migration/*.schema.json
+
+# ad-hoc visual QA screenshots (chrome-devtools MCP scratch captures)
+/.qa-screenshots/

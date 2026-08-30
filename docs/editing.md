@@ -37,11 +37,23 @@ high-level notes:
   result, and the preview card when the page is shared on social media, on
   every page.
 - **Home**: hero proposition + two buttons, "What ODD is", the two-ways-in
-  business/creative section, "What's happening" (a flat, editable activity
-  list — mix ODDfest/ODDference/ODDspace items freely), the platform grid
-  (not fixed at four cards), proof numbers (optional — omit the field rather
-  than invent numbers), the Work with ODD teaser, a case/story teaser
-  (optional), and the participate band (2-5 CTAs).
+  business/creative section (audience explanation only, as of 2026-08-30 —
+  see below), "What's happening" (a flat, editable activity list — mix
+  ODDfest/ODDference/ODDspace items freely), the platform grid (not fixed at
+  four cards), proof numbers (optional — omit the field rather than invent
+  numbers), a case/story teaser (optional), and the participate band (2-5
+  CTAs, each can carry an "audience" tag — see below).
+  - 2026-08-30 homepage revision: the separate "For organisations / Work
+    with ODD." teaser section (and its `workWithOdd` field) was removed —
+    the platform grid immediately above it already includes a Work with ODD
+    card, so the section only duplicated it. The real Work with ODD page is
+    unaffected. The business/creative section's small per-track destination
+    buttons (ODDference/Work with ODD/ODDfest/ODDspace links) were removed
+    for the same reason — those destinations now live only in the platform
+    grid. Each participate-band item can carry an "audience" value
+    (Business/Creative/Stay in touch, or leave blank) to group it under a
+    label instead of one flat row — set it to match how a new CTA should
+    group, or leave it empty for an ungrouped card.
 - **ODDfest**: what it is, how it works, who can take part, what ODD
   provides, organiser ownership, programme, open call (optional), for
   partners, previous edition/proof (optional), FAQ.
@@ -85,10 +97,28 @@ links, social media links, contact emails, footer address, the newsletter
 sign-up link, the "Pre-register" button's destination, and the **Partners**
 and **Featured in** press logo lists — each is one shared list, so an edit
 here updates every page that shows it (Featured in appears on both Home and
-Media from the same list, by design — see docs/architecture.md). Navigation
-links can be grouped: give a link "children" (see the real example already
-set up on "Info") and it becomes a hover dropdown on desktop, a labeled group
-on mobile, and flattens into plain links in the footer.
+Media from the same list, by design — see docs/architecture.md). Also here,
+as of 2026-08-30: **Supported by** (a short list of confirmed foundation/
+supporter logos, shown as a small quiet row in the footer — leave empty
+until a logo is genuinely confirmed as a funder/supporter, not just a
+partner; the footer shows nothing while this is empty) and **the grouped
+logo wall** (Partners/Media/Supported by/Collaborators — a prepared but
+hidden future homepage section; toggle its "visible" field on only once
+every logo in every group has been confirmed for that specific category).
+Navigation links can be grouped: give a link "children" (see the real example
+already set up on "Info", which as of 2026-08-30 renders as a pill-styled
+dropdown on the right side of the header, not inline with the other nav
+links — see Nav.astro) and it becomes a hover dropdown on desktop, and
+flattens into plain, direct links in both the footer and the mobile menu
+(as of 2026-08-30, the mobile menu no longer shows a grouped "Info" heading —
+About/Media/Contact are direct tappable items, same as every other nav link).
+
+Newsletter sign-up itself lives in exactly two places as of 2026-08-30: the
+footer (persistent, on every page) and a timed popup that appears ~15
+seconds after a visitor first arrives, once per browser session — it is no
+longer in the header or the mobile menu. Both reuse the same sign-up
+mechanism, so there's nothing extra to configure beyond the newsletter
+sign-up link above.
 
 ## Contact form setup
 

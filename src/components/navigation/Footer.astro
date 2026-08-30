@@ -2,10 +2,12 @@
 import { getEntry } from 'astro:content';
 import Logo from '../primitives/Logo.astro';
 import SocialIcon from '../primitives/SocialIcon.astro';
+import NewsletterForm from '../primitives/NewsletterForm.astro';
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { nav, social, contact, footerAddress, newsletterLabel, newsletterHref } = site.data;
+const { nav, social, contact, footerAddress, newsletterLabel, newsletterHref, supportedBy } =
+  site.data;
 // A footer link list doesn't need a dropdown — an item with children (e.g.
 // "Info") flattens straight into its real children instead of showing a
 // grouping label that isn't itself a page. See Nav.astro for the dropdown
@@ -31,31 +33,11 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     </nav>
     <div class="foot-nl" id="newsletter">
       <span class="foot-nl-label">{newsletterLabel}</span>
-      <form
-        class="nl-form"
+      <NewsletterForm
         id="newsletterForm"
-        action={newsletterHref}
-        method="get"
-        target="_blank"
-      >
-        <input
-          type="text"
-          name="botcheck"
-          class="nl-botcheck"
-          tabindex="-1"
-          autocomplete="off"
-          aria-hidden="true"
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="you@example.com"
-          aria-label="Email address"
-          required
-        />
-        <button type="submit">Sign up</button>
-      </form>
-      <p class="nl-status" role="status" aria-live="polite"></p>
+        source="footer_newsletter"
+        newsletterHref={newsletterHref}
+      />
     </div>
   </div>
   <div class="wrap foot-mid">
@@ -63,9 +45,7 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
       {
         contact.map((c) => (
           <li>
-            <a href={`mailto:${c.email}`}>
-              {c.label} — {c.email}
-            </a>
+            {c.label} <a href={`mailto:${c.email}`}>{c.email}</a>
           </li>
         ))
       }
@@ -86,13 +66,23 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
       }
     </div>
   </div>
+  {
+    supportedBy && supportedBy.length > 0 && (
+      <div class="wrap foot-supported">
+        <span class="foot-supported-label">Supported by</span>
+        <div class="foot-supported-logos">
+          {supportedBy.map((item) => (
+            <img src={item.logo.src} alt={item.name} loading="lazy" />
+          ))}
+        </div>
+      </div>
+    )
+  }
   <div class="wrap foot-bottom">
     <p>{footerAddress}</p>
     <a href="https://oddfest.co">oddfest.co</a>
   </div>
 </footer>
-
-<script src="../../scripts/newsletter-form.ts"></script>
 
 <style>
   footer {
@@ -117,14 +107,6 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     height: 1.7rem;
     width: auto;
     display: block;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .foot-mark {
-      transition: transform 0.4s var(--ease-spring);
-    }
-    .foot-mark:hover {
-      transform: rotate(-4deg) scale(1.06);
-    }
   }
   .foot-nav {
     display: flex;
@@ -173,73 +155,6 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     text-transform: uppercase;
     color: var(--color-paper-40);
   }
-  .nl-form {
-    display: flex;
-    border: 1px solid var(--color-paper-20);
-    border-radius: 999px;
-    max-width: 320px;
-    flex-shrink: 0;
-    overflow: hidden;
-  }
-  /* The input's own outline is suppressed below (it'd be clipped by this
-     pill's overflow:hidden/rounded corners anyway) — :focus-within on the
-     container itself is the visible replacement, since there was none at
-     all before. */
-  .nl-form:focus-within {
-    border-color: var(--color-paper);
-  }
-  .nl-form input {
-    flex: 1;
-    min-width: 0;
-    border: none;
-    background: transparent;
-    padding: 0.7rem 0 0.7rem 1.1rem;
-    font-family: var(--font-body);
-    font-size: 0.8rem;
-    color: var(--color-paper);
-    outline: none;
-  }
-  /* iOS Safari auto-zooms the viewport on focus for any input under 16px —
-     the 0.8rem above is a deliberate desktop size, kept there; this
-     mobile-only override just avoids the zoom, not a visual redesign. */
-  @media (max-width: 640px) {
-    .nl-form input {
-      font-size: 16px;
-    }
-  }
-  .nl-form button {
-    border: none;
-    background: var(--color-paper);
-    color: var(--color-ink);
-    padding: 0 1.2rem;
-    margin: 3px;
-    border-radius: 999px;
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: opacity var(--duration-fast) ease;
-  }
-  .nl-form button:hover {
-    opacity: 0.85;
-  }
-  .nl-botcheck {
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-  }
-  .nl-status {
-    margin: 0;
-    font-family: var(--font-body);
-    font-size: 0.72rem;
-    color: var(--color-paper-40);
-  }
-
   .foot-mid {
     display: flex;
     flex-wrap: wrap;
@@ -309,6 +224,44 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     width: 22px;
     height: 22px;
     display: block;
+  }
+
+  /* Quiet, secondary treatment on purpose — visually much smaller than the
+     future full grouped logo wall (see site/global.json's `logoWall`), and
+     only renders at all once `supportedBy` actually has confirmed entries
+     (see content.config.ts). */
+  .foot-supported {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    padding: 1.4rem 0;
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .foot-supported-label {
+    font: var(--text-caption);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+    flex-shrink: 0;
+  }
+  .foot-supported-logos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .foot-supported-logos img {
+    height: 22px;
+    width: auto;
+    max-width: 110px;
+    object-fit: contain;
+    opacity: 0.6;
+    filter: brightness(0) invert(1);
+    transition: opacity var(--duration-fast) ease;
+  }
+  .foot-supported-logos img:hover {
+    opacity: 1;
   }
 
   .foot-bottom {

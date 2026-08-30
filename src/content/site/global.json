@@ -22,7 +22,7 @@
     { "platform": "TikTok", "href": "https://www.tiktok.com/@oddfest" },
     { "platform": "Discord", "href": "https://discord.gg/ZXtkM6FjBw" }
   ],
-  "contact": [{ "label": "Say hello", "email": "hello@oddfest.co" }],
+  "contact": [{ "label": "Get in touch with us at", "email": "hello@oddfest.co" }],
   "footerAddress": "New Nordic Way rf · Sturenportti 3, Helsinki",
   "footerTag": "New Nordic Way rf · oddfest.co",
   "newsletterLabel": "Keep up with ODD",
@@ -88,5 +88,15 @@
     { "name": "Industry Awards", "logo": "../../assets/press/industry-awards.svg" },
     { "name": "V2", "logo": "../../assets/press/V2.svg" },
     { "name": "Kordelin", "logo": "../../assets/press/Kordelin_2.svg" }
-  ]
+  ],
+  "logoWall": {
+    "visible": false,
+    "groups": [
+      { "label": "Partners", "items": [] },
+      { "label": "Media", "items": [] },
+      { "label": "Supported by", "items": [] },
+      { "label": "Collaborators", "items": [] }
+    ]
+  },
+  "supportedBy": []
 }
