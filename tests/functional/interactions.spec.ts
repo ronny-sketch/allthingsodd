@@ -24,7 +24,6 @@ test('every flat internal nav link navigates to a real, matching page', async ({
     ['ODDfest', '/oddfest'],
     ['ODDference', '/oddference'],
     ['ODDspace', '/oddspace'],
-    ['Work with ODD', '/work-with-odd'],
   ];
   for (const [label, path] of internalRoutes) {
     await page.goto('/');
@@ -35,7 +34,7 @@ test('every flat internal nav link navigates to a real, matching page', async ({
   }
 });
 
-test('"Info" nav dropdown reveals About/Media/Contact and each navigates correctly', async ({
+test('"Info" nav dropdown reveals About/Work with us/Media/Contact and each navigates correctly', async ({
   page,
 }) => {
   await page.goto('/');
@@ -45,8 +44,11 @@ test('"Info" nav dropdown reveals About/Media/Contact and each navigates correct
 
   // Real DOM text is mixed-case ("About") — it only *renders* uppercase via
   // the Forta display font's glyph design, not CSS text-transform or content.
+  // "Work with ODD" moved in here 2026-08-30, relabelled "Work with us" —
+  // the route (/work-with-odd) is unchanged.
   const children: [string, string][] = [
     ['About', '/about'],
+    ['Work with us', '/work-with-odd'],
     ['Media', '/media'],
     ['Contact', '/contact'],
   ];
@@ -162,9 +164,10 @@ test('Work with ODD and Membership pages load with a real h1 and working nav', a
 test('ODDagency, Media and Contact are reachable even though they left primary nav', async ({
   page,
 }) => {
-  // V2 trimmed the top nav to five items (see docs/architecture.md#v2) — these
-  // three pages are still real, live routes, just reached via in-content CTAs
-  // instead of the nav bar. Confirms they still resolve correctly.
+  // The top nav is four items (ODDfest/ODDference/ODDspace/Info — see
+  // docs/architecture.md#v2) — these three pages are still real, live
+  // routes, just reached via the Info dropdown or in-content CTAs instead of
+  // a top-level nav link. Confirms they still resolve correctly.
   for (const path of ['/oddagency', '/media', '/contact']) {
     const response = await page.goto(path);
     expect(response?.status()).toBe(200);

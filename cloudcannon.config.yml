@@ -48,10 +48,13 @@ collections_config:
         cascade: true
       pathways:
         type: array
-        label: Four ways to work with ODD (Work with ODD only)
-        comment: The large link-out cards for ODDference / Membership / Agency / Partnerships.
+        label: Ways to work with us (Work with ODD only)
+        comment: >-
+          The four entry points — ODDference / ODDnetwork / Event
+          partnerships / ODDagency — shown as a compact progression list, not
+          a funnel: any card can be the first thing an organisation does.
         options:
-          structures: _structures.program_card
+          structures: _structures.pathway_card
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -88,11 +91,13 @@ collections_config:
         cascade: true
       primaryCta:
         type: object
-        label: Primary button (ODDference / ODDspace)
+        label: Primary button
         comment: >-
-          The solid hero button — "Buy Blind Bird" on ODDference, "Become a
-          member" on ODDspace (also reused in ODDspace's "Enter the space"
-          section). Home, ODDfest, ODDagency and About don't use this field.
+          The solid button in the hero — "Buy Blind Bird" on ODDference,
+          "Become a member" on ODDspace (also reused in ODDspace's "Enter
+          the space" section), "Start a conversation" on Work with ODD
+          (scrolls to the enquiry form). Home, ODDfest, ODDagency and About
+          don't use this field.
         options:
           subtype: object
       secondaryCta:
@@ -217,6 +222,15 @@ collections_config:
           ODDfest is" section — the consolidated made-across-Helsinki /
           organisers-keep-ownership / ODD-provides-the-umbrella story, with
           its own optional cta as the page's earlier "register" link.
+        options:
+          subtype: object
+      whatWeDo:
+        type: object
+        label: '"What we do" intro (Work with ODD only)'
+        comment: >-
+          The page's own short explainer — ODDference/ODDfest/ODDspace/
+          ODDnetwork/partnerships/project work as one continuous practice,
+          not five separate business units.
         options:
           subtype: object
       community:
@@ -357,12 +371,14 @@ collections_config:
           subtype: object
       network:
         type: object
-        label: Partners / network note
+        label: Logo strip heading
         comment: >-
-          Appears on Work with ODD and Membership, right above the shared
-          partner logo strip (edited under Global → Partner logos — the same
-          list everywhere it's shown). About no longer carries a partner-logo
-          wall of its own.
+          The eyebrow/title shown above a logo strip. On Membership this
+          sits above the shared sitewide partner logos (edited under Global
+          → Partner logos). On Work with ODD it sits above that page's own
+          curated "logos" list below instead — the two pages intentionally
+          show different organisations, so don't point one at the other's
+          list. About no longer carries a partner-logo wall of its own.
         options:
           subtype: object
       story:
@@ -400,16 +416,6 @@ collections_config:
         type: array
         label: Why ODD
         comment: Appears on ODDagency and Work with ODD.
-        options:
-          structures: _structures.feature_card
-          disable_add: false
-          disable_remove: false
-          disable_reorder: false
-          required: false
-        cascade: true
-      howWeWork:
-        type: array
-        label: How we work (Work with ODD only)
         options:
           structures: _structures.feature_card
           disable_add: false
@@ -603,6 +609,23 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
+      logos:
+        type: array
+        label: Organisations we've worked with (Work with ODD only)
+        comment: >-
+          A page-specific curated set — deliberately not the sitewide
+          "Partner logos" list (that mixes festival sponsors, press and
+          historical relationships, which isn't the same claim as
+          "organisations we've worked with"). Leave empty until this is
+          curated by hand; the section stays hidden while it's empty, the
+          same as Case studies above.
+        options:
+          structures: _structures.logo_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
       accreditation:
         type: object
         label: Accreditation (Media only)
@@ -705,11 +728,14 @@ collections_config:
         comment: >-
           Drives the top nav, the footer links and the mobile menu — one edit
           here changes all three. ODDspace opens in a new tab, so leave its
-          "external" toggle on. "Info" has "children" (About/Media/Contact) —
-          it shows as a hover dropdown on desktop, a labeled group on mobile,
-          and flattens into plain links in the footer. Add "children" to any
-          other item the same way to group it instead of adding a new
-          top-level item.
+          "external" toggle on. "Info" has "children" (About/Work with us/
+          Media/Contact) — it shows as a hover dropdown on desktop, a
+          labeled group on mobile, and flattens into plain links in the
+          footer. Add "children" to any other item the same way to group it
+          instead of adding a new top-level item. Work with ODD moved in
+          here 2026-08-30 — it's no longer a primary destination alongside
+          ODDfest/ODDference/ODDspace, it's where organisations go to go
+          further; the route itself is still /work-with-odd.
         cascade: true
       social:
         type: array
@@ -823,6 +849,30 @@ _structures:
         place_groups_below: false
         tabbed: false
         value:
+          meta: ''
+          title: ''
+          body: ''
+          goLabel: ''
+          href: '#'
+          image:
+  pathway_card:
+    style: select
+    values:
+      - label: Pathway card
+        default: false
+        preview:
+          text:
+            - key: title
+            - key: stage
+          icon:
+            - image
+          image:
+            - key: image
+        place_groups_below: false
+        tabbed: false
+        value:
+          number: '01'
+          stage: ''
           meta: ''
           title: ''
           body: ''

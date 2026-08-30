@@ -225,6 +225,16 @@ const pages = defineCollection({
       image: image().optional(),
     });
 
+    // Work with ODD's four entry points — platformCard plus a number ("01"–
+    // "04") and a one-line "stage" ("Come in." / "Stay involved." / ...).
+    // These aren't sequential funnel steps an organisation must pass through
+    // in order (any card can be the starting point) — the number/stage pair
+    // is a lightweight progression cue for scanning the row, not a gate.
+    const pathwayCard = platformCard.extend({
+      number: z.string(),
+      stage: z.string(),
+    });
+
     // ODDfest's "Last year, this looked like…" grid — real, named 2026
     // Creative Week examples across varied formats (exhibition, performance,
     // screening, club night, workshop, talk, ...). image is optional (falls
@@ -569,14 +579,31 @@ const pages = defineCollection({
       z.object({
         _template: z.literal('work-with-odd'),
         seo,
+        // Rebuilt 2026-08-30 around the page's new role: no longer a
+        // top-level nav destination (moved into the Info dropdown as
+        // "Work with us" — see site/global.json), so it no longer needs to
+        // out-argue ODDfest/ODDference/ODDspace for attention. H1 is "Work
+        // with us." — seo.title above keeps "Work with ODD" for continuity.
         eyebrow: z.string(),
         title: z.string(),
         intro: z.string(),
+        heroImage: image(),
+        primaryCta: linkCta,
+        // "What we do" — one short editorial paragraph, same shape as
+        // ODDference's bigQuestion / ODDagency's whatItIs, not a list of
+        // five independent business units.
+        whatWeDo: sectionIntro,
         whyOdd: z.array(featureCard),
-        pathways: z.array(platformCard),
+        pathways: z.array(pathwayCard),
         cases: z.array(caseStudy),
-        howWeWork: z.array(featureCard),
-        network: z.object({ eyebrow: z.string(), title: z.string(), note: z.string() }),
+        // Page-specific curated logo set for organisations ODD has actually
+        // worked with — deliberately NOT the sitewide `partners`/`featuredIn`
+        // lists (those mix festival sponsors, press and historical
+        // relationships that aren't the same claim as "worked with").
+        // Starts empty on purpose: the section renders conditionally, same
+        // pattern as `cases` above, until this is curated by hand.
+        logos: z.array(z.object({ name: z.string(), logo: image() })),
+        network: z.object({ eyebrow: z.string(), title: z.string() }),
         contact: z.object({ eyebrow: z.string(), title: z.string(), body: z.string() }),
       }),
 
