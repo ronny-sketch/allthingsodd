@@ -38,16 +38,14 @@ const showReport = Boolean(reportLabel && reportUrl);
     {
       items.length > 0 ? (
         <>
-          {
-            /* --cols capped at 4 — forcing every item into one row
+          {/* --cols capped at 4 — forcing every item into one row
                (items.length directly) was fine for the 2-3 item case this
                was designed around, but Media's 8-stat highlights grid
                squeezed each column so narrow that overflow-wrap:anywhere on
                .proof-value fractured numbers mid-character ("2,600" → "2," /
                "600", confirmed via screenshot). Capping at 4 wraps to a
                second row instead — every real usage today (1/2/3/8 items)
-               divides cleanly with no orphaned row. */
-          }
+               divides cleanly with no orphaned row. */}
           <div class="proof-grid reveal" style={`--cols: ${Math.min(items.length, 4)}`}>
             {items.map((item) => (
               <div class="proof-item">
