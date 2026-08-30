@@ -36,7 +36,7 @@ const page = entry.data;
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { partners, featuredIn, logoWall } = site.data;
+const { featuredIn, logoWall } = site.data;
 
 const cloudPhotos = [
   cloudPhoto1,
@@ -134,16 +134,18 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
 
   {
     /* The grouped Partners/Media/Supported by/Collaborators logo wall stays
-       hidden (`logoWall.visible: false` in site/global.json) until real
-       organisations are confirmed for each category — see
-       site/global.json's `logoWall` and docs/editing.md. Today's live,
-       single-group Partners section renders exactly as before until then;
-       flipping `visible` swaps to the grouped version with no further code
-       change. */
-    logoWall?.visible ? (
+       fully OFF the homepage (`logoWall.visible: false` in
+       site/global.json) until real organisations are confirmed for each
+       category — see site/global.json's `logoWall` and docs/editing.md.
+       Deliberately NOT falling back to the old flat `partners` list here:
+       that list mixes funders, media and collaborators under one
+       unlabeled "Partners" heading with no per-organisation confirmation
+       of which group each belongs to, which is exactly what this section
+       is meant to stop doing. Flipping `visible` to true (once
+       `logoWall.groups` is populated) is the only thing needed to bring
+       this section back. */
+    logoWall?.visible && (
       <PartnerTiers eyebrow="Who we build with" title="Partners" groups={logoWall.groups} />
-    ) : (
-      <PartnerTiers eyebrow="Who we build with" title="Partners" items={partners} />
     )
   }
 
