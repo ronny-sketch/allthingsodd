@@ -542,14 +542,43 @@ const pages = defineCollection({
       // subpageBase shape as ODDfest/ODDference/ODDagency, so it can host a
       // real membership pitch, event-space rental rates and a live events
       // calendar instead of sending visitors off-site.
+      //
+      // 2026-08-30 rebuild: restructured around two conversion goals
+      // (become a member / organise an event) instead of one section per
+      // fact. `heroMedia` (shared, subpageBase) is unused here — the new
+      // hero takes a photo grid via `heroPhotos` instead of one video/image
+      // — so oddspace.json just sets `heroMedia: {}`. `location` and
+      // `features` are gone (the address doesn't need its own section; the
+      // old features grid is consolidated into other sections). `whatYouGet`
+      // is gone, replaced by `spaces` (one card per real space type, each
+      // with its own photo) — the membership benefit list now lives
+      // entirely on `membership.benefits`.
       subpageBase.extend({
         _template: z.literal('oddspace'),
+        // "What is ODDspace" — the concrete, once-only explainer (section 2
+        // of the rebuild). `intro` carries the short human/practical
+        // follow-up line rendered directly under it, not a hero paragraph.
         intro: z.string(),
-        features: z.array(featureCard),
         whatItIs: sectionIntro,
+        // The 7-8 photo hero grid — see SpaceHero.astro. Deliberately not
+        // capped at an exact count in the schema (a real editor should be
+        // able to add/remove one without a code change), but the component
+        // itself expects roughly 6-8 for the grid to read well.
+        heroPhotos: z.array(z.object({ image: image(), alt: z.string() })),
+        // Section 3: the four real, distinct spaces — co-working, event/
+        // gallery, auditorium, studio — each with its own photo. Not
+        // `featureCard` (number/title/body only) since this needs a photo
+        // and an optional short bullet list per space; see SpaceShowcase.astro.
+        spaces: z.array(
+          z.object({
+            name: z.string(),
+            body: z.string(),
+            bullets: z.array(z.string()).optional(),
+            image: image().optional(),
+          }),
+        ),
         community: sectionIntro,
         proof: proofSection,
-        whatYouGet: z.array(featureCard),
         // A single tier, not an array like ODDference's tickets/Membership's
         // tiers — ODDspace's real pricing is deliberately one flat rate
         // ("one membership, full access, no tiers"), so this reuses the
@@ -563,7 +592,24 @@ const pages = defineCollection({
           z.object({ name: z.string(), price: z.string(), note: z.string().optional() }),
         ),
         howItWorks: z.array(featureCard),
-        location: sectionIntro,
+        // Section 6, the event-enquiry half of "Enter the space" — the
+        // membership half reuses `membership`/`primaryCta` directly rather
+        // than a second copy block.
+        eventEnquiry: z.object({
+          headline: z.string(),
+          body: z.string(),
+          cta: linkCta,
+        }),
+        // "Organise an event" — the page's secondary CTA, alongside
+        // subpageBase's `primaryCta` ("Become a member"). Both appear in
+        // the hero and again in section 6. ODDference also declares its own
+        // `secondaryCta` (a different purpose, "Partner with ODDference") —
+        // see cloudcannon.config.yml's shared `secondaryCta` _inputs entry.
+        secondaryCta: linkCta.optional(),
+        // Section 7 — the bigger-picture reason ODDspace exists, kept
+        // distinct from `whatItIs` (section 2's concrete "what is this
+        // place" explainer) so the two don't repeat each other.
+        vision: sectionIntro,
         // Optional — the live Google Calendar embed. Omit rather than embed
         // a broken/placeholder calendar if the real one isn't available.
         calendar: z
@@ -575,7 +621,6 @@ const pages = defineCollection({
           })
           .optional(),
         faq: z.array(faqItem),
-        participate: z.array(cta),
       }),
 
       z.object({

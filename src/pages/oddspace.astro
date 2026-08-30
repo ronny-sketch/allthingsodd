@@ -1,16 +1,24 @@
 ---
+// Rebuilt 2026-08-30 around ODDspace's two real conversion goals — become a
+// member, organise an event — instead of one section per fact. See
+// content.config.ts's oddspace extend block for the full field-by-field
+// reasoning behind what changed. Section numbers below match the brief's
+// nine-section structure.
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SubpageFrame from '../components/sections/SubpageFrame.astro';
-import SplitHero from '../components/sections/SplitHero.astro';
-import FeatureGrid from '../components/sections/FeatureGrid.astro';
+import SpaceHero from '../components/sections/SpaceHero.astro';
+import SpaceShowcase from '../components/sections/SpaceShowcase.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
 import ProofGrid from '../components/sections/ProofGrid.astro';
 import PricingGrid from '../components/sections/PricingGrid.astro';
+import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import FAQList from '../components/sections/FAQList.astro';
-import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
-import photoCommunity from '../assets/hero/archive-16.jpg';
+import Pill from '../components/primitives/Pill.astro';
+import oddspaceWordmark from '../assets/logos/oddspace-wordmark.svg';
+import photoCommunity from '../assets/oddspace/lounge.jpg';
+import photoVision from '../assets/oddspace/exterior-building.jpg';
 
 const entry = await getEntry('pages', 'oddspace');
 if (!entry || entry.data._template !== 'oddspace')
@@ -25,64 +33,58 @@ const page = entry.data;
   theme="light"
 >
   <SubpageFrame slug={page._slug} railLeft={page.railLeft} railRight={page.railRight}>
-    <SplitHero
-      variant="split-image"
-      image={page.heroMedia.image}
-      eyebrow={page.eyebrow}
+    <!-- 1. Hero: the space itself, shown through its own photography, with
+         both conversion CTAs up front. -->
+    <SpaceHero
+      photos={page.heroPhotos}
       title={page.title}
       meta={page.meta}
-      intro={page.intro}
+      logo={oddspaceWordmark}
+      logoAlt="ODDspace"
       primaryCta={page.primaryCta}
-      warpTitle
-      warpColor="ink"
+      secondaryCta={page.secondaryCta}
     />
-    <FeatureGrid cards={page.features} />
 
+    <!-- 2. What is ODDspace: one concrete explainer, plus the short human/
+         practical line (page.intro) directly under it. -->
     <SectionIntro
       eyebrow={page.whatItIs.eyebrow}
       headline={page.whatItIs.headline}
       body={page.whatItIs.body}
     />
+    <p class="odds-intro-line reveal">{page.intro}</p>
 
-    {
-      page.proof && (
-        <ProofGrid eyebrow={page.proof.eyebrow} title={page.proof.title} items={page.proof.items} />
-      )
-    }
-
-    <SectionIntro
-      eyebrow={page.community.eyebrow}
-      headline={page.community.headline}
-      body={page.community.body}
-    />
-
-    <PhotoBreak image={photoCommunity} alt="People meeting and talking at an ODD event" />
-
+    <!-- 3. What the space offers, and how it works — the main practical
+         product section: the four real spaces, then membership, then
+         event-use pricing, in one place instead of four separate sections. -->
     <section class="odds-sub">
       <div class="wrap">
         <div class="section-head">
-          <span class="eyebrow">Membership</span>
-          <h2>What you get</h2>
+          <span class="eyebrow">The spaces</span>
+          <h2>Four rooms, one roof.</h2>
         </div>
-        <FeatureGrid cards={page.whatYouGet} />
+        <SpaceShowcase spaces={page.spaces} />
       </div>
     </section>
 
-    <section class="odds-sub">
+    <section class="odds-sub odds-membership">
       <div class="wrap">
         <div class="section-head">
-          <span class="eyebrow">Join</span>
-          <h2>One membership, full access</h2>
+          <span class="eyebrow">Membership</span>
+          <h2>One membership, full access.</h2>
         </div>
         <PricingGrid items={[page.membership]} />
+        <div class="odds-how">
+          <FeatureGrid cards={page.howItWorks} />
+        </div>
       </div>
     </section>
 
     <section class="odds-sub odds-rates">
       <div class="wrap">
         <div class="section-head">
-          <span class="eyebrow">Rent the space</span>
-          <h2>Event space rates</h2>
+          <span class="eyebrow">Event use</span>
+          <h2>Renting the space doesn't require membership.</h2>
         </div>
         <div class="odds-rates-list reveal">
           {
@@ -98,22 +100,61 @@ const page = entry.data;
       </div>
     </section>
 
-    <section class="odds-sub">
+    <!-- 4. ODDspace pilot in numbers. -->
+    <ProofGrid eyebrow={page.proof.eyebrow} title={page.proof.title} items={page.proof.items} />
+
+    <!-- 5. Who's it for. -->
+    <SectionIntro
+      eyebrow={page.community.eyebrow}
+      headline={page.community.headline}
+      body={page.community.body}
+    />
+    <PhotoBreak image={photoCommunity} alt="A co-working lounge area at ODDspace" />
+
+    <!-- 6. Enter the space — the main conversion section: two equal
+         pathways, membership and event enquiry. -->
+    <section class="odds-sub odds-enter">
       <div class="wrap">
         <div class="section-head">
-          <span class="eyebrow">How to join</span>
-          <h2>How it works</h2>
+          <h2>Enter the space</h2>
         </div>
-        <FeatureGrid cards={page.howItWorks} />
+        <div class="odds-enter-grid reveal">
+          <div class="odds-enter-card">
+            <span class="eyebrow">Work here</span>
+            <h3>Become a member</h3>
+            <p>
+              Work from ODDspace, use the shared facilities and become part of the people already
+              shaping the place.
+            </p>
+            <div class="odds-enter-price">{page.membership.price}</div>
+            <ul>
+              {page.membership.benefits.slice(0, 3).map((b) => <li>{b}</li>)}
+            </ul>
+            <Pill href={page.membership.href} variant="solid" magnetic>
+              {page.membership.ctaLabel}
+            </Pill>
+          </div>
+          <div class="odds-enter-card">
+            <span class="eyebrow">Use the space</span>
+            <h3>{page.eventEnquiry.headline}</h3>
+            <p>{page.eventEnquiry.body}</p>
+            <Pill href={page.eventEnquiry.cta.href} variant="outline" magnetic>
+              {page.eventEnquiry.cta.label}
+            </Pill>
+          </div>
+        </div>
       </div>
     </section>
 
+    <!-- 7. Why ODDspace, and the grand vision — only here. -->
     <SectionIntro
-      eyebrow={page.location.eyebrow}
-      headline={page.location.headline}
-      body={page.location.body}
+      eyebrow={page.vision.eyebrow}
+      headline={page.vision.headline}
+      body={page.vision.body}
     />
+    <PhotoBreak image={photoVision} alt="The industrial Vallila building that houses ODDspace" />
 
+    <!-- 8. Event calendar. -->
     {
       page.calendar && (
         <section class="odds-sub">
@@ -135,6 +176,7 @@ const page = entry.data;
       )
     }
 
+    <!-- 9. FAQ. -->
     <section class="odds-sub">
       <div class="wrap">
         <div class="section-head">
@@ -143,14 +185,25 @@ const page = entry.data;
         <FAQList items={page.faq} />
       </div>
     </section>
-
-    <ParticipateBand items={page.participate} noPadTop />
   </SubpageFrame>
 </Layout>
 
 <style>
   .odds-sub {
     padding: var(--space-24) 0;
+  }
+  .odds-intro-line {
+    max-width: 40rem;
+    margin: -2rem auto var(--space-24);
+    padding: 0 1.5rem;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    line-height: 1.8;
+    color: var(--color-paper-80);
+  }
+  .odds-how {
+    margin-top: 3rem;
   }
   .odds-rates-list {
     max-width: 40rem;
@@ -187,6 +240,81 @@ const page = entry.data;
     font-size: 0.78rem;
     color: var(--color-paper-40);
   }
+
+  .odds-enter-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--color-paper-12);
+  }
+  .odds-enter-card {
+    background: var(--color-backstage);
+    padding: 2.6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .odds-enter-card .eyebrow {
+    color: var(--color-paper-60);
+  }
+  .odds-enter-card h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+    color: var(--color-paper);
+    margin: 0.7rem 0 0;
+  }
+  .odds-enter-card p {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--color-paper-60);
+    margin: 1rem 0 0;
+  }
+  .odds-enter-price {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--color-paper);
+    margin-top: 1.2rem;
+  }
+  .odds-enter-card ul {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .odds-enter-card li {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-paper-60);
+    padding-left: 1rem;
+    position: relative;
+  }
+  .odds-enter-card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--color-paper-40);
+  }
+  .odds-enter-card :global(.pill) {
+    margin-top: 1.8rem;
+  }
+  @media (max-width: 760px) {
+    .odds-enter-grid {
+      grid-template-columns: 1fr;
+    }
+    .odds-enter-card {
+      padding: 2rem 1.6rem;
+    }
+  }
+
   .odds-calendar-note {
     max-width: 42rem;
     margin: -1.5rem auto 2rem;

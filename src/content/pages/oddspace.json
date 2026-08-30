@@ -3,90 +3,95 @@
   "_slug": "oddspace",
   "seo": {
     "title": "ODDspace — creative workspace and community in Vallila, Helsinki",
-    "description": "A shared workspace in Vallila with desks, studios, gallery and event space for people working across creative and cultural fields.",
+    "description": "A 1,000+ m² shared space in Vallila with co-working, studios, gallery, auditorium and a community of 40+ members working across creative and cultural fields.",
     "ogImage": "/og/oddspace.jpg"
   },
   "eyebrow": "ODDspace · Vallila",
   "title": "A place to work, meet and make things.",
-  "meta": "Sture697 · Teollisuuskatu 9D, Helsinki",
+  "meta": "Vallila · Helsinki",
   "primaryCta": {
-    "label": "Come see the space",
+    "label": "Become a member",
     "href": "/work-with-odd?interest=oddspace#enquiry-form"
   },
-  "intro": "ODDspace is a shared space in Vallila for people working across art, culture, design, media, business and other creative fields. There are desks, studios, meeting rooms, a gallery and event space — and, more importantly, other people around. It is still a pilot, and the place is meant to keep changing with the people using it.",
-  "heroMedia": {
-    "image": "../../assets/programs/oddspace-card.jpg"
+  "secondaryCta": {
+    "label": "Organise an event",
+    "href": "/work-with-odd?interest=oddspace#enquiry-form"
   },
-  "features": [
+  "intro": "Come here to work. Meet people. Host something. Make something. Or simply have somewhere to keep going between projects.",
+  "heroMedia": {},
+  "heroPhotos": [
     {
-      "number": "01",
-      "title": "Work here",
-      "body": "24/7 access to shared workspaces, with no fixed desk and room to move around."
+      "image": "../../assets/oddspace/lounge.jpg",
+      "alt": "A co-working lounge area at ODDspace with seating and local art on the walls"
     },
     {
-      "number": "02",
-      "title": "Use the space",
-      "body": "Studios, meeting rooms, gallery and event space for work that needs more than a laptop."
+      "image": "../../assets/oddspace/studio-desks.jpg",
+      "alt": "Standing desks and workstations in the ODDspace co-working area"
     },
     {
-      "number": "03",
-      "title": "Shape it together",
-      "body": "A growing mix of people working under the same roof — and a space that evolves through what they bring to it."
+      "image": "../../assets/oddspace/gallery-floor.jpg",
+      "alt": "The raised, curved gallery and event floor at ODDspace"
+    },
+    {
+      "image": "../../assets/oddspace/auditorium.jpg",
+      "alt": "The ODDspace auditorium with tiered seating for talks and screenings"
+    },
+    {
+      "image": "../../assets/oddspace/podcast-studio.jpg",
+      "alt": "The audio and podcast studio at ODDspace, with recording equipment and a blue curtain backdrop"
+    },
+    {
+      "image": "../../assets/oddspace/meeting-room.jpg",
+      "alt": "A meeting room at ODDspace with a long table and screen"
+    },
+    {
+      "image": "../../assets/oddspace/entrance-signage.jpg",
+      "alt": "The ODDspace entrance, with the ODDspace mark on the door"
+    },
+    {
+      "image": "../../assets/oddspace/exterior-building.jpg",
+      "alt": "The industrial Vallila building that houses ODDspace"
     }
   ],
   "whatItIs": {
-    "eyebrow": "Why ODDspace",
-    "headline": "Sometimes creativity just needs somewhere to happen.",
-    "body": "Creative work needs very practical things: a desk, a room, equipment, other people, time and somewhere to keep going after one project ends. ODDspace is our attempt to make more of that available under one roof — affordably, year-round and with enough freedom for the place to become something we could not have designed alone."
+    "eyebrow": "What is ODDspace",
+    "headline": "A shared space for people who make things.",
+    "body": "ODDspace is a 1,000+ m² shared space in Vallila for people working across art, culture, design, media, business and other creative fields. It combines workspace, studios, meeting rooms, event spaces and a growing community under one roof. It's still a pilot — the people using it help shape what it becomes."
   },
-  "community": {
-    "eyebrow": "Who it's for",
-    "headline": "Different practices. Same roof.",
-    "body": "Artists, designers, producers, writers, founders, curators, makers and people who do not fit neatly into one title. You do not need to work the same way as everyone else. The point is to have enough different people around that useful conversations can happen without scheduling a networking event."
-  },
-  "proof": {
-    "eyebrow": "The pilot, right now",
-    "title": "ODDspace, in numbers.",
-    "items": [
-      { "value": "1,000+", "label": "m²", "context": "of pilot workspace" },
-      { "value": "40+", "label": "Members", "context": "working under one roof" },
-      {
-        "value": "4",
-        "label": "Dedicated spaces",
-        "context": "for different kinds of creative work"
-      }
-    ]
-  },
-  "whatYouGet": [
+  "spaces": [
     {
-      "number": "01",
-      "title": "24/7 shared workspace access",
-      "body": "Use any available space across ODDspace, any time — no fixed desks, no restrictions."
+      "name": "Co-working space",
+      "body": "For members working day to day — 24/7 access, shared working areas, WiFi and the everyday basics.",
+      "bullets": [
+        "24/7 access",
+        "Shared working areas",
+        "WiFi, kitchen and the basics",
+        "Meeting rooms where needed"
+      ],
+      "image": "../../assets/oddspace/coworking-desks.jpg"
     },
     {
-      "number": "02",
-      "title": "Studios, meeting rooms, gallery and event space",
-      "body": "Dedicated spaces for work that needs more than a shared desk, available to every member."
+      "name": "Event & gallery space",
+      "body": "A raised, curved floor for exhibitions, launches, workshops, talks, shoots, gatherings, performances and showcases.",
+      "bullets": [
+        "Exhibitions and launches",
+        "Workshops and talks",
+        "Shoots and performances",
+        "Private and organisational events"
+      ],
+      "image": "../../assets/oddspace/gallery-floor.jpg"
     },
     {
-      "number": "03",
-      "title": "Member rates for larger spaces",
-      "body": "Book the gallery or auditorium at member pricing, well below the standard rate."
+      "name": "Auditorium",
+      "body": "Tiered seating for talks, screenings, presentations, workshops and smaller events.",
+      "bullets": ["Talks and screenings", "Presentations", "Workshops", "Smaller events"],
+      "image": "../../assets/oddspace/auditorium.jpg"
     },
     {
-      "number": "04",
-      "title": "A community of people working across disciplines",
-      "body": "Direct access to a multidisciplinary network working across art, business and culture."
-    },
-    {
-      "number": "05",
-      "title": "Events, talks and experiments as they happen",
-      "body": "Ongoing talks, sessions and experiments happening inside the space."
-    },
-    {
-      "number": "06",
-      "title": "WiFi, kitchen, coffee and the basics that let you get on with the work",
-      "body": "The essentials to actually get work done, covered."
+      "name": "Audio & podcast studio",
+      "body": "For work that needs more than a desk — recording, streaming and production space with its own backdrop and kit.",
+      "bullets": ["Recording and podcasting", "Streaming setup", "Production space"],
+      "image": "../../assets/oddspace/podcast-studio.jpg"
     }
   ],
   "membership": {
@@ -95,12 +100,12 @@
     "price": "150€ / month",
     "status": "Rolling admission — pilot phase",
     "benefits": [
-      "Full workspace access, 24/7",
-      "Studios, meeting rooms and event spaces",
+      "24/7 workspace access",
+      "Access to shared facilities — kitchen, WiFi, meeting rooms",
       "Member rates on the gallery and auditorium",
       "Community, programming and events"
     ],
-    "ctaLabel": "Come see the space",
+    "ctaLabel": "Become a member",
     "href": "/work-with-odd?interest=oddspace#enquiry-form",
     "note": "Accepted on a rolling basis as space becomes available during the pilot."
   },
@@ -136,10 +141,33 @@
       "body": "Get onboarding details and full access from day one."
     }
   ],
-  "location": {
-    "eyebrow": "Where it is",
-    "headline": "Vallila. Teollisuuskatu 9D.",
-    "body": "ODDspace is at Teollisuuskatu 9D in Vallila, inside Sture697. The neighbourhood already has studios, venues, workshops and creative businesses in every direction. We would rather add to that life than build an island of our own."
+  "proof": {
+    "eyebrow": "The pilot, right now",
+    "title": "ODDspace, in numbers.",
+    "items": [
+      { "value": "1,000+", "label": "m²", "context": "of workspace" },
+      { "value": "40+", "label": "Members", "context": "under the same roof" },
+      {
+        "value": "4",
+        "label": "Kinds of space",
+        "context": "Co-working · Event space · Auditorium · Studio"
+      }
+    ]
+  },
+  "community": {
+    "eyebrow": "Who it's for",
+    "headline": "Different practices. Same roof.",
+    "body": "ODDspace is for people working across art, design, culture, music, media, writing, production, entrepreneurship, technology, research and other creative practices. You don't need to fit one title. Useful things happen because different people and practices share the same place — not automatically, but because the chance is there."
+  },
+  "eventEnquiry": {
+    "headline": "Want to organise an event?",
+    "body": "Have an exhibition, workshop, talk, screening, launch, performance, gathering, shoot or another idea you want to make happen here? You don't need to be a member to ask.",
+    "cta": { "label": "Organise an event", "href": "/work-with-odd?interest=oddspace#enquiry-form" }
+  },
+  "vision": {
+    "eyebrow": "Why ODDspace",
+    "headline": "A practical attempt at continuity.",
+    "body": "Finland has no shortage of creative people. What's often missing are the places, continuity and shared infrastructure that let creative work keep developing between individual projects, productions and funding cycles. ODDspace is one practical attempt to create more of that — a physical home, repeated encounters, room for new collaborations, and somewhere things can develop over time. It's a pilot for a bigger question: what kind of permanent infrastructure could Finland build around its creative and cultural fields?"
   },
   "calendar": {
     "eyebrow": "What's on",
@@ -149,48 +177,56 @@
   },
   "faq": [
     {
+      "question": "What is ODDspace?",
+      "answer": "A 1,000+ m² shared space in Vallila, Helsinki, combining co-working, studios, meeting rooms, a gallery/event space and an auditorium, used by 40+ members working across creative and cultural fields."
+    },
+    {
+      "question": "Where is ODDspace?",
+      "answer": "Teollisuuskatu 9D, in Vallila, Helsinki — part of the Sture697 development."
+    },
+    {
       "question": "How do I become a member?",
-      "answer": "Apply through the contact form below with a note on how you'd like to use the space. Memberships are accepted on a rolling basis as space becomes available during the pilot."
+      "answer": "Apply through the contact form with a note on how you'd like to use the space. Memberships are accepted on a rolling basis as space becomes available during the pilot."
+    },
+    {
+      "question": "What does membership cost?",
+      "answer": "150€ per month, one flat rate — no tiers."
+    },
+    {
+      "question": "What's included in membership?",
+      "answer": "Full, 24/7 access to the co-working space, shared facilities and meeting rooms, plus member rates on the gallery and auditorium."
     },
     {
       "question": "Is there a minimum commitment?",
       "answer": "No — it's a flexible monthly membership with no long-term commitment during the pilot phase."
     },
     {
-      "question": "Can I rent the gallery or auditorium without being a member?",
-      "answer": "Get in touch — the rates above are member pricing; non-member rates are set case by case."
+      "question": "Can I visit before joining?",
+      "answer": "Yes — mention it in your message and we'll set up a time to show you around."
     },
     {
-      "question": "What's included in the 150€/month membership?",
-      "answer": "Full, 24/7 access to the co-working space, studios and meeting rooms, plus member rates on the gallery and auditorium."
+      "question": "Can non-members organise events?",
+      "answer": "Yes. Renting the gallery or auditorium doesn't require membership — get in touch with what you have in mind."
     },
     {
-      "question": "Where exactly is ODDspace?",
-      "answer": "Teollisuuskatu 9D, in Vallila, Helsinki — part of the Sture697 development."
+      "question": "What kinds of events can happen there?",
+      "answer": "Exhibitions, launches, workshops, talks, screenings, shoots, gatherings, performances and showcases have all happened in the space."
     },
     {
-      "question": "Can I visit before applying?",
-      "answer": "Yes — mention it in your message below and we'll set up a time to show you around."
-    }
-  ],
-  "participate": [
-    {
-      "eyebrow": "Work here",
-      "title": "Become a member",
-      "linkLabel": "Apply now →",
-      "href": "/work-with-odd?interest=oddspace#enquiry-form"
+      "question": "What spaces are available?",
+      "answer": "Co-working space, an event/gallery floor, an auditorium and an audio/podcast studio."
     },
     {
-      "eyebrow": "Use the space",
-      "title": "Rent the space",
-      "linkLabel": "Enquire →",
-      "href": "/work-with-odd?interest=oddspace#enquiry-form"
+      "question": "How much does event use cost?",
+      "answer": "Member rates: 200€ for a full day in the 1st floor gallery, 100€ for a half day in the auditorium. Non-member rates are set case by case — get in touch."
     },
     {
-      "eyebrow": "Keep up",
-      "title": "Join the mailing list",
-      "linkLabel": "Sign up →",
-      "href": "#newsletter"
+      "question": "How do I enquire about an event?",
+      "answer": "Use the contact form and tell us what you have in mind — you don't need to be a member first."
+    },
+    {
+      "question": "Is ODDspace accessible?",
+      "answer": "If accessibility is a factor for your visit, get in touch before you come and we'll make sure it works."
     }
   ],
   "railLeft": [
