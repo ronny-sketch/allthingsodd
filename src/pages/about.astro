@@ -1,85 +1,109 @@
 ---
+// Rebuilt 2026-08-30 around a simpler six-section shape, sharing the same
+// layout language as work-with-odd.astro (PageIntro hero, FeatureGrid
+// pillars, ProofGrid, ParticipateBand) instead of About's old, separate
+// four-panel opening + panel/people/network/ambition structure. See
+// docs/architecture.md#v2-about-rebuild and content.config.ts's `about`
+// schema for the reasoning.
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import AboutPanels from '../components/sections/AboutPanels.astro';
-import SectionIntro from '../components/sections/SectionIntro.astro';
+import PageIntro from '../components/sections/PageIntro.astro';
 import Timeline from '../components/sections/Timeline.astro';
+import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import ProofGrid from '../components/sections/ProofGrid.astro';
-import PersonGrid from '../components/sections/PersonGrid.astro';
-import LogoStrip from '../components/sections/LogoStrip.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
-import photoCommunity from '../assets/hero/archive-40.jpg';
 
 const entry = await getEntry('pages', 'about');
 if (!entry || entry.data._template !== 'about')
   throw new Error('about.json content entry missing or malformed');
 const page = entry.data;
-
-const site = await getEntry('site', 'global');
-if (!site) throw new Error('Missing site/global.json content entry');
-const { partners } = site.data;
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
-  <!-- The four-panel opening (What is ODD / Why we exist / How it works /
-       One platform) — plain stacked panels, one per section (see
-       AboutPanels.astro; this used to be a pinned horizontal-scroll version
-       of the same content, dropped 2026-08-21). -->
-  <AboutPanels panels={page.panels} marqueeItems={page.marqueeItems} pageTitle={page.seo.title} />
+  <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} warpTitle />
 
-  <section class="about-story">
+  <section class="about-argument">
+    <div class="wrap">
+      {page.argument.map((paragraph) => <p class="reveal">{paragraph}</p>)}
+    </div>
+  </section>
+
+  <section class="about-sub">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">{page.story.eyebrow}</span>
         <h2>{page.story.title}</h2>
       </div>
       <Timeline items={page.story.milestones} />
+      <p class="about-legal-note reveal">{page.story.legalNote}</p>
     </div>
   </section>
 
-  <PhotoBreak image={photoCommunity} alt="People connecting at an ODD event" />
-
-  {
-    page.proof && (
-      <ProofGrid eyebrow={page.proof.eyebrow} title={page.proof.title} items={page.proof.items} />
-    )
-  }
-
-  <section class="about-people">
+  <section class="about-sub">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">{page.people.eyebrow}</span>
-        <h2>{page.people.title}</h2>
+        <span class="eyebrow">{page.howWeMakeItHappen.eyebrow}</span>
+        <h2>{page.howWeMakeItHappen.title}</h2>
       </div>
-      <p class="about-people-org reveal">{page.people.orgDescription}</p>
-      {page.people.team && page.people.team.length > 0 && <PersonGrid items={page.people.team} />}
+      <p class="about-lede reveal">{page.howWeMakeItHappen.intro}</p>
+      <FeatureGrid cards={page.howWeMakeItHappen.pillars} />
     </div>
   </section>
 
-  <p class="wrap about-network-note reveal">
-    {page.network.note}
-    <a href="/media">See press coverage →</a>
-  </p>
-  <LogoStrip eyebrow={page.network.eyebrow} title={page.network.title} items={partners} />
+  <section class="about-sub about-principles">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">{page.howWeMakeItHappen.principlesEyebrow}</span>
+        <h2>{page.howWeMakeItHappen.principlesTitle}</h2>
+      </div>
+      <FeatureGrid cards={page.howWeMakeItHappen.principles} />
+    </div>
+  </section>
 
   {
-    page.ambition && (
-      <SectionIntro
-        eyebrow={page.ambition.eyebrow}
-        headline={page.ambition.headline}
-        body={page.ambition.body}
-        cta={page.ambition.cta}
+    page.impact.map((snapshot) => (
+      <ProofGrid
+        eyebrow={snapshot.eyebrow}
+        title={snapshot.title}
+        items={snapshot.items}
+        reportLabel={snapshot.reportLabel}
+        reportUrl={snapshot.reportUrl}
+        placeholder={snapshot.placeholder}
       />
-    )
+    ))
   }
 
   <ParticipateBand title="Get involved" items={page.participate} />
+
+  <PhotoBreak
+    image={page.closingImage?.image}
+    alt={page.closingImage?.alt}
+    tall
+  />
 </Layout>
 
 <style>
-  .about-people-org {
-    max-width: 42rem;
+  .about-sub {
+    padding: var(--space-24) 0;
+  }
+  .about-argument {
+    padding: 0 0 var(--space-16);
+  }
+  .about-argument p {
+    max-width: 40rem;
+    margin: 0 auto;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.85;
+    color: var(--color-paper-60);
+  }
+  .about-argument p + p {
+    margin-top: 1.4rem;
+  }
+  .about-lede {
+    max-width: 40rem;
     margin: -1.5rem auto 0;
     text-align: center;
     font-family: var(--font-body);
@@ -87,24 +111,15 @@ const { partners } = site.data;
     line-height: 1.8;
     color: var(--color-paper-60);
   }
-  .about-network-note {
-    padding-top: var(--space-16);
-    text-align: center;
+  .about-legal-note {
+    margin: var(--space-10) auto 0;
     max-width: 40rem;
-    margin-left: auto;
-    margin-right: auto;
+    text-align: center;
     font-family: var(--font-body);
-    font-size: 0.85rem;
-    color: var(--color-paper-60);
+    font-size: 0.8rem;
+    color: var(--color-paper-40);
   }
-  .about-network-note a {
-    color: var(--color-paper-80);
-    text-decoration: underline;
-    text-decoration-color: var(--color-paper-20);
-    text-underline-offset: 3px;
-  }
-  .about-network-note a:hover {
-    color: var(--color-amber-bright);
-    text-decoration-color: var(--color-amber-bright);
+  .about-principles {
+    padding-top: 0;
   }
 </style>

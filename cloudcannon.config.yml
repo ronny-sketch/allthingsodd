@@ -114,23 +114,49 @@ collections_config:
         label: Right side ticker (decorative)
         comment: Same as the left ticker, mirrored on the right edge.
         cascade: true
-      panels:
+      argument:
         type: array
-        label: About page panels (opening scroll)
-        options:
-          structures: _structures.about_panels
-          disable_add: false
-          disable_remove: false
-          disable_reorder: false
-          required: false
+        label: The deeper "why" case (About only)
         comment: >-
-          The four horizontal-scroll panels that open the About page (What is
-          ODD / Why we exist / How it works / One platform), in this order.
-          Add a "Photo panel" or "Text-only panel" to insert a new one
-          anywhere in the sequence. The deeper sections further down the page
-          (Story, Proof, People, Network, Ambition) are separate fields
-          below, not part of this scroll.
+          The paragraphs below About's opening headline/intro — the fuller
+          editorial case for why ODD exists. Each array entry is its own
+          paragraph; keep them as separate short paragraphs rather than one
+          long block.
+        options:
+          required: false
         cascade: true
+      howWeMakeItHappen:
+        type: object
+        label: How we make it happen (About only)
+        comment: >-
+          The Events / Spaces / Relationships & projects pillars, plus a
+          short "ways of working" list of principles underneath them.
+        options:
+          subtype: object
+      impact:
+        type: array
+        label: Impact snapshots — 2025 / 2026 (About only)
+        comment: >-
+          Exactly two entries: a 2025 snapshot (real, verified numbers) and a
+          2026 snapshot. Leave a snapshot's "items" empty and fill in
+          "placeholder" instead until real, verified numbers exist for that
+          year — never invent participant/reach/partner figures to fill the
+          gap. "reportLabel"/"reportUrl" link out to that year's Impact
+          Report; leave both blank if no report exists yet.
+        options:
+          required: false
+        cascade: true
+      closingImage:
+        type: object
+        label: Closing photo (About only)
+        comment: >-
+          The full-bleed photo the page ends on — ideally a real photo from
+          the 2026 ODD launch. Leave "image" unset until a specific, verified
+          photo has been chosen; the page shows a plain placeholder panel
+          instead of guessing at one.
+        options:
+          subtype: object
+          required: false
       opening:
         type: object
         label: Proposition (Home only)
@@ -224,11 +250,12 @@ collections_config:
         type: object
         label: Proof / traction
         comment: >-
-          Appears on Home, About, ODDference and ODDspace (required on
-          ODDspace — its pilot-phase numbers are the whole point of the
-          section). Elsewhere, leave this field out of the page entirely
-          (delete it) rather than filling it with invented numbers.
-          ODDference's version can also carry an optional attendee quote.
+          Appears on Home, ODDference and ODDspace (required on ODDspace —
+          its pilot-phase numbers are the whole point of the section).
+          Elsewhere, leave this field out of the page entirely (delete it)
+          rather than filling it with invented numbers. ODDference's version
+          can also carry an optional attendee quote. About uses its own
+          "impact" field instead (two year-snapshots, not one).
         options:
           subtype: object
           required: false
@@ -289,26 +316,19 @@ collections_config:
         type: object
         label: Partners / network note
         comment: >-
-          Appears on About, Work with ODD and Membership, right above the
-          shared partner logo strip (edited under Global → Partner logos —
-          the same list everywhere it's shown).
-        options:
-          subtype: object
-      ambition:
-        type: object
-        label: The bigger picture (About only)
-        comment: Optional — for longer-term thinking introduced later. Leave the field out entirely until there's real content for it.
-        options:
-          subtype: object
-          required: false
-      people:
-        type: object
-        label: People & organisation (About only)
+          Appears on Work with ODD and Membership, right above the shared
+          partner logo strip (edited under Global → Partner logos — the same
+          list everywhere it's shown). About no longer carries a partner-logo
+          wall of its own.
         options:
           subtype: object
       story:
         type: object
         label: Our story / timeline (About only)
+        comment: >-
+          "legalNote" is the one place the New Nordic Way rf operator fact
+          lives on this page — a quiet caption under the timeline, not its
+          own section.
         options:
           subtype: object
       contact:
@@ -743,57 +763,6 @@ _structures:
         tabbed: false
         value:
           number: '01'
-          title: ''
-          body: ''
-  # One structure with three selectable values — not three separate
-  # structures — per CloudCannon's own documented pattern for a single array
-  # that offers a choice of shapes (a page-builder-style field). Confirmed
-  # against github.com/CloudCannon/agent-skills' structures.md: a
-  # multi-shape array is one _structures.<name> entry with multiple
-  # `values:`, referenced as a single string, not a list of structure names.
-  about_panels:
-    style: select
-    values:
-      - label: Photo panel
-        default: false
-        preview:
-          text:
-            - key: title
-          icon:
-            - image
-        place_groups_below: false
-        tabbed: false
-        value:
-          _kind: media
-          image:
-          alt: ''
-          eyebrow: ''
-          title: ''
-          body: ''
-      - label: '"Four ways in" program list panel'
-        preview:
-          text:
-            - key: title
-          icon:
-            - list
-        place_groups_below: false
-        tabbed: false
-        value:
-          _kind: model
-          eyebrow: ''
-          title: ''
-          items: []
-      - label: Text-only panel
-        preview:
-          text:
-            - key: title
-          icon:
-            - article
-        place_groups_below: false
-        tabbed: false
-        value:
-          _kind: text
-          eyebrow: ''
           title: ''
           body: ''
   proof_item:

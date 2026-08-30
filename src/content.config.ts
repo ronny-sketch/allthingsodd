@@ -460,58 +460,77 @@ const pages = defineCollection({
       z.object({
         _template: z.literal('about'),
         seo,
-        // The four-panel horizontal scroll-pin stays for the conceptual
-        // opening (What is ODD / Why we exist / How it works / One
-        // platform) — see docs/architecture.md#v2 for why the deeper V2
-        // sections (story, proof, people, network, ambition) continue below
-        // it as a normal page instead of extending the pin to ten panels.
-        panels: z.array(
-          // "_kind" (not "kind") deliberately — a leading underscore is
-          // CloudCannon's own convention for "hide this field from the
-          // editor UI" (see cloudcannon.config.yml). It's the discriminant
-          // that picks which of the three panel shapes below applies;
-          // letting an editor retype it would desync the panel from its own
-          // content and break rendering, for zero editorial value.
-          z.discriminatedUnion('_kind', [
-            z.object({
-              _kind: z.literal('media'),
-              image: image(),
-              alt: z.string(),
-              eyebrow: z.string(),
-              title: z.string(),
-              body: z.string(),
-            }),
-            z.object({
-              _kind: z.literal('model'),
-              eyebrow: z.string(),
-              title: z.string(),
-              items: z.array(z.object({ label: z.string(), meta: z.string(), href: z.string() })),
-            }),
-            z.object({
-              _kind: z.literal('text'),
-              eyebrow: z.string(),
-              title: z.string(),
-              body: z.string(),
-              cta: linkCta.optional(),
-            }),
-          ]),
-        ),
-        marqueeItems: z.array(z.string()),
+        // Rebuilt 2026-08-30 around a simpler six-section shape (see
+        // docs/architecture.md#v2-about-rebuild) instead of the old
+        // four-panel scroll-pin opening: Why ODD exists (this uses the same
+        // PageIntro-shaped eyebrow/title/intro as Work with ODD, plus
+        // `argument` for the deeper editorial case) → Our story → How we
+        // make things happen → Impact → Get involved → closing photo.
+        eyebrow: z.string(),
+        title: z.string(),
+        intro: z.string(),
+        // The deeper "why this matters" case, as separate paragraphs (not
+        // one long string) so the editorial rhythm survives in the CMS —
+        // see about.json for the real copy.
+        argument: z.array(z.string()),
         story: z.object({
           eyebrow: z.string(),
           title: z.string(),
           milestones: z.array(z.object({ year: z.string(), title: z.string(), body: z.string() })),
+          // The one place the legal operator fact lives on this page — a
+          // quiet caption under the timeline, not its own section. See
+          // Timeline.astro / about.astro.
+          legalNote: z.string(),
         }),
-        proof: proofSection.optional(),
-        people: z.object({
+        howWeMakeItHappen: z.object({
           eyebrow: z.string(),
           title: z.string(),
-          orgDescription: z.string(),
-          team: z.array(personItem).optional(),
+          intro: z.string(),
+          // Events / Spaces / Relationships & projects — reuses the same
+          // number/title/body feature-card shape as every other "how it
+          // works" section on the site (see featureCard above).
+          pillars: z.array(featureCard),
+          principlesEyebrow: z.string(),
+          principlesTitle: z.string(),
+          // A small number of working principles, same feature-card shape
+          // as `pillars` — kept inside this same object (not a new
+          // top-level field) since it's a sub-part of the same section.
+          principles: z.array(featureCard),
         }),
-        network: z.object({ eyebrow: z.string(), title: z.string(), note: z.string() }),
-        ambition: sectionIntro.optional(),
+        // Two fixed snapshots (2025 real, 2026 pending) — an array, not the
+        // shared `proofSection` object other pages use, precisely because
+        // About needs two of them side by side. `items` is deliberately
+        // allowed to be empty (2026's real numbers don't exist yet — see
+        // ProofGrid.astro's `placeholder` prop): never fabricate a number to
+        // fill it.
+        impact: z.array(
+          z.object({
+            year: z.string(),
+            eyebrow: z.string(),
+            title: z.string(),
+            items: z.array(proofItem),
+            reportLabel: z.string().optional(),
+            reportUrl: z.string().optional(),
+            // Shown instead of the grid when `items` is empty — e.g. "The
+            // 2026 Impact Report is being compiled — verified numbers will
+            // replace this once it's published." Never invent items instead
+            // of using this.
+            placeholder: z.string().optional(),
+          }),
+        ),
         participate: z.array(cta),
+        // The full-bleed 2026 launch photo the page ends on. `image` is
+        // optional on purpose: no verified 2026 launch photo could be
+        // identified from the archive at rebuild time (2026-08-30) — see
+        // PhotoBreak.astro's empty-state handling. Do not point this at a
+        // guessed/random crowd photo; leave it unset until a real one is
+        // confirmed.
+        closingImage: z
+          .object({
+            image: image().optional(),
+            alt: z.string().optional(),
+          })
+          .optional(),
       }),
 
       z.object({

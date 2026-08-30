@@ -37,7 +37,7 @@ src/
     primitives/             Logo, Pill, SocialIcon — dumb, reusable
     navigation/              Nav, Footer, MobileMenu — read from site/global.json
     media/                    Cursor, SteamFilters — page-independent chrome
-    sections/                 Hero, Converge, SubpageRail, AboutPanels, … —
+    sections/                 Hero, Converge, SubpageRail, ProgramGrid, … —
                                page-specific, each reads its own content props
   scripts/                  Vanilla-TS client behavior, one file per interaction
   layouts/Layout.astro      <html> shell: fonts, nav, footer, cursor, sitewide scripts
@@ -55,30 +55,31 @@ It's the wrong call here. ODD has **ten pages, and most have a genuinely
 different, bespoke layout**: the home page's photo mosaic hero and filmstrip
 don't exist anywhere else; ODDfest/ODDference/ODDagency share a rail+grid
 shape but each hero is a different variant (video split, image split,
-full-bleed video); the about page opens with a four-panel sequence unlike
-anything else on the site. Forcing these into a generic
-"sections" abstraction would mean either (a) building generic components that
-can't actually express this site's real layouts, or (b) building one generic
-section type per page anyway, which is a composer in name only.
+full-bleed video). Forcing these into a generic "sections" abstraction would
+mean either (a) building generic components that can't actually express this
+site's real layouts, or (b) building one generic section type per page
+anyway, which is a composer in name only.
 
-Media, Contact, Work with ODD and Membership are the exception that proves
-the rule, not a contradiction of it: they're genuinely simpler, more
-informational pages, so they get a plain shared `PageIntro` header component
-instead of each inventing bespoke hero markup — reuse where the content is
-actually generic, bespoke schemas where it isn't. Within those (and within
-ODDfest/ODDference/ODDagency's now much longer pages), the same logic repeats
-one level down: `FeatureGrid`, `ProgramGrid`, `SectionIntro`, `CaseGrid`,
-`ParticipateBand` and the other V2 section components (see
+Media, Contact, Work with ODD, Membership and (since the 2026-08-30 rebuild)
+About are the exception that proves the rule, not a contradiction of it:
+they're genuinely simpler, more informational/editorial pages, so they get a
+plain shared `PageIntro` header component instead of each inventing bespoke
+hero markup — reuse where the content is actually generic, bespoke schemas
+where it isn't. Within those (and within ODDfest/ODDference/ODDagency's now
+much longer pages), the same logic repeats one level down: `FeatureGrid`,
+`ProgramGrid`, `SectionIntro`, `ProofGrid`, `CaseGrid`, `ParticipateBand` and
+the other V2 section components (see
 [V2](#v2) below) are reused wherever the
 content genuinely has the same shape, and left page-specific where it
-doesn't.
+doesn't — About's own `argument`/`howWeMakeItHappen`/`impact` fields are the
+bespoke part, the rest is the same component family as Work with ODD.
 
 Instead, each page has a **fixed schema** (see `src/content.config.ts`'s
 discriminated union on `template`) with named, real fields — and the
 _repeating_ content within a page (news items, program cards, feature grids,
-participate CTAs, about-page panels) _is_ an editable array with an "add new"
-structure in CloudCannon. That's real editing power scoped to where the site
-actually repeats, not a composer pretending everything is generic.
+participate CTAs, timeline milestones) _is_ an editable array with an "add
+new" structure in CloudCannon. That's real editing power scoped to where the
+site actually repeats, not a composer pretending everything is generic.
 
 ## V2
 
@@ -100,15 +101,23 @@ real decisions worth recording:
    permanent slot in a five-item primary nav — they're reachable from Work
    with ODD's pathway grid and from CTAs throughout the site instead. See
    `src/content/site/global.json`'s `nav` array.
-3. **About's four-panel opening** (trimmed from five panels to four, content
-   updated) carries the conceptual opening — What is ODD / Why we exist / How
-   it works / One platform — as a plain stacked sequence (`AboutPanels.astro`;
-   see `docs/deployment.md`'s history or git log for the pinned
-   horizontal-scroll version this replaced 2026-08-21, dropped for a more
-   direct page). The V2 sections a real About page also needs (Story/timeline,
-   Proof, People, Network, Ambition) continue as a normal vertical page below
-   it. Same "reuse where generic, bespoke where not" call as Media/Contact
-   above, just inside a single page instead of across the sitemap.
+3. **About rebuilt 2026-08-30 around the same component family as Work with
+   ODD** (`about.astro`), replacing the earlier four-panel opening +
+   panels/people/network/ambition structure (`AboutPanels.astro`; see git
+   history for that version and for the pinned horizontal-scroll version it
+   itself replaced 2026-08-21). Six sections, in order: a `PageIntro` hero
+   (why ODD exists) + `argument` paragraphs for the deeper case; `story`
+   (`Timeline`, unchanged, plus a `legalNote` caption carrying the New Nordic
+   Way rf operator fact — About no longer has a separate People/organisation
+   section for it); `howWeMakeItHappen` (`FeatureGrid` pillars — Events /
+   Spaces / Relationships & projects — plus a `principles` "ways of working"
+   `FeatureGrid`); `impact` (two `ProofGrid` snapshots, 2025 and 2026 — see
+   "Field-name collisions" below for why this isn't the shared `proof`
+   field); `participate` (`ParticipateBand`, unchanged shape); and a closing
+   `closingImage` (`PhotoBreak`, optional — no verified 2026 launch photo
+   existed in the archive at rebuild time, so this renders `PhotoBreak`'s
+   empty-surface state rather than guessing at one). See
+   `content.config.ts`'s `about` schema for the full shape.
 4. **Primary nav grouped to five items via a one-level "Info" dropdown**
    (About/Media/Contact) instead of growing to seven flat items — see
    `src/content/site/global.json`'s `nav[].children`. `Nav.astro` renders it
@@ -177,8 +186,12 @@ silently break the CloudCannon editing UI for one of them. Home's is
 `caseTeaser`; About's stays `story`. Membership's closing CTA is `finalCta`
 (not `contact`, which Work with ODD uses for its embedded-form intro), and
 its pre-logo-strip note is `network` (not `proof`, which means a stats grid —
-`proofSection` — everywhere else it's used). Adding a new field name: grep
-`src/content.config.ts` for it first.
+`proofSection` — everywhere else it's used). Same reason About's 2025/2026
+impact snapshots are their own `impact` field (an array of year-stamped
+objects), not `proof` — `proof` is `proofSection` (one object) everywhere
+else it appears (Home/ODDference/ODDspace), a different shape a shared
+`_inputs.proof` cascade entry can't also describe. Adding a new field name:
+grep `src/content.config.ts` for it first.
 
 **Narrow-column placeholder text.** A few components lay real content into a
 fixed-width slot designed for short values — `ProofGrid`'s big stat number,
