@@ -234,12 +234,15 @@ const path = Astro.url.pathname;
     flex-shrink: 0;
   }
 
-  /* 1024px (not 760px) — V2's nav grew a genuinely long label ("Work with
-     ODD"), and at anything narrower the 5-item nav collided with the
-     Pre-register button (caught via an actual tablet-width screenshot, not
-     assumed — it was silently baked into the visual-regression baseline
-     itself). This range covers every common tablet portrait width
-     (iPad Mini/Air/Pro all 768-1024px), not just phones. */
+  /* 1024px (not 760px) — originally set when V2's flat nav carried a
+     genuinely long label ("Work with ODD"); that item moved into the "Info"
+     dropdown 2026-08-30 (now four flat items: ODDfest/ODDference/ODDspace/
+     Info), but the value is left unchanged rather than tightened on
+     unverified assumption — it was caught via an actual tablet-width
+     screenshot originally (not assumed), and still safely covers every
+     common tablet portrait width (iPad Mini/Air/Pro all 768-1024px), not
+     just phones. Re-tighten only after a real screenshot check confirms
+     there's no longer a collision risk at a narrower width. */
   @media (max-width: 1024px) {
     .nav-links {
       display: none;

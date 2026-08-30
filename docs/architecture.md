@@ -61,11 +61,15 @@ anything else on the site. Forcing these into a generic
 can't actually express this site's real layouts, or (b) building one generic
 section type per page anyway, which is a composer in name only.
 
-Media, Contact, Work with ODD and Membership are the exception that proves
-the rule, not a contradiction of it: they're genuinely simpler, more
-informational pages, so they get a plain shared `PageIntro` header component
-instead of each inventing bespoke hero markup — reuse where the content is
-actually generic, bespoke schemas where it isn't. Within those (and within
+Media, Contact and Membership are the exception that proves the rule, not a
+contradiction of it: they're genuinely simpler, more informational pages, so
+they get a plain shared `PageIntro` header component instead of each
+inventing bespoke hero markup — reuse where the content is actually generic,
+bespoke schemas where it isn't. Work with ODD's own hero (`HeroCentered.astro`,
+added in the 2026-08-30 rebuild below) is centred like `PageIntro` but adds a
+real full-bleed photo behind the text — its own component specifically so a
+change there can't regress Contact/Media/Membership, which keep `PageIntro`
+untouched. Within those (and within
 ODDfest/ODDference/ODDagency's now much longer pages), the same logic repeats
 one level down: `FeatureGrid`, `ProgramGrid`, `SectionIntro`, `CaseGrid`,
 `ParticipateBand` and the other V2 section components (see
@@ -97,9 +101,20 @@ real decisions worth recording:
    - participate) via Zod's `.extend()`, since that part is genuinely common.
 2. **"Work with ODD" is the one B2B gateway**, not two competing nav items.
    ODDmembership and ODDagency both need real pages, but neither needed a
-   permanent slot in a five-item primary nav — they're reachable from Work
-   with ODD's pathway grid and from CTAs throughout the site instead. See
-   `src/content/site/global.json`'s `nav` array.
+   permanent slot in the primary nav — they're reachable from Work with
+   ODD's pathway list and from CTAs throughout the site instead. See
+   `src/content/site/global.json`'s `nav` array. **2026-08-30:** Work with
+   ODD itself moved out of the primary nav too, into the "Info" dropdown as
+   "Work with us" (route unchanged) — it stopped being one of the three
+   primary destinations (ODDfest/ODDference/ODDspace) and became the place
+   organisations go to go further, which doesn't need equal top-level
+   billing. The page itself was rebuilt around a tighter IA: hero → what we
+   do/why ODD → four pathways (`PathwayList.astro`, not `ProgramGrid` —
+   `ProgramGrid` stays as-is, it's shared with the homepage's own "What we
+   do" section) → selected work (hidden until real cases exist) →
+   organisations we've worked with (a page-specific curated `logos` field,
+   not the sitewide `partners` list — see `network`'s `_inputs` comment in
+   `cloudcannon.config.yml`) → the enquiry form.
 3. **About's four-panel opening** (trimmed from five panels to four, content
    updated) carries the conceptual opening — What is ODD / Why we exist / How
    it works / One platform — as a plain stacked sequence (`AboutPanels.astro`;
@@ -109,9 +124,11 @@ real decisions worth recording:
    Proof, People, Network, Ambition) continue as a normal vertical page below
    it. Same "reuse where generic, bespoke where not" call as Media/Contact
    above, just inside a single page instead of across the sitemap.
-4. **Primary nav grouped to five items via a one-level "Info" dropdown**
-   (About/Media/Contact) instead of growing to seven flat items — see
-   `src/content/site/global.json`'s `nav[].children`. `Nav.astro` renders it
+4. **Primary nav grouped via a one-level "Info" dropdown**
+   (About/Work with us/Media/Contact — four flat top-level items:
+   ODDfest/ODDference/ODDspace/Info) instead of growing to a flat list of
+   seven — see `src/content/site/global.json`'s `nav[].children`. `Nav.astro`
+   renders it
    as a CSS-only hover/focus-within dropdown (no JS — a keyboard user tabbing
    onto the "Info" link is itself inside `.nav-dropdown`, which satisfies
    `:focus-within` before Tab moves into the menu). `Footer.astro` flattens
@@ -124,15 +141,20 @@ real decisions worth recording:
    named press contact, social. All of it is real content pulled directly
    from the live oddfest.co press page, not invented — see `media.json`.
 
-**Nav breakpoint: 1024px, not 760px.** "Work with ODD" is a genuinely long
-label next to the site's other single-word nav items — at anything narrower
-than 1024px, the 5-item desktop nav collided with the Pre-register button,
-and that broken state got baked straight into the visual-regression baseline
-without anyone noticing (a pixel-diff test only catches _changes_ from a
-baseline, not whether the baseline itself is good — caught here by an actual
-tablet-width screenshot, not assumed). `Nav.astro`'s `.nav-links` now switches
-to the mobile hamburger menu at 1024px, covering every common tablet
-portrait width (iPad Mini/Air/Pro: 768–1024px), not just phones.
+**Nav breakpoint: 1024px, not 760px.** Originally set because "Work with
+ODD" was a genuinely long label next to the site's other single-word nav
+items — at anything narrower than 1024px, the 5-item desktop nav collided
+with the Pre-register button, and that broken state got baked straight into
+the visual-regression baseline without anyone noticing (a pixel-diff test
+only catches _changes_ from a baseline, not whether the baseline itself is
+good — caught here by an actual tablet-width screenshot, not assumed).
+`Nav.astro`'s `.nav-links` now switches to the mobile hamburger menu at
+1024px, covering every common tablet portrait width (iPad Mini/Air/Pro:
+768–1024px), not just phones. **2026-08-30:** "Work with ODD" moved out of
+the flat nav into the "Info" dropdown (see point 4 above), leaving four flat
+items (ODDfest/ODDference/ODDspace/Info) — the 1024px value is left as-is
+rather than tightened on an unverified assumption; re-check with a real
+tablet-width screenshot before lowering it.
 
 **Featured In's infinite scroll direction.** `LogoStrip`'s `scroll` mode
 uses `marquee-right` (see motion.css) with `animation-direction: reverse` —
@@ -160,7 +182,9 @@ of fixing anything.
 **Photo interludes on the subpages.** `PhotoBreak.astro` — a full-bleed,
 uncaptioned image, real ODD archive photography (`src/assets/hero/`), used as
 breathing room between text-heavy sections on ODDfest/ODDference/ODDagency/
-Work with ODD/Membership/About. No overlay text by design: the site's
+Membership/About. (Work with ODD dropped it in the 2026-08-30 rebuild — its
+own hero now carries a full-bleed photo instead, so a second one lower down
+the page would have been redundant.) No overlay text by design: the site's
 minimal layout exists specifically to leave room for a photo to be the whole
 moment. Works cleanly inside `SubpageFrame`'s fixed side rails too (the
 `.bleed` full-viewport-width pattern renders under the rails, which sit at a

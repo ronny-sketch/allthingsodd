@@ -24,7 +24,11 @@
       "lede": "Get closer to creative people and creative thinking.",
       "body": "ODDference brings business leaders into the same room with people working across art, culture and the creative fields. ODDnetwork, projects and partnerships create ways to keep those relationships going beyond the event.",
       "tracks": [
-        { "label": "ODDference", "meta": "Creative expertise meets business", "href": "/oddference" },
+        {
+          "label": "ODDference",
+          "meta": "Creative expertise meets business",
+          "href": "/oddference"
+        },
         {
           "label": "Work with ODD",
           "meta": "Network, projects, partnerships",

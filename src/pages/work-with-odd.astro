@@ -1,41 +1,47 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import PageIntro from '../components/sections/PageIntro.astro';
+import HeroCentered from '../components/sections/HeroCentered.astro';
+import SectionIntro from '../components/sections/SectionIntro.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
-import ProgramGrid from '../components/sections/ProgramGrid.astro';
+import PathwayList from '../components/sections/PathwayList.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
 import WorkEnquiryForm from '../components/sections/WorkEnquiryForm.astro';
-import PhotoBreak from '../components/sections/PhotoBreak.astro';
-import photoCollab from '../assets/hero/archive-12.jpg';
 
 const entry = await getEntry('pages', 'work-with-odd');
 if (!entry || entry.data._template !== 'work-with-odd')
   throw new Error('work-with-odd.json content entry missing or malformed');
 const page = entry.data;
-
-const site = await getEntry('site', 'global');
-if (!site) throw new Error('Missing site/global.json content entry');
-const { partners } = site.data;
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
-  <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} warpTitle />
+  <HeroCentered
+    eyebrow={page.eyebrow}
+    title={page.title}
+    intro={page.intro}
+    primaryCta={page.primaryCta}
+    image={page.heroImage}
+    warpTitle
+  />
+
+  <SectionIntro
+    eyebrow={page.whatWeDo.eyebrow}
+    headline={page.whatWeDo.headline}
+    body={page.whatWeDo.body}
+  />
 
   <section class="wwo-sub">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Why ODD</span>
-        <h2>What makes this different</h2>
+        <h2>Why work with ODD</h2>
       </div>
       <FeatureGrid cards={page.whyOdd} />
     </div>
   </section>
 
-  <ProgramGrid title="Four ways to work with ODD" cards={page.pathways} />
-
-  <PhotoBreak image={photoCollab} alt="A collaborative performance from the ODD archive" />
+  <PathwayList title="Ways to work with us" cards={page.pathways} />
 
   {
     page.cases.length > 0 && (
@@ -43,7 +49,7 @@ const { partners } = site.data;
         <div class="wrap">
           <div class="section-head">
             <span class="eyebrow">Selected work</span>
-            <h2>Cases</h2>
+            <h2>Things we've built together</h2>
           </div>
           <CaseGrid items={page.cases} />
         </div>
@@ -51,31 +57,19 @@ const { partners } = site.data;
     )
   }
 
-  <section class="wwo-sub">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Process</span>
-        <h2>How we work</h2>
-      </div>
-      <FeatureGrid cards={page.howWeWork} />
-    </div>
-  </section>
+  {
+    page.logos.length > 0 && (
+      <LogoStrip eyebrow={page.network.eyebrow} title={page.network.title} items={page.logos} />
+    )
+  }
 
-  <p class="wrap wwo-network-note reveal">{page.network.note}</p>
-  <LogoStrip eyebrow={page.network.eyebrow} title={page.network.title} items={partners} />
-
-  <section class="wwo-sub">
+  <section class="wwo-sub" id="enquiry-form">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">{page.contact.eyebrow}</span>
         <h2>{page.contact.title}</h2>
       </div>
       <p class="wwo-contact-body reveal">{page.contact.body}</p>
-    </div>
-  </section>
-
-  <section class="wwo-sub" id="enquiry-form">
-    <div class="wrap">
       <WorkEnquiryForm />
     </div>
   </section>
@@ -85,19 +79,9 @@ const { partners } = site.data;
   .wwo-sub {
     padding: var(--space-24) 0;
   }
-  .wwo-network-note {
-    padding-top: var(--space-16);
-    text-align: center;
-    max-width: 40rem;
-    margin-left: auto;
-    margin-right: auto;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    color: var(--color-paper-60);
-  }
   .wwo-contact-body {
     max-width: 40rem;
-    margin: -1.5rem auto 0;
+    margin: -1.5rem auto var(--space-10);
     text-align: center;
     font-family: var(--font-body);
     font-size: 0.95rem;
