@@ -229,10 +229,36 @@ const pages = defineCollection({
       image: image().optional(),
     });
 
-    // Shared by ODDfest/ODDference/ODDagency — the rail+hero+features+participate
-    // shape that made them "subpages" in the first place. Each extends this
-    // with the fields that are actually different between them, rather than
-    // all three carrying every other page's optional fields.
+    // ODDfest's "Last year, this looked like…" grid — real, named 2026
+    // Creative Week examples across varied formats (exhibition, performance,
+    // screening, club night, workshop, talk, ...). image is optional (falls
+    // back to a plain surface, same convention as platformCard/ProgramGrid)
+    // since not every example has a usable photo. Ship this array empty
+    // until real, verified 2026 examples exist to put in it — no invented
+    // events/hosts, same "no placeholder data in production" rule as
+    // proof/speakers/previousEdition elsewhere in this file. See
+    // OddfestExamples.astro, which simply doesn't render the section when
+    // this is empty.
+    const creativeWeekExample = z.object({
+      category: z.string(),
+      title: z.string(),
+      host: z.string().optional(),
+      body: z.string(),
+      image: image().optional(),
+      href: z.string().optional(),
+    });
+
+    // Shared by ODDfest/ODDference/ODDagency/ODDspace — the rail+hero shape
+    // that made them "subpages" in the first place. Each extends this with
+    // the fields that are actually different between them, rather than all
+    // four carrying every other page's optional fields. "intro", "features"
+    // and "participate" are deliberately NOT here even though 3 of the 4
+    // use them — ODDfest's 2027 rebuild dropped the split-hero intro
+    // paragraph, the standalone feature grid and the closing "Ways to
+    // participate" band in favour of its own six-section flow (see
+    // docs/architecture.md's 2027 ODDfest rebuild note), so those three
+    // fields are declared individually on the oddference/oddagency/oddspace
+    // branches below instead of forced onto all four.
     const subpageBase = z.object({
       seo,
       _slug: z.enum(['oddfest', 'oddference', 'oddagency', 'oddspace']),
@@ -240,7 +266,6 @@ const pages = defineCollection({
       title: z.string(),
       meta: z.string(),
       primaryCta: linkCta.optional(),
-      intro: z.string(),
       // Which hero layout a subpage uses (split-video/split-image/
       // fullbleed-video) is fixed per page in the route file itself
       // (src/pages/odd*.astro's <SplitHero variant="...">), not content —
@@ -252,8 +277,6 @@ const pages = defineCollection({
         image: image().optional(),
         sub: z.string().optional(),
       }),
-      features: z.array(featureCard),
-      participate: z.array(cta),
       railLeft: z.array(railItem),
       railRight: z.array(railItem),
     });
@@ -318,39 +341,43 @@ const pages = defineCollection({
         aftermovie: z.object({ poster: image(), video: z.string() }),
       }),
 
+      // The 2027 ODDfest rebuild: a distributed city-wide creative week, not
+      // a booked lineup — see docs/architecture.md#v2 and the six-section
+      // flow in src/pages/oddfest.astro (hero / what it is / how it works /
+      // examples / register / FAQ). whatItIs now carries the whole "made
+      // across Helsinki, organisers keep ownership, ODD provides the
+      // umbrella" story in one consolidated section (folding in what used to
+      // be separate whoCanTakePart/whatOddProvides/organiserOwnership
+      // fields) rather than three thin sections repeating the same idea.
+      // forPartners and previousEdition were real 2026-era fields with no
+      // home in the new flow — removed rather than left as stale CMS
+      // controls; re-add a partners-facing section on Work with ODD instead
+      // if that need resurfaces (see CLAUDE.md's Growth-OS-boundary note —
+      // this is a website content decision, not one of those).
       subpageBase.extend({
         _template: z.literal('oddfest'),
         whatItIs: sectionIntro,
         howItWorks: z.array(featureCard),
-        whoCanTakePart: z.array(z.string()),
-        whatOddProvides: z.array(z.string()),
-        organiserOwnership: sectionIntro,
+        // Optional at the object level only in the sense that it renders
+        // nothing until real, verified 2027 dates/venues exist — same
+        // "leave it out rather than invent it" rule as previousEdition used
+        // to follow. Kept in the schema (not deleted) because the shared
+        // ProgrammeList component is exactly what the 2027 programme will
+        // need once it's live.
         programme: z.array(programmeItem),
-        openCall: z
-          .object({
-            status: z.string(),
-            headline: z.string(),
-            body: z.string(),
-            deadline: z.string().optional(),
-            cta: linkCta,
-            eligibilityHref: z.string().optional(),
-          })
-          .optional(),
-        forPartners: sectionIntro,
-        previousEdition: z
-          .object({
-            eyebrow: z.string(),
-            title: z.string(),
-            body: z.string(),
-            proof: z.array(proofItem).optional(),
-            archiveHref: z.string().optional(),
-          })
-          .optional(),
+        examples: z.array(creativeWeekExample),
+        register: z.object({
+          headline: z.string(),
+          body: z.string(),
+          cta: linkCta,
+        }),
         faq: z.array(faqItem),
       }),
 
       subpageBase.extend({
         _template: z.literal('oddference'),
+        intro: z.string(),
+        features: z.array(featureCard),
         bigQuestion: sectionIntro,
         whoItsFor: z.array(audienceItem),
         whyAttend: z.array(featureCard),
@@ -364,17 +391,21 @@ const pages = defineCollection({
           .optional(),
         tickets: z.array(pricingTier).optional(),
         partnershipCta: cta,
+        participate: z.array(cta),
         faq: z.array(faqItem),
       }),
 
       subpageBase.extend({
         _template: z.literal('oddagency'),
+        intro: z.string(),
+        features: z.array(featureCard),
         whatItIs: sectionIntro,
         capabilities: z.array(featureCard),
         whyOdd: z.array(featureCard),
         howItWorks: z.array(featureCard),
         cases: z.array(caseStudy),
         projectTypes: z.array(z.string()),
+        participate: z.array(cta),
       }),
 
       // ODDspace used to be an external link (oddspace.co) from the nav and
@@ -384,6 +415,8 @@ const pages = defineCollection({
       // calendar instead of sending visitors off-site.
       subpageBase.extend({
         _template: z.literal('oddspace'),
+        intro: z.string(),
+        features: z.array(featureCard),
         whatItIs: sectionIntro,
         community: sectionIntro,
         proof: proofSection,
@@ -413,6 +446,7 @@ const pages = defineCollection({
           })
           .optional(),
         faq: z.array(faqItem),
+        participate: z.array(cta),
       }),
 
       z.object({

@@ -70,7 +70,7 @@ collections_config:
       features:
         type: array
         label: Three-column feature grid
-        comment: Subpages only (ODDfest / ODDference / ODDagency) — not on Home or About.
+        comment: ODDference / ODDagency / ODDspace only — not on Home, About or ODDfest.
         options:
           structures: _structures.feature_card
           disable_add: false
@@ -150,8 +150,11 @@ collections_config:
         type: object
         label: '"What it is" intro'
         comment: >-
-          Appears on ODDfest, ODDagency, ODDspace and Membership — each
-          page's own short explainer section.
+          Appears on ODDagency, ODDspace and Membership — each page's own
+          short explainer section. On ODDfest this same field is the "What
+          ODDfest is" section — the consolidated made-across-Helsinki /
+          organisers-keep-ownership / ODD-provides-the-umbrella story, with
+          its own optional cta as the page's earlier "register" link.
         options:
           subtype: object
       community:
@@ -244,30 +247,16 @@ collections_config:
         options:
           subtype: object
           required: false
-      organiserOwnership:
+      register:
         type: object
-        label: '"What participating organisers own" (ODDfest only)'
+        label: '"Register your event" (ODDfest only)'
+        comment: >-
+          The primary CTA section — headline/body/cta. This is the real,
+          live "we're now collecting ideas for 2027" call, not a
+          leave-it-out-until-ready field like proof elsewhere: keep it
+          populated.
         options:
           subtype: object
-      openCall:
-        type: object
-        label: Open call (ODDfest only)
-        comment: Leave this field out entirely when there's no open call running.
-        options:
-          subtype: object
-          required: false
-      forPartners:
-        type: object
-        label: '"For partners" (ODDfest only)'
-        options:
-          subtype: object
-      previousEdition:
-        type: object
-        label: Previous edition / proof (ODDfest only)
-        comment: Leave this field out entirely until there's a real previous edition to reference.
-        options:
-          subtype: object
-          required: false
       bigQuestion:
         type: object
         label: The big question (ODDference only)
@@ -390,6 +379,23 @@ collections_config:
         comment: Appears on ODDfest and (optionally) ODDference.
         options:
           structures: _structures.programme_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      examples:
+        type: array
+        label: '"Last year, this looked like…" examples (ODDfest only)'
+        comment: >-
+          Real, named 2026 Creative Week examples — exhibitions,
+          performances, screenings, club nights, workshops, talks. Photo is
+          optional (a card without one gets a plain surface instead). Leave
+          this empty until real, verified 2026 events/hosts exist — the
+          section itself doesn't render while it's empty. No placeholder or
+          invented events.
+        options:
+          structures: _structures.creative_week_example
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -974,6 +980,27 @@ _structures:
           partner: ''
           summary: ''
           href: '/contact'
+  creative_week_example:
+    style: select
+    values:
+      - label: Example
+        default: false
+        preview:
+          text:
+            - key: title
+            - key: category
+          icon:
+            - image
+          image:
+            - key: image
+        place_groups_below: false
+        tabbed: false
+        value:
+          category: '[PLACEHOLDER — category, e.g. Exhibition]'
+          title: '[PLACEHOLDER — real event title]'
+          host: ''
+          body: ''
+          href: ''
   resource_link_item:
     style: select
     values:
