@@ -3,16 +3,14 @@ import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SubpageFrame from '../components/sections/SubpageFrame.astro';
 import FullbleedVideoHero from '../components/sections/FullbleedVideoHero.astro';
-import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
+import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import ProgrammeList from '../components/sections/ProgrammeList.astro';
-import ProofGrid from '../components/sections/ProofGrid.astro';
+import OddfestExamples from '../components/sections/OddfestExamples.astro';
 import FAQList from '../components/sections/FAQList.astro';
-import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
-import WarpingText from '../components/media/WarpingText.astro';
 import Pill from '../components/primitives/Pill.astro';
-import photoLineup from '../assets/hero/archive-19.jpg';
+import oddfestWordmark from '../assets/logos/oddfest-wordmark.svg';
 import photoCrowd from '../assets/hero/archive-15.jpg';
 
 const entry = await getEntry('pages', 'oddfest');
@@ -26,31 +24,31 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <SubpageFrame slug={page._slug} railLeft={page.railLeft} railRight={page.railRight}>
+    <!-- 1. Hero: ODDfest logo + "Helsinki's creative week." (the page's one h1),
+         rendered inside FullbleedVideoHero itself — no separate title/intro
+         block repeats it below, per the 2027 rebuild brief. -->
     <FullbleedVideoHero
       video={page.heroMedia.video}
       poster={page.heroMedia.poster}
       sub={page.heroMedia.sub}
+      meta={page.meta}
+      logo={oddfestWordmark}
+      logoAlt="ODDfest"
     />
-    <div class="oddf-head reveal">
-      <div class="eyebrow">{page.eyebrow}</div>
-      <WarpingText
-        as="h1"
-        text={page.title}
-        class="oddf-warping-title"
-        color="paper"
-        align="center"
-      />
-      <div class="oddf-meta">{page.meta}</div>
-    </div>
-    <p class="oddf-body reveal">{page.intro}</p>
-    <FeatureGrid cards={page.features} />
 
+    <!-- 2. What ODDfest is: one consolidated section (absorbs the old
+         separate who-can-take-part / what-ODD-provides / organiser-ownership
+         sections into a single body). Its optional cta is the "appears once
+         earlier" instance of the Register CTA, per the brief — anchors down
+         to section 5 rather than duplicating the page. -->
     <SectionIntro
       eyebrow={page.whatItIs.eyebrow}
       headline={page.whatItIs.headline}
       body={page.whatItIs.body}
+      cta={page.whatItIs.cta}
     />
 
+    <!-- 3. How it works: 4 steps. -->
     <section class="oddf-sub">
       <div class="wrap">
         <div class="section-head">
@@ -60,32 +58,10 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       </div>
     </section>
 
-    <section class="oddf-sub oddf-sub--tags">
-      <div class="wrap oddf-tag-cols">
-        <div>
-          <h2>Who can take part</h2>
-          <ul class="oddf-tag-list">
-            {page.whoCanTakePart.map((t) => <li>{t}</li>)}
-          </ul>
-        </div>
-        <div>
-          <h2>What ODD provides</h2>
-          <ul class="oddf-tag-list">
-            {page.whatOddProvides.map((t) => <li>{t}</li>)}
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <PhotoBreak image={photoLineup} alt="A full band on stage with the crowd at ODDfest" />
-
-    <SectionIntro
-      eyebrow={page.organiserOwnership.eyebrow}
-      headline={page.organiserOwnership.headline}
-      body={page.organiserOwnership.body}
-    />
-
     {
+      // Programme logic stays wired up for when the real 2027 programme goes
+      // live, but renders nothing while page.programme is empty — see
+      // content.config.ts's comment on this field.
       page.programme.length > 0 && (
         <section class="oddf-sub">
           <div class="wrap">
@@ -99,50 +75,37 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       )
     }
 
-    {
-      page.openCall && (
-        <section class="oddf-sub oddf-opencall">
-          <div class="wrap">
-            <span class="eyebrow">{page.openCall.status}</span>
-            <h2>{page.openCall.headline}</h2>
-            <p>{page.openCall.body}</p>
-            {page.openCall.deadline && (
-              <p class="oddf-deadline">Deadline: {page.openCall.deadline}</p>
-            )}
-            <Pill href={page.openCall.cta.href} variant="solid" magnetic>
-              {page.openCall.cta.label}
-            </Pill>
-          </div>
-        </section>
-      )
-    }
-
-    <SectionIntro
-      eyebrow={page.forPartners.eyebrow}
-      headline={page.forPartners.headline}
-      body={page.forPartners.body}
-      cta={page.forPartners.cta}
-    />
+    <PhotoBreak image={photoCrowd} alt="Performers on stage during ODDfest" />
 
     {
-      page.previousEdition && (
+      // 4. Examples from 2026 — only renders once real, verified examples
+      // exist (see content.config.ts's `creativeWeekExample` comment: no
+      // invented events ship here). Empty today; this is the one open item
+      // in the rebuild that needs Ronny's real 2026 recap material.
+      page.examples.length > 0 && (
         <section class="oddf-sub">
           <div class="wrap">
             <div class="section-head">
-              <span class="eyebrow">{page.previousEdition.eyebrow}</span>
-              <h2>{page.previousEdition.title}</h2>
+              <h2>Last year, this looked like…</h2>
             </div>
-            <p class="oddf-prev-body reveal">{page.previousEdition.body}</p>
-            {page.previousEdition.proof && page.previousEdition.proof.length > 0 && (
-              <ProofGrid eyebrow="In numbers" title="" items={page.previousEdition.proof} />
-            )}
+            <OddfestExamples items={page.examples} />
           </div>
         </section>
       )
     }
 
-    <PhotoBreak image={photoCrowd} alt="ODDfest performers on stage" />
+    <!-- 5. Register your event: the primary CTA. -->
+    <section id="register" class="oddf-sub oddf-register">
+      <div class="wrap">
+        <h2>{page.register.headline}</h2>
+        <p>{page.register.body}</p>
+        <Pill href={page.register.cta.href} variant="solid" magnetic>
+          {page.register.cta.label}
+        </Pill>
+      </div>
+    </section>
 
+    <!-- 6. FAQ -->
     <section class="oddf-sub">
       <div class="wrap">
         <div class="section-head">
@@ -151,126 +114,33 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
         <FAQList items={page.faq} />
       </div>
     </section>
-
-    <ParticipateBand items={page.participate} noPadTop />
   </SubpageFrame>
 </Layout>
 
 <style>
-  .oddf-head {
-    max-width: 44rem;
-    margin: 0 auto;
-    text-align: center;
-  }
-  .oddf-head .eyebrow {
-    color: var(--color-paper-60);
-  }
-  /* WarpingText renders its <h1> inside its own component file, so Astro's
-     scoped-CSS attribute doesn't carry over from this file — the bare `h1`
-     selector below would silently stop matching. :global() on the class the
-     component's `class` prop applies is the same cross-component-styling
-     pattern already used for Pill overrides elsewhere (see Hero.astro's
-     `.hero-logo :global(svg)`). */
-  .oddf-head :global(.oddf-warping-title) {
-    font-family: var(--font-display);
-    font-weight: 400;
-    color: var(--color-paper);
-    font-size: clamp(2.2rem, 5.5vw, 4rem);
-    line-height: 1.08;
-    margin: 0.9rem 0 0;
-  }
-  .oddf-meta {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    color: var(--color-paper-60);
-    margin-top: 1rem;
-  }
-  .oddf-body {
-    max-width: 42rem;
-    margin: 2.2rem auto 0;
-    text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.8;
-    color: var(--color-paper-60);
-  }
   .oddf-sub {
     padding: var(--space-24) 0;
   }
-  .oddf-tag-cols {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-  }
-  .oddf-tag-cols h2 {
-    font: var(--text-heading-md);
-    color: var(--color-paper);
-    margin: 0 0 1.2rem;
-  }
-  .oddf-tag-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-  }
-  .oddf-tag-list li {
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    color: var(--color-paper-80);
-    background: var(--color-backstage);
-    border: 1px solid var(--color-paper-12);
-    border-radius: 999px;
-    padding: 0.5rem 1.1rem;
-  }
-  @media (max-width: 700px) {
-    .oddf-tag-cols {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-  }
-  .oddf-opencall {
+  .oddf-register {
     text-align: center;
     background: var(--color-backstage);
   }
-  .oddf-opencall .wrap {
+  .oddf-register .wrap {
     max-width: 40rem;
   }
-  .oddf-opencall .eyebrow {
-    color: var(--color-paper-60);
-  }
-  .oddf-opencall h2 {
+  .oddf-register h2 {
     font: var(--text-heading-md);
     color: var(--color-paper);
-    margin: 0.7rem 0 0;
+    margin: 0;
   }
-  .oddf-opencall p {
+  .oddf-register p {
     font-family: var(--font-body);
     font-size: 0.92rem;
     line-height: 1.7;
     color: var(--color-paper-60);
     margin: 1.1rem 0 0;
   }
-  /* .oddf-opencall p — not just .oddf-deadline — since the markup is
-     <p class="oddf-deadline">: a compound-selector rule always beats a
-     single-class one regardless of source order, so the !important this
-     used to need was masking a specificity mismatch rather than expressing
-     a real override. */
-  .oddf-opencall .oddf-deadline {
-    font-weight: 600;
-    color: var(--color-paper-80);
-  }
-  .oddf-opencall :global(.pill) {
+  .oddf-register :global(.pill) {
     margin-top: 1.5rem;
-  }
-  .oddf-prev-body {
-    max-width: 42rem;
-    margin: -1.5rem auto 2rem;
-    text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    line-height: 1.7;
-    color: var(--color-paper-60);
   }
 </style>
