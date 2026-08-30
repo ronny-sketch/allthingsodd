@@ -17,7 +17,7 @@ CloudCannon input per `cloudcannon.config.yml`.
    commands in [CloudCannon's `cloudcannon-configuration` skill][cc-skill] if
    missing). Still worth **walking through the actual Collections view once
    after connecting** to confirm the array "add new" buttons (news photos,
-   program cards, feature cards, about panels) produce sensible blank
+   program cards, feature cards, timeline milestones) produce sensible blank
    templates — the one thing genuinely easier to verify live than from a
    schema alone.
 
@@ -68,9 +68,15 @@ high-level notes:
 - **Membership**: what it is, who it's for, why join, what's included, the
   year-round rhythm, tiers (optional and empty by default — the whole section
   hides itself until pricing exists), the network note, the closing CTA.
-- **About**: the four stacked panels that open the page, then
-  Story/timeline, Proof (optional), People & organisation, the partner
-  network note, "The bigger picture" (optional), and the participate band.
+- **About**: an opening headline + intro + the deeper "why ODD exists" case
+  (as separate paragraphs), Story/timeline (with the New Nordic Way rf legal
+  note underneath it), "How we make it happen" (the Events/Spaces/
+  Relationships & projects pillars, plus a short ways-of-working principles
+  list), two impact snapshots — 2025 and 2026 (leave a year's numbers out
+  and use its placeholder note instead until they're verified — same
+  "no invented numbers" rule as everywhere else), the participate band, and
+  a closing photo (leave unset until a real, confirmed photo exists — the
+  page shows a plain placeholder panel instead of guessing).
 - **Media**: a full press kit — accreditation callout, key facts, ODDfest
   highlights (optional — a stats grid, same "leave it out rather than invent
   numbers" rule as everywhere else), the shared "Featured in" press logo
