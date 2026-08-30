@@ -1,0 +1,133 @@
+---
+// The four real, distinct spaces inside ODDspace (co-working / event-gallery
+// / auditorium / studio) — a photo-led editorial grid, not another
+// text-only FeatureGrid, since the brief asks the visitor to see the rooms
+// before reading much copy about them.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Space {
+  name: string;
+  body: string;
+  bullets?: string[];
+  image?: ImageMetadata;
+}
+interface Props {
+  spaces: Space[];
+}
+const { spaces } = Astro.props;
+---
+
+<div class="space-showcase reveal">
+  {
+    spaces.map((s) => (
+      <div class="space-card">
+        {s.image && (
+          <div class="space-card-photo">
+            <Image src={s.image} alt="" width={700} />
+          </div>
+        )}
+        <div class="space-card-body">
+          <h3>{s.name}</h3>
+          <p>{s.body}</p>
+          {s.bullets && (
+            <ul>
+              {s.bullets.map((b) => (
+                <li>{b}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .space-showcase {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--color-paper-12);
+  }
+  .space-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg);
+  }
+  .space-card-photo {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+  .space-card-photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: contrast(1.05) saturate(1.1);
+  }
+  .space-card-body {
+    padding: 1.8rem 2rem 2.2rem;
+  }
+  .space-card-body h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    color: var(--color-paper);
+    margin: 0;
+  }
+  .space-card-body p {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--color-paper-60);
+    margin: 0.7rem 0 0;
+  }
+  .space-card-body ul {
+    list-style: none;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .space-card-body li {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--color-paper-60);
+    padding-left: 1rem;
+    position: relative;
+  }
+  .space-card-body li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--color-paper-40);
+  }
+  @media (max-width: 700px) {
+    .space-showcase {
+      grid-template-columns: 1fr;
+    }
+    .space-card-body {
+      padding: 1.4rem 0.2rem 1.8rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .space-showcase .space-card {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity 0.55s ease,
+        transform 0.55s ease;
+    }
+    .space-showcase.in .space-card {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
