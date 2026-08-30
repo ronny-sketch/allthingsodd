@@ -1,13 +1,33 @@
 ---
+import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Logo from '../primitives/Logo.astro';
+import Pill from '../primitives/Pill.astro';
 
 interface Props {
   video: string;
   poster: ImageMetadata;
+  // The one visible line of copy over the video — rendered as the page's
+  // real <h1> (this hero replaces the separate title block subpages using
+  // SplitHero render below their own hero; see docs/architecture.md#hero-variants
+  // and oddfest.astro, the only current caller).
   sub: string;
+  // Optional small secondary line under the h1 (e.g. "Helsinki · 2027").
+  meta?: string;
+  // A real page-specific wordmark (e.g. src/assets/logos/oddfest-wordmark.svg)
+  // takes priority over the generic ODD mark below — pass it whenever one
+  // exists rather than showing the brand's generic mark on a page that has
+  // its own real logo asset.
+  logo?: ImageMetadata;
+  logoAlt?: string;
+  // Optional in-hero CTA pair — ODDfest's hero (the only other caller) has
+  // none; ODDference's does (Buy Blind Bird / Partner with ODDference), so
+  // these stay optional additions rather than forcing every caller to pass
+  // both.
+  primaryCta?: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
 }
-const { video, poster, sub } = Astro.props;
+const { video, poster, sub, meta, logo, logoAlt = '', primaryCta, secondaryCta } = Astro.props;
 ---
 
 <header class="oddfest-hero reveal">
@@ -16,8 +36,27 @@ const { video, poster, sub } = Astro.props;
   </video>
   <div class="oddfest-hero-scrim"></div>
   <div class="oddfest-hero-overlay">
-    <div class="oddfest-hero-logo"><Logo ariaHidden /></div>
-    <p class="oddfest-hero-sub">{sub}</p>
+    <div class="oddfest-hero-logo">
+      {logo ? <Image src={logo} alt={logoAlt} width={720} /> : <Logo ariaHidden />}
+    </div>
+    <h1 class="oddfest-hero-sub">{sub}</h1>
+    {meta && <p class="oddfest-hero-meta">{meta}</p>}
+    {
+      (primaryCta || secondaryCta) && (
+        <div class="oddfest-hero-cta">
+          {primaryCta && (
+            <Pill href={primaryCta.href} variant="ticket" magnetic>
+              {primaryCta.label}
+            </Pill>
+          )}
+          {secondaryCta && (
+            <Pill href={secondaryCta.href} variant="outline">
+              {secondaryCta.label}
+            </Pill>
+          )}
+        </div>
+      )
+    }
   </div>
 </header>
 
@@ -63,15 +102,44 @@ const { video, poster, sub } = Astro.props;
     padding: 2rem;
   }
   .oddfest-hero-logo {
-    width: min(440px, 62vw);
+    /* min(440px, 62vw) sized the old ~3:1 generic mark; a real wordmark
+       asset (oddfest-wordmark.svg) is closer to 5:1, so it needs a wider
+       box at the same visual weight — width is the only constraint,
+       height stays auto so either asset's own aspect ratio is respected. */
+    width: min(520px, 78vw);
     filter: drop-shadow(0 4px 30px rgb(0 0 0 / 50%));
     color: var(--color-paper);
   }
+  .oddfest-hero-logo :global(img),
+  .oddfest-hero-logo :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  /* h1 reset — this line carries the page's only h1 (see Props comment
+     above), so it needs the same visual weight the old plain <p> had, not
+     default browser h1 sizing. */
   .oddfest-hero-sub {
+    margin: 0;
     font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(1.15rem, 2.4vw, 1.7rem);
     color: var(--color-paper);
     letter-spacing: 0.01em;
+  }
+  .oddfest-hero-meta {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .oddfest-hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.9rem;
+    margin-top: 0.8rem;
   }
 </style>

@@ -28,7 +28,7 @@ const page = entry.data;
       primaryCta={page.primaryCta}
       warpTitle
     />
-    <FeatureGrid cards={page.features ?? []} />
+    <FeatureGrid cards={page.features} />
 
     <SectionIntro
       eyebrow={page.whatItIs.eyebrow}
@@ -93,7 +93,7 @@ const page = entry.data;
       </div>
     </section>
 
-    <ParticipateBand items={page.participate ?? []} noPadTop />
+    <ParticipateBand items={page.participate} noPadTop />
   </SubpageFrame>
 </Layout>
 
