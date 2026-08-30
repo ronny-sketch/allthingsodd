@@ -72,7 +72,7 @@ for (const route of ROUTES) {
           // date highlight, new events), so it's masked for the same
           // "real noise, not a layout regression" reason as the
           // photographic regions below.
-          '.mosaic, .news-panel img, .four-card-bg, .about-media img, .aftermovie-full, .oddfest-hero video, .oddfest-hero img, .oddf-hero-video video, .oddf-hero-video img, .photo-break img, .odds-calendar-embed',
+          '.mosaic, .news-panel img, .four-card-bg, .aftermovie-full, .oddfest-hero video, .oddfest-hero img, .oddf-hero-video video, .oddf-hero-video img, .photo-break img, .odds-calendar-embed',
         ),
       ],
     });

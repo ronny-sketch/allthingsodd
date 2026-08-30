@@ -3,19 +3,32 @@
 // ContactForm.astro on /contact. This one captures what the guide's account
 // scoring/pipeline actually needs (organisation, interest, goal, timing,
 // UTM/source) and posts to the Worker's /api/business-enquiry route, which
-// upserts Person/Company/Deal in Attio. See worker/src/index.ts and
-// ops/GROWTH_OS_GUIDE.md §28-29.
+// upserts Person/Company/Deal in Attio. See ../odd-growth-os's
+// worker/src/index.ts and ops/GROWTH_OS_GUIDE.md §28-29.
 //
-// Interest options are the canonical product list (schemas/products.yml) —
+// Interest options are the canonical product list
+// (../odd-growth-os/schemas/products.yml) —
 // kept here as UI copy, not in CloudCannon content, per AGENTS.md's CMS
 // rule that implementation-level enums stay out of the editing contract.
+//
+// Labels rewritten 2026-08-30 for Work with ODD's new IA (ODDference/
+// ODDnetwork/Event partnership/ODDagency) — the stored `value`s are
+// unchanged, so existing `?interest=` deep links and Attio's own field
+// mapping keep working. `city_institution_programme` stays defined in
+// products.yml but is dropped from this visible list: nothing links to it
+// after the pathway rewrite (was only ever work-with-odd's own now-removed
+// "Cities & Institutions" card). `oddspace` stays even though it isn't one
+// of the four highlighted pathways — oddspace.json's own CTAs deep-link
+// here with ?interest=oddspace, and removing the option would leave that
+// link landing on a blank "Choose one" select.
 import Pill from '../primitives/Pill.astro';
 
 const PRODUCTS = [
-  { value: 'oddference_corporate', label: 'ODDference — attend or bring a team' },
-  { value: 'oddmembership', label: 'ODDmembership' },
-  { value: 'oddagency', label: 'ODDagency — bring us a brief' },
-  { value: 'strategic_partnership', label: 'A partnership' },
+  { value: 'oddference_corporate', label: 'ODDference' },
+  { value: 'oddmembership', label: 'ODDnetwork' },
+  { value: 'strategic_partnership', label: 'Event partnership' },
+  { value: 'oddagency', label: 'ODDagency / project' },
+  { value: 'oddspace', label: 'ODDspace — membership or renting the space' },
   { value: 'other', label: 'Something else' },
 ];
 ---

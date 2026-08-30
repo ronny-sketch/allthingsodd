@@ -1,13 +1,18 @@
 ---
 // Speaker/team grid — ODDference's Speakers section and About's People
-// section. No image field: no real photos exist yet for either, so this
-// stays a clean typographic card rather than a placeholder-avatar grid.
+// section. `image` is optional: About's team has no photos yet and keeps
+// the clean typographic card; ODDference's 2026 speaker roster has real,
+// verified photos, which render as a photo-led card instead.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
 interface Person {
   name: string;
   role: string;
   organisation?: string;
   bio?: string;
   href?: string;
+  image?: ImageMetadata;
 }
 interface Props {
   items: Person[];
@@ -20,7 +25,12 @@ const { items } = Astro.props;
     items.map((p) => {
       const Tag = p.href ? 'a' : 'div';
       return (
-        <Tag class="person-card" href={p.href}>
+        <Tag class={`person-card ${p.image ? 'has-photo' : ''}`} href={p.href}>
+          {p.image && (
+            <div class="person-photo">
+              <Image src={p.image} alt="" width={480} />
+            </div>
+          )}
           <span class="person-name">{p.name}</span>
           <span class="person-role">
             {p.role}
@@ -46,6 +56,35 @@ const { items } = Astro.props;
     display: block;
     text-decoration: none;
     color: inherit;
+  }
+  /* Photo-led card (ODDference's speaker roster): the photo takes the top
+     of the card edge-to-edge, name/role sit in the same padded footer as
+     the plain typographic card below. */
+  .person-card.has-photo {
+    padding: 0 0 1.5rem;
+  }
+  .person-photo {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #000;
+    margin-bottom: 1.4rem;
+  }
+  .person-photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: contrast(1.05) saturate(1.1) grayscale(0.15);
+    transition: filter var(--duration-fast) ease;
+  }
+  .person-card.has-photo:hover .person-photo :global(img) {
+    filter: contrast(1.05) saturate(1.25) grayscale(0);
+  }
+  .person-card.has-photo .person-name,
+  .person-card.has-photo .person-role,
+  .person-card.has-photo .person-bio {
+    padding-left: 1.8rem;
+    padding-right: 1.8rem;
   }
   .person-name {
     display: block;

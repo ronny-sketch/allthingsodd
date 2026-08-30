@@ -1,15 +1,19 @@
 // Progressive-enhancement submit for every newsletter form on the page
 // (footer + the timed popup share this one script via NewsletterForm.astro —
 // see docs/architecture.md). Replaces the old bare
-// `GET .../beehiiv-hosted-page` redirect with a same-origin POST to
-// /api/newsletter (worker/src/index.ts), which calls beehiiv's API
-// server-side and preserves UTM/source data the redirect never captured.
+// `GET .../beehiiv-hosted-page` redirect with a POST to /api/newsletter on
+// the Growth OS Worker (../odd-growth-os's worker/src/index.ts; see
+// api-base.ts for why this is a cross-origin absolute URL, not same-origin),
+// which calls beehiiv's API server-side and preserves UTM/source data the
+// redirect never captured.
 //
 // If JS fails to load or the fetch throws, each form's own `action`/`method`
 // attributes are untouched, so a native submit still falls through to the
 // original beehiiv-hosted subscribe page — this never leaves a visitor with
 // a dead button.
 import { captureFirstTouch } from './utm';
+import { API_BASE } from './api-base';
+import { trackEvent } from './analytics';
 
 document.querySelectorAll<HTMLFormElement>('[data-newsletter-form]').forEach((form) => {
   const status = form.parentElement?.querySelector<HTMLElement>('.nl-status');
@@ -29,14 +33,17 @@ document.querySelectorAll<HTMLFormElement>('[data-newsletter-form]').forEach((fo
     const payload = { ...Object.fromEntries(new FormData(form)), source };
 
     try {
-      const res = await fetch('/api/newsletter', {
+      const res = await fetch(`${API_BASE}/api/newsletter`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...payload, ...captureFirstTouch() }),
       });
       const data = (await res.json()) as { ok: boolean; message: string };
       status.textContent = data.message;
-      if (data.ok) form.reset();
+      if (data.ok) {
+        trackEvent('newsletter_signup', { source: 'footer_newsletter' });
+        form.reset();
+      }
     } catch {
       status.textContent = "We couldn't sign you up right now — try again shortly.";
     } finally {

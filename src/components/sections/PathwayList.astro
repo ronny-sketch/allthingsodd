@@ -1,0 +1,203 @@
+---
+// Work with ODD's "Ways to work with us" — four entry points, scannable in
+// a few seconds. Deliberately not ProgramGrid (which the homepage's "What
+// we do" section also uses — redesigning it in place would regress that
+// section too): compact rows, not four near-full-viewport cards. The
+// number/stage pair reads as a rough light→deep progression (see
+// content.config.ts's `pathwayCard` comment) without implying any card is
+// gated behind the one before it — every row links out on its own.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Card {
+  number: string;
+  stage: string;
+  meta: string;
+  title: string;
+  body: string;
+  goLabel: string;
+  href: string;
+  image?: ImageMetadata;
+}
+interface Props {
+  title: string;
+  cards: Card[];
+}
+const { title, cards } = Astro.props;
+---
+
+<section class="pathway-list">
+  <div class="wrap">
+    <div class="section-head"><h2>{title}</h2></div>
+    <div class="pathway-rows reveal">
+      {
+        cards.map((card) => (
+          <a class="pathway-row" href={card.href}>
+            <div class="pathway-row-number">
+              <span class="pathway-number">{card.number}</span>
+              <span class="pathway-stage">{card.stage}</span>
+            </div>
+            <div class="pathway-row-media">
+              {card.image ? (
+                <Image class="pathway-row-img" src={card.image} alt="" width={480} />
+              ) : (
+                <div class="pathway-row-img pathway-row-img--empty" />
+              )}
+            </div>
+            <div class="pathway-row-body">
+              <span class="pathway-meta">{card.meta}</span>
+              <h3>{card.title}</h3>
+              <p>{card.body}</p>
+              <span class="pathway-go">{card.goLabel}</span>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .pathway-list {
+    padding: var(--space-24) 0;
+  }
+  .pathway-rows {
+    display: flex;
+    flex-direction: column;
+    margin-top: 3rem;
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .pathway-row {
+    display: grid;
+    grid-template-columns: 6rem 7rem 1fr;
+    gap: 2rem;
+    align-items: center;
+    padding: 1.8rem 0;
+    border-bottom: 1px solid var(--color-paper-12);
+    text-decoration: none;
+    color: inherit;
+    transition: background-color var(--duration-fast) ease;
+  }
+  .pathway-row:hover {
+    background: color-mix(in srgb, var(--color-backstage) 60%, transparent);
+  }
+  .pathway-row-number {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .pathway-number {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.4rem;
+    color: var(--color-paper-40);
+  }
+  .pathway-stage {
+    font: var(--text-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .pathway-row-media {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+  .pathway-row :global(.pathway-row-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: contrast(1.05) saturate(1.15);
+    transition: transform var(--duration-base) ease;
+  }
+  .pathway-row:hover :global(.pathway-row-img) {
+    transform: scale(1.05);
+  }
+  .pathway-row-img--empty {
+    background: var(--color-paper-12);
+  }
+  .pathway-meta {
+    font: var(--text-caption);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .pathway-row-body h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+    color: var(--color-paper);
+    margin: 0.5rem 0 0;
+  }
+  .pathway-row-body p {
+    font-family: var(--font-body);
+    font-size: 0.86rem;
+    line-height: 1.6;
+    color: var(--color-paper-60);
+    margin: 0.6rem 0 0;
+    max-width: 46ch;
+  }
+  .pathway-go {
+    display: inline-block;
+    width: fit-content;
+    margin-top: 1rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-paper);
+    border-bottom: 1px solid var(--color-paper-40);
+    padding-bottom: 0.15rem;
+    transition: border-color var(--duration-fast) ease;
+  }
+  .pathway-row:hover .pathway-go {
+    border-color: var(--color-paper);
+  }
+  @media (max-width: 700px) {
+    .pathway-row {
+      grid-template-columns: 4rem 1fr;
+      grid-template-areas:
+        'number media'
+        'body body';
+      row-gap: 1rem;
+    }
+    .pathway-row-number {
+      grid-area: number;
+    }
+    .pathway-row-media {
+      grid-area: media;
+      max-width: 7rem;
+      margin-left: auto;
+    }
+    .pathway-row-body {
+      grid-area: body;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pathway-rows .pathway-row {
+      opacity: 0;
+      transform: translateY(14px);
+      transition:
+        opacity 0.5s ease,
+        transform 0.5s ease;
+    }
+    .pathway-rows.in .pathway-row {
+      opacity: 1;
+      transform: none;
+    }
+    .pathway-rows.in .pathway-row:nth-child(1) {
+      transition-delay: 0s;
+    }
+    .pathway-rows.in .pathway-row:nth-child(2) {
+      transition-delay: 0.08s;
+    }
+    .pathway-rows.in .pathway-row:nth-child(3) {
+      transition-delay: 0.16s;
+    }
+    .pathway-rows.in .pathway-row:nth-child(4) {
+      transition-delay: 0.24s;
+    }
+  }
+</style>

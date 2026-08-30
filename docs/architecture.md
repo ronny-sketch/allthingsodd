@@ -37,7 +37,7 @@ src/
     primitives/             Logo, Pill, SocialIcon — dumb, reusable
     navigation/              Nav, Footer, MobileMenu — read from site/global.json
     media/                    Cursor, SteamFilters — page-independent chrome
-    sections/                 Hero, Converge, SubpageRail, AboutPanels, … —
+    sections/                 Hero, Converge, SubpageRail, ProgramGrid, … —
                                page-specific, each reads its own content props
   scripts/                  Vanilla-TS client behavior, one file per interaction
   layouts/Layout.astro      <html> shell: fonts, nav, footer, cursor, sitewide scripts
@@ -55,30 +55,35 @@ It's the wrong call here. ODD has **ten pages, and most have a genuinely
 different, bespoke layout**: the home page's photo mosaic hero and filmstrip
 don't exist anywhere else; ODDfest/ODDference/ODDagency share a rail+grid
 shape but each hero is a different variant (video split, image split,
-full-bleed video); the about page opens with a four-panel sequence unlike
-anything else on the site. Forcing these into a generic
-"sections" abstraction would mean either (a) building generic components that
-can't actually express this site's real layouts, or (b) building one generic
-section type per page anyway, which is a composer in name only.
+full-bleed video). Forcing these into a generic "sections" abstraction would
+mean either (a) building generic components that can't actually express this
+site's real layouts, or (b) building one generic section type per page
+anyway, which is a composer in name only.
 
-Media, Contact, Work with ODD and Membership are the exception that proves
-the rule, not a contradiction of it: they're genuinely simpler, more
-informational pages, so they get a plain shared `PageIntro` header component
-instead of each inventing bespoke hero markup — reuse where the content is
-actually generic, bespoke schemas where it isn't. Within those (and within
-ODDfest/ODDference/ODDagency's now much longer pages), the same logic repeats
-one level down: `FeatureGrid`, `ProgramGrid`, `SectionIntro`, `CaseGrid`,
-`ParticipateBand` and the other V2 section components (see
+Media, Contact, Membership and (since the 2026-08-30 rebuild) About are the
+exception that proves the rule, not a contradiction of it: they're genuinely
+simpler, more informational/editorial pages, so they get a plain shared
+`PageIntro` header component instead of each inventing bespoke hero markup —
+reuse where the content is actually generic, bespoke schemas where it isn't.
+Work with ODD's own hero (`HeroCentered.astro`, added in the same 2026-08-30
+rebuild) is centred like `PageIntro` but adds a real full-bleed photo behind
+the text — its own component specifically so a change there can't regress
+Contact/Media/Membership/About, which keep `PageIntro` untouched. Within
+those (and within ODDfest/ODDference/ODDagency's now much longer pages), the
+same logic repeats one level down: `FeatureGrid`, `ProgramGrid`,
+`SectionIntro`, `ProofGrid`, `CaseGrid`, `ParticipateBand` and the other V2
+section components (see
 [V2](#v2) below) are reused wherever the
 content genuinely has the same shape, and left page-specific where it
-doesn't.
+doesn't — About's own `argument`/`howWeMakeItHappen`/`impact` fields are the
+bespoke part, the rest is the same component family as Work with ODD.
 
 Instead, each page has a **fixed schema** (see `src/content.config.ts`'s
 discriminated union on `template`) with named, real fields — and the
 _repeating_ content within a page (news items, program cards, feature grids,
-participate CTAs, about-page panels) _is_ an editable array with an "add new"
-structure in CloudCannon. That's real editing power scoped to where the site
-actually repeats, not a composer pretending everything is generic.
+participate CTAs, timeline milestones) _is_ an editable array with an "add
+new" structure in CloudCannon. That's real editing power scoped to where the
+site actually repeats, not a composer pretending everything is generic.
 
 ## V2
 
@@ -97,21 +102,44 @@ real decisions worth recording:
    - participate) via Zod's `.extend()`, since that part is genuinely common.
 2. **"Work with ODD" is the one B2B gateway**, not two competing nav items.
    ODDmembership and ODDagency both need real pages, but neither needed a
-   permanent slot in a five-item primary nav — they're reachable from Work
-   with ODD's pathway grid and from CTAs throughout the site instead. See
-   `src/content/site/global.json`'s `nav` array.
-3. **About's four-panel opening** (trimmed from five panels to four, content
-   updated) carries the conceptual opening — What is ODD / Why we exist / How
-   it works / One platform — as a plain stacked sequence (`AboutPanels.astro`;
-   see `docs/deployment.md`'s history or git log for the pinned
-   horizontal-scroll version this replaced 2026-08-21, dropped for a more
-   direct page). The V2 sections a real About page also needs (Story/timeline,
-   Proof, People, Network, Ambition) continue as a normal vertical page below
-   it. Same "reuse where generic, bespoke where not" call as Media/Contact
-   above, just inside a single page instead of across the sitemap.
-4. **Primary nav grouped to five items via a one-level "Info" dropdown**
-   (About/Media/Contact) instead of growing to seven flat items — see
-   `src/content/site/global.json`'s `nav[].children`. `Nav.astro` renders it
+   permanent slot in the primary nav — they're reachable from Work with
+   ODD's pathway list and from CTAs throughout the site instead. See
+   `src/content/site/global.json`'s `nav` array. **2026-08-30:** Work with
+   ODD itself moved out of the primary nav too, into the "Info" dropdown as
+   "Work with us" (route unchanged) — it stopped being one of the three
+   primary destinations (ODDfest/ODDference/ODDspace) and became the place
+   organisations go to go further, which doesn't need equal top-level
+   billing. The page itself was rebuilt around a tighter IA: hero → what we
+   do/why ODD → four pathways (`PathwayList.astro`, not `ProgramGrid` —
+   `ProgramGrid` stays as-is, it's shared with the homepage's own "What we
+   do" section) → selected work (hidden until real cases exist) →
+   organisations we've worked with (a page-specific curated `logos` field,
+   not the sitewide `partners` list — see `network`'s `_inputs` comment in
+   `cloudcannon.config.yml`) → the enquiry form.
+3. **About rebuilt 2026-08-30 around the same component family as Work with
+   ODD** (`about.astro`), replacing the earlier four-panel opening +
+   panels/people/network/ambition structure (`AboutPanels.astro`; see git
+   history for that version and for the pinned horizontal-scroll version it
+   itself replaced 2026-08-21). Six sections, in order: a `PageIntro` hero
+   (why ODD exists) + `argument` paragraphs for the deeper case; `story`
+   (`Timeline`, unchanged, plus a `legalNote` caption carrying the New Nordic
+   Way rf operator fact — About no longer has a separate People/organisation
+   section for it); `howWeMakeItHappen` (`FeatureGrid` pillars — Events /
+   Spaces / Relationships & projects — plus a `principles` "ways of working"
+   `FeatureGrid`); `impact` (two `ProofGrid` snapshots, 2025 and 2026 — see
+   "Field-name collisions" below for why this isn't the shared `proof`
+   field); `participate` (`ParticipateBand`, unchanged shape); and a closing
+   `closingImage` (`PhotoBreak`, optional — no verified 2026 launch photo
+   existed in the archive at rebuild time, so this renders `PhotoBreak`'s
+   empty-surface state rather than guessing at one). See
+   `content.config.ts`'s `about` schema for the full shape. About no longer
+   carries its own partner-logo wall (the `network` field), unlike Work with
+   ODD's page-specific curated one — see point 2 above.
+4. **Primary nav grouped via a one-level "Info" dropdown**
+   (About/Work with us/Media/Contact — four flat top-level items:
+   ODDfest/ODDference/ODDspace/Info) instead of growing to a flat list of
+   seven — see `src/content/site/global.json`'s `nav[].children`. `Nav.astro`
+   renders it
    as a CSS-only hover/focus-within dropdown (no JS — a keyboard user tabbing
    onto the "Info" link is itself inside `.nav-dropdown`, which satisfies
    `:focus-within` before Tab moves into the menu). `Footer.astro` flattens
@@ -123,16 +151,66 @@ real decisions worth recording:
    key facts, highlights, boilerplate, press releases, info packs, assets,
    named press contact, social. All of it is real content pulled directly
    from the live oddfest.co press page, not invented — see `media.json`.
+6. **The 2027 ODDference rebuild** (see commit history on
+   `feature/oddference-2027-rebuild`, branched off the ODDfest 2027 rebuild
+   in `feature/oddfest-2027-rebuild`) clarified ODDference's role once
+   ODDfest itself became the distributed, city-wide Creative Week: ODDfest
+   is the open programme across Helsinki; **ODDference is the centrally
+   produced professional experience**, and it's the one that now absorbs
+   the strongest artistic/experiential layer (installations, performances,
+   scenography, spatial design) that used to sit inside the centrally
+   booked ODDfest — not the two events merging, two distinct roles. The
+   rebuilt page (`oddference.astro`/`oddference.json`) drops the old "Big
+   Question"/Themes/Formats/Why attend/Connection/generic-FAQ sections for
+   eight sections built around four real jobs: explain the product, prove
+   2026 credibility, sell the currently active Blind Bird ticket, generate
+   partnership enquiries. Three decisions worth recording:
+   - **No invented ticketing URL.** No Blind Bird checkout integration
+     exists anywhere in this repo. The hero's primary CTA anchors to the
+     page's own ticket section (`#tickets`); the ticket card's own CTA is a
+     real `mailto:ronny@oddfest.co` link (the existing partnerships/press
+     address) as a functional interim path, flagged in `oddference.json`
+     for a real Tiketti/Venga link once one exists — not a fabricated
+     external URL.
+   - **`Aftermovie.astro` was deliberately not reused.** It's a fixed
+     3-brand (ODDfest/ODDference/ODDspace) logo marquee built around the
+     homepage's one shared `home-aftermovie.mp4` — reusing it here would
+     have mislabeled that generic footage as ODDference's. No dedicated
+     ODDference aftermovie exists yet (checked this repo and the live 2026
+     `oddfest.co/oddference/` page), so the new `aftermovie` field ships
+     `undefined` and the section renders nothing until real footage exists
+     — same "don't invent it, ship it empty" rule `oddfest.examples`
+     already established.
+   - **`partners` ships empty for the same reason.** The live 2026 page has
+     no partners section, and `global.json`'s sitewide partner/press logos
+     aren't attributable to ODDference specifically — showing them here
+     would misrepresent them as current ODDference partners. The section
+     (and its own `_structures.logo_item`-based CMS field, distinct from
+     Global → Partner logos) is built and ready; it just needs a real,
+     verified ODDference-specific list.
 
-**Nav breakpoint: 1024px, not 760px.** "Work with ODD" is a genuinely long
-label next to the site's other single-word nav items — at anything narrower
-than 1024px, the 5-item desktop nav collided with the Pre-register button,
-and that broken state got baked straight into the visual-regression baseline
-without anyone noticing (a pixel-diff test only catches _changes_ from a
-baseline, not whether the baseline itself is good — caught here by an actual
-tablet-width screenshot, not assumed). `Nav.astro`'s `.nav-links` now switches
-to the mobile hamburger menu at 1024px, covering every common tablet
-portrait width (iPad Mini/Air/Pro: 768–1024px), not just phones.
+   Two components changed with blast radius beyond this one page:
+   `FullbleedVideoHero.astro` gained optional `primaryCta`/`secondaryCta`
+   props (additive — ODDfest's existing call, which passes neither, is
+   unaffected), and `PersonGrid.astro` gained an optional per-person
+   `image` (also used by `personItem`, so About's photo-less team keeps its
+   existing plain typographic card; ODDference's real, verified 2026
+   speaker photos render the new photo-led card instead).
+
+**Nav breakpoint: 1024px, not 760px.** Originally set because "Work with
+ODD" was a genuinely long label next to the site's other single-word nav
+items — at anything narrower than 1024px, the 5-item desktop nav collided
+with the Pre-register button, and that broken state got baked straight into
+the visual-regression baseline without anyone noticing (a pixel-diff test
+only catches _changes_ from a baseline, not whether the baseline itself is
+good — caught here by an actual tablet-width screenshot, not assumed).
+`Nav.astro`'s `.nav-links` now switches to the mobile hamburger menu at
+1024px, covering every common tablet portrait width (iPad Mini/Air/Pro:
+768–1024px), not just phones. **2026-08-30:** "Work with ODD" moved out of
+the flat nav into the "Info" dropdown (see point 4 above), leaving four flat
+items (ODDfest/ODDference/ODDspace/Info) — the 1024px value is left as-is
+rather than tightened on an unverified assumption; re-check with a real
+tablet-width screenshot before lowering it.
 
 **Featured In's infinite scroll direction.** `LogoStrip`'s `scroll` mode
 uses `marquee-right` (see motion.css) with `animation-direction: reverse` —
@@ -160,7 +238,9 @@ of fixing anything.
 **Photo interludes on the subpages.** `PhotoBreak.astro` — a full-bleed,
 uncaptioned image, real ODD archive photography (`src/assets/hero/`), used as
 breathing room between text-heavy sections on ODDfest/ODDference/ODDagency/
-Work with ODD/Membership/About. No overlay text by design: the site's
+Membership/About. (Work with ODD dropped it in the 2026-08-30 rebuild — its
+own hero now carries a full-bleed photo instead, so a second one lower down
+the page would have been redundant.) No overlay text by design: the site's
 minimal layout exists specifically to leave room for a photo to be the whole
 moment. Works cleanly inside `SubpageFrame`'s fixed side rails too (the
 `.bleed` full-viewport-width pattern renders under the rails, which sit at a
@@ -177,8 +257,12 @@ silently break the CloudCannon editing UI for one of them. Home's is
 `caseTeaser`; About's stays `story`. Membership's closing CTA is `finalCta`
 (not `contact`, which Work with ODD uses for its embedded-form intro), and
 its pre-logo-strip note is `network` (not `proof`, which means a stats grid —
-`proofSection` — everywhere else it's used). Adding a new field name: grep
-`src/content.config.ts` for it first.
+`proofSection` — everywhere else it's used). Same reason About's 2025/2026
+impact snapshots are their own `impact` field (an array of year-stamped
+objects), not `proof` — `proof` is `proofSection` (one object) everywhere
+else it appears (Home/ODDference/ODDspace), a different shape a shared
+`_inputs.proof` cascade entry can't also describe. Adding a new field name:
+grep `src/content.config.ts` for it first.
 
 **Narrow-column placeholder text.** A few components lay real content into a
 fixed-width slot designed for short values — `ProofGrid`'s big stat number,

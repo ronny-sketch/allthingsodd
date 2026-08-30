@@ -89,13 +89,9 @@ const caseStudy = z.object({
   href: z.string(),
 });
 
-const personItem = z.object({
-  name: z.string(),
-  role: z.string(),
-  organisation: z.string().optional(),
-  bio: z.string().optional(),
-  href: z.string().optional(),
-});
+// image() is only available inside the `pages` collection's own schema
+// closure (see below) — personItem needs it (ODDference's speakers now
+// carry real photos), so its full definition lives there, not here.
 
 const programmeItem = z.object({
   title: z.string(),
@@ -262,6 +258,16 @@ const pages = defineCollection({
       image: image().optional(),
     });
 
+    // Work with ODD's four entry points — platformCard plus a number ("01"–
+    // "04") and a one-line "stage" ("Come in." / "Stay involved." / ...).
+    // These aren't sequential funnel steps an organisation must pass through
+    // in order (any card can be the starting point) — the number/stage pair
+    // is a lightweight progression cue for scanning the row, not a gate.
+    const pathwayCard = platformCard.extend({
+      number: z.string(),
+      stage: z.string(),
+    });
+
     // ODDfest's "Last year, this looked like…" grid — real, named 2026
     // Creative Week examples across varied formats (exhibition, performance,
     // screening, club night, workshop, talk, ...). image is optional (falls
@@ -279,6 +285,21 @@ const pages = defineCollection({
       body: z.string(),
       image: image().optional(),
       href: z.string().optional(),
+    });
+
+    // Speaker/team grid shape — About's team (no photos yet) and
+    // ODDference's 2026 speaker roster (real, verified photos — see
+    // oddference.json and PersonGrid.astro's photo-led card). `image` needs
+    // this collection's own `image()` helper, which is why this fragment
+    // lives in the closure instead of alongside the other shared fragments
+    // above `pages`.
+    const personItem = z.object({
+      name: z.string(),
+      role: z.string(),
+      organisation: z.string().optional(),
+      bio: z.string().optional(),
+      href: z.string().optional(),
+      image: image().optional(),
     });
 
     // Shared by ODDfest/ODDference/ODDagency/ODDspace — the rail+hero shape
@@ -421,25 +442,86 @@ const pages = defineCollection({
         faq: z.array(faqItem),
       }),
 
+      // The 2027 ODDference rebuild: the centrally-produced professional
+      // experience (distinct from ODDfest, the distributed creative week —
+      // see docs/architecture.md's ODDference 2027 rebuild note). Four real
+      // jobs — explain the product, prove 2026 credibility, sell the active
+      // Blind Bird ticket, generate partnership enquiries — replace the old
+      // "Big Question" framing and the Themes/Formats/Why attend/Connection/
+      // generic-FAQ sections that didn't map to any of those jobs.
       subpageBase.extend({
         _template: z.literal('oddference'),
-        intro: z.string(),
-        features: z.array(featureCard),
-        bigQuestion: sectionIntro,
+        // A second hero CTA (ODDfest's FullbleedVideoHero call doesn't pass
+        // one) — declared here, not on subpageBase, since it's genuinely
+        // page-specific: "Buy Blind Bird" + "Partner with ODDference" only
+        // makes sense once there's something to sell and someone to court.
+        secondaryCta: linkCta.optional(),
+        // The one-paragraph concept explainer directly under the hero — same
+        // sectionIntro shape oddfest.whatItIs uses. No separate "Big
+        // Question" section repeats this below.
+        concept: sectionIntro,
+        // "Three reasons to come" — major editorial blocks (Ideas / People /
+        // Experience), not FeatureGrid cards, per the rebuild brief; each can
+        // carry its own photo. Rendered by page-scoped markup in
+        // oddference.astro, not a shared grid component.
+        reasons: z.array(
+          z.object({
+            number: z.string(),
+            eyebrow: z.string().optional(),
+            title: z.string(),
+            body: z.string(),
+            image: image().optional(),
+          }),
+        ),
         whoItsFor: z.array(audienceItem),
-        whyAttend: z.array(featureCard),
-        themes: z.array(z.object({ title: z.string(), body: z.string() })),
-        formats: z.array(z.string()),
+        // ODDference 2026's real, verified speaker roster — social proof,
+        // not a line-up for a not-yet-programmed 2027 edition. Optional at
+        // the object level only in the "ships empty until real names exist"
+        // sense; it's populated for this rebuild (10 confirmed 2026
+        // speakers with real photos).
         speakers: z.array(personItem).optional(),
+        // Kept for a real future 2027 programme (ProgrammeList is exactly
+        // what it'll need) — ships empty, same "don't invent it" rule as
+        // oddfest.examples. Not rendered while empty.
         programme: z.array(programmeItem).optional(),
-        connection: sectionIntro,
-        proof: proofSection
-          .extend({ quote: z.object({ text: z.string(), attribution: z.string() }).optional() })
-          .optional(),
+        // "What changes in 2027" — one section: a sectionIntro-shaped
+        // headline plus 3 featureCard items (More immersive / More
+        // connected / More intentional encounters), same shape
+        // oddfest.whatItIs + oddfest.howItWorks already use split across two
+        // sections, combined here into one.
+        whatsChanging: sectionIntro.extend({ items: z.array(featureCard) }),
+        // The active Blind Bird ticket only — ships with exactly one tier.
+        // No invented checkout URL (see oddference.json's own comment on
+        // each tier's href); the future Early Bird/Standard/Late ladder
+        // stays out of both the content and this array until it's live.
         tickets: z.array(pricingTier).optional(),
         partnershipCta: cta,
-        participate: z.array(cta),
-        faq: z.array(faqItem),
+        // No dedicated ODDference aftermovie exists yet (checked the repo
+        // and the live 2026 oddfest.co/oddference/ page — neither has one).
+        // Ships undefined; the section doesn't render until Ronny supplies
+        // real footage. Deliberately not the homepage's Aftermovie.astro
+        // (a fixed 3-brand marquee built for the generic home-aftermovie.mp4
+        // — reusing it here would either mislabel that generic video as
+        // ODDference's or fork the marquee for no real content to show).
+        aftermovie: z
+          .object({
+            poster: image(),
+            video: z.string(),
+          })
+          .optional(),
+        // No ODDference-specific partner/collaborator list could be
+        // verified (the live 2026 page has no partners section; global
+        // partners/press are sitewide and undated, not attributable to
+        // ODDference specifically) — ships empty, same "don't invent it"
+        // rule as tickets/aftermovie/speakers above. Flagged for Ronny.
+        partners: z
+          .array(
+            z.object({
+              name: z.string(),
+              logo: image(),
+            }),
+          )
+          .optional(),
       }),
 
       subpageBase.extend({
@@ -499,14 +581,36 @@ const pages = defineCollection({
       z.object({
         _template: z.literal('work-with-odd'),
         seo,
+        // Rebuilt 2026-08-30 around the page's new role. Note: an earlier
+        // pass on this same day briefly moved this page's nav placement into
+        // the Info dropdown (relabelled "Work with us") — the 2026-08-30
+        // homepage revision brief explicitly requires "Work with ODD" stay a
+        // primary top-level nav item (see site/global.json's `nav`), so that
+        // move was reverted. This page's own H1 still reads "Work with us."
+        // from that pass — left as-is (a copy/positioning call on this page,
+        // not this brief's scope) rather than reverted without confirming
+        // which title is actually wanted; seo.title above keeps
+        // "Work with ODD" for continuity either way.
         eyebrow: z.string(),
         title: z.string(),
         intro: z.string(),
+        heroImage: image(),
+        primaryCta: linkCta,
+        // "What we do" — one short editorial paragraph, same shape as
+        // ODDference's bigQuestion / ODDagency's whatItIs, not a list of
+        // five independent business units.
+        whatWeDo: sectionIntro,
         whyOdd: z.array(featureCard),
-        pathways: z.array(platformCard),
+        pathways: z.array(pathwayCard),
         cases: z.array(caseStudy),
-        howWeWork: z.array(featureCard),
-        network: z.object({ eyebrow: z.string(), title: z.string(), note: z.string() }),
+        // Page-specific curated logo set for organisations ODD has actually
+        // worked with — deliberately NOT the sitewide `partners`/`featuredIn`
+        // lists (those mix festival sponsors, press and historical
+        // relationships that aren't the same claim as "worked with").
+        // Starts empty on purpose: the section renders conditionally, same
+        // pattern as `cases` above, until this is curated by hand.
+        logos: z.array(z.object({ name: z.string(), logo: image() })),
+        network: z.object({ eyebrow: z.string(), title: z.string() }),
         contact: z.object({ eyebrow: z.string(), title: z.string(), body: z.string() }),
       }),
 
@@ -541,58 +645,77 @@ const pages = defineCollection({
       z.object({
         _template: z.literal('about'),
         seo,
-        // The four-panel horizontal scroll-pin stays for the conceptual
-        // opening (What is ODD / Why we exist / How it works / One
-        // platform) — see docs/architecture.md#v2 for why the deeper V2
-        // sections (story, proof, people, network, ambition) continue below
-        // it as a normal page instead of extending the pin to ten panels.
-        panels: z.array(
-          // "_kind" (not "kind") deliberately — a leading underscore is
-          // CloudCannon's own convention for "hide this field from the
-          // editor UI" (see cloudcannon.config.yml). It's the discriminant
-          // that picks which of the three panel shapes below applies;
-          // letting an editor retype it would desync the panel from its own
-          // content and break rendering, for zero editorial value.
-          z.discriminatedUnion('_kind', [
-            z.object({
-              _kind: z.literal('media'),
-              image: image(),
-              alt: z.string(),
-              eyebrow: z.string(),
-              title: z.string(),
-              body: z.string(),
-            }),
-            z.object({
-              _kind: z.literal('model'),
-              eyebrow: z.string(),
-              title: z.string(),
-              items: z.array(z.object({ label: z.string(), meta: z.string(), href: z.string() })),
-            }),
-            z.object({
-              _kind: z.literal('text'),
-              eyebrow: z.string(),
-              title: z.string(),
-              body: z.string(),
-              cta: linkCta.optional(),
-            }),
-          ]),
-        ),
-        marqueeItems: z.array(z.string()),
+        // Rebuilt 2026-08-30 around a simpler six-section shape (see
+        // docs/architecture.md#v2-about-rebuild) instead of the old
+        // four-panel scroll-pin opening: Why ODD exists (this uses the same
+        // PageIntro-shaped eyebrow/title/intro as Work with ODD, plus
+        // `argument` for the deeper editorial case) → Our story → How we
+        // make things happen → Impact → Get involved → closing photo.
+        eyebrow: z.string(),
+        title: z.string(),
+        intro: z.string(),
+        // The deeper "why this matters" case, as separate paragraphs (not
+        // one long string) so the editorial rhythm survives in the CMS —
+        // see about.json for the real copy.
+        argument: z.array(z.string()),
         story: z.object({
           eyebrow: z.string(),
           title: z.string(),
           milestones: z.array(z.object({ year: z.string(), title: z.string(), body: z.string() })),
+          // The one place the legal operator fact lives on this page — a
+          // quiet caption under the timeline, not its own section. See
+          // Timeline.astro / about.astro.
+          legalNote: z.string(),
         }),
-        proof: proofSection.optional(),
-        people: z.object({
+        howWeMakeItHappen: z.object({
           eyebrow: z.string(),
           title: z.string(),
-          orgDescription: z.string(),
-          team: z.array(personItem).optional(),
+          intro: z.string(),
+          // Events / Spaces / Relationships & projects — reuses the same
+          // number/title/body feature-card shape as every other "how it
+          // works" section on the site (see featureCard above).
+          pillars: z.array(featureCard),
+          principlesEyebrow: z.string(),
+          principlesTitle: z.string(),
+          // A small number of working principles, same feature-card shape
+          // as `pillars` — kept inside this same object (not a new
+          // top-level field) since it's a sub-part of the same section.
+          principles: z.array(featureCard),
         }),
-        network: z.object({ eyebrow: z.string(), title: z.string(), note: z.string() }),
-        ambition: sectionIntro.optional(),
+        // Two fixed snapshots (2025 real, 2026 pending) — an array, not the
+        // shared `proofSection` object other pages use, precisely because
+        // About needs two of them side by side. `items` is deliberately
+        // allowed to be empty (2026's real numbers don't exist yet — see
+        // ProofGrid.astro's `placeholder` prop): never fabricate a number to
+        // fill it.
+        impact: z.array(
+          z.object({
+            year: z.string(),
+            eyebrow: z.string(),
+            title: z.string(),
+            items: z.array(proofItem),
+            reportLabel: z.string().optional(),
+            reportUrl: z.string().optional(),
+            // Shown instead of the grid when `items` is empty — e.g. "The
+            // 2026 Impact Report is being compiled — verified numbers will
+            // replace this once it's published." Never invent items instead
+            // of using this.
+            placeholder: z.string().optional(),
+          }),
+        ),
         participate: z.array(cta),
+        // The full-bleed 2026 launch photo the page ends on. `image` is
+        // optional on purpose: no verified 2026 launch photo could be
+        // identified from the archive at rebuild time (2026-08-30) — see
+        // PhotoBreak.astro's empty-state handling. Do not point this at a
+        // guessed/random crowd photo; leave it unset until a real one is
+        // confirmed.
+        closingImage: z
+          .object({
+            image: image().optional(),
+            alt: z.string().optional(),
+          })
+          .optional(),
       }),
 
       z.object({

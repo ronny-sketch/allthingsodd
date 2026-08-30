@@ -2,7 +2,7 @@
 // newsletter-form.ts). "First touch" matters more than "last touch" for a
 // relationship-driven B2B enquiry that might be filled in days after the
 // visitor arrived from a campaign link — see
-// ops/GROWTH_OS_GUIDE.md §32.4 (primary_source vs latest_conversion_source).
+// ../odd-growth-os/ops/GROWTH_OS_GUIDE.md §32.4 (primary_source vs latest_conversion_source).
 const STORAGE_KEY = 'odd_first_touch_v1';
 
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'] as const;

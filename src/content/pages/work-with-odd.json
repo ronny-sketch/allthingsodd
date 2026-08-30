@@ -1,90 +1,88 @@
 {
   "_template": "work-with-odd",
   "seo": {
-    "title": "Work with ODD — network, projects and partnerships",
-    "description": "Ways for organisations to take part in ODD — come to ODDference, stay involved through the network, bring us a project or build a partnership.",
+    "title": "Work with ODD — ODDference, ODDnetwork, partnerships and ODDagency",
+    "description": "Ways for organisations to work with ODD — come to ODDference, stay involved through ODDnetwork, build an event partnership, or bring us a project through ODDagency.",
     "ogImage": "/og/work-with-odd.jpg"
   },
   "eyebrow": "For organisations",
-  "title": "Work with ODD.",
-  "intro": "Come because you want new perspectives. Because something in your organisation is stuck. Because you want to understand a cultural shift, meet people outside your usual field or build something with creative professionals. Start with ODDference, the network, a project or a partnership — whichever makes sense for what you are actually trying to do.",
+  "title": "Work with us.",
+  "intro": "ODD works with organisations that want to get closer to creative thinking, people and culture — through events, ongoing relationships, partnerships and projects.",
+  "heroImage": "../../assets/hero/archive-12.jpg",
+  "primaryCta": { "label": "Start a conversation", "href": "#enquiry-form" },
+  "whatWeDo": {
+    "eyebrow": "What we do",
+    "headline": "Real events, spaces and relationships — not five separate business units.",
+    "body": "We create events, spaces and relationships that bring creative and cultural expertise closer to business and wider society: ODDference, ODDfest, ODDspace, ODDnetwork, and the partnerships and projects that grow out of them. Organisations can join that work in several ways — from attending ODDference to building a project with us from scratch."
+  },
   "whyOdd": [
     {
       "number": "01",
-      "title": "Access to creative expertise",
-      "body": "ODD is built through real events, spaces and working relationships across creative and cultural fields. The value is not a contact list; it is the context and trust to bring the right people into the same conversation."
+      "title": "We work from inside the creative fields",
+      "body": "ODD is built through actual events, spaces and relationships with people working across creative and cultural fields — not a database of contacts."
     },
     {
       "number": "02",
-      "title": "Cross-sector capability",
-      "body": "ODD spends time across creative, business and public-sector contexts. That makes it easier to translate between different ways of thinking without flattening them into the same language."
+      "title": "We connect worlds that don't meet often enough",
+      "body": "ODD regularly operates across creative, cultural, business and public-sector contexts. The value is partly being able to bring different perspectives into the same work without pretending they're all the same."
     },
     {
       "number": "03",
-      "title": "Real communities & platforms",
-      "body": "The work connects back to actual people and places: ODDfest across Helsinki, ODDference, and a year-round home at ODDspace."
+      "title": "We build around the actual need",
+      "body": "A collaboration doesn't need to fit a predefined sponsorship package or agency product. It can start with an event, a question, a project, a partnership or simply a conversation."
     }
   ],
   "pathways": [
     {
-      "meta": "Attend, bring a team, partner",
+      "number": "01",
+      "stage": "Come in.",
+      "meta": "The easiest way to experience ODD",
       "title": "ODDference",
-      "body": "Come to ODDference, bring a team or build part of the event with us.",
+      "body": "Attend yourself, bring a team, or start a conversation around ODDference.",
       "goLabel": "Explore ODDference →",
       "href": "/oddference",
       "image": "../../assets/programs/oddference-card.jpg"
     },
     {
-      "meta": "Stay involved year-round",
-      "title": "ODDmembership",
-      "body": "ODDnetwork is being shaped as a year-round way for organisations that share the direction to stay involved, learn from each other and help build what comes next.",
-      "goLabel": "Explore Membership →",
+      "number": "02",
+      "stage": "Stay involved.",
+      "meta": "A year-round relationship",
+      "title": "ODDnetwork",
+      "body": "ODDnetwork is being shaped as a year-round way for organisations to stay close to the people, questions and activity around ODD.",
+      "goLabel": "Ask about ODDnetwork →",
       "href": "/membership",
       "image": "../../assets/programs/oddmembership-card.jpg"
     },
     {
-      "meta": "Bring us a brief",
-      "title": "ODDagency",
-      "body": "Bring us a question, brief or project. We shape the work with you and bring in the people it actually needs.",
-      "goLabel": "Explore Agency →",
-      "href": "/oddagency",
-      "image": "../../assets/programs/oddagency-card.jpg"
+      "number": "03",
+      "stage": "Build something with us.",
+      "meta": "For ODDference, ODDfest and beyond",
+      "title": "Event partnerships",
+      "body": "Support something that already exists, bring resources or expertise, or create a programme or experience together. Tell us what you want to make possible and let's see what we could build.",
+      "goLabel": "Explore partnerships →",
+      "href": "/work-with-odd?interest=strategic_partnership#enquiry-form",
+      "image": "../../assets/programs/partnerships-card.jpg"
     },
     {
-      "meta": "Build something together",
-      "title": "Partnerships",
-      "body": "Build something with us across ODD's events, spaces or wider work — from funding what already exists to creating something new together.",
-      "goLabel": "Get in touch →",
-      "href": "/contact",
-      "image": "../../assets/programs/partnerships-card.jpg"
+      "number": "04",
+      "stage": "Bring us a project.",
+      "meta": "A concrete brief, question or idea",
+      "title": "ODDagency",
+      "body": "Bring us a brief, a question or an unfinished idea. We shape the work with you and bring in the people it actually needs.",
+      "goLabel": "Explore ODDagency →",
+      "href": "/oddagency",
+      "image": "../../assets/programs/oddagency-card.jpg"
     }
   ],
   "cases": [],
-  "howWeWork": [
-    {
-      "number": "01",
-      "title": "Start a conversation",
-      "body": "Tell us what you are trying to do, change or understand."
-    },
-    {
-      "number": "02",
-      "title": "Find the right pathway",
-      "body": "We work out the simplest useful way to start — an event, the network, a project or a partnership."
-    },
-    {
-      "number": "03",
-      "title": "Build together",
-      "body": "Then we build the specifics together. The form follows the work, not the other way around."
-    }
-  ],
+  "logos": [],
   "network": {
-    "eyebrow": "Who we work with",
-    "title": "Organisations building with ODD",
-    "note": "A growing list of organisations already building with ODD — see the partners below, with more joining as the network grows."
+    "eyebrow": "Who we've worked with",
+    "title": "Organisations we've worked with"
   },
   "contact": {
     "eyebrow": "Get in touch",
-    "title": "Tell us what you're working on.",
-    "body": "Tell us what you are working on, what is stuck, or what you would like to try. The form goes straight to the team."
+    "title": "What are you working on?",
+    "body": "Tell us what you're trying to do, change, understand or build. You don't need to know which ODD pathway fits yet — we can work that out together."
   }
 }
