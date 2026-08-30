@@ -1,9 +1,13 @@
 ---
-// Titled, dated, linked-out resource rows — Media page's Press Releases,
-// Info Packs and Assets & Photos all use this. See content.config.ts's
-// `resourceLink`.
+// Titled, dated, linked-out resource rows — the Media page's media bank and
+// archive both use this. See content.config.ts's `resourceLink`. `type`/
+// `year` are optional and render as a small badge above the title (e.g.
+// "Press release · 2026") — added for the Media page rebuild so a dense list
+// of mixed resource kinds stays scannable without a new component.
 interface Item {
   title: string;
+  type?: string;
+  year?: string;
   date?: string;
   description?: string;
   href: string;
@@ -24,6 +28,9 @@ const { items } = Astro.props;
         rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
       >
         <div class="resource-body">
+          {(item.type || item.year) && (
+            <span class="resource-badge">{[item.type, item.year].filter(Boolean).join(' · ')}</span>
+          )}
           <span class="resource-title">{item.title}</span>
           {item.description && <p class="resource-desc">{item.description}</p>}
         </div>
@@ -53,6 +60,16 @@ const { items } = Astro.props;
   }
   .resource-list .resource-row:last-child {
     border-bottom: 1px solid var(--color-paper-12);
+  }
+  .resource-badge {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
   }
   .resource-title {
     font-family: var(--font-display);

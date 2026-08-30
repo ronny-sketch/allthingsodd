@@ -65,19 +65,31 @@
     { "name": "Tres Méder", "logo": "../../assets/partners/logo-tresmeder.svg" }
   ],
   "featuredIn": [
-    { "name": "Yle", "logo": "../../assets/press/yle.svg" },
-    { "name": "Helsingin Sanomat", "logo": "../../assets/press/hs.svg" },
-    { "name": "Hufvudstadsbladet", "logo": "../../assets/press/hbl.svg" },
-    { "name": "Kauppalehti", "logo": "../../assets/press/Kauppalehti.svg" },
-    { "name": "Aamulehti", "logo": "../../assets/press/Aamulehti.svg" },
-    { "name": "Rumba", "logo": "../../assets/press/rumba.svg" },
-    { "name": "Soundi", "logo": "../../assets/press/soundi.svg" },
-    { "name": "Radio Helsinki", "logo": "../../assets/press/Radio-Helsinki.svg" },
-    { "name": "Resident Advisor", "logo": "../../assets/press/ra.svg" },
-    { "name": "Helsingin Uutiset", "logo": "../../assets/press/helsingin-uutiset.svg" },
-    { "name": "Töölöläinen", "logo": "../../assets/press/toololainen.svg" },
-    { "name": "Markkinointi & Uutiset", "logo": "../../assets/press/markkinointi-uutiset.svg" },
-    { "name": "Evento", "logo": "../../assets/press/Evento.svg" },
+    { "name": "Yle", "logo": "../../assets/press/yle.svg", "pressCoverage": true },
+    { "name": "Helsingin Sanomat", "logo": "../../assets/press/hs.svg", "pressCoverage": true },
+    { "name": "Hufvudstadsbladet", "logo": "../../assets/press/hbl.svg", "pressCoverage": true },
+    { "name": "Kauppalehti", "logo": "../../assets/press/Kauppalehti.svg", "pressCoverage": true },
+    { "name": "Aamulehti", "logo": "../../assets/press/Aamulehti.svg", "pressCoverage": true },
+    { "name": "Rumba", "logo": "../../assets/press/rumba.svg", "pressCoverage": true },
+    { "name": "Soundi", "logo": "../../assets/press/soundi.svg", "pressCoverage": true },
+    {
+      "name": "Radio Helsinki",
+      "logo": "../../assets/press/Radio-Helsinki.svg",
+      "pressCoverage": true
+    },
+    { "name": "Resident Advisor", "logo": "../../assets/press/ra.svg", "pressCoverage": true },
+    {
+      "name": "Helsingin Uutiset",
+      "logo": "../../assets/press/helsingin-uutiset.svg",
+      "pressCoverage": true
+    },
+    { "name": "Töölöläinen", "logo": "../../assets/press/toololainen.svg", "pressCoverage": true },
+    {
+      "name": "Markkinointi & Uutiset",
+      "logo": "../../assets/press/markkinointi-uutiset.svg",
+      "pressCoverage": true
+    },
+    { "name": "Evento", "logo": "../../assets/press/Evento.svg", "pressCoverage": true },
     { "name": "Salute", "logo": "../../assets/press/salute.svg" },
     { "name": "Feedi", "logo": "../../assets/press/feedi.svg" },
     { "name": "Klangi", "logo": "../../assets/press/klangi.svg" },

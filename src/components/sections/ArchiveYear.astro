@@ -1,0 +1,45 @@
+---
+// One year's worth of archived Media page resources — a plain year heading
+// wrapping ResourceList. Media's Archive section is "research history"
+// (past press releases, a given year's dated facts, past impact reports),
+// deliberately separate from the media bank above it ("publish now"). Kept
+// as its own thin component rather than folding the year loop into
+// media.astro directly, since a future page (e.g. a fuller press archive)
+// could reuse the same "group resources by year" shape.
+import ResourceList from './ResourceList.astro';
+
+interface Item {
+  title: string;
+  type?: string;
+  year?: string;
+  date?: string;
+  description?: string;
+  href: string;
+}
+interface Props {
+  year: string;
+  items: Item[];
+}
+const { year, items } = Astro.props;
+---
+
+<div class="archive-year reveal">
+  <h3>{year}</h3>
+  <ResourceList items={items} />
+</div>
+
+<style>
+  .archive-year {
+    margin-top: var(--space-16);
+  }
+  .archive-year:first-child {
+    margin-top: 0;
+  }
+  .archive-year h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+    color: var(--color-paper);
+    margin: 0 0 0.6rem;
+  }
+</style>

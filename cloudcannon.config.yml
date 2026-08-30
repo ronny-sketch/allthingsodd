@@ -492,41 +492,52 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
-      accreditation:
-        type: object
-        label: Accreditation (Media only)
-        comment: The media-accreditation callout and its application link.
-        options:
-          subtype: object
-      keyFacts:
+      jumpLinks:
         type: array
-        label: Key facts (Media only)
+        label: Anchor shortcuts (Media only)
+        comment: >-
+          Optional compact jump-links row under the hero (e.g. About ODD /
+          Media bank / Archive / Press contact). Leave the whole field out to
+          drop it from the page.
         options:
-          structures: _structures.key_fact_item
+          structures: _structures.link_item
           disable_add: false
           disable_remove: false
           disable_reorder: false
           required: false
         cascade: true
-      highlights:
-        type: object
-        label: Highlights (Media only)
-        comment: >-
-          The "last edition, in numbers" stat grid. Leave this field out
-          entirely rather than filling it with invented figures — same rule
-          as the "proof" field elsewhere on the site.
-        options:
-          subtype: object
-          required: false
       boilerplate:
         type: object
         label: Boilerplate (Media only)
-        comment: The one-paragraph company description journalists can lift directly.
+        comment: >-
+          The reusable "what is ODD" description journalists/editors/AI
+          systems can lift directly — keep this consistent with About's and
+          Work with ODD's own approved framing of ODD/ODDfest/ODDference/
+          ODDspace, don't reinvent it here. "bodyFi" is an optional Finnish
+          version — leave blank until a real, approved Finnish press text
+          exists. "keyFacts" is evergreen only (Based in / Operated by / Main
+          activities) — no event dates, themes, curators or venues; those
+          belong in Archive below. The "Website" fact shown on the page is
+          derived automatically from the site's canonical URL, not stored
+          here.
         options:
           subtype: object
-      pressReleases:
+          _inputs:
+            keyFacts:
+              type: array
+              options:
+                structures: _structures.key_fact_item
+                disable_add: false
+                disable_remove: false
+                disable_reorder: false
+      background:
         type: array
-        label: Press releases (Media only)
+        label: Background reading (Media only)
+        comment: >-
+          Small, undated explainer resources (e.g. "Event Formats
+          Explained") — separate from the dated Archive below because these
+          explain what ODD's terms/formats mean rather than report on one
+          year's edition. Optional: leave empty rather than invent one.
         options:
           structures: _structures.resource_link_item
           disable_add: false
@@ -534,37 +545,90 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
-      infoPacks:
-        type: array
-        label: Info packs (Media only)
-        options:
-          structures: _structures.resource_link_item
-          disable_add: false
-          disable_remove: false
-          disable_reorder: false
-          required: false
-        cascade: true
-      assets:
+      mediaBank:
         type: object
-        label: Assets & photos (Media only)
-        comment: '"usageNote" is the photo-credit line shown above the list of links.'
+        label: Media bank — logos, photos, video (Media only)
+        comment: >-
+          The "publish now" asset hub, split by type. "logos.items" are
+          local wordmark/mark files only — no invented dark/light variants;
+          "logos.driveLink" points to the fuller approved kit on Drive.
+          Each photo item's own "usageNote" is that specific collection's
+          credit/usage line — don't turn it into one blanket site-wide note
+          unless a broader policy is actually confirmed.
         options:
           subtype: object
+          _inputs:
+            logos:
+              type: object
+              options:
+                subtype: object
+                _inputs:
+                  items:
+                    type: array
+                    options:
+                      structures: _structures.logo_asset_item
+                      disable_add: false
+                      disable_remove: false
+                      disable_reorder: false
+                  driveLink:
+                    type: object
+                    options:
+                      subtype: object
+                      required: false
+            photos:
+              type: array
+              options:
+                structures: _structures.resource_link_item
+                disable_add: false
+                disable_remove: false
+                disable_reorder: false
+            video:
+              type: array
+              options:
+                structures: _structures.resource_link_item
+                disable_add: false
+                disable_remove: false
+                disable_reorder: false
+      archive:
+        type: array
+        label: Archive, by year (Media only)
+        comment: >-
+          "Research history" — past editions' dates/theme/curators/venues,
+          past press releases, past impact reports. Grouped by year; add a
+          year, then add resource links inside it. Never presented as
+          current/evergreen truth — that's what boilerplate/keyFacts above
+          are for. No invented years or entries.
+        options:
+          structures: _structures.archive_year_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      accreditationNotice:
+        type: object
+        label: Accreditation notice (Media only)
+        comment: >-
+          Optional and off by default ("active: false"). Only switch this on
+          when media accreditation is genuinely, currently open — never
+          invent an open process. Replaces the old permanent "Press
+          accreditation" section.
+        options:
+          subtype: object
+          required: false
       pressContact:
         type: object
         label: Press contact (Media only)
         comment: The named press/PR contact — separate from the general "Contact emails" under Global, which stays partnerships-focused.
         options:
           subtype: object
-      photobank:
+      followSocial:
         type: object
-        label: Photobank (Media only)
+        label: Follow ODD heading (Media only)
         comment: >-
-          Visual Flickr embeds — real, live photo galleries, not just links
-          (those already live under "Assets & photos"). Each item needs a
-          representative placeholder photo (url/width/height) shown before
-          Flickr's own embed script upgrades it into the full gallery widget.
-          Optional: leave the whole field out rather than invent a link.
+          Just the heading + supporting line — the actual platform/handle/
+          link list is pulled live from Global → Social media links, so it
+          can never drift from the real handles.
         options:
           subtype: object
     add_options:
@@ -678,6 +742,75 @@ _structures:
         value:
           name: ''
           logo:
+          # Only tick this on a verified real editorial/media outlet that has
+          # actually covered ODD — not an award body, community, funder or
+          # industry organisation. The Media page's "Featured in" only shows
+          # items with this on; the homepage's own "Featured in" is
+          # unaffected and keeps showing every logo regardless of this flag.
+          pressCoverage: false
+  link_item:
+    style: select
+    values:
+      - label: Link
+        default: false
+        preview:
+          text:
+            - key: label
+          icon:
+            - link
+        place_groups_below: false
+        tabbed: false
+        value:
+          label: ''
+          href: '#'
+  logo_asset_item:
+    style: select
+    values:
+      - label: Logo file
+        default: false
+        preview:
+          text:
+            - key: name
+            - key: format
+          icon:
+            - image
+          image:
+            - key: logo
+        place_groups_below: false
+        tabbed: false
+        value:
+          name: ''
+          format: ''
+          logo:
+  archive_year_item:
+    style: select
+    values:
+      - label: Archive year
+        default: false
+        preview:
+          text:
+            - key: year
+          icon:
+            - calendar_month
+        place_groups_below: false
+        tabbed: false
+        value:
+          year: '—'
+          items: []
+        # Best-effort nested config (CloudCannon's dot-notation/nested-
+        # structure support for an array inside a structure's own value
+        # isn't fully documented) — if the editor falls back to generic
+        # array editing for "items" here, that's a known, harmless
+        # degradation: the underlying data still matches resource_link_item's
+        # shape either way.
+        _inputs:
+          items:
+            type: array
+            options:
+              structures: _structures.resource_link_item
+              disable_add: false
+              disable_remove: false
+              disable_reorder: false
   partner_logo_item:
     style: select
     values:

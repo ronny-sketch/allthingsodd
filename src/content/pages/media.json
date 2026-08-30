@@ -1,136 +1,142 @@
 {
   "_template": "media",
   "seo": {
-    "title": "Media — ODD",
-    "description": "Key facts, press releases, accreditation, photos, logos and contacts for covering ODD."
+    "title": "ODD Media & Press — facts, photos, logos and contact",
+    "description": "Official information about ODD for press and media use — boilerplate description, key facts, press photos, video, logos, past press releases and press contact details."
   },
   "eyebrow": "Media",
-  "title": "Media.",
-  "intro": "Key facts, press releases, accreditation, photos, logos and contacts for covering ODD.",
-  "accreditation": {
-    "eyebrow": "Accreditation",
-    "headline": "Press accreditation.",
-    "body": "Media accreditation opens ahead of each ODDfest and ODDference edition. Get in touch with press below to be notified when the next round opens."
-  },
-  "keyFacts": [
-    {
-      "label": "2026 event dates",
-      "value": "ODDfest Fri–Sat, June 12–13, 2026 · ODDference Thu–Fri, June 11–12, 2026 · Creative Week Mon–Sun, June 8–14, 2026"
-    },
-    {
-      "label": "Location",
-      "value": "Multiple iconic locations across central Helsinki, including Lasipalatsi, Kulttuurikasarmi, Tavastia Club, Semifinal, Kamppi Chapel, and Vanha Ylioppilastalo"
-    },
-    { "label": "2026 theme", "value": "Bravery" },
-    {
-      "label": "Program curators",
-      "value": "Minna Tervamäki, Suvi Honkanen, Otto Kylmälä, Pihla Viitala, Johanna Oras, Jonas Verwijnen, Ukko-Pekka Itäpelto, Emmi Kärnä, Karoliina Jarenko, and Elisabet Lahti"
-    },
-    {
-      "label": "Mission",
-      "value": "ODD exists to connect Finland's creative and cultural fields with business and wider society, while building better conditions for creative work itself."
-    }
+  "title": "ODD media & press.",
+  "intro": "Facts, boilerplate copy, photos, video, logos, press material and a press contact — for journalists, editors, photographers, broadcasters and anyone covering ODD.",
+  "jumpLinks": [
+    { "label": "About ODD", "href": "#about-odd" },
+    { "label": "Media bank", "href": "#media-bank" },
+    { "label": "Archive", "href": "#archive" },
+    { "label": "Press contact", "href": "#press-contact" }
   ],
-  "highlights": {
-    "eyebrow": "ODDfest 2025 highlights",
-    "title": "ODDfest 2025, in numbers.",
-    "items": [
-      { "value": "2,600", "label": "Attendees", "context": "1,900+ signups" },
-      { "value": "83", "label": "Sessions", "context": "Across 8 stages, 7+ creative sectors" },
-      { "value": "150+", "label": "Speakers & artists", "context": "20+ nationalities" },
-      {
-        "value": "350+",
-        "label": "Contributors",
-        "context": "Partners, speakers, artists, staff, volunteers"
-      },
-      {
-        "value": "€400K",
-        "label": "Direct economic impact",
-        "context": "€320K invested into the creative economy"
-      },
-      { "value": "20+", "label": "Collaborative projects", "context": "Sparked within two months" },
-      { "value": "1M", "label": "Total audience reach" },
-      { "value": "20+", "label": "Countries reached" }
-    ]
-  },
   "boilerplate": {
     "eyebrow": "Boilerplate",
     "headline": "ODD in one paragraph.",
-    "body": "ODD is a Helsinki-based initiative connecting Finland's creative and cultural fields with business and wider society. It creates events, spaces and projects that strengthen the conditions for creative work and bring people from different fields into closer contact. ODD's work includes ODDfest, ODDference, ODDspace, networks, partnerships and project-based collaborations. ODD is operated by the Finnish non-profit New Nordic Way rf."
+    "body": "ODD is a Helsinki-based initiative connecting Finland's creative and cultural fields with business and wider society. ODDfest is ODD's open, city-wide creative week across Helsinki, made by independent organisers with ODD providing the shared umbrella. ODDference is ODD's professional event, built around what business and wider society can learn from creative expertise. ODDspace is ODD's year-round creative space in Vallila, Helsinki. ODD is operated by New Nordic Way rf, a Finnish non-profit based in Helsinki.",
+    "keyFacts": [
+      { "label": "Based in", "value": "Helsinki, Finland" },
+      { "label": "Operated by", "value": "New Nordic Way rf" },
+      { "label": "Main activities", "value": "ODDfest · ODDference · ODDspace" }
+    ]
   },
-  "pressReleases": [
-    {
-      "title": "ODDfest Press Release (FI)",
-      "date": "June 9, 2026",
-      "href": "https://docs.google.com/document/d/101UDyCFxqV8pvFsVIs3PP_hsK-vY-bXV/edit?usp=sharing&ouid=105453556049928542928&rtpof=true&sd=true"
-    }
-  ],
-  "infoPacks": [
+  "background": [
     {
       "title": "Event Formats Explained",
+      "description": "A short explainer of ODD's event formats.",
       "href": "https://drive.google.com/file/d/1VxcygxFTBO_dxMDkUYEGQjA_kUPSQNf8/view?usp=drive_link"
-    },
-    {
-      "title": "ODDfest 2025 Impact Report",
-      "href": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ"
     }
   ],
-  "assets": {
-    "eyebrow": "Assets & photos",
-    "title": "Photos, video and logos",
-    "usageNote": "Pictures are free to use in editorial content related to ODDfest. Please credit \"ODDfest / photographer's name\".",
-    "items": [
-      {
-        "title": "ODDfest 2026 Photobank",
-        "description": "Flickr",
-        "href": "https://www.flickr.com/photos/204686183@N06/"
-      },
-      {
-        "title": "ODDfest 2025 Photobank",
-        "description": "Flickr",
-        "href": "https://www.flickr.com/photos/202979718@N07/"
-      },
-      {
-        "title": "ODDfest 2026 Lineup Images",
-        "description": "Google Drive",
-        "href": "https://drive.google.com/drive/folders/1hjN_7EIuRJ_EeGXqABoM2QdBvCw-vjwW?usp=sharing"
-      },
-      {
-        "title": "ODDfest 2025 Aftermovie",
-        "description": "YouTube",
-        "href": "https://www.youtube.com/watch?v=lBM1Lc3noQE"
-      },
-      {
-        "title": "Logos",
+  "mediaBank": {
+    "eyebrow": "Media bank",
+    "title": "Photos, video and logos.",
+    "logos": {
+      "note": "Wordmarks only. For the fuller, approved kit — including dark/light variants — see the full logo folder below.",
+      "items": [
+        {
+          "name": "ODDfest wordmark",
+          "format": "SVG",
+          "logo": "../../assets/logos/oddfest-wordmark.svg"
+        },
+        {
+          "name": "ODDspace wordmark",
+          "format": "SVG",
+          "logo": "../../assets/logos/oddspace-wordmark.svg"
+        },
+        {
+          "name": "ODDference mark",
+          "format": "PNG",
+          "logo": "../../assets/logos/oddference-mark.png"
+        }
+      ],
+      "driveLink": {
+        "title": "Full logo kit",
         "description": "Google Drive",
         "href": "https://drive.google.com/drive/folders/12zlmz0BqDUkOE5cLeM8moLx3EcLaW67I?usp=sharing"
       }
+    },
+    "photos": [
+      {
+        "title": "ODDfest 2026 Photobank",
+        "type": "Photos",
+        "year": "2026",
+        "description": "Flickr",
+        "href": "https://www.flickr.com/photos/204686183@N06/",
+        "usageNote": "Editorial use — credit \"ODDfest / photographer's name\"."
+      },
+      {
+        "title": "ODDfest 2025 Photobank",
+        "type": "Photos",
+        "year": "2025",
+        "description": "Flickr",
+        "href": "https://www.flickr.com/photos/202979718@N07/",
+        "usageNote": "Editorial use — credit \"ODDfest / photographer's name\"."
+      },
+      {
+        "title": "ODDfest 2026 Lineup Images",
+        "type": "Photos",
+        "year": "2026",
+        "description": "Google Drive",
+        "href": "https://drive.google.com/drive/folders/1hjN_7EIuRJ_EeGXqABoM2QdBvCw-vjwW?usp=sharing",
+        "usageNote": "Editorial use — credit \"ODDfest / photographer's name\"."
+      }
+    ],
+    "video": [
+      {
+        "title": "ODDfest 2025 Aftermovie",
+        "type": "Video",
+        "year": "2025",
+        "description": "YouTube",
+        "href": "https://www.youtube.com/watch?v=lBM1Lc3noQE"
+      }
     ]
   },
+  "archive": [
+    {
+      "year": "2026",
+      "items": [
+        {
+          "title": "ODDfest 2026 press release (FI)",
+          "type": "Press release",
+          "date": "June 9, 2026",
+          "href": "https://docs.google.com/document/d/101UDyCFxqV8pvFsVIs3PP_hsK-vY-bXV/edit?usp=sharing&ouid=105453556049928542928&rtpof=true&sd=true"
+        },
+        {
+          "title": "ODDfest 2026 — dates, theme and venues",
+          "type": "Event record",
+          "description": "ODDfest Fri–Sat, June 12–13, 2026 · ODDference Thu–Fri, June 11–12, 2026 · Creative Week Mon–Sun, June 8–14, 2026. Theme: \"Bravery\". Venues: Lasipalatsi, Kulttuurikasarmi, Tavastia Club, Semifinal, Kamppi Chapel, Vanha Ylioppilastalo. Programme curators: Minna Tervamäki, Suvi Honkanen, Otto Kylmälä, Pihla Viitala, Johanna Oras, Jonas Verwijnen, Ukko-Pekka Itäpelto, Emmi Kärnä, Karoliina Jarenko, Elisabet Lahti.",
+          "href": "https://docs.google.com/document/d/101UDyCFxqV8pvFsVIs3PP_hsK-vY-bXV/edit?usp=sharing&ouid=105453556049928542928&rtpof=true&sd=true"
+        }
+      ]
+    },
+    {
+      "year": "2025",
+      "items": [
+        {
+          "title": "ODDfest 2025 Impact Report",
+          "type": "Impact report",
+          "description": "The first ODDfest, in numbers: 2,600 attendees (1,900+ signups), 83 sessions across 8 stages, 150+ speakers and artists (20+ nationalities), 350+ contributors, €400K direct economic impact (€320K invested into the creative economy), 20+ collaborative projects sparked within two months, 1M total audience reach across 20+ countries.",
+          "href": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ"
+        }
+      ]
+    }
+  ],
+  "accreditationNotice": {
+    "active": false
+  },
   "pressContact": {
+    "eyebrow": "Press contact",
+    "title": "Need something for a story?",
+    "body": "Need an interview, comment, additional material or help finding the right person? Get in touch.",
     "name": "Ronny Eriksson",
     "role": "Partnerships & Press, ODD",
     "email": "ronny@oddfest.co"
   },
-  "photobank": {
-    "eyebrow": "Photobank",
-    "title": "Browse the archive.",
-    "note": "The full public photo archive — browse and download directly from Flickr.",
-    "items": [
-      {
-        "label": "ODDfest 2025 Photobank",
-        "href": "https://www.flickr.com/photos/oddfest/",
-        "photo": "https://live.staticflickr.com/65535/54623635325_3b9e33349c_c.jpg",
-        "photoWidth": 799,
-        "photoHeight": 533
-      },
-      {
-        "label": "ODDfest 2026 Photobank",
-        "href": "https://www.flickr.com/photos/204686183@N06/",
-        "photo": "https://live.staticflickr.com/65535/55345176214_93b8bdb822_z.jpg",
-        "photoWidth": 640,
-        "photoHeight": 427
-      }
-    ]
+  "followSocial": {
+    "title": "Follow ODD",
+    "body": "News, programme announcements, photos and what we're working on."
   }
 }
