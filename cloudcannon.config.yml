@@ -60,6 +60,10 @@ collections_config:
       participate:
         type: array
         label: '"Ways to participate" cards'
+        comment: >-
+          ODDfest / ODDference / ODDagency. Not on ODDspace — its rebuilt
+          "Enter the space" section replaces this with its own dedicated
+          membership/event-enquiry pair.
         options:
           structures: _structures.cta
           disable_add: false
@@ -70,7 +74,10 @@ collections_config:
       features:
         type: array
         label: Three-column feature grid
-        comment: Subpages only (ODDfest / ODDference / ODDagency) — not on Home or About.
+        comment: >-
+          ODDfest / ODDference / ODDagency — not on Home, About or ODDspace
+          (its "spaces" field below replaces this with its own photo-led
+          showcase).
         options:
           structures: _structures.feature_card
           disable_add: false
@@ -80,10 +87,22 @@ collections_config:
         cascade: true
       primaryCta:
         type: object
-        label: Primary button (ODDference only)
-        comment: The solid "Buy your ticket"-style button in the hero. Home, ODDfest, ODDagency and About don't use this field.
+        label: Primary button (ODDference / ODDspace)
+        comment: >-
+          The solid hero button — "Buy your ticket" on ODDference, "Become a
+          member" on ODDspace (also reused in ODDspace's "Enter the space"
+          section). Home, ODDfest, ODDagency and About don't use this field.
         options:
           subtype: object
+      secondaryCta:
+        type: object
+        label: Secondary button (ODDspace only)
+        comment: >-
+          The outline "Organise an event" button, alongside primaryCta in the
+          hero and again in "Enter the space".
+        options:
+          subtype: object
+          required: false
       formAccessKey:
         type: text
         label: Web3Forms access key (Contact page only)
@@ -98,10 +117,25 @@ collections_config:
         comment: >-
           Which of "video"/"poster"/"image" actually apply depends on the
           page — ODDfest and ODDference use a video + poster frame,
-          ODDagency uses a single still image instead. Leave the ones the
-          page doesn't use empty.
+          ODDagency uses a single still image instead. ODDspace uses
+          heroPhotos (below) instead of this field — leave it empty on
+          ODDspace. Leave the ones the page doesn't use empty.
         options:
           subtype: object
+      heroPhotos:
+        type: array
+        label: Hero photo grid (ODDspace only)
+        comment: >-
+          Real photos of the space for the hero's photo grid — roughly 6-8
+          reads best. Each needs its own alt text describing what's actually
+          shown.
+        options:
+          structures: _structures.oddspace_hero_photo
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
       railLeft:
         type: array
         label: Left side ticker (decorative)
@@ -159,12 +193,15 @@ collections_config:
         label: '"Who it''s for" (ODDspace only)'
         options:
           subtype: object
-      whatYouGet:
+      spaces:
         type: array
-        label: What you get (ODDspace only)
-        comment: The membership benefits list.
+        label: The four spaces (ODDspace only)
+        comment: >-
+          Co-working / event & gallery / auditorium / studio, each with its
+          own photo. The membership benefits list itself now lives on
+          "membership" below, not here.
         options:
-          structures: _structures.feature_card
+          structures: _structures.oddspace_space
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -188,9 +225,24 @@ collections_config:
         options:
           required: false
         cascade: true
-      location:
+      eventEnquiry:
         type: object
-        label: Location (ODDspace only)
+        label: Event enquiry copy (ODDspace only)
+        comment: >-
+          The "Want to organise an event?" half of "Enter the space" —
+          membership's half of that section reuses "membership" and
+          "primaryCta" directly instead of a second copy block.
+        options:
+          subtype: object
+      vision:
+        type: object
+        label: '"Why ODDspace" / the bigger picture (ODDspace only)'
+        comment: >-
+          The longer-term reasoning for why ODDspace exists — kept separate
+          from "whatItIs" (the concrete, practical explainer) so the two
+          don't repeat each other. Keep this to what's actually been
+          approved for public communication — no invented future buildings,
+          locations, funding or partners.
         options:
           subtype: object
       calendar:
@@ -745,6 +797,42 @@ _structures:
           number: '01'
           title: ''
           body: ''
+  oddspace_space:
+    style: select
+    values:
+      - label: Space
+        default: false
+        preview:
+          text:
+            - key: name
+          icon:
+            - meeting_room
+          image:
+            - key: image
+        place_groups_below: false
+        tabbed: false
+        value:
+          name: ''
+          body: ''
+          bullets: []
+          image:
+  oddspace_hero_photo:
+    style: select
+    values:
+      - label: Hero photo
+        default: false
+        preview:
+          text:
+            - key: alt
+          icon:
+            - image
+          image:
+            - key: image
+        place_groups_below: false
+        tabbed: false
+        value:
+          image:
+          alt: ''
   # One structure with three selectable values — not three separate
   # structures — per CloudCannon's own documented pattern for a single array
   # that offers a choice of shapes (a page-builder-style field). Confirmed

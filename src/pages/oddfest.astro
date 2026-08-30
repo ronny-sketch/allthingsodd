@@ -43,7 +43,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       <div class="oddf-meta">{page.meta}</div>
     </div>
     <p class="oddf-body reveal">{page.intro}</p>
-    <FeatureGrid cards={page.features} />
+    <FeatureGrid cards={page.features ?? []} />
 
     <SectionIntro
       eyebrow={page.whatItIs.eyebrow}
@@ -152,7 +152,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       </div>
     </section>
 
-    <ParticipateBand items={page.participate} noPadTop />
+    <ParticipateBand items={page.participate ?? []} noPadTop />
   </SubpageFrame>
 </Layout>
 
