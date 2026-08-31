@@ -58,8 +58,25 @@ const infoItem = nav.find((item) => item.children);
               aria-haspopup="true"
             >
               {infoItem.label}
+              <svg
+                class="nav-info-chevron"
+                viewBox="0 0 10 6"
+                width="10"
+                height="6"
+                aria-hidden="true"
+              >
+                <path
+                  d="M1 1l4 3.4L9 1"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  fill="none"
+                />
+              </svg>
             </a>
             <div class="nav-dropdown-menu">
+              <span class="nav-dropdown-label">{infoItem.label}</span>
               {infoItem.children?.map((child) => (
                 <a
                   href={child.href}
@@ -177,22 +194,22 @@ const infoItem = nav.find((item) => item.children);
   }
   .nav-dropdown-menu {
     position: absolute;
-    /* top:100% with no margin, plus padding-top instead of a margin gap —
-       the old margin-top left a real dead zone between the trigger and the
-       menu: the instant the pointer crossed that gap it left every element
-       matching .nav-dropdown:hover, so the menu could flicker shut before
-       the pointer ever reached it. Padding keeps the menu's own box (and so
-       its hover area) contiguous with the trigger while still landing the
-       visible card in the same spot. */
+    /* top:100% plus a padding-top spacer (below), not a margin-top gap — a
+       real gap between trigger and menu is a dead zone: the instant the
+       pointer crosses it, it leaves every element matching
+       .nav-dropdown:hover, so the menu can flicker shut before the pointer
+       ever reaches it. Padding keeps the menu's own box (and so its hover
+       area) contiguous with the trigger while landing the visible card in
+       the same spot. */
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    min-width: 172px;
-    padding: 1.1rem 0.5rem 0.5rem;
+    min-width: 196px;
+    padding: 0.9rem 0.6rem 0.6rem;
     background: var(--color-backstage);
     border: 1px solid var(--color-paper-12);
-    border-radius: 10px;
-    box-shadow: 0 12px 28px -8px rgb(0 0 0 / 45%);
+    border-radius: var(--radius-panel);
+    box-shadow: var(--shadow-panel);
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
@@ -203,6 +220,19 @@ const infoItem = nav.find((item) => item.children);
     transition:
       opacity var(--duration-fast) ease,
       transform var(--duration-fast) ease;
+  }
+  /* A small header inside the panel itself — same eyebrow language used
+     sitewide — is what makes this read as a mini nav panel with its own
+     hierarchy rather than a bare browser-default link list. */
+  .nav-dropdown-label {
+    display: block;
+    font: var(--text-caption);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+    padding: 0.4rem 0.8rem 0.7rem;
+    margin-bottom: 0.2rem;
+    border-bottom: 1px solid var(--color-paper-12);
   }
   @media (prefers-reduced-motion: no-preference) {
     .nav-dropdown-menu {
@@ -217,9 +247,11 @@ const infoItem = nav.find((item) => item.children);
     transform: translateX(-50%) translateY(0) scale(1);
   }
   .nav-dropdown-menu a {
-    padding: 0.6rem 0.8rem;
+    display: block;
+    padding: 0.65rem 0.8rem;
     border-radius: 6px;
     font-size: 0.92rem;
+    text-decoration: none;
     white-space: nowrap;
     transition:
       color var(--duration-fast) ease,
@@ -244,8 +276,9 @@ const infoItem = nav.find((item) => item.children);
   .nav-info > a {
     display: inline-flex;
     align-items: center;
+    gap: 0.4rem;
     border-radius: 999px;
-    padding: 0.55rem 1.25rem;
+    padding: 0.55rem 1.1rem 0.55rem 1.25rem;
     font-family: var(--font-body);
     font-weight: 600;
     font-size: 0.72rem;
@@ -256,6 +289,25 @@ const infoItem = nav.find((item) => item.children);
     transition:
       border-color var(--duration-fast) ease,
       color var(--duration-fast) ease;
+  }
+  /* The chevron is what makes the trigger legible as "opens a panel" rather
+     than a plain link to /about that happens to also have a hover menu —
+     the flip on open/hover is the same small, fast motion language as the
+     panel's own entrance below, not a separate animation to track. */
+  .nav-info-chevron {
+    flex-shrink: 0;
+    color: var(--color-paper-60);
+    transition:
+      transform var(--duration-fast) ease,
+      color var(--duration-fast) ease;
+  }
+  .nav-info > a:hover .nav-info-chevron,
+  .nav-info > a.is-active .nav-info-chevron {
+    color: var(--color-paper);
+  }
+  .nav-dropdown:hover .nav-info-chevron,
+  .nav-dropdown:focus-within .nav-info-chevron {
+    transform: rotate(180deg);
   }
   /* Same dark-ground assumption as Pill.astro's .pill-outline (this trigger
      intentionally matches that variant's look) — under .theme-light

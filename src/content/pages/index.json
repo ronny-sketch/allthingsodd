@@ -43,12 +43,12 @@
   },
   "platforms": [
     {
-      "meta": "Creative · Across Helsinki",
-      "title": "ODDfest",
-      "body": "A city-wide creative week made by the people taking part in it. Artists, collectives, venues, organisations, communities and companies host their own programme; ODD brings it together into one shared whole.",
-      "goLabel": "See ODDfest →",
-      "href": "/oddfest",
-      "image": "../../assets/programs/oddfest-card.jpg"
+      "meta": "Organisations · Network & projects",
+      "title": "Work with ODD",
+      "body": "Join the network, bring us a project or build a partnership with us.",
+      "goLabel": "Explore Work with ODD →",
+      "href": "/work-with-odd",
+      "image": "../../assets/programs/work-with-odd-card.jpg"
     },
     {
       "meta": "Creative expertise · Business & society",
@@ -59,20 +59,20 @@
       "image": "../../assets/programs/oddference-card.jpg"
     },
     {
+      "meta": "Creative · Across Helsinki",
+      "title": "ODDfest",
+      "body": "A city-wide creative week made by the people taking part in it. Artists, collectives, venues, organisations, communities and companies host their own programme; ODD brings it together into one shared whole.",
+      "goLabel": "See ODDfest →",
+      "href": "/oddfest",
+      "image": "../../assets/programs/oddfest-card.jpg"
+    },
+    {
       "meta": "Creative · Vallila",
       "title": "ODDspace",
       "body": "A year-round home for people working across creative and cultural fields — with places to work, meet, host events, make things and shape the space together.",
       "goLabel": "Explore ODDspace →",
       "href": "/oddspace",
       "image": "../../assets/programs/oddspace-card.jpg"
-    },
-    {
-      "meta": "Organisations · Network & projects",
-      "title": "Work with ODD",
-      "body": "Join the network, bring us a project or build a partnership with us.",
-      "goLabel": "Explore Work with ODD →",
-      "href": "/work-with-odd",
-      "image": "../../assets/programs/work-with-odd-card.jpg"
     }
   ],
   "participate": [
