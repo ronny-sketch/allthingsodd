@@ -284,20 +284,54 @@ workaround for content wide enough to trigger the same underlying bug.
 
 ## Hero variants
 
-Subpages share `SubpageFrame.astro` (the fixed side rails + center column) but
-use one of three hero components depending on their content:
+**Corrected 2026-08-31** — this section previously described an earlier
+state (ODDference/ODDagency both on `SplitHero`) that had already changed by
+the time of the final implementation pass; it's rewritten here to match the
+actual current code, not left as a comment describing false architecture.
 
-- **ODDference** — `SplitHero` in `split-video` mode: video on one side, text
-  on the other.
-- **ODDagency** — `SplitHero` in `split-image` mode: same layout, static
-  image instead of video (ODDagency's source page never had its own video).
-- **ODDfest** — `FullbleedVideoHero`: a completely different shape, full-bleed
-  video behind the page title, matching the original site's own layout choice.
+The three primary product subpages — ODDfest, ODDference, ODDspace — share
+`SubpageFrame.astro` (the fixed side rails + a full-frame `hero` slot + the
+normal padded content column). ODDagency moved off this shared frame
+entirely in the 2026-08-31 final implementation pass (see below).
 
-`SplitHero` takes a `variant` prop rather than being two separate components
-because the split-video/split-image cases share ~90% of their markup and
-CSS — only the media element differs. `FullbleedVideoHero` is separate because
-its structure genuinely doesn't overlap.
+- **ODDfest** and **ODDference** — both use `FullbleedVideoHero`: full-bleed
+  video behind the page title, matching the original site's own layout
+  choice. `FullbleedVideoHero` takes an `accent` prop (`'ultraviolet'`
+  default for ODDfest, `'signal'` for ODDference) so the two heroes read as
+  distinct product identities from one shared component rather than forking
+  it — see the component's own comment and `docs/design-system.md`.
+- **ODDspace** — `SpaceHero`: an asymmetric grid of real space photography
+  instead of one video (its brief asks for the space itself, shown through
+  photography, to be the protagonist).
+- **ODDagency** — `HeroCentered`, the same hero Work with ODD uses: a single
+  centered photo hero, no side rails, no video. ODDagency is a deeper way to
+  work with ODD, not a fourth core masterbrand product, so it deliberately
+  doesn't share ODDfest/ODDference/ODDspace's product-hero chrome — see
+  `content.config.ts`'s oddagency extend-block comment and
+  `oddagency.astro`.
+
+`SplitHero` (`split-video`/`split-image` variant) still exists as a
+component but has no current callers — kept rather than deleted since
+another subpage could plausibly need it later, not because anything still
+uses it today.
+
+**Hero-frame architecture (2026-08-31, requirement 23 — full-frame product
+heroes):** `SubpageFrame.astro` exposes a named `hero` slot in addition to
+its default slot. A hero passed into `slot="hero"` renders in its own
+zero-padding zone between the rails — flush to the sticky nav above and both
+rails' inner edges on either side, no gutter — while everything in the
+default slot keeps the normal `.oddf-center` reading gutters (1.75rem
+mobile, 88px desktop) untouched. Before this, every hero rendered as the
+first child of that same padded column, inheriting padding meant for
+article text. `FullbleedVideoHero`/`SpaceHero` size themselves to
+`calc(100svh - var(--nav-h))` (nav + hero = one first viewport, with a fixed
+`min-height` floor for short viewports) and carry no bottom margin of their
+own any more — the hero→content transition space is owned once, by
+`.oddf-center`'s top padding, not by a margin and a padding stacking into an
+accidental double gap. See `SubpageFrame.astro`'s own comment for why no
+padding math needs to match the rails' 68px width: `SubpageRail` is
+`position: fixed` with an opaque fill, so it already visually overlays/masks
+its own width regardless of what's underneath.
 
 ## Visual regression
 

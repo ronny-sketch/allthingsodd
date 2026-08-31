@@ -8,9 +8,10 @@ interface Props {
   video: string;
   poster: ImageMetadata;
   // The one visible line of copy over the video — rendered as the page's
-  // real <h1> (this hero replaces the separate title block subpages using
-  // SplitHero render below their own hero; see docs/architecture.md#hero-variants
-  // and oddfest.astro, the only current caller).
+  // real <h1>. Shared by ODDfest and ODDference (both full-bleed-video
+  // subpages; see docs/architecture.md#hero-variants) — rendered into
+  // SubpageFrame's named `hero` slot by each page, not as a plain first
+  // child (see SubpageFrame.astro's 2026-08-31 hero-frame comment).
   sub: string;
   // Optional small secondary line under the h1 (e.g. "Helsinki · 2027").
   meta?: string;
@@ -79,13 +80,25 @@ const {
 </header>
 
 <style>
+  /* Full-frame height (2026-08-31, requirement 23): nav + hero should read
+     as one first viewport, not nav-height-plus-92vh (previously always
+     taller than one screen). calc(100vh - var(--nav-h)) is the fallback for
+     browsers without svh support; the second declaration overrides it where
+     svh is understood — svh (not the bare dynamic 100vh) is what actually
+     avoids the classic mobile-Safari jump as the address bar/toolbar shows
+     and hides. `min-height` stays a fixed px floor (not 100vh-based) so a
+     very short viewport still protects the logo/headline/meta/CTA stack
+     instead of collapsing with it. No `margin-bottom` any more — the
+     hero→content gap is now owned once, by SubpageFrame's `.oddf-center`
+     top padding, instead of this margin plus that padding stacking into an
+     accidental double gap. */
   .oddfest-hero {
     position: relative;
-    height: 92vh;
+    height: calc(100vh - var(--nav-h));
+    height: calc(100svh - var(--nav-h));
     min-height: 540px;
     overflow: hidden;
     background: #000;
-    margin-bottom: 4.5rem;
   }
   .oddfest-hero video,
   .oddfest-hero img {

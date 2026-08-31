@@ -1,4 +1,21 @@
 ---
+// 2026-08-31 hero-frame pass (requirement 23): split into a full-frame
+// `hero` slot and the normal padded `default` slot, so a page's hero can
+// span edge-to-edge between the rails while everything after it keeps the
+// site's real reading gutters. Before this, every hero (FullbleedVideoHero,
+// SpaceHero) rendered as the first child of the single padded `.oddf-center`
+// column below, inheriting its 4.5rem top / 88px side padding — insetting
+// the hero unnecessarily on all sides. The rails themselves don't need any
+// matching padding math to make the hero "meet" them: SubpageRail is
+// `position: fixed` with an *opaque* `--color-bg` fill (see
+// SubpageRail.astro), so it already visually overlays/masks its own 68px
+// width regardless of what's under it — a hero at true 0 padding
+// automatically reads as flush to the rail's inner edge.
+//
+// A page that doesn't pass a `hero` slot child (none currently omit it, all
+// four subpages that used this frame historically opened directly with
+// their hero) simply renders an empty, zero-height `.oddf-hero-zone` —
+// harmless, not a broken state.
 import SubpageRail from './SubpageRail.astro';
 
 interface RailItem {
@@ -15,6 +32,9 @@ const { slug, railLeft, railRight } = Astro.props;
 
 <div class="oddf-frame">
   <SubpageRail items={railLeft} side="left" slug={slug} />
+  <div class="oddf-hero-zone">
+    <slot name="hero" />
+  </div>
   <div class="oddf-center">
     <slot />
   </div>
@@ -25,8 +45,19 @@ const { slug, railLeft, railRight } = Astro.props;
   .oddf-frame {
     position: relative;
   }
+  /* Full-frame — deliberately zero padding at every breakpoint. The hero
+     component itself (FullbleedVideoHero/SpaceHero) owns its own height and
+     internal layout; this zone's only job is to not inset it. */
+  .oddf-hero-zone {
+    position: relative;
+  }
+  /* Normal content — unchanged gutters, but the top padding here is now the
+     *only* hero→content transition space (the hero no longer also carries
+     its own bottom margin — see FullbleedVideoHero.astro/SpaceHero.astro),
+     so this single value is the one real "breathing room" decision instead
+     of two paddings/margins stacking into an accidental double gap. */
   .oddf-center {
-    padding: 4.5rem 1.75rem 0;
+    padding: var(--space-16) 1.75rem 0;
   }
   @media (min-width: 821px) {
     .oddf-center {

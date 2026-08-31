@@ -72,7 +72,12 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
       (primaryCta || secondaryCta) && (
         <div class="space-hero-ctas">
           {primaryCta && (
-            <Pill href={primaryCta.href} variant="solid" magnetic>
+            <Pill
+              href={primaryCta.href}
+              variant="solid"
+              magnetic
+              class="space-hero-pill-solid"
+            >
               {primaryCta.label}
             </Pill>
           )}
@@ -93,13 +98,19 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
 </header>
 
 <style>
+  /* Full-frame height (2026-08-31, requirement 23) — same reasoning as
+     FullbleedVideoHero.astro's identical change: nav + hero should read as
+     one first viewport, svh avoids the mobile-Safari toolbar jump, the
+     fixed min-height floor protects the logo/title/meta/CTA stack on short
+     viewports, and there's no more margin-bottom here — that gap is now
+     owned once by SubpageFrame's `.oddf-center` top padding. */
   .space-hero {
     position: relative;
-    height: 94vh;
+    height: calc(100vh - var(--nav-h));
+    height: calc(100svh - var(--nav-h));
     min-height: 560px;
     overflow: hidden;
     background: var(--swatch-ink);
-    margin-bottom: 4.5rem;
   }
   .space-hero-grid {
     position: absolute;
@@ -249,5 +260,20 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
   .space-hero-overlay :global(.space-hero-pill-outline.pill-outline) {
     border-color: var(--swatch-paper);
     color: var(--swatch-paper);
+  }
+  /* Same fix, same reasoning, for the solid variant (found 2026-08-31 during
+     the hero-frame QA pass — a real pre-existing defect, not introduced by
+     that work): Pill's `.pill-solid` is `background: var(--color-paper);
+     color: var(--color-ink)`, which is correct against the site's normal
+     dark ground but silently flips under `.theme-light` (ODDspace's own
+     page theme) to a dark pill with light text — nearly invisible against
+     this hero's own dark photo scrim, exactly the class of bug this
+     component's header comment already describes for its plain text. Fixed
+     swatch colors here restore the intended light-pill/dark-text solid
+     button regardless of the page's theme. */
+  .space-hero-overlay :global(.space-hero-pill-solid.pill-solid) {
+    background: var(--swatch-paper);
+    color: var(--swatch-ink);
+    border-color: var(--swatch-paper);
   }
 </style>
