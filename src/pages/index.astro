@@ -185,16 +185,25 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
     margin: 1.8rem auto 0;
     position: relative;
   }
-  /* Home's own reference type scale ("What we do") is --text-heading-md
-     (see layout.css's .section-head h2) — SectionIntro's shared default is
-     larger (used deliberately bigger on most of the pages that reuse it), so
-     this scopes "What ODD is" down to the homepage's own reference size
-     instead of changing the shared component's default for every other page
-     that reuses it. See docs/design-system.md and the 2026-08-30 homepage
-     revision brief, section 2. */
+  /* 2026-08-31 revision: "What ODD is" reads as the homepage's own second
+     hero moment (it's the first real statement after the mosaic), so its
+     scale now matches HeroCentered's h1 — the same opening move About makes
+     with its own "About ODD" hero — instead of the smaller
+     --text-heading-md this used to be scoped down to (a decision from the
+     2026-08-30 revision that read as undersized/secondary against the
+     bigger single-paragraph intro sections on other pages). --text-display-lg
+     is the closest existing token to HeroCentered's own literal
+     clamp(2.2rem, 5.5vw, 4rem) h1 size — reused rather than hand-rolling a
+     near-duplicate value, per the tokens-first rule. */
   .whatoddis-wrap :global(.section-intro-inner h2),
   .whatoddis-wrap :global(.section-intro-inner .section-intro-warping-headline) {
-    font: var(--text-heading-md);
+    font: var(--text-display-lg);
+  }
+  /* HeroCentered's eyebrow reads brighter (--color-paper-80) than
+     SectionIntro's shared default (--color-paper-60) — matched here for the
+     same "second hero" alignment as the headline above. */
+  .whatoddis-wrap :global(.section-intro-inner .eyebrow) {
+    color: var(--color-paper-80);
   }
   /* "Who ODD is for" flows straight into "What we do" as one composition —
      tightening ProgramGrid's own top padding (its default --space-24/6rem

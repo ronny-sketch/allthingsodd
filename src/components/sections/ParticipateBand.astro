@@ -4,11 +4,14 @@ interface Item {
   title: string;
   linkLabel: string;
   href: string;
-  // Optional — groups this CTA under an audience label (e.g. "Business" /
-  // "Creative" / "Stay in touch") instead of one flat row. See
-  // content.config.ts's `cta` fragment and Home's "The way in is by
-  // participation" band (2026-08-30 homepage revision). Any page whose items
-  // don't set this renders exactly as before — one flat, ungrouped row.
+  // Optional small in-card classification (e.g. "Business" / "Creative" /
+  // "Stay in touch") — shown inside the card itself, same slot as `eyebrow`
+  // (whichever is set). See content.config.ts's `cta` fragment and Home's
+  // "The way in is by participation" band. 2026-08-31: this used to group
+  // cards into separate stacked rows with the label sitting *above* each
+  // row instead of inside the cards — replaced with one flat row (matching
+  // every other page that reuses this component) since the classification
+  // reads better as part of each card, not as a row heading.
   audience?: string;
 }
 interface Props {
@@ -18,23 +21,6 @@ interface Props {
   noPadTop?: boolean;
 }
 const { title = 'Ways to participate', items, inverted = false, noPadTop = false } = Astro.props;
-
-// Group by first-appearance order of `audience`, preserving each group's own
-// item order — content-driven grouping, not nth-child CSS or a hardcoded
-// array-position assumption. A "Stay in touch" (or any single-item) group
-// renders visually smaller/secondary via `.is-secondary` below, since it's a
-// different kind of action (mailing list) from the audience-facing CTAs.
-const hasAudience = items.some((i) => i.audience);
-const groups: { label: string; items: Item[] }[] = hasAudience
-  ? Array.from(
-      items.reduce((map, item) => {
-        const key = item.audience || '';
-        if (!map.has(key)) map.set(key, []);
-        map.get(key)!.push(item);
-        return map;
-      }, new Map<string, Item[]>()),
-    ).map(([label, groupItems]) => ({ label, items: groupItems }))
-  : [{ label: '', items }];
 ---
 
 <section
@@ -43,36 +29,19 @@ const groups: { label: string; items: Item[] }[] = hasAudience
 >
   <div class="wrap">
     <div class="section-head"><h2>{title}</h2></div>
-    {
-      hasAudience ? (
-        <div class="participate-groups">
-          {groups.map((g) => (
-            <div class={`participate-group ${g.items.length === 1 ? 'is-secondary' : ''}`}>
-              {g.label && <span class="participate-group-label">{g.label}</span>}
-              <div class="participate reveal" style={`--cols: ${g.items.length}`}>
-                {g.items.map((item) => (
-                  <a class="p-cta" href={item.href}>
-                    {item.eyebrow && <span class="eyebrow">{item.eyebrow}</span>}
-                    <h3>{item.title}</h3>
-                    <span class="go">{item.linkLabel}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div class="participate reveal" style={`--cols: ${items.length}`}>
-          {items.map((item) => (
-            <a class="p-cta" href={item.href}>
-              <span class="eyebrow">{item.eyebrow}</span>
-              <h3>{item.title}</h3>
-              <span class="go">{item.linkLabel}</span>
-            </a>
-          ))}
-        </div>
-      )
-    }
+    <div class="participate reveal" style={`--cols: ${items.length}`}>
+      {
+        items.map((item) => (
+          <a class="p-cta" href={item.href}>
+            {(item.eyebrow || item.audience) && (
+              <span class="eyebrow">{item.eyebrow || item.audience}</span>
+            )}
+            <h3>{item.title}</h3>
+            <span class="go">{item.linkLabel}</span>
+          </a>
+        ))
+      }
+    </div>
   </div>
 </section>
 
@@ -89,32 +58,6 @@ const groups: { label: string; items: Item[] }[] = hasAudience
     color: var(--color-paper);
   }
 
-  .participate-groups {
-    display: flex;
-    flex-direction: column;
-    gap: 2.75rem;
-  }
-  .participate-group-label {
-    display: block;
-    font: var(--text-utility);
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--color-paper-60);
-    margin-bottom: 1rem;
-  }
-  /* "Stay in touch" (or any single-CTA group) reads as a smaller, secondary
-     action rather than a third audience-sized card row — same visual
-     language, deliberately quieter. */
-  .participate-group.is-secondary .participate {
-    max-width: 22rem;
-  }
-  .participate-group.is-secondary .p-cta {
-    min-height: 0;
-    padding: 1.6rem 1.4rem;
-  }
-  .participate-group.is-secondary .participate-group-label {
-    color: var(--color-paper-40);
-  }
   .participate {
     display: grid;
     /* --cols (set inline, per instance) drives the column count — always
@@ -206,6 +149,17 @@ const groups: { label: string; items: Item[] }[] = hasAudience
   }
   .p-cta:hover .eyebrow {
     color: var(--color-paper-60);
+  }
+  /* One full row (--cols, up to 5 in practice) only down to 1023px — below
+     that, a fixed column count stops fitting comfortably (confirmed via a
+     real screenshot at 768px: "ODDference"/"something" broke mid-word, not
+     just wrapped, at ~130px per column). auto-fit + minmax lets the row
+     wrap to however many columns actually fit at ≥210px each instead of
+     forcing all of them into one line. */
+  @media (max-width: 1023px) and (min-width: 761px) {
+    .participate {
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    }
   }
   @media (max-width: 760px) {
     .participate-band {
