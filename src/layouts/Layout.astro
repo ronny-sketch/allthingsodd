@@ -22,8 +22,12 @@ interface Props {
    * ground. See tokens.css's own comment on `.theme-light` for why this is
    * a single class on <body> rather than a per-component light variant. */
   theme?: 'light';
+  /** Transient/private pages (checkout, order confirmation) — keeps them
+   * out of search results without affecting any of the site's ten real
+   * content pages, which never set this. */
+  noindex?: boolean;
 }
-const { title, description, ogImage, preloadImage, theme } = Astro.props;
+const { title, description, ogImage, preloadImage, theme, noindex } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -34,6 +38,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {preloadImage && <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />}

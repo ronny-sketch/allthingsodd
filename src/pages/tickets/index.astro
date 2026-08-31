@@ -1,0 +1,419 @@
+---
+// ODDference ticket storefront. Deliberately not CloudCannon content —
+// ticket types/prices/availability are dynamic, backend-owned data (see
+// ../../../../odd-growth-os/ops/TICKETING_IMPLEMENTATION_PLAN.md), not
+// editorial copy. This is a new, isolated commerce domain: it does not
+// reuse PricingGrid.astro (shared with other pages' generic pricing
+// display) or extend any existing content schema.
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Tickets — ODDference 2027"
+  description="Get your ODDference 2027 ticket. Blind Bird tickets are open now, at €300."
+>
+  <section class="tix-page">
+    <div class="wrap tix-head reveal">
+      <span class="eyebrow">ODDference · 2027</span>
+      <h1>Get your ticket</h1>
+      <p>Select a ticket below. You'll pay securely without leaving this site.</p>
+    </div>
+
+    <div class="wrap tix-layout">
+      <div class="tix-list" id="tixList" aria-busy="true">
+        <p class="tix-loading">Loading tickets…</p>
+      </div>
+      <aside class="tix-summary" id="tixSummary" aria-label="Your order"></aside>
+    </div>
+    <p id="tixCartStatus" class="sr-only" role="status" aria-live="polite"></p>
+  </section>
+
+  <button type="button" class="tix-mobile-bar" id="tixMobileBar" hidden>
+    <span id="tixMobileBarSummary"></span>
+    <span class="tix-mobile-bar-cta">View order</span>
+  </button>
+  <div class="tix-sheet-backdrop" id="tixSheetBackdrop" hidden></div>
+  <div
+    class="tix-sheet"
+    id="tixSheet"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-label="Your order"
+  >
+    <div class="tix-sheet-handle" aria-hidden="true"></div>
+    <button
+      type="button"
+      class="tix-sheet-close"
+      id="tixSheetClose"
+      aria-label="Close order summary">&times;</button
+    >
+    <div id="tixSheetContent"></div>
+  </div>
+
+  <script src="../../scripts/tickets/storefront.ts"></script>
+</Layout>
+
+<style>
+  .tix-page {
+    padding: calc(var(--nav-h) + var(--space-16)) 0 var(--space-24);
+  }
+  .tix-head {
+    max-width: 40rem;
+    text-align: center;
+    margin: 0 auto var(--space-16);
+  }
+  .tix-head h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--color-paper);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.08;
+    margin: 0.9rem 0 0;
+  }
+  .tix-head p {
+    margin: 1.2rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-paper-60);
+  }
+
+  .tix-layout {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .tix-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .tix-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+  }
+  .tix-loading,
+  .tix-error,
+  .tix-empty {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-paper-60);
+  }
+  :global(.tix-cart-notice) {
+    margin: 0 0 0.5rem;
+    padding: 0.8rem 1rem;
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-paper-80);
+  }
+
+  :global(.tix-row) {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+  }
+  :global(.tix-row.is-inactive) {
+    opacity: 0.55;
+  }
+  :global(.tix-row-main) {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  :global(.tix-row-info) {
+    min-width: 0;
+  }
+  :global(.tix-row-name) {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.25rem;
+    color: var(--color-paper);
+  }
+  :global(.tix-row-desc) {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-paper-60);
+  }
+  :global(.tix-row-benefits) {
+    list-style: none;
+    margin: 0.9rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  :global(.tix-row-benefits li) {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--color-paper-80);
+    padding-left: 1rem;
+    position: relative;
+  }
+  :global(.tix-row-benefits li::before) {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-ticket-blue);
+  }
+  :global(.tix-row-price) {
+    flex-shrink: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.4rem;
+    color: var(--color-paper);
+    white-space: nowrap;
+  }
+  :global(.tix-row-action) {
+    display: flex;
+    justify-content: flex-end;
+  }
+  :global(.tix-status-badge) {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+
+  /* Quantity stepper — 44px minimum touch target on every device, not just mobile. */
+  :global(.tix-stepper) {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+  :global(.tix-stepper-btn) {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid var(--color-paper-20);
+    background: transparent;
+    color: var(--color-paper);
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      border-color var(--duration-fast) ease,
+      opacity var(--duration-fast) ease;
+  }
+  :global(.tix-stepper-btn:hover:not(:disabled)) {
+    border-color: var(--color-paper);
+  }
+  :global(.tix-stepper-btn:disabled) {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  :global(.tix-stepper-qty) {
+    min-width: 1.6rem;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--color-paper);
+  }
+
+  /* Desktop sticky summary */
+  .tix-summary {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--space-6));
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    padding: 1.75rem;
+  }
+  @media (max-width: 900px) {
+    .tix-summary {
+      display: none;
+    }
+  }
+  .tix-summary :global(.eyebrow) {
+    display: block;
+    margin-bottom: 1.2rem;
+  }
+  .tix-summary :global(.tix-summary-empty) {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-40);
+  }
+  .tix-summary :global(.tix-summary-lines) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .tix-summary :global(.tix-summary-line) {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-80);
+  }
+  .tix-summary :global(.tix-summary-total-row) {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--color-paper-12);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--color-paper);
+  }
+  .tix-summary :global(.tix-summary-vat-note) {
+    margin: 0.4rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: var(--color-paper-40);
+  }
+  .tix-summary :global(.tix-checkout-btn) {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 1.4rem;
+  }
+  .tix-summary :global(.tix-checkout-btn:disabled) {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Mobile fixed bottom bar — appears once cart > 0, opens the bottom sheet.
+     A real <button> (not a clickable div) so it's keyboard-operable and
+     gets a real accessible name for free — see CLAUDE.md's "no custom
+     controls that only work with pointer devices" rule. */
+  .tix-mobile-bar {
+    display: none;
+  }
+  @media (max-width: 900px) {
+    .tix-mobile-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 1rem 1.25rem;
+      padding-bottom: max(1rem, env(safe-area-inset-bottom));
+      background: var(--color-ink);
+      border: none;
+      border-top: 1px solid var(--color-paper-20);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--color-paper);
+      cursor: pointer;
+      min-height: 44px;
+      text-align: left;
+    }
+    /* The [hidden] attribute's UA-stylesheet display:none is lower
+       specificity than the class rule above, which would otherwise win at
+       this breakpoint and show the bar even with an empty cart — verified
+       live (a real bug, not theoretical) via Chrome DevTools before this
+       fix. */
+    .tix-mobile-bar[hidden] {
+      display: none;
+    }
+  }
+  .tix-mobile-bar-cta {
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .tix-sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 49;
+    background: rgb(0 0 0 / 55%);
+  }
+  .tix-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: var(--color-backstage);
+    border-top: 1px solid var(--color-paper-20);
+    border-radius: 16px 16px 0 0;
+    padding: 1rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
+  }
+  .tix-sheet-handle {
+    width: 40px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-paper-20);
+    margin: 0 auto 1rem;
+  }
+  .tix-sheet-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: none;
+    color: var(--color-paper-60);
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  .tix-sheet :global(.eyebrow) {
+    display: block;
+    margin-bottom: 1rem;
+  }
+  .tix-sheet :global(.tix-summary-lines) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .tix-sheet :global(.tix-summary-line) {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-80);
+  }
+  .tix-sheet :global(.tix-summary-total-row) {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--color-paper-12);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--color-paper);
+  }
+  .tix-sheet :global(.tix-summary-vat-note) {
+    margin: 0.4rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: var(--color-paper-40);
+  }
+  .tix-sheet :global(.tix-checkout-btn) {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 1.4rem;
+  }
+</style>

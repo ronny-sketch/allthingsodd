@@ -1,0 +1,185 @@
+---
+// Order confirmation + digital tickets. Never shows "paid" from the
+// Stripe redirect alone — see ../../scripts/tickets/confirmation.ts,
+// which polls the backend order status (only the webhook handler ever
+// sets it to 'paid'). See
+// ../../../../odd-growth-os/ops/TICKETING_IMPLEMENTATION_PLAN.md.
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Order confirmation — ODDference 2027"
+  description="Your ODDference 2027 order confirmation and tickets."
+  noindex
+>
+  <section class="tixf-page">
+    <div class="wrap">
+      <div id="tixfProcessing" class="tixf-state" hidden>
+        <span class="eyebrow">ODDference · 2027</span>
+        <h1>Processing your payment…</h1>
+        <p>This usually takes a few seconds. Don't close this page.</p>
+        <div class="tixf-spinner" aria-hidden="true"></div>
+      </div>
+
+      <div id="tixfSuccess" class="tixf-state" hidden>
+        <span class="eyebrow">ODDference · 2027</span>
+        <h1>Your tickets are yours.</h1>
+        <p>
+          Assign attendees now, or come back to this page later — this link is saved to your
+          browser, and we'll also confirm by email once that's connected.
+        </p>
+        <div id="tixfTicketList" class="tixf-ticket-list"></div>
+      </div>
+
+      <div id="tixfFailed" class="tixf-state" hidden>
+        <span class="eyebrow">ODDference · 2027</span>
+        <h1>This order didn't go through</h1>
+        <p id="tixfFailedMessage"></p>
+        <a class="pill pill-solid" href="/tickets">Back to tickets</a>
+      </div>
+
+      <div id="tixfTimeout" class="tixf-state" hidden>
+        <span class="eyebrow">ODDference · 2027</span>
+        <h1>Still processing</h1>
+        <p>
+          This is taking longer than expected. Refresh this page in a minute, or check your email
+          for confirmation — if you were charged, your tickets are safe.
+        </p>
+      </div>
+
+      <div id="tixfNotFound" class="tixf-state" hidden>
+        <span class="eyebrow">ODDference · 2027</span>
+        <h1>We couldn't find that order</h1>
+        <p>If you just completed a purchase, check your email for the confirmation link.</p>
+        <a class="pill pill-solid" href="/tickets">Back to tickets</a>
+      </div>
+    </div>
+  </section>
+
+  <script src="../../scripts/tickets/confirmation.ts"></script>
+</Layout>
+
+<style>
+  .tixf-page {
+    padding: calc(var(--nav-h) + var(--space-16)) 0 var(--space-24);
+  }
+  .tixf-state {
+    max-width: 40rem;
+  }
+  .tixf-state h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--color-paper);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin: 0.6rem 0 0;
+  }
+  .tixf-state p {
+    margin: 1rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-paper-60);
+  }
+  #tixfSuccess {
+    max-width: none;
+  }
+  .tixf-spinner {
+    margin-top: 2rem;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 3px solid var(--color-paper-20);
+    border-top-color: var(--color-paper);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .tixf-spinner {
+      animation: tixf-spin 0.8s linear infinite;
+    }
+  }
+  @keyframes tixf-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .tixf-ticket-list {
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  :global(.tixf-ticket) {
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    padding: 1.75rem;
+  }
+  :global(.tixf-ticket-head) {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+  }
+  :global(.tixf-ticket-number) {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--color-paper);
+  }
+  :global(.tixf-ticket-code) {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    color: var(--color-paper-40);
+  }
+  :global(.tixf-ticket-qr) {
+    margin: 1.25rem auto;
+    width: 220px;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-paper);
+  }
+  :global(.tixf-ticket-qr img) {
+    display: block;
+  }
+  :global(.tixf-assign-form) {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  :global(.tixf-assign-form) :global(.field) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  :global(.tixf-assign-form label) {
+    font: var(--text-caption);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  :global(.tixf-assign-form input) {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-paper-20);
+    padding: 0.5rem 0;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-paper);
+    outline: none;
+  }
+  @media (max-width: 640px) {
+    :global(.tixf-assign-form input) {
+      font-size: 16px;
+    }
+  }
+  :global(.tixf-assign-form) :global(.pill) {
+    align-self: flex-start;
+  }
+  :global(.tixf-assign-status) {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--color-paper-40);
+  }
+</style>
