@@ -8,10 +8,8 @@ import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import ProgrammeList from '../components/sections/ProgrammeList.astro';
 import OddfestExamples from '../components/sections/OddfestExamples.astro';
 import FAQList from '../components/sections/FAQList.astro';
-import PhotoBreak from '../components/sections/PhotoBreak.astro';
 import Pill from '../components/primitives/Pill.astro';
 import oddfestWordmark from '../assets/logos/oddfest-wordmark.svg';
-import photoCrowd from '../assets/hero/archive-15.jpg';
 
 const entry = await getEntry('pages', 'oddfest');
 if (!entry || entry.data._template !== 'oddfest')
@@ -75,7 +73,15 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       )
     }
 
-    <PhotoBreak image={photoCrowd} alt="Performers on stage during ODDfest" />
+    {
+      /* No PhotoBreak here (2026-08-31 correction) — the previous image
+         (assets/hero/archive-15.jpg, "Performers on stage during ODDfest")
+         is legacy centrally-produced festival-stage photography, and this
+         page's whole point is the new distributed, organiser-owned Creative
+         Week model; keeping it visually implied the opposite of the page's
+         own copy. Re-add a PhotoBreak here once real, verified Creative Week
+         imagery exists — same "don't guess" rule as the examples below. */
+    }
 
     {
       // 4. Examples from 2026 — only renders once real, verified examples
