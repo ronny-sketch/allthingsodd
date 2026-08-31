@@ -110,10 +110,57 @@ jobs:
       - run: npm install -g npm@11
       - run: npm ci
       - run: npm run build
-      - run: npx surge dist odd-field-guide.surge.sh
+      # A public, secret-free fingerprint of exactly which commit this dist/
+      # was built from — see docs/deployment.md#deploy-verification for why
+      # this exists: on 2026-08-31, every deploy on this workflow silently
+      # no-op'd for over an hour (SURGE_TOKEN had gone empty — see the next
+      # step's comment) while still reporting a green "Deploy to production"
+      # job, because `npx surge`'s own exit code doesn't distinguish "I
+      # published" from "I sat at an interactive login prompt with no stdin
+      # and gave up." This file is what the last two steps below actually
+      # check against, instead of trusting a green checkmark.
+      - name: Write build fingerprint
+        run: |
+          printf '{"sha":"%s","builtAt":"%s"}\n' "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > dist/build-info.json
+          cat dist/build-info.json
+      - name: Publish to Surge
         env:
           SURGE_LOGIN: ronny@oddfest.co
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+        run: |
+          # The 2026-08-31 incident: SURGE_TOKEN resolved to an empty string
+          # (the repo secret had gone missing), so `npx surge` fell through
+          # to its interactive "email:" login prompt, hit EOF on the
+          # runner's non-interactive stdin, and exited 0 anyway — bash -e
+          # never caught it because there was nothing to catch. Refusing to
+          # even attempt the publish when the token is empty turns that into
+          # a loud, immediate failure instead of an hour of silent no-ops.
+          if [ -z "$SURGE_TOKEN" ]; then
+            echo "::error::SURGE_TOKEN is empty — refusing to run surge (it would silently no-op at an interactive login prompt instead of failing). Set the SURGE_TOKEN repository secret." >&2
+            exit 1
+          fi
+          # stdin explicitly from /dev/null: if the token is present but
+          # invalid, this is what turns a hung/eaten prompt into an
+          # immediate EOF the CLI has to react to, rather than silently
+          # succeeding the same way an empty token did.
+          npx surge dist odd-field-guide.surge.sh < /dev/null | tee surge-publish.log
+          grep -q "Success!.*Published to odd-field-guide.surge.sh" surge-publish.log || {
+            echo "::error::surge did not report a completed publish — see the log above." >&2
+            exit 1
+          }
+      - name: Verify production is serving this deploy
+        run: |
+          for i in 1 2 3 4 5 6 7 8; do
+            LIVE_SHA="$(curl -fsS "https://odd-field-guide.surge.sh/build-info.json?verify=$GITHUB_SHA" | jq -r .sha 2>/dev/null || true)"
+            if [ "$LIVE_SHA" = "$GITHUB_SHA" ]; then
+              echo "Production verified at $GITHUB_SHA"
+              exit 0
+            fi
+            echo "Attempt $i/8: production reports '$LIVE_SHA', expected '$GITHUB_SHA' — retrying in 5s..."
+            sleep 5
+          done
+          echo "::error::Production is not serving the deployed SHA $GITHUB_SHA after retries — the publish step reported success but production disagrees. Do not treat this deploy as live." >&2
+          exit 1
     # Growth OS's own Cloudflare Worker deploy (formerly a
     # `deploy-cloudflare-preview` job here) now lives in its own repo,
     # ../odd-growth-os, with its own CI — see that repo's
