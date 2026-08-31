@@ -54,48 +54,53 @@ const page = entry.data;
     />
     <p class="odds-intro-line reveal">{page.intro}</p>
 
-    <!-- 3. What the space offers, and how it works — the main practical
-         product section: the four real spaces, then membership, then
-         event-use pricing, in one place instead of four separate sections. -->
-    <section class="odds-sub">
+    <!-- 3. What the space offers, and how it works — ONE coherent chapter
+         (not three stacked sections): the real spaces, membership, event
+         use and joining all read as internal zones of a single practical
+         product section instead of four separate page chapters. -->
+    <section class="odds-sub odds-offer">
       <div class="wrap">
         <div class="section-head">
-          <span class="eyebrow">The spaces</span>
-          <h2>Four rooms, one roof.</h2>
+          <span class="eyebrow">What's here</span>
+          <h2>What the space offers — and how it works.</h2>
         </div>
-        <SpaceShowcase spaces={page.spaces} />
-      </div>
-    </section>
 
-    <section class="odds-sub odds-membership">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="eyebrow">Membership</span>
-          <h2>One membership, full access.</h2>
+        <div class="odds-offer-zone">
+          <div class="odds-zone-head">
+            <span class="eyebrow">The spaces</span>
+            <h3>Four rooms, one roof.</h3>
+          </div>
+          <SpaceShowcase spaces={page.spaces} />
         </div>
-        <PricingGrid items={[page.membership]} />
-        <div class="odds-how">
-          <FeatureGrid cards={page.howItWorks} />
-        </div>
-      </div>
-    </section>
 
-    <section class="odds-sub odds-rates">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="eyebrow">Event use</span>
-          <h2>Renting the space doesn't require membership.</h2>
+        <div class="odds-offer-zone">
+          <div class="odds-zone-head">
+            <span class="eyebrow">Membership</span>
+            <h3>One membership, full access.</h3>
+          </div>
+          <PricingGrid items={[page.membership]} />
+          <div class="odds-how">
+            <span class="odds-how-label">Joining</span>
+            <FeatureGrid cards={page.howItWorks} />
+          </div>
         </div>
-        <div class="odds-rates-list reveal">
-          {
-            page.rentalRates.map((r) => (
-              <div class="odds-rate-row">
-                <span class="odds-rate-name">{r.name}</span>
-                <span class="odds-rate-price">{r.price}</span>
-                {r.note && <span class="odds-rate-note">{r.note}</span>}
-              </div>
-            ))
-          }
+
+        <div class="odds-offer-zone">
+          <div class="odds-zone-head">
+            <span class="eyebrow">Event use</span>
+            <h3>Renting the space doesn't require membership.</h3>
+          </div>
+          <div class="odds-rates-list reveal">
+            {
+              page.rentalRates.map((r) => (
+                <div class="odds-rate-row">
+                  <span class="odds-rate-name">{r.name}</span>
+                  <span class="odds-rate-price">{r.price}</span>
+                  {r.note && <span class="odds-rate-note">{r.note}</span>}
+                </div>
+              ))
+            }
+          </div>
         </div>
       </div>
     </section>
@@ -202,8 +207,38 @@ const page = entry.data;
     line-height: 1.8;
     color: var(--color-paper-80);
   }
+  /* One "What the space offers" chapter, three internal zones — a shared
+     top section-head (h2) for the chapter, then each zone gets a smaller
+     h3 sub-head instead of repeating the full section-head treatment,
+     so this genuinely reads as one continuous chapter while scrolling,
+     not three sections with the spacing tightened between them. */
+  .odds-offer-zone + .odds-offer-zone {
+    margin-top: var(--space-20);
+    padding-top: var(--space-20);
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .odds-zone-head {
+    text-align: center;
+    margin-bottom: 2.2rem;
+  }
+  .odds-zone-head h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+    color: var(--color-paper);
+    margin: 0.5rem 0 0;
+  }
   .odds-how {
     margin-top: 3rem;
+  }
+  .odds-how-label {
+    display: block;
+    text-align: center;
+    font: var(--text-utility);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+    margin-bottom: 1.4rem;
   }
   .odds-rates-list {
     max-width: 40rem;
