@@ -37,6 +37,11 @@
       "note": "Wordmarks only. For the fuller, approved kit — including dark/light variants — see the full logo folder below.",
       "items": [
         {
+          "name": "ODD mark",
+          "format": "SVG",
+          "logo": "../../assets/logos/odd-mark.svg"
+        },
+        {
           "name": "ODDfest wordmark",
           "format": "SVG",
           "logo": "../../assets/logos/oddfest-wordmark.svg"

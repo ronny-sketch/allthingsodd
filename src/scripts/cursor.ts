@@ -15,8 +15,17 @@ if (!window.matchMedia('(hover: none)').matches) {
     if (frames.length) img.src = frames[0];
     document.body.classList.add('cursor-ready');
 
+    // Native text-entry controls need their own real cursor (I-beam over
+    // text, arrow over a <select>) to actually read as editable/choosable —
+    // the drawn cursor image is hidden whenever the real pointer is over one
+    // of these, so global.css's `cursor: auto` on them is what the visitor
+    // actually sees, not this image drawn on top of it (2026-08-31 final
+    // implementation pass).
+    const NATIVE_CURSOR_SELECTOR = 'input, textarea, select';
     window.addEventListener('mousemove', (e) => {
       img.style.transform = `translate(${(e.clientX - TIP_X * DISPLAY_W).toFixed(1)}px,${(e.clientY - TIP_Y * DISPLAY_H).toFixed(1)}px)`;
+      const overNativeControl = (e.target as Element | null)?.closest?.(NATIVE_CURSOR_SELECTOR);
+      img.style.opacity = overNativeControl ? '0' : '';
     });
 
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && frames.length) {

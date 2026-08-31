@@ -49,11 +49,20 @@ const { items } = Astro.props;
 </div>
 
 <style>
+  /* Capped max track width, no container background (2026-08-31 final
+     implementation pass, same fix as FeatureGrid/PersonGrid's identical
+     bug) — an uncapped 1fr track lets a lone last-row card stretch to fill
+     the whole row once real cases exist in a count that doesn't divide
+     evenly per row; `justify-content: center` centers a short final row
+     instead of leaving it flush left; dropping the background stops CSS
+     Grid's uniform-column-count-per-row from painting an incomplete last
+     row's genuinely empty cells as a bare solid-color box (each card's own
+     background below plus `gap` is what reads as a hairline grid). */
   .case-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+    justify-content: center;
     gap: 1px;
-    background: var(--color-paper-12);
   }
   .case-card {
     background: var(--color-backstage);

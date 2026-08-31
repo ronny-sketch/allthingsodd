@@ -21,16 +21,34 @@ interface Props {
   logo?: ImageMetadata;
   logoAlt?: string;
   // Optional in-hero CTA pair — ODDfest's hero (the only other caller) has
-  // none; ODDference's does (Buy Blind Bird / Partner with ODDference), so
+  // none; ODDference's does (Reserve Blind Bird / Partner with ODDference), so
   // these stay optional additions rather than forcing every caller to pass
   // both.
   primaryCta?: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
+  // Which archive accent tints the hero scrim — 'ultraviolet' (default) is
+  // the ODDfest/festival wash, --color-ultraviolet (tokens.css: "the study's
+  // own rarest color... ODDfest page only"); 'signal' is ODDference's own
+  // business-facing accent, --color-signal ("business / ODDference" per
+  // tokens.css). Added 2026-08-31 (final implementation pass) so the two
+  // subpages that share this hero read as distinct product identities
+  // without duplicating the whole component — see docs/design-system.md.
+  accent?: 'ultraviolet' | 'signal';
 }
-const { video, poster, sub, meta, logo, logoAlt = '', primaryCta, secondaryCta } = Astro.props;
+const {
+  video,
+  poster,
+  sub,
+  meta,
+  logo,
+  logoAlt = '',
+  primaryCta,
+  secondaryCta,
+  accent = 'ultraviolet',
+} = Astro.props;
 ---
 
-<header class="oddfest-hero reveal">
+<header class={`oddfest-hero oddfest-hero--${accent} reveal`}>
   <video autoplay muted loop playsinline poster={poster.src}>
     <source src={video} type="video/mp4" />
   </video>
@@ -82,13 +100,24 @@ const { video, poster, sub, meta, logo, logoAlt = '', primaryCta, secondaryCta }
     inset: 0;
     pointer-events: none;
     background:
-      radial-gradient(ellipse 45% 55% at 84% 14%, rgb(130 36 212 / 16%) 0%, transparent 60%),
+      radial-gradient(ellipse 45% 55% at 84% 14%, var(--hero-accent-wash) 0%, transparent 60%),
       linear-gradient(
         to top,
         rgb(14 9 11 / 78%) 0%,
         rgb(14 9 11 / 10%) 42%,
         rgb(14 9 11 / 50%) 100%
       );
+  }
+  /* ODDfest's wash — the archive's rarest color, used "always a wash, never
+     fill" per tokens.css. */
+  .oddfest-hero--ultraviolet {
+    --hero-accent-wash: color-mix(in srgb, var(--color-ultraviolet) 16%, transparent);
+  }
+  /* ODDference's wash — Signal Blue, the business-facing accent, at the same
+     16% wash strength so the two heroes read as siblings, not a different
+     design language. */
+  .oddfest-hero--signal {
+    --hero-accent-wash: color-mix(in srgb, var(--color-signal) 22%, transparent);
   }
   .oddfest-hero-overlay {
     position: absolute;

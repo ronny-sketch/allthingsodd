@@ -44,11 +44,25 @@ const { items } = Astro.props;
 </div>
 
 <style>
+  /* minmax(220px, 260px), not minmax(220px, 1fr) — with a roster count (10
+     speakers today) that doesn't divide evenly by the columns-per-row a
+     given width fits, an uncapped 1fr track stretches the final row's few
+     remaining cards to fill the gap, reading as visually oversized speaker
+     cards next to normal ones above (2026-08-31 final implementation pass:
+     this is exactly the "incomplete final row" failure requirement 5 warns
+     about — confirmed via a real screenshot). `justify-content: center`
+     centers a short final row rather than leaving it flush left. No
+     container background either (see FeatureGrid.astro's identical fix and
+     comment) — CSS Grid's explicit columns apply to every row uniformly, so
+     a background here painted an incomplete last row's genuinely empty
+     cells too, showing as a bare solid-color box next to the one real card
+     there. Each card's own background below plus `gap` reads as a hairline
+     grid on its own, real cards only. */
   .person-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 260px));
+    justify-content: center;
     gap: 1px;
-    background: var(--color-paper-12);
   }
   .person-card {
     background: var(--color-backstage);

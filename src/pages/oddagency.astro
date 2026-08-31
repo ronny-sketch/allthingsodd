@@ -1,8 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import SubpageFrame from '../components/sections/SubpageFrame.astro';
-import SplitHero from '../components/sections/SplitHero.astro';
+import HeroCentered from '../components/sections/HeroCentered.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
@@ -17,98 +16,89 @@ const page = entry.data;
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
-  <SubpageFrame slug={page._slug} railLeft={page.railLeft} railRight={page.railRight}>
-    <SplitHero
-      variant="split-image"
-      image={page.heroMedia.image}
-      eyebrow={page.eyebrow}
-      title={page.title}
-      meta={page.meta}
-      intro={page.intro}
-      primaryCta={page.primaryCta}
-      warpTitle
-    />
-    <FeatureGrid cards={page.features} />
+  <!-- 2026-08-31 final implementation pass: dropped SubpageFrame's side-rail
+       ticker + SplitHero in favour of Work with ODD's own HeroCentered —
+       ODDagency is a deeper way to work with ODD, not a fourth core
+       masterbrand product beside ODDfest/ODDference/ODDspace, so it
+       shouldn't carry their same product-page chrome (the decorative rails
+       + video/photo split hero). This brings it into the Work with ODD
+       editorial family instead — same hero, same section rhythm. -->
+  <HeroCentered
+    eyebrow={page.eyebrow}
+    title={page.title}
+    intro={page.intro}
+    image={page.heroMedia.image}
+    primaryCta={page.primaryCta}
+    warpTitle
+  />
 
-    <SectionIntro
-      eyebrow={page.whatItIs.eyebrow}
-      headline={page.whatItIs.headline}
-      body={page.whatItIs.body}
-    />
+  <!-- What the work is. -->
+  <SectionIntro
+    eyebrow={page.whatItIs.eyebrow}
+    headline={page.whatItIs.headline}
+    body={page.whatItIs.body}
+  />
 
-    <section class="odda-sub">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="eyebrow">Capabilities</span>
-          <h2>What ODDagency can do</h2>
-        </div>
-        <FeatureGrid cards={page.capabilities} />
+  <!-- Concise capabilities + kinds of questions — one chapter, not two
+         (2026-08-31 final implementation pass: dropped the separate
+         `features` grid, which repeated this same "what ODDagency can do"
+         idea, and the `whyOdd` grid, whose "Network model"/"Real
+         communities & platforms" copy was the internal/consultancy
+         language the brief asks to remove). -->
+  <section class="odda-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Capabilities</span>
+        <h2>What ODDagency can do</h2>
       </div>
-    </section>
-
-    <section class="odda-sub">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="eyebrow">Why ODD</span>
-          <h2>Built around the work, not the agency model</h2>
-        </div>
-        <FeatureGrid cards={page.whyOdd} />
+      <FeatureGrid cards={page.capabilities} />
+      <div class="odda-type-list reveal">
+        {page.projectTypes.map((t) => <span class="odda-type-tag">{t}</span>)}
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="odda-sub">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="eyebrow">Process</span>
-          <h2>How a project works</h2>
-        </div>
-        <FeatureGrid cards={page.howItWorks} />
-      </div>
-    </section>
+  <PhotoBreak image={photoCraft} alt="Musicians performing together at an ODD event" />
 
-    <PhotoBreak image={photoCraft} alt="Musicians performing together at an ODD event" />
-
-    {
-      page.cases.length > 0 && (
-        <section class="odda-sub">
-          <div class="wrap">
-            <div class="section-head">
-              <span class="eyebrow">Selected work</span>
-              <h2>Cases</h2>
-            </div>
-            <CaseGrid items={page.cases} />
+  <!-- Real cases when available — stays hidden while empty. -->
+  {
+    page.cases.length > 0 && (
+      <section class="odda-sub">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="eyebrow">Selected work</span>
+            <h2>Cases</h2>
           </div>
-        </section>
-      )
-    }
+          <CaseGrid items={page.cases} />
+        </div>
+      </section>
+    )
+  }
 
-    <section class="odda-sub odda-types">
-      <div class="wrap">
-        <div class="section-head">
-          <h2>Types of project</h2>
-        </div>
-        <div class="odda-type-list reveal">
-          {page.projectTypes.map((t) => <span class="odda-type-tag">{t}</span>)}
-        </div>
+  <!-- Compact how-we-work process. -->
+  <section class="odda-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Process</span>
+        <h2>How a project works</h2>
       </div>
-    </section>
+      <FeatureGrid cards={page.howItWorks} />
+    </div>
+  </section>
 
-    <ParticipateBand items={page.participate} noPadTop />
-  </SubpageFrame>
+  <ParticipateBand items={page.participate} noPadTop />
 </Layout>
 
 <style>
   .odda-sub {
     padding: var(--space-24) 0;
   }
-  .odda-types {
-    text-align: center;
-  }
   .odda-type-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.6rem;
+    margin-top: var(--space-10);
   }
   .odda-type-tag {
     font-family: var(--font-body);
