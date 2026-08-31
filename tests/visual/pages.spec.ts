@@ -20,6 +20,18 @@ const ROUTES = [
 
 for (const route of ROUTES) {
   test(`${route || 'home'} — full page`, async ({ page }) => {
+    // Pre-seed the "seen" flag NewsletterPopup.astro checks (see
+    // src/scripts/newsletter-popup.ts) before any page script runs — added
+    // 2026-08-31 after the homepage revision made the popup global (every
+    // page via Layout.astro, not just Home). Its 15s timer can otherwise
+    // fire in the middle of toHaveScreenshot's own stability-polling window
+    // on a heavier page (oddspace/membership/about), mutating the DOM
+    // mid-check and failing "two consecutive stable screenshots" — a real
+    // interaction between two independently-developed features, not a
+    // layout regression. Matches how a real returning-same-session visitor
+    // already never sees it twice; doesn't change what a first-time visitor
+    // sees in production.
+    await page.addInitScript(() => sessionStorage.setItem('oddNewsletterPopupSeen', '1'));
     await page.goto(route);
     // Not 'networkidle': WarpingText's per-frame canvas.toDataURL() call (see
     // src/scripts/warping-text.ts) is heavy enough that on a page carrying an
@@ -71,8 +83,18 @@ for (const route of ROUTES) {
           // ODDspace bookings) — its content changes day to day (today's
           // date highlight, new events), so it's masked for the same
           // "real noise, not a layout regression" reason as the
-          // photographic regions below.
-          '.mosaic, .news-panel img, .four-card-bg, .aftermovie-full, .oddfest-hero video, .oddfest-hero img, .oddf-hero-video video, .oddf-hero-video img, .photo-break img, .odds-calendar-embed',
+          // photographic regions below. .warping-text: added 2026-08-31 —
+          // its per-instance canvas.toDataURL() distortion (see
+          // src/scripts/warping-text.ts) redraws with tiny sub-pixel AA
+          // differences every call even under reduced motion (one settle
+          // render, not zero), which was intermittently failing
+          // toHaveScreenshot's own same-run stability check (two
+          // consecutive captures never quite byte-identical) on every page
+          // carrying an active instance — About, ODDspace, Membership,
+          // ODDagency — regardless of any real layout change. The text
+          // content itself still has its own coverage (the h1-count
+          // assertion above, functional nav/heading tests).
+          '.mosaic, .news-panel img, .four-card-bg, .aftermovie-full, .oddfest-hero video, .oddfest-hero img, .oddf-hero-video video, .oddf-hero-video img, .photo-break img, .odds-calendar-embed, .warping-text',
         ),
       ],
     });
