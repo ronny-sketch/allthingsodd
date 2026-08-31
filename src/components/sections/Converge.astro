@@ -8,10 +8,14 @@ interface Props {
   intro: string;
   business: { lede: string; body: string; tracks?: TrackItem[] };
   creative: { lede: string; body: string; tracks?: TrackItem[] };
-  // Small label above the intro paragraph ("Who ODD is for") — optional so
-  // Converge stays usable exactly as before for any future caller that
-  // doesn't want it. See index.astro's merged "Who ODD is for / What we do"
-  // composition (2026-08-30 homepage revision).
+  // The section's own title ("Who ODD is for") — renders as a real
+  // .section-head h2 (2026-08-31: was a tiny eyebrow-style label with no
+  // heading at all above the intro paragraph, which read as under-titled
+  // next to ProgramGrid's own "What we do" .section-head directly below it
+  // in the same composition). Optional so Converge stays usable exactly as
+  // before for any future caller that doesn't want a title. See
+  // index.astro's merged "Who ODD is for / What we do" composition
+  // (2026-08-30 homepage revision).
   audienceEyebrow?: string;
   // Reduces the section's own bottom padding — used only when a caller
   // stacks something (ProgramGrid, on Home) directly underneath as part of
@@ -24,7 +28,13 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
 
 <section class={`converge ${tightBottom ? 'is-tight-bottom' : ''}`}>
   <div class="wrap">
-    {audienceEyebrow && <p class="converge-eyebrow eyebrow reveal">{audienceEyebrow}</p>}
+    {
+      audienceEyebrow && (
+        <div class="section-head converge-head reveal">
+          <h2>{audienceEyebrow}</h2>
+        </div>
+      )
+    }
     <p class="converge-intro reveal">{intro}</p>
     <div class="converge-grid reveal">
       <div class="converge-col converge-col--business">
@@ -76,16 +86,21 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
   .converge.is-tight-bottom {
     padding-bottom: var(--space-10);
   }
-  .converge-eyebrow {
-    text-align: center;
-    margin: 0 0 1rem;
+  /* Reuses the sitewide .section-head shape (bordered, centered — same
+     pattern ProgramGrid's "What we do" uses directly below it in this same
+     composition) so "Who ODD is for" reads as a real section title, not a
+     tiny label the intro paragraph seemed to just be hanging off of. */
+  .converge-head {
+    margin-bottom: var(--space-8);
   }
   .converge-intro {
     text-align: center;
+    max-width: 46rem;
+    margin: 0 auto 3.8rem;
     font-family: var(--font-body);
-    font-size: 0.95rem;
+    font-size: 1.02rem;
+    line-height: 1.8;
     color: var(--color-paper-60);
-    margin: 0 0 3.8rem;
   }
   .converge-grid {
     display: grid;
