@@ -176,4 +176,19 @@ const track = Array.from({ length: reps }, () => logos).flat();
     pointer-events: none;
     background: linear-gradient(to top, rgb(0 0 0 / 35%) 0%, transparent 18%);
   }
+  /* The poster/video frame has "BE THE ODD ONE" baked into the footage
+     itself. Desktop's fixed min(78vh, 680px) band comfortably fits a 2:1
+     source at wide viewports, but on a narrow phone that same tall, narrow
+     box forces object-fit:cover to crop nearly the entire width away,
+     leaving only the two center dots of the logo mark visible — the actual
+     words disappear (confirmed via elementFromPoint against the rendered
+     poster, not assumed). Switching to the source's own 2:1 aspect ratio
+     below 700px shows the full frame with no side-cropping instead. */
+  @media (max-width: 700px) {
+    .aftermovie-full :global(img[data-video-poster]),
+    .aftermovie-full video {
+      height: auto;
+      aspect-ratio: 2 / 1;
+    }
+  }
 </style>

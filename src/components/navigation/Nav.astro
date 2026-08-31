@@ -365,5 +365,14 @@ const infoItem = nav.find((item) => item.children);
     .nav-info {
       display: none;
     }
+    /* Below the tablet cutoff the mark is the only left-side control (the
+       primary links are gone), so it's worth a real tap target: padding
+       grows the invisible hit area, the matching negative margin keeps the
+       mark itself rendering at the exact same size/position as before —
+       purely a hit-slop increase, not a visual change. */
+    .mark {
+      padding: 11px 8px;
+      margin: -11px -8px;
+    }
   }
 </style>

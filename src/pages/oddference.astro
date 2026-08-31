@@ -292,6 +292,25 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
     gap: 3rem;
     align-items: start;
   }
+  /* Grid items default to min-width:auto (content-based). Below ~375px the
+     actual floor turns out to be .oddc-convert-partner's own CTA — Pill's
+     white-space:nowrap keeps "Talk to us about partnering →" on one line,
+     and that unbreakable string's min-content is wider than the column
+     .oddc-convert actually has to give it once it's a single-column grid.
+     Since a single-column grid's two items share the same track, that
+     floors .oddc-convert-tickets right along with it — the ticket card
+     itself has nothing unbreakable that wide (confirmed via a per-child
+     scrollWidth probe: every one of its children matched its own already-
+     allocated width, none were fighting it for space). Real page-level
+     horizontal overflow below ~375px, gone at 390px+. min-width:0 on both
+     items is necessary so the grid can size the column from real available
+     space instead of either item's content floor; letting the CTA wrap
+     (below) is what keeps that content-width fix from just clipping the
+     button text instead. */
+  .oddc-convert-tickets,
+  .oddc-convert-partner {
+    min-width: 0;
+  }
   .oddc-convert-partner {
     background: var(--color-backstage);
     border: 1px solid var(--color-paper-12);
@@ -304,6 +323,12 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
   }
   .oddc-convert-partner :global(.pill) {
     margin-top: 1.5rem;
+  }
+  @media (max-width: 480px) {
+    .oddc-convert-partner :global(.pill) {
+      white-space: normal;
+      text-align: center;
+    }
   }
   @media (max-width: 900px) {
     .oddc-convert {

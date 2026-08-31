@@ -147,7 +147,11 @@ import { GA_MEASUREMENT_ID } from '../../scripts/analytics-config';
     .consent-banner {
       left: var(--space-3);
       right: var(--space-3);
-      bottom: var(--space-3);
+      /* max() not a plain add — env() resolves to 0 on devices without a
+         safe area, which would otherwise leave the banner flush against
+         the bottom edge instead of falling back to the same space-3 every
+         other viewport gets. */
+      bottom: max(var(--space-3), env(safe-area-inset-bottom));
       padding: var(--space-4);
     }
   }

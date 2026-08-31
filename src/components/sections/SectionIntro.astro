@@ -110,4 +110,18 @@ const { eyebrow, headline, body, cta, warpHeadline = false } = Astro.props;
     color: var(--color-amber-bright);
     text-decoration-color: var(--color-amber-bright);
   }
+  @media (max-width: 760px) {
+    /* This single-line link's own text box measures ~20px tall — under the
+       WCAG 2.5.8 AA touch-target guidance. Padding grows the tappable area;
+       the equal-and-opposite negative margin keeps the visible underlined
+       text sitting exactly where it did, so this is hit-slop only, not a
+       layout change (the block stays centered — both are symmetric). */
+    .section-intro-link {
+      padding: 10px 14px;
+      margin-top: calc(1.4rem - 10px);
+      margin-right: -14px;
+      margin-bottom: -10px;
+      margin-left: -14px;
+    }
+  }
 </style>

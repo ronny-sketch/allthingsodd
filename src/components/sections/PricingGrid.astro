@@ -53,6 +53,23 @@ const { items } = Astro.props;
     gap: 1.25rem;
     align-items: stretch;
   }
+  /* minmax(260px, …)'s 260px is a hard floor, not content-based — auto-fit
+     still won't size a track below it even when the real available space is
+     narrower, which forces this grid (and .oddc-convert/.wrap above it)
+     wider than the viewport (confirmed: real page-level horizontal overflow
+     on both ODDference's ticket grid and Membership's tier grid below
+     ~375px, gone at 390px+, and unaffected by min-width:0 anywhere in the
+     ancestor chain — that only helps content-based sizing, not an explicit
+     minmax minimum). Dropping the floor for a plain 1-column track below
+     480px — where a single card easily has room regardless of viewport
+     width — is what actually removes it; auto-fit still runs (2+ columns
+     once there's room for two 260px cards) at every wider width, tablet
+     included. */
+  @media (max-width: 480px) {
+    .pricing-grid {
+      grid-template-columns: 1fr;
+    }
+  }
   .pricing-card {
     position: relative;
     display: flex;

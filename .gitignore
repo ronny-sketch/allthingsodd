@@ -35,3 +35,4 @@ pnpm-debug.log*
 
 # Claude Code agent worktrees/session state — never part of site history
 /.claude/
+scripts-adhoc/
