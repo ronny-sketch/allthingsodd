@@ -35,7 +35,13 @@ const website = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'ODD',
-  description: 'A co-creation platform bringing creativity and business together in Helsinki.',
+  // Same underlying factual framing as Media's boilerplate (media.json) —
+  // masterbrand connecting creative/cultural fields with business and wider
+  // society, not the old "co-creation platform" phrasing, which predates
+  // the current ODDfest/ODDference/ODDspace architecture. Keep both in sync
+  // if either changes; see docs on the Media rebuild (2026-08-30/31).
+  description:
+    "ODD is a Helsinki-based initiative connecting Finland's creative and cultural fields with business and wider society, through ODDfest, ODDference and ODDspace.",
   url: siteUrl,
   publisher: { '@type': 'Organization', name: 'New Nordic Way rf' },
 };
