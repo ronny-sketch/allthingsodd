@@ -36,6 +36,7 @@ const page = entry.data;
     <!-- 1. Hero: the space itself, shown through its own photography, with
          both conversion CTAs up front. -->
     <SpaceHero
+      slot="hero"
       photos={page.heroPhotos}
       title={page.title}
       meta={page.meta}
@@ -148,6 +149,10 @@ const page = entry.data;
             </Pill>
           </div>
         </div>
+        <p class="odds-visit reveal">
+          {page.visit.address} —{' '}
+          <a href={page.visit.directionsUrl} target="_blank" rel="noreferrer"> Get directions → </a>
+        </p>
       </div>
     </section>
 
@@ -348,6 +353,23 @@ const page = entry.data;
     .odds-enter-card {
       padding: 2rem 1.6rem;
     }
+  }
+  .odds-visit {
+    margin: 1.6rem 0 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-60);
+  }
+  .odds-visit a {
+    color: var(--color-paper-80);
+    text-decoration: underline;
+    text-decoration-color: var(--color-paper-20);
+    text-underline-offset: 3px;
+  }
+  .odds-visit a:hover {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
   }
 
   .odds-calendar-note {

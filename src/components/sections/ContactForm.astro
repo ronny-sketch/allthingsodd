@@ -21,7 +21,13 @@ const { contact, social } = site.data;
 <section class="contact-section">
   <div class="wrap contact-grid reveal">
     <form class="contact-form" id="contactForm" data-access-key={accessKey ?? ''}>
-      <input type="hidden" name="subject" value="New message from oddfest.co contact form" />
+      <input
+        type="hidden"
+        name="subject"
+        id="cf-subject"
+        value="New message from oddfest.co contact form"
+      />
+      <p class="contact-topic-note" id="cf-topic-note" hidden></p>
       <div class="field">
         <label for="cf-name">Name</label>
         <input id="cf-name" name="name" type="text" required autocomplete="name" />
@@ -165,6 +171,12 @@ const { contact, social } = site.data;
     font-family: var(--font-body);
     font-size: 0.78rem;
     color: var(--color-paper-40);
+  }
+  .contact-topic-note {
+    margin: -0.8rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-paper-60);
   }
 
   .contact-direct {

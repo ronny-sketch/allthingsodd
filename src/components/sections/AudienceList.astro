@@ -1,0 +1,78 @@
+---
+// A lighter typographic treatment for "who it's for" lists — audiences
+// aren't parallel features or steps, so FeatureGrid's bordered card grid
+// overstates them as another chapter of cards. This scans as a plain list:
+// a bold label, a short description, nothing else. See content.config.ts's
+// `audienceItem` fragment (oddference.json/membership.json both use this
+// shape) and docs/design-system.md's FeatureGrid usage rule.
+interface Item {
+  label: string;
+  description: string;
+}
+interface Props {
+  items: Item[];
+}
+const { items } = Astro.props;
+---
+
+<ul class="audience-list reveal">
+  {
+    items.map((item) => (
+      <li>
+        <span class="audience-label">{item.label}</span>
+        <span class="audience-description">{item.description}</span>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .audience-list {
+    list-style: none;
+    margin: 3rem auto 0;
+    padding: 0;
+    max-width: 46rem;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .audience-list li {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) 1fr;
+    gap: 0.4rem 2rem;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .audience-label {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    color: var(--color-paper);
+  }
+  .audience-description {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--color-paper-60);
+  }
+  @media (max-width: 640px) {
+    .audience-list li {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .audience-list {
+      opacity: 0;
+      transform: translateY(14px);
+      transition:
+        opacity 0.55s ease,
+        transform 0.55s ease;
+    }
+    .audience-list.in {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

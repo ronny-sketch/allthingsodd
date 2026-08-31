@@ -6,6 +6,7 @@ import SubpageFrame from '../components/sections/SubpageFrame.astro';
 import FullbleedVideoHero from '../components/sections/FullbleedVideoHero.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
+import AudienceList from '../components/sections/AudienceList.astro';
 import PersonGrid from '../components/sections/PersonGrid.astro';
 import PricingGrid from '../components/sections/PricingGrid.astro';
 import Pill from '../components/primitives/Pill.astro';
@@ -22,9 +23,10 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <SubpageFrame slug={page._slug} railLeft={page.railLeft} railRight={page.railRight}>
     <!-- 1. Hero: ODDference mark + "Where creative expertise meets business and
-         society." (the page's one h1), Buy Blind Bird / Partner with ODDference
+         society." (the page's one h1), Reserve Blind Bird / Partner with ODDference
          CTAs right in the hero. -->
     <FullbleedVideoHero
+      slot="hero"
       video={page.heroMedia.video}
       poster={page.heroMedia.poster}
       sub={page.title}
@@ -33,6 +35,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
       logoAlt="ODDference"
       primaryCta={page.primaryCta}
       secondaryCta={page.secondaryCta}
+      accent="signal"
     />
 
     <!-- Concept explainer — one concise paragraph, no separate "Big
@@ -70,17 +73,12 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
       </div>
     </section>
 
-    <!-- 3. Who it's for — the mix, not a taxonomy. -->
+    <!-- 3. Who it's for — a lighter typographic list, not another
+         FeatureGrid card chapter (see AudienceList.astro). -->
     <section class="oddc-sub">
       <div class="wrap">
         <div class="section-head"><h2>Who it's for</h2></div>
-        <FeatureGrid
-          cards={page.whoItsFor.map((a, i) => ({
-            number: String(i + 1).padStart(2, '0'),
-            title: a.label,
-            body: a.description,
-          }))}
-        />
+        <AudienceList items={page.whoItsFor} />
       </div>
     </section>
 

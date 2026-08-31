@@ -2,34 +2,17 @@
   "_template": "oddagency",
   "_slug": "oddagency",
   "seo": {
-    "title": "ODD Projects — creative work built around the problem",
+    "title": "ODDagency — creative work built around the problem",
     "description": "Project-based work for organisations that need creative thinking, cultural understanding or the right people around a problem.",
     "ogImage": "/og/oddagency.jpg"
   },
-  "eyebrow": "ODD Projects · For organisations",
+  "eyebrow": "ODDagency · For organisations",
   "title": "Bring us something worth figuring out.",
   "meta": "Project-based · Helsinki",
   "intro": "Some questions need a different mix of people around the table. ODD builds project teams around the work itself — drawing on creative practice, cultural understanding, strategy and production as needed. This is commercial work, shaped project by project.",
   "heroMedia": {
     "image": "../../assets/programs/oddagency-card.jpg"
   },
-  "features": [
-    {
-      "number": "01",
-      "title": "Production",
-      "body": "From first concept through to a finished, installed result."
-    },
-    {
-      "number": "02",
-      "title": "Co-creation",
-      "body": "Bring a fully formed brief, or bring a problem and figure out the brief together."
-    },
-    {
-      "number": "03",
-      "title": "Cultural understanding",
-      "body": "Bring in the perspectives and disciplines the work actually needs, rather than forcing every brief through the same fixed team."
-    }
-  ],
   "whatItIs": {
     "eyebrow": "What ODDagency is",
     "headline": "The team follows the work.",
@@ -55,23 +38,6 @@
       "number": "04",
       "title": "Co-creation & concept work",
       "body": "Workshops and facilitated sessions that turn an open brief into a concrete direction."
-    }
-  ],
-  "whyOdd": [
-    {
-      "number": "01",
-      "title": "Network model",
-      "body": "No fixed roster. The team changes with the problem, and people join because their practice is relevant to the work."
-    },
-    {
-      "number": "02",
-      "title": "Project-specific teams",
-      "body": "Assembled around the brief, not the other way around."
-    },
-    {
-      "number": "03",
-      "title": "Real communities & platforms",
-      "body": "ODD also runs real events and spaces. When it genuinely helps the project, that gives the work a route into wider creative communities and public contexts — without treating those communities as a resource to mine."
     }
   ],
   "howItWorks": [

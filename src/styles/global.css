@@ -3,29 +3,51 @@
 @import './layout.css';
 @import './motion.css';
 
+/* WOFF2 first (2026-08-31 final implementation pass) — same glyphs/metrics as
+   the original .ttf files, losslessly recompressed via fontTools
+   (ttLib.woff2), 65-86% smaller (Forta: 340KB → 47.5KB; each Gabarito weight:
+   ~102KB → ~31-35KB). The .ttf stays as the format() fallback for the rare
+   browser without WOFF2 support; every real target here supports it.
+   font-display: optional (not the previous `block`, which could hold text
+   invisible for up to 3s on a slow connection — a real "blocking font
+   loading" bug) and not `swap` either: this site's display type (Forta) is
+   wide/condensed enough vs. the system-font fallback that swapping it in
+   after layout would risk a visible reflow/CLS regression against this
+   project's own CLS ≤ 0.1 target (see CLAUDE.md's performance
+   requirements). `optional` gives the browser a very short block window,
+   then commits to the fallback for that render rather than swapping later —
+   a repeat visit with the font already cached still gets it immediately. */
 @font-face {
   font-family: 'Forta';
-  src: url('../assets/fonts/forta-regular.ttf') format('truetype');
+  src:
+    url('../assets/fonts/forta-regular.woff2') format('woff2'),
+    url('../assets/fonts/forta-regular.ttf') format('truetype');
   font-weight: 400;
-  font-display: block;
+  font-display: optional;
 }
 @font-face {
   font-family: 'Gabarito';
-  src: url('../assets/fonts/gabarito-regular.ttf') format('truetype');
+  src:
+    url('../assets/fonts/gabarito-regular.woff2') format('woff2'),
+    url('../assets/fonts/gabarito-regular.ttf') format('truetype');
   font-weight: 400;
-  font-display: block;
+  font-display: optional;
 }
 @font-face {
   font-family: 'Gabarito';
-  src: url('../assets/fonts/gabarito-semibold.ttf') format('truetype');
+  src:
+    url('../assets/fonts/gabarito-semibold.woff2') format('woff2'),
+    url('../assets/fonts/gabarito-semibold.ttf') format('truetype');
   font-weight: 600;
-  font-display: block;
+  font-display: optional;
 }
 @font-face {
   font-family: 'Gabarito';
-  src: url('../assets/fonts/gabarito-bold.ttf') format('truetype');
+  src:
+    url('../assets/fonts/gabarito-bold.woff2') format('woff2'),
+    url('../assets/fonts/gabarito-bold.ttf') format('truetype');
   font-weight: 700;
-  font-display: block;
+  font-display: optional;
 }
 
 * {
@@ -94,11 +116,24 @@ body.cursor-ready,
 body.cursor-ready * {
   cursor: none !important;
 }
+/* Native text/pointer cursor over text-entry and choice controls — the
+   playful custom cursor is a distinctive site detail, but it shouldn't
+   replace the one visual cue a visitor has for "this is editable text" or
+   "this opens a list of choices" (2026-08-31 final implementation pass).
+   Higher specificity than the blanket rule above (two classes vs. one),
+   still under an explicit !important so it actually wins over it. */
+body.cursor-ready input,
+body.cursor-ready textarea,
+body.cursor-ready select {
+  cursor: auto !important;
+}
 
 /* keyboard focus */
 a:focus-visible,
 button:focus-visible,
-input:focus-visible {
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 3px;
 }

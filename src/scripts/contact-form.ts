@@ -2,10 +2,32 @@
 // (api.web3forms.com) — no backend of ours involved. See ContactForm.astro's
 // own comment: with no access key set yet, this tells the visitor the form
 // isn't connected instead of pretending to send anything.
+// Known ?topic= values from deep links elsewhere on the site (currently just
+// ODDfest's "Register your event idea" CTA — see oddfest.json) — a friendlier
+// subject line and an on-page confirmation that the message landed in the
+// right place, without needing a dedicated registration form/endpoint that
+// doesn't exist yet. Any unrecognised or absent value leaves the form's
+// default subject/behaviour untouched.
+const TOPICS: Record<string, string> = {
+  oddfest_2027_event: 'ODDfest 2027 — event idea',
+};
+
 const form = document.getElementById('contactForm');
 if (form instanceof HTMLFormElement) {
   const status = form.querySelector<HTMLElement>('.form-status');
   const accessKey = form.dataset.accessKey;
+
+  const topicParam = new URLSearchParams(window.location.search).get('topic');
+  const topicLabel = topicParam ? TOPICS[topicParam] : undefined;
+  if (topicLabel) {
+    const subjectField = form.querySelector<HTMLInputElement>('#cf-subject');
+    if (subjectField) subjectField.value = `${topicLabel} — oddfest.co contact form`;
+    const topicNote = document.getElementById('cf-topic-note');
+    if (topicNote) {
+      topicNote.textContent = `Regarding: ${topicLabel}.`;
+      topicNote.hidden = false;
+    }
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();

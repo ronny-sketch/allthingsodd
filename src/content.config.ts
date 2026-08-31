@@ -17,6 +17,11 @@ const cta = z.object({
   // falls back to one flat ungrouped row when nothing in the array sets
   // this) — see docs/architecture.md and ParticipateBand.astro.
   audience: z.string().optional(),
+  // Optional one-line description — added for Home's quiet "Work with ODD"
+  // pathway card (2026-08-31 final pass), which needs a short body under its
+  // title the way a participate/finalCta entry never has. Every existing
+  // caller simply omits it and renders exactly as before.
+  body: z.string().optional(),
 });
 
 const linkCta = z.object({
@@ -396,8 +401,20 @@ const pages = defineCollection({
           note: z.string(),
           items: z.array(activityItem),
         }),
-        // Not fixed at four — see platformCard's own comment above.
+        // The three primary ODD destinations only (ODDfest / ODDference /
+        // ODDspace) — see platformCard's own comment above. "Work with ODD"
+        // moved out of this array in the 2026-08-31 final implementation
+        // pass: it's a deeper way to work with ODD, not a fourth equal
+        // masterbrand product, so it no longer competes for the same giant
+        // photo-card treatment as the three real programmes — see
+        // `workWithOdd` below and docs/architecture.md.
         platforms: z.array(platformCard),
+        // Home's quiet "Work with ODD" pathway card — reuses the shared
+        // `cta` shape (now with an optional `body`) rather than a full
+        // platformCard, since this renders as a slim organisational banner,
+        // not a giant photo card, immediately under the three-across
+        // platforms grid. See index.astro.
+        workWithOdd: cta,
         // Optional at the object level so this module can be entirely
         // absent from the page until real proof numbers exist — see
         // ProofGrid.astro.
@@ -470,7 +487,7 @@ const pages = defineCollection({
         _template: z.literal('oddference'),
         // A second hero CTA (ODDfest's FullbleedVideoHero call doesn't pass
         // one) — declared here, not on subpageBase, since it's genuinely
-        // page-specific: "Buy Blind Bird" + "Partner with ODDference" only
+        // page-specific: "Reserve Blind Bird" + "Partner with ODDference" only
         // makes sense once there's something to sell and someone to court.
         secondaryCta: linkCta.optional(),
         // The one-paragraph concept explainer directly under the hero — same
@@ -541,13 +558,32 @@ const pages = defineCollection({
           .optional(),
       }),
 
+      // 2026-08-31 final implementation pass: dropped `features` (a near-
+      // duplicate of `capabilities` — same "what ODDagency can do" idea
+      // twice) and `whyOdd` (its "Network model"/"Real communities &
+      // platforms" copy was exactly the internal/consultancy language the
+      // brief asks to remove sitewide, and the page's own `whatItIs` already
+      // carries the "why ODD" reasoning) — removed rather than left as stale
+      // CMS controls, same convention as membership's whyJoin/rhythm above.
+      // This also brings the page down from five stacked FeatureGrid
+      // chapters to two (capabilities, howItWorks), per the brief's
+      // "Hero → what the work is → concise capabilities → cases → how it
+      // works → CTA" target shape.
+      //
+      // Also 2026-08-31: oddagency.astro switched from SubpageFrame (the
+      // side-rail ticker ODDfest/ODDference/ODDspace use) + SplitHero to
+      // Work with ODD's plainer HeroCentered — ODDagency shouldn't visually
+      // pretend to be a fourth core masterbrand product. `heroMedia`,
+      // `railLeft`/`railRight` and `meta` stay in this shape only because
+      // they're inherited from the shared `subpageBase` all four subpages
+      // extend (not worth forking the base type over); they're no longer
+      // rendered on this specific page — don't be surprised editing one of
+      // them has no visible effect here.
       subpageBase.extend({
         _template: z.literal('oddagency'),
         intro: z.string(),
-        features: z.array(featureCard),
         whatItIs: sectionIntro,
         capabilities: z.array(featureCard),
-        whyOdd: z.array(featureCard),
         howItWorks: z.array(featureCard),
         cases: z.array(caseStudy),
         projectTypes: z.array(z.string()),
@@ -564,12 +600,15 @@ const pages = defineCollection({
       // (become a member / organise an event) instead of one section per
       // fact. `heroMedia` (shared, subpageBase) is unused here — the new
       // hero takes a photo grid via `heroPhotos` instead of one video/image
-      // — so oddspace.json just sets `heroMedia: {}`. `location` and
-      // `features` are gone (the address doesn't need its own section; the
-      // old features grid is consolidated into other sections). `whatYouGet`
-      // is gone, replaced by `spaces` (one card per real space type, each
-      // with its own photo) — the membership benefit list now lives
-      // entirely on `membership.benefits`.
+      // — so oddspace.json just sets `heroMedia: {}`. The old dedicated
+      // `location` section and `features` grid are gone (a whole section for
+      // the address was more than it needed; the old features grid is
+      // consolidated into other sections) — see `visit` below for the
+      // compact, 2026-08-31 final-pass replacement: a one-line address +
+      // directions link surfaced in the practical "Enter the space" flow,
+      // not its own section. `whatYouGet` is gone, replaced by `spaces` (one
+      // card per real space type, each with its own photo) — the membership
+      // benefit list now lives entirely on `membership.benefits`.
       subpageBase.extend({
         _template: z.literal('oddspace'),
         // "What is ODDspace" — the concrete, once-only explainer (section 2
@@ -577,6 +616,13 @@ const pages = defineCollection({
         // follow-up line rendered directly under it, not a hero paragraph.
         intro: z.string(),
         whatItIs: sectionIntro,
+        // The real street address + a directions link — shown as one quiet
+        // line inside "Enter the space" (section 6), not a dedicated
+        // section (see the comment above this extend block). `directionsUrl`
+        // is a generated Google Maps search URL for the same real address in
+        // `address`, not a separately-typed-in value that could drift from
+        // it — see oddspace.astro.
+        visit: z.object({ address: z.string(), directionsUrl: z.string() }),
         // The 7-8 photo hero grid — see SpaceHero.astro. Deliberately not
         // capped at an exact count in the schema (a real editor should be
         // able to add/remove one without a code change), but the component
@@ -684,9 +730,13 @@ const pages = defineCollection({
         intro: z.string(),
         whatItIs: sectionIntro,
         whoItsFor: z.array(audienceItem),
-        whyJoin: z.array(featureCard),
+        // "What participation may involve" — one consolidated list (2026-08-31
+        // final implementation pass). Previously split into three separate
+        // FeatureGrid/list chapters (whyJoin, includes, rhythm) that repeated
+        // the same "ongoing relationship" idea three ways; removed rather
+        // than left as stale CMS controls, per this file's own convention —
+        // re-add a richer version once ODDnetwork's real model is settled.
         includes: z.array(z.object({ title: z.string(), body: z.string() })),
-        rhythm: z.array(z.string()),
         // Optional so tiers can be dropped from the page entirely until
         // pricing is final — see PricingGrid.astro.
         tiers: z.array(pricingTier).optional(),

@@ -112,8 +112,12 @@ const { spaces } = Astro.props;
     .space-showcase {
       grid-template-columns: 1fr;
     }
+    /* A modest mobile gutter (2026-08-31 final implementation pass) — the
+       previous near-zero 0.2rem horizontal padding ran the body text right
+       up against the viewport edge on a single-column mobile card, which
+       read as unfinished rather than intentional. */
     .space-card-body {
-      padding: 1.4rem 0.2rem 1.8rem;
+      padding: 1.4rem 1.1rem 1.8rem;
     }
   }
 

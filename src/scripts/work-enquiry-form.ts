@@ -17,10 +17,28 @@ if (form instanceof HTMLFormElement) {
   // us a brief" lands with the right option already selected, instead of a
   // blank dropdown that loses the context they arrived with.
   const interestSelect = form.querySelector<HTMLSelectElement>('#we-interest');
-  const requestedInterest = new URLSearchParams(window.location.search).get('interest');
+  const params = new URLSearchParams(window.location.search);
+  const requestedInterest = params.get('interest');
   if (interestSelect && requestedInterest) {
     const match = Array.from(interestSelect.options).find((o) => o.value === requestedInterest);
     if (match) interestSelect.value = requestedInterest;
+  }
+
+  // ODDspace's two CTAs ("Become a member" / "Organise an event") both share
+  // the single `oddspace` interest value (the Worker's products.yml enum
+  // isn't touched by this website-only change) but mean genuinely different
+  // things — a personal creative applying for membership shouldn't be asked
+  // for a "work email" and a required "organisation" as though they were a
+  // business. `intent` is a display-only query param this form reads itself;
+  // it's never sent to the Worker. See oddspace.json's own CTAs and
+  // content.config.ts's `interest`/`intent` note.
+  if (params.get('intent') === 'membership') {
+    const emailLabel = form.querySelector<HTMLLabelElement>('#we-email-label');
+    const orgLabel = form.querySelector<HTMLLabelElement>('#we-org-label');
+    const orgInput = form.querySelector<HTMLInputElement>('#we-org');
+    if (emailLabel) emailLabel.textContent = 'Email';
+    if (orgLabel) orgLabel.textContent = 'Organisation (leave blank if applying as an individual)';
+    if (orgInput) orgInput.required = false;
   }
 
   form.addEventListener('submit', async (e) => {

@@ -10,12 +10,12 @@
   "title": "Where creative expertise meets business and society.",
   "meta": "Helsinki · 2027",
   "primaryCta": {
-    "label": "Buy Blind Bird — €300",
+    "label": "Reserve Blind Bird — €300",
     "href": "#tickets"
   },
   "secondaryCta": {
     "label": "Partner with ODDference",
-    "href": "/contact?interest=oddference_corporate"
+    "href": "/work-with-odd?interest=oddference_corporate#enquiry-form"
   },
   "heroMedia": {
     "video": "/video/oddference-hero.mp4",
@@ -23,7 +23,7 @@
   },
   "concept": {
     "eyebrow": "What is ODDference",
-    "headline": "Where creative expertise meets business and society.",
+    "headline": "What can business and the rest of society learn from creative expertise?",
     "body": "ODDference brings creative professionals, business leaders, founders and decision-makers into the same room to explore what creative expertise can teach us about how we build organisations, businesses and society. It combines serious professional content, an unusual mix of people, and an experience shaped by artists and creative practitioners — not a conference that happens to feature creative speakers."
   },
   "reasons": [
@@ -160,7 +160,7 @@
         "The lowest price ODDference 2027 will be sold at",
         "First to know the 2027 programme as it's confirmed"
       ],
-      "ctaLabel": "Buy Blind Bird",
+      "ctaLabel": "Reserve Blind Bird",
       "href": "mailto:ronny@oddfest.co?subject=ODDference%202027%20%E2%80%94%20Blind%20Bird%20ticket"
     }
   ],
@@ -168,7 +168,7 @@
     "eyebrow": "For organisations",
     "title": "Let's talk about what your organisation wants to make possible.",
     "linkLabel": "Talk to us about partnering →",
-    "href": "/contact?interest=oddference_corporate"
+    "href": "/work-with-odd?interest=oddference_corporate#enquiry-form"
   },
   "railLeft": [
     {

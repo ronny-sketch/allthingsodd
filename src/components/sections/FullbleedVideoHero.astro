@@ -8,9 +8,10 @@ interface Props {
   video: string;
   poster: ImageMetadata;
   // The one visible line of copy over the video — rendered as the page's
-  // real <h1> (this hero replaces the separate title block subpages using
-  // SplitHero render below their own hero; see docs/architecture.md#hero-variants
-  // and oddfest.astro, the only current caller).
+  // real <h1>. Shared by ODDfest and ODDference (both full-bleed-video
+  // subpages; see docs/architecture.md#hero-variants) — rendered into
+  // SubpageFrame's named `hero` slot by each page, not as a plain first
+  // child (see SubpageFrame.astro's 2026-08-31 hero-frame comment).
   sub: string;
   // Optional small secondary line under the h1 (e.g. "Helsinki · 2027").
   meta?: string;
@@ -21,16 +22,34 @@ interface Props {
   logo?: ImageMetadata;
   logoAlt?: string;
   // Optional in-hero CTA pair — ODDfest's hero (the only other caller) has
-  // none; ODDference's does (Buy Blind Bird / Partner with ODDference), so
+  // none; ODDference's does (Reserve Blind Bird / Partner with ODDference), so
   // these stay optional additions rather than forcing every caller to pass
   // both.
   primaryCta?: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
+  // Which archive accent tints the hero scrim — 'ultraviolet' (default) is
+  // the ODDfest/festival wash, --color-ultraviolet (tokens.css: "the study's
+  // own rarest color... ODDfest page only"); 'signal' is ODDference's own
+  // business-facing accent, --color-signal ("business / ODDference" per
+  // tokens.css). Added 2026-08-31 (final implementation pass) so the two
+  // subpages that share this hero read as distinct product identities
+  // without duplicating the whole component — see docs/design-system.md.
+  accent?: 'ultraviolet' | 'signal';
 }
-const { video, poster, sub, meta, logo, logoAlt = '', primaryCta, secondaryCta } = Astro.props;
+const {
+  video,
+  poster,
+  sub,
+  meta,
+  logo,
+  logoAlt = '',
+  primaryCta,
+  secondaryCta,
+  accent = 'ultraviolet',
+} = Astro.props;
 ---
 
-<header class="oddfest-hero reveal">
+<header class={`oddfest-hero oddfest-hero--${accent} reveal`}>
   <video autoplay muted loop playsinline poster={poster.src}>
     <source src={video} type="video/mp4" />
   </video>
@@ -61,13 +80,25 @@ const { video, poster, sub, meta, logo, logoAlt = '', primaryCta, secondaryCta }
 </header>
 
 <style>
+  /* Full-frame height (2026-08-31, requirement 23): nav + hero should read
+     as one first viewport, not nav-height-plus-92vh (previously always
+     taller than one screen). calc(100vh - var(--nav-h)) is the fallback for
+     browsers without svh support; the second declaration overrides it where
+     svh is understood — svh (not the bare dynamic 100vh) is what actually
+     avoids the classic mobile-Safari jump as the address bar/toolbar shows
+     and hides. `min-height` stays a fixed px floor (not 100vh-based) so a
+     very short viewport still protects the logo/headline/meta/CTA stack
+     instead of collapsing with it. No `margin-bottom` any more — the
+     hero→content gap is now owned once, by SubpageFrame's `.oddf-center`
+     top padding, instead of this margin plus that padding stacking into an
+     accidental double gap. */
   .oddfest-hero {
     position: relative;
-    height: 92vh;
+    height: calc(100vh - var(--nav-h));
+    height: calc(100svh - var(--nav-h));
     min-height: 540px;
     overflow: hidden;
     background: #000;
-    margin-bottom: 4.5rem;
   }
   .oddfest-hero video,
   .oddfest-hero img {
@@ -82,13 +113,24 @@ const { video, poster, sub, meta, logo, logoAlt = '', primaryCta, secondaryCta }
     inset: 0;
     pointer-events: none;
     background:
-      radial-gradient(ellipse 45% 55% at 84% 14%, rgb(130 36 212 / 16%) 0%, transparent 60%),
+      radial-gradient(ellipse 45% 55% at 84% 14%, var(--hero-accent-wash) 0%, transparent 60%),
       linear-gradient(
         to top,
         rgb(14 9 11 / 78%) 0%,
         rgb(14 9 11 / 10%) 42%,
         rgb(14 9 11 / 50%) 100%
       );
+  }
+  /* ODDfest's wash — the archive's rarest color, used "always a wash, never
+     fill" per tokens.css. */
+  .oddfest-hero--ultraviolet {
+    --hero-accent-wash: color-mix(in srgb, var(--color-ultraviolet) 16%, transparent);
+  }
+  /* ODDference's wash — Signal Blue, the business-facing accent, at the same
+     16% wash strength so the two heroes read as siblings, not a different
+     design language. */
+  .oddfest-hero--signal {
+    --hero-accent-wash: color-mix(in srgb, var(--color-signal) 22%, transparent);
   }
   .oddfest-hero-overlay {
     position: absolute;

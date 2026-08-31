@@ -24,19 +24,11 @@ const { title, cards } = Astro.props;
   <div class="wrap">
     <div class="section-head"><h2>{title}</h2></div>
   </div>
-  <div class="four-grid bleed reveal">
+  <div class="four-grid bleed reveal" style={`--cols: ${cards.length}`}>
     {
-      /* An odd card count (Work with ODD's 5 pathways) otherwise strands a
-         lone card next to an empty grid cell in the last row — with no
-         element there, the grid container's own translucent background
-         still fills that cell, showing as a bare grey box (confirmed via
-         screenshot). Spanning the last card full-width instead turns the
-         leftover into a deliberate closing statement, not a gap. */
-    }
-    {
-      cards.map((card, i) => (
+      cards.map((card) => (
         <a
-          class={`four-card ${cards.length % 2 === 1 && i === cards.length - 1 ? 'four-card--wide' : ''}`}
+          class="four-card"
           href={card.href}
           target={card.href.startsWith('http') ? '_blank' : undefined}
           rel={card.href.startsWith('http') ? 'noreferrer' : undefined}
@@ -63,15 +55,19 @@ const { title, cards } = Astro.props;
 </section>
 
 <style>
-  /* Four equal destinations in one row on desktop/wide tablet (2026-08-31
-     homepage revision) — was a 2x2 grid of near-square, viewport-height-
-     driven cards; a fixed aspect-ratio per tier (instead of min-height: Nvh)
-     is what keeps four narrow columns from turning into awkwardly tall
-     slivers on a short laptop screen or a tall external monitor, while still
-     reading as "one deliberate row" rather than four cropped photo strips. */
+  /* Equal destinations in one row on desktop/wide tablet (2026-08-31
+     homepage revision, narrowed to the three primary ODD programmes only —
+     2026-08-31 final implementation pass) — was a 2x2 grid of near-square,
+     viewport-height-driven cards; a fixed aspect-ratio per tier (instead of
+     min-height: Nvh) is what keeps narrow columns from turning into
+     awkwardly tall slivers on a short laptop screen or a tall external
+     monitor, while still reading as "one deliberate row" rather than cropped
+     photo strips. --cols (set inline from the real card count, same pattern
+     as ParticipateBand/ProofGrid) rather than a hardcoded repeat(4, 1fr) —
+     this grid no longer always renders exactly four cards.  */
   .four-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(var(--cols), 1fr);
     gap: 2px;
     background: var(--color-paper-12);
   }
@@ -187,18 +183,6 @@ const { title, cards } = Astro.props;
   }
   .four-card:hover .four-card-body .go {
     border-color: var(--color-paper);
-  }
-  /* A spanning card reverts to a landscape ratio (not the 3/4 portrait
-     every regular card uses) — a full-row card at a tall portrait ratio
-     would run far taller than the row it's meant to close out. */
-  .four-card--wide {
-    grid-column: 1 / -1;
-    aspect-ratio: 21 / 9;
-  }
-  @media (max-width: 760px) {
-    .four-card--wide {
-      aspect-ratio: 4 / 3;
-    }
   }
 
   @media (prefers-reduced-motion: no-preference) {

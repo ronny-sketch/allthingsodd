@@ -47,7 +47,7 @@
   "register": {
     "headline": "Have something you want to bring to ODDfest?",
     "body": "We're now collecting ideas for ODDfest 2027. You don't need to have every detail figured out yet. Tell us what you want to make happen and we'll take it from there.",
-    "cta": { "label": "Register your event idea", "href": "/contact" }
+    "cta": { "label": "Register your event idea", "href": "/contact?topic=oddfest_2027_event" }
   },
   "faq": [
     {

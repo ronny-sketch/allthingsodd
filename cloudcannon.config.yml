@@ -35,10 +35,13 @@ collections_config:
         type: array
         label: The ODD platform (Home only)
         comment: >-
-          The large photo cards for ODDfest / ODDference / ODDspace / Work
-          with ODD. Not fixed at four — add or remove a card and the grid
-          reflows; a card can also skip its photo (falls back to a plain
-          surface) if none is set.
+          The large photo cards for ODDfest / ODDference / ODDspace — the
+          three primary masterbrand destinations only (2026-08-31: Work with
+          ODD moved to its own quieter `workWithOdd` card below, so it no
+          longer competes with these three for equal visual weight). Not
+          fixed at three — add or remove a card and the grid reflows; a card
+          can also skip its photo (falls back to a plain surface) if none is
+          set.
         options:
           structures: _structures.program_card
           disable_add: false
@@ -46,6 +49,16 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
+      workWithOdd:
+        type: object
+        label: '"Work with ODD" quiet pathway card (Home only)'
+        comment: >-
+          A slim organisational banner shown right under the three-across
+          ODDfest/ODDference/ODDspace grid — deliberately not another giant
+          photo card, since Work with ODD is a deeper way to work with ODD,
+          not a fourth equal masterbrand product.
+        options:
+          subtype: object
       pathways:
         type: array
         label: Ways to work with us (Work with ODD only)
@@ -69,21 +82,6 @@ collections_config:
           membership/event-enquiry pair.
         options:
           structures: _structures.cta
-          disable_add: false
-          disable_remove: false
-          disable_reorder: false
-          required: false
-        cascade: true
-      features:
-        type: array
-        label: Three-column feature grid
-        comment: >-
-          ODDagency only — not on Home, About, ODDfest or ODDference
-          (ODDference's "3 reasons to come" is the `reasons` field instead),
-          and not on ODDspace since its 2026-08-30 rebuild (its "spaces"
-          field below replaces this with its own photo-led showcase).
-        options:
-          structures: _structures.feature_card
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -231,6 +229,16 @@ collections_config:
           The page's own short explainer — ODDference/ODDfest/ODDspace/
           ODDnetwork/partnerships/project work as one continuous practice,
           not five separate business units.
+        options:
+          subtype: object
+      visit:
+        type: object
+        label: Address + directions (ODDspace only)
+        comment: >-
+          The real street address, shown as one quiet line inside "Enter the
+          space" with a directions link — not a dedicated section.
+          "directionsUrl" should stay a Google Maps link for the same real
+          address in "address"; don't point it anywhere else.
         options:
           subtype: object
       community:
@@ -410,7 +418,11 @@ collections_config:
       whyOdd:
         type: array
         label: Why ODD
-        comment: Appears on ODDagency and Work with ODD.
+        comment: >-
+          Work with ODD only (2026-08-31: removed from ODDagency, which was
+          repeating "why ODD" reasoning already covered by its own `whatItIs`
+          and had drifted into internal/consultancy phrasing that had no
+          place staying public).
         options:
           structures: _structures.feature_card
           disable_add: false
@@ -427,16 +439,6 @@ collections_config:
           claiming specific installations, artists or venues until confirmed.
         options:
           subtype: object
-      whyJoin:
-        type: array
-        label: Why join (Membership only)
-        options:
-          structures: _structures.feature_card
-          disable_add: false
-          disable_remove: false
-          disable_reorder: false
-          required: false
-        cascade: true
       capabilities:
         type: array
         label: Capabilities (ODDagency only)

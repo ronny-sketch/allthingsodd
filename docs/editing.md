@@ -61,8 +61,12 @@ high-level notes:
   formats, speakers (optional — leave empty until real speakers are
   confirmed), programme (optional), connection & networking, proof (optional,
   can carry an attendee quote), tickets (optional — no invented prices), FAQ.
-- **ODDagency**: what it is, capabilities, why ODD, how a project works,
-  cases, types of project.
+- **ODDagency**: what it is, capabilities (+ types of project, shown in the
+  same section), how a project works, cases (optional — hidden until real
+  cases exist). 2026-08-31: removed the separate `features`/`whyOdd` fields
+  (the first repeated "what it is," the second had drifted into internal
+  language that had no place staying public) — don't re-add them without
+  checking that reasoning first.
 - **ODDspace**: why it exists, who it's for, proof numbers, membership
   benefits, the single membership tier (no invented pricing), event-space
   rental rates, how it works, location, an optional live events-calendar
@@ -77,9 +81,13 @@ high-level notes:
   we've worked with" — `logos`, deliberately separate from the sitewide
   Partner logos, also hidden until curated), the contact intro above the
   embedded enquiry form.
-- **Membership**: what it is, who it's for, why join, what's included, the
-  year-round rhythm, tiers (optional and empty by default — the whole section
-  hides itself until pricing exists), the network note, the closing CTA.
+- **Membership** (public label "ODDnetwork"): what it is, who it's for, what
+  participation may involve (`includes`), tiers (optional and empty by
+  default — the whole section hides itself until pricing exists), the
+  closing CTA. 2026-08-31: removed the separate `whyJoin`/`rhythm` fields,
+  which repeated the same "ongoing relationship" idea `includes` already
+  covers, and the generic team-photo PhotoBreak (it wasn't real ODDnetwork
+  proof) — don't re-add them without checking that reasoning first.
 - **About**: an opening headline + intro + the deeper "why ODD exists" case
   (as separate paragraphs), Story/timeline (with the New Nordic Way rf legal
   note underneath it), "How we make it happen" (the Events/Spaces/

@@ -7,11 +7,24 @@
 const SEEN_KEY = 'oddNewsletterPopupSeen';
 const DELAY_MS = 15000;
 
+// Pages where a timed interruption actively works against the page's own
+// job (2026-08-31 final implementation pass): a journalist on Media
+// shouldn't be interrupted mid-lookup, Contact/Work with ODD's enquiry form
+// is itself the higher-intent conversion already in progress, and ODDspace's
+// own "Enter the space" flow is a similarly high-intent moment not to
+// interrupt. Path-based, not a per-page opt-out prop, since the popup mounts
+// once, globally, from Layout.astro.
+const SUPPRESSED_PATHS = ['/contact', '/media', '/work-with-odd', '/oddspace'];
+const isSuppressed = SUPPRESSED_PATHS.some((path) => {
+  const normalized = window.location.pathname.replace(/\/+$/, '') || '/';
+  return normalized === path;
+});
+
 const backdrop = document.getElementById('newsletterPopupBackdrop');
 const popup = document.getElementById('newsletterPopup');
 const closeBtn = document.getElementById('newsletterPopupClose');
 
-if (backdrop && popup && closeBtn) {
+if (!isSuppressed && backdrop && popup && closeBtn) {
   let alreadySeen = false;
   try {
     alreadySeen = sessionStorage.getItem(SEEN_KEY) === '1';

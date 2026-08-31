@@ -3,22 +3,14 @@ import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import PageIntro from '../components/sections/PageIntro.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
-import FeatureGrid from '../components/sections/FeatureGrid.astro';
+import AudienceList from '../components/sections/AudienceList.astro';
 import PricingGrid from '../components/sections/PricingGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
-import PhotoBreak from '../components/sections/PhotoBreak.astro';
-import photoTeam from '../assets/hero/archive-39.jpg';
 
 const entry = await getEntry('pages', 'membership');
 if (!entry || entry.data._template !== 'membership')
   throw new Error('membership.json content entry missing or malformed');
 const page = entry.data;
-
-const audienceCards = page.whoItsFor.map((a, i) => ({
-  number: String(i + 1).padStart(2, '0'),
-  title: a.label,
-  body: a.description,
-}));
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
@@ -39,25 +31,22 @@ const audienceCards = page.whoItsFor.map((a, i) => ({
   <section class="mem-sub">
     <div class="wrap">
       <div class="section-head"><h2>Who it's for</h2></div>
-      <FeatureGrid cards={audienceCards} />
+      <AudienceList items={page.whoItsFor} />
     </div>
   </section>
 
+  <!-- "What participation may involve" — one consolidated section (2026-08-31
+       final implementation pass), replacing three separate chapters (Why
+       join / What it may include / Year-round rhythm) that repeated the same
+       "ongoing relationship" idea three ways. No generic team-photo
+       PhotoBreak either — it wasn't actual ODDnetwork proof, just a stock
+       backstage shot. -->
   <section class="mem-sub">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Member value</span>
-        <h2>Why join</h2>
+        <span class="eyebrow">What to expect</span>
+        <h2>What participation may involve</h2>
       </div>
-      <FeatureGrid cards={page.whyJoin} />
-    </div>
-  </section>
-
-  <PhotoBreak image={photoTeam} alt="The ODD team backstage at an event" />
-
-  <section class="mem-sub">
-    <div class="wrap">
-      <div class="section-head"><h2>What it may include</h2></div>
       <div class="mem-includes reveal" style={`--cols: ${page.includes.length}`}>
         {
           page.includes.map((i) => (
@@ -68,18 +57,6 @@ const audienceCards = page.whoItsFor.map((a, i) => ({
           ))
         }
       </div>
-    </div>
-  </section>
-
-  <section class="mem-sub">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">What to expect</span>
-        <h2>Year-round rhythm</h2>
-      </div>
-      <ul class="mem-rhythm reveal">
-        {page.rhythm.map((r) => <li>{r}</li>)}
-      </ul>
     </div>
   </section>
 
@@ -135,23 +112,5 @@ const audienceCards = page.whoItsFor.map((a, i) => ({
     font-size: 0.85rem;
     line-height: 1.6;
     color: var(--color-paper-60);
-  }
-  .mem-rhythm {
-    max-width: 40rem;
-    margin: 0 auto;
-    padding: 0;
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-  }
-  .mem-rhythm li {
-    padding: 1rem 0;
-    border-top: 1px solid var(--color-paper-12);
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    color: var(--color-paper-80);
-  }
-  .mem-rhythm li:last-child {
-    border-bottom: 1px solid var(--color-paper-12);
   }
 </style>

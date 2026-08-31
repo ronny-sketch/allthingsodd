@@ -38,6 +38,14 @@ const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
 const { featuredIn, logoWall } = site.data;
 
+// Verified editorial/media coverage only (2026-08-31 final implementation
+// pass) — same `pressCoverage` distinction media.astro's own "Featured in"
+// already uses, rather than blindly rendering the full sitewide list (which
+// also carries funders, award bodies and industry organisations with no
+// editorial coverage of ODD). Capped at the 12 strongest, in the order
+// they're curated in site/global.json.
+const homePressLogos = featuredIn.filter((item) => item.pressCoverage).slice(0, 12);
+
 const cloudPhotos = [
   cloudPhoto1,
   cloudPhoto2,
@@ -115,6 +123,28 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
       creative={page.twoWaysIn.creative}
     />
     <ProgramGrid title="What we do" cards={page.platforms} />
+
+    {
+      /* "Work with ODD" — a quiet organisational pathway, not a fourth equal
+         product card (2026-08-31 final implementation pass: it used to be a
+         giant photo card inside the grid above, competing visually with
+         ODDfest/ODDference/ODDspace, which the brief flags as
+         misrepresenting the site's real hierarchy — ODDnetwork/ODDagency/
+         Work with ODD are deeper ways to work with ODD, not equal masterbrand
+         programmes). A slim single-row banner immediately under the three
+         primary destinations, reusing Pill for the CTA rather than inventing
+         a new card component. */
+    }
+    <div class="wwo-band wrap">
+      <a class="wwo-band-link" href={page.workWithOdd.href}>
+        <span class="wwo-band-text">
+          <span class="eyebrow">{page.workWithOdd.eyebrow}</span>
+          <span class="wwo-band-title">{page.workWithOdd.title}</span>
+          {page.workWithOdd.body && <span class="wwo-band-body">{page.workWithOdd.body}</span>}
+        </span>
+        <span class="wwo-band-go">{page.workWithOdd.linkLabel}</span>
+      </a>
+    </div>
   </div>
 
   {
@@ -123,9 +153,23 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
        vouching for, not stranded above the fold competing with the hero.
        `compact` (see LogoStrip.astro's own comment, written for exactly
        this placement) drops the bordered section-head so it reads as a
-       continuation of "What we do," not a fifth card or a new chapter. */
+       continuation of "What we do," not a fifth card or a new chapter.
+       Filtered to verified press coverage only (see `homePressLogos` above)
+       — the full featuredIn list also carries funders/award bodies/industry
+       organisations, which aren't "featured in" claims. */
   }
-  <LogoStrip eyebrow="Press" title="Featured in" items={featuredIn} size="large" scroll compact />
+  {
+    homePressLogos.length > 0 && (
+      <LogoStrip
+        eyebrow="Press"
+        title="Featured in"
+        items={homePressLogos}
+        size="large"
+        scroll
+        compact
+      />
+    )
+  }
 
   {
     /* "What's happening" is hidden for now — not enough confirmed content
@@ -230,5 +274,60 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
      fifth card glued to the grid. */
   .who-what-we-do + :global(.logo-strip-section.is-compact) {
     padding-top: var(--space-6);
+  }
+
+  /* "Work with ODD" quiet pathway band — one slim row, deliberately far
+     quieter than the three photo cards above it: a plain bordered strip with
+     a text pair and a link, not a card, not a photo, not its own headed
+     section. */
+  .wwo-band {
+    margin-top: 1px;
+  }
+  .wwo-band-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    padding: 1.6rem var(--gutter-wide);
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color var(--duration-fast) ease;
+  }
+  .wwo-band-link:hover {
+    border-color: var(--color-paper-40);
+  }
+  .wwo-band-text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.9rem;
+  }
+  .wwo-band-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.15rem;
+    color: var(--color-paper);
+  }
+  .wwo-band-body {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-60);
+  }
+  .wwo-band-go {
+    flex-shrink: 0;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-paper-80);
+  }
+  @media (max-width: 640px) {
+    .wwo-band-link {
+      padding: 1.4rem var(--gutter);
+    }
   }
 </style>

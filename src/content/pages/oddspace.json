@@ -11,13 +11,17 @@
   "meta": "Vallila · Helsinki",
   "primaryCta": {
     "label": "Become a member",
-    "href": "/work-with-odd?interest=oddspace#enquiry-form"
+    "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form"
   },
   "secondaryCta": {
     "label": "Organise an event",
-    "href": "/work-with-odd?interest=oddspace#enquiry-form"
+    "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
   },
   "intro": "Come here to work. Meet people. Host something. Make something. Or simply have somewhere to keep going between projects.",
+  "visit": {
+    "address": "Teollisuuskatu 9D, Vallila, Helsinki",
+    "directionsUrl": "https://www.google.com/maps/search/?api=1&query=Teollisuuskatu%209D%2C%20Helsinki"
+  },
   "heroMedia": {},
   "heroPhotos": [
     {
@@ -106,7 +110,7 @@
       "Community, programming and events"
     ],
     "ctaLabel": "Become a member",
-    "href": "/work-with-odd?interest=oddspace#enquiry-form",
+    "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form",
     "note": "Accepted on a rolling basis as space becomes available during the pilot."
   },
   "rentalRates": [
@@ -162,7 +166,10 @@
   "eventEnquiry": {
     "headline": "Want to organise an event?",
     "body": "Have an exhibition, workshop, talk, screening, launch, performance, gathering, shoot or another idea you want to make happen here? You don't need to be a member to ask.",
-    "cta": { "label": "Organise an event", "href": "/work-with-odd?interest=oddspace#enquiry-form" }
+    "cta": {
+      "label": "Organise an event",
+      "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
+    }
   },
   "vision": {
     "eyebrow": "Why ODDspace",
@@ -186,7 +193,7 @@
     },
     {
       "question": "How do I become a member?",
-      "answer": "Apply through the contact form with a note on how you'd like to use the space. Memberships are accepted on a rolling basis as space becomes available during the pilot."
+      "answer": "Apply through the membership enquiry link on this page, with a note on how you'd like to use the space. Memberships are accepted on a rolling basis as space becomes available during the pilot."
     },
     {
       "question": "What does membership cost?",
@@ -222,7 +229,7 @@
     },
     {
       "question": "How do I enquire about an event?",
-      "answer": "Use the contact form and tell us what you have in mind — you don't need to be a member first."
+      "answer": "Use the event enquiry link on this page and tell us what you have in mind — you don't need to be a member first."
     },
     {
       "question": "Is ODDspace accessible?",

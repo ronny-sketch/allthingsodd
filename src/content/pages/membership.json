@@ -27,41 +27,19 @@
       "description": "Teams that believe creative work should have a stronger place in business and society — and want to contribute, not just observe."
     }
   ],
-  "whyJoin": [
-    {
-      "number": "01",
-      "title": "An ongoing relationship, not a one-off",
-      "body": "Stay in touch across the year instead of starting a new relationship from zero every time something happens."
-    },
-    {
-      "number": "02",
-      "title": "Built with real organisations",
-      "body": "The network is being built with the organisations taking part. If something would make it more useful, that is part of the conversation."
-    },
-    {
-      "number": "03",
-      "title": "One point of contact",
-      "body": "The point is not another newsletter or logo list. The network should create practical ways to meet, contribute, build and take ideas back into your own organisation."
-    }
-  ],
   "includes": [
     {
       "title": "Ongoing contact",
-      "body": "A simple, ongoing relationship with the ODD team and the other organisations involved."
+      "body": "Regular contact from the ODD team — a simple, ongoing relationship with the ODD team and the other organisations involved."
     },
     {
       "title": "Participation across the year",
-      "body": "Small gatherings, conversations and invitations around the questions the network actually cares about."
+      "body": "Invitations to ODD events and gatherings, plus small conversations around the questions the network actually cares about."
     },
     {
       "title": "A closer relationship",
-      "body": "Connections across the network when there is a real reason for people to meet — not networking for its own sake."
+      "body": "Introductions across the network as relevant opportunities come up — not networking for its own sake, but when there's a real reason for people to meet."
     }
-  ],
-  "rhythm": [
-    "Regular contact from the ODD team",
-    "Invitations to ODD events and gatherings",
-    "Introductions across the network as relevant opportunities come up"
   ],
   "tiers": [],
   "finalCta": {
