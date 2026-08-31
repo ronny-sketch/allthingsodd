@@ -176,5 +176,14 @@ const { newsletterHref } = site.data;
       width: calc(100vw - 2 * var(--space-5));
       padding: var(--space-10) var(--space-6) var(--space-6);
     }
+    /* This popup's own desktop override (0.9rem = 14.4px, above) wins over
+       NewsletterForm.astro's scoped 16px mobile rule by specificity — Safari
+       then auto-zooms the whole page on focus, since iOS treats any input
+       under 16px as "the user must be zooming in to read this." Re-asserting
+       16px here at the same specificity this popup already writes at is what
+       actually restores the behaviour that rule was meant to guarantee. */
+    .nl-popup :global(.nl-form input) {
+      font-size: 16px;
+    }
   }
 </style>
