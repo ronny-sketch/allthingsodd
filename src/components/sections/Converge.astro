@@ -28,8 +28,8 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
     <p class="converge-intro reveal">{intro}</p>
     <div class="converge-grid reveal">
       <div class="converge-col converge-col--business">
-        <h2>For<br />business</h2>
-        <p class="converge-lede">{business.lede}</p>
+        <span class="converge-label">For business</span>
+        <h2 class="converge-title">{business.lede}</h2>
         <p class="converge-body">{business.body}</p>
         {
           business.tracks && (
@@ -47,8 +47,8 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
         }
       </div>
       <div class="converge-col converge-col--creative">
-        <h2>For<br />creatives</h2>
-        <p class="converge-lede">{creative.lede}</p>
+        <span class="converge-label">For creatives</span>
+        <h2 class="converge-title">{creative.lede}</h2>
         <p class="converge-body">{creative.body}</p>
         {
           creative.tracks && (
@@ -104,22 +104,33 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
     grid-column: 2;
     padding-right: 0;
   }
-  .converge-col h2 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    color: var(--color-paper);
-    font-size: clamp(2.8rem, 6vw, 4.6rem);
-    line-height: 0.98;
-    letter-spacing: -0.01em;
-    margin: 0 0 0.9rem;
-    text-wrap: balance;
+  /* Small classification first, subtle but clearly visible — the column's
+     actual headline is its lede copy (promoted below), not this label.
+     Color-coded per side (signal/amber) to match the existing per-column
+     hover accents on the track list further down. */
+  .converge-label {
+    display: block;
+    font: var(--text-caption);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin: 0 0 1rem;
   }
-  .converge-lede {
+  .converge-col--business .converge-label {
+    color: var(--color-signal-bright);
+  }
+  .converge-col--creative .converge-label {
+    color: var(--color-amber-bright);
+  }
+  .converge-title {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(1.2rem, 2vw, 1.5rem);
     color: var(--color-paper);
-    margin: 0 0 1.4rem;
+    font-size: clamp(1.9rem, 3.1vw, 2.6rem);
+    line-height: 1.14;
+    letter-spacing: -0.01em;
+    margin: 0 0 1.2rem;
+    max-width: 19ch;
+    text-wrap: balance;
   }
   .converge-body {
     font-family: var(--font-body);

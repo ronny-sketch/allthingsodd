@@ -102,6 +102,14 @@
   --gutter-wide: clamp(2.5rem, 8vw, 7.5rem);
   --nav-h: 65px; /* JS overwrites this at runtime with the nav's real measured height */
 
+  /* ---------- surfaces (raised panels: nav dropdown, newsletter modal) ----------
+     One shared shape/elevation for every "floating card over the page" surface
+     — kept deliberately restrained (small radius, no heavy shadow) so these
+     read as ODD's own editorial panels, not generic rounded SaaS cards. See
+     Nav.astro's Info dropdown and NewsletterPopup.astro. */
+  --radius-panel: 10px;
+  --shadow-panel: 0 16px 40px -14px rgb(0 0 0 / 45%);
+
   /* ---------- motion ---------- */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);

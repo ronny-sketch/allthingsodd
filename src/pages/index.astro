@@ -71,8 +71,6 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
 >
   <Hero mosaicAlt={page.hero.mosaicAlt} headline={page.opening.headline} />
 
-  <LogoStrip eyebrow="Press" title="Featured in" items={featuredIn} size="large" scroll />
-
   <div class="whatoddis-wrap">
     <FloatingCloud images={cloudPhotos} />
     <SectionIntro
@@ -118,6 +116,16 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
     />
     <ProgramGrid title="What we do" cards={page.platforms} />
   </div>
+
+  {
+    /* "Featured in" moved directly under "What we do" (2026-08-31 homepage
+       revision) — proof sitting right under the platform cards it's
+       vouching for, not stranded above the fold competing with the hero.
+       `compact` (see LogoStrip.astro's own comment, written for exactly
+       this placement) drops the bordered section-head so it reads as a
+       continuation of "What we do," not a fifth card or a new chapter. */
+  }
+  <LogoStrip eyebrow="Press" title="Featured in" items={featuredIn} size="large" scroll compact />
 
   {
     /* "What's happening" is hidden for now — not enough confirmed content
@@ -195,10 +203,23 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
      its `tightBottom` prop instead of overridden here — see Converge.astro. */
   .who-what-we-do :global(#four) {
     padding-top: var(--space-10);
+    /* Default section bottom padding (--space-24/6rem) assumes #four is
+       followed by a fresh, separately-padded section; "Featured in" now
+       sits directly underneath it in `compact` mode (see below), so this
+       trims the gap enough for the two to read as one connected passage
+       instead of stacking two full section gaps back to back. */
+    padding-bottom: var(--space-12);
   }
   @media (max-width: 640px) {
     .who-what-we-do :global(#four) {
       padding-top: var(--space-6);
+      padding-bottom: var(--space-8);
     }
+  }
+  /* Ties "Featured in" visually to "What we do" above it without collapsing
+     the gap to zero — enough air to read as its own line of proof, not a
+     fifth card glued to the grid. */
+  .who-what-we-do + :global(.logo-strip-section.is-compact) {
+    padding-top: var(--space-6);
   }
 </style>
