@@ -2,7 +2,6 @@
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import HeroCentered from '../components/sections/HeroCentered.astro';
-import SectionIntro from '../components/sections/SectionIntro.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import PathwayList from '../components/sections/PathwayList.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
@@ -25,18 +24,13 @@ const page = entry.data;
     warpTitle
   />
 
-  <SectionIntro
-    eyebrow={page.whatWeDo.eyebrow}
-    headline={page.whatWeDo.headline}
-    body={page.whatWeDo.body}
-  />
-
   <section class="wwo-sub">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Why ODD</span>
-        <h2>Why work with ODD</h2>
+        <span class="eyebrow">{page.whatWeDo.eyebrow}</span>
+        <h2>{page.whatWeDo.headline}</h2>
       </div>
+      <p class="wwo-lede reveal">{page.whatWeDo.body}</p>
       <FeatureGrid cards={page.whyOdd} />
     </div>
   </section>
@@ -78,6 +72,15 @@ const page = entry.data;
 <style>
   .wwo-sub {
     padding: var(--space-24) 0;
+  }
+  .wwo-lede {
+    max-width: 40rem;
+    margin: -1.5rem auto 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-paper-60);
   }
   .wwo-contact-body {
     max-width: 40rem;
