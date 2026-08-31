@@ -48,10 +48,17 @@ store):
 npx surge token | gh secret set SURGE_TOKEN --repo ronny-sketch/odd-field-guide
 ```
 
-Until that secret exists, the `deploy` job will fail (auth error) while
-`checks`/`visual` still pass — that's a safe failure mode: nothing gets
-published, but nothing breaks either. Fall back to the manual command below
-if needed:
+**Corrected 2026-08-31 — this was wrong, see "Deploy verification" below**:
+an empty/missing `SURGE_TOKEN` does not fail loudly. `npx surge` falls
+through to its interactive login prompt, hits EOF on the runner's
+non-interactive stdin, and exits `0` anyway — the `deploy` job reports green
+while publishing nothing. This is exactly what happened for over an hour on
+2026-08-31: the secret had gone empty, every deploy since silently no-op'd,
+and the only reason it surfaced was someone actually checking the live site
+against a fresh commit's content. The `deploy` job now checks for an empty
+token explicitly and fails the build instead of reaching the prompt at all —
+see "Deploy verification" below. Fall back to the manual command below if
+needed:
 
 ```bash
 npm run build
@@ -108,6 +115,57 @@ publish to `odd-field-guide.surge.sh` (`SURGE_TOKEN` was already configured
 correctly; it had simply never gotten the chance to run before, since
 `deploy` depends on both other jobs passing first). The "CloudCannon edit →
 live" loop this doc describes above is real and working as of that run.
+
+## Deploy verification
+
+**The incident (2026-08-31)**: production served content from before commit
+`d7a4efe` for over an hour while multiple `deploy` jobs on later commits
+reported success. Root cause: the `SURGE_TOKEN` repository secret had gone
+empty (not present in `gh secret list` at all) at some point after the
+2026-08-20 setup this doc originally described. With `SURGE_TOKEN` empty,
+`npx surge dist odd-field-guide.surge.sh` doesn't error — it prints its
+interactive "email:" login prompt, receives EOF on the runner's stdin (no
+one is there to type a password), and the process exits `0` regardless.
+`bash -e` has nothing to catch, so the step, the job, and the whole workflow
+all reported green while zero bytes reached Surge. `npx surge revs` on the
+account confirmed no new revision had been created since the last time the
+token was valid — the publish never happened, this was never a CDN caching
+issue.
+
+Fixed by regenerating a domain-scoped token
+(`npx surge tokens add --domain odd-field-guide.surge.sh -m "<note>"`) and
+setting it via `gh secret set SURGE_TOKEN` (same one-time-setup command as
+above, now pointed at a fresh token). Hardened the `deploy` job itself
+(`.github/workflows/ci.yml`) so this specific failure mode — a green job
+that published nothing — can't happen silently again:
+
+1. **A public build fingerprint.** Every deploy writes `dist/build-info.json`
+   — `{"sha": "<$GITHUB_SHA>", "builtAt": "<ISO timestamp>"}` — generated
+   fresh from the commit CI is actually building, not maintained by hand.
+   No secrets in it; it's meant to be publicly fetchable.
+2. **Refuse to run surge with an empty token.** The exact condition that
+   caused the incident is checked before the publish command ever runs, so
+   it fails immediately and loudly instead of reaching the interactive
+   prompt at all.
+3. **Check surge's own output, not just its exit code.** The publish
+   command's stdout is grepped for its real completion line
+   (`Success! - Published to odd-field-guide.surge.sh`) — an exit code alone
+   was exactly what missed the incident the first time.
+4. **Verify production against the fingerprint.** After publishing, the job
+   fetches `https://odd-field-guide.surge.sh/build-info.json` and compares
+   its `sha` to `$GITHUB_SHA`, retrying a few times a few seconds apart to
+   absorb any real propagation delay. If production still doesn't match
+   after retries, the job fails — a deploy is not "done" until production
+   provably reflects the commit that was just built, not because the
+   publish command returned `0`.
+
+To check what's actually live at any time, from any machine, with no
+GitHub/Surge access required:
+
+```bash
+curl -fsS https://odd-field-guide.surge.sh/build-info.json
+git log --format=%H -1 <that sha>   # confirm it's a real, expected commit
+```
 
 ## CloudCannon's role
 
