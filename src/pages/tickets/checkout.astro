@@ -1,0 +1,278 @@
+---
+// Buyer details + secure Stripe payment. Minimal fields before payment by
+// design (see ../../../../odd-growth-os/ops/TICKETING_IMPLEMENTATION_PLAN.md
+// and CLAUDE.md's low-friction-checkout instruction) — no account creation,
+// attendee assignment happens after payment on /tickets/confirmation.
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Checkout — ODDference 2027"
+  description="Complete your ODDference 2027 ticket purchase securely."
+  noindex
+>
+  <section class="tixc-page">
+    <div class="wrap">
+      <div class="tixc-head reveal">
+        <span class="eyebrow">ODDference · 2027</span>
+        <h1>Checkout</h1>
+      </div>
+
+      <p id="tixcEmptyNotice" class="tixc-empty" hidden>
+        Your cart is empty. <a href="/tickets">Choose your tickets</a>.
+      </p>
+
+      <div class="tixc-layout" id="tixcLayout">
+        <div class="tixc-main">
+          <form id="tixcBuyerForm" novalidate>
+            <h2>Your details</h2>
+            <div class="field">
+              <label for="tixc-email">Email</label>
+              <input id="tixc-email" name="email" type="email" required autocomplete="email" />
+            </div>
+            <div class="field">
+              <label for="tixc-name">Full name</label>
+              <input id="tixc-name" name="name" type="text" required autocomplete="name" />
+            </div>
+            <label class="tixc-checkbox">
+              <input type="checkbox" id="tixc-company-toggle" />
+              Buying as a company
+            </label>
+            <div class="tixc-company-fields" id="tixcCompanyFields" hidden>
+              <div class="field">
+                <label for="tixc-company">Company name</label>
+                <input
+                  id="tixc-company"
+                  name="companyName"
+                  type="text"
+                  autocomplete="organization"
+                />
+              </div>
+              <div class="field">
+                <label for="tixc-vat">VAT ID</label>
+                <input id="tixc-vat" name="vatId" type="text" />
+              </div>
+            </div>
+            <p class="tixc-status" id="tixcStatus" role="status" aria-live="polite"></p>
+            <p class="tixc-not-connected" id="tixcNotConnected" hidden>
+              Payment isn't connected yet — email
+              <a href="mailto:ronny@oddfest.co">ronny@oddfest.co</a> to reserve your ticket in the meantime.
+            </p>
+            <button type="submit" class="pill pill-solid tixc-continue-btn" id="tixcContinueBtn">
+              Continue to payment
+            </button>
+          </form>
+
+          <div id="tixcPaymentSection" class="tixc-payment" hidden>
+            <h2>Payment</h2>
+            <div id="tixcCheckoutMount"></div>
+            <p class="tixc-payment-error" id="tixcPaymentError" role="alert" hidden></p>
+          </div>
+        </div>
+
+        <aside class="tixc-summary" id="tixcSummary" aria-label="Order summary"></aside>
+      </div>
+    </div>
+  </section>
+
+  <script src="../../scripts/tickets/checkout.ts"></script>
+</Layout>
+
+<style>
+  .tixc-page {
+    padding: calc(var(--nav-h) + var(--space-16)) 0 var(--space-24);
+  }
+  .tixc-head {
+    margin-bottom: var(--space-12);
+  }
+  .tixc-head h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--color-paper);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin: 0.6rem 0 0;
+  }
+  .tixc-empty {
+    font-family: var(--font-body);
+    color: var(--color-paper-60);
+  }
+  .tixc-empty a {
+    color: var(--color-paper);
+  }
+
+  .tixc-layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .tixc-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  :global(.tixc-cart-notice) {
+    grid-column: 1 / -1;
+    margin: 0 0 1rem;
+    padding: 0.8rem 1rem;
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-paper-80);
+  }
+
+  .tixc-main h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.1rem;
+    color: var(--color-paper);
+    margin: 0 0 1.4rem;
+  }
+
+  #tixcBuyerForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .field label {
+    font: var(--text-caption);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .field input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-paper-20);
+    padding: 0.6rem 0;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-paper);
+    outline: none;
+    transition: border-color var(--duration-fast) ease;
+  }
+  /* iOS Safari auto-zoom fix — same pattern as ContactForm.astro. */
+  @media (max-width: 640px) {
+    .field input {
+      font-size: 16px;
+    }
+  }
+  .field input:focus {
+    border-color: var(--color-paper);
+  }
+  .field input:disabled {
+    opacity: 0.5;
+  }
+  .tixc-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-80);
+    cursor: pointer;
+  }
+  .tixc-checkbox input {
+    width: 18px;
+    height: 18px;
+  }
+  .tixc-company-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--color-paper-12);
+  }
+  .tixc-status {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-paper-60);
+    min-height: 1.2em;
+  }
+  .tixc-not-connected {
+    margin: 0;
+    padding: 0.9rem 1rem;
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-paper-80);
+  }
+  .tixc-not-connected a {
+    color: var(--color-paper);
+  }
+  .tixc-continue-btn {
+    align-self: flex-start;
+  }
+  .tixc-continue-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .tixc-payment {
+    margin-top: var(--space-16);
+    padding-top: var(--space-16);
+    border-top: 1px solid var(--color-paper-12);
+  }
+  #tixcCheckoutMount {
+    min-height: 320px;
+  }
+  .tixc-payment-error {
+    margin: 1rem 0 0;
+    padding: 0.9rem 1rem;
+    background: rgb(154 67 43 / 12%);
+    border: 1px solid rgb(154 67 43 / 40%);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper);
+  }
+
+  .tixc-summary {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--space-6));
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    padding: 1.75rem;
+  }
+  .tixc-summary :global(.eyebrow) {
+    display: block;
+    margin-bottom: 1.2rem;
+  }
+  .tixc-summary :global(.tixc-summary-lines) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .tixc-summary :global(.tixc-summary-line) {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-80);
+  }
+  .tixc-summary :global(.tixc-summary-total-row) {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--color-paper-12);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--color-paper);
+  }
+  .tixc-summary :global(.tixc-summary-vat-note) {
+    margin: 0.4rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: var(--color-paper-40);
+  }
+</style>

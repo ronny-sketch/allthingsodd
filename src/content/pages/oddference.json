@@ -11,7 +11,7 @@
   "meta": "Helsinki · 2027",
   "primaryCta": {
     "label": "Reserve Blind Bird — €300",
-    "href": "#tickets"
+    "href": "/tickets"
   },
   "secondaryCta": {
     "label": "Partner with ODDference",
@@ -161,7 +161,7 @@
         "First to know the 2027 programme as it's confirmed"
       ],
       "ctaLabel": "Reserve Blind Bird",
-      "href": "mailto:ronny@oddfest.co?subject=ODDference%202027%20%E2%80%94%20Blind%20Bird%20ticket"
+      "href": "/tickets"
     }
   ],
   "partnershipCta": {
