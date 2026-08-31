@@ -3,12 +3,12 @@
     { "label": "ODDfest", "href": "/oddfest" },
     { "label": "ODDference", "href": "/oddference" },
     { "label": "ODDspace", "href": "/oddspace" },
-    { "label": "Work with ODD", "href": "/work-with-odd" },
     {
       "label": "Info",
       "href": "/about",
       "children": [
         { "label": "About", "href": "/about" },
+        { "label": "Work with us", "href": "/work-with-odd" },
         { "label": "Media", "href": "/media" },
         { "label": "Contact", "href": "/contact" }
       ]
