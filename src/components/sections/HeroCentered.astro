@@ -1,12 +1,21 @@
 ---
-// A centred hero with a real supporting photo — Work with ODD's own hero.
-// Borrows SplitHero's display-type treatment (warped title, meta-less
-// centred stack) and PhotoBreak's scrim idea, but isn't a 50/50 split panel
-// and isn't PageIntro either: PageIntro stays untouched for Contact/Media/
-// Membership, SplitHero stays untouched for ODDference/ODDagency. This is
-// its own component specifically so a change here can't regress either of
-// those. "Much simpler than an event hero" per the brief — one photo, one
-// scrim, no video, no rail.
+// A centred hero with a real supporting photo — Work with ODD's own hero,
+// also About's (2026-08-31 — see about.astro for why About shares this
+// component instead of PageIntro's plainer shape now that Work with ODD has
+// moved on from it). Borrows SplitHero's display-type treatment (warped
+// title, meta-less centred stack) and PhotoBreak's scrim idea, but isn't a
+// 50/50 split panel and isn't PageIntro either: PageIntro stays untouched for
+// Contact/Media/Membership, SplitHero stays untouched for ODDference/
+// ODDagency. This is its own component specifically so a change here can't
+// regress either of those. "Much simpler than an event hero" per the brief —
+// one photo, one scrim, no video, no rail.
+//
+// `image` and `primaryCta` are both optional — a caller with a verified,
+// on-brand photo and a real primary action (Work with ODD) gets the full
+// photographic treatment; a more reflective page with neither yet (About,
+// until a genuine 2026-era photo is chosen — see about.astro's closingImage
+// note for the same "don't guess" rule) still gets the same head layout,
+// widths and typography, just without the media panel and CTA pill.
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Pill from '../primitives/Pill.astro';
@@ -16,18 +25,22 @@ interface Props {
   eyebrow: string;
   title: string;
   intro: string;
-  primaryCta: { label: string; href: string };
-  image: ImageMetadata;
+  primaryCta?: { label: string; href: string };
+  image?: ImageMetadata;
   warpTitle?: boolean;
 }
 const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.props;
 ---
 
-<section class="hero-centered">
-  <div class="hero-centered-media">
-    <Image src={image} alt="" width={2200} />
-    <div class="hero-centered-scrim"></div>
-  </div>
+<section class={`hero-centered ${image ? '' : 'is-plain'}`}>
+  {
+    image && (
+      <div class="hero-centered-media">
+        <Image src={image} alt="" width={2200} />
+        <div class="hero-centered-scrim" />
+      </div>
+    )
+  }
   <div class="wrap">
     <div class="hero-centered-head reveal">
       <span class="eyebrow">{eyebrow}</span>
@@ -45,11 +58,15 @@ const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.pro
         )
       }
       <p>{intro}</p>
-      <div class="hero-centered-cta">
-        <Pill href={primaryCta.href} variant="solid" magnetic>
-          {primaryCta.label}
-        </Pill>
-      </div>
+      {
+        primaryCta && (
+          <div class="hero-centered-cta">
+            <Pill href={primaryCta.href} variant="solid" magnetic>
+              {primaryCta.label}
+            </Pill>
+          </div>
+        )
+      }
     </div>
   </div>
 </section>
@@ -62,6 +79,21 @@ const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.pro
     display: flex;
     align-items: center;
     background: #000;
+  }
+  /* No photo — About, until a verified one exists (see the Props comment
+     above). Same head layout/typography as the photographic variant, but
+     laid out like a plain top-of-page section (nav-offset padding, page
+     background) instead of a full-viewport dark overlay hero, since there's
+     no scrim to sit on. */
+  .hero-centered.is-plain {
+    min-height: 0;
+    background: transparent;
+    padding: calc(var(--nav-h) + var(--space-20)) 0 var(--space-12);
+  }
+  @media (max-width: 640px) {
+    .hero-centered.is-plain {
+      padding: calc(var(--nav-h) + var(--space-12)) 0 var(--space-10);
+    }
   }
   .hero-centered-media {
     position: absolute;

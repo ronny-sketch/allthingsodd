@@ -1,17 +1,20 @@
 ---
-// Rebuilt 2026-08-30 around a simpler six-section shape, sharing the same
-// layout language as work-with-odd.astro (PageIntro hero, FeatureGrid
-// pillars, ProofGrid, ParticipateBand) instead of About's old, separate
-// four-panel opening + panel/people/network/ambition structure. See
-// docs/architecture.md#v2-about-rebuild and content.config.ts's `about`
-// schema for the reasoning.
+// Rebuilt 2026-08-30, corrected 2026-08-31 to actually follow work-with-odd
+// .astro's newer layout language (HeroCentered, editorial section rhythm)
+// instead of the older PageIntro/ParticipateBand shape work-with-odd.astro
+// itself has since moved on from — see HeroCentered.astro's Props comment
+// and docs/architecture.md#v2-about-rebuild. About stays more reflective
+// than Work with ODD (no primaryCta pill, no hero photo until a real,
+// verified 2026-era one exists — same "don't guess" rule as closingImage
+// below), but shares its hero head layout/typography, its section rhythm,
+// and a light closing set of links instead of ParticipateBand's sales-wall
+// card treatment.
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import PageIntro from '../components/sections/PageIntro.astro';
+import HeroCentered from '../components/sections/HeroCentered.astro';
 import Timeline from '../components/sections/Timeline.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import ProofGrid from '../components/sections/ProofGrid.astro';
-import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
 
 const entry = await getEntry('pages', 'about');
@@ -21,7 +24,7 @@ const page = entry.data;
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
-  <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} warpTitle />
+  <HeroCentered eyebrow={page.eyebrow} title={page.title} intro={page.intro} warpTitle />
 
   <section class="about-argument">
     <div class="wrap">
@@ -48,16 +51,24 @@ const page = entry.data;
       </div>
       <p class="about-lede reveal">{page.howWeMakeItHappen.intro}</p>
       <FeatureGrid cards={page.howWeMakeItHappen.pillars} />
-    </div>
-  </section>
 
-  <section class="about-sub about-principles">
-    <div class="wrap">
-      <div class="section-head">
+      <div class="about-principles-head">
         <span class="eyebrow">{page.howWeMakeItHappen.principlesEyebrow}</span>
-        <h2>{page.howWeMakeItHappen.principlesTitle}</h2>
+        <h3>{page.howWeMakeItHappen.principlesTitle}</h3>
       </div>
-      <FeatureGrid cards={page.howWeMakeItHappen.principles} />
+      <ul class="about-principles-list reveal">
+        {
+          page.howWeMakeItHappen.principles.map((item) => (
+            <li>
+              <span class="about-principles-number">{item.number}</span>
+              <div>
+                <h4>{item.title}</h4>
+                <p>{item.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 
@@ -74,9 +85,31 @@ const page = entry.data;
     ))
   }
 
-  <ParticipateBand title="Get involved" items={page.participate} />
+  <section class="about-sub about-continue">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Keep exploring</h2>
+      </div>
+      <ul class="about-continue-list reveal">
+        {
+          page.participate.map((item) => (
+            <li>
+              <a href={item.href}>
+                <span class="about-continue-title">{item.title}</span>
+                <span class="about-continue-go">{item.linkLabel}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
 
-  <PhotoBreak image={page.closingImage?.image} alt={page.closingImage?.alt} tall />
+  {
+    page.closingImage?.image && (
+      <PhotoBreak image={page.closingImage.image} alt={page.closingImage.alt} tall />
+    )
+  }
 </Layout>
 
 <style>
@@ -115,7 +148,114 @@ const page = entry.data;
     font-size: 0.8rem;
     color: var(--color-paper-40);
   }
-  .about-principles {
-    padding-top: 0;
+
+  /* Ways of working — a concise secondary layer inside the same "How we
+     make it happen" chapter, not a second FeatureGrid card row (five
+     principles as full cards would turn this into another giant grid
+     chapter, the opposite of the simpler shape this rebuild is after). */
+  .about-principles-head {
+    max-width: 42rem;
+    margin: var(--space-16) auto 0;
+    text-align: center;
+  }
+  .about-principles-head h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--color-paper);
+    font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+    margin: 0.6rem 0 0;
+  }
+  .about-principles-list {
+    list-style: none;
+    margin: var(--space-10) auto 0;
+    padding: 0;
+    max-width: 46rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .about-principles-list li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1rem;
+    padding: 1.4rem 0;
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .about-principles-list li:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .about-principles-number {
+    font: var(--text-caption);
+    letter-spacing: 0.24em;
+    color: var(--color-paper-40);
+  }
+  .about-principles-list h4 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-paper);
+    margin: 0;
+  }
+  .about-principles-list p {
+    margin: 0.4rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-paper-60);
+  }
+  @media (max-width: 640px) {
+    .about-principles-list li {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+  }
+
+  /* Get involved, replaced 2026-08-31 — ParticipateBand's card-wall
+     treatment read as a sales CTA block; the brief asked for a light
+     continuation instead, so this is a plain underlined-link list, the
+     same weight as SectionIntro's own link treatment. */
+  .about-continue-list {
+    list-style: none;
+    margin: var(--space-10) auto 0;
+    padding: 0;
+    max-width: 42rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .about-continue-list li {
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .about-continue-list li:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .about-continue-list a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.3rem 0;
+    text-decoration: none;
+    color: inherit;
+  }
+  .about-continue-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+    color: var(--color-paper);
+  }
+  .about-continue-go {
+    flex-shrink: 0;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--color-paper-60);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--color-paper-20);
+    transition: color var(--duration-fast) ease;
+  }
+  .about-continue-list a:hover .about-continue-go {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
   }
 </style>
