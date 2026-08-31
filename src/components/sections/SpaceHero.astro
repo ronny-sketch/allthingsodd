@@ -72,12 +72,7 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
       (primaryCta || secondaryCta) && (
         <div class="space-hero-ctas">
           {primaryCta && (
-            <Pill
-              href={primaryCta.href}
-              variant="solid"
-              magnetic
-              class="space-hero-pill-solid"
-            >
+            <Pill href={primaryCta.href} variant="solid" magnetic class="space-hero-pill-solid">
               {primaryCta.label}
             </Pill>
           )}
