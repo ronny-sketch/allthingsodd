@@ -131,6 +131,29 @@ test.describe('/tickets/checkout', () => {
     expect(errors, `console/page errors: ${errors.join('; ')}`).toEqual([]);
   });
 
+  test('offers an invoice-request mailto with the real cart contents', async ({ page }) => {
+    const errors = collectConsoleErrors(page);
+    await mockCatalog(page);
+    await page.addInitScript(
+      (cart) => {
+        localStorage.setItem('odd_tickets_cart_v1', JSON.stringify(cart));
+      },
+      { tt_blind_bird: 2 },
+    );
+    await page.goto('/tickets/checkout');
+    await page.waitForLoadState('load');
+
+    const invoiceLink = page.locator('.tixc-invoice-link');
+    await expect(invoiceLink).toBeVisible();
+    const href = await invoiceLink.getAttribute('href');
+    expect(href).toMatch(/^mailto:ronny@oddfest\.co\?/);
+    const decoded = decodeURIComponent(href ?? '');
+    expect(decoded).toContain('Blind Bird');
+    expect(decoded).toContain('subject=ODDference 2027 — invoice request');
+
+    expect(errors, `console/page errors: ${errors.join('; ')}`).toEqual([]);
+  });
+
   test('is noindex', async ({ page }) => {
     await page.goto('/tickets/checkout');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
