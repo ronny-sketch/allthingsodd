@@ -71,7 +71,40 @@ if (
         <span>${formatMinor(cartTotal(), currency)}</span>
       </div>
       <p class="tixc-summary-vat-note">VAT included where applicable</p>
+      <a class="tixc-invoice-link" href="${buildInvoiceMailtoHref()}">Prefer to pay by invoice? Request one by email →</a>
     `;
+  }
+
+  // No invoicing backend exists yet (email delivery infrastructure is an
+  // open item — see ../../../../odd-growth-os/ops/TICKETING_IMPLEMENTATION_PLAN.md's
+  // launch checklist), so this is a plain mailto: to Ronny, same "honest
+  // placeholder, zero new infra" pattern as #tixcNotConnected above. The
+  // buyer's own mail client sends it — nothing here touches a server.
+  function buildInvoiceMailtoHref(): string {
+    const entries = Object.entries(cart).filter(([, qty]) => qty > 0);
+    const lines = entries
+      .map(([id, qty]) => {
+        const tt = ticketById(id);
+        if (!tt) return null;
+        return `${qty} x ${tt.name} - ${formatMinor(tt.displayPriceMinor * qty, tt.currency)}`;
+      })
+      .filter((line): line is string => line !== null);
+    const body = [
+      'Hi Ronny,',
+      '',
+      "I'd like to request an invoice for the following ODDference 2027 tickets:",
+      '',
+      ...lines,
+      '',
+      `Total: ${formatMinor(cartTotal(), currency)} (VAT included where applicable)`,
+      '',
+      'My name / company:',
+      'Billing address / VAT ID (if applicable):',
+      '',
+      'Thanks!',
+    ].join('\n');
+    const subject = 'ODDference 2027 — invoice request';
+    return `mailto:ronny@oddfest.co?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
   function escapeHtml(value: string): string {
