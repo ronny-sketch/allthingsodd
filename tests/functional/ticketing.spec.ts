@@ -106,9 +106,7 @@ test.describe('/tickets/checkout', () => {
     expect(errors, `console/page errors: ${errors.join('; ')}`).toEqual([]);
   });
 
-  test('a real cart shows the buyer form and an honest "payment not connected" state', async ({
-    page,
-  }) => {
+  test('a real cart shows the buyer form with payment connected', async ({ page }) => {
     const errors = collectConsoleErrors(page);
     await mockCatalog(page);
     await page.addInitScript(
@@ -121,10 +119,37 @@ test.describe('/tickets/checkout', () => {
     await page.waitForLoadState('load');
 
     await expect(page.locator('#tixcLayout')).toBeVisible();
-    // STRIPE_PUBLISHABLE_KEY ships null until Ronny provides a real test key
-    // (see src/scripts/tickets/config.ts) — the honest "not connected yet"
-    // state is the real, current, deterministic behavior, not a mock.
-    await expect(page.locator('#tixcNotConnected')).toBeVisible();
+    // STRIPE_PUBLISHABLE_KEY carries a real pk_test_ value as of 2026-09-01
+    // (see src/scripts/tickets/config.ts) — the "not connected yet" notice
+    // only appears when that's null, so it stays hidden here. Nothing in
+    // this test's flow (page load only, no form submit) triggers a real
+    // Stripe.js network call — that only happens on buyer-form submit,
+    // which this test doesn't do — so this stays hermetic per the file's
+    // own "never touch real Stripe in tests" rule above.
+    await expect(page.locator('#tixcNotConnected')).toBeHidden();
+
+    expect(errors, `console/page errors: ${errors.join('; ')}`).toEqual([]);
+  });
+
+  test('offers an invoice-request mailto with the real cart contents', async ({ page }) => {
+    const errors = collectConsoleErrors(page);
+    await mockCatalog(page);
+    await page.addInitScript(
+      (cart) => {
+        localStorage.setItem('odd_tickets_cart_v1', JSON.stringify(cart));
+      },
+      { tt_blind_bird: 2 },
+    );
+    await page.goto('/tickets/checkout');
+    await page.waitForLoadState('load');
+
+    const invoiceLink = page.locator('.tixc-invoice-link');
+    await expect(invoiceLink).toBeVisible();
+    const href = await invoiceLink.getAttribute('href');
+    expect(href).toMatch(/^mailto:ronny@oddfest\.co\?/);
+    const decoded = decodeURIComponent(href ?? '');
+    expect(decoded).toContain('Blind Bird');
+    expect(decoded).toContain('subject=ODDference 2027 — invoice request');
 
     expect(errors, `console/page errors: ${errors.join('; ')}`).toEqual([]);
   });
