@@ -18,44 +18,55 @@ const ROUTES = [
   '/contact',
 ];
 
-// Scrolls the whole page in steps before capturing — the same pattern
-// site-integrity.spec.ts already uses to force lazy images to load, needed
-// here for a real, independently-confirmed reason too: `.reveal` elements
-// (src/scripts/reveal.ts, most of the content on every page) only get their
-// visible `.in` class from a real IntersectionObserver entry, and this
-// project's `reducedMotion: 'reduce'` (playwright.config.ts) — which the
-// rest of this suite assumes makes `.reveal` unconditionally visible via
-// its own prefers-reduced-motion CSS branch (motion.css) — does not
-// actually take effect at the browser level in this Playwright/Chromium
-// combination (confirmed directly: `matchMedia('(prefers-reduced-motion:
-// reduce)').matches` reports `false` even via test.use({ reducedMotion:
-// 'reduce' }), isolated from this file's own setup entirely). Without
-// scrolling, `.reveal` content below the first viewport never intersects,
-// never gets `.in`, and is captured at its real opacity:0.
+// Scrolls the whole page in fine-grained steps before capturing — the same
+// pattern site-integrity.spec.ts already uses to force lazy images to
+// load, needed here for a real, independently-confirmed reason too:
+// `.reveal` elements (src/scripts/reveal.ts, most of the content on every
+// page) only get their visible `.in` class from a real IntersectionObserver
+// entry, and this project's `reducedMotion: 'reduce'` (playwright.config.ts)
+// — which the rest of this suite assumes makes `.reveal` unconditionally
+// visible via its own prefers-reduced-motion CSS branch (motion.css) —
+// does not actually take effect at the browser level in this Playwright/
+// Chromium combination (confirmed directly: `matchMedia('(prefers-reduced-
+// motion: reduce)').matches` reports `false` even via a bare
+// `test.use({ reducedMotion: 'reduce' })`, isolated from this file's own
+// setup entirely). Without scrolling, `.reveal` content below the first
+// viewport never intersects, never gets `.in`, and is captured at its
+// real opacity:0.
 //
-// KNOWN REMAINING FLAKE (documented, not solved here — see
-// docs/QUALITY_AUDIT.md VISUAL-1): this mitigates the problem but isn't
-// fully reliable yet — repeated runs of the identical scroll-then-wait
-// sequence against the same page were observed to sometimes still leave
-// specific `.reveal` elements (confirmed: ODDfest's `.faq-list`) at
-// opacity:0 even after every element reports 0 remaining
-// `document.querySelectorAll('.reveal:not(.in)')`, meaning the CSS
-// transition itself (not the class addition) is the unreliable part in
-// this environment — a real, below-the-fold-content-invisible-in-baseline
-// risk, not a false alarm. A real visitor scrolling at a normal human pace
-// is not known to be affected (only reproduced via scripted rapid
-// scrolling); this needs more investigation before treating any full-page
-// baseline for a `.reveal`-heavy page as fully trustworthy. Do not
-// mechanically re-run `--update-snapshots` on ODDfest/ODDference/ODDspace/
-// home to "fix" a failure here without first checking the actual diff.
+// Two real, independently-confirmed causes behind why a first attempt at
+// this (coarse, near-viewport-height steps) still left specific elements
+// unrevealed — found via `document.querySelectorAll('.reveal:not(.in)')`
+// after each change, not assumed:
+//
+// 1. A *tall* `.reveal` element (a multi-row pathway/FAQ/feature list) can
+//    have its entire 15%-intersection-ratio window land *between* two large
+//    discrete scroll jumps, so the IntersectionObserver callback never sees
+//    it cross threshold at all — reproduced on Work with ODD's pathways/
+//    "Why ODD" sections. Smaller (150px) steps fixed this — every element
+//    gets multiple chances to be observed mid-transit instead of one.
+// 2. Separately, a *content-dense* page (many simultaneous `.reveal`
+//    elements competing for the same per-step timing budget — ODDference's
+//    speaker/pricing grids, ODDspace's photo sections + a live Google
+//    Calendar iframe) still dropped several observations at a fast 40ms/step
+//    pace, even with the smaller step size from (1) — the browser's
+//    IntersectionObserver callback queue falling behind, not a geometry
+//    problem. 120ms/step gives it enough headroom; confirmed clean across
+//    all 8 `.reveal`-bearing routes, 2 full repeated runs.
 async function scrollThroughPage(page: Page) {
   await page.evaluate(async () => {
-    const step = Math.max(300, window.innerHeight - 100);
+    const step = 150;
     const height = document.body.scrollHeight;
     for (let y = 0; y < height; y += step) {
       window.scrollTo(0, y);
-      await new Promise((r) => setTimeout(r, 60));
+      await new Promise((r) => setTimeout(r, 120));
     }
+    // Explicit final jump to the true bottom — the loop's last step can
+    // undershoot it by up to `step - 1` px, which matters for a `.reveal`
+    // element sitting right at the very end of the page (e.g. a closing
+    // CTA/footer-adjacent section).
+    window.scrollTo(0, height);
+    await new Promise((r) => setTimeout(r, 200));
     window.scrollTo(0, 0);
   });
   // One entrance-transition duration (motion.css's --duration-reveal is
@@ -63,11 +74,17 @@ async function scrollThroughPage(page: Page) {
   // `animations: 'disabled'` on toHaveScreenshot below only forces a
   // transition already in progress to its end state, it doesn't help an
   // IntersectionObserver callback that hasn't fired yet.
-  await page.waitForTimeout(750);
+  await page.waitForTimeout(1000);
 }
 
 for (const route of ROUTES) {
   test(`${route || 'home'} — full page`, async ({ page }) => {
+    // Above Playwright's 30s default — scrollThroughPage's deliberately
+    // slow 120-200ms/step pacing (see its own comment) on the tallest
+    // pages at the widest breakpoint (confirmed: ODDspace/wide) can push
+    // the test's total wall-clock time past the default on its own,
+    // before the screenshot assertion's own budget even starts.
+    test.setTimeout(45_000);
     // Pre-seed the "seen" flag NewsletterPopup.astro checks (see
     // src/scripts/newsletter-popup.ts) before any page script runs — added
     // 2026-08-31 after the homepage revision made the popup global (every
