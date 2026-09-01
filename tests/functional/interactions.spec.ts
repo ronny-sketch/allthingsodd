@@ -144,6 +144,13 @@ test('mobile menu opens on click, closes on the close button', async ({ page }) 
   const overlay = page.locator('#menuOverlay');
   await expect(overlay).not.toHaveClass(/is-open/);
 
+  // Correct from the very first paint, not just after the first toggle —
+  // a screen reader shouldn't see an untagged control before any click.
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(toggle).toHaveAttribute('aria-controls', 'menuOverlay');
+  await expect(overlay).toHaveAttribute('role', 'dialog');
+  await expect(overlay).toHaveAttribute('aria-modal', 'true');
+
   await toggle.click();
   await expect(overlay).toHaveClass(/is-open/);
   await expect(toggle).toHaveAttribute('aria-expanded', 'true');
@@ -302,5 +309,39 @@ test('requirement 11: ODDfest "How it works" is one real 01|02|03|04 row at desk
     expect(w, `column width ${w}px fell below the established 240px floor`).toBeGreaterThanOrEqual(
       240,
     );
+  }
+});
+
+test.describe('ODDspace intent (?interest=oddspace&intent=...)', () => {
+  for (const intent of ['membership', 'event']) {
+    test(`${intent} deep link shows individual-friendly fields and sends intent to the Worker`, async ({
+      page,
+    }) => {
+      let capturedBody: string | null = null;
+      await page.route('**/api/business-enquiry', (route) => {
+        capturedBody = route.request().postData();
+        return route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ ok: true, message: 'ok' }),
+        });
+      });
+
+      await page.goto(`/work-with-odd?interest=oddspace&intent=${intent}#enquiry-form`);
+      await expect(page.locator('#we-email-label')).toHaveText('Email');
+      await expect(page.locator('#we-org')).not.toHaveAttribute('required', '');
+
+      await page.locator('#we-name').fill('Test Person');
+      await page.locator('#we-email').fill('test@example.com');
+      await page.locator('#we-goal').fill('Testing intent payload');
+      await page.locator('#workEnquiryForm button[type="submit"]').click();
+      await expect
+        .poll(() => capturedBody, { message: 'business-enquiry request never fired' })
+        .not.toBeNull();
+
+      const body = JSON.parse(capturedBody!);
+      expect(body.interest).toBe('oddspace');
+      expect(body.intent).toBe(intent);
+    });
   }
 });

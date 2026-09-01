@@ -27,12 +27,16 @@ if (form instanceof HTMLFormElement) {
   // ODDspace's two CTAs ("Become a member" / "Organise an event") both share
   // the single `oddspace` interest value (the Worker's products.yml enum
   // isn't touched by this website-only change) but mean genuinely different
-  // things — a personal creative applying for membership shouldn't be asked
-  // for a "work email" and a required "organisation" as though they were a
-  // business. `intent` is a display-only query param this form reads itself;
-  // it's never sent to the Worker. See oddspace.json's own CTAs and
-  // content.config.ts's `interest`/`intent` note.
-  if (params.get('intent') === 'membership') {
+  // things — neither a personal member nor someone enquiring about renting
+  // the space for an event is necessarily part of a business, so both
+  // shouldn't be asked for a "work email" and a required "organisation" as
+  // though they were. `requestedIntent` is carried through to the Worker
+  // below (see ../../odd-growth-os/worker/src/validate.ts's `intent` field)
+  // — Attio has no dedicated structured field for it today, so it lands in
+  // the same human-readable submission note goal/timing/referrer already
+  // do, not silently folded into the visitor's own free-text message.
+  const requestedIntent = params.get('intent');
+  if (requestedIntent === 'membership' || requestedIntent === 'event') {
     const emailLabel = form.querySelector<HTMLLabelElement>('#we-email-label');
     const orgLabel = form.querySelector<HTMLLabelElement>('#we-org-label');
     const orgInput = form.querySelector<HTMLInputElement>('#we-org');
@@ -49,7 +53,13 @@ if (form instanceof HTMLFormElement) {
     submitBtn?.setAttribute('disabled', 'true');
     status.textContent = 'Sending…';
 
-    const payload = { ...Object.fromEntries(new FormData(form)), ...captureFirstTouch() };
+    const payload = {
+      ...Object.fromEntries(new FormData(form)),
+      ...(requestedIntent === 'membership' || requestedIntent === 'event'
+        ? { intent: requestedIntent }
+        : {}),
+      ...captureFirstTouch(),
+    };
 
     try {
       const res = await fetch(`${API_BASE}/api/business-enquiry`, {

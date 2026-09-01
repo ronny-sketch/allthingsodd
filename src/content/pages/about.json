@@ -122,9 +122,15 @@
   "participate": [
     {
       "eyebrow": "Experience ODD",
-      "title": "ODDfest & ODDference",
+      "title": "ODDfest",
       "linkLabel": "See what's on →",
       "href": "/oddfest"
+    },
+    {
+      "eyebrow": "Experience ODD",
+      "title": "ODDference",
+      "linkLabel": "See what's on →",
+      "href": "/oddference"
     },
     {
       "eyebrow": "Find a place in it",

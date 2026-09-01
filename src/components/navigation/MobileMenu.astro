@@ -20,7 +20,7 @@ const { nav, social, footerTag } = site.data;
 const menuLinks = nav.flatMap((item) => item.children ?? [item]);
 ---
 
-<div class="menu-overlay" id="menuOverlay">
+<div class="menu-overlay" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Site menu">
   <div class="menu-topbar">
     <a href="/" class="mark-ink" aria-label="ODD"><Logo /></a>
     <button type="button" class="menu-close" id="menuClose">Close</button>
@@ -59,6 +59,13 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
   const toggleLabel = document.getElementById('menuToggleLabel');
   if (toggle && overlay && closeBtn && toggleLabel) {
     let open = false;
+
+    // Set once at load, not just inside setOpen() — without this, a
+    // screen reader gets no aria-expanded/aria-controls at all until the
+    // trigger is clicked for the first time, rather than the correct
+    // "closed" state from the start.
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-controls', 'menuOverlay');
 
     function getFocusable(): HTMLElement[] {
       if (!overlay) return [];

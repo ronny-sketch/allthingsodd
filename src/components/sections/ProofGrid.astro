@@ -27,17 +27,18 @@ interface Props {
 }
 const { eyebrow, title, items, reportLabel, reportUrl, placeholder } = Astro.props;
 const showReport = Boolean(reportLabel && reportUrl);
+const hasItems = items.length > 0;
 ---
 
-<section class="proof-section">
+<section class={`proof-section ${!hasItems ? 'is-pending' : ''}`}>
   <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">{eyebrow}</span>
-      {title && <h2>{title}</h2>}
-    </div>
     {
-      items.length > 0 ? (
+      hasItems ? (
         <>
+          <div class="section-head">
+            <span class="eyebrow">{eyebrow}</span>
+            {title && <h2>{title}</h2>}
+          </div>
           {/* --cols capped at 4 — forcing every item into one row
                (items.length directly) was fine for the 2-3 item case this
                was designed around, but Media's 8-stat highlights grid
@@ -62,7 +63,17 @@ const showReport = Boolean(reportLabel && reportUrl);
           )}
         </>
       ) : (
-        placeholder && <p class="proof-placeholder">{placeholder}</p>
+        // No verified numbers yet — a quiet, subordinate note, not the full
+        // bordered section-head/h2 "new chapter" treatment above or a large
+        // dashed placeholder box (missing data shouldn't carry the same
+        // visual weight as real evidence). Automatically upgrades to the
+        // normal ProofGrid treatment the moment `items` is populated —
+        // nothing else to wire up.
+        placeholder && (
+          <p class="proof-pending">
+            <span class="eyebrow">{eyebrow}</span> — {placeholder}
+          </p>
+        )
       )
     }
   </div>
@@ -134,16 +145,23 @@ const showReport = Boolean(reportLabel && reportUrl);
     color: var(--color-amber-bright);
     text-decoration-color: var(--color-amber-bright);
   }
-  .proof-placeholder {
+  /* Quiet, subordinate — this section's own padding shrinks too (see
+     .proof-section.is-pending below) so missing 2026 data reads as a small
+     aside under real 2025 evidence, not a section of equal visual weight. */
+  .proof-section.is-pending {
+    padding: var(--space-8) 0;
+  }
+  .proof-pending {
     max-width: 32rem;
     margin: 0 auto;
     text-align: center;
     font-family: var(--font-body);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     line-height: 1.7;
     color: var(--color-paper-40);
-    padding: 2.4rem 2rem;
-    border: 1px dashed var(--color-paper-12);
+  }
+  .proof-pending .eyebrow {
+    color: var(--color-paper-40);
   }
   @media (max-width: 700px) {
     .proof-grid {
