@@ -16,7 +16,8 @@
     "format:check": "prettier --check .",
     "test": "playwright test",
     "test:update-snapshots": "playwright test --update-snapshots",
-    "cc:validate": "cloudcannon validate"
+    "cc:validate": "cloudcannon validate",
+    "quality": "npm run check && npm run lint && npm run format:check && npm run cc:validate && npm run build"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

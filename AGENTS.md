@@ -210,12 +210,25 @@ pattern for `astro preview`).
 
 ## Growth OS integration (the API boundary — read before touching the two forms)
 
-The website has two forms that reach ODD's commercial operating system —
+**Corrected 2026-09-01:** the newsletter/business-enquiry forms were the
+entire contract until the 2026-08-31 ticketing pass added a second, larger
+surface — `src/scripts/tickets/*.ts` (catalog fetch, checkout, order-status
+polling, attendee assignment on `/tickets`, `/tickets/checkout`,
+`/tickets/confirmation`) calling `../odd-growth-os/worker/src/tickets/*`'s
+`/api/tickets/*` routes: `GET /api/tickets/catalog`,
+`POST /api/tickets/checkout`, `GET /api/tickets/order/:id/status`, and the
+attendee-assignment/check-in routes documented in
+`../odd-growth-os/ops/TICKETING_IMPLEMENTATION_PLAN.md`. Same boundary
+discipline as the two forms below: this repo only ever calls those routes
+by URL/shape, never imports Growth OS code, and the backend (D1, Stripe,
+webhook verification, inventory) lives entirely in `../odd-growth-os`.
+
+The original two forms remain the simpler half of the same contract —
 `src/components/sections/WorkEnquiryForm.astro` (via
 `src/scripts/work-enquiry-form.ts`) POSTs to `/api/business-enquiry`, and
-the newsletter form POSTs to `/api/newsletter`. **That's the entire
-contract.** Neither file imports any Growth OS code, and neither should
-ever start to.
+the newsletter form POSTs to `/api/newsletter`. Neither of those two files
+imports any Growth OS code, and neither should ever start to — the same
+now applies to every file under `src/scripts/tickets/`.
 
 **Corrected 2026-08-28:** these are cross-origin `fetch()` calls to the
 Worker's own `workers.dev` URL, not same-origin relative paths. Production
@@ -249,22 +262,76 @@ new integration, adapter/schema changes, Growth OS operational docs — it
 belongs in `../odd-growth-os`, not here. Don't start implementing it in
 this repo; tell the user it belongs to Growth OS and stop.
 
+## Ticketing architecture
+
+Added 2026-08-31 (`ops/TICKETING_IMPLEMENTATION_PLAN.md` in
+`../odd-growth-os` is the authoritative build record; this section is the
+short version a future agent needs before touching `/tickets/*`):
+
+```
+/tickets, /tickets/checkout, /tickets/confirmation (this repo, static)
+  → fetch() → ../odd-growth-os Worker's /api/tickets/* routes
+      → D1 (TICKETS_DB: events, ticket_types, orders, tickets, attendees)
+      → Stripe Checkout Sessions, ui_mode: 'embedded' (embedded_page)
+          → Stripe-signed webhook → Worker verifies + marks the order paid
+              (the *only* path that ever issues tickets — the confirmation
+              page polls order status, it never trusts Stripe's redirect
+              alone)
+```
+
+- **Stripe.js/API mode is fixed, not a free choice**: `stripe.js` is loaded
+  from `https://js.stripe.com/dahlia/stripe.js` (see
+  `src/scripts/tickets/config.ts`'s `STRIPE_JS_URL`) and mounted via
+  `stripe.createEmbeddedCheckoutPage(...)` (see
+  `src/scripts/tickets/stripe-loader.ts`) — the vanilla-JS "full embedded
+  page" API for `ui_mode: 'embedded'`/`'embedded_page'` Checkout Sessions,
+  confirmed against Stripe's own docs at build time (2026-08-31). Do not
+  "correct" this to a redirect/hosted Checkout flow or to Stripe Elements —
+  those are different UI modes with a different client-side API and would
+  desync from what the backend actually creates
+  (`../odd-growth-os/worker/src/tickets/stripe.ts`). If either side is ever
+  changed, change both together and re-verify against Stripe's current
+  docs, not from memory.
+- **Publishable key**: `src/scripts/tickets/config.ts`'s
+  `STRIPE_PUBLISHABLE_KEY` ships `null` (same inert-until-configured
+  pattern as `analytics-config.ts`) — `/tickets/checkout` shows an honest
+  "payment isn't connected yet" state instead of a broken Stripe.js call.
+  Setting a real `pk_test_...`/`pk_live_...` here is safe (publishable
+  keys are meant to be browser-visible); it must point at the same Stripe
+  account/mode as the Worker's `STRIPE_SECRET_KEY`.
+- **The frontend is presentation and intent only** — price, currency,
+  inventory, ticket status and sale-phase are resolved authoritatively by
+  the Worker/D1, never trusted from the browser. This repo's job stops at
+  catalog display, cart UX, buyer input, mounting the embedded Checkout,
+  and rendering whatever the Worker's order-status/confirmation responses
+  say.
+- **Stripe secrets never enter this repo.** `STRIPE_SECRET_KEY` /
+  `STRIPE_WEBHOOK_SECRET` / `TICKET_SIGNING_SECRET` /
+  `CHECKIN_API_KEY` live only as Worker secrets in `../odd-growth-os`
+  (`wrangler secret put`, never `.dev.vars` beyond local test-mode values,
+  never this repo). See that repo's `ops/TICKETING_IMPLEMENTATION_PLAN.md`
+  "Launch checklist" before ever pointing this at live-mode keys.
+
 ## Analytics (GA4)
 
-Added 2026-08-28. `src/scripts/analytics-config.ts` holds the single
-`GA_MEASUREMENT_ID` constant — `null` until a real GA4 property exists,
-which keeps the consent banner and gtag.js request fully off (nothing
-renders, nothing loads) so this shipped safely ahead of that decision.
+Added 2026-08-28. **Corrected 2026-09-01: live, not a placeholder** —
+`src/scripts/analytics-config.ts`'s `GA_MEASUREMENT_ID` is a real property
+(`G-9Q90CQMBK8`, stream "ODDpage") as of the 2026-08-29 Growth OS
+activation (`../odd-growth-os/ops/DECISIONS.md` D17/D20); this file
+previously said it shipped `null` until a property existed, which is no
+longer true. The "ships inert until configured" pattern it describes is
+still the real mechanism (a `null` ID keeps the consent banner and
+gtag.js request fully off) — it's just no longer the _current_ state.
 `src/components/navigation/ConsentBanner.astro` gates everything on an
 explicit Accept/Reject (GDPR/ePrivacy applies — ODD is a Finnish
 association, GA4 cookies aren't "strictly necessary" — see that file's
 header comment for why this is a simpler "don't request gtag.js until
 accepted" pattern rather than Google's Consent Mode default-denied one).
 `src/scripts/analytics.ts` exports `trackEvent()`, called from
-`work-enquiry-form.ts`/`newsletter-form.ts` on a real successful
-submission — a safe no-op whenever consent hasn't been granted. To turn
-analytics on: set the real Measurement ID in `analytics-config.ts` and
-redeploy — no other code changes needed.
+`work-enquiry-form.ts`/`newsletter-form.ts`/`src/scripts/tickets/*.ts` on a
+real successful submission/funnel event — a safe no-op whenever consent
+hasn't been granted. A future rotation to a different property is still a
+one-file change in `analytics-config.ts`, same mechanism as before.
 
 ## Scope-creep guardrail
 

@@ -47,15 +47,18 @@ const infoItem = nav.find((item) => item.children);
     <div class="nav-buttons">
       {
         infoItem && (
-          <div class="nav-dropdown nav-info">
-            <a
-              href={infoItem.href}
-              class={
+          <div class="nav-dropdown nav-info" data-nav-info>
+            <button
+              type="button"
+              class={`nav-info-trigger${
                 path === infoItem.href || infoItem.children?.some((c) => path === c.href)
-                  ? 'is-active'
-                  : undefined
-              }
+                  ? ' is-active'
+                  : ''
+              }`}
               aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="nav-info-menu"
+              data-nav-info-trigger
             >
               {infoItem.label}
               <svg
@@ -74,8 +77,8 @@ const infoItem = nav.find((item) => item.children);
                   fill="none"
                 />
               </svg>
-            </a>
-            <div class="nav-dropdown-menu">
+            </button>
+            <div class="nav-dropdown-menu" id="nav-info-menu" data-nav-info-menu>
               <span class="nav-dropdown-label">{infoItem.label}</span>
               {infoItem.children?.map((child) => (
                 <a
@@ -97,6 +100,8 @@ const infoItem = nav.find((item) => item.children);
     </div>
   </div>
 </nav>
+
+<script src="../../scripts/nav-info-dropdown.ts"></script>
 
 <style>
   nav {
@@ -185,10 +190,12 @@ const infoItem = nav.find((item) => item.children);
     color: var(--color-paper-60);
   }
   /* Dropdown for a nav item with children (currently just "Info" ->
-     About/Media/Contact) — CSS-only hover/focus-within, no JS: a keyboard
-     user tabbing onto the "Info" link is itself inside .nav-dropdown, which
-     is enough to satisfy :focus-within and reveal the menu before Tab moves
-     into it. */
+     About/Media/Contact) — hover/focus-within still open it with no JS for
+     a pointer/keyboard-tab user, same as before; nav-info-dropdown.ts adds
+     an explicit click/Enter/Space toggle (.is-open), Escape-to-close, and
+     click-outside-to-close on top, since the trigger is a real <button>
+     now (see the markup above) rather than a link that happened to also
+     have a hover menu. */
   .nav-dropdown {
     position: relative;
   }
@@ -206,8 +213,6 @@ const infoItem = nav.find((item) => item.children);
     transform: translateX(-50%);
     min-width: 196px;
     padding: 0.9rem 0.6rem 0.6rem;
-    background: var(--color-backstage);
-    border: 1px solid var(--color-paper-12);
     border-radius: var(--radius-panel);
     box-shadow: var(--shadow-panel);
     display: flex;
@@ -221,6 +226,17 @@ const infoItem = nav.find((item) => item.children);
       opacity var(--duration-fast) ease,
       transform var(--duration-fast) ease;
   }
+  /* White/paper surface (same independent light-panel treatment as
+     MobileMenu.astro's fullscreen overlay — see its own comment) rather
+     than the dark --color-backstage this used to sit on. Pinned to the true
+     light/dark swatches, not the inherited --color-paper/--color-ink, so
+     this stays correct even opened from ODDspace's .theme-light page,
+     where those tokens are already inverted. */
+  .nav-dropdown-menu {
+    background: var(--swatch-paper);
+    color: var(--swatch-ink);
+    border: 1px solid var(--color-ink-12);
+  }
   /* A small header inside the panel itself — same eyebrow language used
      sitewide — is what makes this read as a mini nav panel with its own
      hierarchy rather than a bare browser-default link list. */
@@ -229,10 +245,10 @@ const infoItem = nav.find((item) => item.children);
     font: var(--text-caption);
     letter-spacing: 0.28em;
     text-transform: uppercase;
-    color: var(--color-paper-40);
+    color: var(--color-ink-40);
     padding: 0.4rem 0.8rem 0.7rem;
     margin-bottom: 0.2rem;
-    border-bottom: 1px solid var(--color-paper-12);
+    border-bottom: 1px solid var(--color-ink-12);
   }
   @media (prefers-reduced-motion: no-preference) {
     .nav-dropdown-menu {
@@ -240,7 +256,8 @@ const infoItem = nav.find((item) => item.children);
     }
   }
   .nav-dropdown:hover .nav-dropdown-menu,
-  .nav-dropdown:focus-within .nav-dropdown-menu {
+  .nav-dropdown:focus-within .nav-dropdown-menu,
+  .nav-dropdown.is-open .nav-dropdown-menu {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -253,6 +270,7 @@ const infoItem = nav.find((item) => item.children);
     font-size: 0.92rem;
     text-decoration: none;
     white-space: nowrap;
+    color: var(--swatch-ink);
     transition:
       color var(--duration-fast) ease,
       background-color var(--duration-fast) ease;
@@ -260,20 +278,24 @@ const infoItem = nav.find((item) => item.children);
   .nav-dropdown-menu a::before {
     display: none;
   }
+  /* Menu item default: paper surface, ink text (inherited from the panel
+     above). Hover/keyboard focus: ink fill, paper text — the same inversion
+     MobileMenu.astro's .menu-links a:hover uses. */
   .nav-dropdown-menu a:hover,
-  .nav-dropdown-menu a.is-active {
-    color: var(--color-paper);
-    background: var(--color-paper-12);
+  .nav-dropdown-menu a.is-active,
+  .nav-dropdown-menu a:focus-visible {
+    color: var(--swatch-paper);
+    background: var(--swatch-ink);
   }
   /* "Info" trigger reads as a pill button (same visual language as
      Pill.astro's `outline` variant) now that it sits where the old
      Newsletter pill did, on the header's right side — a plain text link
      there would look like a stray nav item, not an intentional control. Not
-     reusing <Pill> itself: this trigger is one half of a CSS-only
-     hover/focus-within dropdown pair (see .nav-dropdown above), which needs
-     to stay a plain <a> so :focus-within on the shared .nav-dropdown parent
-     keeps working. */
-  .nav-info > a {
+     reusing <Pill> itself: this trigger needs to stay a plain <button> so
+     :focus-within on the shared .nav-dropdown parent keeps working for the
+     hover/focus path, alongside the explicit click/keyboard toggle in
+     nav-info-dropdown.ts. */
+  .nav-info-trigger {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -282,10 +304,24 @@ const infoItem = nav.find((item) => item.children);
     font-family: var(--font-body);
     font-weight: 600;
     font-size: 0.72rem;
+    /* A <button>'s UA stylesheet declares its own line-height (usually
+       "normal") directly on the element, which wins over inheritance
+       regardless of specificity — so swapping this trigger from <a> to
+       <button> silently shrank it a few px versus the old anchor (which
+       inherited body's unitless 1.5 here, same as .nav-links a still does),
+       shaving the same few px off nav's own offsetHeight and, through
+       nav-height.ts's --nav-h, every page's total height sitewide (caught
+       via a real Playwright visual-regression diff, not assumed). Restoring
+       the same 1.5 ratio keeps this pixel-identical to the anchor it
+       replaced. */
+    line-height: 1.5;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--color-paper);
+    background: transparent;
     border: 1px solid rgb(226 223 222 / 35%);
+    cursor: pointer;
+    appearance: none;
     transition:
       border-color var(--duration-fast) ease,
       color var(--duration-fast) ease;
@@ -301,12 +337,13 @@ const infoItem = nav.find((item) => item.children);
       transform var(--duration-fast) ease,
       color var(--duration-fast) ease;
   }
-  .nav-info > a:hover .nav-info-chevron,
-  .nav-info > a.is-active .nav-info-chevron {
+  .nav-info-trigger:hover .nav-info-chevron,
+  .nav-info-trigger.is-active .nav-info-chevron {
     color: var(--color-paper);
   }
   .nav-dropdown:hover .nav-info-chevron,
-  .nav-dropdown:focus-within .nav-info-chevron {
+  .nav-dropdown:focus-within .nav-info-chevron,
+  .nav-dropdown.is-open .nav-info-chevron {
     transform: rotate(180deg);
   }
   /* Same dark-ground assumption as Pill.astro's .pill-outline (this trigger
@@ -314,16 +351,19 @@ const infoItem = nav.find((item) => item.children);
      (ODDspace) the ground is light, so this needs the ink-tinted mirror at
      the same opacity, not the inherited (now-dark) --color-paper value
      reused as a border tint. See Pill.astro's identical comment. */
-  :global(.theme-light) .nav-info > a {
+  :global(.theme-light) .nav-info-trigger {
     border-color: rgb(14 9 11 / 35%);
   }
-  .nav-info > a::before {
+  .nav-info-trigger::before {
     display: none;
   }
-  .nav-info > a:hover,
-  .nav-info > a.is-active {
+  .nav-info-trigger:hover,
+  .nav-info-trigger.is-active {
     border-color: var(--color-paper);
     color: var(--color-paper);
+  }
+  .nav-info-trigger:focus-visible {
+    outline-offset: 2px;
   }
   /* Right-aligned under the trigger, not centered — .nav-dropdown-menu's
      default centering (built for a mid-row trigger like the old inline
@@ -341,7 +381,8 @@ const infoItem = nav.find((item) => item.children);
     }
   }
   .nav-info:hover .nav-dropdown-menu,
-  .nav-info:focus-within .nav-dropdown-menu {
+  .nav-info:focus-within .nav-dropdown-menu,
+  .nav-info.is-open .nav-dropdown-menu {
     transform: none;
   }
   .nav-buttons {

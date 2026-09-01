@@ -11,6 +11,7 @@ const ORDER_TOKEN_KEY = 'odd_tickets_order_token_v1';
 const POLL_INTERVAL_MS = 2000;
 const MAX_POLL_ATTEMPTS = 30; // ~60s
 
+const heading = document.getElementById('tixfHeading');
 const processing = document.getElementById('tixfProcessing');
 const success = document.getElementById('tixfSuccess');
 const failed = document.getElementById('tixfFailed');
@@ -19,6 +20,17 @@ const notFound = document.getElementById('tixfNotFound');
 const ticketList = document.getElementById('tixfTicketList')!;
 const failedMessage = document.getElementById('tixfFailedMessage');
 
+// One real heading text per state, keyed by the same element each state's
+// <div> already uses — see confirmation.astro's own comment on why this
+// page has a single shared <h1> instead of one per state.
+const HEADINGS: Record<string, string> = {
+  tixfProcessing: 'Processing your payment…',
+  tixfSuccess: 'Your tickets are yours.',
+  tixfFailed: "This order didn't go through",
+  tixfTimeout: 'Still processing',
+  tixfNotFound: "We couldn't find that order",
+};
+
 function escapeHtml(value: string): string {
   const div = document.createElement('div');
   div.textContent = value;
@@ -26,7 +38,9 @@ function escapeHtml(value: string): string {
 }
 
 function show(el: HTMLElement | null): void {
-  el?.removeAttribute('hidden');
+  if (!el) return;
+  el.removeAttribute('hidden');
+  if (heading && HEADINGS[el.id]) heading.textContent = HEADINGS[el.id];
 }
 function hide(el: HTMLElement | null): void {
   el?.setAttribute('hidden', '');

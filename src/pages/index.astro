@@ -85,10 +85,15 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
       eyebrow={page.whatOddIs.eyebrow}
       headline={page.whatOddIs.headline}
       body={page.whatOddIs.body}
-      cta={page.whatOddIs.cta}
       warpHeadline
     />
     {
+      /* One integrated action pair, not two competing CTA mechanisms — this
+         used to also render SectionIntro's own text-link cta
+         (page.whatOddIs.cta) directly above this row, so the section carried
+         two different CTA styles doing two different things back to back.
+         SectionIntro's `cta` prop is intentionally unused here; these Pills
+         are the section's only calls to action. */
       (page.opening.primaryCta || page.opening.secondaryCta) && (
         <div class="whatoddis-ctas reveal">
           {page.opening.primaryCta && (

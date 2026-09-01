@@ -14,16 +14,23 @@ import Layout from '../../layouts/Layout.astro';
 >
   <section class="tixf-page">
     <div class="wrap">
+      <!-- One real, shared h1 for the whole page — confirmation.ts sets its
+           text per state instead of each state carrying its own hidden h1.
+           Five parallel <h1>s (only one ever unhidden) would still pass a
+           screen reader's "hidden content is inert" check, but it fails the
+           sitewide "exactly one h1 per page" assertion
+           (tests/visual/pages.spec.ts) the same way a real duplicate would —
+           and there's only ever one real heading role on this page regardless
+           of state, so one element is the more accurate markup anyway. -->
+      <span class="eyebrow">ODDference · 2027</span>
+      <h1 id="tixfHeading"></h1>
+
       <div id="tixfProcessing" class="tixf-state" hidden>
-        <span class="eyebrow">ODDference · 2027</span>
-        <h1>Processing your payment…</h1>
         <p>This usually takes a few seconds. Don't close this page.</p>
         <div class="tixf-spinner" aria-hidden="true"></div>
       </div>
 
       <div id="tixfSuccess" class="tixf-state" hidden>
-        <span class="eyebrow">ODDference · 2027</span>
-        <h1>Your tickets are yours.</h1>
         <p>
           Assign attendees now, or come back to this page later — this link is saved to your
           browser, and we'll also confirm by email once that's connected.
@@ -32,15 +39,11 @@ import Layout from '../../layouts/Layout.astro';
       </div>
 
       <div id="tixfFailed" class="tixf-state" hidden>
-        <span class="eyebrow">ODDference · 2027</span>
-        <h1>This order didn't go through</h1>
         <p id="tixfFailedMessage"></p>
         <a class="pill pill-solid" href="/tickets">Back to tickets</a>
       </div>
 
       <div id="tixfTimeout" class="tixf-state" hidden>
-        <span class="eyebrow">ODDference · 2027</span>
-        <h1>Still processing</h1>
         <p>
           This is taking longer than expected. Refresh this page in a minute, or check your email
           for confirmation — if you were charged, your tickets are safe.
@@ -48,8 +51,6 @@ import Layout from '../../layouts/Layout.astro';
       </div>
 
       <div id="tixfNotFound" class="tixf-state" hidden>
-        <span class="eyebrow">ODDference · 2027</span>
-        <h1>We couldn't find that order</h1>
         <p>If you just completed a purchase, check your email for the confirmation link.</p>
         <a class="pill pill-solid" href="/tickets">Back to tickets</a>
       </div>
@@ -66,7 +67,7 @@ import Layout from '../../layouts/Layout.astro';
   .tixf-state {
     max-width: 40rem;
   }
-  .tixf-state h1 {
+  #tixfHeading {
     font-family: var(--font-display);
     font-weight: 400;
     color: var(--color-paper);

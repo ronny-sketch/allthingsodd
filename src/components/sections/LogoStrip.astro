@@ -39,9 +39,10 @@ const sizeClass = size === 'large' ? 'is-large' : '';
   <div class="wrap">
     {
       compact ? (
-        <p class="logo-strip-label">
-          <span class="eyebrow">{eyebrow}</span> — {title}
-        </p>
+        <div class="logo-strip-label">
+          <span class="eyebrow">{eyebrow}</span>
+          <h2>{title}</h2>
+        </div>
       ) : (
         <div class="section-head">
           <span class="eyebrow">{eyebrow}</span>
@@ -89,15 +90,26 @@ const sizeClass = size === 'large' ? 'is-large' : '';
     border-top: none;
     padding: var(--space-4) 0 var(--space-20);
   }
+  /* Real heading typography (same --text-heading-md/--color-paper the
+     non-compact .section-head h2 above uses — Media's own "Featured in" is
+     the source of truth) without the bordered/padded "new chapter" scaffold
+     .section-head carries — that's what keeps this reading as supportive
+     proof under "What we do" rather than a competing section of its own. */
   .logo-strip-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
+    gap: var(--space-2);
     margin: 0 0 var(--space-8);
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    color: var(--color-paper-40);
   }
   .logo-strip-label .eyebrow {
-    color: var(--color-paper-40);
+    color: var(--color-paper-60);
+  }
+  .logo-strip-label h2 {
+    font: var(--text-heading-md);
+    margin: 0;
+    color: var(--color-paper);
   }
   .sr-only {
     position: absolute;
