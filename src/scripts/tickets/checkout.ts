@@ -21,6 +21,11 @@ const checkoutMount = document.getElementById('tixcCheckoutMount')!;
 const paymentError = document.getElementById('tixcPaymentError')!;
 const summary = document.getElementById('tixcSummary')!;
 const notConnectedNotice = document.getElementById('tixcNotConnected');
+const invoiceToggle = document.getElementById('tixcInvoiceToggle');
+const invoiceForm = document.getElementById('tixcInvoiceForm');
+const invoiceTicketSelect = document.getElementById('tixc-inv-ticket');
+const invoiceQtyInput = document.getElementById('tixc-inv-qty');
+const invoiceSubmit = document.getElementById('tixcInvoiceSubmit');
 
 if (
   emptyNotice &&
@@ -33,7 +38,12 @@ if (
   paymentSection &&
   checkoutMount &&
   paymentError &&
-  summary
+  summary &&
+  invoiceToggle instanceof HTMLButtonElement &&
+  invoiceForm instanceof HTMLFormElement &&
+  invoiceTicketSelect instanceof HTMLSelectElement &&
+  invoiceQtyInput instanceof HTMLInputElement &&
+  invoiceSubmit instanceof HTMLAnchorElement
 ) {
   let ticketTypes: CatalogTicketType[] = [];
   let currency = 'EUR';
@@ -71,35 +81,42 @@ if (
         <span>${formatMinor(cartTotal(), currency)}</span>
       </div>
       <p class="tixc-summary-vat-note">VAT included where applicable</p>
-      <a class="tixc-invoice-link" href="${buildInvoiceMailtoHref()}">Prefer to pay by invoice? Request one by email →</a>
     `;
   }
 
   // No invoicing backend exists yet (email delivery infrastructure is an
   // open item — see ../../../../odd-growth-os/ops/TICKETING_IMPLEMENTATION_PLAN.md's
-  // launch checklist), so this is a plain mailto: to Ronny, same "honest
+  // launch checklist), so submitting #tixcInvoiceForm builds a plain
+  // mailto: to Ronny rather than calling a server — same "honest
   // placeholder, zero new infra" pattern as #tixcNotConnected above. The
-  // buyer's own mail client sends it — nothing here touches a server.
-  function buildInvoiceMailtoHref(): string {
-    const entries = Object.entries(cart).filter(([, qty]) => qty > 0);
-    const lines = entries
-      .map(([id, qty]) => {
-        const tt = ticketById(id);
-        if (!tt) return null;
-        return `${qty} x ${tt.name} - ${formatMinor(tt.displayPriceMinor * qty, tt.currency)}`;
-      })
-      .filter((line): line is string => line !== null);
+  // buyer's own mail client sends it. Deliberately independent of the
+  // cart's own ticket type/quantity (though pre-filled from it below) —
+  // Ronny asked for this to require its own explicit ticket-type +
+  // quantity entry, not silently reuse whatever's in the cart.
+  function buildInvoiceMailtoHref(
+    ticketTypeId: string,
+    quantity: number,
+    name: string,
+    email: string,
+    company: string,
+  ): string {
+    const tt = ticketById(ticketTypeId);
+    const line = tt
+      ? `${quantity} x ${tt.name} - ${formatMinor(tt.displayPriceMinor * quantity, tt.currency)}`
+      : `${quantity} x (ticket type unavailable)`;
+    const total = tt ? formatMinor(tt.displayPriceMinor * quantity, tt.currency) : '—';
     const body = [
       'Hi Ronny,',
       '',
       "I'd like to request an invoice for the following ODDference 2027 tickets:",
       '',
-      ...lines,
+      line,
       '',
-      `Total: ${formatMinor(cartTotal(), currency)} (VAT included where applicable)`,
+      `Total: ${total} (VAT included where applicable)`,
       '',
-      'My name / company:',
-      'Billing address / VAT ID (if applicable):',
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Company: ${company || '-'}`,
       '',
       'Thanks!',
     ].join('\n');
@@ -115,6 +132,45 @@ if (
 
   companyToggle.addEventListener('change', () => {
     companyFields.hidden = !companyToggle.checked;
+  });
+
+  invoiceToggle.addEventListener('click', () => {
+    const nextHidden = !invoiceForm.hidden;
+    invoiceForm.hidden = nextHidden;
+    invoiceToggle.setAttribute('aria-expanded', String(!nextHidden));
+    if (!nextHidden) {
+      refreshInvoiceHref();
+      invoiceForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  // The CTA is a real <a href="mailto:...">, kept live-updated on every
+  // relevant input change, rather than a JS-driven window.location
+  // assignment on submit — a genuine link the browser (and right-click
+  // "copy email address") handles natively, matching this site's existing
+  // Pill anchor-button pattern elsewhere. Disabled (via aria-disabled +
+  // an intercepted click) until the required fields actually validate.
+  const refreshInvoiceHref = (): void => {
+    const ticketTypeId = invoiceTicketSelect.value;
+    const quantity = Math.max(1, Math.trunc(Number(invoiceQtyInput.value) || 1));
+    const name =
+      (document.getElementById('tixc-inv-name') as HTMLInputElement | null)?.value.trim() ?? '';
+    const email =
+      (document.getElementById('tixc-inv-email') as HTMLInputElement | null)?.value.trim() ?? '';
+    const company =
+      (document.getElementById('tixc-inv-company') as HTMLInputElement | null)?.value.trim() ?? '';
+    invoiceSubmit.href = buildInvoiceMailtoHref(ticketTypeId, quantity, name, email, company);
+    const isValid = invoiceForm.checkValidity();
+    invoiceSubmit.setAttribute('aria-disabled', String(!isValid));
+  };
+
+  invoiceForm.addEventListener('input', refreshInvoiceHref);
+  invoiceForm.addEventListener('change', refreshInvoiceHref);
+
+  invoiceSubmit.addEventListener('click', (e) => {
+    if (invoiceForm.checkValidity()) return; // real mailto href, let the browser handle it
+    e.preventDefault();
+    invoiceForm.reportValidity();
   });
 
   buyerForm.addEventListener('submit', async (e) => {
@@ -201,6 +257,19 @@ if (
     }
     ticketTypes = catalog.ticketTypes;
     currency = catalog.event.currency;
+
+    invoiceTicketSelect.innerHTML = ticketTypes
+      .map(
+        (tt) =>
+          `<option value="${tt.id}">${escapeHtml(tt.name)} — ${formatMinor(tt.displayPriceMinor, tt.currency)}</option>`,
+      )
+      .join('');
+    const firstCartEntry = Object.entries(cart).find(([, qty]) => qty > 0);
+    if (firstCartEntry) {
+      const [firstCartId, firstCartQty] = firstCartEntry;
+      invoiceTicketSelect.value = firstCartId;
+      invoiceQtyInput.value = String(firstCartQty);
+    }
 
     const { cart: revalidated, changed, messages } = revalidateCart(cart, ticketTypes);
     cart = revalidated;

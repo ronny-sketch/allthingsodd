@@ -68,6 +68,63 @@ import Layout from '../../layouts/Layout.astro';
             <div id="tixcCheckoutMount"></div>
             <p class="tixc-payment-error" id="tixcPaymentError" role="alert" hidden></p>
           </div>
+
+          <div class="tixc-invoice-toggle-wrap">
+            <button
+              type="button"
+              class="tixc-invoice-toggle-btn"
+              id="tixcInvoiceToggle"
+              aria-expanded="false"
+              aria-controls="tixcInvoiceForm"
+            >
+              Prefer to pay by invoice? Request one instead →
+            </button>
+          </div>
+
+          <form id="tixcInvoiceForm" class="tixc-invoice-form" hidden novalidate>
+            <h2>Request an invoice</h2>
+            <p class="tixc-invoice-intro">
+              We'll email you an invoice instead of taking card payment now. This opens your own
+              email app, addressed to us — nothing is sent automatically.
+            </p>
+            <div class="field">
+              <label for="tixc-inv-ticket">Ticket type</label>
+              <select id="tixc-inv-ticket" name="ticketTypeId" required></select>
+            </div>
+            <div class="field">
+              <label for="tixc-inv-qty">Number of tickets</label>
+              <input
+                id="tixc-inv-qty"
+                name="quantity"
+                type="number"
+                inputmode="numeric"
+                min="1"
+                step="1"
+                value="1"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="tixc-inv-name">Full name</label>
+              <input id="tixc-inv-name" name="name" type="text" required autocomplete="name" />
+            </div>
+            <div class="field">
+              <label for="tixc-inv-email">Email</label>
+              <input id="tixc-inv-email" name="email" type="email" required autocomplete="email" />
+            </div>
+            <div class="field">
+              <label for="tixc-inv-company">Company (optional)</label>
+              <input id="tixc-inv-company" name="company" type="text" autocomplete="organization" />
+            </div>
+            <a
+              id="tixcInvoiceSubmit"
+              class="pill pill-outline tixc-invoice-submit-btn"
+              href="#"
+              aria-disabled="true"
+            >
+              Send invoice request
+            </a>
+          </form>
         </div>
 
         <aside class="tixc-summary" id="tixcSummary" aria-label="Order summary"></aside>
@@ -244,6 +301,65 @@ import Layout from '../../layouts/Layout.astro';
     color: var(--color-paper);
   }
 
+  .tixc-invoice-toggle-wrap {
+    margin-top: var(--space-16);
+    padding-top: var(--space-16);
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .tixc-invoice-toggle-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-paper-60);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+  }
+  .tixc-invoice-toggle-btn:hover {
+    color: var(--color-paper);
+  }
+
+  .tixc-invoice-form {
+    margin-top: var(--space-16);
+    padding-top: var(--space-16);
+    border-top: 1px solid var(--color-paper-12);
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+  /* Same [hidden]-vs-author-CSS specificity tie as .tixc-layout[hidden]
+     above — author `display: flex` wins the tie over the UA stylesheet's
+     `display: none`, so the `hidden` attribute alone doesn't hide this. */
+  .tixc-invoice-form[hidden] {
+    display: none;
+  }
+  .tixc-invoice-intro {
+    margin: -0.6rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-paper-60);
+    line-height: 1.6;
+  }
+  .tixc-invoice-form select {
+    background: var(--color-ink);
+    border: none;
+    border-bottom: 1px solid var(--color-paper-20);
+    padding: 0.6rem 0;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-paper);
+    outline: none;
+  }
+  .tixc-invoice-submit-btn {
+    align-self: flex-start;
+  }
+  .tixc-invoice-submit-btn[aria-disabled='true'] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
   .tixc-summary {
     position: sticky;
     top: calc(var(--nav-h) + var(--space-6));
@@ -283,19 +399,5 @@ import Layout from '../../layouts/Layout.astro';
     font-family: var(--font-body);
     font-size: 0.7rem;
     color: var(--color-paper-40);
-  }
-  .tixc-summary :global(.tixc-invoice-link) {
-    display: block;
-    margin-top: 1.2rem;
-    padding-top: 1.2rem;
-    border-top: 1px solid var(--color-paper-12);
-    font-family: var(--font-body);
-    font-size: 0.78rem;
-    color: var(--color-paper-60);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-  }
-  .tixc-summary :global(.tixc-invoice-link:hover) {
-    color: var(--color-paper);
   }
 </style>

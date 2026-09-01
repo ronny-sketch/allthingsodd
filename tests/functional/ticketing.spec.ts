@@ -131,7 +131,9 @@ test.describe('/tickets/checkout', () => {
     expect(errors, `console/page errors: ${errors.join('; ')}`).toEqual([]);
   });
 
-  test('offers an invoice-request mailto with the real cart contents', async ({ page }) => {
+  test('invoice-request form requires its own fields and builds a real mailto', async ({
+    page,
+  }) => {
     const errors = collectConsoleErrors(page);
     await mockCatalog(page);
     await page.addInitScript(
@@ -143,12 +145,31 @@ test.describe('/tickets/checkout', () => {
     await page.goto('/tickets/checkout');
     await page.waitForLoadState('load');
 
-    const invoiceLink = page.locator('.tixc-invoice-link');
-    await expect(invoiceLink).toBeVisible();
-    const href = await invoiceLink.getAttribute('href');
+    const form = page.locator('#tixcInvoiceForm');
+    const submit = page.locator('#tixcInvoiceSubmit');
+    await expect(form).toBeHidden();
+
+    await page.locator('#tixcInvoiceToggle').click();
+    await expect(form).toBeVisible();
+
+    // Pre-filled from the real cart (2 x Blind Bird).
+    await expect(page.locator('#tixc-inv-ticket')).toHaveValue('tt_blind_bird');
+    await expect(page.locator('#tixc-inv-qty')).toHaveValue('2');
+
+    // Required buyer fields aren't filled yet — the link stays disabled
+    // rather than pointing at an incomplete request.
+    await expect(submit).toHaveAttribute('aria-disabled', 'true');
+
+    await page.locator('#tixc-inv-name').fill('Test Buyer');
+    await page.locator('#tixc-inv-email').fill('buyer@example.com');
+    await expect(submit).toHaveAttribute('aria-disabled', 'false');
+
+    const href = await submit.getAttribute('href');
     expect(href).toMatch(/^mailto:ronny@oddfest\.co\?/);
     const decoded = decodeURIComponent(href ?? '');
     expect(decoded).toContain('Blind Bird');
+    expect(decoded).toContain('Name: Test Buyer');
+    expect(decoded).toContain('Email: buyer@example.com');
     expect(decoded).toContain('subject=ODDference 2027 — invoice request');
 
     expect(errors, `console/page errors: ${errors.join('; ')}`).toEqual([]);
