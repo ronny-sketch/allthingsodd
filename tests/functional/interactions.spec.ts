@@ -65,7 +65,7 @@ test('"Info" nav dropdown reveals About/Media/Contact and each navigates correct
   ];
   for (const [label, path] of children) {
     await page.goto('/');
-    await page.locator('.nav-dropdown > a').hover();
+    await page.locator('.nav-info-trigger').hover();
     await expect(menu).toBeVisible();
     await menu.locator('a', { hasText: label }).click();
     await expect(page).toHaveURL(new RegExp(`${path}/?$`));
@@ -76,8 +76,54 @@ test('"Info" nav dropdown reveals About/Media/Contact and each navigates correct
 test('"Info" nav dropdown is also reachable by keyboard (focus-within)', async ({ page }) => {
   await page.goto('/');
   const menu = page.locator('.nav-dropdown-menu');
-  await page.locator('.nav-dropdown > a').focus();
+  await page.locator('.nav-info-trigger').focus();
   await expect(menu).toBeVisible();
+});
+
+test('"Info" trigger is a real button with no navigation destination of its own', async ({
+  page,
+}) => {
+  // Requirement 7 — this used to be <a href="/about"> that happened to
+  // also show a hover menu, so clicking "Info" navigated straight to About
+  // instead of opening the panel. See Nav.astro's own comment.
+  await page.goto('/');
+  const trigger = page.locator('.nav-info-trigger');
+  await expect(trigger).toHaveJSProperty('tagName', 'BUTTON');
+  await expect(trigger).not.toHaveAttribute('href');
+  await trigger.click();
+  await expect(page).toHaveURL('/');
+});
+
+test('"Info" dropdown click-toggles, tracks aria-expanded, and closes on Escape/click-outside', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const dropdown = page.locator('.nav-dropdown');
+  const trigger = page.locator('.nav-info-trigger');
+  const menu = page.locator('.nav-dropdown-menu');
+
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  await trigger.click();
+  await expect(dropdown).toHaveClass(/is-open/);
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  await expect(menu).toBeVisible();
+
+  // Click again toggles it back closed.
+  await trigger.click();
+  await expect(dropdown).not.toHaveClass(/is-open/);
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+
+  // Escape closes it from the open state.
+  await trigger.click();
+  await expect(dropdown).toHaveClass(/is-open/);
+  await page.keyboard.press('Escape');
+  await expect(dropdown).not.toHaveClass(/is-open/);
+
+  // Clicking outside the dropdown closes it too.
+  await trigger.click();
+  await expect(dropdown).toHaveClass(/is-open/);
+  await page.locator('main').click({ position: { x: 10, y: 10 } });
+  await expect(dropdown).not.toHaveClass(/is-open/);
 });
 
 test('ODDspace is a real subpage, not an external link', async ({ page }) => {
@@ -121,6 +167,50 @@ test('mobile menu closes after clicking a link inside it', async ({ page }) => {
   await page.locator('.menu-links a', { hasText: 'ODDfest' }).click();
   await expect(page).toHaveURL(/\/oddfest\/?$/);
   await expect(page.locator('#menuOverlay')).not.toHaveClass(/is-open/);
+});
+
+test('mobile menu manages focus: moves in on open, traps Tab, returns to the trigger on close', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const toggle = page.locator('#menuToggle');
+  const closeBtn = page.locator('#menuClose');
+  await toggle.focus();
+  await toggle.click();
+  await expect(closeBtn).toBeFocused();
+
+  // Background content becomes inert while the overlay is open — Tab can't
+  // reach it, a screen reader can't read it. Nav is body's own first child.
+  await expect(page.locator('body > nav')).toHaveAttribute('inert', '');
+
+  await page.locator('#menuClose').click();
+  await expect(toggle).toBeFocused();
+  await expect(page.locator('body > nav')).not.toHaveAttribute('inert', '');
+});
+
+test('requirement 30: the fullscreen menu fits a normal laptop viewport with no scrolling', async ({
+  page,
+}) => {
+  // 1440x800 is a common laptop browser-window size, not an extreme edge
+  // case — this is exactly the height range that used to overflow (7 links
+  // at the old flat 2.1-4.6rem/6.5vw sizing ran ~600-630px tall on their
+  // own, before topbar/bottom chrome, on a viewport not much taller than
+  // that). overflow-y:auto stays as the safety fallback for genuinely
+  // extreme heights, not asserted here — see MobileMenu.astro's comment.
+  await page.setViewportSize({ width: 1440, height: 800 });
+  await page.goto('/');
+  await page.locator('#menuToggle').click();
+  const overlay = page.locator('#menuOverlay');
+  await expect(overlay).toHaveClass(/is-open/);
+
+  const { scrollHeight, clientHeight } = await overlay.evaluate((el) => ({
+    scrollHeight: el.scrollHeight,
+    clientHeight: el.clientHeight,
+  }));
+  expect(
+    scrollHeight,
+    `menu content is ${scrollHeight}px tall, viewport-constrained overlay is ${clientHeight}px`,
+  ).toBeLessThanOrEqual(clientHeight);
 });
 
 test('404 route returns real 404 status and its link goes home', async ({ page }) => {
@@ -183,5 +273,34 @@ test('ODDagency, Media and Contact are reachable even though they left primary n
     const response = await page.goto(path);
     expect(response?.status()).toBe(200);
     await expect(page.locator('h1').first()).toBeVisible();
+  }
+});
+
+test('requirement 11: ODDfest "How it works" is one real 01|02|03|04 row at desktop width', async ({
+  page,
+}) => {
+  // 1280px, not 1024px — the container inside SubpageFrame's rails is
+  // narrower than the raw viewport, and 1024px measures out to a real
+  // squeeze below FeatureGrid's own 240px column-width floor (a graceful
+  // 2x2 fallback there is correct, not a bug — see FeatureGrid.astro's
+  // is-four-column comment for the measured numbers behind the 1200px
+  // breakpoint). 1280px is comfortably above it.
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/oddfest');
+  const cards = page.locator('.oddf-grid.is-four-column > div');
+  await expect(cards).toHaveCount(4);
+
+  const tops = await cards.evaluateAll((els) =>
+    els.map((el) => Math.round(el.getBoundingClientRect().top)),
+  );
+  expect(new Set(tops).size, `card top offsets: ${tops.join(', ')}`).toBe(1);
+
+  const widths = await cards.evaluateAll((els) =>
+    els.map((el) => Math.round(el.getBoundingClientRect().width)),
+  );
+  for (const w of widths) {
+    expect(w, `column width ${w}px fell below the established 240px floor`).toBeGreaterThanOrEqual(
+      240,
+    );
   }
 });

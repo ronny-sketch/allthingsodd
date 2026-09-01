@@ -59,21 +59,83 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
   const toggleLabel = document.getElementById('menuToggleLabel');
   if (toggle && overlay && closeBtn && toggleLabel) {
     let open = false;
+
+    function getFocusable(): HTMLElement[] {
+      if (!overlay) return [];
+      return Array.from(
+        overlay.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+    }
+
+    // "Background does not remain interactable" — every other direct child
+    // of <body> (Nav, <main>, Footer, the newsletter popup, the consent
+    // banner, the custom cursor) gets `inert` while the overlay is open, so
+    // Tab can't leave it and a screen reader can't reach page content
+    // behind it. The overlay element itself is always excluded.
+    function setBackgroundInert(v: boolean) {
+      Array.from(document.body.children).forEach((el) => {
+        if (el === overlay) return;
+        if (v) el.setAttribute('inert', '');
+        else el.removeAttribute('inert');
+      });
+    }
+
+    function onKeydown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        setOpen(false);
+        return;
+      }
+      // Minimal focus trap — Tab/Shift+Tab wrap within the overlay's own
+      // focusable elements instead of escaping into (now-inert) page
+      // content behind it, same pattern as newsletter-popup.ts.
+      if (e.key === 'Tab') {
+        const focusable = getFocusable();
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
     const setOpen = (v: boolean) => {
       open = v;
       overlay.classList.toggle('is-open', open);
       document.body.classList.toggle('menu-open', open);
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       toggleLabel.textContent = open ? 'Close' : 'Menu';
+      setBackgroundInert(open);
+      if (open) {
+        closeBtn?.focus();
+        document.addEventListener('keydown', onKeydown);
+      } else {
+        document.removeEventListener('keydown', onKeydown);
+        // Always the toggle itself, not "whatever was focused before
+        // opening" — the spec calls for focus returning to the Menu
+        // trigger specifically (this is the only way to open the menu, so
+        // that's also the only sensible return target). requestAnimationFrame,
+        // not a synchronous call — verified via a real cross-browser
+        // failure, not assumed: WebKit doesn't finish making a
+        // just-un-inerted element focusable within the same task
+        // removeAttribute('inert') runs in, so calling .focus() immediately
+        // after silently no-ops there (Chromium/Firefox both handle it
+        // synchronously and don't need this, but the deferral is harmless
+        // for them too — one paint's delay is imperceptible).
+        requestAnimationFrame(() => toggle.focus());
+      }
     };
     toggle.addEventListener('click', () => setOpen(!open));
     closeBtn.addEventListener('click', () => setOpen(false));
     overlay
       .querySelectorAll('.menu-links a')
       .forEach((a) => a.addEventListener('click', () => setOpen(false)));
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && open) setOpen(false);
-    });
   }
 </script>
 
@@ -117,12 +179,17 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.85rem 2rem;
+    /* Height-aware — see .menu-links's own comment below on why 100dvh
+       fitting needs every section's vertical rhythm to respond to viewport
+       height, not just the links themselves. Unchanged on genuinely tall
+       viewports (2svh only undercuts 0.85rem below ~680px tall), tightens
+       on short ones. */
+    padding: clamp(0.6rem, 2svh, 0.85rem) 2rem;
     /* This fullscreen overlay sits flush against inset:0, so on a notched
        phone the close button/logo need their own safe-area clearance —
        nothing else on the site needs this (every other fixed/sticky
        surface leaves the very top of the viewport alone). */
-    padding-top: max(0.85rem, env(safe-area-inset-top));
+    padding-top: max(clamp(0.6rem, 2svh, 0.85rem), env(safe-area-inset-top));
     border-bottom: 1px solid rgb(36 34 32 / 15%);
     flex-shrink: 0;
   }
@@ -153,23 +220,38 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
   .menu-close:hover {
     border-color: var(--color-ink);
   }
+  /* Requirement 30: the whole overlay (topbar + links + bottom bar) needs to
+     fit 100dvh with no scrolling at normal phone/tablet/laptop heights — it
+     didn't (a real bug, not hypothetical: 7 links at the old flat
+     2.1-4.6rem/6.5vw sizing ran 600-630px tall on their own, before topbar/
+     bottom chrome, which already overflows a ~700px-tall browser window).
+     Fixed by making every section's vertical rhythm height-aware — font
+     size and padding both respond to svh, not just vw — so short viewports
+     shrink automatically instead of only ever growing with width.
+     overflow-y:auto stays on .menu-overlay itself as the safety fallback
+     for genuinely extreme heights/zoom levels this can't fully solve (see
+     the file-level comment above), not the primary fit strategy. */
   .menu-links {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 2rem 2.5rem;
+    padding: clamp(1rem, 3.5svh, 2rem) 2.5rem;
   }
   .menu-links a {
     display: block;
     font-family: var(--font-display);
     font-weight: 400;
     text-transform: uppercase;
-    font-size: clamp(2.1rem, 6.5vw, 4.6rem);
-    line-height: 1.22;
+    /* min(vw, svh) — whichever dimension is actually tight wins. A tall
+       narrow phone stays vw-limited (unchanged from before: plenty of
+       height there already). A short wide viewport (laptop window, tablet
+       landscape) becomes svh-limited instead of overflowing. */
+    font-size: clamp(1.7rem, min(6.5vw, 8.2svh), 4.6rem);
+    line-height: 1.14;
     color: var(--color-ink);
     text-decoration: none;
-    padding: 0.15rem 0.6rem;
+    padding: clamp(0.05rem, 0.6svh, 0.15rem) 0.6rem;
     margin: 0 -0.6rem;
     transition:
       background var(--duration-fast) ease,
@@ -183,13 +265,21 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
   }
   .menu-bottom {
     border-top: 1px solid rgb(36 34 32 / 15%);
-    padding: 1.8rem 2.5rem;
+    padding: clamp(1rem, 3svh, 1.8rem) 2.5rem;
     flex-shrink: 0;
     display: flex;
     flex-wrap: wrap;
     gap: 1.6rem 2.5rem;
     align-items: center;
     justify-content: space-between;
+  }
+  /* Extreme short heights (landscape phone, a badly cramped browser zoom
+     level) — tighten line-height further on top of the svh-based sizing
+     above rather than relying on overflow-y:auto alone. */
+  @media (max-height: 480px) {
+    .menu-links a {
+      line-height: 1.05;
+    }
   }
   .menu-social {
     display: flex;

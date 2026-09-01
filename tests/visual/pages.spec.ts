@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 // Every real route in the rebuilt site. Screenshots are checked into
 // tests/visual/pages.spec.ts-snapshots/ as the visual-regression baseline —
@@ -17,6 +17,54 @@ const ROUTES = [
   '/media',
   '/contact',
 ];
+
+// Scrolls the whole page in steps before capturing — the same pattern
+// site-integrity.spec.ts already uses to force lazy images to load, needed
+// here for a real, independently-confirmed reason too: `.reveal` elements
+// (src/scripts/reveal.ts, most of the content on every page) only get their
+// visible `.in` class from a real IntersectionObserver entry, and this
+// project's `reducedMotion: 'reduce'` (playwright.config.ts) — which the
+// rest of this suite assumes makes `.reveal` unconditionally visible via
+// its own prefers-reduced-motion CSS branch (motion.css) — does not
+// actually take effect at the browser level in this Playwright/Chromium
+// combination (confirmed directly: `matchMedia('(prefers-reduced-motion:
+// reduce)').matches` reports `false` even via test.use({ reducedMotion:
+// 'reduce' }), isolated from this file's own setup entirely). Without
+// scrolling, `.reveal` content below the first viewport never intersects,
+// never gets `.in`, and is captured at its real opacity:0.
+//
+// KNOWN REMAINING FLAKE (documented, not solved here — see
+// docs/QUALITY_AUDIT.md VISUAL-1): this mitigates the problem but isn't
+// fully reliable yet — repeated runs of the identical scroll-then-wait
+// sequence against the same page were observed to sometimes still leave
+// specific `.reveal` elements (confirmed: ODDfest's `.faq-list`) at
+// opacity:0 even after every element reports 0 remaining
+// `document.querySelectorAll('.reveal:not(.in)')`, meaning the CSS
+// transition itself (not the class addition) is the unreliable part in
+// this environment — a real, below-the-fold-content-invisible-in-baseline
+// risk, not a false alarm. A real visitor scrolling at a normal human pace
+// is not known to be affected (only reproduced via scripted rapid
+// scrolling); this needs more investigation before treating any full-page
+// baseline for a `.reveal`-heavy page as fully trustworthy. Do not
+// mechanically re-run `--update-snapshots` on ODDfest/ODDference/ODDspace/
+// home to "fix" a failure here without first checking the actual diff.
+async function scrollThroughPage(page: Page) {
+  await page.evaluate(async () => {
+    const step = Math.max(300, window.innerHeight - 100);
+    const height = document.body.scrollHeight;
+    for (let y = 0; y < height; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 60));
+    }
+    window.scrollTo(0, 0);
+  });
+  // One entrance-transition duration (motion.css's --duration-reveal is
+  // 0.7s) so the last-triggered reveals finish fading in before capture —
+  // `animations: 'disabled'` on toHaveScreenshot below only forces a
+  // transition already in progress to its end state, it doesn't help an
+  // IntersectionObserver callback that hasn't fired yet.
+  await page.waitForTimeout(750);
+}
 
 for (const route of ROUTES) {
   test(`${route || 'home'} — full page`, async ({ page }) => {
@@ -46,9 +94,13 @@ for (const route of ROUTES) {
     // already cover what networkidle was otherwise being used as a proxy for.
     await page.waitForLoadState('load');
     await page.evaluate(() => document.fonts.ready);
-    // Let entrance animations (mosaic fly-in, reveal-on-scroll) settle before
-    // capturing, so the baseline isn't flaky against animation timing.
+    // Let entrance animations (mosaic fly-in) settle before capturing, so
+    // the baseline isn't flaky against animation timing.
     await page.waitForTimeout(1200);
+    // Triggers every .reveal element's IntersectionObserver entry — see
+    // scrollThroughPage's own comment above for why this is load-bearing,
+    // not just the lazy-image nicety it is in site-integrity.spec.ts.
+    await scrollThroughPage(page);
     // A future regression adding a second heading, or removing the only one,
     // would still pass every other assertion in this file — this is the only
     // place that would catch it.

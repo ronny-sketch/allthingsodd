@@ -106,6 +106,15 @@ import Layout from '../../layouts/Layout.astro';
     gap: 2.5rem;
     align-items: start;
   }
+  /* [hidden] (UA stylesheet, display:none) and .tixc-layout (this file,
+     display:grid) tie on specificity — author CSS wins the tie, so the
+     `hidden` attribute checkout.ts sets for an empty cart was silently
+     losing to this rule and rendering the (empty) layout anyway. Same bug
+     class the PR #9 commit already fixed once for the mobile cart bar's
+     [hidden]; this instance was missed. */
+  .tixc-layout[hidden] {
+    display: none;
+  }
   @media (max-width: 860px) {
     .tixc-layout {
       grid-template-columns: 1fr;

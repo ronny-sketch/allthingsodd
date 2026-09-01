@@ -68,8 +68,17 @@ const { newsletterHref } = site.data;
      bordered like the rest of the ODD panel language (Nav.astro's Info
      dropdown shares --radius-panel/--shadow-panel, see tokens.css), just
      roomier: this is the one deliberate full-attention interruption on the
-     site, not a quiet corner toast. */
+     site, not a quiet corner toast.
+
+     White/paper surface (same independent light-panel treatment as
+     MobileMenu.astro's fullscreen overlay and Nav.astro's Info dropdown —
+     see their own comments) rather than the dark --color-backstage this
+     used to sit on. Pinned to the true light/dark swatches, not the
+     inherited --color-paper/--color-ink, so this renders correctly on
+     ODDspace's .theme-light page too, where those tokens are inverted. */
   .nl-popup {
+    --color-paper: var(--swatch-paper);
+    --color-ink: var(--swatch-ink);
     position: fixed;
     z-index: 221;
     top: 50%;
@@ -78,8 +87,9 @@ const { newsletterHref } = site.data;
     width: min(30rem, calc(100vw - 2 * var(--space-6)));
     max-height: calc(100vh - 2 * var(--space-6));
     overflow-y: auto;
-    background: var(--color-backstage);
-    border: 1px solid var(--color-paper-12);
+    background: var(--color-paper);
+    color: var(--color-ink);
+    border: 1px solid var(--color-ink-12);
     border-radius: var(--radius-panel);
     box-shadow: var(--shadow-panel);
     padding: var(--space-12) var(--space-10) var(--space-10);
@@ -113,40 +123,57 @@ const { newsletterHref } = site.data;
     height: 20px;
     width: auto;
     margin: 0 auto var(--space-6);
-    color: var(--color-paper-40);
+    color: var(--color-ink-40);
   }
+  /* .eyebrow's sitewide default (--color-paper-40) is tuned for dark
+     grounds and doesn't track this panel's local paper/ink flip above (it's
+     a fixed literal, not a role token) — needs its own ink-based override
+     here, same as every other text color in this component below. */
   .nl-popup .eyebrow {
     display: block;
     margin: 0 0 0.6rem;
+    color: var(--color-ink-60);
   }
   .nl-popup h2 {
     margin: 0;
     font: var(--text-heading-lg);
-    color: var(--color-paper);
+    color: var(--color-ink);
   }
   .nl-popup-body {
     margin: 0.9rem auto 0;
     font-family: var(--font-body);
     font-size: 0.92rem;
     line-height: 1.7;
-    color: var(--color-paper-60);
+    color: var(--color-ink-60);
     max-width: 36ch;
   }
   .nl-popup :global(.nl-form) {
     max-width: none;
     width: 100%;
     margin: var(--space-8) auto 0;
+    border-color: var(--color-ink-20);
+  }
+  .nl-popup :global(.nl-form:focus-within) {
+    border-color: var(--color-ink);
   }
   .nl-popup :global(.nl-form input) {
     padding: 0.95rem 0 0.95rem 1.4rem;
     font-size: 0.9rem;
+    color: var(--color-ink);
   }
+  /* NewsletterForm's button is paper-fill/ink-text by default (built for
+     the site's usual dark ambient page, where that pairing pops) — on this
+     always-light panel it would render paper-on-paper. Inverted here for
+     real contrast against the panel. */
   .nl-popup :global(.nl-form button) {
     padding: 0 1.6rem;
     font-size: 0.72rem;
+    background: var(--color-ink);
+    color: var(--color-paper);
   }
   .nl-popup :global(.nl-status) {
     text-align: center;
+    color: var(--color-ink-40);
   }
   .nl-popup-close {
     position: absolute;
@@ -160,15 +187,15 @@ const { newsletterHref } = site.data;
     border: none;
     border-radius: 999px;
     background: transparent;
-    color: var(--color-paper-60);
+    color: var(--color-ink-60);
     cursor: pointer;
     transition:
       background-color var(--duration-fast) ease,
       color var(--duration-fast) ease;
   }
   .nl-popup-close:hover {
-    background: var(--color-paper-12);
-    color: var(--color-paper);
+    background: var(--color-ink-12);
+    color: var(--color-ink);
   }
 
   @media (max-width: 640px) {

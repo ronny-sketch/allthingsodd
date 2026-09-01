@@ -13,16 +13,26 @@ interface Props {
   // future case a caller needs a different level rather than forcing every
   // page's heading hierarchy through one fixed tag.
   headingLevel?: 'h2' | 'h3' | 'h4';
+  // Opt-in only (default 'auto', every existing caller unaffected). The
+  // default track (`repeat(auto-fit, minmax(240px, 280px))`) sizes columns
+  // to the *container's* real width, which at some in-between desktop/
+  // laptop widths silently produced an accidental 3+1 or 2x2 split for
+  // ODDfest's exactly-4-step "How it works" instead of one deliberate
+  // 01|02|03|04 row — see docs/architecture.md and the .is-four-column rule
+  // below. Every other FeatureGrid instance (3-, 5-step grids) keeps the
+  // exact auto-fit behavior it already has.
+  layout?: 'auto' | 'four-column';
 }
-const { cards, headingLevel = 'h3' } = Astro.props;
+const { cards, headingLevel = 'h3', layout = 'auto' } = Astro.props;
 const Heading = headingLevel;
 // A wider cap for 4+ cards (was a flat 60rem, tuned for the original
 // fixed-3-column grid) — otherwise a 4- or 5-card row gets squeezed
 // narrower than it needs to be relative to the page's own .wrap container.
 const maxWidth = cards.length <= 3 ? '60rem' : '72rem';
+const gridClass = `oddf-grid reveal${layout === 'four-column' ? ' is-four-column' : ''}`;
 ---
 
-<div class="oddf-grid reveal" style={`max-width: ${maxWidth}`}>
+<div class={gridClass} style={`max-width: ${maxWidth}`}>
   {
     cards.map((c) => (
       <div>
@@ -70,6 +80,30 @@ const maxWidth = cards.length <= 3 ? '60rem' : '72rem';
     grid-template-columns: repeat(auto-fit, minmax(240px, 280px));
     justify-content: center;
     gap: 1px;
+  }
+  /* Forces exactly four columns, one deliberate row, once the container is
+     wide enough for four ~240px cards without squeezing below the same
+     240px floor the default auto-fit track already treats as a hard
+     minimum. Below this width it falls back to the identical responsive
+     stacking every other FeatureGrid instance uses (no separate mobile/
+     tablet branch needed).
+
+     1200px, not a rounder 1024/1080 — measured directly (not assumed):
+     inside SubpageFrame's rails + .oddf-center's gutters, this section's
+     real container width runs ~232px narrower than the raw viewport (792px
+     container at a 1024px viewport, 808px at 1040px — confirmed via two
+     live getBoundingClientRect() checks, linear across both). Four 240px
+     columns plus 3px of gap need a ~963px container, i.e. a ~1195px
+     viewport; 1200px leaves a small safety margin rather than sitting
+     exactly on that edge. Below it, 1024/1040 measured out to a squeezed
+     ~201px/column — under the established minimum, a real regression this
+     breakpoint is specifically here to avoid. Verified via a real
+     screenshot pass at 1024/1200/1280/1440/1920 — see
+     tests/functional/interactions.spec.ts's geometry assertion. */
+  @media (min-width: 1200px) {
+    .oddf-grid.is-four-column {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
   }
   .oddf-grid > div {
     /* overflow: hidden — a safety net, not the primary fix (that's the

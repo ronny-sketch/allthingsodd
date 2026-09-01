@@ -22,20 +22,26 @@ on the maintainer's machine (`astro dev --background`, then `astro dev stop` /
 
 ## Scripts
 
-| Command                           | What it does                                                                                                 |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `npm run dev`                     | Local dev server with HMR                                                                                    |
-| `npm run build`                   | Production build to `dist/`                                                                                  |
-| `npm run preview`                 | Serve the built `dist/` locally                                                                              |
-| `npm run check`                   | Astro + TypeScript diagnostics                                                                               |
-| `npm run lint`                    | ESLint                                                                                                       |
-| `npm run format` / `format:check` | Prettier (write / check)                                                                                     |
-| `npm test`                        | Full Playwright suite — visual regression + functional/cross-browser (needs `npm run preview` running first) |
-| `npm run test:update-snapshots`   | Regenerate visual-regression baselines after an intentional design change                                    |
-| `npm run cc:validate`             | Validate `cloudcannon.config.yml` — CI gate                                                                  |
-| `npm run worker:check`            | TypeScript check for `worker/` (Growth OS Cloudflare Worker) — CI gate                                       |
-| `npm run worker:test`             | Unit tests for `worker/` — CI gate                                                                           |
-| `npm run worker:dev`              | Local Cloudflare Worker dev server (`wrangler dev`)                                                          |
+| Command                           | What it does                                                                                                                 |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`                     | Local dev server with HMR                                                                                                    |
+| `npm run build`                   | Production build to `dist/`                                                                                                  |
+| `npm run preview`                 | Serve the built `dist/` locally                                                                                              |
+| `npm run check`                   | Astro + TypeScript diagnostics                                                                                               |
+| `npm run lint`                    | ESLint                                                                                                                       |
+| `npm run format` / `format:check` | Prettier (write / check)                                                                                                     |
+| `npm test`                        | Full Playwright suite — visual regression + functional/cross-browser (needs `npm run preview` running first)                 |
+| `npm run test:update-snapshots`   | Regenerate visual-regression baselines after an intentional design change                                                    |
+| `npm run cc:validate`             | Validate `cloudcannon.config.yml` — CI gate                                                                                  |
+| `npm run quality`                 | `check` + `lint` + `format:check` + `cc:validate` + `build` in sequence — the same static/build gates CI's `checks` job runs |
+
+**Corrected 2026-09-01:** this repo has no `worker/` of its own — Growth OS's
+Cloudflare Worker (and its own `worker:check`/`worker:test`/`worker:dev`
+scripts) lives in the separate `../odd-growth-os` repo as of the 2026-08-28
+split; a prior version of this table listed those scripts here, which was
+stale even before this correction (they'd never resolved in this repo's
+`package.json`). See `AGENTS.md`'s "Growth OS integration" section for the
+`/api/*` boundary.
 
 ## Documentation
 
