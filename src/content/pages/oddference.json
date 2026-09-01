@@ -169,9 +169,7 @@
       "description": "Once Blind Bird sells out or the calendar turns, this is next.",
       "price": "€350",
       "status": "From 1 Nov 2026 — until 1 Jan 2027",
-      "benefits": [
-        "Full ODDference 2027 access"
-      ],
+      "benefits": ["Full ODDference 2027 access"],
       "ctaLabel": "See tickets",
       "href": "/tickets"
     },
@@ -181,9 +179,7 @@
       "description": "Runs until ODDference 2027 itself.",
       "price": "€450",
       "status": "From 1 Jan 2027 — until the event",
-      "benefits": [
-        "Full ODDference 2027 access"
-      ],
+      "benefits": ["Full ODDference 2027 access"],
       "ctaLabel": "See tickets",
       "href": "/tickets"
     }
