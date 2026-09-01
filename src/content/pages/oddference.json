@@ -3,14 +3,14 @@
   "_slug": "oddference",
   "seo": {
     "title": "ODDference — where creative expertise meets business and society",
-    "description": "ODDference brings creative practitioners and business leaders into the same room. Blind Bird tickets for 2027 are open now, at €300.",
+    "description": "ODDference brings creative practitioners and business leaders into the same room. Blind Bird tickets for 2027 are open now, at €250.",
     "ogImage": "/og/oddference.jpg"
   },
   "eyebrow": "ODDference · 2027",
   "title": "Where creative expertise meets business and society.",
   "meta": "Helsinki · 2027",
   "primaryCta": {
-    "label": "Reserve Blind Bird — €300",
+    "label": "Reserve Blind Bird — €250",
     "href": "/tickets"
   },
   "secondaryCta": {
@@ -153,14 +153,34 @@
       "name": "Blind Bird",
       "audience": "The earliest ticket",
       "description": "For people who already believe the room and the idea are worth showing up for.",
-      "price": "€300",
-      "status": "Active now",
+      "price": "€250",
+      "status": "Active now — until 1 Nov 2026",
       "benefits": [
         "Full ODDference 2027 access",
         "The lowest price ODDference 2027 will be sold at",
         "First to know the 2027 programme as it's confirmed"
       ],
       "ctaLabel": "Reserve Blind Bird",
+      "href": "/tickets"
+    },
+    {
+      "name": "Early Bird",
+      "audience": "The second tier",
+      "description": "Once Blind Bird sells out or the calendar turns, this is next.",
+      "price": "€350",
+      "status": "From 1 Nov 2026 — until 1 Jan 2027",
+      "benefits": ["Full ODDference 2027 access"],
+      "ctaLabel": "See tickets",
+      "href": "/tickets"
+    },
+    {
+      "name": "Regular Ticket",
+      "audience": "Full price",
+      "description": "Runs until ODDference 2027 itself.",
+      "price": "€450",
+      "status": "From 1 Jan 2027 — until the event",
+      "benefits": ["Full ODDference 2027 access"],
+      "ctaLabel": "See tickets",
       "href": "/tickets"
     }
   ],
@@ -180,7 +200,7 @@
     },
     {
       "kind": "meta",
-      "text": "Blind Bird · €300"
+      "text": "Blind Bird · €250"
     },
     {
       "kind": "meta",

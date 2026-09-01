@@ -5,10 +5,12 @@ export const EVENT_SLUG = 'oddference-2027';
 
 // Public by design (Stripe publishable keys are meant to ship to the
 // browser) — same "ships inert until configured" pattern as
-// analytics-config.ts's GA_MEASUREMENT_ID: null keeps /tickets/checkout
-// showing an honest "payment isn't connected yet" state instead of a
-// broken Stripe.js call until the real pk_test_/pk_live_ value is set here.
-export const STRIPE_PUBLISHABLE_KEY: string | null = null;
+// analytics-config.ts's GA_MEASUREMENT_ID. TEST MODE key (pk_test_), set
+// 2026-09-01 alongside the matching sk_test_ Worker secret in
+// ../../../odd-growth-os — see that repo's ops/TICKETING_IMPLEMENTATION_PLAN.md
+// launch checklist before ever swapping this for a pk_live_ value.
+export const STRIPE_PUBLISHABLE_KEY: string | null =
+  'pk_test_51UAbRuEWKidxDSktHTSDUyrhnE4YkbqZVJ1kfGdCKrwTBaZXE8JqbPMYJPk2iTYBlbm35wC4lp34lh7nFiL8gtVR00UBKrfrTU';
 
 // Loaded only on /tickets/checkout — never sitewide. "dahlia" matches the
 // API version pinned in ../../../odd-growth-os/worker/src/tickets/stripe.ts;
