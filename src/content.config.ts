@@ -660,6 +660,10 @@ const pages = defineCollection({
         // follow-up line rendered directly under it, not a hero paragraph.
         intro: z.string(),
         whatItIs: sectionIntro,
+        // NEW SECTION (2026-09-02 copywriting pass) — "Co-creative, not
+        // just coworking": the clearest differentiation from ordinary
+        // coworking, right after `whatItIs`.
+        coCreative: sectionIntro,
         // The real street address + a directions link — shown as one quiet
         // line inside "Enter the space" (section 6), not a dedicated
         // section (see the comment above this extend block). `directionsUrl`
@@ -692,6 +696,13 @@ const pages = defineCollection({
         // same pricingTier shape as a single object instead of forcing an
         // N=1 array just for consistency with those other pages.
         membership: pricingTier,
+        // NEW SECTION (2026-09-02 copywriting pass) — "The network is
+        // bigger than the room": the physical member base is the anchor,
+        // not the boundary. [HUMAN DECISION — EXTERNAL MEMBER MODEL] the
+        // doc's own note: no formal external-member product/pricing exists
+        // yet, so this stays a generic "get in touch" CTA, not a paid tier
+        // — see oddspace.json's `cta` value and the final report.
+        networkBeyondRoom: sectionIntro,
         // Event-space rental rates (member pricing) — a plain price list,
         // not the fuller pricingTier shape (no benefits list/CTA per row
         // needed here, just name/price/note).

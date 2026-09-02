@@ -261,6 +261,26 @@ collections_config:
           paragraph), rendered after the Pathways list, not before it.
         options:
           subtype: object
+      coCreative:
+        type: object
+        label: '"Co-creative, not just coworking" (ODDspace only)'
+        comment: >-
+          NEW (2026-09-02 copywriting pass): the clearest differentiation
+          from ordinary coworking, rendered right after "whatItIs".
+        options:
+          subtype: object
+      networkBeyondRoom:
+        type: object
+        label: '"The network is bigger than the room" (ODDspace only)'
+        comment: >-
+          NEW (2026-09-02 copywriting pass), rendered between the
+          membership zone and the event-use/rental-rates zone. [HUMAN
+          DECISION — EXTERNAL MEMBER MODEL] no formal external-member
+          product/pricing exists yet — keep the "cta" generic ("get in
+          touch"), don't promise a paid tier or specific benefits until
+          that product is defined.
+        options:
+          subtype: object
       visit:
         type: object
         label: Address + directions (ODDspace only)
@@ -359,9 +379,13 @@ collections_config:
         type: object
         label: Proof / traction
         comment: >-
-          Appears on Home and ODDspace (required on ODDspace — its
-          pilot-phase numbers are the whole point of the section). Elsewhere,
-          leave this field out of the page entirely (delete it) rather than
+          Appears on Home and ODDspace. On ODDspace, "items" is currently
+          empty on purpose — [HIDE UNTIL VERIFIED] the public member-count
+          and square-metre figures are disputed against the canonical
+          Current State doc (2026-09-02); the section renders nothing while
+          empty (see oddspace.astro). Fill "items" in only once real,
+          verified figures are confirmed — never estimate. Elsewhere, leave
+          this field out of the page entirely (delete it) rather than
           filling it with invented numbers. About uses its own "impact"
           field instead (two year-snapshots, not one). ODDference dropped
           its own proof/quote block in the 2027 rebuild (no verified stats
