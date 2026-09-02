@@ -724,26 +724,37 @@ const pages = defineCollection({
       z.object({
         _template: z.literal('work-with-odd'),
         seo,
-        // Rebuilt 2026-08-30 around the page's new role. Note: an earlier
-        // pass on this same day briefly moved this page's nav placement into
-        // the Info dropdown (relabelled "Work with us") — the 2026-08-30
-        // homepage revision brief explicitly requires "Work with ODD" stay a
-        // primary top-level nav item (see site/global.json's `nav`), so that
-        // move was reverted. This page's own H1 still reads "Work with us."
-        // from that pass — left as-is (a copy/positioning call on this page,
-        // not this brief's scope) rather than reverted without confirming
-        // which title is actually wanted; seo.title above keeps
-        // "Work with ODD" for continuity either way.
+        // Rebuilt 2026-08-30 around the page's new role; hero rewritten
+        // again 2026-09-02 (copywriting master pass) to open with the
+        // visitor's own question ("What are you trying to make happen?")
+        // rather than a naming choice between "Work with us"/"Work with
+        // ODD" — nav placement stays a primary top-level item either way
+        // (see site/global.json's `nav`); seo.title keeps "Work with ODD"
+        // for continuity.
         eyebrow: z.string(),
         title: z.string(),
         intro: z.string(),
         heroImage: image(),
         primaryCta: linkCta,
-        // "What we do" — one short editorial paragraph, same shape as
+        // NEW SECTION (2026-09-02 copywriting pass) — "When ODD is useful":
+        // the clearest articulation of the organisational use case, right
+        // after the hero. Not `sectionIntro` (no intro paragraph in the
+        // doc's copy, straight from headline to the list) — eyebrow/
+        // headline plus featureCard items only, rendered as a plain
+        // editorial list (see work-with-odd.astro) — "not sales cards" per
+        // the doc's implementation note.
+        whenOddIsUseful: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          items: z.array(featureCard),
+        }),
+        // "Why ODD" — one short editorial paragraph, same shape as
         // ODDference's bigQuestion / ODDagency's whatItIs, not a list of
-        // five independent business units.
+        // five independent business units. Now the page's merged "Why ODD"
+        // explanation (2026-09-02 pass folded the old three-card `whyOdd`
+        // grid into this single paragraph, rendered after Pathways — see
+        // work-with-odd.astro).
         whatWeDo: sectionIntro,
-        whyOdd: z.array(featureCard),
         pathways: z.array(pathwayCard),
         cases: z.array(caseStudy),
         // Page-specific curated logo set for organisations ODD has actually

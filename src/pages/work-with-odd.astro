@@ -2,7 +2,6 @@
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import HeroCentered from '../components/sections/HeroCentered.astro';
-import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import PathwayList from '../components/sections/PathwayList.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
@@ -24,6 +23,45 @@ const page = entry.data;
     warpTitle
   />
 
+  {
+    /* "When ODD is useful" — NEW SECTION (2026-09-02 copywriting pass),
+       right after the hero: the clearest articulation of the
+       organisational use case, before the visitor even reaches the
+       pathways. A plain editorial list (same numbered-list treatment
+       About's "Ways of working" uses), not a sales-card grid, per the
+       doc's own implementation note. */
+  }
+  <section class="wwo-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">{page.whenOddIsUseful.eyebrow}</span>
+        <h2>{page.whenOddIsUseful.headline}</h2>
+      </div>
+      <ul class="wwo-useful-list reveal">
+        {
+          page.whenOddIsUseful.items.map((item) => (
+            <li>
+              <span class="wwo-useful-number">{item.number}</span>
+              <div>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <PathwayList title="Ways to work with us" cards={page.pathways} />
+
+  {
+    /* "Why ODD" — the merged single-paragraph explanation (2026-09-02
+       copywriting pass folded the old three-card whyOdd grid into
+       `whatWeDo`), still positioned after the pathways: a visitor should
+       reach the actual ways to work with ODD before the supporting
+       reasoning for why. */
+  }
   <section class="wwo-sub">
     <div class="wrap">
       <div class="section-head">
@@ -31,22 +69,6 @@ const page = entry.data;
         <h2>{page.whatWeDo.headline}</h2>
       </div>
       <p class="wwo-lede reveal">{page.whatWeDo.body}</p>
-    </div>
-  </section>
-
-  <PathwayList title="Ways to work with us" cards={page.pathways} />
-
-  {
-    /* "Why ODD" moved below the pathways (was bundled into the "What we
-       do" section above, ahead of them) — a visitor should reach the
-       actual ways to work with ODD before the supporting reasoning for
-       why. No new heading here: whyOdd has no title/eyebrow field of its
-       own (see content.config.ts) and each card already carries its own
-       01/02/03 number, same treatment ODDfest's "How it works" uses. */
-  }
-  <section class="wwo-sub wwo-why-odd">
-    <div class="wrap">
-      <FeatureGrid cards={page.whyOdd} />
     </div>
   </section>
 
@@ -86,16 +108,55 @@ const page = entry.data;
   .wwo-sub {
     padding: var(--space-24) 0;
   }
-  /* FeatureGrid's own margin-top:4rem (tuned for sitting directly under a
-     section-head + lede paragraph) stacks with this section's own already-
-     generous --space-24 top padding when it's the section's only child —
-     a real double-gap, same failure mode this codebase's other pages
-     already fix at the source rather than override (see
-     docs/architecture.md). Zeroed here since .wwo-sub's own padding is
-     already the section's rhythm. */
-  .wwo-why-odd :global(.oddf-grid) {
-    margin-top: 0;
+
+  /* "When ODD is useful" — plain numbered list, same treatment as About's
+     "Ways of working" (.about-principles-list) — reused here rather than
+     forked, since it's the exact same shape (number + title + body, no
+     photo, no card chrome). */
+  .wwo-useful-list {
+    list-style: none;
+    margin: var(--space-10) auto 0;
+    padding: 0;
+    max-width: 46rem;
+    display: flex;
+    flex-direction: column;
   }
+  .wwo-useful-list li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1rem;
+    padding: 1.4rem 0;
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .wwo-useful-list li:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .wwo-useful-number {
+    font: var(--text-caption);
+    letter-spacing: 0.24em;
+    color: var(--color-paper-40);
+  }
+  .wwo-useful-list h3 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-paper);
+    margin: 0;
+  }
+  .wwo-useful-list p {
+    margin: 0.4rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-paper-60);
+  }
+  @media (max-width: 640px) {
+    .wwo-useful-list li {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+  }
+
   .wwo-lede {
     max-width: 40rem;
     margin: -1.5rem auto 0;
