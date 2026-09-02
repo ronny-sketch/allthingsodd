@@ -244,12 +244,35 @@ collections_config:
         type: object
         label: '"What it is" intro'
         comment: >-
-          Appears on ODDspace and Membership — each page's own short
-          explainer section. On ODDfest this same field is the "What ODDfest
-          is" section — the consolidated made-across-Helsinki /
-          organisers-keep-ownership / ODD-provides-the-umbrella story, with
-          its own optional cta as the page's earlier "register" link.
-          (2026-09-02: removed from ODDagency, folded into its hero intro.)
+          Appears on ODDspace — the page's own short explainer section. On
+          ODDfest this same field is the "What ODDfest is" section — the
+          consolidated made-across-Helsinki / organisers-keep-ownership /
+          ODD-provides-the-umbrella story, with its own optional cta as the
+          page's earlier "register" link. (2026-09-02: removed from
+          ODDagency, folded into its hero intro; also removed from
+          Membership, replaced by "whyThisExists"/"whatWeAreShaping" below.)
+        options:
+          subtype: object
+      whyThisExists:
+        type: object
+        label: '"Why this exists" (Membership only)'
+        comment: >-
+          NEW (2026-09-02 copywriting pass): explains the need for a
+          year-round organisational relationship without promising benefits
+          that are not yet designed. Rendered right after the hero.
+        options:
+          subtype: object
+      whatWeAreShaping:
+        type: object
+        label: '"What we are shaping" (Membership only)'
+        comment: >-
+          SIMPLIFIED (2026-09-02 copywriting pass) from a "what it is" intro
+          plus a three-card audience list ("whoItsFor") plus a three-card
+          benefit grid ("includes") down to one deliberately small
+          paragraph with a single CTA. Keep this small until ODDnetwork's
+          offer, cadence, tiers and annual price are actually approved —
+          don't re-add audience/benefit cards without a real product
+          decision behind them.
         options:
           subtype: object
       whatWeDo:
@@ -592,8 +615,11 @@ collections_config:
         cascade: true
       whoItsFor:
         type: array
-        label: Who it's for
-        comment: Appears on ODDference and Membership.
+        label: Who it's for (ODDference only)
+        comment: >-
+          (2026-09-02: Membership's own three-card audience list was
+          removed and folded into "whatWeAreShaping" above — see that
+          field's comment.)
         options:
           structures: _structures.audience_item
           disable_add: false
@@ -609,16 +635,6 @@ collections_config:
           feature cards — each can carry its own photo.
         options:
           structures: _structures.reason_card
-          disable_add: false
-          disable_remove: false
-          disable_reorder: false
-          required: false
-        cascade: true
-      includes:
-        type: array
-        label: What membership includes (Membership only)
-        options:
-          structures: _structures.title_body_item
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -1259,21 +1275,6 @@ _structures:
         tabbed: false
         value:
           year: '—'
-          title: ''
-          body: ''
-  title_body_item:
-    style: select
-    values:
-      - label: Item
-        default: false
-        preview:
-          text:
-            - key: title
-          icon:
-            - article
-        place_groups_below: false
-        tabbed: false
-        value:
           title: ''
           body: ''
   programme_item:

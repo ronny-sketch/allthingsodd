@@ -819,15 +819,21 @@ const pages = defineCollection({
         eyebrow: z.string(),
         title: z.string(),
         intro: z.string(),
-        whatItIs: sectionIntro,
-        whoItsFor: z.array(audienceItem),
-        // "What participation may involve" — one consolidated list (2026-08-31
-        // final implementation pass). Previously split into three separate
-        // FeatureGrid/list chapters (whyJoin, includes, rhythm) that repeated
-        // the same "ongoing relationship" idea three ways; removed rather
-        // than left as stale CMS controls, per this file's own convention —
-        // re-add a richer version once ODDnetwork's real model is settled.
-        includes: z.array(z.object({ title: z.string(), body: z.string() })),
+        // NEW SECTION (2026-09-02 copywriting pass) — "Why this exists":
+        // explains the need for year-round continuity without promising
+        // benefits that are not yet designed.
+        whyThisExists: sectionIntro,
+        // "What we are shaping" — SIMPLIFIED (2026-09-02 copywriting pass)
+        // from `whatItIs` + the three-card `whoItsFor` audience list + the
+        // three-card `includes` benefit grid down to one deliberately small
+        // paragraph. The doc is explicit: "Remove the current three
+        // audience cards and three benefit cards until the offer, cadence,
+        // tiers and annual price are actually approved. This page can be
+        // deliberately small." Removed rather than left as stale CMS
+        // controls, same convention as the 2026-08-31 pass this section
+        // itself replaces — re-add a richer version once ODDnetwork's real
+        // model is settled.
+        whatWeAreShaping: sectionIntro,
         // Optional so tiers can be dropped from the page entirely until
         // pricing is final — see PricingGrid.astro.
         tiers: z.array(pricingTier).optional(),
