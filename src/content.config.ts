@@ -75,11 +75,21 @@ const proofItem = z.object({
 
 // A whole proof/traction module — optional at the object level (not just an
 // empty array) so a page can omit it entirely until real numbers exist. See
-// ProofGrid.astro.
+// ProofGrid.astro. `eyebrow`/`title` are optional (2026-09-02 copywriting
+// pass) — Home's new "Already in motion" proof module pairs a SectionIntro
+// (which already carries its own eyebrow/headline) directly above a bare
+// ProofGrid stat row, so that instance omits both rather than repeating the
+// eyebrow twice. About/ODDspace keep passing both as before.
 const proofSection = z.object({
-  eyebrow: z.string(),
-  title: z.string(),
+  eyebrow: z.string().optional(),
+  title: z.string().optional(),
   items: z.array(proofItem),
+  // Optional link to the underlying report (e.g. "2025 Impact Report") —
+  // Home's new proof module uses this; About's own impact section declares
+  // the same two fields separately rather than via this shared fragment
+  // (predates it), so this stays optional/unused there.
+  reportLabel: z.string().optional(),
+  reportUrl: z.string().optional(),
 });
 
 const caseStudy = z.object({
@@ -390,11 +400,17 @@ const pages = defineCollection({
             lede: z.string(),
             body: z.string(),
             tracks: z.array(trackItem).optional(),
+            // Optional single routing CTA (2026-09-02 copywriting pass —
+            // "Work with ODD →" / "Find your way in →") — a different shape
+            // from `tracks` (a whole list of destinations); most callers
+            // omit it. See Converge.astro.
+            cta: linkCta.optional(),
           }),
           creative: z.object({
             lede: z.string(),
             body: z.string(),
             tracks: z.array(trackItem).optional(),
+            cta: linkCta.optional(),
           }),
         }),
         whatsHappening: z.object({
@@ -419,6 +435,13 @@ const pages = defineCollection({
         // absent from the page until real proof numbers exist — see
         // ProofGrid.astro.
         proof: proofSection.optional(),
+        // "Already in motion" — the editorial intro (eyebrow/headline/body/
+        // cta) rendered as a SectionIntro directly above the bare `proof`
+        // ProofGrid stat row (2026-09-02 copywriting pass, "Proof / what is
+        // already real"). Kept as its own field rather than folded into
+        // `proof` since it's a different shape (sectionIntro) feeding a
+        // different component.
+        proofIntro: sectionIntro.optional(),
         // "workWithOdd" (the separate "For organisations / Work with ODD."
         // teaser section, with its own four-card grid) was removed from Home
         // in the 2026-08-30 homepage revision — it duplicated the "What we
