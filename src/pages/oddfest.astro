@@ -37,15 +37,41 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
 
     <!-- 2. What ODDfest is: one consolidated section (absorbs the old
          separate who-can-take-part / what-ODD-provides / organiser-ownership
-         sections into a single body). Its optional cta is the "appears once
-         earlier" instance of the Register CTA, per the brief — anchors down
-         to section 5 rather than duplicating the page. -->
+         sections into a single body). No CTA here (2026-09-02 copywriting
+         pass, final-review UX note): let the visitor understand How it
+         works first, then present the primary Register CTA at higher
+         visual emphasis further down the page. -->
     <SectionIntro
       eyebrow={page.whatItIs.eyebrow}
       headline={page.whatItIs.headline}
       body={page.whatItIs.body}
-      cta={page.whatItIs.cta}
     />
+
+    <!-- NEW SECTION (2026-09-02 copywriting pass) — "You make the event.
+         ODD builds the shared layer.": a clear host/ODD responsibility
+         split, plus a smaller shared-platform explainer beneath it. -->
+    <section class="oddf-sub oddf-layer">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>{page.sharedLayer.headline}</h2>
+        </div>
+        <div class="oddf-layer-grid reveal">
+          <div class="oddf-layer-col">
+            <h3>{page.sharedLayer.host.title}</h3>
+            <p>{page.sharedLayer.host.body}</p>
+          </div>
+          <div class="oddf-layer-col">
+            <h3>{page.sharedLayer.odd.title}</h3>
+            <p>{page.sharedLayer.odd.body}</p>
+          </div>
+        </div>
+        <div class="oddf-layer-platform reveal">
+          <h3>{page.sharedLayer.platform.title}</h3>
+          <p>{page.sharedLayer.platform.body}</p>
+        </div>
+        <p class="oddf-layer-closing reveal">{page.sharedLayer.closing}</p>
+      </div>
+    </section>
 
     <!-- 3. How it works: 4 steps. -->
     <section class="oddf-sub">
@@ -54,6 +80,19 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
           <h2>How it works</h2>
         </div>
         <FeatureGrid cards={page.howItWorks} layout="four-column" />
+      </div>
+    </section>
+
+    <!-- 5. Register your event: the primary CTA — moved to sit immediately
+         after How it works (2026-09-02 UX note), with a visibly larger,
+         more conversion-focused Pill than an ordinary tertiary link. -->
+    <section id="register" class="oddf-sub oddf-register">
+      <div class="wrap">
+        <h2>{page.register.headline}</h2>
+        <p>{page.register.body}</p>
+        <Pill href={page.register.cta.href} variant="ticket" magnetic class="oddf-register-cta">
+          {page.register.cta.label}
+        </Pill>
       </div>
     </section>
 
@@ -89,28 +128,22 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       // exist (see content.config.ts's `creativeWeekExample` comment: no
       // invented events ship here). Empty today; this is the one open item
       // in the rebuild that needs Ronny's real 2026 recap material.
+      // `examplesIntro`'s eyebrow/headline/closing are ready for that
+      // moment (2026-09-02 copywriting pass) — see oddfest.json.
       page.examples.length > 0 && (
         <section class="oddf-sub">
           <div class="wrap">
             <div class="section-head">
-              <h2>Last year, this looked like…</h2>
+              <span class="eyebrow">{page.examplesIntro.eyebrow}</span>
+              <h2>{page.examplesIntro.headline}</h2>
             </div>
+            <p class="oddf-examples-lede reveal">{page.examplesIntro.body}</p>
             <OddfestExamples items={page.examples} />
+            <p class="oddf-examples-closing reveal">{page.examplesIntro.closing}</p>
           </div>
         </section>
       )
     }
-
-    <!-- 5. Register your event: the primary CTA. -->
-    <section id="register" class="oddf-sub oddf-register">
-      <div class="wrap">
-        <h2>{page.register.headline}</h2>
-        <p>{page.register.body}</p>
-        <Pill href={page.register.cta.href} variant="solid" magnetic>
-          {page.register.cta.label}
-        </Pill>
-      </div>
-    </section>
 
     <!-- 6. FAQ -->
     <section class="oddf-sub">
@@ -125,6 +158,20 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
 </Layout>
 
 <style>
+  /* Hero→first-content gap (2026-09-02 copywriting pass — final review
+     flagged the shared SubpageFrame top padding as oversized on this page,
+     same as ODDference). Overridden here rather than in SubpageFrame.astro
+     itself, since ODDagency/ODDspace weren't flagged. One step down the
+     spacing scale (--space-16 → --space-12 desktop, → --space-8 mobile). */
+  :global(.oddf-center) {
+    padding-top: var(--space-12);
+  }
+  @media (max-width: 640px) {
+    :global(.oddf-center) {
+      padding-top: var(--space-8);
+    }
+  }
+
   .oddf-sub {
     padding: var(--space-24) 0;
   }
@@ -149,5 +196,98 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
   }
   .oddf-register :global(.pill) {
     margin-top: 1.5rem;
+  }
+  /* Prominent registration CTA (2026-09-02 UX note) — visibly larger than
+     an ordinary tertiary Pill, using the `ticket` variant's existing
+     shadow/lift treatment for extra weight rather than inventing a new
+     button style. */
+  .oddf-register :global(.oddf-register-cta.pill) {
+    padding: 1rem 2.4rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.07em;
+  }
+
+  /* "You make the event. ODD builds the shared layer." */
+  .oddf-layer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    max-width: 56rem;
+    margin: 0 auto;
+  }
+  .oddf-layer-col h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    color: var(--color-paper);
+    margin: 0;
+  }
+  .oddf-layer-col p {
+    margin: 0.9rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--color-paper-60);
+  }
+  .oddf-layer-platform {
+    max-width: 42rem;
+    margin: var(--space-16) auto 0;
+    padding-top: var(--space-10);
+    border-top: 1px solid var(--color-paper-12);
+    text-align: center;
+  }
+  .oddf-layer-platform h3 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+    margin: 0;
+  }
+  .oddf-layer-platform p {
+    margin: 0.9rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--color-paper-60);
+  }
+  .oddf-layer-closing {
+    max-width: 36rem;
+    margin: var(--space-10) auto 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--color-paper-40);
+  }
+  @media (max-width: 700px) {
+    .oddf-layer-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      text-align: center;
+    }
+  }
+
+  /* "Last year, this looked like…" examples chapter — lede above the grid,
+     closing line below it. */
+  .oddf-examples-lede {
+    max-width: 40rem;
+    margin: -1.5rem auto var(--space-10);
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-paper-60);
+  }
+  .oddf-examples-closing {
+    max-width: 36rem;
+    margin: var(--space-10) auto 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--color-paper-40);
   }
 </style>

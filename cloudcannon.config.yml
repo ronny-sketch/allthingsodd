@@ -419,7 +419,29 @@ collections_config:
           The primary CTA section — headline/body/cta. This is the real,
           live "we're now collecting ideas for 2027" call, not a
           leave-it-out-until-ready field like proof elsewhere: keep it
-          populated.
+          populated. Renders directly after "How it works" with a visually
+          larger CTA (2026-09-02 copywriting pass) — don't move it earlier.
+        options:
+          subtype: object
+      sharedLayer:
+        type: object
+        label: '"You make the event. ODD builds the shared layer." (ODDfest only)'
+        comment: >-
+          NEW (2026-09-02 copywriting pass): the host/ODD responsibility
+          split, right after "whatItIs". "platform.body" should only
+          promise 2027 programme/map/platform features that are actually
+          confirmed — don't turn it into a feature promise ahead of the
+          real build.
+        options:
+          subtype: object
+      examplesIntro:
+        type: object
+        label: '"2026 examples" section framing (ODDfest only)'
+        comment: >-
+          The eyebrow/headline/body/closing shown above the real "examples"
+          list below — kept separate so this editorial framing is ready the
+          moment real, verified Creative Week 2026 examples exist. This
+          section only renders once "examples" is non-empty.
         options:
           subtype: object
       concept:

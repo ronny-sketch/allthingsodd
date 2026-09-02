@@ -487,6 +487,19 @@ const pages = defineCollection({
       subpageBase.extend({
         _template: z.literal('oddfest'),
         whatItIs: sectionIntro,
+        // NEW SECTION (2026-09-02 copywriting pass) — "You make the event.
+        // ODD builds the shared layer.": a clear host/ODD responsibility
+        // split plus a smaller shared-platform explainer, right after
+        // `whatItIs`. `platform.body` should only promise 2027
+        // programme/map/platform functions that are actually confirmed —
+        // see the doc's [NEEDS PRODUCT/TECH CONFIRMATION] note.
+        sharedLayer: z.object({
+          headline: z.string(),
+          host: z.object({ title: z.string(), body: z.string() }),
+          odd: z.object({ title: z.string(), body: z.string() }),
+          platform: z.object({ title: z.string(), body: z.string() }),
+          closing: z.string(),
+        }),
         howItWorks: z.array(featureCard),
         // Optional at the object level only in the sense that it renders
         // nothing until real, verified 2027 dates/venues exist — same
@@ -495,6 +508,18 @@ const pages = defineCollection({
         // ProgrammeList component is exactly what the 2027 programme will
         // need once it's live.
         programme: z.array(programmeItem),
+        // The "2026 examples" section's editorial framing (eyebrow/headline/
+        // body/closing) — kept separate from `examples` itself (the actual
+        // NEEDS-REAL-PROOF list, still empty) so this copy is ready the
+        // moment real, verified Creative Week 2026 examples exist, without
+        // needing a code change. Renders only when `examples` is non-empty
+        // — see oddfest.astro.
+        examplesIntro: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          closing: z.string(),
+        }),
         examples: z.array(creativeWeekExample),
         register: z.object({
           headline: z.string(),
