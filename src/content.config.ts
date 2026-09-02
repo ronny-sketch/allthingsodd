@@ -164,6 +164,11 @@ const pricingTier = z.object({
   href: z.string(),
   recommended: z.boolean().optional(),
   note: z.string().optional(),
+  // Optional low-friction secondary link under the note (2026-09-02
+  // copywriting pass — ODDference's "Want to know more before buying?"
+  // mailto route). A different shape from `note` (plain text) since this
+  // one needs a real href — see PricingGrid.astro.
+  noteLink: linkCta.optional(),
 });
 
 // One singleton: everything that repeats identically on every page (nav, footer,
@@ -510,9 +515,16 @@ const pages = defineCollection({
         _template: z.literal('oddference'),
         // A second hero CTA (ODDfest's FullbleedVideoHero call doesn't pass
         // one) — declared here, not on subpageBase, since it's genuinely
-        // page-specific: "Reserve Blind Bird" + "Partner with ODDference" only
+        // page-specific: "Get your ticket" + "Partner with ODDference" only
         // makes sense once there's something to sell and someone to court.
         secondaryCta: linkCta.optional(),
+        // The hero's practical-value support line (2026-09-02 copywriting
+        // pass — "A professional event for learning from creative and
+        // cultural expertise — and meeting..."), rendered under the
+        // question-headline `title`/h1. Page-specific (not on subpageBase —
+        // ODDfest's hero has no equivalent line) — see
+        // FullbleedVideoHero.astro's new optional `support` prop.
+        heroSupport: z.string(),
         // The one-paragraph concept explainer directly under the hero — same
         // sectionIntro shape oddfest.whatItIs uses. No separate "Big
         // Question" section repeats this below.

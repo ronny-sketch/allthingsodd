@@ -7,13 +7,23 @@ import Pill from '../primitives/Pill.astro';
 interface Props {
   video: string;
   poster: ImageMetadata;
+  // Optional small caption above the logo/h1 (e.g. "ODDference · 2027") —
+  // added 2026-09-02 for ODDference's hero, which the copywriting master
+  // doc asks to carry a visible eyebrow; ODDfest's hero (the only other
+  // caller) omits it and renders exactly as before.
+  eyebrow?: string;
   // The one visible line of copy over the video — rendered as the page's
   // real <h1>. Shared by ODDfest and ODDference (both full-bleed-video
   // subpages; see docs/architecture.md#hero-variants) — rendered into
   // SubpageFrame's named `hero` slot by each page, not as a plain first
   // child (see SubpageFrame.astro's 2026-08-31 hero-frame comment).
   sub: string;
-  // Optional small secondary line under the h1 (e.g. "Helsinki · 2027").
+  // Optional supporting paragraph under the h1 (2026-09-02 copywriting
+  // pass) — ODDference's hero needs a short practical-value line under its
+  // question-headline h1 that meta's single small caption can't carry.
+  // ODDfest omits it and renders exactly as before.
+  support?: string;
+  // Optional small secondary line under the h1/support (e.g. "Helsinki · 2027").
   meta?: string;
   // A real page-specific wordmark (e.g. src/assets/logos/oddfest-wordmark.svg)
   // takes priority over the generic ODD mark below — pass it whenever one
@@ -22,7 +32,7 @@ interface Props {
   logo?: ImageMetadata;
   logoAlt?: string;
   // Optional in-hero CTA pair — ODDfest's hero (the only other caller) has
-  // none; ODDference's does (Reserve Blind Bird / Partner with ODDference), so
+  // none; ODDference's does (Get your ticket / Partner with ODDference), so
   // these stay optional additions rather than forcing every caller to pass
   // both.
   primaryCta?: { label: string; href: string };
@@ -39,7 +49,9 @@ interface Props {
 const {
   video,
   poster,
+  eyebrow,
   sub,
+  support,
   meta,
   logo,
   logoAlt = '',
@@ -58,7 +70,9 @@ const {
     <div class="oddfest-hero-logo">
       {logo ? <Image src={logo} alt={logoAlt} width={720} /> : <Logo ariaHidden />}
     </div>
+    {eyebrow && <span class="oddfest-hero-eyebrow eyebrow">{eyebrow}</span>}
     <h1 class="oddfest-hero-sub">{sub}</h1>
+    {support && <p class="oddfest-hero-support">{support}</p>}
     {meta && <p class="oddfest-hero-meta">{meta}</p>}
     {
       (primaryCta || secondaryCta) && (
@@ -158,6 +172,13 @@ const {
     width: 100%;
     height: auto;
   }
+  /* Optional caption above the logo/h1 (ODDference only — see Props
+     comment). Reuses the sitewide `.eyebrow` utility class for color/
+     tracking, this rule only trims the spacing the flex-column gap already
+     handles for every other child. */
+  .oddfest-hero-eyebrow {
+    margin: 0;
+  }
   /* h1 reset — this line carries the page's only h1 (see Props comment
      above), so it needs the same visual weight the old plain <p> had, not
      default browser h1 sizing. */
@@ -168,6 +189,17 @@ const {
     font-size: clamp(1.15rem, 2.4vw, 1.7rem);
     color: var(--color-paper);
     letter-spacing: 0.01em;
+  }
+  /* Optional supporting paragraph under the h1 (ODDference only) — a real
+     sentence, not another caption, so it gets body-font sizing/line-height
+     rather than the meta line's small-caps treatment. */
+  .oddfest-hero-support {
+    margin: 0;
+    max-width: 34rem;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--color-paper-80);
   }
   .oddfest-hero-meta {
     margin: 0;

@@ -22,14 +22,16 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <SubpageFrame slug={page._slug} railLeft={page.railLeft} railRight={page.railRight}>
-    <!-- 1. Hero: ODDference mark + "Where creative expertise meets business and
-         society." (the page's one h1), Reserve Blind Bird / Partner with ODDference
-         CTAs right in the hero. -->
+    <!-- 1. Hero: ODDference mark + the central question (the page's one h1),
+         a practical-value support line, and Get your ticket / Partner with
+         ODDference CTAs right in the hero. -->
     <FullbleedVideoHero
       slot="hero"
       video={page.heroMedia.video}
       poster={page.heroMedia.poster}
+      eyebrow={page.eyebrow}
       sub={page.title}
+      support={page.heroSupport}
       meta={page.meta}
       logo={oddferenceMark}
       logoAlt="ODDference"
@@ -91,7 +93,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
         <section class="oddc-sub">
           <div class="wrap">
             <div class="section-head">
-              <span class="eyebrow">ODDference 2026</span>
+              <span class="eyebrow">Past speakers · ODDference 2026</span>
               <h2>People who joined us last time.</h2>
             </div>
             <PersonGrid items={page.speakers} />
@@ -147,6 +149,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
           <div class="oddc-convert-partner">
             <span class="eyebrow">{page.partnershipCta.eyebrow}</span>
             <h2>{page.partnershipCta.title}</h2>
+            {page.partnershipCta.body && <p>{page.partnershipCta.body}</p>}
             <Pill href={page.partnershipCta.href} variant="outline" magnetic>
               {page.partnershipCta.linkLabel}
             </Pill>
@@ -202,6 +205,21 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
 </Layout>
 
 <style>
+  /* Hero→first-content gap (2026-09-02 copywriting pass — final review
+     flagged the shared SubpageFrame top padding as oversized on this page).
+     Overridden here rather than in SubpageFrame.astro itself, since
+     ODDagency/ODDspace weren't flagged and shouldn't change. One step down
+     the spacing scale (--space-16 → --space-12 desktop, → --space-8
+     mobile), not a full collapse — the hero itself is untouched. */
+  :global(.oddf-center) {
+    padding-top: var(--space-12);
+  }
+  @media (max-width: 640px) {
+    :global(.oddf-center) {
+      padding-top: var(--space-8);
+    }
+  }
+
   .oddc-sub {
     padding: var(--space-24) 0;
   }
@@ -318,6 +336,13 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
     font: var(--text-heading-sm);
     color: var(--color-paper);
     margin: 0.6rem 0 0;
+  }
+  .oddc-convert-partner p {
+    margin: 0.8rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-paper-60);
   }
   .oddc-convert-partner :global(.pill) {
     margin-top: 1.5rem;
