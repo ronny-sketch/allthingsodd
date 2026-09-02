@@ -1,70 +1,79 @@
 {
   "_template": "about",
   "seo": {
-    "title": "About ODD — why we exist and what we do",
-    "description": "ODD exists to connect Finland's creative and cultural fields with business and wider society — while building better conditions for creative work itself.",
+    "title": "About ODD — why we exist and what we are building",
+    "description": "ODD works on two connected problems: creative work needs more continuity, and creative and cultural expertise needs stronger links to business and wider society.",
     "ogImage": "/og/about.jpg"
   },
   "eyebrow": "About ODD",
   "title": "Creativity belongs closer to the centre.",
-  "intro": "ODD exists to connect Finland's creative and cultural fields with business and wider society — while building better conditions for creative work itself.",
+  "intro": "ODD started from a simple frustration: Finland has extraordinary creative work, but too much of it lives in short bursts — and too much of the knowledge inside it stays inside its own circles.",
   "argument": [
-    "Creative people shape culture, meaning and how society imagines what comes next — capabilities that matter far beyond the creative fields.",
-    "Yet the people and structures around that work still often sit in separate rooms — creative work built project by project, grant by grant, with fragile continuity, while business and institutions rarely spend real time with the people shaping culture.",
-    "ODD exists to bring those rooms closer together — better conditions for creative work, and more ways for creative expertise and the rest of society to meet.",
-    "Finland already has real creative talent — the open question is what gets built around it. As execution gets cheaper through technology and AI, imagination, taste, cultural understanding and meaning-making become more valuable, not less. A good city shouldn't only function; it should be a place where interesting things can happen. ODD is one attempt in that direction, not the whole answer."
+    "Creative work has a continuity problem. A project gets funded, produced and finished. Then the people involved often have to rebuild the next thing almost from zero: new money, new partners, a new place to work, a new reason to gather. Good work happens, but too much of the knowledge, trust and momentum disappears between projects.",
+    "There is another separation at the same time. The people working with culture, meaning, audiences and new forms of expression rarely spend enough serious time with the people making decisions in companies, institutions and public life. They live in the same society, but often in different professional worlds.",
+    "We think that distance is unnecessary. Creative practice contains expertise in imagination, taste, attention, emotion, identity, cultural change and making things that do not yet exist. None of that transfers neatly into a business method, and it should not have to. But it deserves a place in more of the conversations that shape organisations and society.",
+    "This is not an argument that culture needs a business case in order to matter. Art and culture have value on their own terms. It is also true that creative expertise is underused elsewhere — and that creative work itself deserves better conditions to keep developing.",
+    "ODD is one attempt to work on both problems at once. Not by claiming to represent or own the creative field, but by building practical places and moments where more work can continue, more people can meet, and more useful relationships can survive the first encounter."
   ],
+  "whyNow": {
+    "eyebrow": "Why now",
+    "headline": "When execution gets easier, judgment matters more.",
+    "body": [
+      "Technology is making more kinds of execution faster and cheaper. That does not make creative expertise less important. It raises the value of deciding what is worth making, what people will care about, how something should feel, what it means, and why anyone should pay attention. Those are not new questions for creative fields. They are becoming harder to ignore elsewhere.",
+      "Finland's own creative-economy goals already assume that cultural and creative capability will matter more to growth, exports, innovation and the country's international position. The practical question is what structures make that possible rather than leaving it as a policy ambition."
+    ]
+  },
   "story": {
     "eyebrow": "Our story",
     "title": "How we got here.",
     "milestones": [
       {
         "year": "2023",
-        "title": "New Nordic Way rf founded",
-        "body": "New Nordic Way rf is founded in Helsinki — the organisational home for an idea that hadn't fully taken shape yet."
+        "title": "New Nordic Way rf",
+        "body": "The association is founded in Helsinki. The idea that becomes ODD is still taking shape."
       },
       {
         "year": "2024",
         "title": "Finding the gap",
-        "body": "An idea starts forming around a simple observation: Finland has extraordinary creative people and organisations, but the structures connecting them to each other — and to the rest of society — remain fragmented."
+        "body": "The question becomes clearer: Finland has strong creative talent, but too little continuity around the work and too few structures connecting creative fields with the rest of society."
       },
       {
         "year": "2025",
-        "title": "ODDfest, the first experiment",
-        "body": "ODDfest becomes the first major public experiment — proof that there's real appetite for bringing creative fields together differently, and connecting them with new audiences, organisations and each other. Around 2,600 participants, 350+ contributors and 70+ partners took part, reaching over a million people in total."
+        "title": "The first ODDfest",
+        "body": "The first public experiment brings 2,600+ participants, 350+ contributors and 70+ partners together in Helsinki."
       },
       {
         "year": "2026",
-        "title": "Beyond one event",
-        "body": "The idea starts expanding beyond a single event. ODDference develops the professional, business-facing side; Creative Week experiments with a distributed, city-wide model; and ODDspace gives the work a physical, year-round home."
+        "title": "More than one event",
+        "body": "Creative Week tests a distributed city-wide model. ODDference tests the professional proposition. ODDspace creates a year-round physical base."
       },
       {
         "year": "2027",
-        "title": "A clearer structure",
-        "body": "The direction becomes clearer: ODDfest becomes Helsinki's creative week, ODDference becomes the centrally produced professional experience, ODDspace continues year-round, and a growing network of partnerships and projects create further ways to take part. This is where ODD is heading — not yet where it is."
+        "title": "A clearer portfolio",
+        "body": "Creative Week becomes ODDfest. ODDference stands as its own professional event. ODDspace continues year-round. Projects, partnerships and a developing organisational network create further ways to work together. This is the structure we are building, not a finished system."
       }
     ],
     "legalNote": "ODD is operated by New Nordic Way rf, a Finnish non-profit association based in Helsinki."
   },
   "howWeMakeItHappen": {
-    "eyebrow": "How we make it happen",
-    "title": "Turning the idea into something real.",
-    "intro": "Events create moments. Spaces create continuity. Relationships and projects let things keep developing.",
+    "eyebrow": "What we build",
+    "title": "Different problems need different structures.",
+    "intro": "One annual event cannot create continuity on its own. A workspace cannot create the same public momentum as a city-wide week. A good conversation does not become collaboration by itself. ODD uses different formats for different jobs.",
     "pillars": [
       {
         "number": "01",
-        "title": "Events",
-        "body": "ODDfest and ODDference create visibility, encounters and momentum — bringing different people, ideas and practices into the same moments. ODDfest opens up a city-wide context for creative activity; ODDference creates a deliberately curated professional environment where creative expertise meets business and society."
+        "title": "Events create reasons to gather",
+        "body": "ODDfest makes creative activity across Helsinki visible as one shared week. ODDference creates a deliberately composed professional room around creative expertise. Both create moments that would not otherwise exist."
       },
       {
         "number": "02",
-        "title": "Spaces",
-        "body": "ODDspace gives people somewhere to work, meet and keep things developing between individual events and projects — continuity for work that would otherwise stop and restart every time."
+        "title": "Spaces give people somewhere to return",
+        "body": "ODDspace is the everyday layer: somewhere to work, meet, host things and keep going between projects and events."
       },
       {
         "number": "03",
-        "title": "Relationships & projects",
-        "body": "ODDnetwork, partnerships and project-based work create ways for organisations and people to continue a relationship beyond one event — taking things further once the first conversation has happened."
+        "title": "Projects and relationships let something continue",
+        "body": "ODDagency, partnerships and the developing ODDnetwork create ways to keep working together when there is a real reason to do so. Programmes can add another layer when there is a clear need and the funding to run them properly."
       }
     ],
     "principlesEyebrow": "Ways of working",
@@ -72,28 +81,60 @@
     "principles": [
       {
         "number": "01",
-        "title": "Make room for creativity",
-        "body": "We try to create conditions where other people can bring their own work, ideas and expertise — not make everything ourselves."
+        "title": "Make room for other people's work",
+        "body": "ODD should create conditions for people to bring their own ideas, practice and expertise — not make itself the centre of everything."
       },
       {
         "number": "02",
-        "title": "Bring different worlds closer",
-        "body": "The point isn't to protect the line between creative fields and the rest of society. It's to make crossing it normal."
+        "title": "Make crossing worlds normal",
+        "body": "Creative fields, business and institutions do not need to become the same thing. They should be able to work together without the crossing feeling exceptional."
       },
       {
         "number": "03",
         "title": "Participation over spectatorship",
-        "body": "ODD works best when people are actually building and taking part, not just watching something happen to them."
+        "body": "ODD is strongest when people can do something: host, make, question, contribute, build or take responsibility."
       },
       {
         "number": "04",
         "title": "People are not the product",
-        "body": "Creative people are not a talent inventory for companies, and companies are not simply funding sources. Both are participants."
+        "body": "Creative people are not a talent inventory for companies, and companies are not simply funding sources. Both are participants with their own reasons to be there."
       },
       {
         "number": "05",
         "title": "Good intentions need good economics",
         "body": "If something is meant to last, the economics need to work for the people actually making it — not just for the idea behind it."
+      }
+    ]
+  },
+  "whatWeLearned": {
+    "eyebrow": "What we have learned",
+    "headline": "The model got clearer by trying it.",
+    "body": "ODD was not designed fully formed. The first two years were experiments in how different kinds of creative activity, professional exchange and year-round work could fit together. Some things proved stronger than others.",
+    "items": [
+      {
+        "number": "01",
+        "title": "A shared moment can create real gravity",
+        "body": "The first ODDfest in 2025 brought more than 2,600 participants, 350+ contributors and 70+ partners into one experiment. It proved there was appetite for a new kind of platform around creative work."
+      },
+      {
+        "number": "02",
+        "title": "Not everything should be produced centrally",
+        "body": "Creative Week 2026 showed the strength of a distributed model: hosts make their own programme, while ODD makes the whole easier to find and experience together. That model becomes ODDfest in 2027."
+      },
+      {
+        "number": "03",
+        "title": "Creative expertise can carry a professional product",
+        "body": "The first ODDference brought roughly 300 people into a programme built for business, public-sector and creative audiences. It gave the clearest signal that this question can stand on its own."
+      },
+      {
+        "number": "04",
+        "title": "A place changes the rhythm",
+        "body": "ODDspace moved part of the work from annual peaks into everyday life. It is still a pilot, but it gives us a real place to test what continuity can mean in practice."
+      },
+      {
+        "number": "05",
+        "title": "Bigger production is not automatically better",
+        "body": "The centrally produced Showcase model created too much cost and risk for the demand it had. We are not repeating it in 2027. The lesson is part of the strategy: build what people actually use and pay for, and let the rest stay experimental until the economics are real."
       }
     ]
   },
@@ -103,7 +144,7 @@
       "eyebrow": "2025",
       "title": "The first ODDfest, in numbers.",
       "items": [
-        { "value": "2,600", "label": "Participants", "context": "1,900+ signups" },
+        { "value": "2,600+", "label": "Participants", "context": "1,900+ signups" },
         { "value": "70+", "label": "Partners" },
         { "value": "350+", "label": "Contributors" },
         { "value": "1M+", "label": "Total reach" }
@@ -123,13 +164,13 @@
     {
       "eyebrow": "Experience ODD",
       "title": "ODDfest",
-      "linkLabel": "See what's on →",
+      "linkLabel": "See ODDfest →",
       "href": "/oddfest"
     },
     {
       "eyebrow": "Experience ODD",
       "title": "ODDference",
-      "linkLabel": "See what's on →",
+      "linkLabel": "Explore ODDference →",
       "href": "/oddference"
     },
     {
@@ -141,13 +182,13 @@
     {
       "eyebrow": "Build something with us",
       "title": "Work with ODD",
-      "linkLabel": "Work with us →",
+      "linkLabel": "Start a conversation →",
       "href": "/work-with-odd"
     },
     {
       "eyebrow": "Stay connected",
-      "title": "Join the mailing list",
-      "linkLabel": "Sign up →",
+      "title": "Mailing list",
+      "linkLabel": "Keep up with ODD →",
       "href": "#newsletter"
     }
   ]

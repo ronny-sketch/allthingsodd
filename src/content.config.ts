@@ -793,6 +793,17 @@ const pages = defineCollection({
         // one long string) so the editorial rhythm survives in the CMS —
         // see about.json for the real copy.
         argument: z.array(z.string()),
+        // NEW SECTION (2026-09-02 copywriting pass) — "Why now": the
+        // technology/execution-gets-cheaper argument, grounded in Finland's
+        // own creative-economy context. Same multi-paragraph-array shape as
+        // `argument` (not `sectionIntro`, whose `body` is a single string)
+        // since this also needs two real paragraph breaks, rendered by
+        // page-scoped markup in about.astro rather than SectionIntro.
+        whyNow: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.array(z.string()),
+        }),
         story: z.object({
           eyebrow: z.string(),
           title: z.string(),
@@ -817,6 +828,12 @@ const pages = defineCollection({
           // top-level field) since it's a sub-part of the same section.
           principles: z.array(featureCard),
         }),
+        // NEW SECTION (2026-09-02 copywriting pass) — "What 2025–2026 taught
+        // us": candid, numbered lessons from the first two years. Same
+        // sectionIntro-extended-with-featureCard-items shape ODDference's
+        // `whatsChanging` already uses, reused rather than inventing a
+        // near-duplicate.
+        whatWeLearned: sectionIntro.extend({ items: z.array(featureCard) }),
         // Two fixed snapshots (2025 real, 2026 pending) — an array, not the
         // shared `proofSection` object other pages use, precisely because
         // About needs two of them side by side. `items` is deliberately
