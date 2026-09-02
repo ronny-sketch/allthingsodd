@@ -2,69 +2,95 @@
   "_template": "oddagency",
   "_slug": "oddagency",
   "seo": {
-    "title": "ODDagency — creative work built around the problem",
-    "description": "Project-based work for organisations that need creative thinking, cultural understanding or the right people around a problem.",
+    "title": "ODDagency — commercial creative and cultural project work",
+    "description": "ODDagency works with organisations on concept development, cultural context, creative production and project-specific teams built around the question.",
     "ogImage": "/og/oddagency.jpg"
   },
   "eyebrow": "ODDagency · For organisations",
   "title": "Bring us something worth figuring out.",
   "meta": "Project-based · Helsinki",
-  "intro": "Some questions need a different mix of people around the table. ODD builds project teams around the work itself — drawing on creative practice, cultural understanding, strategy and production as needed. This is commercial work, shaped project by project.",
+  "intro": "ODDagency is the commercial project arm of ODD. We work with companies, cities and institutions on projects that need cultural understanding, creative conception and the ability to turn an idea into something real. Sometimes we lead most of the work ourselves. Sometimes the right answer is to build a wider team around it.",
   "heroMedia": {
     "image": "../../assets/programs/oddagency-card.jpg"
   },
-  "whatItIs": {
-    "eyebrow": "What ODDagency is",
-    "headline": "The team follows the work.",
-    "body": "We do not start with a fixed roster and squeeze the brief into it. We start with what you are trying to make, change or understand, then build the right team around that."
+  "whenThisWorks": {
+    "eyebrow": "When ODDagency makes sense",
+    "headline": "Start with the question, not the service menu.",
+    "items": [
+      {
+        "number": "01",
+        "title": "The brief is still open.",
+        "body": "You know what you want to change, understand or make possible, but the right format is not obvious yet."
+      },
+      {
+        "number": "02",
+        "title": "Concept and delivery need to stay connected.",
+        "body": "You do not want a strategy handed over to a separate production machine. The same framing can stay alive through the making."
+      },
+      {
+        "number": "03",
+        "title": "Culture is part of the problem, not just the look.",
+        "body": "The work depends on how people interpret, participate in or care about something — not only on how it is executed."
+      },
+      {
+        "number": "04",
+        "title": "The project needs people who are not on one permanent roster.",
+        "body": "We build the team around the work and agree roles, expectations and compensation clearly."
+      }
+    ]
   },
   "capabilities": [
     {
       "number": "01",
-      "title": "Creative production",
-      "body": "Concept, design and production for physical and digital work, end to end."
+      "title": "Framing & concept",
+      "body": "Turning an open question into a clearer direction, proposition, format or concept before the project becomes production."
     },
     {
       "number": "02",
-      "title": "Cultural strategy",
-      "body": "Understanding the cultural context around a question — what people care about, what is changing and what that might mean for the work."
+      "title": "Culture & context",
+      "body": "Understanding the people, scenes, signals and cultural context around the work — what is changing, what people care about and what would feel credible."
     },
     {
       "number": "03",
-      "title": "Community activation",
-      "body": "Projects can bring organisations and creative practitioners together around real work, with clear roles, fair expectations and a reason for everyone to be there."
+      "title": "Creative production",
+      "body": "Designing and producing the physical, digital or event-based work needed to make the concept real."
     },
     {
       "number": "04",
-      "title": "Co-creation & concept work",
-      "body": "Workshops and facilitated sessions that turn an open brief into a concrete direction."
+      "title": "Participation & collaboration",
+      "body": "Building projects where organisations and creative practitioners work together with clear roles, fair expectations and a reason for everyone to be there."
+    },
+    {
+      "number": "05",
+      "title": "Evidence & learning",
+      "body": "When relevant, defining what the project is trying to change, documenting what happened and turning the learning into something useful after delivery."
     }
   ],
   "howItWorks": [
     {
       "number": "01",
-      "title": "Challenge / brief",
-      "body": "You bring a problem, a brief, or just a rough idea of what you're trying to do."
+      "title": "Bring the question",
+      "body": "A brief, a problem or a rough idea is enough."
     },
     {
       "number": "02",
-      "title": "Framing",
-      "body": "We work through what the project actually needs before assembling anyone."
+      "title": "Frame the work",
+      "body": "We work out what the project actually needs before deciding the format, team or production scale."
     },
     {
       "number": "03",
-      "title": "Team",
-      "body": "We invite the people whose practice and perspective fit the work, agree the roles clearly and build the project team."
+      "title": "Build the team",
+      "body": "We bring in the people whose practice fits the work, agree the roles clearly and make sure the economics make sense."
     },
     {
       "number": "04",
-      "title": "Creation / production",
-      "body": "The team builds, tests and produces the work."
+      "title": "Make it",
+      "body": "The team designs, tests and produces the work."
     },
     {
       "number": "05",
-      "title": "Delivery / learning",
-      "body": "We deliver the work, review what happened and decide what is worth carrying into the next project."
+      "title": "Finish and learn",
+      "body": "We deliver, review what happened and decide what is worth carrying into the next project."
     }
   ],
   "cases": [],
@@ -75,20 +101,13 @@
     "Community activations",
     "Concept development"
   ],
-  "participate": [
-    {
-      "eyebrow": "",
-      "title": "Bring us a brief",
-      "linkLabel": "Start a project →",
-      "href": "/work-with-odd?interest=oddagency#enquiry-form"
-    },
-    {
-      "eyebrow": "",
-      "title": "Talk to us first",
-      "linkLabel": "Get in touch →",
-      "href": "/work-with-odd?interest=oddagency#enquiry-form"
-    }
-  ],
+  "closingCta": {
+    "eyebrow": "",
+    "title": "Have something worth figuring out?",
+    "body": "Send us the brief, the problem, or the unfinished version.",
+    "linkLabel": "Start a conversation →",
+    "href": "/work-with-odd?interest=oddagency#enquiry-form"
+  },
   "railLeft": [
     { "kind": "logo" },
     { "kind": "word", "text": "ODDagency" },

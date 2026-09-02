@@ -595,15 +595,20 @@ const pages = defineCollection({
 
       // 2026-08-31 final implementation pass: dropped `features` (a near-
       // duplicate of `capabilities` — same "what ODDagency can do" idea
-      // twice) and `whyOdd` (its "Network model"/"Real communities &
-      // platforms" copy was exactly the internal/consultancy language the
-      // brief asks to remove sitewide, and the page's own `whatItIs` already
-      // carries the "why ODD" reasoning) — removed rather than left as stale
-      // CMS controls, same convention as membership's whyJoin/rhythm above.
-      // This also brings the page down from five stacked FeatureGrid
-      // chapters to two (capabilities, howItWorks), per the brief's
-      // "Hero → what the work is → concise capabilities → cases → how it
-      // works → CTA" target shape.
+      // twice) and the old `whyOdd` grid — removed rather than left as
+      // stale CMS controls, same convention as membership's whyJoin/rhythm
+      // above.
+      //
+      // 2026-09-02 copywriting pass: dropped `whatItIs` too — its content is
+      // now folded into the richer hero `intro` itself, and the doc's
+      // recommended flow (Hero → When this work makes sense → What
+      // ODDagency contributes → How it works → Cases → CTA) has no separate
+      // "what it is" chapter. Added `whenThisWorks` (NEW SECTION, right
+      // after the hero) and replaced the two-card `participate` array with
+      // a single `closingCta` (doc: "[SIMPLIFY] Closing CTA... one clear
+      // exit is enough") — reuses the shared `cta` shape (already carries
+      // an optional `body`, exactly what the new headline+body+one-link
+      // closing needs).
       //
       // Also 2026-08-31: oddagency.astro switched from SubpageFrame (the
       // side-rail ticker ODDfest/ODDference/ODDspace use) + SplitHero to
@@ -617,12 +622,16 @@ const pages = defineCollection({
       subpageBase.extend({
         _template: z.literal('oddagency'),
         intro: z.string(),
-        whatItIs: sectionIntro,
+        whenThisWorks: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          items: z.array(featureCard),
+        }),
         capabilities: z.array(featureCard),
         howItWorks: z.array(featureCard),
         cases: z.array(caseStudy),
         projectTypes: z.array(z.string()),
-        participate: z.array(cta),
+        closingCta: cta,
       }),
 
       // ODDspace used to be an external link (oddspace.co) from the nav and

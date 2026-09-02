@@ -77,7 +77,8 @@ collections_config:
         type: array
         label: '"Ways to participate" cards'
         comment: >-
-          ODDfest / ODDference / ODDagency. Not on ODDspace — its rebuilt
+          Home and About only (2026-09-02: removed from ODDagency in favour
+          of a single-link `closingCta`). Not on ODDspace — its rebuilt
           "Enter the space" section replaces this with its own dedicated
           membership/event-enquiry pair.
         options:
@@ -127,6 +128,13 @@ collections_config:
           ODDspace. Leave the ones the page doesn't use empty.
         options:
           subtype: object
+      heroSupport:
+        type: text
+        label: Hero support line (ODDference only)
+        comment: >-
+          NEW (2026-09-02 copywriting pass): the short practical-value
+          paragraph rendered under the hero's question-headline h1
+          ("title"), above the "meta" line.
       heroPhotos:
         type: array
         label: Hero photo grid (ODDspace only)
@@ -164,12 +172,33 @@ collections_config:
         options:
           required: false
         cascade: true
+      whyNow:
+        type: object
+        label: Why now (About only)
+        comment: >-
+          NEW (2026-09-02 copywriting pass): the technology/execution
+          argument, grounded in Finland's creative-economy context. "body"
+          is two real paragraphs (array), same rhythm as "argument" above.
+        options:
+          subtype: object
       howWeMakeItHappen:
         type: object
-        label: How we make it happen (About only)
+        label: What we build (About only)
         comment: >-
-          The Events / Spaces / Relationships & projects pillars, plus a
-          short "ways of working" list of principles underneath them.
+          The "pillars" (events/spaces/projects, 01-03) render right after
+          "whyNow"; "principles" ("Ways of working") render lower on the
+          page, after the timeline — both still live in this one field
+          (see about.astro), just rendered in two places.
+        options:
+          subtype: object
+      whatWeLearned:
+        type: object
+        label: What we have learned (About only)
+        comment: >-
+          NEW (2026-09-02 copywriting pass): 5 candid numbered lessons from
+          2025-2026, rendered between "What we build" and the timeline.
+          Flagged for fact-check before publish — see item 3's ODDference
+          attendance figure and item 5's Showcase-economics detail.
         options:
           subtype: object
       impact:
@@ -215,20 +244,21 @@ collections_config:
         type: object
         label: '"What it is" intro'
         comment: >-
-          Appears on ODDagency, ODDspace and Membership — each page's own
-          short explainer section. On ODDfest this same field is the "What
-          ODDfest is" section — the consolidated made-across-Helsinki /
+          Appears on ODDspace and Membership — each page's own short
+          explainer section. On ODDfest this same field is the "What ODDfest
+          is" section — the consolidated made-across-Helsinki /
           organisers-keep-ownership / ODD-provides-the-umbrella story, with
           its own optional cta as the page's earlier "register" link.
+          (2026-09-02: removed from ODDagency, folded into its hero intro.)
         options:
           subtype: object
       whatWeDo:
         type: object
-        label: '"What we do" intro (Work with ODD only)'
+        label: '"Why ODD" intro (Work with ODD only)'
         comment: >-
-          The page's own short explainer — ODDference/ODDfest/ODDspace/
-          ODDnetwork/partnerships/project work as one continuous practice,
-          not five separate business units.
+          The page's merged "Why ODD" explanation (2026-09-02 copywriting
+          pass folded the old three-card whyOdd grid into this single
+          paragraph), rendered after the Pathways list, not before it.
         options:
           subtype: object
       visit:
@@ -336,7 +366,18 @@ collections_config:
           field instead (two year-snapshots, not one). ODDference dropped
           its own proof/quote block in the 2027 rebuild (no verified stats
           or quote existed to populate it) — its speaker roster carries the
-          social-proof job instead.
+          social-proof job instead. On Home, pairs with "proofIntro" below —
+          leave "eyebrow"/"title" blank here (the editorial framing lives in
+          proofIntro instead).
+        options:
+          subtype: object
+          required: false
+      proofIntro:
+        type: object
+        label: '"Already in motion" proof intro (Home only)'
+        comment: >-
+          NEW (2026-09-02 copywriting pass): the eyebrow/headline/body/cta
+          rendered directly above the bare "proof" stat row below it.
         options:
           subtype: object
           required: false
@@ -415,21 +456,32 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
-      whyOdd:
-        type: array
-        label: Why ODD
+      whenOddIsUseful:
+        type: object
+        label: When ODD is useful (Work with ODD only)
         comment: >-
-          Work with ODD only (2026-08-31: removed from ODDagency, which was
-          repeating "why ODD" reasoning already covered by its own `whatItIs`
-          and had drifted into internal/consultancy phrasing that had no
-          place staying public).
+          NEW (2026-09-02 copywriting pass): the organisational use-case
+          section right after the hero — eyebrow/headline plus 3 short
+          items. Renders as a plain numbered list, not a card grid.
         options:
-          structures: _structures.feature_card
-          disable_add: false
-          disable_remove: false
-          disable_reorder: false
-          required: false
-        cascade: true
+          subtype: object
+      whenThisWorks:
+        type: object
+        label: When ODDagency makes sense (ODDagency only)
+        comment: >-
+          NEW (2026-09-02 copywriting pass): says when to buy ODDagency,
+          right after the hero — eyebrow/headline plus 4 short items.
+        options:
+          subtype: object
+      closingCta:
+        type: object
+        label: Closing CTA (ODDagency only)
+        comment: >-
+          Replaced the old two-card "Bring us a brief / Talk to us first"
+          participate band (2026-09-02 copywriting pass — "one clear exit is
+          enough"): a single headline/body/link.
+        options:
+          subtype: object
       whatsChanging:
         type: object
         label: What changes in 2027 (ODDference only)
