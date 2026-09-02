@@ -17,7 +17,10 @@
     "eyebrow": "What it may involve",
     "headline": "We are designing the model around actual use.",
     "body": "The working idea includes small conversations and gatherings, relevant ways into ODD activity across the year, and introductions when there is a real reason for people to meet. We do not want to publish a long benefits list before we know which parts are genuinely useful.",
-    "cta": { "label": "Ask about ODDnetwork →", "href": "/work-with-odd?interest=oddmembership#enquiry-form" }
+    "cta": {
+      "label": "Ask about ODDnetwork →",
+      "href": "/work-with-odd?interest=oddmembership#enquiry-form"
+    }
   },
   "tiers": [],
   "finalCta": {
