@@ -2,22 +2,140 @@
 
 ## Current state
 
-**This is production.** `odd-field-guide.surge.sh` served the old single-file
-site (`../ODD NEW WEBPAGE/`) up through 2026-08-20; the domain now serves this
-Astro build instead, deployed via:
+**Production is `https://allthingsodd.co`.** The site is a plain static Astro
+build on Surge. Three hostnames exist and each has a defined job:
+
+| Host                             | Role                                                                                                         |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `allthingsodd.co`                | Canonical production. Every `<link rel="canonical">`, `og:url`, JSON-LD `url` and sitemap entry points here. |
+| `www.allthingsodd.co`            | Redirects to the apex. Surge does this itself — see [Domain migration](#domain-migration).                   |
+| `odd-field-guide.surge.sh`       | Retired production host, **still published with the identical build** so no existing link 404s.              |
+| `odd-field-guide-astro.surge.sh` | Preview. Deliberately outside the automated pipeline; publish to it by hand to eyeball a build.              |
+
+Manual publish, if CI is ever unavailable:
 
 ```bash
 npm run build
-npx surge dist odd-field-guide.surge.sh
+npx surge dist https://allthingsodd.co        # canonical (https:// forces HTTPS)
+rm -f dist/CNAME
+npx surge dist https://odd-field-guide.surge.sh
 ```
 
 The old single-file site's own files/repo still exist untouched at
 `../ODD NEW WEBPAGE/` — they're just no longer what's live. Don't run its
-`npx surge .` again; that would revert the live domain back to the old site.
+`npx surge .` again; that would revert odd-field-guide.surge.sh back to the
+old site.
 
-A **preview** deployment also exists at `odd-field-guide-astro.surge.sh`
-(same command, different subdomain) — useful for checking a build before
-promoting it to the real domain.
+## Domain migration
+
+Cutover from `odd-field-guide.surge.sh` to `allthingsodd.co`, 2026-09-03.
+
+### What changed in this repo
+
+The whole public-URL surface of this site derives from one value — `site` in
+`astro.config.mjs`. Canonical links and `og:url` (`Layout.astro`), OG and
+Twitter image URLs (same), `Organization`/`WebSite` JSON-LD
+(`StructuredData.astro`), the Media page's copyable press URL
+(`media.astro`) and the generated sitemap all read from it, and nothing in
+`src/` hardcodes a production hostname. So the migration is that one line,
+plus two things that genuinely can't read from it:
+
+- `public/robots.txt` — a static file Astro copies verbatim, so its
+  `Sitemap:` line is maintained by hand.
+- `.github/workflows/ci.yml` — the deploy job's publish targets.
+
+`src/scripts/api-base.ts` needed **no** change: the two Growth OS forms post
+to the Worker's own `workers.dev` URL, which is host-independent. What that
+Worker allows is not — see [Cross-repo dependencies](#cross-repo-dependencies).
+
+### DNS and HTTPS
+
+Surge offers two ways to point a domain at it
+([docs](https://surge.sh/docs/platform/custom-domains)): delegate the domain's
+nameservers to `ns1`–`ns4.surge.world`, or add a `CNAME` to `geo.surge.sh` at
+your existing DNS provider. **The second one cannot serve an apex domain** —
+it needs an `ALIAS`/`ANAME`/flattened-CNAME record type, and GoDaddy (where
+`allthingsodd.co` is registered) does not offer one. Surge publishes no A
+record for this purpose either, so there is nothing to point an apex `A` at.
+Nameserver delegation is therefore not a preference here, it is the only
+option that puts the canonical apex on Surge at all.
+
+Once the domain resolves to Surge, everything else is automatic and free
+(custom domains and managed SSL are both on the free plan; only per-request
+server features are not — see [Plan limits](#plan-limits)):
+
+- A managed certificate is issued and renewed with no command to run. Watch
+  it with `npx surge allthingsodd.co debug status` (`securing` → `live`) and
+  inspect it with `npx surge allthingsodd.co debug certs`.
+- `www.allthingsodd.co` folds onto the apex with a redirect, because the
+  apex is the form CI publishes to. No `www` record, no second publish, and
+  no indexable duplicate of the site.
+- `http://` → `https://` is enforced because CI publishes to
+  `https://allthingsodd.co`, scheme included — that is how the setting is
+  expressed on Surge, and it sticks with the project across publishes.
+
+### Plan limits
+
+This Surge account is on the **Free** plan. Free covers unlimited projects,
+custom domains, managed SSL and the CDN. It does **not** cover the
+server-side per-request features, and one of those matters here: redirects
+come from a `ROUTER` file, which is paid-only. **A real 301 from
+`odd-field-guide.surge.sh` to `allthingsodd.co` is therefore not available
+without upgrading the plan.**
+
+The lowest-risk free substitute, and what this repo does:
+
+1. Keep publishing the identical build to the old host. Nothing 404s; every
+   link that exists in the wild still resolves to a working page.
+2. Every page on it already declares `<link rel="canonical">` and `og:url`
+   pointing at `allthingsodd.co`. That is the signal search engines actually
+   use to fold duplicate hosts together, and it does not depend on a 301.
+3. For humans following old links, `Layout.astro` emits a synchronous,
+   path/query/hash-preserving `location.replace()` in `<head>` when it sees
+   the old hostname — gated on `PUBLIC_LEGACY_REDIRECT` being `'1'` at build
+   time, which the deploy job sets.
+
+`PUBLIC_LEGACY_REDIRECT` ships as `'0'`. Flip it to `'1'` in the deploy job's
+`env:` block **only after** `curl -fsI https://allthingsodd.co/` succeeds.
+Turning it on earlier would bounce every visitor on the old host to a domain
+that doesn't answer — taking production down for exactly the audience the
+redirect exists to serve.
+
+### Cross-repo dependencies
+
+Two values live in `../odd-growth-os` and are not fixed by anything in this
+repo:
+
+- **`ALLOWED_ORIGINS`** (`worker/src/index.ts`) — the Worker's CORS
+  allowlist. Without `https://allthingsodd.co` in it, the newsletter signup,
+  the business enquiry form and the whole ticketing flow fail on the new
+  domain with a CORS error. Additive and safe to deploy at any time.
+- **`TICKETS_RETURN_URL`** (`wrangler.toml`) — where Stripe sends a buyer the
+  instant they finish paying. Deliberately **left on the old host** until
+  `allthingsodd.co` resolves: pointed at a domain that doesn't answer yet, it
+  strands a paying buyer on a dead page. (The order itself would still
+  complete — the Stripe webhook records payment, not this redirect — but the
+  buyer couldn't see it.) The old host serves the identical build throughout,
+  so this destination stays correct until it is moved.
+
+The Worker's deploy is manual (`npx wrangler deploy`); its CI deploy job is
+gated off behind the `CLOUDFLARE_DEPLOY_ENABLED` repo variable.
+
+### Outside every repo
+
+- **GA4** — Admin → Data streams → "ODDpage" → set the stream URL to
+  `https://allthingsodd.co`. The measurement ID is host-independent, so
+  collection never stops; this is what keeps the console's own links honest.
+- **Search Console** — add `https://allthingsodd.co` as a property and submit
+  `https://allthingsodd.co/sitemap-index.xml`. The
+  `public/google181860bcd4b9963d.html` verification file ships with every
+  build, so the new host verifies on the same token. Keep the old surge.sh
+  property until Google has moved the index across.
+- **`oddfest.co`** — a separate live Next.js site on Vercel, on its own
+  GoDaddy DNS, carrying Google Workspace mail (`MX`, SPF, verification `TXT`).
+  Nothing in this repo touches it, and its nameservers must not be changed.
+  Redirecting it to `allthingsodd.co/oddfest` is a Vercel-side redirect, not
+  a DNS change.
 
 ## Production workflow
 
@@ -25,7 +143,8 @@ promoting it to the real domain.
 commit to main (code, or CloudCannon content commit)
   → GitHub Actions CI (.github/workflows/ci.yml): check, lint, build, test
   → on green, on main, on push (not PRs): deploy job publishes to
-    odd-field-guide.surge.sh automatically
+    allthingsodd.co (canonical) and odd-field-guide.surge.sh (retired,
+    kept alive) automatically
 ```
 
 `main` is the deploy branch. All three jobs — `checks`, `functional`,
@@ -62,7 +181,9 @@ needed:
 
 ```bash
 npm run build
-npx surge dist odd-field-guide.surge.sh
+npx surge dist https://allthingsodd.co
+rm -f dist/CNAME
+npx surge dist https://odd-field-guide.surge.sh
 ```
 
 ## CI history

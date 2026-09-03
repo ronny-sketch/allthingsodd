@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://odd-field-guide.surge.sh/sitemap-index.xml
+Sitemap: https://allthingsodd.co/sitemap-index.xml

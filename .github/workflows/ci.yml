@@ -98,9 +98,33 @@ jobs:
     # Only main, and only on an actual push (a green PR doesn't deploy) — a
     # content edit from CloudCannon lands here as a normal push to main, same
     # as a code change, so this is what actually closes the loop from "edit
-    # in CloudCannon" to "live on odd-field-guide.surge.sh". See
-    # docs/deployment.md.
+    # in CloudCannon" to "live on allthingsodd.co". See docs/deployment.md.
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    env:
+      # The canonical production host, cut over from odd-field-guide.surge.sh
+      # on 2026-09-03. Published with an explicit https:// scheme, which is
+      # how Surge is told to force HTTPS — from then on every plain-http://
+      # request to this domain answers with a redirect to the https:// URL
+      # (surge.sh/docs/platform/ssl). www.allthingsodd.co needs no publish and
+      # no DNS record of its own: Surge folds www onto whichever form of the
+      # domain you publish to, so publishing the apex makes the apex canonical
+      # and www a redirect onto it automatically (surge.sh/docs/platform/
+      # clean-urls). That is also why there is exactly one canonical URL per
+      # page here rather than an indexable duplicate on www.
+      PRIMARY_DOMAIN: allthingsodd.co
+      # The retired production host. Deliberately still published, with the
+      # identical build, so no link anywhere on the internet 404s. See
+      # LEGACY_REDIRECT below and docs/deployment.md#domain-migration.
+      LEGACY_DOMAIN: odd-field-guide.surge.sh
+      # Flip to '1' once allthingsodd.co is confirmed resolving over HTTPS
+      # (`curl -fsI https://allthingsodd.co`). It makes the build served on
+      # the legacy host forward visitors to the same path on the canonical
+      # host (Layout.astro). Kept at '0' until then because turning it on
+      # before DNS lands would bounce every old-host visitor at a domain that
+      # doesn't answer — taking production down for precisely the people it
+      # exists to protect. Canonical/og:url tags already point at the new
+      # domain regardless, so SEO consolidation does not wait on this.
+      PUBLIC_LEGACY_REDIRECT: '0'
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -117,7 +141,7 @@ jobs:
       # step's comment) while still reporting a green "Deploy to production"
       # job, because `npx surge`'s own exit code doesn't distinguish "I
       # published" from "I sat at an interactive login prompt with no stdin
-      # and gave up." This file is what the last two steps below actually
+      # and gave up." This file is what the verify steps below actually
       # check against, instead of trusting a green checkmark.
       - name: Write build fingerprint
         run: |
@@ -139,28 +163,79 @@ jobs:
             echo "::error::SURGE_TOKEN is empty — refusing to run surge (it would silently no-op at an interactive login prompt instead of failing). Set the SURGE_TOKEN repository secret." >&2
             exit 1
           fi
-          # stdin explicitly from /dev/null: if the token is present but
-          # invalid, this is what turns a hung/eaten prompt into an
-          # immediate EOF the CLI has to react to, rather than silently
-          # succeeding the same way an empty token did.
-          npx surge dist odd-field-guide.surge.sh < /dev/null | tee surge-publish.log
-          grep -q "Success!.*Published to odd-field-guide.surge.sh" surge-publish.log || {
-            echo "::error::surge did not report a completed publish — see the log above." >&2
-            exit 1
+
+          # One build, published to two hosts. `publish <domain> <log>`:
+          # stdin explicitly from /dev/null so a present-but-invalid token
+          # hits an immediate EOF the CLI has to react to, rather than
+          # silently succeeding the way an empty token did; and surge's own
+          # completion line is grepped, because an exit code alone is exactly
+          # what missed the 2026-08-31 incident.
+          publish() {
+            npx surge dist "$1" < /dev/null | tee "$2"
+            # Domain, not an exact phrase: the published target is echoed back
+            # with or without the scheme depending on how it was passed.
+            grep -Eq "Success!.*${3}" "$2" || {
+              echo "::error::surge did not report a completed publish to ${3} — see the log above." >&2
+              exit 1
+            }
           }
+
+          # Canonical host first, with the scheme, which is what enables
+          # Surge's HTTP -> HTTPS redirect for this project.
+          publish "https://$PRIMARY_DOMAIN" surge-primary.log "$PRIMARY_DOMAIN"
+
+          # A publish writes a CNAME file into the published directory
+          # recording the domain (surge.sh/docs/platform/custom-domains).
+          # Removing it before the second publish keeps that leftover out of
+          # the legacy host's build and off the CDN, and guarantees the
+          # explicit domain argument below is the only thing deciding where
+          # this goes.
+          rm -f dist/CNAME
+          publish "https://$LEGACY_DOMAIN" surge-legacy.log "$LEGACY_DOMAIN"
       - name: Verify production is serving this deploy
         run: |
-          for i in 1 2 3 4 5 6 7 8; do
-            LIVE_SHA="$(curl -fsS "https://odd-field-guide.surge.sh/build-info.json?verify=$GITHUB_SHA" | jq -r .sha 2>/dev/null || true)"
-            if [ "$LIVE_SHA" = "$GITHUB_SHA" ]; then
-              echo "Production verified at $GITHUB_SHA"
-              exit 0
+          # Fetches the fingerprint written above from a live host and
+          # compares it to the commit CI actually built. A deploy is not
+          # "done" because the publish command returned 0 — it is done when
+          # production provably serves this SHA. Retries absorb real CDN
+          # propagation delay.
+          #
+          # `tolerant` is only about one specific, precisely detected state:
+          # curl exit 6 is "couldn't resolve host" and nothing else. Until the
+          # GoDaddy nameserver change lands, allthingsodd.co does not resolve
+          # to Surge yet, and a warning is the honest reading of that. It
+          # cannot mask a broken site — a domain that does resolve can never
+          # produce exit 6, so every other failure mode (resolves but serves
+          # the wrong SHA, TLS error, 404, 5xx) still fails the job. Once DNS
+          # is delegated this check hardens itself with no edit needed.
+          verify() {
+            host="$1"; mode="$2"
+
+            if [ "$mode" = "tolerant" ]; then
+              rc=0
+              curl -fsS -o /dev/null --max-time 20 "https://${host}/build-info.json" || rc=$?
+              if [ "$rc" = "6" ]; then
+                echo "::warning::${host} does not resolve yet — the GoDaddy nameserver change has not propagated. Skipping its verification for this run; ${LEGACY_DOMAIN} below is still authoritative for this deploy."
+                return 0
+              fi
             fi
-            echo "Attempt $i/8: production reports '$LIVE_SHA', expected '$GITHUB_SHA' — retrying in 5s..."
-            sleep 5
-          done
-          echo "::error::Production is not serving the deployed SHA $GITHUB_SHA after retries — the publish step reported success but production disagrees. Do not treat this deploy as live." >&2
-          exit 1
+
+            for i in 1 2 3 4 5 6 7 8; do
+              live="$(curl -fsS --max-time 20 "https://${host}/build-info.json?verify=$GITHUB_SHA" | jq -r .sha 2>/dev/null || true)"
+              if [ "$live" = "$GITHUB_SHA" ]; then
+                echo "${host} verified at $GITHUB_SHA"
+                return 0
+              fi
+              echo "Attempt $i/8: ${host} reports '${live}', expected '$GITHUB_SHA' — retrying in 5s..."
+              sleep 5
+            done
+
+            echo "::error::${host} is not serving the deployed SHA $GITHUB_SHA after retries — the publish step reported success but production disagrees. Do not treat this deploy as live." >&2
+            return 1
+          }
+
+          verify "$PRIMARY_DOMAIN" tolerant
+          verify "$LEGACY_DOMAIN" strict
     # Growth OS's own Cloudflare Worker deploy (formerly a
     # `deploy-cloudflare-preview` job here) now lives in its own repo,
     # ../odd-growth-os, with its own CI — see that repo's

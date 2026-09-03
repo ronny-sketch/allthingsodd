@@ -388,5 +388,10 @@ reference for this migration (see CLAUDE.md's "What this is") — not a
 design-parity requirement for changes made since. Its own files/repo are
 untouched by this project, but **its `npx surge .` deploy path is no longer
 what serves odd-field-guide.surge.sh** — cutover happened 2026-08-20; running
-that command again would revert the live domain back to the old site, so
-don't. See [deployment.md](deployment.md) for the current deploy path.
+that command again would revert that domain back to the old site, so don't.
+Since the 2026-09-03 domain migration the canonical production host is
+`allthingsodd.co`; odd-field-guide.surge.sh is still published with the same
+build, which is precisely why running the old command remains dangerous. See
+[deployment.md](deployment.md) for the current deploy path and
+[deployment.md#domain-migration](deployment.md#domain-migration) for the
+cutover.
