@@ -67,6 +67,16 @@ for (const width of MOBILE_WIDTHS) {
         await suppressInterruptions(page);
         await page.goto(route);
         await page.waitForLoadState('load');
+        // Geometry must not be measured while the page is still in fallback
+        // fonts. Every width here is text-driven, and the fallback metrics
+        // are wider than the real faces — enough to report overflow that
+        // does not exist once the webfonts land. On a developer machine the
+        // 1200ms settle below hides that; on a loaded CI runner it does not,
+        // which is exactly how this suite first failed (chromium measured
+        // 375px and webkit 333px at the same 320px viewport — two different
+        // fallback stacks, neither of them the real design). Same reason
+        // tests/visual/pages.spec.ts awaits this before every screenshot.
+        await page.evaluate(() => document.fonts.ready);
         await page.waitForTimeout(1200);
 
         const { scrollWidth, clientWidth } = await page.evaluate(() => ({
@@ -100,6 +110,11 @@ test.describe('landscape and short viewports', () => {
       for (const route of ['/oddfest', '/oddference', '/oddspace']) {
         await page.goto(route);
         await page.waitForLoadState('load');
+        // Same reason as above: a hero's height is driven by the headline's
+        // wrapped line count, so measuring in fallback fonts can report a
+        // hero taller than the viewport purely because the text wrapped one
+        // line further than it will for a real visitor.
+        await page.evaluate(() => document.fonts.ready);
         await page.waitForTimeout(800);
 
         const { scrollWidth, clientWidth } = await page.evaluate(() => ({

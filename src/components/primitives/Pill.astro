@@ -102,6 +102,34 @@ const Tag = href ? 'a' : 'button';
   .pill:focus-visible {
     outline-offset: 2px;
   }
+  /* Narrow screens: a Pill may never be wider than the column it sits in.
+     `white-space: nowrap` above is right on desktop — CTAs belong on one
+     line — but it makes a long label's min-content width a hard floor on
+     whatever grid or flex track holds the button, and that floor propagates
+     all the way up to the document, producing page-level horizontal
+     overflow rather than a clipped button.
+
+     This has now bitten three pages independently: ODDference's "Talk to us
+     about partnering →" (patched in that page's own CSS), ODDfest's
+     "Register your event idea" (which regressed the moment the copywriting
+     pass introduced it — measured 294px wide inside a 264px column at
+     320px, i.e. 30px of document overflow), and Membership's tier grid.
+     Patching each page as it appears is whack-a-mole: the next long CTA
+     label an editor writes reintroduces it, and CloudCannon means labels are
+     editable content.
+
+     Letting the label wrap below 480px removes the whole class of defect at
+     the primitive, for every existing and future caller. `max-width: 100%`
+     is what actually caps the box; `white-space: normal` is what lets the
+     text reflow inside that cap instead of being clipped. Desktop and tablet
+     keep the single-line treatment exactly as approved. */
+  @media (max-width: 480px) {
+    .pill {
+      white-space: normal;
+      max-width: 100%;
+      text-align: center;
+    }
+  }
   /* Touch (2026-09-02 mobile experience pass). Two separate problems, one
      media query:
 

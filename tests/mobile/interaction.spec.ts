@@ -52,7 +52,11 @@ test.describe('mobile navigation', () => {
   test('tapping a menu link navigates and closes the menu', async ({ page }) => {
     await page.locator('#menuToggle').tap();
     await page.locator('#menuOverlay .menu-links a[href="/oddfest"]').tap();
-    await page.waitForURL('**/oddfest');
+    // Trailing-slash-tolerant: whether a host serves /oddfest or /oddfest/ is
+    // the server's choice (astro preview omits it, a plain static server
+    // 301s to it), and this test is about the tap navigating — not about
+    // which of the two forms the URL settles on.
+    await page.waitForURL(/\/oddfest\/?$/);
     await expect(page.locator('#menuOverlay')).not.toHaveClass(/is-open/);
   });
 });
@@ -70,8 +74,12 @@ test.describe('touch targets and card taps', () => {
     await card.scrollIntoViewIfNeeded();
     await page.waitForTimeout(900);
     const href = await card.getAttribute('href');
+    // A program card with no href would make the rest of this test
+    // meaningless rather than failing usefully, so assert it first.
+    expect(href, 'program card should be a real link').toBeTruthy();
     await card.tap();
-    await page.waitForURL(`**${href}`);
+    // Same trailing-slash tolerance as the menu-link test above.
+    await page.waitForURL(new RegExp(`${href!.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/?$`));
   });
 
   test('primary buttons meet the 44px touch-target minimum', async ({ page }) => {
