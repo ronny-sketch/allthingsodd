@@ -3,10 +3,14 @@
 The production site for ODD (ODDfest / ODDference / ODDspace / ODDagency) —
 Astro + structured content, edited through CloudCannon.
 
-> **This is live** at **odd-field-guide.surge.sh** (cut over 2026-08-20). The
-> old single-file build at `../ODD NEW WEBPAGE/` is no longer deployed — see
+> **This is live** at **https://allthingsodd.co** (domain cutover 2026-09-03;
+> before that, odd-field-guide.surge.sh, which is still published with the
+> identical build so no existing link breaks). The old single-file build at
+> `../ODD NEW WEBPAGE/` is no longer deployed — see
 > [docs/deployment.md](docs/deployment.md) for how a change reaches
-> production now.
+> production now, and
+> [docs/deployment.md#domain-migration](docs/deployment.md#domain-migration)
+> for what the domain change did and did not touch.
 
 ## Install and run
 
