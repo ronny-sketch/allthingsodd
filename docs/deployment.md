@@ -102,6 +102,72 @@ Once the nameservers point at Surge, the tolerant branch can never be taken
 again and the canonical host is checked as strictly as the legacy one, with
 no edit needed.
 
+### www and its certificate
+
+`www.allthingsodd.co` returns a server-side **301** to the same path on the
+apex, over HTTPS, with a valid certificate. Getting there was not automatic
+and the arrangement is easy to break by accident, so:
+
+**Two independent mechanisms have to both hold.**
+
+1. **The 301 is Surge's automatic www-folding**, which applies only while
+   _nothing is published at www_. Publishing any project there replaces the
+   redirect with that project's content — verified the hard way on
+   2026-09-03, when a project at www turned the 301 into a `200`.
+2. **The certificate is issued per published domain.** So at cutover www had
+   none, and Surge served its default `*.surge.sh` certificate — a
+   browser-visible security warning on the canonical domain's most likely
+   typo. The apex certificate does not cover it (`Alt Names:
+allthingsodd.co`, nothing else).
+
+Those two facts pull in opposite directions: www needs a certificate, which
+requires publishing to it, but publishing to it destroys the redirect.
+
+**What resolved it:** publish www once purely to trigger certificate
+issuance, then tear that project down so the automatic 301 resumes. The
+certificate survives the teardown.
+
+```bash
+npx surge <some-dir> https://www.allthingsodd.co   # triggers issuance
+npx surge www.allthingsodd.co teardown             # restores the 301
+```
+
+**The open risk.** Because www is no longer a project, its renewal cannot be
+inspected — `surge www.allthingsodd.co debug certs` answers `Unauthorized`.
+Whether Surge auto-renews a certificate for a domain with no project is
+genuinely unknown, not assumed, and the certificate expires ~90 days after
+2026-09-03. The `deploy` job therefore asserts on every deploy that www still
+answers `301` to the apex over HTTPS; `curl` without `-k` fails on an invalid
+certificate, so a lapse fails the build loudly instead of reaching a visitor
+as a security warning. If that check ever fires, re-run the two commands
+above.
+
+**Do not publish anything to www** to "fix" a problem there — that is what
+breaks the redirect. Publish, then tear down.
+
+### The deploy token must not be domain-scoped
+
+The `SURGE_TOKEN` secret created during the 2026-08-31 incident fix was
+scoped with `--domain odd-field-guide.surge.sh`. The first deploy after the
+domain migration failed on it:
+
+```
+Aborted - you do not have permission to publish to allthingsodd.co
+```
+
+`surge tokens add` accepts only one `--domain`, so a domain-scoped token
+cannot cover a site that publishes to two hosts. The secret must hold an
+**account-scoped** token — `surge tokens add` with no `--domain`:
+
+```bash
+npx surge tokens add -m "github-actions-ci-<date>" \
+  | gh secret set SURGE_TOKEN --repo ronny-sketch/odd-field-guide
+```
+
+Worth noting the failure was caught rather than silent: the publish step
+greps surge's own completion line, so an aborted publish failed the job
+instead of reporting green — the exact protection added after 2026-08-31.
+
 ### Plan limits
 
 This Surge account is on the **Free** plan. Free covers unlimited projects,
