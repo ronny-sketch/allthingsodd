@@ -63,14 +63,14 @@ const { items } = Astro.props;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .audience-list {
+    :global(html.reveal-js) .audience-list {
       opacity: 0;
       transform: translateY(14px);
       transition:
         opacity 0.55s ease,
         transform 0.55s ease;
     }
-    .audience-list.in {
+    :global(html.reveal-js) .audience-list.in {
       opacity: 1;
       transform: none;
     }

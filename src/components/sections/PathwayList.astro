@@ -61,6 +61,17 @@ const { title, cards } = Astro.props;
   .pathway-list {
     padding: var(--space-24) 0;
   }
+  /* Mobile rhythm. 6rem top+bottom is tuned for a desktop column; stacked on
+     a phone it puts ~192px of empty screen between two sections (measured
+     across /work-with-odd, /oddference, /oddspace, /about and /media). Halved
+     to match layout.css's own `section` reduction at the same breakpoint, so
+     page-level and component-level sections stay on one rhythm — see that
+     file's comment, which flags exactly this class of override. */
+  @media (max-width: 640px) {
+    .pathway-list {
+      padding: var(--space-12) 0;
+    }
+  }
   .pathway-rows {
     display: flex;
     flex-direction: column;
@@ -78,8 +89,10 @@ const { title, cards } = Astro.props;
     color: inherit;
     transition: background-color var(--duration-fast) ease;
   }
-  .pathway-row:hover {
-    background: color-mix(in srgb, var(--color-backstage) 60%, transparent);
+  @media (hover: hover) {
+    .pathway-row:hover {
+      background: color-mix(in srgb, var(--color-backstage) 60%, transparent);
+    }
   }
   .pathway-row-number {
     display: flex;
@@ -110,8 +123,10 @@ const { title, cards } = Astro.props;
     filter: contrast(1.05) saturate(1.15);
     transition: transform var(--duration-base) ease;
   }
-  .pathway-row:hover :global(.pathway-row-img) {
-    transform: scale(1.05);
+  @media (hover: hover) {
+    .pathway-row:hover :global(.pathway-row-img) {
+      transform: scale(1.05);
+    }
   }
   .pathway-row-img--empty {
     background: var(--color-paper-12);
@@ -151,9 +166,30 @@ const { title, cards } = Astro.props;
     padding-bottom: 0.15rem;
     transition: border-color var(--duration-fast) ease;
   }
-  .pathway-row:hover .pathway-go {
-    border-color: var(--color-paper);
+  @media (hover: hover) {
+    .pathway-row:hover .pathway-go {
+      border-color: var(--color-paper);
+    }
   }
+  /* Touch press state. `(hover: hover)` above keeps the pointer-only
+     enhancements off touchscreens, where iOS leaves :hover stuck on the
+     last-tapped element; this is what replaces them — an immediate, physical
+     acknowledgement at the moment of the tap. The tap-highlight reset is
+     paired with it deliberately: the platform's grey flash is only removed
+     because there is a real state taking its place. */
+  @media (hover: none) {
+    .pathway-row {
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.12s ease;
+    }
+    .pathway-row:active {
+      background: color-mix(in srgb, var(--color-backstage) 75%, transparent);
+    }
+    .pathway-row:active .pathway-go {
+      border-color: var(--color-paper);
+    }
+  }
+
   @media (max-width: 700px) {
     .pathway-row {
       grid-template-columns: 4rem 1fr;
@@ -176,14 +212,14 @@ const { title, cards } = Astro.props;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .pathway-rows .pathway-row {
+    :global(html.reveal-js) .pathway-rows .pathway-row {
       opacity: 0;
       transform: translateY(14px);
       transition:
         opacity 0.5s ease,
         transform 0.5s ease;
     }
-    .pathway-rows.in .pathway-row {
+    :global(html.reveal-js) .pathway-rows.in .pathway-row {
       opacity: 1;
       transform: none;
     }

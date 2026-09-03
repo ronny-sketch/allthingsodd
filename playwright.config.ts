@@ -14,7 +14,10 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: [['html', { open: 'never' }]],
   use: {
-    baseURL: 'http://localhost:4321',
+    // Overridable so a second preview server (a baseline build, a different
+    // port when 4321 is already taken by another checkout) can be targeted
+    // without editing this file.
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:4321',
     screenshot: 'only-on-failure',
     // The mosaic Ken-Burns pans, hero tilt, filmstrip drift, and marquees are
     // JS rAF loops, not CSS @keyframes, so Playwright's `animations: 'disabled'`
@@ -71,6 +74,44 @@ export default defineConfig({
       name: 'functional-webkit',
       testDir: './tests/functional',
       use: { ...devices['Desktop Safari'] },
+    },
+
+    // Mobile, with motion actually ON (2026-09-02 mobile experience pass).
+    //
+    // Every project above inherits this file's global `reducedMotion:
+    // 'reduce'`, which is correct for deterministic screenshots but meant
+    // that normal-motion mobile behaviour — the reveal system, the mosaic,
+    // real video playback, touch press states — had no coverage at all. That
+    // is exactly where this pass found its defects: content that could never
+    // become visible because an IntersectionObserver threshold was
+    // unreachable is invisible only when the animation is running.
+    //
+    // These two projects re-enable motion explicitly and run the mobile
+    // suite on both engines. WebKit is not optional here: it is the closest
+    // available stand-in for mobile Safari, and its autoplay and observer
+    // behaviour differ from Chromium's in ways that have already produced
+    // real divergence (see tests/mobile/video.spec.ts).
+    {
+      name: 'mobile-motion-chromium',
+      testDir: './tests/mobile',
+      use: { ...devices['Pixel 7'], ...({ reducedMotion: 'no-preference' } as const) },
+    },
+    {
+      name: 'mobile-motion-webkit',
+      testDir: './tests/mobile',
+      use: { ...devices['iPhone 13'], ...({ reducedMotion: 'no-preference' } as const) },
+    },
+    // The reduced-motion half of the same contract — that suppressing motion
+    // suppresses *motion*, and never content.
+    {
+      name: 'mobile-reduced-chromium',
+      testDir: './tests/mobile-reduced',
+      use: { ...devices['Pixel 7'], ...({ reducedMotion: 'reduce' } as const) },
+    },
+    {
+      name: 'mobile-reduced-webkit',
+      testDir: './tests/mobile-reduced',
+      use: { ...devices['iPhone 13'], ...({ reducedMotion: 'reduce' } as const) },
     },
   ],
 });

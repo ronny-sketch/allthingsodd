@@ -49,10 +49,34 @@ const {
 } = Astro.props;
 ---
 
-<header class={`oddfest-hero oddfest-hero--${accent} reveal`}>
-  <video autoplay muted loop playsinline poster={poster.src}>
-    <source src={video} type="video/mp4" />
-  </video>
+{
+  /* No `.reveal` on the hero itself (removed 2026-09-02): this is the page's
+     first paint and its LCP candidate, and gating it on an
+     IntersectionObserver meant the whole first screen started at opacity 0
+     and depended on JS to become visible at all. Its own entrance is a CSS
+     animation instead — see .oddfest-hero-overlay below — which can't fail
+     open. */
+}
+<header class={`oddfest-hero oddfest-hero--${accent}`} data-video-stage>
+  {
+    /* Real <img>, not the <video poster> attribute. The poster attribute is
+       only shown while a video element has no frame of its own, which makes
+       it invisible to LCP, unavailable without JS, and impossible to fade
+       between — the whole hero is either the still or the film with a hard
+       cut. As a sibling layer it is the guaranteed rendering, and the video
+       crossfades over it only once autoplay-video.ts has confirmed real
+       playback (mobile Safari refuses inline autoplay in more cases than
+       Chromium; a refusal now leaves a photograph, never a black frame). */
+  }
+  <Image
+    src={poster}
+    alt=""
+    width={poster.width}
+    data-video-poster
+    loading="eager"
+    fetchpriority="high"
+  />
+  <video data-autoplay-video muted loop playsinline preload="none" data-src={video}></video>
   <div class="oddfest-hero-scrim"></div>
   <div class="oddfest-hero-overlay">
     <div class="oddfest-hero-logo">
@@ -79,6 +103,8 @@ const {
   </div>
 </header>
 
+<script src="../../scripts/autoplay-video.ts"></script>
+
 <style>
   /* Full-frame height (2026-08-31, requirement 23): nav + hero should read
      as one first viewport, not nav-height-plus-92vh (previously always
@@ -100,13 +126,31 @@ const {
     overflow: hidden;
     background: #000;
   }
+  /* Poster and video occupy the identical box so the crossfade between them
+     can't move a pixel. */
   .oddfest-hero video,
-  .oddfest-hero img {
+  .oddfest-hero :global(img[data-video-poster]) {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
     filter: contrast(1.05) saturate(1.15) brightness(0.8);
+  }
+  .oddfest-hero video {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--duration-slow) ease;
+  }
+  .oddfest-hero[data-video-state='playing'] video {
+    opacity: 1;
+    visibility: visible;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .oddfest-hero video {
+      transition: none;
+    }
   }
   .oddfest-hero-scrim {
     position: absolute;
@@ -142,6 +186,39 @@ const {
     text-align: center;
     gap: 1.1rem;
     padding: 2rem;
+  }
+  /* Short viewports — landscape phones above all, but also a small laptop
+     window or a zoomed-in page.
+
+     The `min-height: 540px` floor above protects the logo/headline/meta/CTA
+     stack in portrait, but on a 375px-tall landscape phone it forces the hero
+     to 1.4x the viewport height: the CTAs end up below the fold of a hero
+     that is supposed to *be* the first screen, and the reader has to scroll a
+     full-bleed video to find the button.
+
+     Here the floor is dropped and the composition sized by its own content
+     instead: the overlay returns to normal flow so the header is exactly as
+     tall as the stack inside it needs, with the viewport height as a
+     *minimum* rather than a fixed target. The media stays absolutely
+     positioned behind it, so the full-frame effect is unchanged — the frame
+     just stops being taller than the screen. Portrait is untouched. */
+  @media (max-height: 620px) {
+    .oddfest-hero {
+      height: auto;
+      min-height: calc(100vh - var(--nav-h));
+      min-height: calc(100svh - var(--nav-h));
+      display: flex;
+    }
+    .oddfest-hero-overlay {
+      position: relative;
+      inset: auto;
+      flex: 1;
+      padding: 2rem 1.5rem;
+      gap: 0.8rem;
+    }
+    .oddfest-hero-logo {
+      width: min(380px, 58vw);
+    }
   }
   .oddfest-hero-logo {
     /* min(440px, 62vw) sized the old ~3:1 generic mark; a real wordmark
@@ -183,5 +260,38 @@ const {
     justify-content: center;
     gap: 0.9rem;
     margin-top: 0.8rem;
+  }
+  /* The hero's entrance, replacing the `.reveal` class this header used to
+     carry (see the markup comment above). A plain CSS animation with `both`
+     fill runs unconditionally at load and always finishes at the visible
+     state — there is no observer, no class toggle and no script that could
+     fail and leave the first screen blank. The staggered children are what
+     gives the frame the same "assembling" feel the shared reveal had. */
+  @media (prefers-reduced-motion: no-preference) {
+    .oddfest-hero-logo,
+    .oddfest-hero-sub,
+    .oddfest-hero-meta,
+    .oddfest-hero-cta {
+      animation: hero-frame-in 0.9s var(--ease-out-expo) both;
+    }
+    .oddfest-hero-sub {
+      animation-delay: 0.1s;
+    }
+    .oddfest-hero-meta {
+      animation-delay: 0.18s;
+    }
+    .oddfest-hero-cta {
+      animation-delay: 0.26s;
+    }
+  }
+  @keyframes hero-frame-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 </style>

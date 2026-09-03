@@ -99,9 +99,19 @@ GitHub (canonical repo, version history)
    compose sections; sections compose primitives; nothing skips a layer.
 4. **Motion respects `prefers-reduced-motion`, always.** Every animation in this
    codebase (CSS `@keyframes`, JS `requestAnimationFrame` loop, or autoplay
-   video) has a reduced-motion branch. See `src/scripts/reduced-motion-video.ts`
-   for the pattern used for video specifically — swap to a static poster
-   `<img>` entirely, don't just pause in place (leaves a decode-timing race).
+   video) has a reduced-motion branch. For video that's
+   `src/scripts/autoplay-video.ts`: the poster `<img>` is a real, permanent
+   sibling layer and the `<video>` only fades in over it once playback is
+   _confirmed_, so reduced motion simply never starts the video (and never
+   downloads it) rather than swapping DOM around. It replaced
+   `reduced-motion-video.ts` in the 2026-09-02 mobile pass.
+5. **An animation may never be the only thing making content visible.**
+   `.reveal`'s hidden state is scoped to `html.reveal-js`, which
+   `src/scripts/reveal.ts` adds itself — so a script error, a blocked bundle
+   or an old browser renders plain visible content instead of a blank page.
+   Any new entrance animation follows the same convention: gate the _hidden_
+   half on `:global(html.reveal-js)`, and gate the `.in` half too so the
+   relative specificity still resolves. See `src/styles/motion.css`.
 
 ## CMS rules
 
@@ -147,7 +157,7 @@ GitHub (canonical repo, version history)
   (`npm run preview` first — see `docs/deployment.md#local-preview`, this
   project's dev/preview servers are managed background daemons, not
   foreground processes, so Playwright doesn't own their lifecycle). Two
-  suites, eight browser projects total:
+  suites, twelve browser projects total:
   - `tests/visual/pages.spec.ts` — full-page screenshot regression + a
     per-route console-error check, one engine per breakpoint (mobile →
     wide). A layout/structure change that intentionally changes a page's
@@ -158,6 +168,32 @@ GitHub (canonical repo, version history)
     routing) run across chromium, firefox, _and_ webkit — see
     `playwright.config.ts`'s `functional-*` projects. This is what actually
     catches a cross-browser interaction bug; the visual suite alone can't.
+  - `tests/mobile/*.spec.ts` — mobile QA **with motion enabled**, on
+    Chromium and WebKit (`mobile-motion-*` projects). Added 2026-09-02
+    because every other project inherits this config's global
+    `reducedMotion: 'reduce'`, under which motion.css keeps all `.reveal`
+    content visible unconditionally — so no existing test could see a
+    reveal, video or touch defect at all. Covers: nothing left invisible
+    after a real-speed scroll, tall reveal targets, per-route/per-width
+    overflow with the offending element named, the video lifecycle
+    (poster-before-playback, refused autoplay, failed fetch, offscreen
+    pause), mobile nav, 44px touch targets.
+  - `tests/mobile-reduced/*.spec.ts` — the other half of the same contract
+    (`mobile-reduced-*` projects): reduced motion suppresses motion and
+    never content, and no video is even requested.
+
+  **Known gap, not yet fixed:** `reducedMotion` declared on a project's
+  `use` block does not reach the browser in this Playwright/engine
+  combination — verified directly. The visual suite's screenshots are
+  therefore captured with motion running despite this config asking for
+  `reduce`, and `tests/mobile-reduced` has to call
+  `page.emulateMedia({ reducedMotion: 'reduce' })` itself (it asserts the
+  preference really applied before testing anything else). Relatedly, the
+  visual suite is currently flaky on pages carrying WarpingText: an
+  unmodified `origin/main` failed 10 of its own committed baselines on the
+  same machine that failed 8 with this branch, with the failing set moving
+  between runs. Treat a visual diff on those pages as unproven until it
+  reproduces.
 
 ## Deployment workflow
 

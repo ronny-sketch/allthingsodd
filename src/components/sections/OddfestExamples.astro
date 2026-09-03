@@ -61,8 +61,10 @@ const { items } = Astro.props;
     color: inherit;
     transition: background-color var(--duration-fast) ease;
   }
-  a.example-card:hover {
-    background: color-mix(in srgb, var(--color-backstage) 85%, var(--color-paper) 15%);
+  @media (hover: hover) {
+    a.example-card:hover {
+      background: color-mix(in srgb, var(--color-backstage) 85%, var(--color-paper) 15%);
+    }
   }
   .example-media {
     position: relative;
@@ -78,9 +80,30 @@ const { items } = Astro.props;
     filter: contrast(1.05) saturate(1.15) brightness(0.92);
     transition: transform 0.6s ease;
   }
-  a.example-card:hover .example-media :global(.example-media-img) {
-    transform: scale(1.05);
+  @media (hover: hover) {
+    a.example-card:hover .example-media :global(.example-media-img) {
+      transform: scale(1.05);
+    }
   }
+  /* Touch press state. `(hover: hover)` above keeps the pointer-only
+     enhancements off touchscreens, where iOS leaves :hover stuck on the
+     last-tapped element; this is what replaces them — an immediate, physical
+     acknowledgement at the moment of the tap. The tap-highlight reset is
+     paired with it deliberately: the platform's grey flash is only removed
+     because there is a real state taking its place. */
+  @media (hover: none) {
+    a.example-card {
+      -webkit-tap-highlight-color: transparent;
+      transition:
+        transform 0.12s ease,
+        background 0.12s ease;
+    }
+    a.example-card:active {
+      transform: scale(0.985);
+      background: color-mix(in srgb, var(--color-backstage) 85%, var(--color-paper) 15%);
+    }
+  }
+
   .example-media--empty {
     background:
       radial-gradient(ellipse 70% 70% at 30% 20%, rgb(226 223 222 / 6%) 0%, transparent 60%),
@@ -122,14 +145,14 @@ const { items } = Astro.props;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .examples-grid .example-card {
+    :global(html.reveal-js) .examples-grid .example-card {
       opacity: 0;
       transform: translateY(16px);
       transition:
         opacity 0.55s ease,
         transform 0.55s ease;
     }
-    .examples-grid.in .example-card {
+    :global(html.reveal-js) .examples-grid.in .example-card {
       opacity: 1;
       transform: none;
     }

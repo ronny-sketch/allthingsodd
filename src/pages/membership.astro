@@ -81,6 +81,17 @@ const page = entry.data;
   .mem-sub {
     padding: var(--space-24) 0;
   }
+  /* Mobile rhythm. 6rem top+bottom is tuned for a desktop column; stacked on
+     a phone it puts ~192px of empty screen between two sections (measured
+     across /work-with-odd, /oddference, /oddspace, /about and /media). Halved
+     to match layout.css's own `section` reduction at the same breakpoint, so
+     page-level and component-level sections stay on one rhythm — see that
+     file's comment, which flags exactly this class of override. */
+  @media (max-width: 640px) {
+    .mem-sub {
+      padding: var(--space-12) 0;
+    }
+  }
   .mem-includes {
     display: grid;
     /* --cols (set inline, per instance) — see ProofGrid/wwo-cards for the

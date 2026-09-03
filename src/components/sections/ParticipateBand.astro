@@ -176,14 +176,14 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .participate .p-cta {
+    :global(html.reveal-js) .participate .p-cta {
       opacity: 0;
       transform: translateY(14px);
       transition:
         opacity 0.55s ease,
         transform 0.55s ease;
     }
-    .participate.in .p-cta {
+    :global(html.reveal-js) .participate.in .p-cta {
       opacity: 1;
       transform: none;
     }

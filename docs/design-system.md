@@ -88,9 +88,11 @@ no-preference)` around the animation declaration itself (not just a
    drift) — each checks
    `window.matchMedia('(prefers-reduced-motion: reduce)')` before starting and
    either no-ops or falls back to a static equivalent. Autoplaying video gets
-   the same treatment via `src/scripts/reduced-motion-video.ts`, which
-   replaces the `<video>` element outright with its poster `<img>` — not just
-   `.pause()`, which still leaves a decode/paint race.
+   the same treatment via `src/scripts/autoplay-video.ts`, which keeps the
+   poster `<img>` as a permanent sibling layer and only fades the `<video>`
+   in over it once real playback is confirmed — so reduced motion never
+   starts (or even downloads) the video, and a refused autoplay anywhere
+   leaves a photograph rather than an empty frame.
 
 Anything new that moves needs the same treatment.
 

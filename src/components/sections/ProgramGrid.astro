@@ -95,15 +95,38 @@ const { title, cards } = Astro.props;
       padding: 1.75rem;
     }
   }
+  /* One card per row on a phone. The card is 4:3 on tablet because there are
+     two of them side by side and each is half as wide; full-width at 390px
+     that same ratio gives a 292px-tall box, and the card's own stack (meta,
+     title, a four-line paragraph, the go link) needs ~260px of it. The text
+     therefore filled the card top to bottom and rode up out of the scrim's
+     dark zone into the bright top of the photograph — confirmed on the
+     homepage's ODDference card, where the eyebrow and title sat over a
+     high-key filmstrip image and were barely readable.
+
+     Two changes together: a squarer card gives the copy a bottom third to
+     live in, and the scrim gets a real midpoint instead of falling away to
+     5% by half height, so the text has a floor of contrast wherever it lands
+     as the copy length changes. Desktop and tablet keep their own ratios and
+     the original scrim. */
   @media (max-width: 760px) {
     .four-grid {
       grid-template-columns: 1fr;
     }
     .four-card {
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 1 / 1;
     }
     .four-card-body {
-      padding: 2.2rem;
+      padding: 1.9rem;
+    }
+    .four-card-scrim {
+      background: linear-gradient(
+        to top,
+        rgb(0 0 0 / 92%) 0%,
+        rgb(0 0 0 / 72%) 45%,
+        rgb(0 0 0 / 38%) 75%,
+        rgb(0 0 0 / 18%) 100%
+      );
     }
   }
   .four-card :global(.four-card-bg) {
@@ -117,9 +140,11 @@ const { title, cards } = Astro.props;
       transform 0.6s ease,
       filter var(--duration-base) ease;
   }
-  .four-card:hover :global(.four-card-bg) {
-    transform: scale(1.06);
-    filter: brightness(0.92) contrast(1.08) saturate(1.35);
+  @media (hover: hover) {
+    .four-card:hover :global(.four-card-bg) {
+      transform: scale(1.06);
+      filter: brightness(0.92) contrast(1.08) saturate(1.35);
+    }
   }
   .four-card-bg--empty {
     background:
@@ -181,19 +206,42 @@ const { title, cards } = Astro.props;
     padding-bottom: 0.15rem;
     transition: border-color var(--duration-fast) ease;
   }
-  .four-card:hover .four-card-body .go {
-    border-color: var(--color-paper);
+  @media (hover: hover) {
+    .four-card:hover .four-card-body .go {
+      border-color: var(--color-paper);
+    }
+  }
+  /* Touch press state. `(hover: hover)` above keeps the pointer-only
+     enhancements off touchscreens, where iOS leaves :hover stuck on the
+     last-tapped element; this is what replaces them — an immediate, physical
+     acknowledgement at the moment of the tap. The tap-highlight reset is
+     paired with it deliberately: the platform's grey flash is only removed
+     because there is a real state taking its place. */
+  @media (hover: none) {
+    .four-card {
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.12s ease;
+    }
+    .four-card:active {
+      transform: scale(0.985);
+    }
+    .four-card:active :global(.four-card-bg) {
+      filter: brightness(0.95) contrast(1.08) saturate(1.35);
+    }
+    .four-card:active .four-card-body .go {
+      border-color: var(--color-paper);
+    }
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .four-grid .four-card {
+    :global(html.reveal-js) .four-grid .four-card {
       opacity: 0;
       transform: translateY(18px);
       transition:
         opacity var(--duration-slow) ease,
         transform var(--duration-slow) ease;
     }
-    .four-grid.in .four-card {
+    :global(html.reveal-js) .four-grid.in .four-card {
       opacity: 1;
       transform: none;
     }

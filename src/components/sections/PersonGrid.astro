@@ -91,8 +91,10 @@ const { items } = Astro.props;
     filter: contrast(1.05) saturate(1.1) grayscale(0.15);
     transition: filter var(--duration-fast) ease;
   }
-  .person-card.has-photo:hover .person-photo :global(img) {
-    filter: contrast(1.05) saturate(1.25) grayscale(0);
+  @media (hover: hover) {
+    .person-card.has-photo:hover .person-photo :global(img) {
+      filter: contrast(1.05) saturate(1.25) grayscale(0);
+    }
   }
   .person-card.has-photo .person-name,
   .person-card.has-photo .person-role,
@@ -123,14 +125,14 @@ const { items } = Astro.props;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .person-grid .person-card {
+    :global(html.reveal-js) .person-grid .person-card {
       opacity: 0;
       transform: translateY(14px);
       transition:
         opacity 0.5s ease,
         transform 0.5s ease;
     }
-    .person-grid.in .person-card {
+    :global(html.reveal-js) .person-grid.in .person-card {
       opacity: 1;
       transform: none;
     }
