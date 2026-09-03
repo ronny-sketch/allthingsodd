@@ -164,12 +164,15 @@ GitHub (canonical repo, version history)
 See `docs/deployment.md`. Short version: GitHub is canonical, CI
 (`.github/workflows/ci.yml`) gates `main`, and CloudCannon commits content
 changes back into the same repo. **This build is live** at
-`odd-field-guide.surge.sh` (cut over 2026-08-20) — the old single-file
-site's own deploy path is no longer what's serving that domain.
+`https://allthingsodd.co` (domain cutover 2026-09-03; before that
+`odd-field-guide.surge.sh`, which is still published with the identical
+build so no existing link 404s) — the old single-file site's own deploy path
+is no longer what's serving either domain.
 
 **Corrected 2026-08-21:** deploy is CI-automated, not manual — the `deploy`
-job in `.github/workflows/ci.yml` runs `npx surge dist
-odd-field-guide.surge.sh` automatically on every push to `main` that passes
+job in `.github/workflows/ci.yml` runs `npx surge dist` against
+`allthingsodd.co` (canonical) and `odd-field-guide.surge.sh` (retired, kept
+alive) automatically on every push to `main` that passes
 `checks`/`functional` (this is what makes a CloudCannon content commit go
 live with no one running a manual command). A prior version of this file
 said deploys were manual; that was stale. Treat any push to `main` as a real
