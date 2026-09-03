@@ -395,8 +395,41 @@ collections_config:
           subtype: object
       contact:
         type: object
-        label: Contact intro (Work with ODD only)
-        comment: The short prompt shown above the embedded inquiry form.
+        label: Contact block
+        comment: >-
+          On Work with ODD, the short prompt above the embedded enquiry form.
+          On Privacy & cookies, the controller's name, email and postal
+          address at the foot of the policy — which GDPR Article 13 requires
+          to be there, so empty it at your peril.
+        options:
+          subtype: object
+      lastUpdated:
+        type: text
+        label: Last updated (legal pages only)
+        comment: >-
+          Shown at the top of the policy. Change it whenever you change
+          anything below — a policy with a stale date is weaker evidence of
+          what was in force when. Written out in full, e.g. "3 September 2026".
+      sections:
+        type: array
+        label: Policy sections (legal pages only)
+        comment: >-
+          The body of the policy, in order. Each section is a heading, one or
+          more paragraphs, and an optional bulleted list. The cookie table is
+          NOT edited here — it is generated from the site's own consent
+          configuration so it cannot disagree with what the site actually
+          sets.
+        options:
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+      cookieSection:
+        type: object
+        label: Cookie section intro (legal pages only)
+        comment: >-
+          The prose above and around the automatically generated cookie
+          table, plus the label on the button that reopens the cookie banner.
         options:
           subtype: object
       finalCta:
