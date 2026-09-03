@@ -101,6 +101,43 @@ Turning it on earlier would bounce every visitor on the old host to a domain
 that doesn't answer — taking production down for exactly the audience the
 redirect exists to serve.
 
+### The old host was never indexable
+
+Verified live, not assumed: `https://odd-field-guide.surge.sh/robots.txt`
+serves
+
+```
+User-agent: *
+Disallow: /
+```
+
+— not the `Allow: /` this repo publishes. Surge overrides robots.txt on every
+`*.surge.sh` subdomain with a blanket disallow; it is an anti-link-farm
+measure, and it applies to the free subdomains only, never to a custom
+domain ([sintaxi/surge#288](https://github.com/sintaxi/surge/issues/288),
+[discussion #443](https://github.com/sintaxi/surge/discussions/443)).
+
+Three consequences worth being explicit about, because they invert what a
+domain migration normally is:
+
+1. **There is no index to migrate.** This site has never been indexable. The
+   move to `allthingsodd.co` is not a migration of search equity, it is the
+   first time the site becomes crawlable at all.
+2. **There is no duplicate-content risk** from keeping the old host
+   published. Surge keeps disallowing it, so it cannot compete with the
+   canonical domain no matter how long it stays up.
+3. **The missing 301 costs nothing in search terms.** The ROUTER limitation
+   above only affects humans following old links, which the
+   `PUBLIC_LEGACY_REDIRECT` script covers. Its absence was never going to
+   split ranking, because there was no ranking on the old host to split.
+
+The corollary is that `public/robots.txt` genuinely matters now, on the
+custom domain, where it is served verbatim. Confirm it after cutover:
+
+```bash
+curl -fsS https://allthingsodd.co/robots.txt   # must say Allow: / and the new Sitemap:
+```
+
 ### Cross-repo dependencies
 
 Two values live in `../odd-growth-os` and are not fixed by anything in this
