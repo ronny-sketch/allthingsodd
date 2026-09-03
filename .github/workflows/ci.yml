@@ -200,24 +200,29 @@ jobs:
           # production provably serves this SHA. Retries absorb real CDN
           # propagation delay.
           #
-          # `tolerant` is only about one specific, precisely detected state:
-          # curl exit 6 is "couldn't resolve host" and nothing else. Until the
-          # GoDaddy nameserver change lands, allthingsodd.co does not resolve
-          # to Surge yet, and a warning is the honest reading of that. It
-          # cannot mask a broken site — a domain that does resolve can never
-          # produce exit 6, so every other failure mode (resolves but serves
-          # the wrong SHA, TLS error, 404, 5xx) still fails the job. Once DNS
-          # is delegated this check hardens itself with no edit needed.
+          # `tolerant` exists for exactly one window: allthingsodd.co is
+          # published here before its GoDaddy nameservers are delegated to
+          # Surge, so until that happens this job would be checking a host
+          # that isn't ours yet. The test for that is the domain's NS
+          # records, NOT whether it answers — a parked GoDaddy domain
+          # resolves fine and serves a valid-certificate 404, which curl
+          # reports as a plain exit 0, so no request-level heuristic can tell
+          # "not delegated yet" from "genuinely broken". Delegation is the
+          # only unambiguous signal, and it flips exactly once.
+          #
+          # Asked over DNS-over-HTTPS rather than dig, so the job depends on
+          # nothing beyond curl and jq, which it already uses.
+          delegated_to_surge() {
+            curl -fsS --max-time 20 "https://dns.google/resolve?name=$1&type=NS" \
+              | jq -r '.Answer[]?.data' | grep -qi 'surge\.world'
+          }
+
           verify() {
             host="$1"; mode="$2"
 
-            if [ "$mode" = "tolerant" ]; then
-              rc=0
-              curl -fsS -o /dev/null --max-time 20 "https://${host}/build-info.json" || rc=$?
-              if [ "$rc" = "6" ]; then
-                echo "::warning::${host} does not resolve yet — the GoDaddy nameserver change has not propagated. Skipping its verification for this run; ${LEGACY_DOMAIN} below is still authoritative for this deploy."
-                return 0
-              fi
+            if [ "$mode" = "tolerant" ] && ! delegated_to_surge "$host"; then
+              echo "::warning::${host} is not delegated to Surge's nameservers yet, so this deploy cannot be verified there. The publish itself succeeded and will serve as soon as DNS lands. ${LEGACY_DOMAIN} is verified strictly below and is authoritative for this deploy. See docs/deployment.md#dns-and-https."
+              return 0
             fi
 
             for i in 1 2 3 4 5 6 7 8; do
@@ -234,6 +239,9 @@ jobs:
             return 1
           }
 
+          # Once the nameservers are delegated, the tolerant branch can never
+          # be taken again and the canonical host is checked as strictly as
+          # the legacy one. Nothing to edit when that happens.
           verify "$PRIMARY_DOMAIN" tolerant
           verify "$LEGACY_DOMAIN" strict
     # Growth OS's own Cloudflare Worker deploy (formerly a

@@ -74,6 +74,34 @@ server features are not — see [Plan limits](#plan-limits)):
   `https://allthingsodd.co`, scheme included — that is how the setting is
   expressed on Surge, and it sticks with the project across publishes.
 
+### Verifying a deploy during the DNS window
+
+The `deploy` job verifies both hosts against the `build-info.json`
+fingerprint. The canonical host is checked _tolerantly_ until its nameservers
+are delegated to Surge, and the test for that is the domain's `NS` records —
+not whether it answers.
+
+That distinction is the whole point. A parked GoDaddy domain resolves
+perfectly well and serves a **valid-certificate 404**, which `curl` reports as
+a plain exit `0`:
+
+```bash
+curl -sS -o /dev/null -w '%{http_code}\n' https://allthingsodd.co/build-info.json
+# 404, and curl exits 0
+```
+
+So no request-level heuristic can distinguish "not delegated yet" from
+"genuinely broken" — an earlier version of this job tried `curl`'s
+"couldn't resolve host" exit code and would have failed every deploy during
+the DNS window, turning a successful publish red for a reason that had
+nothing to do with the build. Delegation is the only unambiguous signal, and
+it flips exactly once. It is queried over DNS-over-HTTPS so the job needs
+nothing beyond the `curl` and `jq` it already uses.
+
+Once the nameservers point at Surge, the tolerant branch can never be taken
+again and the canonical host is checked as strictly as the legacy one, with
+no edit needed.
+
 ### Plan limits
 
 This Surge account is on the **Free** plan. Free covers unlimited projects,
