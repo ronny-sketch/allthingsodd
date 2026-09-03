@@ -191,10 +191,11 @@ const track = Array.from({ length: reps }, () => logos).flat();
      leaving only the two center dots of the logo mark visible — the actual
      words disappear (confirmed via elementFromPoint against the rendered
      poster, not assumed). Switching to the source's own 2:1 aspect ratio
-     below 700px shows the full frame with no side-cropping instead. */
-  Only the poster needs the rule: it is the element in flow that sizes the
-     band, and the video is absolutely stretched to whatever box the poster
-     ends up defining. */
+     below 700px shows the full frame with no side-cropping instead.
+
+     Only the poster carries the rule: it is the element in flow that sizes
+     the band, and the video is absolutely stretched to whatever box the
+     poster ends up defining. */
   @media (max-width: 700px) {
     .aftermovie-full :global(img[data-video-poster]) {
       height: auto;
