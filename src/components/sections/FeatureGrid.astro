@@ -141,14 +141,14 @@ const gridClass = `oddf-grid reveal${layout === 'four-column' ? ' is-four-column
     line-height: 1.6;
   }
   @media (prefers-reduced-motion: no-preference) {
-    .oddf-grid > div {
+    :global(html.reveal-js) .oddf-grid > div {
       opacity: 0;
       transform: translateY(16px);
       transition:
         opacity 0.55s ease,
         transform 0.55s ease;
     }
-    .oddf-grid.in > div {
+    :global(html.reveal-js) .oddf-grid.in > div {
       opacity: 1;
       transform: none;
     }

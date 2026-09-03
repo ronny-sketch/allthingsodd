@@ -195,14 +195,14 @@ const { items } = Astro.props;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .pricing-grid .pricing-card {
+    :global(html.reveal-js) .pricing-grid .pricing-card {
       opacity: 0;
       transform: translateY(14px);
       transition:
         opacity 0.5s ease,
         transform 0.5s ease;
     }
-    .pricing-grid.in .pricing-card {
+    :global(html.reveal-js) .pricing-grid.in .pricing-card {
       opacity: 1;
       transform: none;
     }

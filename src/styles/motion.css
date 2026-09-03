@@ -5,15 +5,29 @@
   prefers-reduced-motion — see docs/design-system.md#motion.
 */
 
+/*
+  `.reveal` is opt-in-hidden, not hidden-by-default: the `html.reveal-js`
+  scope is added by src/scripts/reveal.ts itself, so the hidden state only
+  ever exists while the script that can undo it is running. A script error, a
+  blocked bundle, a browser without IntersectionObserver, or a plain no-JS
+  visit all render every `.reveal` element at its normal, visible, final state
+  — the animation enhances content that is already there rather than being a
+  prerequisite for seeing it. See reveal.ts's own comment for the two
+  reproduced failure modes this replaced.
+
+  Every component with its own `.reveal`-driven entrance (ProgramGrid's
+  staggered cards, FloatingCloud's scatter, ProofGrid's counters, …) follows
+  the same convention: gate the hidden half on `:global(html.reveal-js)`.
+*/
 @media (prefers-reduced-motion: no-preference) {
-  .reveal {
+  html.reveal-js .reveal {
     opacity: 0;
     transform: translateY(14px);
     transition:
       opacity var(--duration-reveal) ease,
       transform var(--duration-reveal) ease;
   }
-  .reveal.in {
+  html.reveal-js .reveal.in {
     opacity: 1;
     transform: none;
   }

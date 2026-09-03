@@ -56,6 +56,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 // production down for exactly the audience it exists to protect.
 // See docs/deployment.md#domain-migration.
 const legacyRedirect = import.meta.env.PUBLIC_LEGACY_REDIRECT === '1';
+
+/** See the <script is:inline> in <head> below for what this is and why. */
+const revealOptIn = `(function(){var d=document.documentElement;try{if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver' in window){d.classList.add('reveal-js');setTimeout(function(){if(!d.hasAttribute('data-reveal-ready'))d.classList.remove('reveal-js');},4000);}}catch(e){d.classList.remove('reveal-js');}})();`;
 ---
 
 <!doctype html>
@@ -101,6 +104,27 @@ const legacyRedirect = import.meta.env.PUBLIC_LEGACY_REDIRECT === '1';
     }
     <meta name="twitter:card" content="summary_large_image" />
     <StructuredData />
+    <!--
+      Reveal-animation opt-in, inline and render-blocking on purpose.
+      `.reveal`'s hidden state is scoped to `html.reveal-js` (see
+      styles/motion.css) so that content is visible by default and the
+      animation only exists when the script able to undo it is running. That
+      scope has to be on <html> before the first paint — adding it from the
+      deferred src/scripts/reveal.ts module instead would paint every section
+      visible, then blank it, then fade it back in.
+
+      The timer is the failure backstop: src/scripts/reveal.ts sets
+      data-reveal-ready as soon as it runs, so this only ever fires when that
+      module didn't (a bundle that 404s, a script error, an engine that chokes
+      on it) — in which case the scope is dropped and the page renders as
+      plain, visible, un-animated content rather than staying at opacity 0
+      forever.
+
+      Built as a string handed to set:html rather than written as literal
+      script body: prettier's Astro plugin cannot parse an inline <script>
+      here and fails `npm run format:check` outright.
+    -->
+    <script is:inline set:html={revealOptIn} />
   </head>
   <body class={theme === 'light' ? 'theme-light' : undefined}>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -115,7 +139,6 @@ const legacyRedirect = import.meta.env.PUBLIC_LEGACY_REDIRECT === '1';
     <NewsletterPopup />
     <ConsentBanner />
     <Cursor />
-    <script src="../scripts/reduced-motion-video.ts"></script>
     <script src="../scripts/reveal.ts"></script>
     <script src="../scripts/magnetic.ts"></script>
     <script src="../scripts/nav-height.ts"></script>

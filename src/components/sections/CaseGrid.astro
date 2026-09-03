@@ -73,8 +73,10 @@ const { items } = Astro.props;
     color: inherit;
     transition: background-color var(--duration-fast) ease;
   }
-  .case-card:hover {
-    background: color-mix(in srgb, var(--color-backstage) 85%, var(--color-paper) 15%);
+  @media (hover: hover) {
+    .case-card:hover {
+      background: color-mix(in srgb, var(--color-backstage) 85%, var(--color-paper) 15%);
+    }
   }
   .case-category {
     font: var(--text-caption);
@@ -134,19 +136,42 @@ const { items } = Astro.props;
     padding-bottom: 0.15rem;
     transition: border-color var(--duration-fast) ease;
   }
-  .case-card:hover .case-go {
-    border-color: var(--color-paper);
+  @media (hover: hover) {
+    .case-card:hover .case-go {
+      border-color: var(--color-paper);
+    }
+  }
+  /* Touch press state. `(hover: hover)` above keeps the pointer-only
+     enhancements off touchscreens, where iOS leaves :hover stuck on the
+     last-tapped element; this is what replaces them — an immediate, physical
+     acknowledgement at the moment of the tap. The tap-highlight reset is
+     paired with it deliberately: the platform's grey flash is only removed
+     because there is a real state taking its place. */
+  @media (hover: none) {
+    .case-card {
+      -webkit-tap-highlight-color: transparent;
+      transition:
+        transform 0.12s ease,
+        background 0.12s ease;
+    }
+    .case-card:active {
+      transform: scale(0.985);
+      background: color-mix(in srgb, var(--color-backstage) 85%, var(--color-paper) 15%);
+    }
+    .case-card:active .case-go {
+      border-color: var(--color-paper);
+    }
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .case-grid .case-card {
+    :global(html.reveal-js) .case-grid .case-card {
       opacity: 0;
       transform: translateY(16px);
       transition:
         opacity 0.55s ease,
         transform 0.55s ease;
     }
-    .case-grid.in .case-card {
+    :global(html.reveal-js) .case-grid.in .case-card {
       opacity: 1;
       transform: none;
     }

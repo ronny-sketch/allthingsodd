@@ -155,10 +155,28 @@ const looped = [...items, ...items];
       color var(--duration-fast) ease,
       text-decoration-color var(--duration-fast) ease;
   }
-  .news-panel:hover .news-panel-caption {
-    color: var(--color-amber-bright);
-    text-decoration-color: var(--color-amber-bright);
+  @media (hover: hover) {
+    .news-panel:hover .news-panel-caption {
+      color: var(--color-amber-bright);
+      text-decoration-color: var(--color-amber-bright);
+    }
   }
+  /* Touch press state. `(hover: hover)` above keeps the pointer-only
+     enhancements off touchscreens, where iOS leaves :hover stuck on the
+     last-tapped element; this is what replaces them — an immediate, physical
+     acknowledgement at the moment of the tap. The tap-highlight reset is
+     paired with it deliberately: the platform's grey flash is only removed
+     because there is a real state taking its place. */
+  @media (hover: none) {
+    .news-panel {
+      -webkit-tap-highlight-color: transparent;
+    }
+    .news-panel:active .news-panel-caption {
+      color: var(--color-amber-bright);
+      text-decoration-color: var(--color-amber-bright);
+    }
+  }
+
   @media (max-width: 820px) {
     .news-panel {
       width: 100vw;

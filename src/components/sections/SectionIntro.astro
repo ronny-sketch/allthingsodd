@@ -110,6 +110,24 @@ const { eyebrow, headline, body, cta, warpHeadline = false } = Astro.props;
     color: var(--color-amber-bright);
     text-decoration-color: var(--color-amber-bright);
   }
+  /* Mobile typography (2026-09-02 mobile experience pass). The eyebrow and
+     headline stay centered — that centered editorial opening is the shape of
+     this component and reads correctly at any width. The body paragraph does
+     not: at 390px the measure is ~28 characters, and several of these
+     sections run 9-11 lines, so centered setting leaves every line starting
+     and ending in a different place with no left edge for the eye to return
+     to. Ragged-right at this measure is simply easier to read, and the block
+     itself stays centered in the column, so the composition is unchanged.
+
+     Line-height comes down with it: 1.8 is generous for a wide desktop
+     measure and turns into a very loose, sprawling column once the same
+     paragraph is three times as tall. */
+  @media (max-width: 640px) {
+    .section-intro-inner p {
+      text-align: left;
+      line-height: 1.65;
+    }
+  }
   @media (max-width: 760px) {
     /* This single-line link's own text box measures ~20px tall — under the
        WCAG 2.5.8 AA touch-target guidance. Padding grows the tappable area;

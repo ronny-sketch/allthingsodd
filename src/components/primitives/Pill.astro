@@ -72,16 +72,20 @@ const Tag = href ? 'a' : 'button';
   :global(.theme-light) .pill-outline {
     border-color: rgb(14 9 11 / 35%);
   }
-  .pill-outline:hover {
-    border-color: var(--color-paper);
+  @media (hover: hover) {
+    .pill-outline:hover {
+      border-color: var(--color-paper);
+    }
   }
   .pill-solid {
     background: var(--color-paper);
     color: var(--color-ink);
     border-color: var(--color-paper);
   }
-  .pill-solid:hover {
-    opacity: 0.85;
+  @media (hover: hover) {
+    .pill-solid:hover {
+      opacity: 0.85;
+    }
   }
   .pill-ticket {
     background: var(--color-paper);
@@ -89,11 +93,88 @@ const Tag = href ? 'a' : 'button';
     border-color: var(--color-paper);
     box-shadow: 0 6px 18px rgb(0 0 0 / 35%);
   }
-  .pill-ticket:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 22px rgb(0 0 0 / 45%);
+  @media (hover: hover) {
+    .pill-ticket:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgb(0 0 0 / 45%);
+    }
   }
   .pill:focus-visible {
     outline-offset: 2px;
+  }
+  /* Narrow screens: a Pill may never be wider than the column it sits in.
+     `white-space: nowrap` above is right on desktop — CTAs belong on one
+     line — but it makes a long label's min-content width a hard floor on
+     whatever grid or flex track holds the button, and that floor propagates
+     all the way up to the document, producing page-level horizontal
+     overflow rather than a clipped button.
+
+     This has now bitten three pages independently: ODDference's "Talk to us
+     about partnering →" (patched in that page's own CSS), ODDfest's
+     "Register your event idea" (which regressed the moment the copywriting
+     pass introduced it — measured 294px wide inside a 264px column at
+     320px, i.e. 30px of document overflow), and Membership's tier grid.
+     Patching each page as it appears is whack-a-mole: the next long CTA
+     label an editor writes reintroduces it, and CloudCannon means labels are
+     editable content.
+
+     Letting the label wrap below 480px removes the whole class of defect at
+     the primitive, for every existing and future caller. `max-width: 100%`
+     is what actually caps the box; `white-space: normal` is what lets the
+     text reflow inside that cap instead of being clipped. Desktop and tablet
+     keep the single-line treatment exactly as approved. */
+  @media (max-width: 480px) {
+    .pill {
+      white-space: normal;
+      max-width: 100%;
+      text-align: center;
+    }
+  }
+  /* Touch (2026-09-02 mobile experience pass). Two separate problems, one
+     media query:
+
+     1. The shipped padding puts this button at roughly 35px tall — under the
+        44px minimum every touch-target guideline agrees on, and this is the
+        site's only button shape, so it applied to every CTA on every page.
+        Growing the vertical padding here (rather than sitewide) fixes the
+        tap target without touching the approved desktop button proportions
+        at all.
+     2. None of the hover states above can ever fire meaningfully on a
+        touchscreen — they either never trigger or stick after the tap — so
+        the button had no press feedback whatsoever. `:active` supplies it. */
+  @media (hover: none) {
+    .pill {
+      /* Vertical padding only — the horizontal value deliberately stays at
+         the desktop 1.25rem. Pill sets `white-space: nowrap`, so a long
+         label's min-content width is a hard floor on whatever grid column
+         holds it, and widening this button widens that floor everywhere.
+         ODDference's "Talk to us about partnering →" CTA is already the
+         binding constraint on `.oddc-convert`'s single-column track (see
+         that page's own comment); an earlier version of this rule used
+         1.4rem and pushed `/oddference` 3px past a 320px viewport on Linux
+         CI, where the string measures slightly wider than on macOS. The
+         44px target is a height requirement, so height is all this needs. */
+      padding: 0.85rem 1.25rem;
+      /* A <button>'s UA stylesheet sets its own `line-height: normal`
+         directly on the element, which beats inheritance regardless of
+         specificity — so a Pill rendered as a button (the Menu trigger) came
+         out several px shorter than the identical Pill rendered as a link,
+         and landed at 42px where the anchors reached 44. Same UA quirk
+         Nav.astro documents for its Info trigger. Asserting body's 1.5 here
+         makes both tags measure the same. Scoped to this touch block so the
+         approved desktop button proportions are untouched. */
+      line-height: 1.5;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .pill:active {
+      transform: scale(0.96);
+    }
+    .pill-outline:active {
+      border-color: var(--color-paper);
+    }
+    .pill-solid:active,
+    .pill-ticket:active {
+      opacity: 0.82;
+    }
   }
 </style>

@@ -262,14 +262,14 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .converge-grid .converge-col {
+    :global(html.reveal-js) .converge-grid .converge-col {
       opacity: 0;
       transform: translateY(16px);
       transition:
         opacity var(--duration-slow) ease,
         transform var(--duration-slow) ease;
     }
-    .converge-grid.in .converge-col {
+    :global(html.reveal-js) .converge-grid.in .converge-col {
       opacity: 1;
       transform: none;
     }

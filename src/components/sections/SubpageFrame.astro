@@ -17,6 +17,7 @@
 // their hero) simply renders an empty, zero-height `.oddf-hero-zone` —
 // harmless, not a broken state.
 import SubpageRail from './SubpageRail.astro';
+import SubpageTicker from './SubpageTicker.astro';
 
 interface RailItem {
   kind: 'logo' | 'word' | 'meta';
@@ -35,6 +36,14 @@ const { slug, railLeft, railRight } = Astro.props;
   <div class="oddf-hero-zone">
     <slot name="hero" />
   </div>
+  {
+    /* Mobile-only identity band — the phone's version of the two vertical
+       rails above, which hide below 821px. Renders nothing at tablet-and-up
+       widths where the real rails are visible; see SubpageTicker.astro. Fed
+       the same rail beats, joined into one sequence, so there is no second
+       content model. */
+  }
+  <SubpageTicker items={[...railLeft, ...railRight]} slug={slug} />
   <div class="oddf-center">
     <slot />
   </div>
@@ -58,6 +67,17 @@ const { slug, railLeft, railRight } = Astro.props;
      of two paddings/margins stacking into an accidental double gap. */
   .oddf-center {
     padding: var(--space-16) 1.75rem 0;
+  }
+  /* The hero→content gap is owned here (see the comment above), and 4rem of
+     it was tuned when the hero ran straight into this column. On a phone the
+     identity ticker now sits between the two and provides that separation
+     itself, so the full gap on top of it — plus the first section's own top
+     padding underneath — left roughly a third of a screen empty before the
+     first word. Halved for mobile only; the desktop value is untouched. */
+  @media (max-width: 820px) {
+    .oddf-center {
+      padding-top: var(--space-8);
+    }
   }
   @media (min-width: 821px) {
     .oddf-center {

@@ -48,37 +48,28 @@ const track = Array.from({ length: reps }, () => logos).flat();
   )
 }
 <section class={`aftermovie-section ${showBrandMarquee ? '' : 'is-standalone'}`}>
-  <div class="aftermovie-full">
+  {
+    /* The poster <img> stays in the document flow permanently — it defines
+       the band's height (so there is no CLS when the video arrives) and it is
+       the only thing crawlers, no-JS visitors and reduced-motion visitors
+       ever see. The <video> is layered over it and only fades in once
+       src/scripts/autoplay-video.ts has confirmed real playback; if playback
+       is refused or the file fails, the poster simply stays. This used to
+       remove the poster up front and hope, which left a black rectangle on
+       every mobile viewport in both engines — see autoplay-video.ts. */
+  }
+  <div class="aftermovie-full" data-video-stage>
     {
       /* width 2200 — .aftermovie-full is full-bleed (100vw), which was
          upscaling a 1600px source on any wide monitor. See PhotoBreak.astro
          for the identical reasoning. */
     }
     <Image src={poster} alt="" width={2200} data-video-poster />
-    <video autoplay muted loop playsinline poster={poster.src} preload="none">
-      <source src={video} type="video/mp4" />
-    </video>
+    <video data-autoplay-video muted loop playsinline preload="none" data-src={video}></video>
   </div>
 </section>
 
-<script>
-  // Swap the static poster <img> (used for LCP / no-JS) for the real <video> once
-  // the browser can actually play it — avoids shipping/decoding the video for
-  // crawlers and no-JS visitors, who only ever see the poster frame. Skipped
-  // entirely under prefers-reduced-motion: those visitors keep the static
-  // poster rather than an autoplaying video, same as src/scripts/reduced-motion-video.ts.
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.querySelectorAll<HTMLElement>('.aftermovie-full').forEach((wrap) => {
-      const poster = wrap.querySelector('img[data-video-poster]');
-      const video = wrap.querySelector('video');
-      if (poster && video instanceof HTMLVideoElement) {
-        poster.remove();
-        video.style.display = 'block';
-        video.load();
-      }
-    });
-  }
-</script>
+<script src="../../scripts/autoplay-video.ts"></script>
 
 <style>
   .logo-train {
@@ -163,11 +154,28 @@ const track = Array.from({ length: reps }, () => logos).flat();
     object-fit: cover;
     display: block;
   }
+  /* Layered over the poster, not swapped for it — identical box, identical
+     object-fit, so the crossfade can't shift anything. `visibility` rides
+     along with opacity so a never-playing video is fully out of the
+     compositor rather than an invisible full-bleed layer. */
   .aftermovie-full video {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: min(78vh, 680px);
-    display: none;
+    height: 100%;
     object-fit: cover;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--duration-slow) ease;
+  }
+  .aftermovie-full[data-video-state='playing'] video {
+    opacity: 1;
+    visibility: visible;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .aftermovie-full video {
+      transition: none;
+    }
   }
   .aftermovie-full::after {
     content: '';
@@ -183,10 +191,13 @@ const track = Array.from({ length: reps }, () => logos).flat();
      leaving only the two center dots of the logo mark visible — the actual
      words disappear (confirmed via elementFromPoint against the rendered
      poster, not assumed). Switching to the source's own 2:1 aspect ratio
-     below 700px shows the full frame with no side-cropping instead. */
+     below 700px shows the full frame with no side-cropping instead.
+
+     Only the poster carries the rule: it is the element in flow that sizes
+     the band, and the video is absolutely stretched to whatever box the
+     poster ends up defining. */
   @media (max-width: 700px) {
-    .aftermovie-full :global(img[data-video-poster]),
-    .aftermovie-full video {
+    .aftermovie-full :global(img[data-video-poster]) {
       height: auto;
       aspect-ratio: 2 / 1;
     }

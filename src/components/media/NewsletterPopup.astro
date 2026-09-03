@@ -86,7 +86,19 @@ const { newsletterHref } = site.data;
     transform: translate(-50%, -50%);
     width: min(30rem, calc(100vw - 2 * var(--space-6)));
     max-height: calc(100vh - 2 * var(--space-6));
+    /* svh, not vh (2026-09-02 mobile experience pass). `100vh` on mobile is
+       the *large* viewport — the height the page would have with the
+       browser's toolbars retracted — so a full-height modal measured against
+       it is taller than what is actually on screen, and its bottom (the
+       field and the submit button) sits under the browser chrome. `100svh`
+       is the small viewport, the one that is always fully visible. The `vh`
+       line above stays as the fallback for anything without svh support. */
+    max-height: calc(100svh - 2 * var(--space-6));
     overflow-y: auto;
+    /* Landscape on a notched phone puts the display cutout at one side; the
+       panel is centred, so it only needs to not *extend* under it. */
+    padding-left: max(var(--space-10), env(safe-area-inset-left));
+    padding-right: max(var(--space-10), env(safe-area-inset-right));
     background: var(--color-paper);
     color: var(--color-ink);
     border: 1px solid var(--color-ink-12);
@@ -202,6 +214,10 @@ const { newsletterHref } = site.data;
     .nl-popup {
       width: calc(100vw - 2 * var(--space-5));
       padding: var(--space-10) var(--space-6) var(--space-6);
+      /* When the panel is tall enough to reach the bottom of the screen, its
+         last element is the submit button — which would otherwise sit under
+         the iPhone home indicator. */
+      padding-bottom: max(var(--space-6), env(safe-area-inset-bottom));
     }
     /* This popup's own desktop override (0.9rem = 14.4px, above) wins over
        NewsletterForm.astro's scoped 16px mobile rule by specificity — Safari

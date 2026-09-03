@@ -122,14 +122,14 @@ const { spaces } = Astro.props;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .space-showcase .space-card {
+    :global(html.reveal-js) .space-showcase .space-card {
       opacity: 0;
       transform: translateY(16px);
       transition:
         opacity 0.55s ease,
         transform 0.55s ease;
     }
-    .space-showcase.in .space-card {
+    :global(html.reveal-js) .space-showcase.in .space-card {
       opacity: 1;
       transform: none;
     }

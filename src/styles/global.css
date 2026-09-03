@@ -90,6 +90,22 @@ a {
     animation: grain 0.5s steps(1) infinite;
   }
 }
+/* The grain surface is deliberately oversized (220% of the viewport, so its
+   jitter never exposes an edge) and repaints on a 0.5s step for the whole
+   life of every page. On a phone that is a full-screen composited layer being
+   invalidated twice a second, forever, behind everything else — the most
+   expensive purely-decorative thing on the site per pixel of value.
+
+   Kept, not deleted: the texture is a real part of the ODD surface. Slowed to
+   a 1.2s step below the tablet breakpoint instead. The jitter is what sells
+   "film grain" rather than "a noise PNG", and it still reads as alive at this
+   rate; it just stops asking a phone GPU for 120 full-screen invalidations a
+   minute. Desktop is untouched. */
+@media (prefers-reduced-motion: no-preference) and (max-width: 820px) {
+  .grain {
+    animation-duration: 1.2s;
+  }
+}
 @keyframes grain {
   0% {
     transform: translate(0, 0);

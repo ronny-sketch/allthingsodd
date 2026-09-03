@@ -91,9 +91,26 @@ const { items } = Astro.props;
     margin: 0.4rem 0 0;
     transition: color var(--duration-fast) ease;
   }
-  a.programme-row:hover h3 {
-    color: var(--color-amber-bright);
+  @media (hover: hover) {
+    a.programme-row:hover h3 {
+      color: var(--color-amber-bright);
+    }
   }
+  /* Touch press state. `(hover: hover)` above keeps the pointer-only
+     enhancements off touchscreens, where iOS leaves :hover stuck on the
+     last-tapped element; this is what replaces them — an immediate, physical
+     acknowledgement at the moment of the tap. The tap-highlight reset is
+     paired with it deliberately: the platform's grey flash is only removed
+     because there is a real state taking its place. */
+  @media (hover: none) {
+    a.programme-row {
+      -webkit-tap-highlight-color: transparent;
+    }
+    a.programme-row:active h3 {
+      color: var(--color-amber-bright);
+    }
+  }
+
   .programme-body p {
     margin: 0.5rem 0 0;
     font-family: var(--font-body);
@@ -117,14 +134,14 @@ const { items } = Astro.props;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .programme-list .programme-row {
+    :global(html.reveal-js) .programme-list .programme-row {
       opacity: 0;
       transform: translateY(10px);
       transition:
         opacity 0.5s ease,
         transform 0.5s ease;
     }
-    .programme-list.in .programme-row {
+    :global(html.reveal-js) .programme-list.in .programme-row {
       opacity: 1;
       transform: none;
     }

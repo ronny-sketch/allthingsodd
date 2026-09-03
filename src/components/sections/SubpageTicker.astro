@@ -1,0 +1,139 @@
+---
+// The mobile expression of SubpageRail's identity framing.
+//
+// Added 2026-09-02 (mobile experience pass). The two fixed vertical rails
+// (SubpageRail.astro) are one of the strongest things about a subpage on
+// desktop — a slow ticker of the page's own name and metadata running down
+// both edges — and they `display: none` below 821px, because 68px of fixed
+// furniture on each side of a 360px screen is not a trade worth making. That
+// left every product subpage on a phone with no framing at all: the hero
+// ended and generic body content began.
+//
+// This is the same idea rotated into the axis a phone actually has to spare.
+// One slim horizontal band directly under the hero, running the identical
+// `railLeft`/`railRight` beats the vertical rails are built from (so there is
+// no second content model and nothing new for an editor to fill in), sized to
+// cost ~40px of vertical space once.
+//
+// Deliberately one band, not two: the desktop version has a left and a right
+// rail because it has two edges to use. A phone has one place this belongs,
+// and a second competing ticker would read as clutter rather than identity.
+import { Image } from 'astro:assets';
+import Logo from '../primitives/Logo.astro';
+import oddfestWordmark from '../../assets/logos/oddfest-wordmark.svg';
+import oddferenceMark from '../../assets/logos/oddference-mark.png';
+
+interface RailItem {
+  kind: 'logo' | 'word' | 'meta';
+  text?: string;
+}
+interface Props {
+  items: RailItem[];
+  slug: 'oddfest' | 'oddference' | 'oddagency' | 'oddspace';
+}
+const { items, slug } = Astro.props;
+
+// Repeated to a fixed multiple, then translated by exactly -50% — the same
+// "duplicate the track so the loop has no seam" convention SubpageRail and
+// LogoStrip already use. 6 copies of a short beat list is enough to overfill
+// the widest tablet this renders on.
+const reps = 6;
+const track = Array.from({ length: reps }, () => items).flat();
+---
+
+<div class="oddf-ticker" aria-hidden="true">
+  <div class="oddf-ticker-track">
+    {
+      track.map((item) => (
+        <span class="oddf-ticker-item">
+          {item.kind === 'logo' &&
+            (slug === 'oddfest' ? (
+              <img src={oddfestWordmark.src} alt="" />
+            ) : slug === 'oddference' ? (
+              <Image src={oddferenceMark} alt="" width={40} />
+            ) : (
+              <Logo ariaHidden />
+            ))}
+          {item.kind === 'word' && <span class="oddf-ticker-word">{item.text}</span>}
+          {item.kind === 'meta' && <span class="oddf-ticker-meta">{item.text}</span>}
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  /* Above the tablet cutoff the real vertical rails are visible (SubpageRail
+     hides itself at exactly this width), so this must not also be on screen —
+     they are two renderings of one idea, never both at once. */
+  .oddf-ticker {
+    display: none;
+  }
+  @media (max-width: 820px) {
+    .oddf-ticker {
+      display: block;
+      overflow: hidden;
+      border-top: 1px solid var(--color-paper-12);
+      border-bottom: 1px solid var(--color-paper-12);
+      background: var(--color-bg);
+      padding: 0.7rem 0;
+      /* Full-bleed inside SubpageFrame's padded column, so the band meets
+         both screen edges the way the vertical rails meet theirs. Uses the
+         same `.bleed` geometry as layout.css rather than a new technique. */
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+    }
+  }
+  .oddf-ticker-track {
+    display: flex;
+    align-items: center;
+    gap: 2.4rem;
+    width: max-content;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .oddf-ticker-track {
+      /* Slow — this is framing, not a news crawl. 38s across one half of a
+         doubled track reads as a drift at the edge of attention. */
+      animation: marquee-left 38s linear infinite;
+    }
+  }
+  /* Reduced motion keeps the band and its content, static — the beats are
+     still legible, they just don't travel. Nothing here is information that
+     exists only while it moves. */
+  .oddf-ticker-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-shrink: 0;
+  }
+  .oddf-ticker-item img,
+  .oddf-ticker-item :global(img) {
+    height: 13px;
+    width: auto;
+    display: block;
+    opacity: 0.9;
+  }
+  .oddf-ticker-item :global(svg) {
+    height: 14px;
+    width: auto;
+    display: block;
+    color: var(--color-paper);
+    opacity: 0.85;
+  }
+  .oddf-ticker-word {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-paper);
+    white-space: nowrap;
+  }
+  .oddf-ticker-meta {
+    font: var(--text-caption);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+    white-space: nowrap;
+  }
+</style>

@@ -14,6 +14,36 @@
 //     the reduced-motion rule in CLAUDE.md.
 const SVGNS = 'http://www.w3.org/2000/svg';
 
+/*
+  Capability tiering, added 2026-09-02 (mobile experience pass).
+
+  The effect above is two separable things: a per-word oscillating blur (a
+  handful of `setAttribute` calls per frame — cheap anywhere) and a
+  cursor-biased displacement map (a canvas repainted, then re-encoded through
+  `canvas.toDataURL()` and handed to an SVG `feImage`/`feDisplacementMap` —
+  expensive everywhere, and it re-encodes a full PNG *per frame*). This
+  project's own visual-test suite already documents the cost from the other
+  side: a page carrying an active instance never reaches network-idle at all,
+  because the main thread is too busy to let the browser's idle window close.
+
+  Two changes, neither of which removes the creative idea:
+
+  - **Everywhere:** the displacement map is regenerated on a ~15fps budget
+    rather than every frame. The gradients it paints move slowly enough that
+    this is not visible, and it cuts the PNG re-encode to a quarter of the
+    frames.
+  - **Coarse-pointer / low-core devices:** the displacement half is skipped
+    entirely and the type keeps only the per-word blur. That is the half that
+    actually reads as "living type" on a phone anyway — the displacement is
+    biased by cursor position, and on a touchscreen there is no cursor, so it
+    was paying the most expensive part of the effect to render a
+    barely-moving distortion nobody could steer.
+*/
+const NOISE_INTERVAL_MS = 66;
+const LIGHT_TIER =
+  window.matchMedia('(hover: none)').matches ||
+  (typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency <= 4);
+
 interface Word {
   text: string;
   lineIndex: number;
@@ -61,15 +91,22 @@ function initInstance(container: HTMLElement) {
 
   const measure = document.createElement('div');
   measure.className = 'warping-measure';
-  const canvas = document.createElement('canvas');
-  canvas.className = 'warping-canvas';
-  const ctx = canvas.getContext('2d');
+  // The canvas exists only to paint the displacement map, so on the light
+  // tier it is never created at all — not merely left unpainted. A <canvas>
+  // with no width/height attributes has an intrinsic 300x150 box, and this
+  // one is absolutely positioned inside a padded column: left un-sized on a
+  // 320px screen it pushed the document's scroll width past the viewport
+  // (caught by tests/mobile/overflow.spec.ts, on `/` and `/membership`).
+  const canvas = LIGHT_TIER ? null : document.createElement('canvas');
+  const ctx = canvas ? canvas.getContext('2d') : null;
+  if (canvas) canvas.className = 'warping-canvas';
   const svg = document.createElementNS(SVGNS, 'svg');
   svg.setAttribute('class', 'warping-svg');
   svg.setAttribute('aria-hidden', 'true');
-  if (!ctx) return;
+  if (!LIGHT_TIER && !ctx) return;
 
-  fallback.after(measure, canvas, svg);
+  if (canvas) fallback.after(measure, canvas, svg);
+  else fallback.after(measure, svg);
   fallback.classList.add('warping-fallback--hidden');
 
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -148,11 +185,15 @@ function initInstance(container: HTMLElement) {
     const paddedHeight = boxHeight + padding * 2;
     if (paddedWidth <= 0 || paddedHeight <= 0) return;
 
-    canvas.width = paddedWidth * dpr;
-    canvas.height = paddedHeight * dpr;
-    canvas.style.width = `${paddedWidth}px`;
-    canvas.style.height = `${paddedHeight}px`;
-    canvas.style.margin = `${-padding}px`;
+    // Sizing the canvas allocates its backing store — skip it entirely on the
+    // light tier, where nothing ever paints into it.
+    if (!LIGHT_TIER && canvas) {
+      canvas.width = paddedWidth * dpr;
+      canvas.height = paddedHeight * dpr;
+      canvas.style.width = `${paddedWidth}px`;
+      canvas.style.height = `${paddedHeight}px`;
+      canvas.style.margin = `${-padding}px`;
+    }
 
     svg.setAttribute('width', String(paddedWidth));
     svg.setAttribute('height', String(paddedHeight));
@@ -176,26 +217,33 @@ function initInstance(container: HTMLElement) {
       wordFilters.push(blur);
     });
 
-    const dispFilter = svgEl('filter', { id: `${container.id}-displacement` });
-    dispFeImage = svgEl('feImage', {
-      result: 'displacementMap',
-      x: 0,
-      y: 0,
-      width: paddedWidth,
-      height: paddedHeight,
-      preserveAspectRatio: 'none',
-    });
-    dispFeDisplacement = svgEl('feDisplacementMap', {
-      in: 'SourceGraphic',
-      in2: 'displacementMap',
-      scale: 0,
-      xChannelSelector: 'R',
-      yChannelSelector: 'G',
-    });
-    dispFilter.append(dispFeImage, dispFeDisplacement);
-    defs.appendChild(dispFilter);
+    // On the light tier the displacement filter is never built, so the word
+    // group below is drawn unfiltered — one fewer filter region for the
+    // compositor as well as no canvas work at all.
+    if (!LIGHT_TIER) {
+      const dispFilter = svgEl('filter', { id: `${container.id}-displacement` });
+      dispFeImage = svgEl('feImage', {
+        result: 'displacementMap',
+        x: 0,
+        y: 0,
+        width: paddedWidth,
+        height: paddedHeight,
+        preserveAspectRatio: 'none',
+      });
+      dispFeDisplacement = svgEl('feDisplacementMap', {
+        in: 'SourceGraphic',
+        in2: 'displacementMap',
+        scale: 0,
+        xChannelSelector: 'R',
+        yChannelSelector: 'G',
+      });
+      dispFilter.append(dispFeImage, dispFeDisplacement);
+      defs.appendChild(dispFilter);
+    }
 
-    const g = svgEl('g', { filter: `url(#${container.id}-displacement)` });
+    const g = LIGHT_TIER
+      ? svgEl('g', {})
+      : svgEl('g', { filter: `url(#${container.id}-displacement)` });
     g.appendChild(
       svgEl('rect', { x: 0, y: 0, width: paddedWidth, height: paddedHeight, fill: 'transparent' }),
     );
@@ -282,7 +330,7 @@ function initInstance(container: HTMLElement) {
     ctx.fillStyle = `rgba(127,127,127,${1 - smoothedAmount})`;
     ctx.fillRect(0, 0, cw, ch);
 
-    dispFeImage?.setAttribute('href', canvas.toDataURL());
+    if (canvas) dispFeImage?.setAttribute('href', canvas.toDataURL());
     dispFeDisplacement?.setAttribute('scale', String(boxWidth * 0.04 * displacementStrength));
   }
 
@@ -298,7 +346,9 @@ function initInstance(container: HTMLElement) {
     });
   }
 
-  function tick() {
+  let lastNoiseAt = 0;
+
+  function tick(now: number) {
     if (!intersecting) {
       raf = null;
       return;
@@ -312,7 +362,13 @@ function initInstance(container: HTMLElement) {
     smoothMouse[0] += (rawMouse[0] - smoothMouse[0]) * 0.075;
     smoothMouse[1] += (rawMouse[1] - smoothMouse[1]) * 0.075;
 
-    drawNoise();
+    // The blur is cheap and carries the motion, so it stays per-frame. The
+    // displacement map is throttled (and on the light tier, absent) — see the
+    // tiering comment at the top of this file.
+    if (!LIGHT_TIER && now - lastNoiseAt >= NOISE_INTERVAL_MS) {
+      lastNoiseAt = now;
+      drawNoise();
+    }
     updateWordBlur();
     raf = requestAnimationFrame(tick);
   }
@@ -321,21 +377,38 @@ function initInstance(container: HTMLElement) {
     if (raf === null) raf = requestAnimationFrame(tick);
   }
 
-  window.addEventListener('mousemove', (e) => {
-    rawMouse = [e.clientX, e.clientY];
-  });
+  // Only the displacement map reads the pointer, so on the light tier (where
+  // it isn't built) this listener would run on every mouse move for nothing.
+  if (!LIGHT_TIER) {
+    window.addEventListener(
+      'mousemove',
+      (e) => {
+        rawMouse = [e.clientX, e.clientY];
+      },
+      { passive: true },
+    );
+  }
 
   const resizeObserver = new ResizeObserver(() => remeasure());
   resizeObserver.observe(container);
 
+  let onScreen = true;
+  function syncLoop() {
+    intersecting = onScreen && !document.hidden;
+    if (intersecting) startLoop();
+  }
+
   const intersectionObserver = new IntersectionObserver(
     (entries) => {
-      intersecting = entries[0]?.isIntersecting ?? true;
-      if (intersecting) startLoop();
+      onScreen = entries[0]?.isIntersecting ?? true;
+      syncLoop();
     },
     { rootMargin: '10% 0px' },
   );
   intersectionObserver.observe(container);
+  // The observer alone doesn't cover a backgrounded tab, where the heading is
+  // still technically "intersecting" and the loop would keep running.
+  document.addEventListener('visibilitychange', syncLoop);
 
   if (document.fonts?.ready) {
     document.fonts.ready.then(() => remeasure());

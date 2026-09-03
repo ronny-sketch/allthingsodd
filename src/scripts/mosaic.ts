@@ -106,7 +106,28 @@ if (mosaic) {
       [order[s], order[j]] = [order[j], order[s]];
     }
     let oi = 0;
+    let timer: number | null = null;
+
+    // Added 2026-09-02 (mobile experience pass). The swap loop and the 20
+    // Ken-Burns keyframe animations used to run forever, whether or not the
+    // hero was on screen and whether or not the tab was even visible — on a
+    // phone that is a continuous decode-plus-composite cost paid for
+    // something nobody is looking at, for the entire time someone reads the
+    // rest of the homepage. Both are now suspended whenever the hero is
+    // offscreen or the document is hidden, and resumed on return.
+    //
+    // Deliberately NOT a reduction in what the hero does while it is being
+    // looked at: the cadence, the crossfade and the pan are all unchanged.
+    // The saving comes from not doing the work at all when it can't be seen.
+    let onScreen = true;
+
+    function running() {
+      return onScreen && !document.hidden;
+    }
+
     function scheduleTick() {
+      timer = null;
+      if (!running()) return;
       swap(order[oi % order.length]);
       oi++;
       // 1.6–2.2s between swaps (was 2.6–3.5s) — the hero read as slightly
@@ -115,9 +136,35 @@ if (mosaic) {
       // structure above is unchanged, so the "no two cells ever show the
       // same source image at once" invariant (the `assigned` reservation in
       // swap()) still holds at the faster rate.
-      setTimeout(scheduleTick, 1600 + Math.random() * 600);
+      timer = window.setTimeout(scheduleTick, 1600 + Math.random() * 600);
     }
-    setTimeout(scheduleTick, 4000);
+
+    function sync() {
+      const go = running();
+      // `.mosaic-is-idle` parks the CSS pan animations and drops their
+      // `will-change` hint (see Hero.astro) — a paused animation with
+      // will-change still holds its own compositor layer.
+      mosaic!.classList.toggle('mosaic-is-idle', !go);
+      if (go && timer === null) {
+        timer = window.setTimeout(scheduleTick, 1600 + Math.random() * 600);
+      } else if (!go && timer !== null) {
+        clearTimeout(timer);
+        timer = null;
+      }
+    }
+
+    document.addEventListener('visibilitychange', sync);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(
+        (entries) => {
+          onScreen = entries[0]?.isIntersecting ?? true;
+          sync();
+        },
+        { threshold: 0 },
+      ).observe(mosaic);
+    }
+
+    timer = window.setTimeout(scheduleTick, 4000);
   }
 }
 
