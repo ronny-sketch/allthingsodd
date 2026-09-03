@@ -9,7 +9,12 @@ interface ProofItem {
   context?: string;
 }
 interface Props {
-  eyebrow: string;
+  // Optional (2026-09-02 copywriting pass) — Home's "Already in motion"
+  // module pairs a SectionIntro (which already carries its own eyebrow)
+  // directly above a bare stat row, so that instance omits both eyebrow and
+  // title and this component renders no section-head at all. Every other
+  // caller keeps passing both as before.
+  eyebrow?: string;
   title?: string;
   items: ProofItem[];
   // A link to the underlying report (e.g. "Read the 2025 Impact Report") —
@@ -35,10 +40,12 @@ const hasItems = items.length > 0;
     {
       hasItems ? (
         <>
-          <div class="section-head">
-            <span class="eyebrow">{eyebrow}</span>
-            {title && <h2>{title}</h2>}
-          </div>
+          {(eyebrow || title) && (
+            <div class="section-head">
+              {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+              {title && <h2>{title}</h2>}
+            </div>
+          )}
           {/* --cols capped at 4 — forcing every item into one row
                (items.length directly) was fine for the 2-3 item case this
                was designed around, but Media's 8-stat highlights grid

@@ -55,6 +55,15 @@ const page = entry.data;
     />
     <p class="odds-intro-line reveal">{page.intro}</p>
 
+    <!-- NEW SECTION (2026-09-02 copywriting pass) — "Co-creative, not just
+         coworking": the clearest differentiation from ordinary coworking,
+         right after the concrete "what is this place" explainer above. -->
+    <SectionIntro
+      eyebrow={page.coCreative.eyebrow}
+      headline={page.coCreative.headline}
+      body={page.coCreative.body}
+    />
+
     <!-- 3. What the space offers, and how it works — ONE coherent chapter
          (not three stacked sections): the real spaces, membership, event
          use and joining all read as internal zones of a single practical
@@ -86,11 +95,33 @@ const page = entry.data;
           </div>
         </div>
 
+        <!-- NEW SECTION (2026-09-02 copywriting pass) — "The network is
+             bigger than the room": the physical member base is the anchor,
+             not the boundary. No formal external-member product exists yet
+             (see content.config.ts's HUMAN DECISION comment on
+             `networkBeyondRoom`), so this is a plain editorial paragraph +
+             a generic "get in touch" link, not a paid tier. -->
+        <div class="odds-offer-zone">
+          <div class="odds-zone-head">
+            <span class="eyebrow">{page.networkBeyondRoom.eyebrow}</span>
+            <h3>{page.networkBeyondRoom.headline}</h3>
+          </div>
+          <p class="odds-network-body reveal">{page.networkBeyondRoom.body}</p>
+          {
+            page.networkBeyondRoom.cta && (
+              <a class="odds-network-cta reveal" href={page.networkBeyondRoom.cta.href}>
+                {page.networkBeyondRoom.cta.label}
+              </a>
+            )
+          }
+        </div>
+
         <div class="odds-offer-zone">
           <div class="odds-zone-head">
             <span class="eyebrow">Event use</span>
             <h3>Renting the space doesn't require membership.</h3>
           </div>
+          <span class="odds-rates-label">Selected member rates</span>
           <div class="odds-rates-list reveal">
             {
               page.rentalRates.map((r) => (
@@ -102,12 +133,22 @@ const page = entry.data;
               ))
             }
           </div>
+          <p class="odds-rates-nonmember">Non-member pricing: Ask us about your event.</p>
         </div>
       </div>
     </section>
 
-    <!-- 4. ODDspace pilot in numbers. -->
-    <ProofGrid eyebrow={page.proof.eyebrow} title={page.proof.title} items={page.proof.items} />
+    <!-- 4. ODDspace pilot in numbers — HIDDEN UNTIL VERIFIED (2026-09-02
+         copywriting pass): the public member-count and square-metre figures
+         are disputed against the canonical Current State doc, so `proof`
+         ships with an empty `items` array (see oddspace.json) rather than
+         invented/estimated numbers. The data model stays in schema for
+         when real figures are confirmed; only the render is skipped. -->
+    {
+      page.proof.items.length > 0 && (
+        <ProofGrid eyebrow={page.proof.eyebrow} title={page.proof.title} items={page.proof.items} />
+      )
+    }
 
     <!-- 5. Who's it for. -->
     <SectionIntro
@@ -266,6 +307,46 @@ const page = entry.data;
     color: var(--color-paper-40);
     margin-bottom: 1.4rem;
   }
+
+  /* "The network is bigger than the room" zone — plain paragraph + one link,
+     same width/centering as the zone-head above it, no card chrome. */
+  .odds-network-body {
+    max-width: 40rem;
+    margin: 0 auto;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-paper-60);
+  }
+  .odds-network-cta {
+    display: block;
+    width: fit-content;
+    margin: 1.4rem auto 0;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--color-paper-80);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--color-paper-20);
+    transition: color var(--duration-fast) ease;
+  }
+  .odds-network-cta:hover {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
+  }
+
+  .odds-rates-label {
+    display: block;
+    text-align: center;
+    font: var(--text-utility);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+    margin-bottom: 1.4rem;
+  }
   .odds-rates-list {
     max-width: 40rem;
     margin: 0 auto;
@@ -299,6 +380,13 @@ const page = entry.data;
     grid-column: 1 / -1;
     font-family: var(--font-body);
     font-size: 0.78rem;
+    color: var(--color-paper-40);
+  }
+  .odds-rates-nonmember {
+    margin: 1.2rem 0 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
     color: var(--color-paper-40);
   }
 

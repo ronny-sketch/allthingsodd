@@ -32,6 +32,64 @@ const page = entry.data;
     </div>
   </section>
 
+  {
+    /* "Why now" — NEW SECTION (2026-09-02 copywriting pass). Same plain
+       section-head + stacked-paragraph treatment as the core argument above
+       it, not SectionIntro (whose `body` is a single string and can't carry
+       this section's two real paragraph breaks). */
+  }
+  <section class="about-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">{page.whyNow.eyebrow}</span>
+        <h2>{page.whyNow.headline}</h2>
+      </div>
+      <div class="about-argument-inner">
+        {page.whyNow.body.map((paragraph) => <p class="reveal">{paragraph}</p>)}
+      </div>
+    </div>
+  </section>
+
+  {
+    /* "What we build" (howWeMakeItHappen's pillars only) — "Ways of working"
+       (its `principles`) moved down below the timeline, per the 2026-09-02
+       copywriting pass's recommended flow: What we build → What we have
+       learned → Our story → Ways of working → Impact. Both still live in
+       the same `howWeMakeItHappen` content field (repo mapping unchanged),
+       just rendered in two places. */
+  }
+  <section class="about-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">{page.howWeMakeItHappen.eyebrow}</span>
+        <h2>{page.howWeMakeItHappen.title}</h2>
+      </div>
+      <p class="about-lede reveal">{page.howWeMakeItHappen.intro}</p>
+      <FeatureGrid cards={page.howWeMakeItHappen.pillars} />
+    </div>
+  </section>
+
+  {
+    /* "What we have learned" — NEW SECTION (2026-09-02 copywriting pass):
+       candid, numbered lessons from 2025–2026. Reuses FeatureGrid for the
+       five items, same shape ODDference's "What changes in 2027" already
+       uses. [HUMAN DECISION / NEEDS FACT CHECK — see about.json's
+       `whatWeLearned.items[2]` "roughly 300" ODDference attendance figure
+       and item[4]'s Showcase-economics detail; both are the doc's own
+       supplied copy, flagged there for confirmation against the canonical
+       public figures before this goes live.] */
+  }
+  <section class="about-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">{page.whatWeLearned.eyebrow}</span>
+        <h2>{page.whatWeLearned.headline}</h2>
+      </div>
+      <p class="about-lede reveal">{page.whatWeLearned.body}</p>
+      <FeatureGrid cards={page.whatWeLearned.items} />
+    </div>
+  </section>
+
   <section class="about-sub">
     <div class="wrap">
       <div class="section-head">
@@ -43,18 +101,16 @@ const page = entry.data;
     </div>
   </section>
 
+  {
+    /* "Ways of working" — now its own standalone section (moved down from
+       being a sub-part of "What we build" — see the comment above). Same
+       markup as before, just relocated. */
+  }
   <section class="about-sub">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">{page.howWeMakeItHappen.eyebrow}</span>
-        <h2>{page.howWeMakeItHappen.title}</h2>
-      </div>
-      <p class="about-lede reveal">{page.howWeMakeItHappen.intro}</p>
-      <FeatureGrid cards={page.howWeMakeItHappen.pillars} />
-
-      <div class="about-principles-head">
         <span class="eyebrow">{page.howWeMakeItHappen.principlesEyebrow}</span>
-        <h3>{page.howWeMakeItHappen.principlesTitle}</h3>
+        <h2>{page.howWeMakeItHappen.principlesTitle}</h2>
       </div>
       <ul class="about-principles-list reveal">
         {
@@ -131,6 +187,23 @@ const page = entry.data;
   .about-argument p + p {
     margin-top: 1.4rem;
   }
+  /* "Why now" reuses the same stacked-paragraph treatment as the core
+     argument above it, scoped to its own section (not `.about-argument`,
+     which also sets this section's own zero-top padding — "Why now" instead
+     uses `.about-sub`'s normal section rhythm since it follows a real
+     section-head, not the hero). */
+  .about-argument-inner p {
+    max-width: 40rem;
+    margin: var(--space-8) auto 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.85;
+    color: var(--color-paper-60);
+  }
+  .about-argument-inner p + p {
+    margin-top: 1.4rem;
+  }
   .about-lede {
     max-width: 40rem;
     margin: -1.5rem auto 0;
@@ -149,22 +222,13 @@ const page = entry.data;
     color: var(--color-paper-40);
   }
 
-  /* Ways of working — a concise secondary layer inside the same "How we
-     make it happen" chapter, not a second FeatureGrid card row (five
-     principles as full cards would turn this into another giant grid
-     chapter, the opposite of the simpler shape this rebuild is after). */
-  .about-principles-head {
-    max-width: 42rem;
-    margin: var(--space-16) auto 0;
-    text-align: center;
-  }
-  .about-principles-head h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    color: var(--color-paper);
-    font-size: clamp(1.4rem, 2.4vw, 1.9rem);
-    margin: 0.6rem 0 0;
-  }
+  /* Ways of working — now its own standalone section (2026-09-02
+     copywriting pass moved it below the timeline), still a concise list
+     rather than a second FeatureGrid card row (five principles as full
+     cards would be another giant grid chapter, the opposite of the simpler
+     shape this rebuild is after). Its section-head is now the sitewide
+     shared `.section-head` (see layout.css), same as every other
+     `.about-sub` section-head on this page. */
   .about-principles-list {
     list-style: none;
     margin: var(--space-10) auto 0;

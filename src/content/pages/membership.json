@@ -1,46 +1,27 @@
 {
   "_template": "membership",
   "seo": {
-    "title": "ODDnetwork — stay involved throughout the year",
-    "description": "A developing year-round network for organisations that want to stay involved with ODD, learn across sectors and help move the same things forward.",
+    "title": "ODDnetwork — stay involved beyond a single event",
+    "description": "A developing year-round model for organisations that want to stay involved with ODD beyond one ticket, partnership or project — being shaped with the first organisations involved.",
     "ogImage": "/og/membership.jpg"
   },
   "eyebrow": "ODDnetwork · Work with ODD",
-  "title": "Stay involved beyond a single event.",
-  "intro": "Some organisations want to stay involved after the event or project is over. ODDnetwork is the working model for that: a year-round group of organisations that want to learn from each other, stay close to ODD's activity and help build stronger connections between creative fields, business and society. The exact model is still being shaped with the first organisations involved.",
-  "whatItIs": {
-    "eyebrow": "What it is",
-    "headline": "A network you take part in, not a membership card.",
-    "body": "ODDnetwork is meant for organisations that want continuity: regular contact, shared conversations and useful ways to take part across the year. It should grow from what the organisations in it actually want to do together, rather than from a fixed benefits list invented in advance."
+  "title": "Some relationships should not reset after every event.",
+  "intro": "We are building a year-round model for organisations that want to stay involved with ODD beyond one ticket, partnership or project. The final shape is not fixed yet. We are developing it with the first organisations interested in taking part.",
+  "whyThisExists": {
+    "eyebrow": "Why a year-round relationship",
+    "headline": "Useful relationships need more than annual peaks.",
+    "body": "Events are good at creating first encounters. They are less good at giving people enough time to understand each other, follow an idea, or find the right moment to work together. ODDnetwork is an attempt to create that continuity for organisations around ODD — without turning every interaction into a sponsorship package or a networking event."
   },
-  "whoItsFor": [
-    {
-      "label": "Organisations wanting an ongoing creative connection",
-      "description": "Companies and institutions that want an ongoing way to meet people outside their usual field and keep learning from the creative world."
-    },
-    {
-      "label": "Partners already working with ODD",
-      "description": "Partners and collaborators who want to keep the relationship active beyond one event or project."
-    },
-    {
-      "label": "Organisations exploring the creative economy",
-      "description": "Teams that believe creative work should have a stronger place in business and society — and want to contribute, not just observe."
+  "whatWeAreShaping": {
+    "eyebrow": "What it may involve",
+    "headline": "We are designing the model around actual use.",
+    "body": "The working idea includes small conversations and gatherings, relevant ways into ODD activity across the year, and introductions when there is a real reason for people to meet. We do not want to publish a long benefits list before we know which parts are genuinely useful.",
+    "cta": {
+      "label": "Ask about ODDnetwork →",
+      "href": "/work-with-odd?interest=oddmembership#enquiry-form"
     }
-  ],
-  "includes": [
-    {
-      "title": "Ongoing contact",
-      "body": "Regular contact from the ODD team — a simple, ongoing relationship with the ODD team and the other organisations involved."
-    },
-    {
-      "title": "Participation across the year",
-      "body": "Invitations to ODD events and gatherings, plus small conversations around the questions the network actually cares about."
-    },
-    {
-      "title": "A closer relationship",
-      "body": "Introductions across the network as relevant opportunities come up — not networking for its own sake, but when there's a real reason for people to meet."
-    }
-  ],
+  },
   "tiers": [],
   "finalCta": {
     "eyebrow": "Interested?",
