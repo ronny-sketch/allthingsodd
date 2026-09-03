@@ -64,9 +64,9 @@ GitHub (canonical repo, version history)
   → CloudCannon (edits src/content/**/*.json through the git history)
 ```
 
-- **Content** lives in `src/content/pages/*.json` (10 fixed pages: home,
+- **Content** lives in `src/content/pages/*.json` (11 fixed pages: home,
   oddfest, oddference, oddagency, oddspace, work-with-odd, membership, about,
-  media, contact) and
+  media, contact, privacy) and
   `src/content/site/global.json` (nav, footer, social, partner/press logos —
   shared across every page). Schema: `src/content.config.ts`.
 - **Design system** lives in `src/styles/` — `tokens.css` (color/type/space/motion
@@ -113,9 +113,11 @@ GitHub (canonical repo, version history)
   variants, technical config), it stays out of CloudCannon on purpose — see
   `docs/design-system.md` and cloudcannon.config.yml's own comments on why raw
   CSS values are never exposed to editors.
-- The `pages` collection's ten files are fixed (`disable_add: true` in
+- The `pages` collection's eleven files are fixed (`disable_add: true` in
   cloudcannon.config.yml) — the routes in `src/pages/*.astro` depend on those
-  exact filenames.
+  exact filenames. `privacy.json` is the one generic (`legal`) template: a
+  second legal document (terms of sale, a code of conduct) is a new JSON file
+  plus a two-line route, not a new schema.
 
 ## Development rules
 
@@ -164,12 +166,15 @@ GitHub (canonical repo, version history)
 See `docs/deployment.md`. Short version: GitHub is canonical, CI
 (`.github/workflows/ci.yml`) gates `main`, and CloudCannon commits content
 changes back into the same repo. **This build is live** at
-`odd-field-guide.surge.sh` (cut over 2026-08-20) — the old single-file
-site's own deploy path is no longer what's serving that domain.
+`https://allthingsodd.co` (domain cutover 2026-09-03; before that
+`odd-field-guide.surge.sh`, which is still published with the identical
+build so no existing link 404s) — the old single-file site's own deploy path
+is no longer what's serving either domain.
 
 **Corrected 2026-08-21:** deploy is CI-automated, not manual — the `deploy`
-job in `.github/workflows/ci.yml` runs `npx surge dist
-odd-field-guide.surge.sh` automatically on every push to `main` that passes
+job in `.github/workflows/ci.yml` runs `npx surge dist` against
+`allthingsodd.co` (canonical) and `odd-field-guide.surge.sh` (retired, kept
+alive) automatically on every push to `main` that passes
 `checks`/`functional` (this is what makes a CloudCannon content commit go
 live with no one running a manual command). A prior version of this file
 said deploys were manual; that was stale. Treat any push to `main` as a real
@@ -312,26 +317,44 @@ short version a future agent needs before touching `/tickets/*`):
   never this repo). See that repo's `ops/TICKETING_IMPLEMENTATION_PLAN.md`
   "Launch checklist" before ever pointing this at live-mode keys.
 
-## Analytics (GA4)
+## Analytics and consent
 
-Added 2026-08-28. **Corrected 2026-09-01: live, not a placeholder** —
-`src/scripts/analytics-config.ts`'s `GA_MEASUREMENT_ID` is a real property
-(`G-9Q90CQMBK8`, stream "ODDpage") as of the 2026-08-29 Growth OS
-activation (`../odd-growth-os/ops/DECISIONS.md` D17/D20); this file
-previously said it shipped `null` until a property existed, which is no
-longer true. The "ships inert until configured" pattern it describes is
-still the real mechanism (a `null` ID keeps the consent banner and
-gtag.js request fully off) — it's just no longer the _current_ state.
-`src/components/navigation/ConsentBanner.astro` gates everything on an
-explicit Accept/Reject (GDPR/ePrivacy applies — ODD is a Finnish
-association, GA4 cookies aren't "strictly necessary" — see that file's
-header comment for why this is a simpler "don't request gtag.js until
-accepted" pattern rather than Google's Consent Mode default-denied one).
-`src/scripts/analytics.ts` exports `trackEvent()`, called from
-`work-enquiry-form.ts`/`newsletter-form.ts`/`src/scripts/tickets/*.ts` on a
-real successful submission/funnel event — a safe no-op whenever consent
-hasn't been granted. A future rotation to a different property is still a
-one-file change in `analytics-config.ts`, same mechanism as before.
+**Rebuilt 2026-09-03 — four categories, not one flag.** Full reasoning:
+`docs/architecture.md#consent`. The short version a future agent needs:
+
+- `src/scripts/consent-config.ts` is the **single source of truth** for what
+  this site stores and in which category. Both the banner and the privacy
+  page's cookie table render from it. **Adding any tracker, pixel or
+  third-party embed means adding an entry here** — otherwise it is
+  undeclared on `/privacy/` and ungated by the banner, which is the actual
+  legal failure, not a styling detail.
+- `src/scripts/consent.ts` is the store (read/write/subscribe/withdraw).
+  Nothing else reads the stored value directly. It migrates the
+  pre-2026-09-03 `odd_analytics_consent_v1` flag once, then deletes it.
+- `src/scripts/analytics.ts` — GA4, gated on `statistics`.
+  `GA_MEASUREMENT_ID` is a real property (`G-9Q90CQMBK8`, stream "ODDpage").
+  It still ships the "inert until configured" contract: a `null` ID collapses
+  the statistics category out of the banner entirely. `trackEvent()` is
+  called from the two forms and the ticketing funnel and is a safe no-op
+  until consent exists. Rotating the property is still a one-file change.
+- `src/scripts/calendar-embed.ts` — the ODDspace Google Calendar, gated on
+  `preferences`. Its URL lives in `data-src`, never `src`; that is what makes
+  the gate structural rather than a race with script timing. **Do not
+  "simplify" it back to a plain `src`.**
+- Withdrawal (GDPR Art. 7(3)) is the footer's "Cookie settings" button and
+  the one on `/privacy/`; both clear the stored value before reopening, so
+  abandoning the reopened banner fails closed.
+
+**We deliberately do not use Cookiebot**, unlike oddfest.co — see
+`docs/architecture.md#consent` for why a CMP would make this particular site
+less private rather than more, and for what we gave up (auto-blocking, a
+server-side consent log) and how each gap is covered. Revisit that decision
+if a marketing pixel is ever added.
+
+`tests/functional/consent.spec.ts` asserts on the **network** — that no
+Google request happens before consent — because that is the thing that
+would actually breach ePrivacy, and it is invisible in a screenshot. If a
+change makes those tests fail, the change is wrong, not the test.
 
 ## Scope-creep guardrail
 

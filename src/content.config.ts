@@ -1051,6 +1051,55 @@ const pages = defineCollection({
         // sitewide source of truth), not duplicated here.
         followSocial: z.object({ title: z.string(), body: z.string() }),
       }),
+      // Legal pages (privacy & cookies today). Deliberately the site's one
+      // generic prose template rather than a page-specific shape like every
+      // variant above: a legal document is genuinely just headed sections of
+      // text, it is the one kind of content here that really does recombine,
+      // and a second one (terms of sale, a code of conduct) should be a new
+      // JSON file plus a two-line route, not a new schema.
+      //
+      // The cookie table is NOT content and is not in here — it is rendered
+      // from src/scripts/consent-config.ts, the same array the consent
+      // banner gates on, so the declaration can't drift from what the site
+      // actually sets. `cookieSection` below is only the prose around it.
+      z.object({
+        _template: z.literal('legal'),
+        seo,
+        eyebrow: z.string(),
+        title: z.string(),
+        /** Displayed to the reader and meaningful in law — a policy with no
+         *  visible date can't be shown to have been in force on a given day.
+         *  Free text, not a date type, so it reads "3 September 2026". */
+        lastUpdated: z.string(),
+        intro: z.string(),
+        sections: z.array(
+          z.object({
+            title: z.string(),
+            /** One string per paragraph. An array rather than one blob with
+             *  newlines in it because CloudCannon gives an editor a real
+             *  repeatable list for the former and a single textarea whose
+             *  line breaks silently don't render for the latter. */
+            body: z.array(z.string()),
+            /** Optional bullet list under the paragraphs — used for the
+             *  GDPR rights list, where each item is "Right to X: what it
+             *  means" and a paragraph would bury it. */
+            items: z.array(z.string()).optional(),
+          }),
+        ),
+        cookieSection: z.object({
+          title: z.string(),
+          body: z.array(z.string()),
+          /** Label on the button that reopens the consent banner. */
+          settingsLabel: z.string(),
+        }),
+        contact: z.object({
+          title: z.string(),
+          body: z.array(z.string()),
+          name: z.string(),
+          email: z.string(),
+          address: z.string(),
+        }),
+      }),
     ]);
   },
 });

@@ -1,0 +1,306 @@
+---
+// Renders a legal page: prose sections, then the cookie declaration table,
+// then a contact block. Shared rather than page-specific because a second
+// legal document (terms of sale, a code of conduct) should be a JSON file
+// and a two-line route, not another component — see the `legal` variant's
+// comment in src/content.config.ts.
+//
+// The cookie table is built from src/scripts/consent-config.ts, which is
+// the same array ConsentBanner.astro gates on. That shared import is the
+// whole point: a tracker can't be added to the site without appearing here,
+// and a category can't be documented here without being enforceable there.
+import { GA_MEASUREMENT_ID } from '../../scripts/analytics-config';
+import { buildDeclaration } from '../../scripts/consent-config';
+
+interface Section {
+  title: string;
+  body: string[];
+  items?: string[];
+}
+interface Props {
+  lastUpdated: string;
+  sections: Section[];
+  cookieSection: { title: string; body: string[]; settingsLabel: string };
+  contact: { title: string; body: string[]; name: string; email: string; address: string };
+}
+const { lastUpdated, sections, cookieSection, contact } = Astro.props;
+
+const declaration = buildDeclaration(GA_MEASUREMENT_ID);
+
+const KIND_LABEL: Record<string, string> = {
+  cookie: 'Cookie',
+  localStorage: 'Local storage',
+  sessionStorage: 'Session storage',
+};
+---
+
+<section class="legal">
+  <div class="wrap">
+    <p class="legal-updated reveal">Last updated: {lastUpdated}</p>
+
+    {
+      sections.map((section) => (
+        <article class="legal-section reveal">
+          <h2>{section.title}</h2>
+          {section.body.map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
+          {section.items && (
+            <ul>
+              {section.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          )}
+        </article>
+      ))
+    }
+
+    <article class="legal-section reveal" id="cookies">
+      <h2>{cookieSection.title}</h2>
+      {cookieSection.body.map((paragraph) => <p>{paragraph}</p>)}
+
+      {
+        declaration.map((category) => (
+          <div class="legal-category">
+            <h3>
+              {category.label}
+              {category.alwaysOn && <span class="legal-tag">Always on</span>}
+            </h3>
+            <p class="legal-category-summary">{category.summary}</p>
+            {category.entries.length === 0 ? (
+              /* An empty category is stated outright rather than omitted.
+                 "We don't do this" is information a reader can act on;
+                 silence is indistinguishable from an oversight. */
+              <p class="legal-empty">Nothing in this category. We set none of these.</p>
+            ) : (
+              /* Wrapped, not styled to fit: a five-column table cannot
+                 shrink to a 320px viewport without becoming unreadable, so
+                 it scrolls inside its own box while the page itself never
+                 scrolls sideways. tabindex makes that box keyboard-
+                 reachable, which a scrollable region otherwise isn't. */
+              <div
+                class="legal-table-scroll"
+                tabindex="0"
+                role="region"
+                aria-label={`${category.label} cookies`}
+              >
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Type</th>
+                      <th scope="col">Set by</th>
+                      <th scope="col">Purpose</th>
+                      <th scope="col">Kept for</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {category.entries.map((entry) => (
+                      <tr>
+                        <th scope="row">
+                          <code>{entry.name}</code>
+                          {entry.scope && <span class="legal-scope">{entry.scope}</span>}
+                        </th>
+                        <td>{KIND_LABEL[entry.kind] ?? entry.kind}</td>
+                        <td>{entry.provider}</td>
+                        <td>{entry.purpose}</td>
+                        <td>{entry.retention}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        ))
+      }
+
+      <button type="button" class="legal-settings-btn" id="privacyConsentSettings">
+        {cookieSection.settingsLabel}
+      </button>
+    </article>
+
+    <article class="legal-section reveal">
+      <h2>{contact.title}</h2>
+      {contact.body.map((paragraph) => <p>{paragraph}</p>)}
+      <address>
+        {contact.name}<br />
+        <a href={`mailto:${contact.email}`}>{contact.email}</a><br />
+        {contact.address}
+      </address>
+    </article>
+  </div>
+</section>
+
+<script>
+  import { openConsentSettings } from '../../scripts/consent';
+
+  document
+    .getElementById('privacyConsentSettings')
+    ?.addEventListener('click', () => openConsentSettings());
+</script>
+
+<style>
+  .legal {
+    padding: 0 0 var(--space-24);
+  }
+  .legal .wrap {
+    /* Narrower than the site's default wrap — this is the one page on the
+       site that is genuinely read top to bottom, and a 75ch measure is the
+       difference between a policy someone reads and one they scroll past. */
+    max-width: 46rem;
+  }
+  .legal-updated {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-paper-40);
+    margin: 0 0 var(--space-10);
+  }
+  .legal-section {
+    margin-bottom: var(--space-12);
+  }
+  .legal-section h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+    line-height: 1.2;
+    color: var(--color-paper);
+    margin: 0 0 var(--space-4);
+  }
+  .legal-section h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.05rem;
+    color: var(--color-paper);
+    margin: 0 0 var(--space-2);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .legal-section p,
+  .legal-section li {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-paper-60);
+  }
+  .legal-section p {
+    margin: 0 0 var(--space-4);
+  }
+  .legal-section ul {
+    margin: 0 0 var(--space-4);
+    padding-left: 1.1rem;
+  }
+  .legal-section li {
+    margin-bottom: var(--space-3);
+  }
+  .legal-category {
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .legal-category-summary {
+    margin-bottom: var(--space-4);
+  }
+  .legal-tag {
+    font-family: var(--font-body);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-paper-40);
+    border: 1px solid var(--color-paper-20);
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+  }
+  .legal-empty {
+    font-style: italic;
+    margin: 0;
+  }
+  .legal-table-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--color-paper-12);
+    border-radius: 8px;
+  }
+  .legal-table-scroll table {
+    border-collapse: collapse;
+    width: 100%;
+    /* Sized to fit inside the 46rem reading column at desktop (minus the
+       wrap's own padding) so the table does NOT scroll on the viewports
+       most people read this on — below that the five columns would wrap
+       into unreadable slivers, and the scroll container above takes over
+       instead. */
+    min-width: 36rem;
+  }
+  .legal-table-scroll th,
+  .legal-table-scroll td {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    text-align: left;
+    vertical-align: top;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-paper-12);
+    color: var(--color-paper-60);
+  }
+  .legal-table-scroll thead th {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-paper-80);
+    white-space: nowrap;
+  }
+  .legal-table-scroll tbody tr:last-child th,
+  .legal-table-scroll tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .legal-table-scroll tbody th {
+    font-weight: 400;
+    color: var(--color-paper-80);
+  }
+  .legal-table-scroll code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.76rem;
+    color: var(--color-paper);
+    display: block;
+  }
+  .legal-scope {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.72rem;
+    color: var(--color-paper-40);
+  }
+  .legal-settings-btn {
+    margin-top: var(--space-8);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.7rem 1.4rem;
+    border-radius: 999px;
+    background: var(--color-signal);
+    border: 1px solid var(--color-signal);
+    color: var(--color-paper);
+    cursor: pointer;
+    transition: opacity var(--duration-fast) ease;
+  }
+  .legal-settings-btn:hover {
+    opacity: 0.85;
+  }
+  .legal-section address {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    font-style: normal;
+    color: var(--color-paper-60);
+  }
+  .legal-section address a {
+    color: var(--color-paper);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+</style>

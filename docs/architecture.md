@@ -25,9 +25,9 @@ src/
   content.config.ts       Zod schemas for every content collection
   content/
     site/global.json      Nav, footer, social, contact, partner/press logos — shared everywhere
-    pages/*.json           10 fixed pages: home, oddfest, oddference, oddagency,
+    pages/*.json           11 fixed pages: home, oddfest, oddference, oddagency,
                             oddspace, work-with-odd, membership, about, media,
-                            contact
+                            contact, privacy
   styles/
     tokens.css             Color, spacing, motion tokens (with provenance)
     typography.css         Fluid type-scale roles (display-xl → caption)
@@ -51,7 +51,7 @@ sections" model — an editor drags a Hero, then a Quote, then a Gallery, in any
 order, onto any page. That's the right call for a blog or a marketing site
 with many similar landing pages.
 
-It's the wrong call here. ODD has **ten pages, and most have a genuinely
+It's the wrong call here. ODD has **eleven pages, and most have a genuinely
 different, bespoke layout**: the home page's photo mosaic hero and filmstrip
 don't exist anywhere else; ODDfest/ODDference/ODDagency share a rail+grid
 shape but each hero is a different variant (video split, image split,
@@ -333,9 +333,65 @@ padding math needs to match the rails' 68px width: `SubpageRail` is
 `position: fixed` with an opaque fill, so it already visually overlays/masks
 its own width regardless of what's underneath.
 
+## Consent
+
+Rebuilt 2026-09-03. Four categories — necessary / preferences / statistics /
+marketing — matching the vocabulary Cookiebot and EU guidance use, and the
+one oddfest.co already shows visitors through its own Cookiebot install.
+
+```
+src/scripts/consent-config.ts   what exists, in which category  (pure data)
+src/scripts/consent.ts          the store: read/write/subscribe/withdraw
+src/scripts/analytics.ts        GA4, subscribed to `statistics`
+src/scripts/calendar-embed.ts   ODDspace Google Calendar, gated on `preferences`
+ConsentBanner.astro             the banner, rendered from consent-config
+LegalDocument.astro             the cookie table, rendered from consent-config
+```
+
+**Why not Cookiebot.** oddfest.co loads `consent.cookiebot.com/uc.js` with
+`data-blockingmode="auto"` and Google Consent Mode v2 defaults, which is the
+right answer for a site with a marketing stack: Cookiebot auto-blocks
+trackers nobody registered, keeps a server-side consent log, and generates
+its own declaration. This site has one analytics tag and one embed. Adopting
+a CMP here would add a third-party script on every page and make the site
+_less_ private, because Consent Mode still pings Google before consent —
+cookielessly, but it still contacts them. Not requesting `gtag.js` at all is
+the stricter position, and it's only available to us because the surface is
+small enough to enumerate by hand. If a marketing pixel is ever added, that
+trade flips and this decision should be revisited.
+
+**What we gave up, and how each gap is covered.** No auto-blocking: the
+declaration in `consent-config.ts` is the manual substitute, and the reason
+both the banner and the privacy table render from it is that a tracker
+without an entry can't be gated, so the two can't drift apart silently. No
+consent log: `decidedAt` on the stored value is the closest honest
+equivalent, and it is client-side only — we cannot prove to a regulator who
+consented when. That is a real, accepted limitation, not an oversight.
+
+**The two gaps this fixed.** Before this, the banner only knew about GA4, so
+the ODDspace calendar embed loaded regardless of the answer; and a stored
+choice could not be changed, which GDPR Article 7(3) requires to be as easy
+as giving it. The footer's "Cookie settings" button and the one on
+`/privacy/` both call `openConsentSettings()`, which clears the stored value
+before reopening — so abandoning the reopened banner fails closed.
+
+**Two things that are load-bearing and easy to undo by accident:**
+
+1. The calendar's URL lives in `data-src`, never `src`. That is what makes
+   the gate structural rather than a race against script timing.
+2. Both the iframe and its placeholder are styled `:not([hidden])`. An
+   explicit `display` beats the UA stylesheet's `[hidden] { display: none }`,
+   so without it a hidden element stays laid out at full height — which
+   doubled the calendar container and pushed the whole page down when this
+   was first written. `tests/visual` caught it.
+
+`tests/functional/consent.spec.ts` asserts on the network, not the banner's
+appearance: the requests are the thing that would actually breach ePrivacy
+Article 5(3), and they are invisible in a screenshot.
+
 ## Visual regression
 
-`tests/visual/pages.spec.ts` screenshots all 10 routes at 5 viewports
+`tests/visual/pages.spec.ts` screenshots all 11 routes at 5 viewports
 (mobile/tablet/laptop/desktop/wide) against committed baselines in
 `tests/visual/pages.spec.ts-snapshots/`.
 
@@ -388,5 +444,10 @@ reference for this migration (see CLAUDE.md's "What this is") — not a
 design-parity requirement for changes made since. Its own files/repo are
 untouched by this project, but **its `npx surge .` deploy path is no longer
 what serves odd-field-guide.surge.sh** — cutover happened 2026-08-20; running
-that command again would revert the live domain back to the old site, so
-don't. See [deployment.md](deployment.md) for the current deploy path.
+that command again would revert that domain back to the old site, so don't.
+Since the 2026-09-03 domain migration the canonical production host is
+`allthingsodd.co`; odd-field-guide.surge.sh is still published with the same
+build, which is precisely why running the old command remains dangerous. See
+[deployment.md](deployment.md) for the current deploy path and
+[deployment.md#domain-migration](deployment.md#domain-migration) for the
+cutover.

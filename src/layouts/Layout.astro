@@ -29,12 +29,54 @@ interface Props {
 }
 const { title, description, ogImage, preloadImage, theme, noindex } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// Path-preserving redirect from the retired production host
+// (odd-field-guide.surge.sh) to the canonical one (allthingsodd.co).
+//
+// Why this is JavaScript and not a real 301: Surge serves redirects from a
+// ROUTER file, and ROUTER files are a paid-plan feature (verified against
+// surge.sh/docs/platform/redirects and .../plans; this account is on Free —
+// custom domains and managed SSL are free, per-request server features are
+// not). A genuine 301 on the old hostname is not available without
+// upgrading the plan, so this is the lowest-risk free equivalent: keep
+// publishing the identical build to the old host (nothing 404s, no existing
+// link on the internet dies) and hand visitors forward to the same path on
+// the new one.
+//
+// Search-engine consolidation does NOT depend on this script — every page's
+// <link rel="canonical"> and og:url below already point at allthingsodd.co
+// (from `site` in astro.config.mjs), which is the signal Google actually
+// uses to fold duplicate hosts together. This is for humans following old
+// links.
+//
+// Off by default. `PUBLIC_LEGACY_REDIRECT` is set to '1' in the deploy job
+// (.github/workflows/ci.yml) only once allthingsodd.co is confirmed
+// resolving over HTTPS — enabling it before DNS lands would bounce every
+// visitor on the old host to a domain that doesn't answer, i.e. take
+// production down for exactly the audience it exists to protect.
+// See docs/deployment.md#domain-migration.
+const legacyRedirect = import.meta.env.PUBLIC_LEGACY_REDIRECT === '1';
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    {
+      /* First script in <head>, is:inline and synchronous, so an old-host
+         visitor is forwarded before any of this page paints. Only the
+         retired production host redirects — the preview deployment
+         (odd-field-guide-astro.surge.sh) deliberately does not, since its
+         whole job is showing a build that is NOT production. `replace`, not
+         `assign`: the old URL must not sit in the back-stack, or Back from
+         the new site bounces the visitor straight forward again. */
+      legacyRedirect && (
+        <script
+          is:inline
+          set:html="if(location.hostname==='odd-field-guide.surge.sh')location.replace('https://allthingsodd.co'+location.pathname+location.search+location.hash)"
+        />
+      )
+    }
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
