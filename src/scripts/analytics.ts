@@ -14,6 +14,7 @@ import { onConsentChange } from './consent';
 
 declare global {
   interface Window {
+    /** Holds `arguments` objects, not arrays — see loadGtag() below. */
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
   }
@@ -25,8 +26,18 @@ function loadGtag(): void {
   if (loaded || !GA_MEASUREMENT_ID) return;
   loaded = true;
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function gtag(...args: unknown[]) {
-    window.dataLayer!.push(args);
+  // `arguments`, NOT a rest-parameter array — this is not a style choice and
+  // reverting it silently breaks all measurement. gtag.js reads dataLayer
+  // and only treats entries that are `arguments` objects as commands; a real
+  // Array is taken for GTM-style data and skipped without any error. From
+  // 2026-08-28 until 2026-09-03 this file pushed `[...args]`, so gtag.js
+  // loaded, the measurement ID was correct, consent worked — and not one hit
+  // was ever sent. Confirmed live against allthingsodd.co: zero /g/collect
+  // beacons, and one appeared the instant the same commands were pushed as
+  // `arguments`. tests/functional/consent.spec.ts guards the shape now.
+  window.gtag = function gtag() {
+    // eslint-disable-next-line prefer-rest-params
+    window.dataLayer!.push(arguments);
   };
   window.gtag('js', new Date());
   window.gtag('config', GA_MEASUREMENT_ID, { anonymize_ip: true });

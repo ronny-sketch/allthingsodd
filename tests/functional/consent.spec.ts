@@ -22,6 +22,18 @@ function trackRequests(page: Page): string[] {
   return urls;
 }
 
+/** Waits long enough for a gated request to have happened if it were going
+ *  to. Deliberately not `waitForLoadState('networkidle')`: webkit never
+ *  reaches idle on /about or /oddspace (confirmed — it times out at 30s on
+ *  every run, while chromium and firefox settle), and every assertion these
+ *  tests make about "nothing was requested" is a negative, which no load
+ *  state can prove anyway. A bounded settle after `load` is both honest
+ *  about that and stable across all three engines. */
+async function settle(page: Page) {
+  await page.waitForLoadState('load');
+  await page.waitForTimeout(1500);
+}
+
 test.beforeEach(async ({ context }) => {
   // Same rationale as interactions.spec.ts: keep the unrelated 15s newsletter
   // popup out of tests that click things.
@@ -34,9 +46,7 @@ test('no analytics request before the visitor answers the banner', async ({ page
   const requests = trackRequests(page);
   await page.goto('/');
   await expect(page.locator('#consentBanner')).toBeVisible();
-  // networkidle, not a fixed wait: the assertion is "nothing was requested by
-  // the time the page went quiet", which a timeout can only approximate.
-  await page.waitForLoadState('networkidle');
+  await settle(page);
   expect(requests.filter((url) => GOOGLE_ANALYTICS.test(url))).toEqual([]);
 });
 
@@ -47,7 +57,7 @@ test('rejecting keeps analytics off, and is remembered on the next page', async 
   await expect(page.locator('#consentBanner')).not.toBeVisible();
 
   await page.goto('/about');
-  await page.waitForLoadState('networkidle');
+  await settle(page);
   // The banner must not reappear — re-asking someone who already said no is
   // its own dark pattern, quite apart from being annoying.
   await expect(page.locator('#consentBanner')).not.toBeVisible();
@@ -62,17 +72,27 @@ test('accepting loads gtag.js with the configured measurement ID', async ({ page
   await expect
     .poll(() => requests.filter((url) => GOOGLE_ANALYTICS.test(url)).length)
     .toBeGreaterThan(0);
-  // Asserted against the value the site actually ships rather than a
-  // hardcoded ID here, so rotating the property in analytics-config.ts
-  // doesn't fail this test for the wrong reason.
-  const configured = await page.evaluate(() => window.dataLayer !== undefined);
-  expect(configured).toBe(true);
+  // The commands queued for gtag.js must be `arguments` objects, not arrays.
+  // This is the exact defect that made GA4 collect nothing from 2026-08-28
+  // to 2026-09-03: gtag.js skips Array entries in dataLayer without error,
+  // so the ID was right, the script loaded, consent worked, and zero hits
+  // were sent. Asserting on the shape rather than on a live /g/collect
+  // request keeps this test offline-safe while still catching the bug.
+  const queue = await page.evaluate(() =>
+    (window.dataLayer ?? []).map((entry) => ({
+      isArray: Array.isArray(entry),
+      command: String((entry as IArguments)[0] ?? ''),
+    })),
+  );
+  expect(queue.length).toBeGreaterThan(0);
+  expect(queue.map((e) => e.command)).toContain('config');
+  expect(queue.filter((e) => e.isArray)).toEqual([]);
 });
 
 test('the ODDspace calendar does not load Google before consent', async ({ page }) => {
   const requests = trackRequests(page);
   await page.goto('/oddspace');
-  await page.waitForLoadState('networkidle');
+  await settle(page);
 
   expect(requests.filter((url) => GOOGLE_CALENDAR.test(url))).toEqual([]);
   // The iframe exists in the markup but must carry no src at all — this is
