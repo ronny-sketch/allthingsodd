@@ -3,7 +3,6 @@ import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import PageIntro from '../components/sections/PageIntro.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
-import AudienceList from '../components/sections/AudienceList.astro';
 import PricingGrid from '../components/sections/PricingGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 
@@ -22,43 +21,29 @@ const page = entry.data;
     warpTitle
   />
 
+  <!-- NEW SECTION (2026-09-02 copywriting pass) — "Why this exists":
+       explains the need for year-round continuity without promising
+       benefits that are not yet designed. -->
   <SectionIntro
-    eyebrow={page.whatItIs.eyebrow}
-    headline={page.whatItIs.headline}
-    body={page.whatItIs.body}
+    eyebrow={page.whyThisExists.eyebrow}
+    headline={page.whyThisExists.headline}
+    body={page.whyThisExists.body}
   />
 
-  <section class="mem-sub">
-    <div class="wrap">
-      <div class="section-head"><h2>Who it's for</h2></div>
-      <AudienceList items={page.whoItsFor} />
-    </div>
-  </section>
-
-  <!-- "What participation may involve" — one consolidated section (2026-08-31
-       final implementation pass), replacing three separate chapters (Why
-       join / What it may include / Year-round rhythm) that repeated the same
-       "ongoing relationship" idea three ways. No generic team-photo
-       PhotoBreak either — it wasn't actual ODDnetwork proof, just a stock
-       backstage shot. -->
-  <section class="mem-sub">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">What to expect</span>
-        <h2>What participation may involve</h2>
-      </div>
-      <div class="mem-includes reveal" style={`--cols: ${page.includes.length}`}>
-        {
-          page.includes.map((i) => (
-            <div class="mem-include">
-              <h3>{i.title}</h3>
-              <p>{i.body}</p>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
+  <!-- "What we are shaping" — SIMPLIFIED (2026-09-02 copywriting pass) from
+       a "what it is" intro + a three-card audience list + a three-card
+       benefit grid down to one deliberately small paragraph. The doc is
+       explicit that this page should stay small until the offer, cadence,
+       tiers and annual price are actually approved — see
+       content.config.ts's comment on `whatWeAreShaping`. No generic
+       team-photo PhotoBreak either — it wasn't actual ODDnetwork proof,
+       just a stock backstage shot. -->
+  <SectionIntro
+    eyebrow={page.whatWeAreShaping.eyebrow}
+    headline={page.whatWeAreShaping.headline}
+    body={page.whatWeAreShaping.body}
+    cta={page.whatWeAreShaping.cta}
+  />
 
   {
     page.tiers && page.tiers.length > 0 && (
@@ -80,48 +65,5 @@ const page = entry.data;
 <style>
   .mem-sub {
     padding: var(--space-24) 0;
-  }
-  /* Mobile rhythm. 6rem top+bottom is tuned for a desktop column; stacked on
-     a phone it puts ~192px of empty screen between two sections (measured
-     across /work-with-odd, /oddference, /oddspace, /about and /media). Halved
-     to match layout.css's own `section` reduction at the same breakpoint, so
-     page-level and component-level sections stay on one rhythm — see that
-     file's comment, which flags exactly this class of override. */
-  @media (max-width: 640px) {
-    .mem-sub {
-      padding: var(--space-12) 0;
-    }
-  }
-  .mem-includes {
-    display: grid;
-    /* --cols (set inline, per instance) — see ProofGrid/wwo-cards for the
-       same fix and why: auto-fit strands a fixed small count unevenly at
-       some widths instead of always filling one row. */
-    grid-template-columns: repeat(var(--cols), 1fr);
-    gap: 1px;
-    background: var(--color-paper-12);
-  }
-  @media (max-width: 700px) {
-    .mem-includes {
-      grid-template-columns: 1fr;
-    }
-  }
-  .mem-include {
-    background: var(--color-backstage);
-    padding: 1.8rem;
-  }
-  .mem-include h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.15rem;
-    color: var(--color-paper);
-    margin: 0;
-  }
-  .mem-include p {
-    margin: 0.7rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    line-height: 1.6;
-    color: var(--color-paper-60);
   }
 </style>

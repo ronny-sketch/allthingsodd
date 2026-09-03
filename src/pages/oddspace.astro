@@ -55,6 +55,15 @@ const page = entry.data;
     />
     <p class="odds-intro-line reveal">{page.intro}</p>
 
+    <!-- NEW SECTION (2026-09-02 copywriting pass) — "Co-creative, not just
+         coworking": the clearest differentiation from ordinary coworking,
+         right after the concrete "what is this place" explainer above. -->
+    <SectionIntro
+      eyebrow={page.coCreative.eyebrow}
+      headline={page.coCreative.headline}
+      body={page.coCreative.body}
+    />
+
     <!-- 3. What the space offers, and how it works — ONE coherent chapter
          (not three stacked sections): the real spaces, membership, event
          use and joining all read as internal zones of a single practical
@@ -86,11 +95,33 @@ const page = entry.data;
           </div>
         </div>
 
+        <!-- NEW SECTION (2026-09-02 copywriting pass) — "The network is
+             bigger than the room": the physical member base is the anchor,
+             not the boundary. No formal external-member product exists yet
+             (see content.config.ts's HUMAN DECISION comment on
+             `networkBeyondRoom`), so this is a plain editorial paragraph +
+             a generic "get in touch" link, not a paid tier. -->
+        <div class="odds-offer-zone">
+          <div class="odds-zone-head">
+            <span class="eyebrow">{page.networkBeyondRoom.eyebrow}</span>
+            <h3>{page.networkBeyondRoom.headline}</h3>
+          </div>
+          <p class="odds-network-body reveal">{page.networkBeyondRoom.body}</p>
+          {
+            page.networkBeyondRoom.cta && (
+              <a class="odds-network-cta reveal" href={page.networkBeyondRoom.cta.href}>
+                {page.networkBeyondRoom.cta.label}
+              </a>
+            )
+          }
+        </div>
+
         <div class="odds-offer-zone">
           <div class="odds-zone-head">
             <span class="eyebrow">Event use</span>
             <h3>Renting the space doesn't require membership.</h3>
           </div>
+          <span class="odds-rates-label">Selected member rates</span>
           <div class="odds-rates-list reveal">
             {
               page.rentalRates.map((r) => (
@@ -102,12 +133,22 @@ const page = entry.data;
               ))
             }
           </div>
+          <p class="odds-rates-nonmember">Non-member pricing: Ask us about your event.</p>
         </div>
       </div>
     </section>
 
-    <!-- 4. ODDspace pilot in numbers. -->
-    <ProofGrid eyebrow={page.proof.eyebrow} title={page.proof.title} items={page.proof.items} />
+    <!-- 4. ODDspace pilot in numbers — HIDDEN UNTIL VERIFIED (2026-09-02
+         copywriting pass): the public member-count and square-metre figures
+         are disputed against the canonical Current State doc, so `proof`
+         ships with an empty `items` array (see oddspace.json) rather than
+         invented/estimated numbers. The data model stays in schema for
+         when real figures are confirmed; only the render is skipped. -->
+    {
+      page.proof.items.length > 0 && (
+        <ProofGrid eyebrow={page.proof.eyebrow} title={page.proof.title} items={page.proof.items} />
+      )
+    }
 
     <!-- 5. Who's it for. -->
     <SectionIntro
@@ -174,12 +215,32 @@ const page = entry.data;
               <h2>{page.calendar.title}</h2>
             </div>
             {page.calendar.note && <p class="odds-calendar-note reveal">{page.calendar.note}</p>}
-            <div class="odds-calendar-embed reveal">
+            {/* Consent-gated: this is a Google embed, and Google sets its
+                 own cookies the moment it loads — which is exactly the
+                 "strictly necessary" exemption ePrivacy does not grant. The
+                 URL is held in data-src, never src, so the request cannot
+                 start before src/scripts/calendar-embed.ts has confirmed
+                 `preferences` consent (or the visitor has pressed the
+                 button below, which loads it for this visit only). */}
+            <div class="odds-calendar-embed reveal" data-calendar-embed>
               <iframe
-                src={page.calendar.embedUrl}
+                data-src={page.calendar.embedUrl}
                 title="ODDspace events calendar"
                 loading="lazy"
+                hidden
               />
+              <div class="odds-calendar-placeholder" data-calendar-placeholder>
+                <p>
+                  The live calendar is embedded from Google Calendar, which sets its own cookies. It
+                  loads once you allow embedded content.
+                </p>
+                <div class="odds-calendar-actions">
+                  <button type="button" class="odds-calendar-btn" data-calendar-load>
+                    Show the calendar
+                  </button>
+                  <a href="/privacy/">Why we ask</a>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -196,6 +257,7 @@ const page = entry.data;
       </div>
     </section>
   </SubpageFrame>
+  <script src="../scripts/calendar-embed.ts"></script>
 </Layout>
 
 <style>
@@ -256,6 +318,46 @@ const page = entry.data;
     color: var(--color-paper-40);
     margin-bottom: 1.4rem;
   }
+
+  /* "The network is bigger than the room" zone — plain paragraph + one link,
+     same width/centering as the zone-head above it, no card chrome. */
+  .odds-network-body {
+    max-width: 40rem;
+    margin: 0 auto;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-paper-60);
+  }
+  .odds-network-cta {
+    display: block;
+    width: fit-content;
+    margin: 1.4rem auto 0;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--color-paper-80);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--color-paper-20);
+    transition: color var(--duration-fast) ease;
+  }
+  .odds-network-cta:hover {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
+  }
+
+  .odds-rates-label {
+    display: block;
+    text-align: center;
+    font: var(--text-utility);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+    margin-bottom: 1.4rem;
+  }
   .odds-rates-list {
     max-width: 40rem;
     margin: 0 auto;
@@ -289,6 +391,13 @@ const page = entry.data;
     grid-column: 1 / -1;
     font-family: var(--font-body);
     font-size: 0.78rem;
+    color: var(--color-paper-40);
+  }
+  .odds-rates-nonmember {
+    margin: 1.2rem 0 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
     color: var(--color-paper-40);
   }
 
@@ -400,10 +509,76 @@ const page = entry.data;
        stay light too rather than following ODDspace's own light/dark swap. */
     background: var(--swatch-paper);
   }
-  .odds-calendar-embed iframe {
+  /* :not([hidden]) is load-bearing, not decoration: an explicit `display`
+     here beats the UA stylesheet's `[hidden] { display: none }`, so without
+     it the consent-gated iframe stays laid out at its full 620px while
+     invisible — doubling the container's height and pushing the rest of the
+     page down. Caught by the visual suite on 2026-09-03. */
+  .odds-calendar-embed iframe:not([hidden]) {
     display: block;
     width: 100%;
     height: min(70vh, 620px);
     border: 0;
+  }
+  /* Same box the iframe would occupy, so granting consent (or pressing
+     "Show the calendar") swaps content in without the page reflowing under
+     the reader — the CLS budget in CLAUDE.md is 0.1 and a 620px jump would
+     spend all of it on its own. */
+  /* :not([hidden]) for the same reason as the iframe rule above — this one
+     is the mirror image: once consent loads the calendar, a placeholder
+     still laid out at 620px would sit under it instead of disappearing. */
+  .odds-calendar-placeholder:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    height: min(70vh, 620px);
+    padding: var(--space-6);
+    text-align: center;
+  }
+  .odds-calendar-placeholder p {
+    max-width: 34rem;
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    /* On the fixed light surface this frame keeps regardless of page theme
+       (see .odds-calendar-embed above), so the ink readings, not paper. */
+    color: var(--color-ink-80);
+  }
+  .odds-calendar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+  }
+  .odds-calendar-btn {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.7rem 1.4rem;
+    border-radius: 999px;
+    background: var(--color-ink);
+    border: 1px solid var(--color-ink);
+    color: var(--color-paper);
+    cursor: pointer;
+    transition: opacity var(--duration-fast) ease;
+  }
+  .odds-calendar-btn:hover {
+    opacity: 0.85;
+  }
+  .odds-calendar-actions a {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--color-ink-60);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .odds-calendar-actions a:hover {
+    color: var(--color-ink);
   }
 </style>

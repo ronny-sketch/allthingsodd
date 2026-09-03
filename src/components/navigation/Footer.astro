@@ -80,9 +80,29 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
   }
   <div class="wrap foot-bottom">
     <p>{footerAddress}</p>
-    <a href="https://oddfest.co">oddfest.co</a>
+    <div class="foot-legal">
+      <a href="/privacy/">Privacy &amp; cookies</a>
+      {
+        /* GDPR Article 7(3): withdrawing consent has to be as easy as giving
+          it. A real <button> rather than a link — it changes state on this
+          page (clears the stored choice and reopens the banner), it doesn't
+          navigate. Rendered unconditionally: it stays meaningful even for a
+          visitor who has never answered, since pressing it just opens the
+          banner they haven't seen yet. */
+      }
+      <button type="button" id="consentSettingsLink" class="foot-legal-btn">Cookie settings</button>
+      <a href="https://oddfest.co">oddfest.co</a>
+    </div>
   </div>
 </footer>
+
+<script>
+  import { openConsentSettings } from '../../scripts/consent';
+
+  document
+    .getElementById('consentSettingsLink')
+    ?.addEventListener('click', () => openConsentSettings());
+</script>
 
 <style>
   footer {
@@ -296,6 +316,31 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
   }
   .foot-bottom a:hover {
     color: var(--color-paper);
+  }
+  .foot-legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1.4rem;
+  }
+  /* Inherits the row's own colour/size rather than restating the two clay
+     readings above — a button doesn't inherit font or colour from its
+     parent the way the sibling <a> does, so those three lines are the whole
+     job of making it look like the links beside it. */
+  .foot-legal-btn {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .foot-legal-btn:hover {
+    color: var(--color-paper);
+  }
+  :global(.theme-light) .foot-legal-btn:hover {
+    color: var(--color-ink);
   }
 
   @media (max-width: 700px) {

@@ -6,6 +6,7 @@ import Hero from '../components/sections/Hero.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
 import Converge from '../components/sections/Converge.astro';
 import ProgramGrid from '../components/sections/ProgramGrid.astro';
+import ProofGrid from '../components/sections/ProofGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
 import Aftermovie from '../components/sections/Aftermovie.astro';
@@ -112,55 +113,89 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
   </div>
 
   {
-    /* "Who ODD is for" (Converge, audience explanation only — the small
-       per-track destination buttons were removed 2026-08-30, see
-       Converge.astro's own comment) flows directly into "What we do"
-       (ProgramGrid, the real platform destinations) as one composition
-       instead of two separately-padded sections repeating the same four
-       destinations. See docs/architecture.md. */
+    /* "What we do" (ProgramGrid, the three real platform destinations) moves
+       directly under "Why ODD" (2026-09-02 copywriting pass — MOVE + REWRITE:
+       once the reader understands why ODD exists, the next question is what
+       it actually does, not who it's for). "Who ODD is for" (Converge) now
+       follows the proof module instead of sitting glued to this grid — see
+       below. */
   }
-  <div class="who-what-we-do">
-    <Converge
-      audienceEyebrow="Who ODD is for"
-      tightBottom
-      intro={page.twoWaysIn.intro}
-      business={page.twoWaysIn.business}
-      creative={page.twoWaysIn.creative}
-    />
-    <ProgramGrid title="What we do" cards={page.platforms} />
+  <ProgramGrid title="What we do" cards={page.platforms} />
 
-    {
-      /* "Work with ODD" — a quiet organisational pathway, not a fourth equal
-         product card (2026-08-31 final implementation pass: it used to be a
-         giant photo card inside the grid above, competing visually with
-         ODDfest/ODDference/ODDspace, which the brief flags as
-         misrepresenting the site's real hierarchy — ODDnetwork/ODDagency/
-         Work with ODD are deeper ways to work with ODD, not equal masterbrand
-         programmes). A slim single-row banner immediately under the three
-         primary destinations, reusing Pill for the CTA rather than inventing
-         a new card component. */
-    }
-    <div class="wwo-band wrap">
-      <a class="wwo-band-link" href={page.workWithOdd.href}>
-        <span class="wwo-band-text">
-          <span class="eyebrow">{page.workWithOdd.eyebrow}</span>
-          <span class="wwo-band-title">{page.workWithOdd.title}</span>
-          {page.workWithOdd.body && <span class="wwo-band-body">{page.workWithOdd.body}</span>}
-        </span>
-        <span class="wwo-band-go">{page.workWithOdd.linkLabel}</span>
-      </a>
-    </div>
+  {
+    /* "Work with ODD" — a quiet organisational pathway, not a fourth equal
+       product card (2026-08-31 final implementation pass: it used to be a
+       giant photo card inside the grid above, competing visually with
+       ODDfest/ODDference/ODDspace, which the brief flags as
+       misrepresenting the site's real hierarchy — ODDnetwork/ODDagency/
+       Work with ODD are deeper ways to work with ODD, not equal masterbrand
+       programmes). A slim single-row banner immediately under the three
+       primary destinations, reusing Pill for the CTA rather than inventing
+       a new card component. */
+  }
+  <div class="wwo-band wrap">
+    <a class="wwo-band-link" href={page.workWithOdd.href}>
+      <span class="wwo-band-text">
+        <span class="eyebrow">{page.workWithOdd.eyebrow}</span>
+        <span class="wwo-band-title">{page.workWithOdd.title}</span>
+        {page.workWithOdd.body && <span class="wwo-band-body">{page.workWithOdd.body}</span>}
+      </span>
+      <span class="wwo-band-go">{page.workWithOdd.linkLabel}</span>
+    </a>
   </div>
 
   {
-    /* "Featured in" moved directly under "What we do" (2026-08-31 homepage
-       revision) — proof sitting right under the platform cards it's
-       vouching for, not stranded above the fold competing with the hero.
-       `compact` (see LogoStrip.astro's own comment, written for exactly
-       this placement) drops the bordered section-head so it reads as a
-       continuation of "What we do," not a fifth card or a new chapter.
-       Filtered to verified press coverage only (see `homePressLogos` above)
-       — the full featuredIn list also carries funders/award bodies/industry
+    /* "Already in motion" — NEW SECTION (2026-09-02 copywriting pass): the
+       homepage's first hard proof, right after the reader has seen what ODD
+       does. SectionIntro carries the eyebrow/headline/body/cta; the bare
+       ProofGrid underneath (no eyebrow/title of its own — see
+       content.config.ts's proofSection comment) renders the verified 2025
+       stat row plus the 2025 Impact Report link. Guarded on `proofIntro`
+       (not `proof`) since the editorial framing is what makes this a real
+       section, not just a stat grid. */
+  }
+  {
+    page.proofIntro && (
+      <div class="home-proof">
+        <SectionIntro
+          eyebrow={page.proofIntro.eyebrow}
+          headline={page.proofIntro.headline}
+          body={page.proofIntro.body}
+          cta={page.proofIntro.cta}
+        />
+        {page.proof && (
+          <ProofGrid
+            eyebrow={page.proof.eyebrow}
+            title={page.proof.title}
+            items={page.proof.items}
+            reportLabel={page.proof.reportLabel}
+            reportUrl={page.proof.reportUrl}
+          />
+        )}
+      </div>
+    )
+  }
+
+  {
+    /* "Who ODD is for" (Converge, audience explanation only — the small
+       per-track destination buttons were removed 2026-08-30, see
+       Converge.astro's own comment) now follows the proof module rather
+       than sitting glued to "What we do" — see the MOVE above. */
+  }
+  <Converge
+    audienceEyebrow="Who ODD is for"
+    intro={page.twoWaysIn.intro}
+    business={page.twoWaysIn.business}
+    creative={page.twoWaysIn.creative}
+  />
+
+  {
+    /* "Featured in" — proof sitting after the audience/product story rather
+       than competing with the hero above the fold. `compact` (see
+       LogoStrip.astro's own comment) drops the bordered section-head so it
+       reads as a continuation of the page, not a new chapter. Filtered to
+       verified press coverage only (see `homePressLogos` above) — the full
+       featuredIn list also carries funders/award bodies/industry
        organisations, which aren't "featured in" claims. */
   }
   {
@@ -181,12 +216,6 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
        to justify showing it (see AGENTS.md/task notes). Component + content
        field are both kept as-is for when there's real programme to show;
        just not rendered. */
-  }
-
-  {
-    /* "ODDfest, in numbers" is removed from the homepage — ProofGrid itself
-       stays in use elsewhere (About, Media, ODDspace, oddfest.astro); only
-       this page's `proof` key + guard are gone. */
   }
 
   {
@@ -254,31 +283,18 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
   .whatoddis-wrap :global(.section-intro-inner .eyebrow) {
     color: var(--color-paper-80);
   }
-  /* "Who ODD is for" flows straight into "What we do" as one composition —
-     tightening ProgramGrid's own top padding (its default --space-24/6rem
-     assumes it's a standalone section) so the two read as related, not
-     collided or double-gapped. Converge's own bottom padding is reduced via
-     its `tightBottom` prop instead of overridden here — see Converge.astro. */
-  .who-what-we-do :global(#four) {
-    padding-top: var(--space-10);
-    /* Default section bottom padding (--space-24/6rem) assumes #four is
-       followed by a fresh, separately-padded section; "Featured in" now
-       sits directly underneath it in `compact` mode (see below), so this
-       trims the gap enough for the two to read as one connected passage
-       instead of stacking two full section gaps back to back. */
+  /* "What we do" (ProgramGrid, #four) now sits directly under the "Why ODD"
+     hero moment above and directly over the quiet "Work with ODD" band below
+     it (2026-09-02 copywriting pass — platforms MOVEd earlier). Trimmed
+     bottom padding keeps the band tight against the grid it belongs to,
+     rather than stacking a full section gap in between. */
+  :global(#four) {
     padding-bottom: var(--space-12);
   }
   @media (max-width: 640px) {
-    .who-what-we-do :global(#four) {
-      padding-top: var(--space-6);
+    :global(#four) {
       padding-bottom: var(--space-8);
     }
-  }
-  /* Ties "Featured in" visually to "What we do" above it without collapsing
-     the gap to zero — enough air to read as its own line of proof, not a
-     fifth card glued to the grid. */
-  .who-what-we-do + :global(.logo-strip-section.is-compact) {
-    padding-top: var(--space-6);
   }
 
   /* "Work with ODD" quiet pathway band — one slim row, deliberately far
@@ -287,6 +303,30 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
      section. */
   .wwo-band {
     margin-top: 1px;
+  }
+
+  /* "Already in motion" proof module — a SectionIntro (eyebrow/headline/
+     body/cta) directly above a bare ProofGrid stat row. Both render as full
+     default-padded <section>s on their own (see layout.css), which stacks a
+     12rem gap between the closing line and the numbers backing it up —
+     trimmed here so the two read as one connected passage. */
+  .home-proof :global(.section-intro) {
+    padding-bottom: var(--space-6);
+  }
+  .home-proof :global(.proof-section) {
+    padding-top: 0;
+  }
+  @media (max-width: 640px) {
+    .home-proof :global(.section-intro) {
+      padding-bottom: var(--space-4);
+    }
+  }
+
+  /* Ties "Featured in" visually to "Who ODD is for" above it without
+     collapsing the gap to zero — enough air to read as its own line of
+     proof, not a new chapter. */
+  :global(.converge + .logo-strip-section.is-compact) {
+    padding-top: var(--space-6);
   }
   .wwo-band-link {
     display: flex;

@@ -3,10 +3,9 @@ import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import HeroCentered from '../components/sections/HeroCentered.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
-import SectionIntro from '../components/sections/SectionIntro.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
-import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
+import Pill from '../components/primitives/Pill.astro';
 import photoCraft from '../assets/hero/archive-09.jpg';
 
 const entry = await getEntry('pages', 'oddagency');
@@ -32,24 +31,29 @@ const page = entry.data;
     warpTitle
   />
 
-  <!-- What the work is. -->
-  <SectionIntro
-    eyebrow={page.whatItIs.eyebrow}
-    headline={page.whatItIs.headline}
-    body={page.whatItIs.body}
-  />
+  <!-- "When ODDagency makes sense" — NEW SECTION (2026-09-02 copywriting
+       pass), right after the hero: says when to buy ODDagency, which the
+       old capabilities list didn't. Four concise panels via FeatureGrid
+       (reused, not forked — same shape as capabilities/howItWorks below). -->
+  <section class="odda-sub">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">{page.whenThisWorks.eyebrow}</span>
+        <h2>{page.whenThisWorks.headline}</h2>
+      </div>
+      <FeatureGrid cards={page.whenThisWorks.items} />
+    </div>
+  </section>
 
   <!-- Concise capabilities + kinds of questions — one chapter, not two
          (2026-08-31 final implementation pass: dropped the separate
          `features` grid, which repeated this same "what ODDagency can do"
-         idea, and the `whyOdd` grid, whose "Network model"/"Real
-         communities & platforms" copy was the internal/consultancy
-         language the brief asks to remove). -->
+         idea, and the old `whyOdd` grid). -->
   <section class="odda-sub">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Capabilities</span>
-        <h2>What ODDagency can do</h2>
+        <h2>What ODDagency contributes</h2>
       </div>
       <FeatureGrid cards={page.capabilities} />
       <div class="odda-type-list reveal">
@@ -67,7 +71,7 @@ const page = entry.data;
         <div class="wrap">
           <div class="section-head">
             <span class="eyebrow">Selected work</span>
-            <h2>Cases</h2>
+            <h2>The work is easier to understand through the work.</h2>
           </div>
           <CaseGrid items={page.cases} />
         </div>
@@ -86,7 +90,18 @@ const page = entry.data;
     </div>
   </section>
 
-  <ParticipateBand items={page.participate} noPadTop />
+  <!-- Closing CTA — SIMPLIFIED (2026-09-02 copywriting pass) from a
+       two-card ParticipateBand ("Bring us a brief" / "Talk to us first") to
+       one clear exit. Plain headline + body + single Pill, not a card grid. -->
+  <section class="odda-sub odda-closing">
+    <div class="wrap">
+      <h2>{page.closingCta.title}</h2>
+      <p>{page.closingCta.body}</p>
+      <Pill href={page.closingCta.href} variant="solid" magnetic>
+        {page.closingCta.linkLabel}
+      </Pill>
+    </div>
+  </section>
 </Layout>
 
 <style>
@@ -119,5 +134,29 @@ const page = entry.data;
     border: 1px solid var(--color-paper-12);
     border-radius: 999px;
     padding: 0.55rem 1.2rem;
+  }
+
+  /* Closing CTA — one clear exit, plain and centered rather than a card
+     grid (see the comment above this section). */
+  .odda-closing .wrap {
+    max-width: 34rem;
+    text-align: center;
+  }
+  .odda-closing h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--color-paper);
+    font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+    margin: 0;
+  }
+  .odda-closing p {
+    margin: 1.1rem 0 0;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--color-paper-60);
+  }
+  .odda-closing :global(.pill) {
+    margin-top: 1.8rem;
   }
 </style>

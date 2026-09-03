@@ -15,6 +15,10 @@ interface Tier {
   href: string;
   recommended?: boolean;
   note?: string;
+  // Optional low-friction secondary link under the note (e.g. "Want to know
+  // more before buying? Email hello@oddfest.co") — a different shape from
+  // `note` (plain text) since this one needs a real href.
+  noteLink?: { label: string; href: string };
 }
 interface Props {
   items: Tier[];
@@ -41,6 +45,11 @@ const { items } = Astro.props;
           {t.ctaLabel}
         </Pill>
         {t.note && <p class="pricing-note">{t.note}</p>}
+        {t.noteLink && (
+          <a class="pricing-note-link" href={t.noteLink.href}>
+            {t.noteLink.label}
+          </a>
+        )}
       </div>
     ))
   }
@@ -166,6 +175,23 @@ const { items } = Astro.props;
     font-family: var(--font-body);
     font-size: 0.72rem;
     color: var(--color-paper-40);
+  }
+  .pricing-note-link {
+    display: inline-block;
+    margin: 0.8rem 0 0;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.72rem;
+    color: var(--color-paper-60);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--color-paper-20);
+    transition: color var(--duration-fast) ease;
+  }
+  .pricing-note-link:hover {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
   }
 
   @media (prefers-reduced-motion: no-preference) {

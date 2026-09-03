@@ -1,0 +1,117 @@
+{
+  "_template": "legal",
+  "seo": {
+    "title": "Privacy & cookies — ODD",
+    "description": "What ODD collects, why, who processes it, and how to change your cookie choices or exercise your rights under GDPR."
+  },
+  "eyebrow": "Legal",
+  "title": "Privacy & cookies",
+  "lastUpdated": "3 September 2026",
+  "intro": "This page explains what happens to your information when you use allthingsodd.co — what we collect, why, who else touches it, and what you can ask us to do about it. We have tried to write it in plain language rather than the usual boilerplate, and to describe what the site actually does rather than what a template assumes.",
+  "sections": [
+    {
+      "title": "Who is responsible",
+      "body": [
+        "New Nordic Way rf, a registered non-profit association in Finland, is the data controller for this site and for ODDfest, ODDference, ODDspace and ODD Agency. Our address is Sturenportti 3, Helsinki, Finland.",
+        "If you want to reach a person about anything on this page, write to hello@oddfest.co."
+      ]
+    },
+    {
+      "title": "What we collect, and when",
+      "body": [
+        "We do not ask you for anything to read this site. Information reaches us only when you choose to send it:"
+      ],
+      "items": [
+        "Newsletter: your email address, and your name if you give it. Used to send you the ODD newsletter, and nothing else.",
+        "Business enquiries: your name, work email, organisation, what you are interested in, and what you want to achieve. We also record which page you came from and any campaign tags in the link you followed, so we know which of our own efforts actually reach people.",
+        "Contact form: your name, email and message.",
+        "Tickets: your name, email, and — if you are buying as a company — company name, VAT number and billing country. If you assign a ticket to someone else, we store that person's name and email so we can admit them. We never see or store your card details; Stripe handles the payment itself.",
+        "Analytics: if, and only if, you accept the statistics category in the cookie banner, anonymised information about which pages you visit."
+      ]
+    },
+    {
+      "title": "The legal basis for each of those",
+      "body": [
+        "Newsletter and analytics run on your consent, which you can withdraw at any time — the unsubscribe link in any newsletter, and the cookie settings on this page.",
+        "Ticket purchases run on performance of a contract: we cannot sell you a ticket and let you in without knowing who you are. Some of that data we keep afterwards because Finnish accounting law requires us to.",
+        "Enquiries and messages you send us run on our legitimate interest in answering people who contact us."
+      ]
+    },
+    {
+      "title": "Who else processes it",
+      "body": [
+        "We use a small number of external services, each for a specific job. They act as our processors and may not use your data for their own purposes:"
+      ],
+      "items": [
+        "Google Analytics (Google Ireland Limited) — anonymised usage statistics. Only after you accept.",
+        "Google Calendar (Google Ireland Limited) — the embedded events calendar on the ODDspace page. Only after you accept embedded content, or press the button on that page.",
+        "Stripe Payments Europe, Ltd. — ticket payments and payment fraud prevention.",
+        "beehiiv, Inc. — sending the newsletter.",
+        "Attio — our internal record of business enquiries, so an enquiry does not get lost.",
+        "Web3Forms — delivering contact-form messages to our inbox.",
+        "Cloudflare, Inc. — runs the small service behind our forms and ticketing.",
+        "Surge — hosts this website's files."
+      ]
+    },
+    {
+      "title": "Where your data goes",
+      "body": [
+        "Some of these providers are based in, or store data in, the United States. Where that is the case, transfers rely on the EU–US Data Privacy Framework or on the European Commission's standard contractual clauses.",
+        "We do not sell your personal data, and we do not share it with anyone for advertising."
+      ]
+    },
+    {
+      "title": "How long we keep it",
+      "body": [
+        "Newsletter subscriptions: until you unsubscribe.",
+        "Enquiries and messages: for as long as the conversation is live, and up to two years afterwards so we remember who we have spoken to.",
+        "Ticket and payment records: six years, which is what Finnish accounting law requires.",
+        "Analytics: for the retention period set on our Google Analytics property, currently 14 months."
+      ]
+    },
+    {
+      "title": "Your rights",
+      "body": [
+        "Under the GDPR you can ask us to do any of the following, free of charge, and we will answer within one month:"
+      ],
+      "items": [
+        "Access — get a copy of what we hold about you.",
+        "Rectification — have anything inaccurate corrected.",
+        "Erasure — have your data deleted, unless we are legally required to keep it.",
+        "Restriction — have us pause processing while something is disputed.",
+        "Portability — receive your data in a machine-readable format.",
+        "Objection — object to processing we base on legitimate interest.",
+        "Withdraw consent — at any time, without affecting anything done before you withdrew it."
+      ]
+    },
+    {
+      "title": "If you are not satisfied",
+      "body": [
+        "Write to us first — most things are quicker to fix directly. If we cannot resolve it, you have the right to complain to the Finnish Data Protection Ombudsman (Tietosuojavaltuutetun toimisto), tietosuoja.fi."
+      ]
+    },
+    {
+      "title": "Changes to this page",
+      "body": [
+        "If what we do changes, this page changes with it, and the date at the top changes too. A material change to what we collect or who processes it will also reset the cookie banner, so you get to answer again rather than being carried over on an old answer."
+      ]
+    }
+  ],
+  "cookieSection": {
+    "title": "Cookies and similar storage",
+    "body": [
+      "Nothing optional loads before you say so. On your first visit the banner appears and no analytics tag and no embedded calendar is requested until you answer it — not a cookieless ping, not a blocked script that loaded anyway. That is a deliberate choice: it is stricter than the usual consent-mode setup, and it is possible because this site runs one analytics tag and one embed rather than a marketing stack.",
+      "The table below is the full list. It is generated from the same configuration that the consent banner enforces, so it cannot fall out of date with what the site actually does. Storage marked local or session storage is not technically a cookie, but it is the same thing from your point of view, so we list it too."
+    ],
+    "settingsLabel": "Change your cookie choices"
+  },
+  "contact": {
+    "title": "Contact",
+    "body": [
+      "For anything on this page — a question, a request about your data, or a complaint — write to us and a person will answer."
+    ],
+    "name": "New Nordic Way rf",
+    "email": "hello@oddfest.co",
+    "address": "Sturenportti 3, Helsinki, Finland"
+  }
+}

@@ -4,10 +4,15 @@ interface TrackItem {
   meta: string;
   href: string;
 }
+interface LinkCta {
+  label: string;
+  href: string;
+  external?: boolean;
+}
 interface Props {
   intro: string;
-  business: { lede: string; body: string; tracks?: TrackItem[] };
-  creative: { lede: string; body: string; tracks?: TrackItem[] };
+  business: { lede: string; body: string; tracks?: TrackItem[]; cta?: LinkCta };
+  creative: { lede: string; body: string; tracks?: TrackItem[]; cta?: LinkCta };
   // The section's own title ("Who ODD is for") — renders as a real
   // .section-head h2 (2026-08-31: was a tiny eyebrow-style label with no
   // heading at all above the intro paragraph, which read as under-titled
@@ -55,6 +60,13 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
             </div>
           )
         }
+        {
+          business.cta && (
+            <a class="converge-cta" href={business.cta.href}>
+              {business.cta.label}
+            </a>
+          )
+        }
       </div>
       <div class="converge-col converge-col--creative">
         <span class="converge-label">For creatives</span>
@@ -72,6 +84,13 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
                 </a>
               ))}
             </div>
+          )
+        }
+        {
+          creative.cta && (
+            <a class="converge-cta" href={creative.cta.href}>
+              {creative.cta.label}
+            </a>
           )
         }
       </div>
@@ -154,6 +173,27 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
     color: var(--color-paper-60);
     max-width: 38ch;
     margin: 0 0 2.2rem;
+  }
+  /* Single routing CTA per side (2026-09-02 copywriting pass) — same visual
+     treatment as SectionIntro's own text link, reused rather than inventing
+     a new link style. */
+  .converge-cta {
+    display: inline-block;
+    margin-top: -0.6rem;
+    margin-bottom: 1.6rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--color-paper-80);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--color-paper-20);
+    transition: color var(--duration-fast) ease;
+  }
+  .converge-cta:hover {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
   }
   @media (max-width: 820px) {
     .converge-grid {

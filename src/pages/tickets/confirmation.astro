@@ -26,14 +26,21 @@ import Layout from '../../layouts/Layout.astro';
       <h1 id="tixfHeading"></h1>
 
       <div id="tixfProcessing" class="tixf-state" hidden>
-        <p>This usually takes a few seconds. Don't close this page.</p>
+        <p>This usually takes a few seconds. Do not close this page.</p>
         <div class="tixf-spinner" aria-hidden="true"></div>
       </div>
 
+      <!-- Success wording deliberately stops at "saved to your browser" —
+           no confirmation-email promise. There's no email-sending step
+           anywhere in this flow yet (only order-status polling — see
+           confirmation.ts), so the copywriting master doc's "we'll also
+           confirm by email" line would be untrue. Reinstate it once a real
+           confirmation email exists — see the doc's TICKETS / CHECKOUT /
+           CONFIRMATION section, "[NEEDS FACT CHECK]" note. -->
       <div id="tixfSuccess" class="tixf-state" hidden>
         <p>
-          Assign attendees now, or come back to this page later — this link is saved to your
-          browser, and we'll also confirm by email once that's connected.
+          Your order is confirmed. Assign attendee details now, or come back to this page later —
+          this link is saved to your browser.
         </p>
         <div id="tixfTicketList" class="tixf-ticket-list"></div>
       </div>
@@ -45,13 +52,20 @@ import Layout from '../../layouts/Layout.astro';
 
       <div id="tixfTimeout" class="tixf-state" hidden>
         <p>
-          This is taking longer than expected. Refresh this page in a minute, or check your email
-          for confirmation — if you were charged, your tickets are safe.
+          This is taking longer than expected. Refresh this page in a minute. If you were charged,
+          your order is safe.
         </p>
       </div>
 
+      <!-- Same "no live confirmation email yet" constraint as Success above
+           — pointing people at "the confirmation link sent to your email"
+           would be false, so this stays anchored to the truthful
+           browser-saved-link fallback instead. -->
       <div id="tixfNotFound" class="tixf-state" hidden>
-        <p>If you just completed a purchase, check your email for the confirmation link.</p>
+        <p>
+          We could not find this order. If you just completed a purchase, use the confirmation link
+          saved in your browser, or <a href="mailto:hello@oddfest.co">contact us</a>.
+        </p>
         <a class="pill pill-solid" href="/tickets">Back to tickets</a>
       </div>
     </div>

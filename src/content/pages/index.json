@@ -1,36 +1,53 @@
 {
   "_template": "home",
   "seo": {
-    "title": "ODD — connecting Finland's creative and cultural fields",
-    "description": "ODD connects Finland's creative and cultural fields with business and wider society through events, spaces and projects in Helsinki.",
+    "title": "ODD — creative and cultural fields, business and society",
+    "description": "ODD builds events, spaces and projects that strengthen creative work and bring creative and cultural expertise closer to business and wider society.",
     "ogImage": "/og/home.jpg"
   },
   "hero": {
     "mosaicAlt": "People, performances, talks and encounters from ODD in Helsinki."
   },
   "opening": {
-    "headline": "ODD exists to connect Finland's creative and cultural fields with business and wider society.",
+    "headline": "ODD exists to bring creative and cultural fields closer to business and wider society — while building better conditions for creative work itself.",
     "primaryCta": { "label": "See what we do", "href": "#four" }
   },
   "whatOddIs": {
-    "eyebrow": "What ODD is",
-    "headline": "Events, spaces and projects built for connection.",
-    "body": "ODDfest, ODDference and ODDspace are three different ways of doing the same thing: getting people out of their usual circles. ODDfest brings independently made events across Helsinki into one shared week. ODDference puts creative expertise in the same room with business and society. ODDspace keeps the connection going year-round — a place to work, meet and collaborate. Different formats, same direction: more chances for people from different fields to find each other, learn from each other and build together.",
-    "cta": { "label": "Read more about ODD", "href": "/about" }
+    "eyebrow": "Why ODD",
+    "headline": "Finland has no shortage of creative talent. What is often missing is what gets built around it.",
+    "body": "Creative work is still rebuilt project by project, production by production and funding cycle by funding cycle. At the same time, the people shaping culture and the people shaping business, institutions and public life spend surprisingly little time working together. ODD works on both problems: creating more continuity around creative work, and more situations where different kinds of expertise can actually meet.",
+    "cta": { "label": "Why we exist →", "href": "/about" }
   },
   "twoWaysIn": {
-    "intro": "Creative people and businesses often move in different circles. ODD works in both directions: creating better conditions for creative work, and more ways for business to meet, learn from and work with the people behind it.",
+    "intro": "ODD has different doors, depending on why you are here.",
     "business": {
-      "lede": "Get closer to creative people and creative thinking.",
-      "body": "ODDference brings business leaders into the same room with people working across art, culture and the creative fields. ODDnetwork, projects and partnerships create ways to keep those relationships going beyond the event."
+      "lede": "Get closer to creative expertise and the people behind it.",
+      "body": "Come to ODDference, build a partnership, or bring us a question or project that needs a different mix of people around it.",
+      "cta": { "label": "Work with ODD →", "href": "/work-with-odd" }
     },
     "creative": {
       "lede": "Work, show and find your people.",
-      "body": "ODDspace gives you a year-round place to work, meet others and shape something together. ODDfest is a way to put what you're already doing on the map — host your own programme, reach new people and discover what others around the city are making."
+      "body": "Use ODDspace as a place to keep working. Bring something of your own to ODDfest. Join the parts of ODD that are useful to your practice — without having to become part of a single scene or organisation.",
+      "cta": { "label": "Find your way in →", "href": "/oddspace" }
     }
   },
+  "proof": {
+    "items": [
+      { "value": "2,600+", "label": "Participants" },
+      { "value": "350+", "label": "Contributors" },
+      { "value": "70+", "label": "Partners" }
+    ],
+    "reportLabel": "2025 Impact Report",
+    "reportUrl": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ"
+  },
+  "proofIntro": {
+    "eyebrow": "Already in motion",
+    "headline": "ODD started as an experiment. It did not stay one.",
+    "body": "The first ODDfest in 2025 brought together more than 2,600 participants, 350+ contributors and 70+ partners. In 2026, ODD expanded into a city-wide Creative Week, the first ODDference and a year-round physical space in Vallila.",
+    "cta": { "label": "See how ODD got here →", "href": "/about" }
+  },
   "whatsHappening": {
-    "note": "A running list of what's on across ODDfest, ODDference and ODDspace — updated as things are confirmed.",
+    "note": "A running list of events, open calls and things happening across ODDfest, ODDference and ODDspace.",
     "items": [
       {
         "date": "Weekly",
@@ -43,9 +60,9 @@
   },
   "platforms": [
     {
-      "meta": "Creative · Across Helsinki",
+      "meta": "Across Helsinki · Made by its hosts",
       "title": "ODDfest",
-      "body": "A city-wide creative week made by the people taking part in it. Artists, collectives, venues, organisations, communities and companies host their own programme; ODD brings it together into one shared whole.",
+      "body": "Helsinki's creative week, made by the people taking part. Hosts make and produce their own programme; ODD brings it together into one shared week.",
       "goLabel": "See ODDfest →",
       "href": "/oddfest",
       "image": "../../assets/programs/oddfest-card.jpg"
@@ -53,15 +70,15 @@
     {
       "meta": "Creative expertise · Business & society",
       "title": "ODDference",
-      "body": "A professional event built around what business and wider society can learn from creative expertise — with people from those worlds in the same room.",
-      "goLabel": "Visit ODDference →",
+      "body": "A professional event built around one question: what can business and the rest of society learn from creative expertise?",
+      "goLabel": "Explore ODDference →",
       "href": "/oddference",
       "image": "../../assets/programs/oddference-card.jpg"
     },
     {
-      "meta": "Creative · Vallila",
+      "meta": "Vallila · Year-round",
       "title": "ODDspace",
-      "body": "A year-round home for people working across creative and cultural fields — with places to work, meet, host events, make things and shape the space together.",
+      "body": "A place to work, meet, record, host things and keep projects moving — with different creative practices under the same roof.",
       "goLabel": "Explore ODDspace →",
       "href": "/oddspace",
       "image": "../../assets/programs/oddspace-card.jpg"
@@ -70,23 +87,16 @@
   "workWithOdd": {
     "eyebrow": "For organisations",
     "title": "Work with ODD",
-    "body": "Join the network, bring us a project or build a partnership with us.",
+    "body": "Bring us a question, brief, event or partnership idea. We'll work out what it actually needs.",
     "linkLabel": "Explore Work with ODD →",
     "href": "/work-with-odd"
   },
   "participate": [
     {
       "eyebrow": "",
-      "title": "Attend ODDference",
+      "title": "Come to ODDference",
       "linkLabel": "Explore →",
       "href": "/oddference",
-      "audience": "Business"
-    },
-    {
-      "eyebrow": "",
-      "title": "Work with ODD",
-      "linkLabel": "Explore →",
-      "href": "/work-with-odd",
       "audience": "Business"
     },
     {
@@ -102,6 +112,13 @@
       "linkLabel": "Explore →",
       "href": "/oddspace",
       "audience": "Creative"
+    },
+    {
+      "eyebrow": "",
+      "title": "Build something with ODD",
+      "linkLabel": "Explore →",
+      "href": "/work-with-odd",
+      "audience": "Business"
     }
   ],
   "aftermovie": {

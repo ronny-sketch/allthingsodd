@@ -75,11 +75,21 @@ const proofItem = z.object({
 
 // A whole proof/traction module — optional at the object level (not just an
 // empty array) so a page can omit it entirely until real numbers exist. See
-// ProofGrid.astro.
+// ProofGrid.astro. `eyebrow`/`title` are optional (2026-09-02 copywriting
+// pass) — Home's new "Already in motion" proof module pairs a SectionIntro
+// (which already carries its own eyebrow/headline) directly above a bare
+// ProofGrid stat row, so that instance omits both rather than repeating the
+// eyebrow twice. About/ODDspace keep passing both as before.
 const proofSection = z.object({
-  eyebrow: z.string(),
-  title: z.string(),
+  eyebrow: z.string().optional(),
+  title: z.string().optional(),
   items: z.array(proofItem),
+  // Optional link to the underlying report (e.g. "2025 Impact Report") —
+  // Home's new proof module uses this; About's own impact section declares
+  // the same two fields separately rather than via this shared fragment
+  // (predates it), so this stays optional/unused there.
+  reportLabel: z.string().optional(),
+  reportUrl: z.string().optional(),
 });
 
 const caseStudy = z.object({
@@ -154,6 +164,11 @@ const pricingTier = z.object({
   href: z.string(),
   recommended: z.boolean().optional(),
   note: z.string().optional(),
+  // Optional low-friction secondary link under the note (2026-09-02
+  // copywriting pass — ODDference's "Want to know more before buying?"
+  // mailto route). A different shape from `note` (plain text) since this
+  // one needs a real href — see PricingGrid.astro.
+  noteLink: linkCta.optional(),
 });
 
 // One singleton: everything that repeats identically on every page (nav, footer,
@@ -390,11 +405,17 @@ const pages = defineCollection({
             lede: z.string(),
             body: z.string(),
             tracks: z.array(trackItem).optional(),
+            // Optional single routing CTA (2026-09-02 copywriting pass —
+            // "Work with ODD →" / "Find your way in →") — a different shape
+            // from `tracks` (a whole list of destinations); most callers
+            // omit it. See Converge.astro.
+            cta: linkCta.optional(),
           }),
           creative: z.object({
             lede: z.string(),
             body: z.string(),
             tracks: z.array(trackItem).optional(),
+            cta: linkCta.optional(),
           }),
         }),
         whatsHappening: z.object({
@@ -419,6 +440,13 @@ const pages = defineCollection({
         // absent from the page until real proof numbers exist — see
         // ProofGrid.astro.
         proof: proofSection.optional(),
+        // "Already in motion" — the editorial intro (eyebrow/headline/body/
+        // cta) rendered as a SectionIntro directly above the bare `proof`
+        // ProofGrid stat row (2026-09-02 copywriting pass, "Proof / what is
+        // already real"). Kept as its own field rather than folded into
+        // `proof` since it's a different shape (sectionIntro) feeding a
+        // different component.
+        proofIntro: sectionIntro.optional(),
         // "workWithOdd" (the separate "For organisations / Work with ODD."
         // teaser section, with its own four-card grid) was removed from Home
         // in the 2026-08-30 homepage revision — it duplicated the "What we
@@ -459,6 +487,19 @@ const pages = defineCollection({
       subpageBase.extend({
         _template: z.literal('oddfest'),
         whatItIs: sectionIntro,
+        // NEW SECTION (2026-09-02 copywriting pass) — "You make the event.
+        // ODD builds the shared layer.": a clear host/ODD responsibility
+        // split plus a smaller shared-platform explainer, right after
+        // `whatItIs`. `platform.body` should only promise 2027
+        // programme/map/platform functions that are actually confirmed —
+        // see the doc's [NEEDS PRODUCT/TECH CONFIRMATION] note.
+        sharedLayer: z.object({
+          headline: z.string(),
+          host: z.object({ title: z.string(), body: z.string() }),
+          odd: z.object({ title: z.string(), body: z.string() }),
+          platform: z.object({ title: z.string(), body: z.string() }),
+          closing: z.string(),
+        }),
         howItWorks: z.array(featureCard),
         // Optional at the object level only in the sense that it renders
         // nothing until real, verified 2027 dates/venues exist — same
@@ -467,6 +508,18 @@ const pages = defineCollection({
         // ProgrammeList component is exactly what the 2027 programme will
         // need once it's live.
         programme: z.array(programmeItem),
+        // The "2026 examples" section's editorial framing (eyebrow/headline/
+        // body/closing) — kept separate from `examples` itself (the actual
+        // NEEDS-REAL-PROOF list, still empty) so this copy is ready the
+        // moment real, verified Creative Week 2026 examples exist, without
+        // needing a code change. Renders only when `examples` is non-empty
+        // — see oddfest.astro.
+        examplesIntro: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          closing: z.string(),
+        }),
         examples: z.array(creativeWeekExample),
         register: z.object({
           headline: z.string(),
@@ -487,9 +540,16 @@ const pages = defineCollection({
         _template: z.literal('oddference'),
         // A second hero CTA (ODDfest's FullbleedVideoHero call doesn't pass
         // one) — declared here, not on subpageBase, since it's genuinely
-        // page-specific: "Reserve Blind Bird" + "Partner with ODDference" only
+        // page-specific: "Get your ticket" + "Partner with ODDference" only
         // makes sense once there's something to sell and someone to court.
         secondaryCta: linkCta.optional(),
+        // The hero's practical-value support line (2026-09-02 copywriting
+        // pass — "A professional event for learning from creative and
+        // cultural expertise — and meeting..."), rendered under the
+        // question-headline `title`/h1. Page-specific (not on subpageBase —
+        // ODDfest's hero has no equivalent line) — see
+        // FullbleedVideoHero.astro's new optional `support` prop.
+        heroSupport: z.string(),
         // The one-paragraph concept explainer directly under the hero — same
         // sectionIntro shape oddfest.whatItIs uses. No separate "Big
         // Question" section repeats this below.
@@ -560,15 +620,20 @@ const pages = defineCollection({
 
       // 2026-08-31 final implementation pass: dropped `features` (a near-
       // duplicate of `capabilities` — same "what ODDagency can do" idea
-      // twice) and `whyOdd` (its "Network model"/"Real communities &
-      // platforms" copy was exactly the internal/consultancy language the
-      // brief asks to remove sitewide, and the page's own `whatItIs` already
-      // carries the "why ODD" reasoning) — removed rather than left as stale
-      // CMS controls, same convention as membership's whyJoin/rhythm above.
-      // This also brings the page down from five stacked FeatureGrid
-      // chapters to two (capabilities, howItWorks), per the brief's
-      // "Hero → what the work is → concise capabilities → cases → how it
-      // works → CTA" target shape.
+      // twice) and the old `whyOdd` grid — removed rather than left as
+      // stale CMS controls, same convention as membership's whyJoin/rhythm
+      // above.
+      //
+      // 2026-09-02 copywriting pass: dropped `whatItIs` too — its content is
+      // now folded into the richer hero `intro` itself, and the doc's
+      // recommended flow (Hero → When this work makes sense → What
+      // ODDagency contributes → How it works → Cases → CTA) has no separate
+      // "what it is" chapter. Added `whenThisWorks` (NEW SECTION, right
+      // after the hero) and replaced the two-card `participate` array with
+      // a single `closingCta` (doc: "[SIMPLIFY] Closing CTA... one clear
+      // exit is enough") — reuses the shared `cta` shape (already carries
+      // an optional `body`, exactly what the new headline+body+one-link
+      // closing needs).
       //
       // Also 2026-08-31: oddagency.astro switched from SubpageFrame (the
       // side-rail ticker ODDfest/ODDference/ODDspace use) + SplitHero to
@@ -582,12 +647,16 @@ const pages = defineCollection({
       subpageBase.extend({
         _template: z.literal('oddagency'),
         intro: z.string(),
-        whatItIs: sectionIntro,
+        whenThisWorks: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          items: z.array(featureCard),
+        }),
         capabilities: z.array(featureCard),
         howItWorks: z.array(featureCard),
         cases: z.array(caseStudy),
         projectTypes: z.array(z.string()),
-        participate: z.array(cta),
+        closingCta: cta,
       }),
 
       // ODDspace used to be an external link (oddspace.co) from the nav and
@@ -616,6 +685,10 @@ const pages = defineCollection({
         // follow-up line rendered directly under it, not a hero paragraph.
         intro: z.string(),
         whatItIs: sectionIntro,
+        // NEW SECTION (2026-09-02 copywriting pass) — "Co-creative, not
+        // just coworking": the clearest differentiation from ordinary
+        // coworking, right after `whatItIs`.
+        coCreative: sectionIntro,
         // The real street address + a directions link — shown as one quiet
         // line inside "Enter the space" (section 6), not a dedicated
         // section (see the comment above this extend block). `directionsUrl`
@@ -648,6 +721,13 @@ const pages = defineCollection({
         // same pricingTier shape as a single object instead of forcing an
         // N=1 array just for consistency with those other pages.
         membership: pricingTier,
+        // NEW SECTION (2026-09-02 copywriting pass) — "The network is
+        // bigger than the room": the physical member base is the anchor,
+        // not the boundary. [HUMAN DECISION — EXTERNAL MEMBER MODEL] the
+        // doc's own note: no formal external-member product/pricing exists
+        // yet, so this stays a generic "get in touch" CTA, not a paid tier
+        // — see oddspace.json's `cta` value and the final report.
+        networkBeyondRoom: sectionIntro,
         // Event-space rental rates (member pricing) — a plain price list,
         // not the fuller pricingTier shape (no benefits list/CTA per row
         // needed here, just name/price/note).
@@ -689,26 +769,37 @@ const pages = defineCollection({
       z.object({
         _template: z.literal('work-with-odd'),
         seo,
-        // Rebuilt 2026-08-30 around the page's new role. Note: an earlier
-        // pass on this same day briefly moved this page's nav placement into
-        // the Info dropdown (relabelled "Work with us") — the 2026-08-30
-        // homepage revision brief explicitly requires "Work with ODD" stay a
-        // primary top-level nav item (see site/global.json's `nav`), so that
-        // move was reverted. This page's own H1 still reads "Work with us."
-        // from that pass — left as-is (a copy/positioning call on this page,
-        // not this brief's scope) rather than reverted without confirming
-        // which title is actually wanted; seo.title above keeps
-        // "Work with ODD" for continuity either way.
+        // Rebuilt 2026-08-30 around the page's new role; hero rewritten
+        // again 2026-09-02 (copywriting master pass) to open with the
+        // visitor's own question ("What are you trying to make happen?")
+        // rather than a naming choice between "Work with us"/"Work with
+        // ODD" — nav placement stays a primary top-level item either way
+        // (see site/global.json's `nav`); seo.title keeps "Work with ODD"
+        // for continuity.
         eyebrow: z.string(),
         title: z.string(),
         intro: z.string(),
         heroImage: image(),
         primaryCta: linkCta,
-        // "What we do" — one short editorial paragraph, same shape as
+        // NEW SECTION (2026-09-02 copywriting pass) — "When ODD is useful":
+        // the clearest articulation of the organisational use case, right
+        // after the hero. Not `sectionIntro` (no intro paragraph in the
+        // doc's copy, straight from headline to the list) — eyebrow/
+        // headline plus featureCard items only, rendered as a plain
+        // editorial list (see work-with-odd.astro) — "not sales cards" per
+        // the doc's implementation note.
+        whenOddIsUseful: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          items: z.array(featureCard),
+        }),
+        // "Why ODD" — one short editorial paragraph, same shape as
         // ODDference's bigQuestion / ODDagency's whatItIs, not a list of
-        // five independent business units.
+        // five independent business units. Now the page's merged "Why ODD"
+        // explanation (2026-09-02 pass folded the old three-card `whyOdd`
+        // grid into this single paragraph, rendered after Pathways — see
+        // work-with-odd.astro).
         whatWeDo: sectionIntro,
-        whyOdd: z.array(featureCard),
         pathways: z.array(pathwayCard),
         cases: z.array(caseStudy),
         // Page-specific curated logo set for organisations ODD has actually
@@ -728,15 +819,21 @@ const pages = defineCollection({
         eyebrow: z.string(),
         title: z.string(),
         intro: z.string(),
-        whatItIs: sectionIntro,
-        whoItsFor: z.array(audienceItem),
-        // "What participation may involve" — one consolidated list (2026-08-31
-        // final implementation pass). Previously split into three separate
-        // FeatureGrid/list chapters (whyJoin, includes, rhythm) that repeated
-        // the same "ongoing relationship" idea three ways; removed rather
-        // than left as stale CMS controls, per this file's own convention —
-        // re-add a richer version once ODDnetwork's real model is settled.
-        includes: z.array(z.object({ title: z.string(), body: z.string() })),
+        // NEW SECTION (2026-09-02 copywriting pass) — "Why this exists":
+        // explains the need for year-round continuity without promising
+        // benefits that are not yet designed.
+        whyThisExists: sectionIntro,
+        // "What we are shaping" — SIMPLIFIED (2026-09-02 copywriting pass)
+        // from `whatItIs` + the three-card `whoItsFor` audience list + the
+        // three-card `includes` benefit grid down to one deliberately small
+        // paragraph. The doc is explicit: "Remove the current three
+        // audience cards and three benefit cards until the offer, cadence,
+        // tiers and annual price are actually approved. This page can be
+        // deliberately small." Removed rather than left as stale CMS
+        // controls, same convention as the 2026-08-31 pass this section
+        // itself replaces — re-add a richer version once ODDnetwork's real
+        // model is settled.
+        whatWeAreShaping: sectionIntro,
         // Optional so tiers can be dropped from the page entirely until
         // pricing is final — see PricingGrid.astro.
         tiers: z.array(pricingTier).optional(),
@@ -770,6 +867,17 @@ const pages = defineCollection({
         // one long string) so the editorial rhythm survives in the CMS —
         // see about.json for the real copy.
         argument: z.array(z.string()),
+        // NEW SECTION (2026-09-02 copywriting pass) — "Why now": the
+        // technology/execution-gets-cheaper argument, grounded in Finland's
+        // own creative-economy context. Same multi-paragraph-array shape as
+        // `argument` (not `sectionIntro`, whose `body` is a single string)
+        // since this also needs two real paragraph breaks, rendered by
+        // page-scoped markup in about.astro rather than SectionIntro.
+        whyNow: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.array(z.string()),
+        }),
         story: z.object({
           eyebrow: z.string(),
           title: z.string(),
@@ -794,6 +902,12 @@ const pages = defineCollection({
           // top-level field) since it's a sub-part of the same section.
           principles: z.array(featureCard),
         }),
+        // NEW SECTION (2026-09-02 copywriting pass) — "What 2025–2026 taught
+        // us": candid, numbered lessons from the first two years. Same
+        // sectionIntro-extended-with-featureCard-items shape ODDference's
+        // `whatsChanging` already uses, reused rather than inventing a
+        // near-duplicate.
+        whatWeLearned: sectionIntro.extend({ items: z.array(featureCard) }),
         // Two fixed snapshots (2025 real, 2026 pending) — an array, not the
         // shared `proofSection` object other pages use, precisely because
         // About needs two of them side by side. `items` is deliberately
@@ -936,6 +1050,55 @@ const pages = defineCollection({
         // list is sourced live from site/global.json's `social` (already the
         // sitewide source of truth), not duplicated here.
         followSocial: z.object({ title: z.string(), body: z.string() }),
+      }),
+      // Legal pages (privacy & cookies today). Deliberately the site's one
+      // generic prose template rather than a page-specific shape like every
+      // variant above: a legal document is genuinely just headed sections of
+      // text, it is the one kind of content here that really does recombine,
+      // and a second one (terms of sale, a code of conduct) should be a new
+      // JSON file plus a two-line route, not a new schema.
+      //
+      // The cookie table is NOT content and is not in here — it is rendered
+      // from src/scripts/consent-config.ts, the same array the consent
+      // banner gates on, so the declaration can't drift from what the site
+      // actually sets. `cookieSection` below is only the prose around it.
+      z.object({
+        _template: z.literal('legal'),
+        seo,
+        eyebrow: z.string(),
+        title: z.string(),
+        /** Displayed to the reader and meaningful in law — a policy with no
+         *  visible date can't be shown to have been in force on a given day.
+         *  Free text, not a date type, so it reads "3 September 2026". */
+        lastUpdated: z.string(),
+        intro: z.string(),
+        sections: z.array(
+          z.object({
+            title: z.string(),
+            /** One string per paragraph. An array rather than one blob with
+             *  newlines in it because CloudCannon gives an editor a real
+             *  repeatable list for the former and a single textarea whose
+             *  line breaks silently don't render for the latter. */
+            body: z.array(z.string()),
+            /** Optional bullet list under the paragraphs — used for the
+             *  GDPR rights list, where each item is "Right to X: what it
+             *  means" and a paragraph would bury it. */
+            items: z.array(z.string()).optional(),
+          }),
+        ),
+        cookieSection: z.object({
+          title: z.string(),
+          body: z.array(z.string()),
+          /** Label on the button that reopens the consent banner. */
+          settingsLabel: z.string(),
+        }),
+        contact: z.object({
+          title: z.string(),
+          body: z.array(z.string()),
+          name: z.string(),
+          email: z.string(),
+          address: z.string(),
+        }),
       }),
     ]);
   },

@@ -16,6 +16,7 @@ const ROUTES = [
   '/about',
   '/media',
   '/contact',
+  '/privacy',
 ];
 
 // Scrolls the whole page in fine-grained steps before capturing — the same

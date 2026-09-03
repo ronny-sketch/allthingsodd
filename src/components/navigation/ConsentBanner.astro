@@ -1,31 +1,85 @@
 ---
-// GA4 consent gate — required because ODD is a Finnish association and GA4
-// cookies aren't "strictly necessary" under GDPR/ePrivacy, so consent has
-// to come before the tracking request, not after. See
-// src/scripts/analytics.ts for why this is "don't load gtag.js at all
-// until accepted" rather than Google's Consent Mode default-denied pattern
-// — simpler and unambiguous for a site this size.
+// The consent gate — required because ODD is a Finnish association and
+// neither GA4's cookies nor Google's calendar embed are "strictly
+// necessary" under GDPR/ePrivacy, so consent has to come before the
+// request, not after. See src/scripts/analytics.ts for why this is "don't
+// load gtag.js at all until accepted" rather than Google's Consent Mode
+// default-denied pattern.
 //
-// Renders nothing (server-side) if analytics isn't configured yet — see
-// src/scripts/analytics-config.ts. The client script also re-checks this
-// and bails out, so there's no dead banner if the constant and the render
-// condition ever drift.
+// Four categories, matching the vocabulary Cookiebot and EU guidance use
+// (and what oddfest.co already shows visitors), but only the ones that
+// currently gate something real are rendered as toggles — see
+// togglableCategories() in consent-config.ts for why an empty category is
+// documented on the privacy page and not offered as a switch here.
+//
+// Renders nothing if there is nothing to ask about. The client script
+// re-checks the same condition, so there is no dead banner if the two ever
+// drift.
 import { GA_MEASUREMENT_ID } from '../../scripts/analytics-config';
+import { buildDeclaration, togglableCategories } from '../../scripts/consent-config';
+
+const categories = togglableCategories(buildDeclaration(GA_MEASUREMENT_ID));
 ---
 
 {
-  GA_MEASUREMENT_ID && (
-    <div class="consent-banner" id="consentBanner" role="region" aria-label="Cookie consent">
-      <p>
-        We'd like to use privacy-respecting analytics to understand how people find and use this
-        site. No tracking until you say yes.
-      </p>
+  categories.length > 0 && (
+    <div
+      class="consent-banner"
+      id="consentBanner"
+      role="region"
+      aria-label="Cookie consent"
+      data-consent-banner
+    >
+      <div class="consent-intro">
+        <p>
+          We use a small number of cookies: some to make the site work, and — only if you agree —
+          one anonymous analytics tag and one embedded calendar. Nothing loads before you choose.
+        </p>
+      </div>
+
+      <div class="consent-detail" id="consentDetail" hidden>
+        <ul class="consent-list">
+          <li class="consent-row consent-row-fixed">
+            <span class="consent-row-head">
+              <span class="consent-row-label">Necessary</span>
+              <span class="consent-row-state">Always on</span>
+            </span>
+            <span class="consent-row-summary">
+              Needed for the site to work. These are never optional and never used to track you.
+            </span>
+          </li>
+          {categories.map((category) => (
+            <li class="consent-row">
+              <label class="consent-row-head" for={`consent-${category.id}`}>
+                <span class="consent-row-label">{category.label}</span>
+                <input
+                  type="checkbox"
+                  id={`consent-${category.id}`}
+                  class="consent-check"
+                  data-category={category.id}
+                />
+              </label>
+              <span class="consent-row-summary">{category.summary}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="consent-detail-note">
+          Full detail of every cookie is on our <a href="/privacy/">privacy &amp; cookie policy</a>.
+        </p>
+      </div>
+
       <div class="consent-actions">
+        <button type="button" id="consentCustomise" class="consent-btn consent-btn-quiet">
+          Choose
+        </button>
+        <button type="button" id="consentSave" class="consent-btn consent-btn-ghost" hidden>
+          Save choices
+        </button>
         <button type="button" id="consentReject" class="consent-btn consent-btn-ghost">
-          No thanks
+          Reject all
         </button>
         <button type="button" id="consentAccept" class="consent-btn consent-btn-solid">
-          Accept
+          Accept all
         </button>
       </div>
     </div>
@@ -33,26 +87,81 @@ import { GA_MEASUREMENT_ID } from '../../scripts/analytics-config';
 }
 
 <script>
-  import { getConsent, setConsent, loadGtag } from '../../scripts/analytics';
+  import {
+    getConsent,
+    setConsent,
+    acceptAll,
+    rejectAll,
+    CONSENT_OPEN_EVENT,
+  } from '../../scripts/consent';
+  import { initAnalytics } from '../../scripts/analytics';
+
+  // Subscribes the GA4 loader to the consent store. Safe on every page:
+  // it loads nothing until a stored or freshly-given statistics consent
+  // says so.
+  initAnalytics();
 
   const banner = document.getElementById('consentBanner');
   const accept = document.getElementById('consentAccept');
   const reject = document.getElementById('consentReject');
+  const customise = document.getElementById('consentCustomise');
+  const save = document.getElementById('consentSave');
+  const detail = document.getElementById('consentDetail');
 
-  if (banner && accept && reject) {
-    const existing = getConsent();
-    if (existing === 'granted') {
-      loadGtag();
-    } else if (existing === null) {
-      banner.classList.add('is-visible');
-    }
-    accept.addEventListener('click', () => {
-      setConsent('granted');
+  if (banner && accept && reject && customise && save && detail) {
+    const show = () => banner.classList.add('is-visible');
+    const hide = () => {
       banner.classList.remove('is-visible');
+      // Collapse the detail panel too, so reopening from the footer starts
+      // at the same simple two-button state a first-time visitor sees.
+      detail.hidden = true;
+      save.hidden = true;
+      customise.hidden = false;
+    };
+
+    // Only an undecided visitor is interrupted. A stored decision — including
+    // one migrated from the pre-2026-09-03 single-flag format — is honoured
+    // silently, and is reopened only on request via the footer's "Cookie
+    // settings" link (CONSENT_OPEN_EVENT).
+    if (!getConsent()) show();
+
+    window.addEventListener(CONSENT_OPEN_EVENT, () => {
+      show();
+      // Opening from the footer is an explicit "I want to change this", so
+      // go straight to the per-category view rather than the summary.
+      detail.hidden = false;
+      save.hidden = false;
+      customise.hidden = true;
+      const firstCheck = detail.querySelector<HTMLInputElement>('.consent-check');
+      firstCheck?.focus();
     });
+
+    customise.addEventListener('click', () => {
+      detail.hidden = false;
+      save.hidden = false;
+      customise.hidden = true;
+    });
+
+    accept.addEventListener('click', () => {
+      acceptAll();
+      hide();
+    });
+
     reject.addEventListener('click', () => {
-      setConsent('denied');
-      banner.classList.remove('is-visible');
+      rejectAll();
+      hide();
+    });
+
+    save.addEventListener('click', () => {
+      const checked = (category: string) =>
+        detail.querySelector<HTMLInputElement>(`.consent-check[data-category="${category}"]`)
+          ?.checked === true;
+      setConsent({
+        preferences: checked('preferences'),
+        statistics: checked('statistics'),
+        marketing: checked('marketing'),
+      });
+      hide();
     });
   }
 </script>
@@ -109,8 +218,86 @@ import { GA_MEASUREMENT_ID } from '../../scripts/analytics-config';
     color: var(--color-paper-80);
     margin: 0;
   }
+  .consent-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    /* The detail panel can outgrow a short viewport once every category is
+       expanded — scroll inside the banner rather than pushing the action
+       buttons off-screen, which would leave no way to answer it. */
+    max-height: min(46vh, 20rem);
+    overflow-y: auto;
+  }
+  .consent-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .consent-row:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  .consent-row-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    cursor: pointer;
+  }
+  .consent-row-fixed .consent-row-head {
+    cursor: default;
+  }
+  .consent-row-label {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--color-paper);
+  }
+  .consent-row-state {
+    font-family: var(--font-body);
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-paper-40);
+  }
+  .consent-row-summary {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--color-paper-60);
+  }
+  .consent-check {
+    /* Sized up from the browser default: the checkbox is the control this
+       whole component exists for, and a 13px default box is below the 24px
+       minimum target size WCAG 2.2 (2.5.8) asks for. */
+    inline-size: 1.15rem;
+    block-size: 1.15rem;
+    flex-shrink: 0;
+    accent-color: var(--color-signal);
+    cursor: pointer;
+  }
+  /* Separated from the last category rather than sitting directly under
+     its summary line, where it read as part of that category rather than
+     as a note about all of them. */
+  .consent-detail-note {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-paper-12);
+    font-size: 0.75rem !important;
+    color: var(--color-paper-60) !important;
+  }
+  .consent-detail-note a {
+    color: var(--color-paper);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
   .consent-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--space-3);
     justify-content: flex-end;
   }
@@ -142,6 +329,21 @@ import { GA_MEASUREMENT_ID } from '../../scripts/analytics-config';
   }
   .consent-btn-solid:hover {
     opacity: 0.85;
+  }
+  /* "Choose" is the third path, not a third equal option — it opens the
+     detail rather than answering, so it reads as a link-weight control and
+     sits left of the two real answers via margin-right: auto. */
+  .consent-btn-quiet {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--color-paper-60);
+    padding-inline: 0;
+    margin-right: auto;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+  .consent-btn-quiet:hover {
+    color: var(--color-paper);
   }
   @media (max-width: 640px) {
     .consent-banner {
