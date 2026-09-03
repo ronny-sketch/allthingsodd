@@ -116,15 +116,13 @@ jobs:
       # identical build, so no link anywhere on the internet 404s. See
       # LEGACY_REDIRECT below and docs/deployment.md#domain-migration.
       LEGACY_DOMAIN: odd-field-guide.surge.sh
-      # Flip to '1' once allthingsodd.co is confirmed resolving over HTTPS
-      # (`curl -fsI https://allthingsodd.co`). It makes the build served on
-      # the legacy host forward visitors to the same path on the canonical
-      # host (Layout.astro). Kept at '0' until then because turning it on
-      # before DNS lands would bounce every old-host visitor at a domain that
-      # doesn't answer — taking production down for precisely the people it
-      # exists to protect. Canonical/og:url tags already point at the new
-      # domain regardless, so SEO consolidation does not wait on this.
-      PUBLIC_LEGACY_REDIRECT: '0'
+      # ON since 2026-09-03: allthingsodd.co is delegated to Surge, holds a
+      # valid certificate and serves this build, so the legacy host can now
+      # safely forward visitors to the same path on it (Layout.astro). This
+      # was deliberately '0' through the DNS window — turning it on earlier
+      # would have bounced every old-host visitor at a domain that didn't
+      # answer yet.
+      PUBLIC_LEGACY_REDIRECT: '1'
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -239,11 +237,45 @@ jobs:
             return 1
           }
 
+          # www must answer HTTPS with a VALID certificate and a 301 onto the
+          # apex, carrying the path across. Both halves matter and neither is
+          # theoretical:
+          #
+          # - The 301 is Surge's automatic www-folding, which only applies
+          #   while no project is published AT www. Publishing anything there
+          #   replaces the redirect with that project's content.
+          # - The certificate is the fragile half. Surge issues certificates
+          #   per published domain, so on 2026-09-03 www had none and served
+          #   the default *.surge.sh cert — a browser-visible error on the
+          #   canonical domain's most likely typo. It was fixed by publishing
+          #   www once purely to trigger issuance, then tearing that project
+          #   down so the automatic 301 resumed; the certificate survived.
+          #   Because www is no longer a project, its auto-renewal cannot be
+          #   inspected (`surge www.<domain> debug certs` returns
+          #   Unauthorized), so whether it renews at ~90 days is genuinely
+          #   unknown rather than assumed. This check is the safety net: curl
+          #   without -k fails on an invalid certificate, so a lapse fails a
+          #   deploy loudly instead of surfacing as a security warning to a
+          #   visitor. See docs/deployment.md#www-and-its-certificate.
+          verify_www() {
+            www="www.$1"
+            location="$(curl -sSI --max-time 20 "https://${www}/oddfest" | tr -d '\r' | awk 'tolower($1) == "location:" { print $2 }')"
+            if [ "$location" = "https://$1/oddfest" ]; then
+              echo "${www} verified: 301 -> ${location}, certificate valid"
+              return 0
+            fi
+            echo "::error::${www} did not redirect to https://$1/oddfest as expected (got '${location:-no redirect, or the request failed}'). Either Surge's automatic www-folding stopped applying — check nothing has been published to ${www} — or its certificate has lapsed, which curl reports as a failed request. See docs/deployment.md#www-and-its-certificate." >&2
+            return 1
+          }
+
           # Once the nameservers are delegated, the tolerant branch can never
           # be taken again and the canonical host is checked as strictly as
           # the legacy one. Nothing to edit when that happens.
           verify "$PRIMARY_DOMAIN" tolerant
           verify "$LEGACY_DOMAIN" strict
+          if delegated_to_surge "$PRIMARY_DOMAIN"; then
+            verify_www "$PRIMARY_DOMAIN"
+          fi
     # Growth OS's own Cloudflare Worker deploy (formerly a
     # `deploy-cloudflare-preview` job here) now lives in its own repo,
     # ../odd-growth-os, with its own CI — see that repo's
