@@ -116,7 +116,17 @@ const Tag = href ? 'a' : 'button';
         the button had no press feedback whatsoever. `:active` supplies it. */
   @media (hover: none) {
     .pill {
-      padding: 0.85rem 1.4rem;
+      /* Vertical padding only — the horizontal value deliberately stays at
+         the desktop 1.25rem. Pill sets `white-space: nowrap`, so a long
+         label's min-content width is a hard floor on whatever grid column
+         holds it, and widening this button widens that floor everywhere.
+         ODDference's "Talk to us about partnering →" CTA is already the
+         binding constraint on `.oddc-convert`'s single-column track (see
+         that page's own comment); an earlier version of this rule used
+         1.4rem and pushed `/oddference` 3px past a 320px viewport on Linux
+         CI, where the string measures slightly wider than on macOS. The
+         44px target is a height requirement, so height is all this needs. */
+      padding: 0.85rem 1.25rem;
       /* A <button>'s UA stylesheet sets its own `line-height: normal`
          directly on the element, which beats inheritance regardless of
          specificity — so a Pill rendered as a button (the Menu trigger) came
