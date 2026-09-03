@@ -1,14 +1,16 @@
 // Minimal GA4 loader + event helper. Deliberately NOT the standard "always
-// load gtag.js with Consent Mode default-denied" pattern — for a small
-// brand site the simpler, unambiguously-compliant option is to not request
-// gtag.js at all until the visitor has actually accepted (see
-// analytics-consent.ts for the banner that gates this). GDPR/ePrivacy
-// applies here: ODD is a Finnish association, GA4's cookies aren't
-// "strictly necessary," so consent has to come before the request, not
-// just before reading the cookie.
+// load gtag.js with Consent Mode default-denied" pattern that oddfest.co
+// uses via Cookiebot — for a small brand site with one analytics tag the
+// simpler, unambiguously-compliant option is to not request gtag.js at all
+// until the visitor has actually accepted. GDPR/ePrivacy applies here: ODD
+// is a Finnish association, GA4's cookies aren't "strictly necessary," so
+// consent has to come before the request, not just before reading the
+// cookie. Consent Mode's cookieless pings still reach Google; this doesn't.
+//
+// What is allowed to run lives in consent.ts; what it is called and why is
+// declared in consent-config.ts's `statistics` category.
 import { GA_MEASUREMENT_ID } from './analytics-config';
-
-const CONSENT_KEY = 'odd_analytics_consent_v1';
+import { onConsentChange } from './consent';
 
 declare global {
   interface Window {
@@ -19,25 +21,7 @@ declare global {
 
 let loaded = false;
 
-export function getConsent(): 'granted' | 'denied' | null {
-  try {
-    const v = localStorage.getItem(CONSENT_KEY);
-    return v === 'granted' || v === 'denied' ? v : null;
-  } catch {
-    return null;
-  }
-}
-
-export function setConsent(value: 'granted' | 'denied'): void {
-  try {
-    localStorage.setItem(CONSENT_KEY, value);
-  } catch {
-    /* private browsing / storage blocked — consent still applies for this page view */
-  }
-  if (value === 'granted') loadGtag();
-}
-
-export function loadGtag(): void {
+function loadGtag(): void {
   if (loaded || !GA_MEASUREMENT_ID) return;
   loaded = true;
   window.dataLayer = window.dataLayer || [];
@@ -52,9 +36,25 @@ export function loadGtag(): void {
   document.head.appendChild(script);
 }
 
-// Called by the two Growth OS forms on a real successful submission. A
-// no-op whenever consent hasn't been granted or GA4 isn't configured yet —
-// callers don't need to check either condition themselves.
+/** Called once per page load from ConsentBanner.astro, which mounts on every
+ *  page via Layout.astro. Subscribing (rather than reading storage once)
+ *  is what makes an in-banner Accept start measurement on the same page view
+ *  instead of the next navigation.
+ *
+ *  There is deliberately no "unload" path: gtag.js cannot be unloaded once
+ *  fetched, so withdrawing statistics consent takes effect on the next page
+ *  load. openConsentSettings() clearing the stored value is what guarantees
+ *  that — the next load starts from no consent, and this never fires. */
+export function initAnalytics(): void {
+  onConsentChange((state) => {
+    if (state.statistics) loadGtag();
+  });
+}
+
+// Called by the Growth OS forms and the ticketing funnel on a real
+// successful submission/step. A no-op whenever statistics consent hasn't
+// been granted or GA4 isn't configured yet — callers don't need to check
+// either condition themselves.
 export function trackEvent(name: string, params?: Record<string, unknown>): void {
   if (typeof window.gtag === 'function') window.gtag('event', name, params);
 }

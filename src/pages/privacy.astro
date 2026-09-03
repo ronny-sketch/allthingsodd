@@ -1,0 +1,21 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import PageIntro from '../components/sections/PageIntro.astro';
+import LegalDocument from '../components/sections/LegalDocument.astro';
+
+const entry = await getEntry('pages', 'privacy');
+if (!entry || entry.data._template !== 'legal')
+  throw new Error('privacy.json content entry missing or malformed');
+const page = entry.data;
+---
+
+<Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
+  <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
+  <LegalDocument
+    lastUpdated={page.lastUpdated}
+    sections={page.sections}
+    cookieSection={page.cookieSection}
+    contact={page.contact}
+  />
+</Layout>
