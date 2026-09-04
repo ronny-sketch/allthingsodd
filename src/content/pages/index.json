@@ -1,7 +1,7 @@
 {
   "_template": "home",
   "seo": {
-    "title": "ODD — creative and cultural fields, business and society",
+    "title": "All Things ODD — creative and cultural fields, business and society",
     "description": "ODD builds events, spaces and projects that strengthen creative work and bring creative and cultural expertise closer to business and wider society.",
     "ogImage": "/og/home.jpg"
   },
@@ -10,53 +10,71 @@
   },
   "opening": {
     "headline": "ODD exists to bring creative and cultural fields closer to business and wider society — while building better conditions for creative work itself.",
-    "primaryCta": { "label": "See what we do", "href": "#four" }
+    "primaryCta": {
+      "label": "See what we do",
+      "href": "#four"
+    }
   },
   "whatOddIs": {
     "eyebrow": "Why ODD",
     "headline": "Finland has no shortage of creative talent. What is often missing is what gets built around it.",
     "body": "Creative work is still rebuilt project by project, production by production and funding cycle by funding cycle. At the same time, the people shaping culture and the people shaping business, institutions and public life spend surprisingly little time working together. ODD works on both problems: creating more continuity around creative work, and more situations where different kinds of expertise can actually meet.",
-    "cta": { "label": "Why we exist →", "href": "/about" }
+    "cta": {
+      "label": "Why we exist →",
+      "href": "/about"
+    }
   },
   "twoWaysIn": {
     "intro": "ODD has different doors, depending on why you are here.",
     "business": {
       "lede": "Get closer to creative expertise and the people behind it.",
       "body": "Come to ODDference, build a partnership, or bring us a question or project that needs a different mix of people around it.",
-      "cta": { "label": "Work with ODD →", "href": "/work-with-odd" }
+      "cta": {
+        "label": "Work with ODD →",
+        "href": "/work-with-odd"
+      }
     },
     "creative": {
       "lede": "Work, show and find your people.",
       "body": "Use ODDspace as a place to keep working. Bring something of your own to ODDfest. Join the parts of ODD that are useful to your practice — without having to become part of a single scene or organisation.",
-      "cta": { "label": "Find your way in →", "href": "/oddspace" }
+      "cta": {
+        "label": "Find your way in →",
+        "href": "/oddspace"
+      }
     }
   },
   "proof": {
     "items": [
-      { "value": "2,600+", "label": "Participants" },
-      { "value": "350+", "label": "Contributors" },
-      { "value": "70+", "label": "Partners" }
+      {
+        "value": "5,000+",
+        "label": "Participants"
+      },
+      {
+        "value": "500+",
+        "label": "Collaborators"
+      },
+      {
+        "value": "100+",
+        "label": "Partners"
+      },
+      {
+        "value": "€400K+",
+        "label": "Directly into creative & cultural industries",
+        "srValue": "More than €400,000"
+      }
     ],
     "reportLabel": "2025 Impact Report",
-    "reportUrl": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ"
+    "reportUrl": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ",
+    "reportNote": "The 2025 report covers ODDfest 2025 alone. The figures above are cumulative across everything ODD has run since."
   },
   "proofIntro": {
     "eyebrow": "Already in motion",
-    "headline": "ODD started as an experiment. It did not stay one.",
-    "body": "The first ODDfest in 2025 brought together more than 2,600 participants, 350+ contributors and 70+ partners. In 2026, ODD expanded into a city-wide Creative Week, the first ODDference and a year-round physical space in Vallila.",
-    "cta": { "label": "See how ODD got here →", "href": "/about" }
-  },
-  "whatsHappening": {
-    "note": "A running list of events, open calls and things happening across ODDfest, ODDference and ODDspace.",
-    "items": [
-      {
-        "date": "Weekly",
-        "category": "ODDspace",
-        "title": "Coffee on the House",
-        "description": "A standing open meetup for ODDspace members and friends, most weeks, in Vallila.",
-        "href": "/oddspace"
-      }
-    ]
+    "headline": "In less than two years, ODD has already brought thousands of people, collaborators and organisations into the same orbit.",
+    "body": "More than 5,000 people have taken part. We have worked with 500+ collaborators and 100+ partners — and channelled more than €400,000 directly into the creative and cultural industries.",
+    "cta": {
+      "label": "See how ODD got here →",
+      "href": "/about"
+    }
   },
   "platforms": [
     {

@@ -43,6 +43,11 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run cc:validate
+      # The source half of the identity contract (2026-09-04) — a retired
+      # project name reappearing in a doc, a package field or a deploy
+      # command is invisible to every browser test in this repo. See
+      # scripts/check-identity.mjs.
+      - run: npm run check:identity
       - run: npm run build
 
   functional:
@@ -147,6 +152,11 @@ jobs:
           cat dist/build-info.json
       - name: Publish to Surge
         env:
+          # INTERNAL PROVIDER ACCOUNT — not this site's identity. This is the
+          # email the Surge account itself was registered under; changing it
+          # means migrating the Surge account, which would orphan every
+          # published project including production. It is never rendered
+          # anywhere public. See docs/IDENTITY_LAUNCH_MATRIX_2026-09-04.md.
           SURGE_LOGIN: ronny@oddfest.co
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
         run: |
@@ -276,6 +286,79 @@ jobs:
           if delegated_to_surge "$PRIMARY_DOMAIN"; then
             verify_www "$PRIMARY_DOMAIN"
           fi
+      - name: Verify the other ODD domains redirect here
+        run: |
+          # oddfest.co and oddspace.co are supposed to be controlled entry
+          # points into allthingsodd.co, not parallel websites (2026-09-04 —
+          # see docs/IDENTITY_LAUNCH_MATRIX_2026-09-04.md §Legacy domains).
+          # At the time this was written both still served their own old
+          # standalone site, and neither can be changed from this repo:
+          # oddfest.co is a Vercel project on GoDaddy DNS carrying Google
+          # Workspace mail, oddspace.co is WordPress on Hostinger.
+          #
+          # This check adapts rather than being flipped by hand, the same way
+          # `delegated_to_surge` above does. A domain that has not been
+          # migrated yet warns; one that HAS been migrated is then held to it
+          # forever, so a redirect that later breaks or points somewhere
+          # wrong fails the deploy loudly. There is no switch to remember.
+          #
+          # "Migrated" means: the domain answers with a 3xx whose Location is
+          # on allthingsodd.co. Anything else — a 200 (still the old site), a
+          # 3xx somewhere else, a redirect chain that lands off-domain — is
+          # either "not done yet" or "done wrong", and the two are told apart
+          # by whether a redirect to us was ever seen at all.
+          fail=0
+
+          check_legacy_domain() {
+            host="$1"; expected="$2"
+            # The registrable domain, so "www.oddfest.co -> oddfest.co" can be
+            # recognised as the old site's own www-folding (i.e. not migrated
+            # yet) rather than mistaken for a redirect somewhere unintended.
+            apex="${host#www.}"
+
+            # -I, no -L: the FIRST hop is what matters. A chain that starts
+            # by 301ing to the old site and only later reaches us would still
+            # have shown a visitor the old page.
+            headers="$(curl -sSI --max-time 20 "https://${host}/" 2>&1)" || {
+              echo "::warning::${host} did not answer HTTPS with a valid certificate. If it has just been repointed, DNS or the certificate may still be settling; if it has not been migrated yet, this is expected. Not failing the deploy."
+              return 0
+            }
+
+            status="$(printf '%s' "$headers" | head -n1 | awk '{print $2}')"
+            location="$(printf '%s' "$headers" | tr -d '\r' | awk 'tolower($1) == "location:" { print $2 }' | tail -n1)"
+
+            case "$location" in
+              https://allthingsodd.co*)
+                if [ "$location" = "$expected" ]; then
+                  echo "${host} verified: ${status} -> ${location}"
+                  return 0
+                fi
+                echo "::error::${host} redirects to ${location}, but the agreed destination is ${expected}. See docs/IDENTITY_LAUNCH_MATRIX_2026-09-04.md for the redirect map." >&2
+                return 1
+                ;;
+              '')
+                echo "::warning::${host} answered ${status} with no redirect — it is still serving its own site rather than forwarding to ${expected}. This is a known launch blocker (registrar/host credentials are outside this repo), not a regression in this deploy."
+                return 0
+                ;;
+              https://"$apex"/*|https://"$apex"|http://"$apex"/*|http://"$apex")
+                # Still pointing at itself. Same unmigrated state as the bare
+                # 200 above, just reached via the old site's own www-folding.
+                echo "::warning::${host} still folds onto ${location} — its own old site — rather than forwarding to ${expected}. Known launch blocker, not a regression in this deploy."
+                return 0
+                ;;
+              *)
+                echo "::error::${host} redirects to ${location}, which is not on allthingsodd.co. A visitor following an old ODD link is being sent somewhere unintended." >&2
+                return 1
+                ;;
+            esac
+          }
+
+          check_legacy_domain oddfest.co       https://allthingsodd.co/oddfest  || fail=1
+          check_legacy_domain www.oddfest.co   https://allthingsodd.co/oddfest  || fail=1
+          check_legacy_domain oddspace.co      https://allthingsodd.co/oddspace || fail=1
+          check_legacy_domain www.oddspace.co  https://allthingsodd.co/oddspace || fail=1
+
+          exit $fail
     # Growth OS's own Cloudflare Worker deploy (formerly a
     # `deploy-cloudflare-preview` job here) now lives in its own repo,
     # ../odd-growth-os, with its own CI — see that repo's

@@ -3,14 +3,24 @@
 ## Current state
 
 **Production is `https://allthingsodd.co`.** The site is a plain static Astro
-build on Surge. Three hostnames exist and each has a defined job:
+build on Surge. Four Surge hostnames exist and each has a defined job:
 
-| Host                             | Role                                                                                                         |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `allthingsodd.co`                | Canonical production. Every `<link rel="canonical">`, `og:url`, JSON-LD `url` and sitemap entry points here. |
-| `www.allthingsodd.co`            | Redirects to the apex. Surge does this itself — see [Domain migration](#domain-migration).                   |
-| `odd-field-guide.surge.sh`       | Retired production host, **still published with the identical build** so no existing link 404s.              |
-| `odd-field-guide-astro.surge.sh` | Preview. Deliberately outside the automated pipeline; publish to it by hand to eyeball a build.              |
+| Host                            | Role                                                                                                                                                                                                                                         |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `allthingsodd.co`               | Canonical production. Every `<link rel="canonical">`, `og:url`, JSON-LD `url` and sitemap entry points here.                                                                                                                                 |
+| `www.allthingsodd.co`           | Redirects to the apex. Surge does this itself — see [Domain migration](#domain-migration).                                                                                                                                                   |
+| `odd-field-guide.surge.sh`      | **Legacy redirect — keep.** Retired production host, still published with the identical build so no existing link 404s, and forwarding on to the canonical domain (Layout.astro). Not a second production site, and not this project's name. |
+| `allthingsodd-preview.surge.sh` | Preview. Deliberately outside the automated pipeline; publish to it by hand to eyeball a build.                                                                                                                                              |
+
+**Preview-host rename (2026-09-04).** Previews used to be published to
+`odd-field-guide-astro.surge.sh`. That name is retired along with the rest of
+the old project identity: publish previews to `allthingsodd-preview.surge.sh`
+from now on. Unlike `odd-field-guide.surge.sh`, the old preview host serves no
+backward-compatibility purpose — no public link points at it — so it can be
+torn down (`npx surge teardown odd-field-guide-astro.surge.sh`) rather than
+kept alive. Note that the preview host deliberately does **not** carry the
+legacy-host redirect script, since its whole job is showing a build that is
+not production.
 
 Manual publish, if CI is ever unavailable:
 
@@ -18,7 +28,7 @@ Manual publish, if CI is ever unavailable:
 npm run build
 npx surge dist https://allthingsodd.co        # canonical (https:// forces HTTPS)
 rm -f dist/CNAME
-npx surge dist https://odd-field-guide.surge.sh
+npx surge dist https://odd-field-guide.surge.sh   # legacy host, kept as a redirect
 ```
 
 The old single-file site's own files/repo still exist untouched at
@@ -161,7 +171,7 @@ cannot cover a site that publishes to two hosts. The secret must hold an
 
 ```bash
 npx surge tokens add -m "github-actions-ci-<date>" \
-  | gh secret set SURGE_TOKEN --repo ronny-sketch/odd-field-guide
+  | gh secret set SURGE_TOKEN --repo ronny-sketch/allthingsodd
 ```
 
 Worth noting the failure was caught rather than silent: the publish step
@@ -193,7 +203,7 @@ The fix is one command, from a terminal where `surge` is logged in as
 
 ```bash
 npx surge tokens add -m "github-actions-ci-$(date +%Y%m%d)" \
-  | gh secret set SURGE_TOKEN --repo ronny-sketch/odd-field-guide
+  | gh secret set SURGE_TOKEN --repo ronny-sketch/allthingsodd
 ```
 
 Then re-run the failed deploy job and confirm `/build-info.json` matches the
@@ -326,7 +336,7 @@ session, since the token goes straight from `surge` to GitHub's secret
 store):
 
 ```bash
-npx surge token | gh secret set SURGE_TOKEN --repo ronny-sketch/odd-field-guide
+npx surge token | gh secret set SURGE_TOKEN --repo ronny-sketch/allthingsodd
 ```
 
 **Corrected 2026-08-31 — this was wrong, see "Deploy verification" below**:

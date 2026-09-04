@@ -1,10 +1,11 @@
 ---
-// JSON-LD structured data — Organization + WebSite only. Deliberately not
-// adding Event schema for the What's On dates: that content is explicitly
-// marked "Illustrative example — not confirmed dates" in home.json, and
-// shipping Event markup with unconfirmed dates is exactly the kind of fake
-// structured data that hurts more than it helps. Add it once real dates
-// exist — see src/content/pages/home.json's whatsOn.note.
+// JSON-LD structured data — Organization + WebSite only. Deliberately no
+// Event schema: the homepage's activity list ("What's happening") was
+// removed on 2026-09-04 and nothing else on this site publishes confirmed
+// dates, so there is no real event data to mark up. Shipping Event markup
+// with unconfirmed dates is the kind of fake structured data that hurts
+// more than it helps; add it if and when a page carries dates a human has
+// actually confirmed.
 import { getEntry } from 'astro:content';
 
 const site = await getEntry('site', 'global');
@@ -34,7 +35,12 @@ const organization = {
 const website = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'ODD',
+  // The website, not the brand (2026-09-04). "All Things ODD" is the name of
+  // this site/project — the canonical digital home for ODD's things; `ODD`
+  // stays on as the brand's alternate name, and the Organization entity
+  // above keeps the legal publisher (New Nordic Way rf) factual.
+  name: 'All Things ODD',
+  alternateName: 'ODD',
   // Same underlying factual framing as Media's boilerplate (media.json) —
   // masterbrand connecting creative/cultural fields with business and wider
   // society, not the old "co-creation platform" phrasing, which predates

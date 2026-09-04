@@ -7,6 +7,14 @@ interface ProofItem {
   value: string;
   label: string;
   context?: string;
+  // An unabbreviated spoken form of `value`, for screen readers only
+  // (2026-09-04). Home's cumulative proof row shows "€400K+", which a
+  // screen reader renders as something between "euro four hundred K plus"
+  // and a spelled-out "K" — so the full meaning ("More than €400,000") is
+  // carried here instead of being lost to the abbreviation the design
+  // needs. Set it and the visible glyphs are hidden from the a11y tree in
+  // favour of this string; omit it and nothing changes.
+  srValue?: string;
 }
 interface Props {
   // Optional (2026-09-02 copywriting pass) — Home's "Already in motion"
@@ -22,6 +30,13 @@ interface Props {
   // link to a report that doesn't exist yet.
   reportLabel?: string;
   reportUrl?: string;
+  // A qualifying line under the report link (2026-09-04). Home's stat row is
+  // now cumulative across ODD's whole first two years, while the only
+  // published report covers 2025 alone — so the link has to say what it does
+  // and does not evidence, rather than sitting under four numbers it cannot
+  // substantiate on its own. Omit where the report and the numbers are the
+  // same scope.
+  reportNote?: string;
   // Shown instead of the grid when `items` is empty — About's 2026 impact
   // snapshot, whose real numbers aren't verified yet, uses this rather than
   // fabricating figures or silently omitting the section. A deliberate,
@@ -30,7 +45,7 @@ interface Props {
   // pending, not nonexistent.
   placeholder?: string;
 }
-const { eyebrow, title, items, reportLabel, reportUrl, placeholder } = Astro.props;
+const { eyebrow, title, items, reportLabel, reportUrl, reportNote, placeholder } = Astro.props;
 const showReport = Boolean(reportLabel && reportUrl);
 const hasItems = items.length > 0;
 ---
@@ -57,16 +72,28 @@ const hasItems = items.length > 0;
           <div class="proof-grid reveal" style={`--cols: ${Math.min(items.length, 4)}`}>
             {items.map((item) => (
               <div class="proof-item">
-                <div class="proof-value">{item.value}</div>
+                <div class="proof-value">
+                  {item.srValue ? (
+                    <>
+                      <span aria-hidden="true">{item.value}</span>
+                      <span class="sr-only">{item.srValue}</span>
+                    </>
+                  ) : (
+                    item.value
+                  )}
+                </div>
                 <div class="proof-label">{item.label}</div>
                 {item.context && <div class="proof-context">{item.context}</div>}
               </div>
             ))}
           </div>
           {showReport && (
-            <a class="proof-report-link" href={reportUrl}>
-              {reportLabel} →
-            </a>
+            <div class="proof-report">
+              <a class="proof-report-link" href={reportUrl}>
+                {reportLabel} →
+              </a>
+              {reportNote && <p class="proof-report-note">{reportNote}</p>}
+            </div>
           )}
         </>
       ) : (
@@ -134,10 +161,14 @@ const hasItems = items.length > 0;
     font-size: 0.78rem;
     color: var(--color-paper-40);
   }
+  .proof-report {
+    margin-top: 2.4rem;
+    text-align: center;
+  }
   .proof-report-link {
     display: block;
     width: fit-content;
-    margin: 2.4rem auto 0;
+    margin: 0 auto;
     font-family: var(--font-body);
     font-weight: 600;
     font-size: 0.82rem;
@@ -151,6 +182,16 @@ const hasItems = items.length > 0;
   .proof-report-link:hover {
     color: var(--color-amber-bright);
     text-decoration-color: var(--color-amber-bright);
+  }
+  /* Deliberately quieter than the link above it — this is a scope caveat,
+     not a second call to action. */
+  .proof-report-note {
+    max-width: 34rem;
+    margin: 0.7rem auto 0;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--color-paper-40);
   }
   /* Quiet, subordinate — this section's own padding shrinks too (see
      .proof-section.is-pending below) so missing 2026 data reads as a small

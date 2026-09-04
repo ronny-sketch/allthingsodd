@@ -7,6 +7,7 @@
 import { getEntry } from 'astro:content';
 import Pill from '../primitives/Pill.astro';
 import SocialIcon from '../primitives/SocialIcon.astro';
+import { socialLinkLabel } from '../primitives/social-handle';
 
 interface Props {
   accessKey?: string;
@@ -84,7 +85,12 @@ const { contact, social } = site.data;
       <div class="contact-social">
         {
           social.map((s) => (
-            <a href={s.href} target="_blank" rel="noreferrer" aria-label={s.platform}>
+            <a
+              href={s.href}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={socialLinkLabel(s.platform, s.href)}
+            >
               <SocialIcon platform={s.platform} />
             </a>
           ))

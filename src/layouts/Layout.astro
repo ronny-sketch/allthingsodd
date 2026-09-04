@@ -87,7 +87,7 @@ const revealOptIn = `(function(){var d=document.documentElement;try{if(!window.m
       /* First script in <head>, is:inline and synchronous, so an old-host
          visitor is forwarded before any of this page paints. Only the
          retired production host redirects — the preview deployment
-         (odd-field-guide-astro.surge.sh) deliberately does not, since its
+         (allthingsodd-preview.surge.sh) deliberately does not, since its
          whole job is showing a build that is NOT production. `replace`, not
          `assign`: the old URL must not sit in the back-stack, or Back from
          the new site bounces the visitor straight forward again. */
@@ -118,6 +118,14 @@ const revealOptIn = `(function(){var d=document.documentElement;try{if(!window.m
     }
 
     <meta property="og:type" content="website" />
+    {
+      /* The website's own name, distinct from each page's og:title. "All
+         Things ODD" is the umbrella site/project (2026-09-04); ODD remains
+         the masterbrand and ODDfest/ODDference/ODDspace/ODDagency remain its
+         products, which is why this is the one place the phrase belongs and
+         product page titles stay product-first. */
+    }
+    <meta property="og:site_name" content="All Things ODD" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />

@@ -1,5 +1,5 @@
 {
-  "name": "odd-field-guide-astro",
+  "name": "allthingsodd",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -17,7 +17,8 @@
     "test": "playwright test",
     "test:update-snapshots": "playwright test --update-snapshots",
     "cc:validate": "cloudcannon validate",
-    "quality": "npm run check && npm run lint && npm run format:check && npm run cc:validate && npm run build"
+    "check:identity": "node scripts/check-identity.mjs",
+    "quality": "npm run check && npm run lint && npm run format:check && npm run cc:validate && npm run check:identity && npm run build"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

@@ -266,7 +266,7 @@ grep `src/content.config.ts` for it first.
 
 **Narrow-column placeholder text.** A few components lay real content into a
 fixed-width slot designed for short values — `ProofGrid`'s big stat number,
-`Timeline`'s year column, `ProgrammeList`/`WhatsOn`'s date column. A long
+`Timeline`'s year column, `ProgrammeList`'s date column. A long
 `[PLACEHOLDER — description]` string in one of those overflows its column and
 visually collides with the next one (caught during V2 build via an actual
 screenshot, not assumed). Convention: those specific fields get a short

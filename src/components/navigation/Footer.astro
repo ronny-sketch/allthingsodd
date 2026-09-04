@@ -2,6 +2,7 @@
 import { getEntry } from 'astro:content';
 import Logo from '../primitives/Logo.astro';
 import SocialIcon from '../primitives/SocialIcon.astro';
+import { socialLinkLabel } from '../primitives/social-handle';
 import NewsletterForm from '../primitives/NewsletterForm.astro';
 
 const site = await getEntry('site', 'global');
@@ -58,7 +59,7 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
             href={s.href}
             target="_blank"
             rel="noreferrer"
-            aria-label={s.platform}
+            aria-label={socialLinkLabel(s.platform, s.href)}
           >
             <SocialIcon platform={s.platform} />
           </a>
