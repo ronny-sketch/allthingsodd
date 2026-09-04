@@ -420,6 +420,29 @@ account's own credentials. _Human action, exactly:_
    Behold to `/privacy`'s processor list automatically, and turns the seven
    "feed configured" specs from skipped into a live gate.
 
+**B12 — The `SURGE_TOKEN` repository secret cannot publish to
+`allthingsodd.co`.** _Missing:_ an account-scoped Surge token in the repo
+secret. The one there is scoped `--domain odd-field-guide.surge.sh`, so every
+push to `main` since the domain migration has failed at the publish step with
+`Aborted - you do not have permission to publish to allthingsodd.co` —
+confirmed on PR #19's merge (run 33801137415) and this pass's merge (run
+33822336466). CI's `checks` and `functional` jobs pass; only the publish
+fails, and production has been kept current by hand since. _Why code cannot
+invent it:_ it is an account credential, and creating or rotating one is
+outside this pass's authorisation. _Human action, exactly_ — from a terminal
+where `surge` is logged in as `ronny@oddfest.co` and `gh` is authenticated
+(the value never appears on screen):
+
+```bash
+npx surge tokens add -m "github-actions-ci-$(date +%Y%m%d)" \
+  | gh secret set SURGE_TOKEN --repo ronny-sketch/odd-field-guide
+```
+
+_Prepared:_ the failure mode, its history and this command are now written
+into `docs/deployment.md#the-deploy-token-must-not-be-domain-scoped` rather
+than left to be re-diagnosed. Until it is done, a CloudCannon content edit
+does not reach the live site on its own.
+
 **B9 — Approved public cases for Work with ODD and ODDagency.** _Missing:_
 three to five, and two to four, approved case studies. The master's own claim
 watchlist forbids publishing Sitra / AI Finland until procurement is confirmed
