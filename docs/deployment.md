@@ -168,6 +168,37 @@ Worth noting the failure was caught rather than silent: the publish step
 greps surge's own completion line, so an aborted publish failed the job
 instead of reporting green — the exact protection added after 2026-08-31.
 
+**Still unfixed as of 2026-09-04 — read this before trusting a deploy.** The
+account-scoped token above was written down here but never actually put in
+the repository secret. `SURGE_TOKEN` is still the domain-scoped one, so
+**every push to `main` since the domain migration has failed at this step**
+with the same `Aborted - you do not have permission to publish to
+allthingsodd.co` — confirmed on the merges of PR #19 (run 33801137415) and
+PR #20 (run 33822336466). CI's `checks` and `functional` jobs pass; only the
+publish fails. Production has been kept current by hand in the meantime, via
+the manual publish at the top of this document, which is why the live site
+can be newer than the last green deploy job.
+
+Consequences worth knowing:
+
+- A CloudCannon content edit does **not** reach the live site on its own any
+  more. The loop from "edit in CloudCannon" to "live" is broken until the
+  secret is replaced.
+- `main` is red at the deploy job by default. That is a real failure, not
+  noise, and it should not be normalised.
+
+The fix is one command, from a terminal where `surge` is logged in as
+`ronny@oddfest.co` and `gh` is authenticated. The token goes straight from
+`surge` into GitHub's secret store and is never printed:
+
+```bash
+npx surge tokens add -m "github-actions-ci-$(date +%Y%m%d)" \
+  | gh secret set SURGE_TOKEN --repo ronny-sketch/odd-field-guide
+```
+
+Then re-run the failed deploy job and confirm `/build-info.json` matches the
+commit, per "Deploy verification" below.
+
 ### Plan limits
 
 This Surge account is on the **Free** plan. Free covers unlimited projects,
