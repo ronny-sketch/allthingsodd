@@ -14,6 +14,13 @@ interface Tier {
   ctaLabel: string;
   href: string;
   recommended?: boolean;
+  // Ticket-catalog slug, ODDference only. Present means "this card's price,
+  // status, benefits and CTA are owned by the ticket backend, not by this
+  // JSON" — src/scripts/oddference-tickets.ts re-reads them from
+  // /api/tickets/catalog at runtime and the build-time values are only the
+  // no-JS/offline fallback. Membership's tiers have no catalog behind them
+  // and deliberately omit it.
+  syncSlug?: string;
   note?: string;
   // Optional low-friction secondary link under the note (e.g. "Want to know
   // more before buying? Email hello@oddfest.co") — a different shape from
@@ -29,12 +36,19 @@ const { items } = Astro.props;
 <div class="pricing-grid reveal">
   {
     items.map((t) => (
-      <div class={`pricing-card ${t.recommended ? 'is-recommended' : ''}`}>
-        {t.recommended && <span class="pricing-badge">Recommended</span>}
+      <div
+        class={`pricing-card ${t.recommended ? 'is-recommended' : ''}`}
+        data-ticket-slug={t.syncSlug}
+      >
+        <span class="pricing-badge" hidden={!t.recommended}>
+          Recommended
+        </span>
         <span class="pricing-name">{t.name}</span>
         {t.audience && <span class="pricing-audience">{t.audience}</span>}
         <div class="pricing-price">{t.price}</div>
-        {t.status && <span class="pricing-status">{t.status}</span>}
+        <span class="pricing-status" hidden={!t.status}>
+          {t.status}
+        </span>
         {t.description && <p class="pricing-desc">{t.description}</p>}
         <ul class="pricing-benefits">
           {t.benefits.map((b) => (
@@ -124,6 +138,16 @@ const { items } = Astro.props;
     font-weight: 400;
     font-size: 1.6rem;
     color: var(--color-paper);
+  }
+  /* .pricing-badge and .pricing-status are always in the DOM and toggled
+     with the `hidden` attribute (rather than conditionally rendered) so
+     oddference-tickets.ts can reveal either one when the live catalog says
+     a different tier is the active/recommended one. `.pricing-status` sets
+     its own `display`, which outranks the UA sheet's `[hidden]` rule — hence
+     the explicit override; without it, hiding it would silently do nothing. */
+  .pricing-badge[hidden],
+  .pricing-status[hidden] {
+    display: none;
   }
   .pricing-status {
     display: inline-block;

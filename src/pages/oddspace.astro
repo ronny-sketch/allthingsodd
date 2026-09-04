@@ -14,6 +14,8 @@ import ProofGrid from '../components/sections/ProofGrid.astro';
 import PricingGrid from '../components/sections/PricingGrid.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import FAQList from '../components/sections/FAQList.astro';
+import InstagramGallery from '../components/sections/InstagramGallery.astro';
+import { ODDSPACE_INSTAGRAM_FEED_ID } from '../scripts/oddspace-instagram-config';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
 import Pill from '../components/primitives/Pill.astro';
 import oddspaceWordmark from '../assets/logos/oddspace-wordmark.svg';
@@ -244,6 +246,24 @@ const page = entry.data;
             </div>
           </div>
         </section>
+      )
+    }
+
+    {
+      /* 8b. The live @oddspace.co Instagram wall — the visual half of the
+         same "what is happening here" chapter the calendar above opens.
+         Rendered only when a Behold feed is actually connected
+         (PUBLIC_ODDSPACE_INSTAGRAM_FEED_ID): an unconfigured build ships no
+         empty gallery, no skeleton and no dead section. See
+         src/scripts/oddspace-instagram-config.ts. */
+    }
+    {
+      page.instagram && ODDSPACE_INSTAGRAM_FEED_ID && (
+        <InstagramGallery
+          eyebrow={page.instagram.eyebrow}
+          headline={page.instagram.headline}
+          ctaLabel={page.instagram.ctaLabel}
+        />
       )
     }
 

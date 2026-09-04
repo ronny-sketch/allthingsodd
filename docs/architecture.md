@@ -389,6 +389,89 @@ before reopening — so abandoning the reopened banner fails closed.
 appearance: the requests are the thing that would actually breach ePrivacy
 Article 5(3), and they are invisible in a screenshot.
 
+## ODDspace Instagram
+
+The wall of recent `@oddspace.co` posts under the ODDspace calendar
+(`InstagramGallery.astro` + `src/scripts/instagram-gallery.ts`), added
+2026-09-03.
+
+**Provider: Behold, via its JSON feed, not its widget.**
+`GET https://feeds.behold.so/<feedId>` returns the posts as data — id,
+permalink, media type, captions, a colour palette, and pre-sized media at
+400/700/1000/2000px webp with real dimensions. That is what makes this
+section ODD's own markup in ODD's own tokens rather than an embedded widget:
+no iframe, no provider stylesheet, no Instagram logo, no like or follower
+counts. The pre-sized media is also what lets the grid reserve space and ship
+a responsive `srcset` instead of hotlinking Instagram originals behind
+expiring URLs.
+
+**It is not a consent-gated tracker, and that was checked rather than
+assumed.** Behold sets no cookies and writes no `localStorage`, so ePrivacy
+Article 5(3) is not engaged and there is no entry in `consent-config.ts` — an
+entry there would describe storage that does not exist. Elfsight, the obvious
+alternative, sets an `elfsight_viewed_recently` cookie and would have needed
+declaring, disclosing and gating before the request.
+`tests/functional/instagram-gallery.spec.ts` asserts the absence of cookies
+and storage on the real browser, so the claim fails loudly if the provider
+ever changes.
+
+Behold is still a third-party processor, and `/privacy` names it — but only
+while it is actually running. That is what the `onlyWhen` form of a legal
+list item does (see `content.config.ts`): the item lives in `privacy.json`
+like any other copy, and `privacy.astro` renders it only when the feed is
+configured. A processor that ships switched off must not be disclosed as if
+it were running, and must be impossible to forget once it is.
+
+**Configuration.** `PUBLIC_ODDSPACE_INSTAGRAM_FEED_ID`, read once in
+`src/scripts/oddspace-instagram-config.ts`. A feed ID is public by design (in
+Behold's own widget it is an HTML attribute), so it is not a secret and does
+not belong in a Worker. With no ID the section is not rendered at all — the
+same "inert until configured" contract as `analytics-config.ts` and
+`tickets/config.ts` — so a build without the account connected ships no empty
+gallery and no skeleton. The account connection itself is a one-time human
+OAuth step; see `FINAL_IMPLEMENTATION_MATRIX_2026-09-03.md` blocker B8.
+
+**Cost.** Below the fold, so nothing is requested until the section is within
+400px of the viewport. The six tiles are server-rendered at final size before
+any image exists, so filling them shifts nothing. Reels show poster media; no
+`<video>` element is ever created.
+
+**Failure.** A provider outage sets `data-state="unavailable"`, which swaps
+the grid for one quiet line and the follow link, with no error of our own in
+the console — deliberately not `console.error`, since a third party being down
+is not this site's bug and would turn the visual suite's per-route console
+check red on something no deploy can fix. The same fallback covers a visitor
+with no JavaScript: the grid is opt-in via `data-state`, so it is never left
+as six empty squares.
+
+## ODDference ticket sync
+
+`/oddference` sells tickets; `/tickets` sells them. Until 2026-09-03 both
+described the same three ticket types independently, and they had drifted:
+the marketing page advertised Blind Bird at €300 while
+`GET /api/tickets/catalog` — the price Stripe charges — said €250. A green
+build, green lint and green screenshots all agreed, because nothing compared
+them.
+
+`src/scripts/oddference-tickets.ts` now re-reads price, sale state, benefits
+and CTA for each ticket card from the catalog at runtime, keyed by the
+`syncSlug` field on the content's ticket tiers (`content.config.ts`'s
+`pricingTier`). Membership's tiers have no catalog behind them and omit it.
+
+It is progressive enhancement on purpose. The server-rendered card already
+carries a truthful price and status, so a blocked fetch, an offline visitor or
+a crawler sees a complete, honest ticket section rather than a spinner; the
+script only ever corrects it. Nothing here reaches checkout — price, inventory
+and sale phase are still resolved authoritatively by the Worker and D1, and
+the browser is never trusted with a total (see the ticketing section of
+`AGENTS.md`).
+
+`tests/functional/oddference-tickets.spec.ts` drives it against a mocked
+catalog — live values, the active→upcoming boundary, sold-out, an unreachable
+backend — plus one live check that the build-time fallback still agrees with
+the real catalog, which annotates and skips rather than failing when the
+backend is unreachable.
+
 ## Visual regression
 
 `tests/visual/pages.spec.ts` screenshots all 11 routes at 5 viewports

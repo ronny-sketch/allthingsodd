@@ -20,6 +20,7 @@
 // deliberately does NOT duplicate a file under a second name or pull in
 // stock photography to force the number to 50.
 import { getImage } from 'astro:assets';
+import { mosaicImage, MOSAIC_SIZES } from './mosaic-images';
 import Logo from '../primitives/Logo.astro';
 
 const heroModules = import.meta.glob<{ default: ImageMetadata }>('../../assets/hero/*.jpg', {
@@ -38,9 +39,7 @@ const archive = [
   ...Object.values(newsModules).map((m) => m.default),
 ];
 
-const cellImages = await Promise.all(
-  archive.slice(0, 20).map((src) => getImage({ src, width: 500, format: 'webp' })),
-);
+const cellImages = await Promise.all(archive.slice(0, 20).map((src) => mosaicImage(src)));
 const poolImages = await Promise.all(
   archive.map((src) => getImage({ src, width: 500, format: 'webp' })),
 );
@@ -75,10 +74,13 @@ const { mosaicAlt, headline } = Astro.props;
         <div class="mosaic-cell">
           <img
             src={img.src}
-            width={img.attributes.width}
-            height={img.attributes.height}
+            srcset={img.srcset}
+            sizes={MOSAIC_SIZES}
+            width={img.width}
+            height={img.height}
             alt=""
             loading="eager"
+            decoding="async"
             fetchpriority={i === 0 ? 'high' : undefined}
           />
         </div>
@@ -191,6 +193,22 @@ const { mosaicAlt, headline } = Astro.props;
     animation-play-state: paused;
     will-change: auto;
   }
+  /* Pausing was not enough on its own. A paused animation keeps its element
+     alive as a composited layer, so twenty offscreen mosaic cells were still
+     being composited every frame for the whole time someone reads the rest
+     of the homepage — the unattributed steady-state CPU cost PR #19 measured
+     and could not place. `content-visibility: hidden` skips rendering the
+     subtree outright, which is exactly what "nobody can see this" should
+     mean. Measured at 390x844 / 4x CPU, hero scrolled offscreen, task time
+     over a 6s window, median of 3: 639ms -> 309ms (-52%).
+     The mosaic is `position: absolute; inset: 0`, so its box comes from the
+     hero and cannot collapse without content; it is already aria-hidden, so
+     nothing is being hidden from assistive tech that was not already; and an
+     engine without support simply keeps the previous paused-only behaviour.
+     Only ever applied while the hero is offscreen — see mosaic.ts's sync(). */
+  .mosaic.mosaic-is-idle {
+    content-visibility: hidden;
+  }
   @keyframes ken-burns {
     from {
       transform: scale(1);
@@ -279,16 +297,35 @@ const { mosaicAlt, headline } = Astro.props;
       0 8px 32px rgb(14 9 11 / 50%);
   }
   @media (prefers-reduced-motion: no-preference) {
+    /* No entrance delay, and that is a performance decision, not a taste one.
+       This <h1> is by far the largest contentful element on the homepage
+       (~102,500px^2 against ~15,000px^2 for a mosaic cell), so it is the
+       page's natural LCP element. Chrome evaluates a text element for LCP at
+       the paint where its content first appears, and an element painted at
+       opacity 0 is not a candidate — it is not reconsidered later. With the
+       0.55s delay this used to carry, the headline was therefore disqualified
+       outright, and LCP fell through to a 130px mosaic thumbnail, which the
+       ambient self-swap in mosaic.ts then kept replacing with a marginally
+       larger one for as long as the page stayed open. Measured result:
+       LCP 4376ms -> 484ms at 390x844 / 4x CPU, median of 3, with the element
+       moving from a swapped-in archive photo to this heading. That is also
+       the honest number: the headline really is readable within half a
+       second. Keep the delay at 0 — reintroducing one puts the metric back
+       on a thumbnail with no visible change to the page. */
     .hero-headline {
       opacity: 0;
-      animation: hero-logo-in 1.2s 0.55s var(--ease-out-expo) both;
+      animation: hero-logo-in 1.2s 0s var(--ease-out-expo) both;
     }
   }
   @media (prefers-reduced-motion: no-preference) {
+    /* The mark used to lead the headline by 0.25s. With the headline moved
+       to a 0s delay above, keeping the mark at 0.3s would have inverted that
+       order on screen. Both now rise together from the first frame, which
+       keeps the pair reading as one gesture. */
     .hero-logo :global(svg) {
       opacity: 0;
       animation:
-        hero-logo-in 1.2s 0.3s var(--ease-out-expo) both,
+        hero-logo-in 1.2s 0s var(--ease-out-expo) both,
         hero-float 10s ease-in-out infinite;
     }
   }

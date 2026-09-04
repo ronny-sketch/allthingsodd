@@ -204,6 +204,12 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
     color: var(--color-ink);
     display: flex;
     align-items: center;
+    /* Same hit-slop as Nav.astro's `.mark`, for the same reason: the mark is
+       ~22px tall, two pixels under WCAG 2.2 SC 2.5.8, and this one is inside
+       an overlay where it is one of only two controls. Padding grows the
+       target, the negative margin keeps the rendering identical. */
+    padding: 3px 4px;
+    margin: -3px -4px;
   }
   .menu-topbar .mark-ink :global(svg) {
     height: 1.35rem;

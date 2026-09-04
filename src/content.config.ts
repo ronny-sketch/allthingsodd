@@ -163,6 +163,16 @@ const pricingTier = z.object({
   ctaLabel: z.string(),
   href: z.string(),
   recommended: z.boolean().optional(),
+  // ODDference only. The ticket-type slug in the ticket backend's catalog
+  // (GET /api/tickets/catalog — see AGENTS.md's ticketing section). Setting
+  // it hands price/status/benefits/CTA for that card to the backend at
+  // runtime (src/scripts/oddference-tickets.ts); the values in this JSON
+  // become the no-JS/offline fallback rather than a second source of truth.
+  // The reason this exists: the marketing page and the storefront had
+  // already drifted — main advertised Blind Bird at EUR 300 while the
+  // catalog charged EUR 250 — and no test could see it, because nothing
+  // compared the two.
+  syncSlug: z.string().optional(),
   note: z.string().optional(),
   // Optional low-friction secondary link under the note (2026-09-02
   // copywriting pass — ODDference's "Want to know more before buying?"
@@ -467,6 +477,13 @@ const pages = defineCollection({
             href: z.string(),
           })
           .optional(),
+        // Home's closing participation band headline. Editorial copy, so it
+        // lives here rather than hardcoded in index.astro (CMS rules in
+        // AGENTS.md) — it was a literal string in the page until the
+        // 2026-09-03 final integration pass, which is how it survived the
+        // copywriting master's rewrite of this exact line ("participation" ->
+        // "doing") while every field around it was updated.
+        participateTitle: z.string().optional(),
         participate: z.array(cta),
         aftermovie: z.object({ poster: image(), video: z.string() }),
       }),
@@ -761,6 +778,19 @@ const pages = defineCollection({
             title: z.string(),
             note: z.string().optional(),
             embedUrl: z.string(),
+          })
+          .optional(),
+        // The live @oddspace.co Instagram wall under the calendar (2026-09-03
+        // final integration pass). Only the editorial framing lives here —
+        // which account, which provider and how many posts are technical
+        // config, in src/scripts/oddspace-instagram-config.ts, per the CMS
+        // rules in AGENTS.md. Optional so the section can be removed from
+        // content without touching the page.
+        instagram: z
+          .object({
+            eyebrow: z.string(),
+            headline: z.string(),
+            ctaLabel: z.string(),
           })
           .optional(),
         faq: z.array(faqItem),
@@ -1082,8 +1112,24 @@ const pages = defineCollection({
             body: z.array(z.string()),
             /** Optional bullet list under the paragraphs — used for the
              *  GDPR rights list, where each item is "Right to X: what it
-             *  means" and a paragraph would bury it. */
-            items: z.array(z.string()).optional(),
+             *  means" and a paragraph would bury it.
+             *
+             *  An item may instead be `{ text, onlyWhen }`, which renders
+             *  only while that optional integration is actually configured
+             *  in this build. It exists for exactly one problem: a
+             *  third-party processor that ships switched off (the ODDspace
+             *  Instagram feed) must not be disclosed as if it were running,
+             *  and must be impossible to forget once it is. The copy still
+             *  lives in content; only the condition lives in code — see
+             *  src/pages/privacy.astro. */
+            items: z
+              .array(
+                z.union([
+                  z.string(),
+                  z.object({ text: z.string(), onlyWhen: z.enum(['oddspace-instagram']) }),
+                ]),
+              )
+              .optional(),
           }),
         ),
         cookieSection: z.object({

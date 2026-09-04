@@ -21,11 +21,19 @@ const { contact, social } = site.data;
 <section class="contact-section">
   <div class="wrap contact-grid reveal">
     <form class="contact-form" id="contactForm" data-access-key={accessKey ?? ''}>
+      {
+        /* The subject line the message arrives with in ODD's inbox — the
+          site it came from, not the address it goes to. Updated 2026-09-03
+          with the domain cutover: hello@oddfest.co stays the canonical
+          address (a separate, unapproved migration), but the old oddfest.co
+          site still exists and still has its own forms, so a subject naming
+          it made messages from this site indistinguishable from that one's. */
+      }
       <input
         type="hidden"
         name="subject"
         id="cf-subject"
-        value="New message from oddfest.co contact form"
+        value="New message from the allthingsodd.co contact form"
       />
       <p class="contact-topic-note" id="cf-topic-note" hidden></p>
       <div class="field">

@@ -13,9 +13,18 @@ interface Props {
   title: string;
   description: string;
   ogImage?: string;
-  /** URL of this page's real LCP candidate, if it has an image-heavy hero
-   * worth preloading — see index.astro for how the home page computes it. */
+  /** URL of the first image a page paints, if it has an image-heavy hero
+   * worth a head start — see index.astro for how the home page computes it.
+   * (Home's real LCP element is its <h1>, not this image; see Hero.astro's
+   * .hero-headline comment. This preload is about the hero's first
+   * photograph appearing promptly, not about the metric.) */
   preloadImage?: string;
+  /** The same image's responsive candidate set. Required whenever the
+   * preloaded <img> itself uses srcset: without them the preload names one
+   * fixed file while the img picks another, so the browser downloads both.
+   * See src/components/sections/mosaic-images.ts. */
+  preloadImageSrcset?: string;
+  preloadImageSizes?: string;
   /** 'light' flips the whole page — Nav/Footer/MobileMenu included, via the
    * `.theme-light` token scope in tokens.css — to ODDspace's inverse
    * identity. Every other page omits this and stays the sitewide dark
@@ -27,7 +36,16 @@ interface Props {
    * content pages, which never set this. */
   noindex?: boolean;
 }
-const { title, description, ogImage, preloadImage, theme, noindex } = Astro.props;
+const {
+  title,
+  description,
+  ogImage,
+  preloadImage,
+  preloadImageSrcset,
+  preloadImageSizes,
+  theme,
+  noindex,
+} = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 // Path-preserving redirect from the retired production host
@@ -86,7 +104,18 @@ const revealOptIn = `(function(){var d=document.documentElement;try{if(!window.m
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    {preloadImage && <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />}
+    {
+      preloadImage && (
+        <link
+          rel="preload"
+          as="image"
+          href={preloadImage}
+          imagesrcset={preloadImageSrcset}
+          imagesizes={preloadImageSizes}
+          fetchpriority="high"
+        />
+      )
+    }
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />

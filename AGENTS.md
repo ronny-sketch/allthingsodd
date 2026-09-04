@@ -392,6 +392,33 @@ Google request happens before consent — because that is the thing that
 would actually breach ePrivacy, and it is invisible in a screenshot. If a
 change makes those tests fail, the change is wrong, not the test.
 
+## ODDspace Instagram feed
+
+Added 2026-09-03. Full reasoning: `docs/architecture.md#oddspace-instagram`.
+The short version:
+
+- The wall under the ODDspace calendar is **ODD's own markup fed by Behold's
+  JSON feed**, not an embedded widget. Do not "simplify" it to
+  `<behold-widget>` or an Instagram embed — that trades the whole design
+  system for provider chrome and, in Elfsight's case, a cookie.
+- **It is not in `consent-config.ts`, and that is correct**: Behold sets no
+  cookie and no storage, so there is nothing to declare there. It _is_
+  disclosed on `/privacy` as a processor, via a list item that renders only
+  while the feed is configured (`onlyWhen` in `content.config.ts`). If the
+  provider ever starts storing anything, both files change together — and
+  `tests/functional/instagram-gallery.spec.ts` fails first.
+- `PUBLIC_ODDSPACE_INSTAGRAM_FEED_ID` is the one switch. Unset, the section
+  is not rendered at all.
+
+## ODDference ticket sync
+
+The `/oddference` ticket cards read price, status, benefits and CTA from
+`GET /api/tickets/catalog` at runtime (`src/scripts/oddference-tickets.ts`),
+keyed by `syncSlug` in the content. The values in `oddference.json` are the
+no-JS/offline fallback, not a second source of truth — they had already
+drifted once (page said €300, backend charged €250). If you edit a ticket
+price in content, you are editing a fallback; change the backend.
+
 ## Scope-creep guardrail
 
 Before implementing a newly discovered requirement, classify it:

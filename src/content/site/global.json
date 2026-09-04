@@ -24,7 +24,7 @@
   ],
   "contact": [{ "label": "Get in touch", "email": "hello@oddfest.co" }],
   "footerAddress": "New Nordic Way rf · Helsinki",
-  "footerTag": "New Nordic Way rf · oddfest.co",
+  "footerTag": "New Nordic Way rf · Helsinki",
   "newsletterLabel": "Keep up with ODD",
   "newsletterHref": "https://oddfest.beehiiv.com",
   "preRegister": { "label": "Newsletter", "href": "#newsletter" },
