@@ -33,6 +33,12 @@ import { lstatSync, readFileSync } from 'node:fs';
 
 const MIGRATION_RECORD = 'docs/IDENTITY_LAUNCH_MATRIX_2026-09-04.md';
 const SELF = 'scripts/check-identity.mjs';
+// The rendered-site half of the same contract. It has to name the strings it
+// forbids in order to forbid them, so it is allowlisted everywhere this file
+// is — caught by CI on the first run, because a locally untracked new file is
+// invisible to `git ls-files` and therefore to this scan. Run it against a
+// staged tree, not a dirty one.
+const IDENTITY_SPEC = 'tests/functional/identity-integrity.spec.ts';
 
 /**
  * Hostnames removed from every line before the identity rules run. Each is a
@@ -91,6 +97,7 @@ const RULES = [
       'AGENTS.md': 'the constitution names it once, to retire it',
       'README.md': 'the readme names it once, to retire it',
       [MIGRATION_RECORD]: 'the migration record',
+      [IDENTITY_SPEC]: 'asserts the retired name never reaches a rendered page',
       [SELF]: 'this file',
     },
   },
@@ -110,6 +117,7 @@ const RULES = [
       'AGENTS.md': 'the constitution names it once, to retire it',
       [MIGRATION_RECORD]: 'the migration record',
       'docs/FINAL_IMPLEMENTATION_MATRIX_2026-09-03.md': 'historical record of the 2026-09-03 pass',
+      [IDENTITY_SPEC]: 'asserts the legacy host never leaks past its one permitted use',
       [SELF]: 'this file',
     },
   },
@@ -129,7 +137,7 @@ const DEAD_ADDRESS = {
     'allthingsodd.co has no MX record, so this address cannot receive mail — publishing it would break a real contact route',
   allow: {
     [MIGRATION_RECORD]: 'documents the address that is not live yet',
-    'tests/functional/identity-integrity.spec.ts': 'asserts it is never published',
+    [IDENTITY_SPEC]: 'asserts it is never published',
     [SELF]: 'this file',
   },
 };
