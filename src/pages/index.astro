@@ -1,6 +1,6 @@
 ---
 import { getEntry } from 'astro:content';
-import { getImage } from 'astro:assets';
+import { mosaicImage, MOSAIC_SIZES } from '../components/sections/mosaic-images';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/sections/Hero.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
@@ -8,6 +8,7 @@ import Converge from '../components/sections/Converge.astro';
 import ProgramGrid from '../components/sections/ProgramGrid.astro';
 import ProofGrid from '../components/sections/ProofGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
+import WhatsOn from '../components/sections/WhatsOn.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
 import Aftermovie from '../components/sections/Aftermovie.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
@@ -61,15 +62,20 @@ const cloudPhotos = [
   cloudPhoto11,
 ];
 
-// The hero mosaic's first cell is the page's real LCP element (confirmed via
-// a PerformanceObserver check against production, not assumed) — preloading
-// it lets the browser start fetching before it's parsed HTML deep enough to
-// discover the <img> tag itself, same file Hero.astro resolves internally.
+// A head start on the hero mosaic's first cell — the first photograph the
+// page paints. Built through the same helper Hero.astro uses, and passed to
+// Layout with its full candidate set, so the preload names exactly the file
+// `srcset` will pick rather than a second one alongside it.
+//
+// Corrected 2026-09-03: this used to be described as the page's LCP element.
+// It was, but only because the real one — the <h1> — was disqualified by an
+// entrance animation; measurement moved LCP back to the heading at ~0.5s.
+// See Hero.astro's .hero-headline comment for the full finding.
 const archiveModules = import.meta.glob<{ default: ImageMetadata }>('../assets/hero/*.jpg', {
   eager: true,
 });
 const firstArchiveImage = Object.values(archiveModules)[0].default;
-const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format: 'webp' });
+const preloadImage = await mosaicImage(firstArchiveImage);
 ---
 
 <Layout
@@ -77,6 +83,8 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
   description={page.seo.description}
   ogImage={page.seo.ogImage}
   preloadImage={preloadImage.src}
+  preloadImageSrcset={preloadImage.srcset}
+  preloadImageSizes={MOSAIC_SIZES}
 >
   <Hero mosaicAlt={page.hero.mosaicAlt} headline={page.opening.headline} />
 
@@ -121,28 +129,6 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
        below. */
   }
   <ProgramGrid title="What we do" cards={page.platforms} />
-
-  {
-    /* "Work with ODD" — a quiet organisational pathway, not a fourth equal
-       product card (2026-08-31 final implementation pass: it used to be a
-       giant photo card inside the grid above, competing visually with
-       ODDfest/ODDference/ODDspace, which the brief flags as
-       misrepresenting the site's real hierarchy — ODDnetwork/ODDagency/
-       Work with ODD are deeper ways to work with ODD, not equal masterbrand
-       programmes). A slim single-row banner immediately under the three
-       primary destinations, reusing Pill for the CTA rather than inventing
-       a new card component. */
-  }
-  <div class="wwo-band wrap">
-    <a class="wwo-band-link" href={page.workWithOdd.href}>
-      <span class="wwo-band-text">
-        <span class="eyebrow">{page.workWithOdd.eyebrow}</span>
-        <span class="wwo-band-title">{page.workWithOdd.title}</span>
-        {page.workWithOdd.body && <span class="wwo-band-body">{page.workWithOdd.body}</span>}
-      </span>
-      <span class="wwo-band-go">{page.workWithOdd.linkLabel}</span>
-    </a>
-  </div>
 
   {
     /* "Already in motion" — NEW SECTION (2026-09-02 copywriting pass): the
@@ -212,11 +198,47 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
   }
 
   {
-    /* "What's happening" is hidden for now — not enough confirmed content
-       to justify showing it (see AGENTS.md/task notes). Component + content
-       field are both kept as-is for when there's real programme to show;
-       just not rendered. */
+    /* "What's happening" — [KEEP WITH LIVE CONTENT] (2026-09-03 final
+       integration pass). This was unconditionally commented out, which is
+       not the same thing as the copywriting master's "keep this only if the
+       list is genuinely maintained": a hardcoded `off` stays off after the
+       list *is* maintained, and nobody watching the CMS would ever know.
+       Rendering is now gated on the content itself — the section appears
+       exactly while `whatsHappening.items` has entries and disappears on its
+       own when an editor empties it, so the promise ("updated as things are
+       confirmed") can never outlive the content backing it. */
   }
+  {
+    page.whatsHappening.items.length > 0 && (
+      <WhatsOn items={page.whatsHappening.items} note={page.whatsHappening.note} />
+    )
+  }
+
+  {
+    /* "Work with ODD" — a quiet organisational pathway, not a fourth equal
+       product card (2026-08-31 final implementation pass: it used to be a
+       giant photo card inside the grid above, competing visually with
+       ODDfest/ODDference/ODDspace, which the brief flags as
+       misrepresenting the site's real hierarchy — ODDnetwork/ODDagency/
+       Work with ODD are deeper ways to work with ODD, not equal masterbrand
+       programmes). A slim single-row banner, not a card and not a photo.
+       2026-09-03 final integration pass: MOVEd down from directly under the
+       three-across platforms grid to here — the copywriting master's home
+       flow puts the organisational path after the proof, audience routing
+       and current activity, and a band sitting immediately under the three
+       product cards read as a fourth one regardless of how quiet its
+       styling was. */
+  }
+  <div class="wwo-band wrap">
+    <a class="wwo-band-link" href={page.workWithOdd.href}>
+      <span class="wwo-band-text">
+        <span class="eyebrow">{page.workWithOdd.eyebrow}</span>
+        <span class="wwo-band-title">{page.workWithOdd.title}</span>
+        {page.workWithOdd.body && <span class="wwo-band-body">{page.workWithOdd.body}</span>}
+      </span>
+      <span class="wwo-band-go">{page.workWithOdd.linkLabel}</span>
+    </a>
+  </div>
 
   {
     /* The grouped Partners/Media/Supported by/Collaborators logo wall stays
@@ -248,7 +270,7 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
     showBrandMarquee={false}
   />
 
-  <ParticipateBand title="The way in is by participation." items={page.participate} />
+  <ParticipateBand title={page.participateTitle} items={page.participate} />
 </Layout>
 
 <style>
@@ -283,26 +305,20 @@ const preloadImage = await getImage({ src: firstArchiveImage, width: 500, format
   .whatoddis-wrap :global(.section-intro-inner .eyebrow) {
     color: var(--color-paper-80);
   }
-  /* "What we do" (ProgramGrid, #four) now sits directly under the "Why ODD"
-     hero moment above and directly over the quiet "Work with ODD" band below
-     it (2026-09-02 copywriting pass — platforms MOVEd earlier). Trimmed
-     bottom padding keeps the band tight against the grid it belongs to,
-     rather than stacking a full section gap in between. */
-  :global(#four) {
-    padding-bottom: var(--space-12);
+  /* "Work with ODD" quiet pathway band — one slim row, deliberately far
+     quieter than a product card: a plain bordered strip with a text pair and
+     a link, not a card, not a photo, not its own headed section. It used to
+     sit flush under the platforms grid (margin-top: 1px, with #four's bottom
+     padding trimmed to match); since the 2026-09-03 MOVE it closes the
+     page's organisational chapter instead, so it carries its own section
+     rhythm rather than borrowing the grid's. */
+  .wwo-band {
+    margin-top: var(--space-16);
   }
   @media (max-width: 640px) {
-    :global(#four) {
-      padding-bottom: var(--space-8);
+    .wwo-band {
+      margin-top: var(--space-8);
     }
-  }
-
-  /* "Work with ODD" quiet pathway band — one slim row, deliberately far
-     quieter than the three photo cards above it: a plain bordered strip with
-     a text pair and a link, not a card, not a photo, not its own headed
-     section. */
-  .wwo-band {
-    margin-top: 1px;
   }
 
   /* "Already in motion" proof module — a SectionIntro (eyebrow/headline/

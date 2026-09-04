@@ -3,18 +3,35 @@ import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import PageIntro from '../components/sections/PageIntro.astro';
 import LegalDocument from '../components/sections/LegalDocument.astro';
+import { ODDSPACE_INSTAGRAM_FEED_ID } from '../scripts/oddspace-instagram-config';
 
 const entry = await getEntry('pages', 'privacy');
 if (!entry || entry.data._template !== 'legal')
   throw new Error('privacy.json content entry missing or malformed');
 const page = entry.data;
+
+// Which optional integrations are actually live in this build. A processor
+// that ships switched off must not be listed here as if it were running —
+// and, more importantly, must appear the moment it is switched on, without
+// anyone remembering to edit this page. See content.config.ts's `onlyWhen`
+// comment; tests/functional/instagram-gallery.spec.ts asserts both halves.
+const enabledIntegrations = {
+  'oddspace-instagram': ODDSPACE_INSTAGRAM_FEED_ID !== null,
+} as const;
+
+const sections = page.sections.map((section) => ({
+  ...section,
+  items: section.items
+    ?.filter((item) => typeof item === 'string' || enabledIntegrations[item.onlyWhen])
+    .map((item) => (typeof item === 'string' ? item : item.text)),
+}));
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
   <LegalDocument
     lastUpdated={page.lastUpdated}
-    sections={page.sections}
+    sections={sections}
     cookieSection={page.cookieSection}
     contact={page.contact}
   />

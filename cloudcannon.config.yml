@@ -53,10 +53,11 @@ collections_config:
         type: object
         label: '"Work with ODD" quiet pathway card (Home only)'
         comment: >-
-          A slim organisational banner shown right under the three-across
-          ODDfest/ODDference/ODDspace grid — deliberately not another giant
-          photo card, since Work with ODD is a deeper way to work with ODD,
-          not a fourth equal masterbrand product.
+          A slim organisational banner closing the homepage's
+          organisational chapter, after the proof, audience routing and
+          "What's happening" — deliberately not another giant photo card,
+          since Work with ODD is a deeper way to work with ODD, not a fourth
+          equal masterbrand product.
         options:
           subtype: object
       pathways:
@@ -73,6 +74,15 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
+      participateTitle:
+        type: text
+        label: Participation band headline (Home only)
+        comment: >-
+          The headline over Home's closing "ways to participate" cards —
+          "The way in is by doing." Editorial copy, so it lives in content
+          rather than in the page template; it was hardcoded until
+          2026-09-03, which is how it kept an older wording through a full
+          copywriting pass.
       participate:
         type: array
         label: '"Ways to participate" cards'
@@ -379,6 +389,18 @@ collections_config:
           URL (not the "view calendar" share link) — see docs/editing.md.
           Optional: leave the whole field out rather than embed a broken or
           placeholder calendar.
+        options:
+          subtype: object
+          required: false
+      instagram:
+        type: object
+        label: Instagram wall framing (ODDspace only)
+        comment: >-
+          Eyebrow, headline and follow-link label for the live @oddspace.co
+          gallery under the calendar. Editorial framing only — which account
+          it pulls from, which provider serves it and how many posts it shows
+          are technical config in the codebase, not editable here. The
+          section is hidden entirely until the feed is connected.
         options:
           subtype: object
           required: false

@@ -118,7 +118,7 @@ const page = entry.data;
             <li>
               <span class="about-principles-number">{item.number}</span>
               <div>
-                <h4>{item.title}</h4>
+                <h3>{item.title}</h3>
                 <p>{item.body}</p>
               </div>
             </li>
@@ -263,7 +263,11 @@ const page = entry.data;
     letter-spacing: 0.24em;
     color: var(--color-paper-40);
   }
-  .about-principles-list h4 {
+  /* h3, not h4: these sit directly under the section's own h2, and an
+     h2 -> h4 jump is a real heading-order break for anyone navigating by
+     headings. The type scale below is unchanged — the level is semantic,
+     the size is a design choice. Found in the 2026-09-03 a11y sweep. */
+  .about-principles-list h3 {
     font-family: var(--font-body);
     font-weight: 600;
     font-size: 0.95rem;

@@ -1,0 +1,222 @@
+---
+// ODDspace's live Instagram wall — an editorial gallery of the last six
+// posts from @oddspace.co, sitting under the "What's on" calendar so the
+// "what is happening here" chapter has real, current pictures behind it.
+//
+// Deliberately not a provider widget: the tiles are this site's own markup
+// and tokens (see docs/design-system.md), fed by Behold's JSON feed. No
+// Instagram logo, no follower counts, no like counts, no provider header —
+// the page should read as ODDspace showing its own room, not as a social
+// plugin bolted onto the bottom of a page.
+//
+// The tiles are rendered server-side, empty, at their final size: that is
+// what makes the section cost zero layout shift when the images arrive (and
+// it is why the grid is composed for exactly six — see
+// oddspace-instagram-config.ts). src/scripts/instagram-gallery.ts fills
+// them once the section is near the viewport.
+import {
+  ODDSPACE_INSTAGRAM_FEED_ID,
+  ODDSPACE_INSTAGRAM_POST_COUNT,
+  ODDSPACE_INSTAGRAM_URL,
+} from '../../scripts/oddspace-instagram-config';
+
+interface Props {
+  eyebrow: string;
+  headline: string;
+  ctaLabel: string;
+}
+const { eyebrow, headline, ctaLabel } = Astro.props;
+const tiles = Array.from({ length: ODDSPACE_INSTAGRAM_POST_COUNT });
+---
+
+<section class="odds-sub ig-section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">{eyebrow}</span>
+      <h2>{headline}</h2>
+    </div>
+
+    <div
+      class="ig-gallery reveal"
+      data-instagram-gallery
+      data-feed-id={ODDSPACE_INSTAGRAM_FEED_ID}
+      data-state="idle"
+    >
+      <div class="ig-grid">
+        {
+          tiles.map(() => (
+            <a class="ig-tile" href={ODDSPACE_INSTAGRAM_URL} target="_blank" rel="noreferrer">
+              <span class="ig-tile-media" />
+              <span class="ig-tile-badge" hidden />
+            </a>
+          ))
+        }
+      </div>
+
+      {
+        /* Shown when Behold is down, the feed is empty, or JavaScript never ran
+          (the grid is opt-in via data-state, so a no-JS visitor gets this line
+          rather than six empty squares). Quiet on purpose: one line and the
+          same follow link that closes the section anyway. */
+      }
+      <p class="ig-unavailable">
+        The live feed is not loading right now. You can see what is happening at ODDspace on
+        Instagram.
+      </p>
+
+      <div class="ig-foot">
+        <a class="ig-follow" href={ODDSPACE_INSTAGRAM_URL} target="_blank" rel="noreferrer">
+          {ctaLabel}
+        </a>
+        <a class="ig-credit" href="https://behold.so" target="_blank" rel="noreferrer" hidden>
+          Feed by Behold
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="../../scripts/instagram-gallery.ts"></script>
+</section>
+
+<style>
+  /* The grid is rendered at its final size before a single image exists —
+     six aspect-ratio tiles in a fixed 3x3 — which is what makes the whole
+     section cost zero layout shift when the photographs arrive. It is
+     display:none until the script has actually started, so a visitor with
+     no JavaScript (or a blocked bundle) sees the one-line fallback instead
+     of six empty squares. Same "never leave a placeholder as the final
+     state" rule as motion.css's reveal system. */
+  .ig-grid {
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+  }
+  /* One 2x2 lead tile plus five singles fills a 3x3 exactly — a deliberate
+     gallery-wall rhythm rather than six identical thumbnails, without any
+     of the reflow risk of a masonry layout. Gated on there actually being
+     six: at any smaller count the big tile stops tiling and leaves visible
+     holes in the wall (confirmed against a four-post feed), so a short feed
+     falls back to an even grid instead. */
+  .ig-gallery[data-count='6'] .ig-tile:first-child {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .ig-tile {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--ig-tile-bg, var(--color-paper-06));
+    text-decoration: none;
+  }
+  .ig-tile-media {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .ig-tile :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* A photograph arriving is the one moment this section moves. Gated on
+       reduced motion below like every other transition in the codebase. */
+    opacity: 0;
+    animation: ig-fade var(--duration-slow) ease forwards;
+  }
+  @keyframes ig-fade {
+    to {
+      opacity: 1;
+    }
+  }
+  .ig-tile-badge {
+    position: absolute;
+    top: 0.55rem;
+    right: 0.7rem;
+    font-size: 0.85rem;
+    line-height: 1;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+    pointer-events: none;
+  }
+  .ig-tile-badge[hidden] {
+    display: none;
+  }
+  /* Hover is an enhancement only; the whole tile is the link, so nothing is
+     hover-only information. */
+  @media (hover: hover) {
+    .ig-tile :global(img) {
+      transition: transform var(--duration-slow) var(--ease-out-expo);
+    }
+    .ig-tile:hover :global(img) {
+      transform: scale(1.03);
+    }
+  }
+  .ig-unavailable {
+    display: none;
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--color-paper-60);
+  }
+  .ig-gallery[data-state='loading'] .ig-grid,
+  .ig-gallery[data-state='loaded'] .ig-grid {
+    display: grid;
+  }
+  /* `idle` means the script never ran; `unavailable` means it ran and the
+     provider had nothing to give. Both are honest reasons to show the line
+     instead of the wall, and the follow link below survives every state. */
+  .ig-gallery[data-state='idle'] .ig-unavailable,
+  .ig-gallery[data-state='unavailable'] .ig-unavailable {
+    display: block;
+  }
+  .ig-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.6rem 1.5rem;
+    margin-top: 1.4rem;
+  }
+  .ig-follow {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    /* Comfortably past the 24px WCAG target floor without moving anything
+       around it — same hit-slop pattern as the section-intro CTA links. */
+    padding: 0.7rem 0;
+  }
+  .ig-credit {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    opacity: 0.55;
+    padding: 0.7rem 0;
+  }
+  .ig-credit[hidden] {
+    display: none;
+  }
+  @media (max-width: 760px) {
+    .ig-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    /* The 2x2 lead tile would eat a whole two-column row on a phone and push
+       the rest below the fold of the section — every tile is equal here. */
+    .ig-gallery[data-count='6'] .ig-tile:first-child {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ig-tile :global(img) {
+      opacity: 1;
+      animation: none;
+      transition: none;
+    }
+    .ig-tile:hover :global(img) {
+      transform: none;
+    }
+  }
+</style>

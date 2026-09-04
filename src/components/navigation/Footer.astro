@@ -91,7 +91,17 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
           banner they haven't seen yet. */
       }
       <button type="button" id="consentSettingsLink" class="foot-legal-btn">Cookie settings</button>
-      <a href="https://oddfest.co">oddfest.co</a>
+      {
+        /* A bare "oddfest.co" link used to sit here, in the legal row, from
+          before the 2026-09-03 domain cutover. In that position — beside
+          "Privacy & cookies" — a bare domain reads as *this* site's
+          identity, so on allthingsodd.co it named the wrong site to every
+          visitor who noticed it. Removed rather than repointed: the copy
+          master's footer is the contact line, the legal/location line, the
+          social links and the newsletter, and a self-referential domain
+          label is not one of them. hello@oddfest.co stays canonical above;
+          that is an address, not a claim about where you are. */
+      }
     </div>
   </div>
 </footer>

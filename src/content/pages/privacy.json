@@ -45,6 +45,10 @@
       "items": [
         "Google Analytics (Google Ireland Limited) — anonymised usage statistics. Only after you accept.",
         "Google Calendar (Google Ireland Limited) — the embedded events calendar on the ODDspace page. Only after you accept embedded content, or press the button on that page.",
+        {
+          "text": "Behold (Behold Studio, Inc.) — serves the Instagram gallery on the ODDspace page. It sets no cookies and stores nothing on your device; your browser requests the photographs from Behold’s servers the same way it requests any other image.",
+          "onlyWhen": "oddspace-instagram"
+        },
         "Stripe Payments Europe, Ltd. — ticket payments and payment fraud prevention.",
         "beehiiv, Inc. — sending the newsletter.",
         "Attio — our internal record of business enquiries, so an enquiry does not get lost.",

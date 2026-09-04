@@ -143,6 +143,15 @@ const infoItem = nav.find((item) => item.children);
     display: flex;
     align-items: center;
     flex-shrink: 0;
+    /* The mark renders at 1.35rem tall, which makes its clickable box ~22px
+       — two pixels under WCAG 2.2 SC 2.5.8's 24x24 minimum, on the one
+       control that appears on every page. The hit-slop pattern the mobile
+       rule below already uses works just as well here: padding grows the
+       invisible target, the matching negative margin keeps the mark itself
+       rendering at exactly the same size and position. No visual change.
+       (Mobile keeps its larger 11px version — see below.) */
+    padding: 3px 4px;
+    margin: -3px -4px;
   }
   .mark :global(svg) {
     height: 1.35rem;

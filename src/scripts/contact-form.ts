@@ -21,7 +21,7 @@ if (form instanceof HTMLFormElement) {
   const topicLabel = topicParam ? TOPICS[topicParam] : undefined;
   if (topicLabel) {
     const subjectField = form.querySelector<HTMLInputElement>('#cf-subject');
-    if (subjectField) subjectField.value = `${topicLabel} — oddfest.co contact form`;
+    if (subjectField) subjectField.value = `${topicLabel} — allthingsodd.co contact form`;
     const topicNote = document.getElementById('cf-topic-note');
     if (topicNote) {
       topicNote.textContent = `Regarding: ${topicLabel}.`;

@@ -188,6 +188,11 @@
     "note": "Public events and things happening in the space as they are confirmed.",
     "embedUrl": "https://calendar.google.com/calendar/embed?src=c_2b949751536a12e3c8dcbe7b3ffbdd82a49ffad8bebbbb3db05365ca725975f1%40group.calendar.google.com&ctz=Europe%2FHelsinki"
   },
+  "instagram": {
+    "eyebrow": "From ODDspace",
+    "headline": "A look at what's been happening.",
+    "ctaLabel": "Follow @oddspace.co →"
+  },
   "faq": [
     {
       "question": "What is ODDspace?",
@@ -243,7 +248,7 @@
     },
     {
       "question": "Is ODDspace accessible?",
-      "answer": "If accessibility is a factor for your visit, get in touch before you come and we'll make sure it works."
+      "answer": "We do not have verified accessibility information for the building to publish yet — step-free access, lifts, accessible toilets and door widths are still being documented, and we would rather say that than reassure you about something we have not measured. If accessibility matters for your visit, email hello@oddfest.co and we will tell you exactly what the space can and cannot do today."
     }
   ],
   "railLeft": [

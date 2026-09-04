@@ -202,6 +202,13 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
       )
     }
   </SubpageFrame>
+  {
+    /* Re-reads price/status/benefits/CTA for the ticket cards above from the
+      ticket backend's catalog, so this marketing page cannot advertise a
+      price the storefront will not honour — see
+      src/scripts/oddference-tickets.ts. */
+  }
+  <script src="../scripts/oddference-tickets.ts"></script>
 </Layout>
 
 <style>
