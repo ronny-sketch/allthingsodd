@@ -71,6 +71,11 @@ const proofItem = z.object({
   value: z.string(),
   label: z.string(),
   context: z.string().optional(),
+  // Screen-reader-only expansion of an abbreviated `value` — see
+  // ProofGrid.astro's `srValue`. Home's "€400K+" carries the full
+  // "More than €400,000" here so the abbreviation the design needs never
+  // costs the claim its meaning.
+  srValue: z.string().optional(),
 });
 
 // A whole proof/traction module — optional at the object level (not just an
@@ -90,6 +95,10 @@ const proofSection = z.object({
   // (predates it), so this stays optional/unused there.
   reportLabel: z.string().optional(),
   reportUrl: z.string().optional(),
+  // A scope caveat under the report link — see ProofGrid.astro's
+  // `reportNote`. Home needs it because its stat row is cumulative across
+  // ODD's first two years while the only published report covers 2025.
+  reportNote: z.string().optional(),
 });
 
 const caseStudy = z.object({
@@ -135,14 +144,6 @@ const resourceLink = z.object({
   year: z.string().optional(),
   date: z.string().optional(),
   description: z.string().optional(),
-  href: z.string(),
-});
-
-const activityItem = z.object({
-  date: z.string(),
-  category: z.string(),
-  title: z.string(),
-  description: z.string(),
   href: z.string(),
 });
 
@@ -427,10 +428,6 @@ const pages = defineCollection({
             tracks: z.array(trackItem).optional(),
             cta: linkCta.optional(),
           }),
-        }),
-        whatsHappening: z.object({
-          note: z.string(),
-          items: z.array(activityItem),
         }),
         // The three primary ODD destinations only (ODDfest / ODDference /
         // ODDspace) — see platformCard's own comment above. "Work with ODD"

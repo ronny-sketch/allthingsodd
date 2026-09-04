@@ -8,7 +8,6 @@ import Converge from '../components/sections/Converge.astro';
 import ProgramGrid from '../components/sections/ProgramGrid.astro';
 import ProofGrid from '../components/sections/ProofGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
-import WhatsOn from '../components/sections/WhatsOn.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
 import Aftermovie from '../components/sections/Aftermovie.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
@@ -135,10 +134,20 @@ const preloadImage = await mosaicImage(firstArchiveImage);
        homepage's first hard proof, right after the reader has seen what ODD
        does. SectionIntro carries the eyebrow/headline/body/cta; the bare
        ProofGrid underneath (no eyebrow/title of its own — see
-       content.config.ts's proofSection comment) renders the verified 2025
-       stat row plus the 2025 Impact Report link. Guarded on `proofIntro`
-       (not `proof`) since the editorial framing is what makes this a real
-       section, not just a stat grid. */
+       content.config.ts's proofSection comment) renders the stat row plus
+       the Impact Report link. Guarded on `proofIntro` (not `proof`) since
+       the editorial framing is what makes this a real section, not just a
+       stat grid.
+
+       2026-09-04: the numbers are now ODD's cumulative totals across its
+       first two years (5,000+ / 500+ / 100+ / €400K+), not the ODDfest 2025
+       snapshot this launched with — the homepage's job is to say what ODD
+       has built, and a first-event-only row understated it by half. The
+       2025 figures themselves are historically correct and stay where they
+       belong, on About's own year-by-year impact section; this is not a
+       rewrite of history. The report link keeps its 2025 scope explicit via
+       `reportNote` so four cumulative figures never read as though one
+       year's report evidences them. */
   }
   {
     page.proofIntro && (
@@ -156,6 +165,7 @@ const preloadImage = await mosaicImage(firstArchiveImage);
             items={page.proof.items}
             reportLabel={page.proof.reportLabel}
             reportUrl={page.proof.reportUrl}
+            reportNote={page.proof.reportNote}
           />
         )}
       </div>
@@ -198,23 +208,6 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   }
 
   {
-    /* "What's happening" — [KEEP WITH LIVE CONTENT] (2026-09-03 final
-       integration pass). This was unconditionally commented out, which is
-       not the same thing as the copywriting master's "keep this only if the
-       list is genuinely maintained": a hardcoded `off` stays off after the
-       list *is* maintained, and nobody watching the CMS would ever know.
-       Rendering is now gated on the content itself — the section appears
-       exactly while `whatsHappening.items` has entries and disappears on its
-       own when an editor empties it, so the promise ("updated as things are
-       confirmed") can never outlive the content backing it. */
-  }
-  {
-    page.whatsHappening.items.length > 0 && (
-      <WhatsOn items={page.whatsHappening.items} note={page.whatsHappening.note} />
-    )
-  }
-
-  {
     /* "Work with ODD" — a quiet organisational pathway, not a fourth equal
        product card (2026-08-31 final implementation pass: it used to be a
        giant photo card inside the grid above, competing visually with
@@ -223,11 +216,13 @@ const preloadImage = await mosaicImage(firstArchiveImage);
        Work with ODD are deeper ways to work with ODD, not equal masterbrand
        programmes). A slim single-row banner, not a card and not a photo.
        2026-09-03 final integration pass: MOVEd down from directly under the
-       three-across platforms grid to here — the copywriting master's home
-       flow puts the organisational path after the proof, audience routing
-       and current activity, and a band sitting immediately under the three
-       product cards read as a fourth one regardless of how quiet its
-       styling was. */
+       three-across platforms grid to here — the home flow puts the
+       organisational path after the proof and the audience routing, and a
+       band sitting immediately under the three product cards read as a
+       fourth one regardless of how quiet its styling was. It used to follow
+       a "What's happening" activity list, removed outright on 2026-09-04
+       (see the All Things ODD identity/launch pass) — this band now closes
+       the organisational chapter directly after "Featured in". */
   }
   <div class="wwo-band wrap">
     <a class="wwo-band-link" href={page.workWithOdd.href}>
@@ -335,6 +330,39 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   @media (max-width: 640px) {
     .home-proof :global(.section-intro) {
       padding-bottom: var(--space-4);
+    }
+  }
+
+  /* Four cumulative figures since 2026-09-04, not the three 2025-only ones
+     this module launched with. The shared ProofGrid goes four-across above
+     700px and one-per-row below it, which was right for three short labels
+     and is not right for these: "Directly into creative & cultural
+     industries" is four times the length of "Participants", so the tablet
+     band would render it inside a ~110px column. Scoped to this instance
+     rather than changed in ProofGrid itself, because Media's eight-stat row
+     and About's two-stat row both want the existing behaviour. */
+  .home-proof :global(.proof-label) {
+    /* One long label among three short ones breaks into an unbalanced
+       ragged block by default; `balance` evens the lines so the four read
+       as one row of captions. */
+    text-wrap: balance;
+  }
+  @media (min-width: 701px) {
+    /* 2rem each side is generous for a one-word label and costs the long
+       one a whole extra line — the divider rules still separate the
+       columns. */
+    .home-proof :global(.proof-item) {
+      padding: 0 1.2rem;
+    }
+  }
+  @media (min-width: 701px) and (max-width: 1024px) {
+    .home-proof :global(.proof-grid) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    /* The shared component drops the divider on every 4th item because it
+       assumes four columns; at two, that has to be every other one. */
+    .home-proof :global(.proof-item:nth-child(2n + 1)) {
+      border-left: none;
     }
   }
 

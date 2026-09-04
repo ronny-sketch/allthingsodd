@@ -1,4 +1,4 @@
-# ODD Field Guide — project constitution
+# All Things ODD — project constitution
 
 ```
 THIS REPOSITORY IS THE ODD PUBLIC WEBSITE.
@@ -22,9 +22,29 @@ is meant to be worked on — not generic Astro advice (that's linked at the bott
 
 ## What this is
 
-The production rebuild of the ODD website — "Signal & Ember / Field Guide 005," a
-co-creation platform site for New Nordic Way rf (ODDfest, ODDference, ODDspace,
-Work with ODD). Migrated 2026-08-19 from a single 13MB hand-authored static
+**All Things ODD** — the ODD website, at `https://allthingsodd.co`, from the
+GitHub repository `ronny-sketch/allthingsodd`.
+
+**Read this before renaming anything.** "All Things ODD" is the name of the
+_website/project_: the umbrella home ODD's things live inside. It is not a
+new brand and it does not replace `ODD` in public copy. ODD is still the
+masterbrand; ODDfest, ODDference, ODDspace and ODDagency are still their own
+product names and still get product-first page titles. The phrase belongs in
+the site's own identity — `og:site_name`, the WebSite JSON-LD name, the
+homepage `<title>`, this repo, this package — and essentially nowhere else in
+editorial copy. Do not sweep-replace visible `ODD` with `All Things ODD`.
+
+The project was called **ODD Field Guide** / `odd-field-guide` until
+2026-09-04. That identity is retired. It survives only where it names the
+retired Surge host (`odd-field-guide.surge.sh`, still published as a
+backward-compatibility redirect), the Growth OS Worker's own deployed
+hostname, or an explicitly historical record. `scripts/check-identity.mjs`
+(run by `npm run quality`) fails the build if it reappears anywhere else.
+
+The site itself is the production rebuild of the ODD website — "Signal &
+Ember / Field Guide 005," a co-creation platform site for New Nordic Way rf
+(ODDfest, ODDference, ODDspace, Work with ODD). Migrated 2026-08-19 from a
+single 13MB hand-authored static
 `index.html` (see `../ODD NEW WEBPAGE/` — no longer deployed as of 2026-08-20,
 kept only as historical reference) into
 Astro + structured content + CloudCannon, without losing the original's visual
@@ -59,9 +79,10 @@ state of any given field, not this file, if in doubt.
 ## Architecture
 
 ```
-GitHub (canonical repo, version history)
+GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
   → Astro (production frontend, static output)
   → CloudCannon (edits src/content/**/*.json through the git history)
+  → Surge — allthingsodd.co (production)
 ```
 
 - **Content** lives in `src/content/pages/*.json` (11 fixed pages: home,
@@ -183,6 +204,18 @@ GitHub (canonical repo, version history)
   - `tests/mobile-reduced/*.spec.ts` — the other half of the same contract
     (`mobile-reduced-*` projects): reduced motion suppresses motion and
     never content, and no video is even requested.
+  - `tests/functional/identity-integrity.spec.ts` — the site's own name,
+    added 2026-09-04. Asserts on the rendered HTML that canonical URLs and
+    `og:url` are under `https://allthingsodd.co`, that `og:site_name` and
+    the WebSite JSON-LD name are `All Things ODD`, that no page carries the
+    retired `ODD Field Guide` identity or advertises a legacy domain as the
+    current website, that the product names survive, and that the homepage's
+    two 2026-09-04 content decisions hold (no `What's happening`; the
+    cumulative `Already in motion` figures and their "less than two years"
+    framing). Its source-side twin is `scripts/check-identity.mjs`, which
+    `npm run quality` runs against tracked files with a narrow, documented
+    allowlist — the rendered test cannot see a stale name in a doc or a
+    config, and the source scan cannot see one composed at build time.
 
   **Known gap, not yet fixed:** `reducedMotion` declared on a project's
   `use` block does not reach the browser in this Playwright/engine
@@ -204,8 +237,19 @@ See `docs/deployment.md`. Short version: GitHub is canonical, CI
 changes back into the same repo. **This build is live** at
 `https://allthingsodd.co` (domain cutover 2026-09-03; before that
 `odd-field-guide.surge.sh`, which is still published with the identical
-build so no existing link 404s) — the old single-file site's own deploy path
-is no longer what's serving either domain.
+build so no existing link 404s, and which forwards visitors on to the
+canonical domain) — the old single-file site's own deploy path is no longer
+what's serving either domain.
+
+**Two other ODD domains are still separate old websites, and that is a
+known open blocker, not the intended state.** `oddfest.co` (Vercel, GoDaddy
+DNS) and `oddspace.co` (Hostinger) each still serve their own standalone
+pre-All-Things-ODD site, including facts this site deliberately does not
+publish. They are meant to become redirects into `allthingsodd.co`; both
+need registrar/host credentials this repo does not have. See
+`docs/IDENTITY_LAUNCH_MATRIX_2026-09-04.md` for the exact redirect map and
+the human actions. Do not "fix" this by adding claims back to this site to
+match theirs.
 
 **Corrected 2026-08-21:** deploy is CI-automated, not manual — the `deploy`
 job in `.github/workflows/ci.yml` runs `npx surge dist` against
@@ -229,9 +273,10 @@ Growth OS side of it belongs in `../odd-growth-os`.
 
 ## Definition of done
 
-A change is done when: `npm run check`, `npm run lint`, `npm run build`, and
-`npm test` all pass; new/changed editorial content is in `src/content/`, not
-hardcoded; new CMS-relevant fields are reflected in `cloudcannon.config.yml`;
+A change is done when: `npm run quality` (which now includes the identity
+scan) and `npm test` both pass; new/changed editorial content is in
+`src/content/`, not hardcoded; new CMS-relevant fields are reflected in
+`cloudcannon.config.yml`;
 and the visual result has been checked against the current live site — not
 just "looks fine in isolation," and not against the old pre-migration file
 (see "What this is" above on why that's provenance reference, not a
@@ -465,6 +510,9 @@ while implementing a website feature.
 - `docs/design-system.md` — the token/component rules, with the reasoning
 - `docs/editing.md` — what a non-developer can do in CloudCannon
 - `docs/deployment.md` — how a change reaches production
+- `docs/IDENTITY_LAUNCH_MATRIX_2026-09-04.md` — the All Things ODD identity /
+  domain / repository migration: what changed, what is verified, and the
+  external blockers that remain
 - Astro docs: https://docs.astro.build
   ([routing](https://docs.astro.build/en/guides/routing/),
   [content collections](https://docs.astro.build/en/guides/content-collections/),

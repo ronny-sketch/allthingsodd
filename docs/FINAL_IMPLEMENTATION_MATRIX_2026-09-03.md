@@ -435,7 +435,7 @@ where `surge` is logged in as `ronny@oddfest.co` and `gh` is authenticated
 
 ```bash
 npx surge tokens add -m "github-actions-ci-$(date +%Y%m%d)" \
-  | gh secret set SURGE_TOKEN --repo ronny-sketch/odd-field-guide
+  | gh secret set SURGE_TOKEN --repo ronny-sketch/allthingsodd
 ```
 
 _Prepared:_ the failure mode, its history and this command are now written

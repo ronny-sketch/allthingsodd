@@ -13,6 +13,7 @@
 import { getEntry } from 'astro:content';
 import Logo from '../primitives/Logo.astro';
 import SocialIcon from '../primitives/SocialIcon.astro';
+import { socialLinkLabel } from '../primitives/social-handle';
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
@@ -42,7 +43,12 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
     <div class="menu-social">
       {
         social.map((s) => (
-          <a href={s.href} target="_blank" rel="noreferrer" aria-label={s.platform}>
+          <a
+            href={s.href}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={socialLinkLabel(s.platform, s.href)}
+          >
             <SocialIcon platform={s.platform} />
           </a>
         ))

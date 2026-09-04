@@ -20,7 +20,7 @@ test('home tells the story in the order the copy master specifies', async ({ pag
       whatWeDo: html.indexOf('What we do'),
       proof: html.indexOf('Already in motion'),
       audience: html.indexOf('Who ODD is for'),
-      whatsHappening: html.indexOf('whats-happening'),
+      featuredIn: html.indexOf('Featured in'),
       workWithOdd: html.indexOf('wwo-band'),
       participate: html.indexOf('The way in is by doing'),
     };
@@ -32,10 +32,15 @@ test('home tells the story in the order the copy master specifies', async ({ pag
   expect(order.whyOdd).toBeLessThan(order.whatWeDo);
   expect(order.whatWeDo).toBeLessThan(order.proof);
   expect(order.proof).toBeLessThan(order.audience);
-  expect(order.audience).toBeLessThan(order.whatsHappening);
-  // The organisational band closes the story; before this pass it sat
-  // directly under the three product cards and read as a fourth product.
-  expect(order.whatsHappening).toBeLessThan(order.workWithOdd);
+  // "What's happening" used to sit between the audience section and the
+  // organisational band; it was removed outright on 2026-09-04 (see
+  // identity-integrity.spec.ts, which asserts it stays gone). The order
+  // contract is otherwise unchanged, and "Featured in" now closes the
+  // proof half of the page.
+  expect(order.audience).toBeLessThan(order.featuredIn);
+  // The organisational band closes the story; before the 2026-09-03 pass it
+  // sat directly under the three product cards and read as a fourth product.
+  expect(order.featuredIn).toBeLessThan(order.workWithOdd);
   expect(order.workWithOdd).toBeLessThan(order.participate);
 });
 

@@ -14,6 +14,7 @@ import LogoStrip from '../components/sections/LogoStrip.astro';
 import ResourceList from '../components/sections/ResourceList.astro';
 import ArchiveYear from '../components/sections/ArchiveYear.astro';
 import SocialIcon from '../components/primitives/SocialIcon.astro';
+import { deriveHandle } from '../components/primitives/social-handle';
 
 const entry = await getEntry('pages', 'media');
 if (!entry || entry.data._template !== 'media')
@@ -34,24 +35,6 @@ const pressLogos = featuredIn.filter((item) => item.pressCoverage);
 // domain in page content.
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
 const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteUrl }];
-
-// A profile-style handle derived directly from the real href in
-// site/global.json — never a separately maintained/hardcoded handle that
-// could drift from the actual link. Discord's link is a plain invite (no
-// meaningful "@handle"), so it's shown without one.
-function deriveHandle(platform: string, href: string): string | null {
-  if (platform === 'Discord') return null;
-  try {
-    const url = new URL(href);
-    const segment = url.pathname
-      .replace(/^\/+|\/+$/g, '')
-      .split('/')
-      .pop();
-    return segment ? `@${segment}` : null;
-  } catch {
-    return null;
-  }
-}
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>

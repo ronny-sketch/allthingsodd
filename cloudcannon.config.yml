@@ -410,16 +410,6 @@ collections_config:
         comment: The business/creative dual-entry section. Keep the framing reciprocal, not "business buys, creatives belong".
         options:
           subtype: object
-      whatsHappening:
-        type: object
-        label: '"What''s happening" (Home only)'
-        comment: >-
-          "note" is the small disclaimer line under the activity list.
-          "items" is the flat, editable list of current activity — mix
-          ODDfest/ODDference/ODDspace/member items freely, each with its own
-          category tag.
-        options:
-          subtype: object
       proof:
         type: object
         label: Proof / traction
@@ -437,7 +427,13 @@ collections_config:
           or quote existed to populate it) — its speaker roster carries the
           social-proof job instead. On Home, pairs with "proofIntro" below —
           leave "eyebrow"/"title" blank here (the editorial framing lives in
-          proofIntro instead).
+          proofIntro instead). Home's four figures are ODD's cumulative
+          totals across its whole first two years (2026-09-04), not one
+          event's: keep them and proofIntro's wording in step, and keep
+          "reportNote" honest about what the linked report actually covers.
+          "srValue" on an item is the spoken form of an abbreviated number
+          ("€400K+" -> "More than €400,000") — set it whenever a value is
+          shortened for the design, leave it blank otherwise.
         options:
           subtype: object
           required: false
@@ -986,8 +982,17 @@ collections_config:
         type: text
         label: Newsletter sign-up link
         comment: >-
-          Where the footer and menu "Sign up" forms send visitors — the
-          publication's real hosted subscribe page (e.g. a Beehiiv URL).
+          Where the footer and menu "Sign up" forms send visitors without
+          JavaScript — the publication's real hosted subscribe page (e.g. a
+          Beehiiv URL). With JavaScript the form posts to the Growth OS
+          /api/newsletter route instead, so this is the fallback, not the
+          only path. Currently `oddfest.beehiiv.com`: the publication is
+          ODDfest-branded but serves the whole ecosystem, which is a real
+          mismatch now that the site is All Things ODD. Renaming or
+          re-domaining it takes Beehiiv account access — see B15 in
+          docs/IDENTITY_LAUNCH_MATRIX_2026-09-04.md. Do not replace this
+          with a guessed allthingsodd URL: a sign-up form pointing at a
+          publication that does not exist loses every subscriber who tries.
       preRegister:
         type: object
         label: Pre-registration CTA (not currently shown anywhere)

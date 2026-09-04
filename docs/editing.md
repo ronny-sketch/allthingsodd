@@ -38,11 +38,26 @@ high-level notes:
   every page.
 - **Home**: hero proposition + two buttons, "What ODD is", the two-ways-in
   business/creative section (audience explanation only, as of 2026-08-30 —
-  see below), "What's happening" (a flat, editable activity list — mix
-  ODDfest/ODDference/ODDspace items freely), the platform grid (not fixed at
-  four cards), proof numbers (optional — omit the field rather than invent
-  numbers), a case/story teaser (optional), and the participate band (2-5
-  CTAs, each can carry an "audience" tag — see below).
+  see below), the platform grid (not fixed at four cards), the "Already in
+  motion" proof module (its editorial intro plus the four cumulative
+  figures — see below), a case/story teaser (optional), and the participate
+  band (2-5 CTAs, each can carry an "audience" tag — see below).
+  - 2026-09-04: the homepage's "What's happening" activity list was removed
+    outright, along with its editing fields. It is not hidden and there is
+    nothing to re-enable — a running list of current activity only stays
+    true if someone maintains it weekly, and nobody owned that. ODDspace's
+    own calendar on `/oddspace` is unaffected and is still the place where
+    live activity is published.
+  - 2026-09-04: "Already in motion" now carries ODD's **cumulative** totals
+    across its whole first two years (5,000+ participants, 500+
+    collaborators, 100+ partners, €400K+ into the creative and cultural
+    industries), not ODDfest 2025's figures alone. If you change a number
+    here, change the intro paragraph above it too — they state the same
+    facts twice, deliberately, and one of them going stale is the failure
+    mode. Two supporting fields: `srValue` on a shortened number is what a
+    screen reader says instead of the abbreviation ("More than €400,000"),
+    and `reportNote` under the report link is what keeps that link's scope
+    honest ("the 2025 report covers ODDfest 2025 alone").
   - 2026-08-30 homepage revision: the separate "For organisations / Work
     with ODD." teaser section (and its `workWithOdd` field) was removed —
     the platform grid immediately above it already includes a Work with ODD

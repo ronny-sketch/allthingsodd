@@ -43,7 +43,8 @@ came from, or be explicitly called out as a deliberate, documented departure.
 
 **Check contrast before shipping a new opacity value.** Several of the
 archive-measured opacity steps (`--color-paper-40`, and the light-band
-`whats-on-desc` text) originally fell just under WCAG AA's 4.5:1 for the text
+description text in the since-removed `WhatsOn` component) originally fell
+just under WCAG AA's 4.5:1 for the text
 they're used on — found by actually computing contrast on the composited
 (alpha-blended) color, not the token's face value, since a translucent color
 reads differently depending on what's behind it. Both were nudged up just
