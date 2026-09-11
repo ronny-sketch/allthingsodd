@@ -70,9 +70,18 @@ high-level notes:
     (Business/Creative/Stay in touch, or leave blank) to group it under a
     label instead of one flat row — set it to match how a new CTA should
     group, or leave it empty for an ungrouped card.
-- **ODDfest**: what it is, how it works, who can take part, what ODD
-  provides, organiser ownership, programme, open call (optional), for
-  partners, previous edition/proof (optional), FAQ.
+- **ODDfest**: hero (eyebrow/title/hero support line/meta and two buttons),
+  what it is, the two look-back buttons under it, how it works (who does
+  what, then the four numbered steps), how to join, programme (optional —
+  empty until a real 2027 programme exists), what has happened before, 2026
+  examples (optional — empty until real, named ones exist), FAQ.
+  Rebuilt 2026-09-11; the bullet here previously listed a set of fields
+  (who can take part / what ODD provides / organiser ownership / open call /
+  for partners / previous edition) that had already been consolidated away
+  in the V2 rebuild and no longer existed. Two rules on this page in
+  particular: the "what has happened before" section must carry only figures
+  the site already publishes elsewhere, and the deleted "shared platform"
+  block must not come back until there is a platform to describe.
 - **ODDference**: the big question, who it's for, why attend, themes,
   formats, speakers (optional — leave empty until real speakers are
   confirmed), programme (optional), connection & networking, proof (optional,
@@ -130,9 +139,10 @@ high-level notes:
   strip (edited under Global — same list shown on the homepage), boilerplate,
   press releases, info packs, assets & photos (with a photo-credit usage
   note), a named press contact, and social media.
-- **Contact**: eyebrow/title/intro text above the contact form. See
-  [Contact form setup](#contact-form-setup) below for the one field that
-  actually makes it send.
+- **Contact**: eyebrow/title/intro text above the contact form. The access
+  keys that actually make it send live under Global — see
+  [Contact form setup](#contact-form-setup) below for those and for where
+  each topic's message goes.
 
 A field marked "optional" in `cloudcannon.config.yml`'s comments can be left
 out of the page's JSON entirely — the page renders correctly without it. This
@@ -173,11 +183,56 @@ sign-up link above.
 The Contact page's form submits via [Web3Forms](https://web3forms.com) — a
 free service that emails you a submission, no backend of ours required.
 
-1. Get a free access key at web3forms.com (just an email address, no signup).
-2. Paste it into the Contact page's "Web3Forms access key" field.
-3. Publish. The form starts sending for real; until then it renders normally
-   but tells visitors it isn't connected yet, rather than silently discarding
-   what they type.
+The form asks the visitor what their message is about, and each topic goes to
+a different address. A Web3Forms access key is tied to exactly one recipient,
+so there is one key per topic:
+
+| Topic on the form         | Key field    | Sends to              |
+| ------------------------- | ------------ | --------------------- |
+| Something else / not sure | `general`    | `hello@oddfest.co`    |
+| Partnering & ODDference   | `partnering` | `partners@oddfest.co` |
+| ODDspace                  | `oddspace`   | `space@oddfest.co`    |
+| ODDfest                   | `oddfest`    | `fest@oddfest.co`     |
+
+The three `partners@`/`space@`/`fest@` addresses are **Google Groups**, not
+mailboxes. Who receives each topic is the group's membership, changed in
+Google Workspace admin — not here, and not in the code. That is the whole
+point of the setup: teams change more often than this site deploys, and
+deploying needs a manual step (see `docs/deployment.md`), so a list of
+people's addresses living in the repo would quietly go stale and keep mailing
+someone who left. Each group also contains `hello@oddfest.co`, so the shared
+inbox sees every message without being addressed separately.
+
+`hello@allthingsodd.co` is a Workspace **domain alias** of `hello@oddfest.co`
+— the same mailbox, so adding it as a second recipient would only deliver two
+copies of everything to one inbox.
+
+The **Work with ODD** enquiry form uses the same `partnering` key: it writes
+the enquiry to Attio as it always has, and now also emails
+`partners@oddfest.co` so somebody is actually told it arrived. That is why the
+keys live under **Global → Form routing**, not on the Contact page — two
+different forms send to the same place, and pasting the key twice would let
+them drift into mailing different people about the same partnership.
+
+To connect it:
+
+1. In Google Workspace admin, create the three groups above and add the right
+   people plus `hello@oddfest.co` to each.
+2. At web3forms.com, get a free access key for each of the four addresses
+   (just an email address, no signup — the key is mailed to that address, and
+   for a group any member receives it).
+3. Paste each into its field under **Global → Form routing — Web3Forms access
+   keys**.
+4. Publish.
+
+A topic left blank falls back to the General key, so the message still reaches
+a human rather than the visitor being told the form is broken — you can
+connect General first and add the rest later. (The Work with ODD notification
+is the one exception: with no `partnering` key it simply doesn't send, and
+that form behaves exactly as it did before — the Attio record is still
+written.) Until General is set too, the
+form renders normally but tells visitors it isn't connected yet, rather than
+silently discarding what they type.
 
 ## What you can't edit here (and why)
 

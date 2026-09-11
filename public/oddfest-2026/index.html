@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ODDfest 2026 — Thank You</title>
+  <style>
+
+/* ─── Fonts ──────────────────────────────────────────── */
+@font-face { font-family:'Forta';    src:url('forta-regular.woff2') format('woff2');   font-weight:400;     font-display:swap; }
+@font-face { font-family:'Gabarito'; src:url('gabarito-variable.woff2') format('woff2'); font-weight:400 800; font-display:swap; }
+
+
+/* ─── Archive banner ─────────────────────────────────────
+   This page was written in June 2026 and says 2027 will be "one cohesive
+   concept, one central location". ODDfest 2027 has since become a
+   distributed, host-owned creative week, so the claim below is superseded.
+   Nothing in the original is rewritten — the banner dates it instead, and
+   points at the current plan. --archive-h is what #bar and #bar-progress
+   offset themselves by, so the two stay in sync at every width. */
+:root { --archive-h:38px; }
+#archive-note {
+  position:fixed;
+  top:0; left:0; right:0;
+  z-index:400;
+  height:var(--archive-h);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:0 16px;
+  background:#f0ebe0;
+  color:#000;
+  font-family:var(--G);
+  font-size:12px;
+  line-height:1.3;
+  letter-spacing:0.01em;
+  text-align:center;
+}
+#archive-note b {
+  font-weight:700;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  font-size:10.5px;
+  white-space:nowrap;
+}
+#archive-note span { opacity:0.78; }
+#archive-note a {
+  color:#000;
+  font-weight:600;
+  text-decoration:underline;
+  text-underline-offset:2px;
+  white-space:nowrap;
+}
+#archive-note a:hover { opacity:0.6; }
+@media (max-width:720px) {
+  :root { --archive-h:54px; }
+  #archive-note { flex-direction:column; gap:1px; justify-content:center; font-size:11px; }
+}
+
+/* ─── Reset ──────────────────────────────────────────── */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+:root {
+  --c:   #f0ebe0;
+  --c80: rgba(240,235,224,0.80);
+  --c60: rgba(240,235,224,0.60);
+  --c40: rgba(240,235,224,0.40);
+  --c20: rgba(240,235,224,0.20);
+  --c12: rgba(240,235,224,0.12);
+  --c06: rgba(240,235,224,0.06);
+  --c03: rgba(240,235,224,0.03);
+  --F:'Forta',sans-serif;
+  --G:'Gabarito',sans-serif;
+}
+
+html { scroll-behavior:smooth; }
+body {
+  background:#000;
+  color:var(--c);
+  font-family:var(--G);
+  font-weight:400;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ─── Controls bar ───────────────────────────────────── */
+#bar {
+  position:fixed;
+  top:var(--archive-h); left:0; right:0;
+  z-index:300;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 32px;
+  height:60px;
+  background:rgba(0,0,0,0.82);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(240,235,224,0.08);
+  pointer-events:none;
+}
+#bar > * { pointer-events:all; }
+
+.bar-logo img {
+  height:34px;
+  width:auto;
+  opacity:0.92;
+  display:block;
+}
+
+.bar-center {
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+/* Waveform visualiser */
+.viz {
+  display:flex;
+  align-items:center;
+  gap:2.5px;
+  margin-right:16px;
+  height:20px;
+}
+.viz-bar {
+  width:2px;
+  height:3px;
+  background:var(--c20);
+  border-radius:1px;
+}
+@keyframes vizPulse {
+  0%,100% { height:3px; }
+  50%      { height:15px; }
+}
+.viz.active .viz-bar { background:var(--c60); }
+.viz.active .viz-bar:nth-child(1)  { animation:vizPulse 0.55s 0.00s ease-in-out infinite; }
+.viz.active .viz-bar:nth-child(2)  { animation:vizPulse 0.70s 0.08s ease-in-out infinite; }
+.viz.active .viz-bar:nth-child(3)  { animation:vizPulse 0.50s 0.16s ease-in-out infinite; }
+.viz.active .viz-bar:nth-child(4)  { animation:vizPulse 0.65s 0.05s ease-in-out infinite; }
+.viz.active .viz-bar:nth-child(5)  { animation:vizPulse 0.80s 0.12s ease-in-out infinite; }
+.viz.active .viz-bar:nth-child(6)  { animation:vizPulse 0.60s 0.20s ease-in-out infinite; }
+.viz.active .viz-bar:nth-child(7)  { animation:vizPulse 0.45s 0.03s ease-in-out infinite; }
+.viz.active .viz-bar:nth-child(8)  { animation:vizPulse 0.75s 0.10s ease-in-out infinite; }
+.viz.active .viz-bar:nth-child(9)  { animation:vizPulse 0.58s 0.18s ease-in-out infinite; }
+.viz.active .viz-bar:nth-child(10) { animation:vizPulse 0.68s 0.07s ease-in-out infinite; }
+
+/* Play button — Forta editorial style */
+#playBtn {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:none;
+  border:none;
+  border-bottom:1px solid transparent;
+  color:var(--c40);
+  font-family:var(--F);
+  font-size:13px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  padding:4px 0 5px;
+  cursor:pointer;
+  transition:color 0.25s, border-color 0.25s;
+  white-space:nowrap;
+}
+#playBtn:hover { color:var(--c80); border-bottom-color:var(--c20); }
+#playBtn.is-playing { color:var(--c); border-bottom-color:var(--c40); }
+.play-icon { font-style:normal; font-size:10px; line-height:1; }
+
+/* Base-speed nudge (minimal, hidden label) */
+.speed-row {
+  display:flex;
+  align-items:center;
+  gap:0;
+  margin-left:20px;
+  opacity:0.35;
+  transition:opacity 0.2s;
+}
+.speed-row:hover { opacity:0.7; }
+#speedRange {
+  width:44px;
+  accent-color:var(--c);
+  cursor:pointer;
+  -webkit-appearance:none;
+  appearance:none;
+  height:1px;
+  background:var(--c20);
+  outline:none;
+  border-radius:0;
+}
+#speedRange::-webkit-slider-thumb {
+  -webkit-appearance:none;
+  width:8px; height:8px;
+  background:var(--c60);
+  border-radius:50%;
+  cursor:pointer;
+}
+
+.bar-right {
+  font-family:var(--G);
+  font-size:9px;
+  font-weight:500;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:var(--c20);
+  user-select:none;
+}
+
+/* Audio progress bar (below nav) */
+#bar-progress {
+  position:fixed;
+  top:calc(var(--archive-h) + 60px);
+  left:0; right:0;
+  height:1px;
+  background:var(--c06);
+  z-index:299;
+}
+#bar-progress-fill {
+  height:100%;
+  width:0%;
+  background:linear-gradient(to right, var(--c20), var(--c60));
+}
+
+/* Beat flash overlay */
+#beat-flash {
+  position:fixed;
+  inset:0;
+  z-index:200;
+  pointer-events:none;
+  background:rgba(240,235,224,0.055);
+  opacity:0;
+}
+
+/* ─── Photo burst opener ─────────────────────────────── */
+#opener {
+  position:relative;
+  width:100%;
+  height:100vh;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  grid-template-rows:repeat(4,1fr);
+  gap:3px;
+  overflow:hidden;
+  background:#000;
+  cursor:default;
+}
+
+/* Cell entry animation */
+.opener-cell {
+  overflow:hidden;
+  position:relative;
+  opacity:0;
+  transform:translateX(var(--ex,0px)) translateY(var(--ey,0px)) rotate(var(--er,0deg)) scale(0.80);
+  animation:cellFly 0.95s cubic-bezier(0.16,1,0.3,1) both;
+}
+.opener-cell.w2 { grid-column:span 2; }
+
+/* Dark overlay per cell — lifts on hover, deepens on siblings */
+.opener-cell::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:rgba(0,0,0,0);
+  transition:background 0.35s ease;
+  pointer-events:none;
+}
+#opener:hover .opener-cell:not(:hover)::before {
+  background:rgba(0,0,0,0.42);
+}
+.opener-cell:hover::before {
+  background:rgba(0,0,0,0) !important;
+}
+.opener-cell:hover { filter:brightness(1.18) saturate(1.08); }
+.opener-cell { transition:filter 0.25s ease; }
+
+/* Ken Burns on each photo */
+.opener-cell img {
+  width:100%; height:100%;
+  object-fit:cover;
+  display:block;
+  animation:kenBurns var(--kd,16s) ease-in-out infinite alternate;
+  transform-origin:var(--kox,50%) var(--koy,50%);
+  will-change:transform;
+}
+
+@keyframes cellFly {
+  to { opacity:1; transform:none; }
+}
+@keyframes kenBurns {
+  from { transform:scale(1.0); }
+  to   { transform:scale(1.16) translate(var(--kx,2%),var(--ky,1%)); }
+}
+
+/* Cursor spotlight */
+#opener-spotlight {
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  transition:none;
+}
+
+/* Film grain */
+#opener::after {
+  content:'';
+  position:absolute;
+  inset:-60%;
+  width:220%; height:220%;
+  z-index:3;
+  pointer-events:none;
+  opacity:0.04;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:140px 140px;
+  animation:grain 0.45s steps(1) infinite;
+}
+@keyframes grain {
+  0%  { transform:translate(0,0); }
+  20% { transform:translate(-6%,-4%); }
+  40% { transform:translate(5%,6%); }
+  60% { transform:translate(-4%,5%); }
+  80% { transform:translate(6%,-3%); }
+  100%{ transform:translate(-3%,4%); }
+}
+
+/* Logo overlay */
+#opener-overlay {
+  position:absolute;
+  inset:0;
+  z-index:4;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(ellipse 60% 70% at 50% 50%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 100%),
+    linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0.08) 70%, rgba(0,0,0,0.65) 100%);
+  pointer-events:none;
+}
+#opener-overlay img {
+  width:min(360px,62vw);
+  height:auto;
+  opacity:0;
+  animation:fadeUp 1.2s 0.5s cubic-bezier(0.16,1,0.3,1) both;
+  filter:drop-shadow(0 0 60px rgba(240,235,224,0.07));
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:none; }
+}
+
+/* ─── Credits wrapper ────────────────────────────────── */
+#credits {
+  max-width:700px;
+  margin:0 auto;
+  padding:56px 52px 60vh;
+  text-align:center;
+}
+
+.sec { margin:72px 0; }
+
+.line {
+  display:block;
+  width:1px;
+  height:56px;
+  background:linear-gradient(to bottom, transparent, var(--c20), transparent);
+  margin:0 auto;
+}
+
+/* ─── Logo section ───────────────────────────────────── */
+.logo-img {
+  width:min(300px,65vw);
+  height:auto;
+  margin-bottom:24px;
+  opacity:0.92;
+}
+.logo-date {
+  font-family:var(--G);
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:0.48em;
+  text-transform:uppercase;
+  color:var(--c40);
+  margin-bottom:40px;
+}
+
+/* ─── Hero body ──────────────────────────────────────── */
+.hero-body {
+  font-family:var(--G);
+  font-size:clamp(16px,2.4vw,21px);
+  font-weight:400;
+  line-height:1.85;
+  color:var(--c80);
+}
+.hero-body b { font-weight:700; color:var(--c); }
+
+/* ─── Hero anchor ────────────────────────────────────── */
+.hero-anchor { margin-top:40px; }
+.hero-anchor-headline {
+  font-family:var(--F);
+  font-size:clamp(30px,5.5vw,56px);
+  color:var(--c);
+  line-height:1.1;
+  margin-bottom:0;
+}
+
+/* ─── Quote ──────────────────────────────────────────── */
+.quote-pull {
+  font-family:var(--F);
+  font-size:clamp(20px,3vw,32px);
+  line-height:1.55;
+  color:var(--c);
+  margin-bottom:24px;
+  max-width:520px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.quote-em { color:var(--c80); }
+.quote-attr {
+  font-family:var(--G);
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:var(--c40);
+}
+
+/* ─── Year / recap ───────────────────────────────────── */
+.cat-label {
+  font-family:var(--G);
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:0.55em;
+  text-transform:uppercase;
+  color:var(--c40);
+  margin-bottom:32px;
+}
+.year-bg {
+  font-family:var(--F);
+  font-size:clamp(72px,16vw,160px);
+  color:var(--c06);
+  line-height:1;
+  margin:28px 0 8px;
+  user-select:none;
+  pointer-events:none;
+}
+.body-p {
+  font-family:var(--G);
+  font-size:clamp(15px,2vw,18px);
+  font-weight:400;
+  line-height:1.9;
+  color:var(--c60);
+  text-align:left;
+  margin-bottom:28px;
+}
+
+/* ─── Heroes intro ───────────────────────────────────── */
+.heroes-intro {
+  font-family:var(--F);
+  font-size:clamp(34px,6.5vw,72px);
+  line-height:1.1;
+  color:var(--c);
+}
+.heroes-sub {
+  font-family:var(--G);
+  font-size:clamp(14px,2vw,17px);
+  font-weight:400;
+  color:var(--c60);
+  margin-top:18px;
+  line-height:1.7;
+}
+
+/* ─── Credit names ───────────────────────────────────── */
+.sub-cat {
+  font-family:var(--G);
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:0.52em;
+  text-transform:uppercase;
+  color:var(--c20);
+  margin-bottom:36px;
+}
+.cr-name {
+  font-family:var(--F);
+  font-size:clamp(24px,3.8vw,40px);
+  color:var(--c);
+  line-height:1.2;
+  margin-bottom:4px;
+  opacity:0;
+  transform:translateY(12px);
+  transition:opacity 0.6s ease, transform 0.6s ease;
+}
+.cr-name.vis { opacity:1; transform:none; }
+.cr-role {
+  font-family:var(--G);
+  font-size:9px;
+  font-weight:500;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:var(--c40);
+  margin-bottom:26px;
+  opacity:0;
+  transition:opacity 0.6s ease 0.1s;
+}
+.cr-role.vis { opacity:1; }
+
+/* ─── Artist names ───────────────────────────────────── */
+.artist {
+  font-family:var(--G);
+  font-size:clamp(14px,1.8vw,16px);
+  font-weight:400;
+  line-height:2.2;
+  color:var(--c80);
+}
+
+/* ─── Volunteer section ──────────────────────────────── */
+.vol-intro {
+  font-family:var(--G);
+  font-size:clamp(14px,1.9vw,17px);
+  font-weight:400;
+  line-height:1.75;
+  color:var(--c60);
+  margin-bottom:36px;
+}
+.vol-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:0 16px;
+  text-align:center;
+}
+.vol {
+  font-family:var(--G);
+  font-size:13px;
+  font-weight:400;
+  line-height:2.1;
+  color:var(--c60);
+  border-bottom:1px solid var(--c06);
+}
+
+/* ─── Partner section ────────────────────────────────── */
+.p-subhead {
+  font-family:var(--G);
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:0.45em;
+  text-transform:uppercase;
+  color:var(--c20);
+  margin:40px 0 18px;
+}
+.p-subhead:first-child { margin-top:0; }
+.p-name {
+  font-family:var(--G);
+  font-size:clamp(13px,1.7vw,15px);
+  font-weight:400;
+  line-height:2.4;
+  color:var(--c60);
+}
+.p-name a { color:inherit; text-decoration:none; transition:color 0.2s; }
+.p-name a:hover { color:var(--c); }
+
+.media-banner {
+  margin-top:36px;
+  padding:24px 20px;
+  border:1px solid var(--c06);
+}
+.media-banner-lbl {
+  font-family:var(--G);
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:0.45em;
+  text-transform:uppercase;
+  color:var(--c20);
+  margin-bottom:14px;
+}
+.media-banner-names {
+  font-family:var(--G);
+  font-size:12px;
+  font-weight:400;
+  line-height:2.2;
+  color:var(--c40);
+}
+.media-banner-names a { color:inherit; text-decoration:none; }
+.media-banner-names a:hover { color:var(--c60); }
+
+/* ─── CTA blocks ─────────────────────────────────────── */
+.cta-box {
+  padding:44px 36px;
+  border:1px solid var(--c12);
+  margin:48px 0;
+}
+.cta-eyebrow {
+  font-family:var(--G);
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:0.5em;
+  text-transform:uppercase;
+  color:var(--c40);
+  margin-bottom:20px;
+}
+.cta-head {
+  font-family:var(--F);
+  font-size:clamp(24px,4.2vw,42px);
+  line-height:1.2;
+  color:var(--c);
+  margin-bottom:32px;
+}
+.btn {
+  display:inline-block;
+  background:transparent;
+  border:1px solid var(--c40);
+  color:var(--c);
+  font-family:var(--G);
+  font-weight:600;
+  font-size:10px;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  padding:12px 28px;
+  text-decoration:none;
+  cursor:pointer;
+  transition:border-color 0.2s, background 0.2s;
+  margin:5px;
+}
+.btn:hover { border-color:var(--c); background:var(--c06); }
+
+/* ─── Feedback form ──────────────────────────────────── */
+.f-label {
+  display:block;
+  font-family:var(--G);
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:var(--c40);
+  margin:20px 0 7px;
+  text-align:left;
+}
+.f-input,.f-textarea {
+  width:100%;
+  background:var(--c03);
+  border:1px solid var(--c12);
+  color:var(--c);
+  font-family:var(--G);
+  font-size:16px;
+  font-weight:400;
+  padding:11px 13px;
+  outline:none;
+  transition:border-color 0.2s;
+  border-radius:0;
+  -webkit-appearance:none;
+}
+.f-input:focus,.f-textarea:focus { border-color:var(--c40); }
+.f-textarea { min-height:100px; resize:vertical; }
+.f-submit {
+  margin-top:18px;
+  width:100%;
+  background:transparent;
+  border:1px solid var(--c40);
+  color:var(--c);
+  font-family:var(--G);
+  font-weight:600;
+  font-size:10px;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  padding:14px;
+  cursor:pointer;
+  transition:background 0.2s, border-color 0.2s;
+}
+.f-submit:hover { background:var(--c06); border-color:var(--c); }
+
+/* ─── ODDspace ───────────────────────────────────────── */
+.space-p {
+  font-family:var(--G);
+  font-size:clamp(14px,2vw,18px);
+  font-weight:400;
+  line-height:1.85;
+  color:var(--c60);
+  margin-bottom:20px;
+}
+
+/* ─── Sign-off ───────────────────────────────────────── */
+.signoff {
+  font-family:var(--F);
+  font-size:clamp(56px,13vw,130px);
+  color:var(--c);
+  line-height:1.0;
+  margin-bottom:28px;
+}
+.love {
+  font-family:var(--G);
+  font-size:clamp(15px,2.3vw,20px);
+  font-weight:400;
+  line-height:1.8;
+  color:var(--c60);
+}
+
+/* ════════════════════════════════════════════════════════
+   PHOTO SECTIONS
+   ════════════════════════════════════════════════════════ */
+
+/* ── 1. Film Strip ─────────────────────────────────────── */
+.film-strip-wrap {
+  position:relative;
+  left:50%;
+  transform:translateX(-50%);
+  width:100vw;
+  overflow:hidden;
+  margin:48px 0;
+  padding:0;
+}
+.film-row {
+  display:flex;
+  gap:5px;
+  width:max-content;
+  will-change:transform;
+}
+.film-row.row-a { animation:filmA 40s linear infinite; }
+.film-row.row-b { animation:filmB 52s linear infinite; margin-top:5px; }
+
+@keyframes filmA { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+@keyframes filmB { from{transform:translateX(-50%);} to{transform:translateX(0);} }
+
+.film-frame {
+  width:200px;
+  height:140px;
+  flex-shrink:0;
+  background:var(--c06);
+  overflow:hidden;
+  position:relative;
+}
+.film-frame img {
+  width:100%; height:100%;
+  object-fit:cover;
+  display:block;
+  opacity:0;
+  transition:opacity 0.4s;
+}
+.film-frame img.loaded { opacity:1; }
+.film-frame.empty::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,var(--c06) 0%,transparent 100%);
+}
+
+/* ── 2. Polaroid scatter ───────────────────────────────── */
+.scatter-wrap {
+  position:relative;
+  left:50%;
+  transform:translateX(-50%);
+  width:100vw;
+  margin:48px 0;
+  overflow:hidden;
+}
+.scatter-row {
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  padding:20px 32px;
+  flex-wrap:nowrap;
+}
+.polaroid {
+  flex-shrink:0;
+  width:170px;
+  background:#0d0d0d;
+  border:1px solid var(--c12);
+  padding:7px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.6);
+  opacity:0;
+  transform:translateY(32px) rotate(var(--rot,0deg));
+  transition:opacity 0.7s ease, transform 0.7s ease;
+}
+.polaroid.vis {
+  opacity:1;
+  transform:translateY(0) rotate(var(--rot,0deg));
+}
+.polaroid:hover {
+  transform:translateY(-8px) rotate(0deg) scale(1.07);
+  z-index:10;
+  box-shadow:0 20px 60px rgba(0,0,0,0.85);
+  transition:transform 0.25s ease, box-shadow 0.25s ease;
+}
+.polaroid-img {
+  width:100%;
+  aspect-ratio:1;
+  object-fit:cover;
+  display:block;
+  background:var(--c06);
+}
+
+/* ── 3. Mosaic grid ────────────────────────────────────── */
+.mosaic-wrap { margin:32px 0; }
+.mosaic-eyebrow {
+  font-family:var(--G);
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:0.45em;
+  text-transform:uppercase;
+  color:var(--c80);
+  text-align:center;
+  margin-bottom:36px;
+}
+.mosaic-eyebrow a {
+  color:inherit;
+  text-decoration:none;
+  border-bottom:1px solid var(--c20);
+  padding-bottom:2px;
+  transition:color 0.2s, border-color 0.2s;
+}
+.mosaic-eyebrow a:hover { color:var(--c); border-color:var(--c60); }
+
+.mosaic-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:4px;
+}
+.mosaic-cell {
+  background:var(--c06);
+  overflow:hidden;
+  position:relative;
+  opacity:0;
+  transform:scale(0.97);
+  transition:opacity 0.5s ease, transform 0.5s ease;
+}
+.mosaic-cell.vis { opacity:1; transform:none; }
+.mosaic-cell.wide { grid-column:span 2; }
+.mosaic-cell img {
+  width:100%; height:100%;
+  object-fit:cover;
+  display:block;
+  min-height:140px;
+  opacity:0;
+  transition:opacity 0.4s;
+}
+.mosaic-cell img.loaded { opacity:1; }
+.mosaic-cell::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0);
+  transition:background 0.25s;
+}
+.mosaic-cell:hover::after { background:rgba(0,0,0,0.18); }
+
+/* ─── Mobile ─────────────────────────────────────────── */
+@media (max-width:640px) {
+  #bar { padding:0 16px; height:54px; }
+  .bar-logo img { height:26px; }
+  .speed-row { display:none; }
+  #playBtn { font-size:9px; padding:7px 14px; }
+  .bar-right { display:none; }
+
+  #credits { padding:40px 20px 50vh; }
+  .sec { margin:52px 0; }
+  .line { height:40px; }
+
+  .vol-grid { grid-template-columns:repeat(2,1fr); }
+
+  .scatter-row { gap:12px; padding:12px 16px; }
+  .polaroid { width:130px; }
+
+  .mosaic-grid { grid-template-columns:repeat(2,1fr); }
+  .mosaic-cell.wide { grid-column:span 2; }
+
+  .cta-box { padding:32px 20px; }
+
+  #opener {
+    grid-template-columns:repeat(3,1fr);
+    grid-template-rows:repeat(4,1fr);
+  }
+  .opener-cell.w2 { grid-column:span 2; }
+}
+
+  </style>
+</head>
+<body>
+
+<div id="archive-note">
+  <b>Archive</b>
+  <span>Written June 2026. ODDfest has taken a different shape since.</span>
+  <a href="https://allthingsodd.co/oddfest">See the 2027 plan &rarr;</a>
+</div>
+
+<!-- ═══ CONTROLS BAR ═══ -->
+<div id="beat-flash" aria-hidden="true"></div>
+<div id="bar">
+  <a href="#" class="bar-logo"><img src="ODDfest-logo-valkoinen.png" alt="ODDfest"></a>
+  <div class="bar-center">
+    <div class="viz" id="viz" aria-hidden="true">
+      <div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div>
+      <div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div>
+      <div class="viz-bar"></div><div class="viz-bar"></div><div class="viz-bar"></div>
+      <div class="viz-bar"></div>
+    </div>
+    <button id="playBtn" title="Space to toggle">
+      <span class="play-icon" id="playIcon">▶</span>
+      <span class="play-label" id="playLabel">Play Credits</span>
+    </button>
+    <div class="speed-row" title="Base speed">
+      <input type="range" id="speedRange" min="40" max="240" value="130">
+    </div>
+  </div>
+  <span class="bar-right">Helsinki · 2026</span>
+</div>
+<div id="bar-progress"><div id="bar-progress-fill"></div></div>
+
+<!-- ═══ PHOTO BURST OPENER ═══ -->
+<div id="opener">
+  <div id="opener-overlay">
+    <img src="ODDfest-logo-valkoinen.png" alt="ODDfest">
+  </div>
+  <div id="opener-spotlight"></div>
+</div>
+
+<!-- ═══ CREDITS ═══ -->
+<div id="credits">
+
+  <!-- HERO -->
+  <div class="sec">
+    <p class="hero-body">
+      To every soul who showed up, stayed up late,<br>
+      gave up comfortable choices, and poured themselves<br>
+      into something that had never been made before —
+      <br><br>
+      <b>thank you.</b>
+    </p>
+    <div class="hero-anchor">
+      <p class="hero-anchor-headline">You are the<br>heroes of ODD.</p>
+    </div>
+  </div>
+
+  <span class="line"></span>
+
+  <!-- QUOTE -->
+  <div class="sec">
+    <p class="quote-pull">
+      "a hero is an ordinary individual who finds the strength to <span class="quote-em">persevere and endure</span> in spite of overwhelming obstacles."
+    </p>
+    <p class="quote-attr">— Christopher Reeve</p>
+  </div>
+
+  <!-- FILM STRIP -->
+  <div class="film-strip-wrap" id="strip1">
+    <div class="film-row row-a" id="rowA"></div>
+    <div class="film-row row-b" id="rowB"></div>
+  </div>
+
+  <span class="line"></span>
+
+  <!-- 2026 / 2027 -->
+  <div class="sec">
+    <p class="cat-label">What we lived through &amp; where we go</p>
+
+    <div class="year-bg">2026</div>
+
+    <p class="body-p">
+      Something new was born this year. ODDference arrived — and it arrived with a bang.
+      The program was sharp, the conversations were real, the production was on point,
+      and the people were exactly who they needed to be. The concept was validated.
+      We know it works. We know what it can become.
+      Expect a more immersive, co-created and deeply developed format ahead.
+    </p>
+    <p class="body-p">
+      ODDfest continued to seek its form. It was ambitious — deliberately so.
+      Hundreds of beautiful performances. Multiple iconic venues. Programming that stretched
+      across disciplines, genres, and ideas in ways Helsinki had not seen before.
+      Those who arrived, loved what they found. But the concept was layered, complex,
+      and new — and that made it hard to explain before you'd experienced it.
+      Not enough people crossed that threshold.
+    </p>
+    <p class="body-p">
+      We gathered a lot of feedback. We heard what to crystallise, what to cut,
+      and what deserves to grow. We got to know our audience.
+      All of this has been enormous, necessary work. And it was worth every step.
+    </p>
+
+    <div class="year-bg">2027</div>
+
+    <p class="body-p">
+      Next year is about focus. One cohesive concept. One central location.
+      An immersive experience that is nailed down, crystal clear, and impossible to forget.
+      Co-curated with our visitors and target audience at the very centre —
+      not made <em>for</em> them, but <em>with</em> them.
+    </p>
+    <p class="body-p">
+      In 2027, Finland turns 110. ODD will be a living showcase of Finnish culture
+      and creativity — past, present, and future. The most Finnish and the most
+      international we have ever been, at exactly the same time.
+    </p>
+    <p class="body-p">
+      The work continues. See you on the other side.
+    </p>
+    <div style="margin-top:36px;">
+      <a href="https://www.oddfest.co" target="_blank" class="btn">See 2026 Webpage &nbsp;↗</a>
+    </div>
+  </div>
+
+  <span class="line"></span>
+
+  <!-- HEROES INTRO -->
+  <div class="sec" id="heroes">
+    <p class="cat-label">Our ODD Heroes</p>
+    <p class="heroes-intro">The doers.<br>The supporters.<br>The makers.</p>
+    <p class="heroes-sub">These are the people who made it real.</p>
+  </div>
+
+  <!-- CORE TEAM -->
+  <div class="sec">
+    <p class="sub-cat">Core Team</p>
+    <div class="cr-name">Ronny Eriksson</div><div class="cr-role">Founder &amp; Director</div>
+    <div class="cr-name">Ukko-Pekka "Upi" Itäpelto</div><div class="cr-role">Chief ODDness Officer</div>
+    <div class="cr-name">Aki Pöntinen</div><div class="cr-role">Co-founder</div>
+    <div class="cr-name">Max Wikholm</div><div class="cr-role">Head of Partnerships</div>
+    <div class="cr-name">Laura Fuentes</div><div class="cr-role">Head of PR</div>
+    <div class="cr-name">Kirsi Shemeikka</div><div class="cr-role">Production Manager</div>
+    <div class="cr-name">Hannamari Tamminen</div><div class="cr-role">Artist Production Manager</div>
+    <div class="cr-name">Jonas Verwijnen</div><div class="cr-role">Artist Booker</div>
+    <div class="cr-name">Karoliina Pärnänen</div><div class="cr-role">Social Media &amp; Visuals</div>
+    <div class="cr-name">Remu Shemeikka</div><div class="cr-role">Content Creator</div>
+    <div class="cr-name">Fernando Catalán</div><div class="cr-role">Operations</div>
+    <div class="cr-name">Pete Lipponen</div><div class="cr-role">ODDspace &amp; Venues</div>
+    <div class="cr-name">Kevin</div><div class="cr-role">Volunteer Coordinator</div>
+    <div class="cr-name">Alexandra</div><div class="cr-role">Partnerships</div>
+    <div class="cr-name">Joppe Quaedvlieg</div><div class="cr-role">Logistics</div>
+    <div class="cr-name">Lara Kanerva</div><div class="cr-role">Social Content</div>
+    <div class="cr-name">Laura Ylinen</div><div class="cr-role">Communications</div>
+    <div class="cr-name">Valle Turkka</div><div class="cr-role">Volunteer Lead</div>
+    <div class="cr-name">Saara Taha</div><div class="cr-role">Volunteer Lead</div>
+    <div class="cr-name">Roman Turikov</div><div class="cr-role">Volunteer Lead</div>
+    <div class="cr-name">Emma Helminiitty</div><div class="cr-role">Volunteer Lead</div>
+    <div class="cr-name">Georgii Iuzefovich</div><div class="cr-role">Volunteer Lead</div>
+  </div>
+
+  <!-- POLAROID SCATTER -->
+  <div class="scatter-wrap" id="scatter1">
+    <div class="scatter-row" id="scatterRow1"></div>
+    <div class="scatter-row" id="scatterRow2" style="margin-top:-16px;"></div>
+  </div>
+
+  <span class="line"></span>
+
+  <!-- ARTISTS -->
+  <div class="sec">
+    <p class="sub-cat">Artists, Performers &amp; Collectives</p>
+    <div class="artist">25films</div>
+    <div class="artist">A. Blomqvist</div>
+    <div class="artist">Aavistus</div>
+    <div class="artist">African Acid is the Future: Maryisonacid (FR)</div>
+    <div class="artist">Anastasia Maydanova</div>
+    <div class="artist">Ari Pulkkinen</div>
+    <div class="artist">Assembly (US)</div>
+    <div class="artist">Avanti! Presents: Paleface &amp; Harput</div>
+    <div class="artist">Bar25 — Days Out of Time (DE)</div>
+    <div class="artist">Casvu.ai</div>
+    <div class="artist">Clavert</div>
+    <div class="artist">Connection Interrupted</div>
+    <div class="artist">DanceWorks Helsinki</div>
+    <div class="artist">Dení Vázquez</div>
+    <div class="artist">Discobingo</div>
+    <div class="artist">DJ Dominga (CL)</div>
+    <div class="artist">DJ PoB</div>
+    <div class="artist">DJ Upi</div>
+    <div class="artist">DJ WUF</div>
+    <div class="artist">DocPoint</div>
+    <div class="artist">Electric Elisa</div>
+    <div class="artist">Espoo Game LAB</div>
+    <div class="artist">Espoo Theatre</div>
+    <div class="artist">Eva Kottonen &amp; Jaana Haapaluoma-Höglund</div>
+    <div class="artist">Eve</div>
+    <div class="artist">Felix Alexander Lybeck</div>
+    <div class="artist">Filip Hiltmann (Way Out West, SE)</div>
+    <div class="artist">Flowers of Life</div>
+    <div class="artist">Folded Visuals</div>
+    <div class="artist">Föllakzoid (CL)</div>
+    <div class="artist">Gone Future</div>
+    <div class="artist">Hanna Arvela</div>
+    <div class="artist">Heidi Backman</div>
+    <div class="artist">INDIE SHOWCASE</div>
+    <div class="artist">Ivan Tkalenko feat. Maija Kauhanen</div>
+    <div class="artist">Jarkko Vilska</div>
+    <div class="artist">Joe Sauer</div>
+    <div class="artist">Johanna Hurme</div>
+    <div class="artist">Joona Kotilainen</div>
+    <div class="artist">Juho Romakkaniemi</div>
+    <div class="artist">Jukka-Pekka Heikkilä</div>
+    <div class="artist">Juska "DJ Orion" Wendland</div>
+    <div class="artist">Jyrki Nummisto</div>
+    <div class="artist">Kaero</div>
+    <div class="artist">Kaukolampi</div>
+    <div class="artist">Kuvittajat</div>
+    <div class="artist">Lakeside Games: Twilight Ferry</div>
+    <div class="artist">Lauer &amp; DENA (DE)</div>
+    <div class="artist">Lore Drop</div>
+    <div class="artist">Lotta Savolainen</div>
+    <div class="artist">Lottaliina Pokkinen</div>
+    <div class="artist">Lyran &amp; Akademen</div>
+    <div class="artist">Maria Ritola</div>
+    <div class="artist">Mari Savio</div>
+    <div class="artist">Marina Yurchenko</div>
+    <div class="artist">Matias van Houtum (Ö fest)</div>
+    <div class="artist">Matti Pietari Järvinen</div>
+    <div class="artist">Meow Wolf: Luke Dorman &amp; Marley Prudeaux (US)</div>
+    <div class="artist">Messy Micc</div>
+    <div class="artist">Mikko-Pekka Hanski</div>
+    <div class="artist">Minna Mustapää</div>
+    <div class="artist">Minna Tervamäki</div>
+    <div class="artist">MISHA</div>
+    <div class="artist">Mitäs Mitäs Mitäs</div>
+    <div class="artist">MORA</div>
+    <div class="artist">Mr. Dad</div>
+    <div class="artist">MUSH</div>
+    <div class="artist">Muovipussi</div>
+    <div class="artist">Night Lore</div>
+    <div class="artist">Night Owl Dynamics: Gentle Night Talk</div>
+    <div class="artist">Night Shift</div>
+    <div class="artist">Nuua Company</div>
+    <div class="artist">ODDarcade</div>
+    <div class="artist">ODD Club Presents Club Theatre</div>
+    <div class="artist">ODD DEEP SPACE</div>
+    <div class="artist">ODDgames</div>
+    <div class="artist">Odd Latent Games</div>
+    <div class="artist">Oddacity</div>
+    <div class="artist">ODDclub</div>
+    <div class="artist">Oki Tåg</div>
+    <div class="artist">ONCHI</div>
+    <div class="artist">Otto "YOTTO" Yliperttula</div>
+    <div class="artist">Pascal Fischer (DE)</div>
+    <div class="artist">Paula Karvonen</div>
+    <div class="artist">Pauli Patinen</div>
+    <div class="artist">Pelkkää Hyvää Experience</div>
+    <div class="artist">Q-teatteri</div>
+    <div class="artist">Reetta Koski</div>
+    <div class="artist">Reidar Wasenius</div>
+    <div class="artist">Reinar Wasenius</div>
+    <div class="artist">Rolf Ekroth</div>
+    <div class="artist">Roope Mokka</div>
+    <div class="artist">Rudi Ruuskanen</div>
+    <div class="artist">Rönkkö/Kuusijärvi</div>
+    <div class="artist">Salomé Daoudi / Nus Nus (DK)</div>
+    <div class="artist">Salla Vallius</div>
+    <div class="artist">Samppa Lappalainen</div>
+    <div class="artist">Sarah Julia (NL)</div>
+    <div class="artist">Silja Minkkinen</div>
+    <div class="artist">Simo Vassinen</div>
+    <div class="artist">Skaalaajat</div>
+    <div class="artist">Solovey</div>
+    <div class="artist">Sonja Saarikoski</div>
+    <div class="artist">Stacy Epps, Believe &amp; Wildchild (USA)</div>
+    <div class="artist">Studio Laaya: Foghorns Drown</div>
+    <div class="artist">Suva</div>
+    <div class="artist">Super Bario</div>
+    <div class="artist">Suvi Honkanen</div>
+    <div class="artist">Suvi Kemppainen</div>
+    <div class="artist">Tatu Rönkkö</div>
+    <div class="artist">The House of Xclusive Lanvin</div>
+    <div class="artist">Total Refusal (AT)</div>
+    <div class="artist">Tunement</div>
+    <div class="artist">Tyre</div>
+    <div class="artist">Us</div>
+    <div class="artist">Valerie June (US)</div>
+    <div class="artist">VALIOBEATS (VALIOART)</div>
+    <div class="artist">VIRTA</div>
+    <div class="artist">VJ Indigo</div>
+    <div class="artist">Wanda O Rly</div>
+    <div class="artist">Wera Malmivaara</div>
+    <div class="artist">Winged</div>
+  </div>
+
+  <span class="line"></span>
+
+  <!-- VOLUNTEERS -->
+  <div class="sec">
+    <p class="sub-cat">Volunteers</p>
+    <p class="vol-intro">
+      You were the heartbeat of the festival.<br>
+      Every smile, every direction given, every moment of calm<br>
+      in the middle of chaos — that was you.
+    </p>
+    <div class="vol-grid">
+      <div class="vol">Riitta Chorfi</div>
+      <div class="vol">Fred Koskinen</div>
+      <div class="vol">Anastasiia Barabash</div>
+      <div class="vol">Kelsie Vu</div>
+      <div class="vol">Zeynep Kaynar</div>
+      <div class="vol">Anna Nyberg</div>
+      <div class="vol">Jason Selvarajan</div>
+      <div class="vol">Tori Leets</div>
+      <div class="vol">Kristian Kuismin</div>
+      <div class="vol">Muhammad Shahzaib</div>
+      <div class="vol">Moises Teodoro Tihinen</div>
+      <div class="vol">Maria Freidin</div>
+      <div class="vol">Daniela Monteiro</div>
+      <div class="vol">Hanna Laakso</div>
+      <div class="vol">Eric Nguyen</div>
+      <div class="vol">Noe Escudero Neri</div>
+      <div class="vol">Gunju Oyunkhishig</div>
+      <div class="vol">Kseniia Shaleva</div>
+      <div class="vol">Abdul Rouf</div>
+      <div class="vol">Mariia Gnedovskaia</div>
+      <div class="vol">Vipin Kumar</div>
+      <div class="vol">Ting Loetaphirom</div>
+      <div class="vol">Riitta Mettomäki</div>
+      <div class="vol">Pushpa Koirala</div>
+      <div class="vol">Carole Kurowski</div>
+      <div class="vol">Olga Kryuchkova</div>
+      <div class="vol">Giovanni Foppiani</div>
+      <div class="vol">Marika Luostarinen</div>
+      <div class="vol">Graham Featherstone</div>
+      <div class="vol">Oskar Kouvalainen</div>
+      <div class="vol">Samuli Heino</div>
+      <div class="vol">Laxmi Thapa</div>
+      <div class="vol">An Pham</div>
+      <div class="vol">Zoheb Rahman</div>
+      <div class="vol">Pauliina Cross</div>
+      <div class="vol">Sana Mehta</div>
+      <div class="vol">Aada Luotola</div>
+      <div class="vol">Wen-Jing Lin</div>
+      <div class="vol">Milja Lassila</div>
+      <div class="vol">Lily Dang</div>
+      <div class="vol">Joya Roy</div>
+      <div class="vol">Aayush Jain</div>
+      <div class="vol">Sheryl Wong</div>
+      <div class="vol">Katja Jokisalo</div>
+      <div class="vol">Roger Johnson</div>
+      <div class="vol">Simon Borali</div>
+      <div class="vol">Susanna Kiviniemi</div>
+      <div class="vol">Feyza Aslan Baskurt</div>
+      <div class="vol">Chia-Hsuan</div>
+      <div class="vol">Alena Mima</div>
+      <div class="vol">Ekaterina Statsiura</div>
+      <div class="vol">Camila</div>
+      <div class="vol">Kerttuli Karels</div>
+      <div class="vol">Mia Saukko</div>
+      <div class="vol">Ksenia Avetisova</div>
+      <div class="vol">Henna Mettälä</div>
+      <div class="vol">Enna-Matilda Kukkola</div>
+      <div class="vol">Ranjani Veeraraghavan</div>
+      <div class="vol">Amritha Pal</div>
+      <div class="vol">Alisa Haikkola</div>
+      <div class="vol">Niraj Neupane</div>
+      <div class="vol">Alex Strachan</div>
+      <div class="vol">Ibraahim Farah</div>
+      <div class="vol">Sini Järvinen</div>
+      <div class="vol">Nalle Silberstein</div>
+      <div class="vol">Roosa Virtanen</div>
+      <div class="vol">Davide Forni</div>
+      <div class="vol">Daniel Lammi</div>
+      <div class="vol">Léa Subrenat</div>
+      <div class="vol">Warisha Rizvi</div>
+      <div class="vol">Arul Karthick Viswanathan</div>
+      <div class="vol">Zubia Faisal</div>
+      <div class="vol">Hafiza Tisbeeha Rehman</div>
+      <div class="vol">Linda Illman</div>
+      <div class="vol">Jussi Itkonen</div>
+      <div class="vol">Milena Walder</div>
+      <div class="vol">Jyry</div>
+      <div class="vol">Ronny's brother</div>
+      <div class="vol">Julian Kollataj</div>
+    </div>
+  </div>
+
+  <span class="line"></span>
+
+  <!-- PARTNERS -->
+  <div class="sec">
+    <p class="cat-label">Partners &amp; Collaborators</p>
+
+    <p class="p-subhead">Production</p>
+    <div class="p-name">Roudaamo</div>
+    <div class="p-name">16bit</div>
+
+    <p class="p-subhead">Partners</p>
+    <div class="p-name"><a href="https://adventureclub.io" target="_blank">Adventure Club</a></div>
+    <div class="p-name">Netvisor / Visma</div>
+    <div class="p-name">EMU Group</div>
+    <div class="p-name">Dottir Law</div>
+    <div class="p-name"><a href="https://tiketti.fi" target="_blank">Tiketti</a></div>
+    <div class="p-name">Gilda</div>
+    <div class="p-name">Republic PR</div>
+    <div class="p-name">Brella</div>
+    <div class="p-name">Randöm</div>
+    <div class="p-name"><a href="https://www.nordicbridgemusic.com/" target="_blank">Nordic Bridge Music</a></div>
+    <div class="p-name"><a href="https://www.marimekko.com/fi_en" target="_blank">Marimekko</a></div>
+    <div class="p-name"><a href="https://www.nescafe.com/fi/" target="_blank">Nescafé</a></div>
+    <div class="p-name">Innovestor</div>
+    <div class="p-name">Burger Company</div>
+
+    <p class="p-subhead">Media</p>
+    <div class="p-name">Outshine</div>
+    <div class="p-name">Radio Helsinki</div>
+    <div class="p-name">Salute</div>
+    <div class="p-name"><a href="https://bnf.fi/fi/" target="_blank">Bonnier News Finland</a></div>
+    <div class="p-name"><a href="https://studioplayground.cc/" target="_blank">Playground</a></div>
+
+    <p class="p-subhead">Supported By</p>
+    <div class="p-name">Yksityisyrittäjän Säätiö</div>
+    <div class="p-name">Amos Andersons Fond</div>
+    <div class="p-name">Suomen Kulttuurirahasto</div>
+    <div class="p-name"><a href="https://www.hel.fi/en" target="_blank">Helsingin kaupunki</a></div>
+    <div class="p-name"><a href="https://kordelin.fi/en/" target="_blank">Alfred Kordelin Foundation</a></div>
+
+    <p class="p-subhead">Collaborators</p>
+    <div class="p-name">FiBAN</div>
+    <div class="p-name">Reveel</div>
+    <div class="p-name">Lasipalatsikortteli</div>
+    <div class="p-name">EIT Culture &amp; Creativity</div>
+    <div class="p-name">Kampin kappeli</div>
+    <div class="p-name">Nuua Company</div>
+    <div class="p-name">Mitäs Mitäs Mitäs</div>
+    <div class="p-name">FunDesign</div>
+    <div class="p-name">Sång- och Musikfesten</div>
+    <div class="p-name">Creative Lunch Club</div>
+    <div class="p-name">Venga</div>
+    <div class="p-name"><a href="https://pertinvalinta.fi/en" target="_blank">Pertin Valinta</a></div>
+    <div class="p-name"><a href="https://www.spot.fi/" target="_blank">SPOT</a></div>
+    <div class="p-name"><a href="https://www.instagram.com/ravespresso/" target="_blank">Ravespresso</a></div>
+    <div class="p-name"><a href="https://www.instagram.com/raaka_arki_events/" target="_blank">Raaka Arki Events</a></div>
+    <div class="p-name"><a href="https://www.skidit.fi/" target="_blank">Skidit</a></div>
+    <div class="p-name"><a href="https://www.aavistusfestival.fi/" target="_blank">Aavistus</a></div>
+    <div class="p-name"><a href="https://tapahtumateollisuus.fi/" target="_blank">Tapahtumateollisuus</a></div>
+    <div class="p-name"><a href="https://musicmedia.fi/en/" target="_blank">Music x Media</a></div>
+    <div class="p-name"><a href="https://www.tampere.fi/en" target="_blank">Tampereen kaupunki</a></div>
+    <div class="p-name"><a href="https://www.wingedapp.com/" target="_blank">Winged</a></div>
+    <div class="p-name"><a href="https://meb.fi/ENG/" target="_blank">MEB</a></div>
+    <div class="p-name"><a href="https://soloveymusic.com/" target="_blank">Solovey</a></div>
+    <div class="p-name"><a href="https://www.danceworkshelsinki.fi/" target="_blank">DanceWorks Helsinki</a></div>
+    <div class="p-name"><a href="https://espoonteatteri.fi/en/" target="_blank">Espoo Theatre</a></div>
+    <div class="p-name"><a href="https://docpoint.fi/en/home/" target="_blank">DocPoint</a></div>
+    <div class="p-name"><a href="https://www.q-teatteri.fi/home-en" target="_blank">Q-teatteri</a></div>
+    <div class="p-name"><a href="https://www.instagram.com/indieshowcase_/" target="_blank">Indie Showcase</a></div>
+    <div class="p-name"><a href="https://kulttuurijataide.fi/en/" target="_blank">Kulta ry</a></div>
+
+    <div class="media-banner">
+      <p class="media-banner-lbl">Also featured in our media wall</p>
+      <p class="media-banner-names">
+        <a href="https://www.artsdynamics.com/" target="_blank">Arts Dynamics Talks</a> &nbsp;·&nbsp;
+        <a href="https://avecmedia.fi/evento/" target="_blank">Evento</a> &nbsp;·&nbsp;
+        Kordelin Major Cultural Projects &nbsp;·&nbsp;
+        <a href="https://www.kauppalehti.fi/" target="_blank">Kauppalehti</a> &nbsp;·&nbsp;
+        <a href="https://www.aamulehti.fi/" target="_blank">Aamulehti</a> &nbsp;·&nbsp;
+        <a href="https://www.instagram.com/creativerespectpod" target="_blank">Creative Respect</a> &nbsp;·&nbsp;
+        <a href="https://www.v2.fi/" target="_blank">V2.fi</a> &nbsp;·&nbsp;
+        <a href="https://designforum.fi/en/" target="_blank">Design Forum Finland</a>
+      </p>
+    </div>
+  </div>
+
+  <span class="line"></span>
+
+  <!-- PRE-REGISTER -->
+  <div class="cta-box">
+    <p class="cta-eyebrow">Be first in line</p>
+    <p class="cta-head">ODD 2027<br>is on its way.</p>
+    <a href="#" class="btn">Pre-register for ODD 2027</a>
+  </div>
+
+  <!-- FEEDBACK -->
+  <div class="cta-box" style="margin-top:16px;">
+    <p class="cta-eyebrow">Your voice shapes what comes next</p>
+    <p class="cta-head">What moved you?<br>What should ODD become?</p>
+    <label class="f-label">Your name</label>
+    <input type="text" class="f-input" placeholder="Name">
+    <label class="f-label">Your email</label>
+    <input type="email" class="f-input" placeholder="email@example.com">
+    <label class="f-label">Your ODDfest 2026 experience</label>
+    <textarea class="f-textarea" placeholder="Tell us what you felt, what worked, what surprised you..."></textarea>
+    <label class="f-label">What should ODD be in 2027?</label>
+    <textarea class="f-textarea" placeholder="Your vision for next year..."></textarea>
+    <button class="f-submit">Send feedback</button>
+  </div>
+
+  <span class="line" style="margin-top:48px;display:block;"></span>
+
+  <!-- MAIN PHOTO MOSAIC -->
+  <div class="sec">
+    <div class="mosaic-wrap">
+      <p class="mosaic-eyebrow"><a href="https://www.flickr.com/photos/204686183@N06/" target="_blank">A festival lives in its photographs &nbsp;↗</a></p>
+      <div class="mosaic-grid" id="mosaicGrid"></div>
+    </div>
+  </div>
+
+  <span class="line"></span>
+
+  <!-- ODDSPACE -->
+  <div class="sec">
+    <p class="cat-label">The work continues</p>
+    <p class="space-p">
+      The festival may be over.<br>
+      But the space never closes.
+    </p>
+    <p class="space-p">
+      ODDspace is our year-round home for creatives,<br>
+      makers, thinkers, and those who don't fit anywhere else.<br>
+      This is where ODD lives between festivals.
+    </p>
+    <a href="#" class="btn">Become a member at ODDspace</a>
+  </div>
+
+  <span class="line"></span>
+
+  <!-- SIGN-OFF -->
+  <div class="sec" style="margin-bottom:0;padding-bottom:0;">
+    <p class="signoff">Stay ODD.</p>
+    <p class="love">We love you and miss you already.</p>
+    <div style="margin-top:80px;">
+      <img src="ODDfest-logo-valkoinen.png" alt="ODDfest"
+           style="width:min(200px,44vw);opacity:0.4;">
+      <div class="logo-date" style="margin-top:14px;margin-bottom:0;">Helsinki · 2026</div>
+    </div>
+  </div>
+
+</div><!-- /credits -->
+
+<script>
+/* ══════════════════════════════════════════════════════
+   AUDIO
+   ══════════════════════════════════════════════════════ */
+let audio = null;
+const progressFill = document.getElementById('bar-progress-fill');
+
+function initAudio() {
+  if (audio) return;
+  // Create audio within user gesture so Safari allows playback on file://
+  audio = new Audio('oddfest-2026-aftermovie.mp3');
+  audio.loop  = true;
+  audio.volume = 0.78;
+  audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    progressFill.style.width = (audio.currentTime / audio.duration * 100).toFixed(2) + '%';
+  });
+}
+
+/* ══════════════════════════════════════════════════════
+   PHOTOS
+   ══════════════════════════════════════════════════════ */
+const PHOTOS = [
+  'https://live.staticflickr.com/65535/55334187211_2c2f24ee97_b.jpg',
+  'https://live.staticflickr.com/65535/55334324298_dcb8522107_b.jpg',
+  'https://live.staticflickr.com/65535/55334589025_4cf8fed265_b.jpg',
+  'https://live.staticflickr.com/65535/55333211637_732dd70a33_b.jpg',
+  'https://live.staticflickr.com/65535/55334140591_4e1996fc74_b.jpg',
+  'https://live.staticflickr.com/65535/55334353639_ed4e6f0f41_b.jpg',
+  'https://live.staticflickr.com/65535/55334557320_53fbef657b_b.jpg',
+  'https://live.staticflickr.com/65535/55333206147_2b36b30dae_b.jpg',
+  'https://live.staticflickr.com/65535/55334553730_81b6775381_b.jpg',
+  'https://live.staticflickr.com/65535/55333204732_18d1a4e76a_b.jpg',
+  'https://live.staticflickr.com/65535/55333204662_2c3d12f2cd_b.jpg',
+  'https://live.staticflickr.com/65535/55334131976_9c796c76f2_b.jpg',
+  'https://live.staticflickr.com/65535/55334339379_e392b26c9b_b.jpg',
+  'https://live.staticflickr.com/65535/55334339304_68708147ca_b.jpg',
+  'https://live.staticflickr.com/65535/55334337609_3c6a92243c_b.jpg',
+  'https://live.staticflickr.com/65535/55334120141_f7bf3140ea_b.jpg',
+  'https://live.staticflickr.com/65535/55334118706_7246e4ff39_b.jpg',
+  'https://live.staticflickr.com/65535/55334271773_b8383b3e8a_b.jpg',
+  'https://live.staticflickr.com/65535/55334271823_c4819133d7_b.jpg',
+  'https://live.staticflickr.com/65535/55334118661_3970ed8737_b.jpg',
+  'https://live.staticflickr.com/65535/55334118696_0f7d925e3b_b.jpg',
+  'https://live.staticflickr.com/65535/55334535795_bfe425b4dc_b.jpg',
+  'https://live.staticflickr.com/65535/55333186922_3eb617096d_b.jpg',
+  'https://live.staticflickr.com/65535/55334326839_92817dc9d3_b.jpg',
+  'https://live.staticflickr.com/65535/55332824146_9f0d113c11_b.jpg',
+];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+/* Fetch full photostream via Flickr API (pages 1–3 = up to 1500 photos),
+   then rebuild media sections so they get the full variety */
+async function fetchAndRefreshPhotos() {
+  const KEY = 'a8b270314b1613e980fa437c4ee40c2f';
+  const UID = '204686183%40N06';
+  const base = `https://api.flickr.com/services/rest/?method=flickr.people.getPublicPhotos&api_key=${KEY}&user_id=${UID}&format=json&nojsoncallback=1&per_page=500&extras=url_b`;
+  let added = 0;
+  for (const page of [1, 2, 3]) {
+    try {
+      const d = await (await fetch(`${base}&page=${page}`)).json();
+      if (!d.photos?.photo?.length) break;
+      d.photos.photo.forEach(p => {
+        if (p.url_b && !PHOTOS.includes(p.url_b)) { PHOTOS.push(p.url_b); added++; }
+      });
+      if (d.photos.pages && page >= d.photos.pages) break;
+    } catch(e) { break; }
+  }
+  if (added > 0) {
+    // Rebuild sections with the full, shuffled photo pool
+    document.getElementById('rowA').innerHTML = '';
+    document.getElementById('rowB').innerHTML = '';
+    document.getElementById('scatterRow1').innerHTML = '';
+    document.getElementById('scatterRow2').innerHTML = '';
+    document.getElementById('mosaicGrid').innerHTML = '';
+    buildFilmStrip();
+    buildScatter();
+    buildMosaic();
+    const io2 = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('vis'); io2.unobserve(e.target); }
+      });
+    }, {threshold:0.12});
+    document.querySelectorAll('.mosaic-cell,.polaroid').forEach(el => io2.observe(el));
+  }
+}
+
+/* ─── Image factory ────────────────────────────────── */
+function makeImg(src) {
+  const img = document.createElement('img');
+  img.src = src; img.alt = '';
+  img.addEventListener('load', () => img.classList.add('loaded'));
+  img.addEventListener('error', () => img.closest('.film-frame,.mosaic-cell')?.classList.add('empty'));
+  return img;
+}
+
+/* ─── Photo burst opener ───────────────────────────── */
+function buildOpener() {
+  const opener  = document.getElementById('opener');
+  const overlay = document.getElementById('opener-overlay');
+
+  const layout = [
+    {w:1,r:0,c:0},{w:1,r:0,c:1},{w:1,r:0,c:2},{w:1,r:0,c:3},{w:1,r:0,c:4},
+    {w:2,r:1,c:0},{w:1,r:1,c:2},{w:1,r:1,c:3},{w:1,r:1,c:4},
+    {w:1,r:2,c:0},{w:1,r:2,c:1},{w:2,r:2,c:2},{w:1,r:2,c:4},
+    {w:1,r:3,c:0},{w:1,r:3,c:1},{w:1,r:3,c:2},{w:1,r:3,c:3},{w:1,r:3,c:4},
+  ];
+
+  const dirs = [
+    [-130,0],[130,0],[0,-110],[0,110],
+    [-90,-70],[90,-70],[-90,70],[90,70],
+    [-110,-50],[110,50],[-60,-90],[60,90],
+  ];
+  const kb = [
+    {ox:'30%',oy:'40%',kx:'3%', ky:'2%', d:'16s'},
+    {ox:'70%',oy:'60%',kx:'-3%',ky:'-2%',d:'19s'},
+    {ox:'50%',oy:'25%',kx:'2%', ky:'3%', d:'14s'},
+    {ox:'20%',oy:'75%',kx:'-2%',ky:'-3%',d:'21s'},
+    {ox:'80%',oy:'20%',kx:'3%', ky:'-2%',d:'15s'},
+    {ox:'45%',oy:'80%',kx:'-3%',ky:'2%', d:'18s'},
+    {ox:'60%',oy:'35%',kx:'2%', ky:'-3%',d:'13s'},
+    {ox:'25%',oy:'55%',kx:'-2%',ky:'3%', d:'20s'},
+  ];
+
+  const seed = Math.floor(Math.random()*1000);
+  const shuffled = shuffle(PHOTOS);
+
+  layout.forEach((cell, i) => {
+    const div = document.createElement('div');
+    div.className = 'opener-cell' + (cell.w === 2 ? ' w2' : '');
+
+    // Diagonal wave timing
+    const delay = Math.max(0, (cell.r + cell.c) * 0.07 + (((seed*(i+1)*0.001) % 0.06) - 0.03));
+    div.style.animationDelay = delay.toFixed(3) + 's';
+
+    // Random entry direction
+    const dir = dirs[i % dirs.length];
+    const jx = ((seed*(i*7+3)) % 40) - 20;
+    const jy = ((seed*(i*11+5)) % 28) - 14;
+    div.style.setProperty('--ex', (dir[0]+jx).toFixed(0)+'px');
+    div.style.setProperty('--ey', (dir[1]+jy).toFixed(0)+'px');
+    div.style.setProperty('--er', (((seed*(i+7)) % 60)/10 - 3).toFixed(1)+'deg');
+
+    // Ken Burns per-cell params
+    const kbv = kb[i % kb.length];
+    div.style.setProperty('--kox', kbv.ox);
+    div.style.setProperty('--koy', kbv.oy);
+    div.style.setProperty('--kx',  kbv.kx);
+    div.style.setProperty('--ky',  kbv.ky);
+    div.style.setProperty('--kd',  kbv.d);
+
+    const img = document.createElement('img');
+    img.src = shuffled[i % shuffled.length];
+    img.alt = '';
+    img.style.animationDelay = (delay + 0.95).toFixed(2) + 's';
+
+    div.appendChild(img);
+    opener.insertBefore(div, overlay);
+  });
+}
+
+/* ─── Cursor interaction on opener ────────────────── */
+function initOpenerInteraction() {
+  const opener     = document.getElementById('opener');
+  const spotlight  = document.getElementById('opener-spotlight');
+
+  // Skip on touch-only devices
+  if (window.matchMedia('(hover:none)').matches) return;
+
+  let curX = 50, curY = 50;   // spotlight position (%)
+  let tiltX = 0, tiltY = 0;   // current tilt
+  let tgtTX = 0, tgtTY = 0;  // target tilt
+  let raf = null;
+  let inside = false;
+
+  function tick() {
+    // Smooth tilt interpolation
+    tiltX += (tgtTX - tiltX) * 0.06;
+    tiltY += (tgtTY - tiltY) * 0.06;
+
+    opener.style.transform = `perspective(1400px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) scale(1.02)`;
+    spotlight.style.background = `radial-gradient(circle 280px at ${curX.toFixed(1)}% ${curY.toFixed(1)}%, rgba(255,255,255,0.10) 0%, transparent 68%)`;
+
+    raf = requestAnimationFrame(tick);
+  }
+
+  opener.addEventListener('mouseenter', () => {
+    inside = true;
+    if (!raf) raf = requestAnimationFrame(tick);
+  });
+
+  opener.addEventListener('mousemove', e => {
+    const rect = opener.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / rect.width;
+    const ny = (e.clientY - rect.top)  / rect.height;
+
+    curX = nx * 100;
+    curY = ny * 100;
+    tgtTX = (ny - 0.5) * -9;   // tilt up when cursor is high
+    tgtTY = (nx - 0.5) *  9;
+  });
+
+  opener.addEventListener('mouseleave', () => {
+    inside = false;
+    tgtTX = 0; tgtTY = 0;
+    spotlight.style.background = 'none';
+    // Let tilt ease back to zero then stop RAF
+    setTimeout(() => {
+      if (!inside) { cancelAnimationFrame(raf); raf = null; opener.style.transform = ''; }
+    }, 600);
+  });
+}
+
+/* ─── Film strips ──────────────────────────────────── */
+function buildFilmStrip() {
+  const rowA = document.getElementById('rowA');
+  const rowB = document.getElementById('rowB');
+  [[rowA, shuffle(PHOTOS)],[rowB, shuffle(PHOTOS)]].forEach(([row,src]) => {
+    [...src,...src,...src].forEach(url => {
+      const frame = document.createElement('div');
+      frame.className = 'film-frame';
+      const img = document.createElement('img');
+      img.src = url; img.alt = '';
+      img.addEventListener('load', () => img.classList.add('loaded'));
+      frame.appendChild(img);
+      row.appendChild(frame);
+    });
+  });
+}
+
+/* ─── Polaroid scatter ─────────────────────────────── */
+function buildScatter() {
+  const rots = [-6,-4,-3,-2,-1,0,1,2,3,4,6,7,-7,-5,5,8];
+  const r1  = document.getElementById('scatterRow1');
+  const r2  = document.getElementById('scatterRow2');
+  const sh  = shuffle(PHOTOS);
+  [r1, r2].forEach((row, ri) => {
+    for (let i = 0; i < 7; i++) {
+      const idx = ri*7+i;
+      const p = document.createElement('div');
+      p.className = 'polaroid';
+      p.style.setProperty('--rot', rots[idx % rots.length]+'deg');
+      p.style.transitionDelay = (i*0.08)+'s';
+      const imgEl = document.createElement('img');
+      imgEl.className = 'polaroid-img';
+      imgEl.src = sh[idx % sh.length]; imgEl.alt = '';
+      p.appendChild(imgEl);
+      row.appendChild(p);
+    }
+  });
+}
+
+/* ─── Mosaic grid ──────────────────────────────────── */
+const MOSAIC_LAYOUT = [
+  {cls:'wide', h:'260px'},
+  {cls:'',     h:'260px'},
+  {cls:'',     h:'210px'},
+  {cls:'',     h:'210px'},
+  {cls:'',     h:'210px'},
+  {cls:'',     h:'210px'},
+  {cls:'wide', h:'240px'},
+  {cls:'',     h:'240px'},
+  {cls:'',     h:'200px'},
+  {cls:'',     h:'200px'},
+  {cls:'',     h:'200px'},
+  {cls:'',     h:'200px'},
+  {cls:'wide', h:'220px'},
+];
+
+function buildMosaic() {
+  const grid = document.getElementById('mosaicGrid');
+  const sh = shuffle(PHOTOS);
+  let pi = 0;
+  MOSAIC_LAYOUT.forEach(cell => {
+    const div = document.createElement('div');
+    div.className = 'mosaic-cell ' + (cell.cls || '');
+    div.style.minHeight = cell.h;
+    div.appendChild(makeImg(sh[pi++ % sh.length]));
+    grid.appendChild(div);
+  });
+}
+
+/* ─── Scroll reveals ───────────────────────────────── */
+function initObservers() {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.cr-name,.cr-role,.mosaic-cell,.polaroid').forEach(el => io.observe(el));
+}
+
+/* ─── Opener photo rotation (slow, unsynchronised) ──── */
+function swapOpenerPhoto(cell) {
+  const oldImg = cell.querySelector('img');
+  if (!PHOTOS.length) return;
+
+  const newImg = document.createElement('img');
+  newImg.src   = PHOTOS[Math.floor(Math.random() * PHOTOS.length)];
+  newImg.alt   = '';
+
+  // Randomise Ken Burns for each new photo
+  const kd  = (12 + Math.random() * 9).toFixed(0) + 's';
+  const kox = (15 + Math.random() * 70).toFixed(0) + '%';
+  const koy = (15 + Math.random() * 70).toFixed(0) + '%';
+  const kx  = ((Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * 3)).toFixed(1) + '%';
+  const ky  = ((Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * 2)).toFixed(1) + '%';
+
+  Object.assign(newImg.style, {
+    position: 'absolute', inset: '0',
+    width: '100%', height: '100%',
+    objectFit: 'cover', display: 'block',
+    opacity: '0',
+    transition: 'opacity 2.2s ease',
+    animation: `kenBurns ${kd} ease-in-out infinite alternate`,
+    transformOrigin: `${kox} ${koy}`,
+    willChange: 'transform',
+  });
+  newImg.style.setProperty('--kx', kx);
+  newImg.style.setProperty('--ky', ky);
+
+  cell.appendChild(newImg);
+
+  // Double-rAF so the initial opacity:0 is painted before we transition
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    newImg.style.opacity = '1';
+    if (oldImg) {
+      oldImg.style.transition = 'opacity 2.2s ease';
+      oldImg.style.opacity = '0';
+      setTimeout(() => oldImg.remove(), 2300);
+    }
+  }));
+}
+
+function scheduleOpenerRotation() {
+  document.querySelectorAll('.opener-cell').forEach(cell => {
+    function loop() {
+      swapOpenerPhoto(cell);
+      setTimeout(loop, 9000 + Math.random() * 11000); // 9–20 s between swaps
+    }
+    // Each cell starts at a different random offset (4–18 s) so they never all swap together
+    setTimeout(loop, 4000 + Math.random() * 14000);
+  });
+}
+
+/* ─── Player + scroll ──────────────────────────────── */
+let playing = false, rafId = null, lastTs = null;
+const playBtn  = document.getElementById('playBtn');
+const playIcon = document.getElementById('playIcon');
+const playLabel = document.getElementById('playLabel');
+const speedEl  = document.getElementById('speedRange');
+const vizEl    = document.getElementById('viz');
+
+function tick(ts) {
+  if (!playing) return;
+  if (lastTs !== null) {
+    window.scrollBy({ top: parseInt(speedEl.value, 10) * (ts - lastTs) / 1000, behavior: 'instant' });
+    if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4) {
+      stop(); return;
+    }
+  }
+  lastTs = ts;
+  rafId = requestAnimationFrame(tick);
+}
+
+function play() {
+  initAudio();
+  playing = true; lastTs = null;
+  playBtn.classList.add('is-playing');
+  vizEl.classList.add('active');
+  playIcon.textContent = '⏸';
+  playLabel.textContent = 'Pause';
+  audio.play().catch(() => {});
+  rafId = requestAnimationFrame(tick);
+}
+
+function stop() {
+  playing = false;
+  if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+  if (audio) audio.pause();
+  playBtn.classList.remove('is-playing');
+  vizEl.classList.remove('active');
+  playIcon.textContent = '▶';
+  playLabel.textContent = 'Play Credits';
+}
+
+playBtn.addEventListener('click', () => playing ? stop() : play());
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && !['INPUT','TEXTAREA'].includes(e.target.tagName)) {
+    e.preventDefault(); playing ? stop() : play();
+  }
+});
+document.getElementById('bar-progress').addEventListener('click', e => {
+  if (!audio || !audio.duration) return;
+  audio.currentTime = (e.offsetX / e.currentTarget.offsetWidth) * audio.duration;
+});
+
+/* ─── Feedback form ────────────────────────────────── */
+document.querySelector('.f-submit').addEventListener('click', e => {
+  e.preventDefault();
+  e.target.textContent = 'Thank you ♥';
+  e.target.disabled = true;
+});
+
+/* ─── Init ─────────────────────────────────────────── */
+buildOpener();
+scheduleOpenerRotation();
+buildFilmStrip();
+buildScatter();
+buildMosaic();
+initObservers();
+fetchAndRefreshPhotos(); // loads full Flickr pool and rebuilds media sections
+
+</script>
+</body>
+</html>

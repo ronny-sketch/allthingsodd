@@ -194,11 +194,60 @@ real decisions worth recording:
 
    Two components changed with blast radius beyond this one page:
    `FullbleedVideoHero.astro` gained optional `primaryCta`/`secondaryCta`
-   props (additive — ODDfest's existing call, which passes neither, is
-   unaffected), and `PersonGrid.astro` gained an optional per-person
+   props (additive — ODDfest's call passed neither at the time; it passes
+   both as of the 2026-09-11 rebuild in point 7), and `PersonGrid.astro`
+   gained an optional per-person
    `image` (also used by `personItem`, so About's photo-less team keeps its
    existing plain typographic card; ODDference's real, verified 2026
    speaker photos render the new photo-led card instead).
+
+7. **The 2026-09-11 ODDfest rebuild**, at Ronny's direct request, put the
+   page in the order a reader actually asks things in: hero, what it is,
+   how it works, how to join, what has happened before, FAQ. Four
+   decisions worth recording:
+   - **The hero took ODDspace's anatomy, not its medium.** The brief was
+     "same structure as the ODDspace page" — eyebrow, wordmark, h1, a
+     support line, meta, two CTAs. It keeps the aftermovie behind all of
+     that rather than adopting `SpaceHero`'s photo grid: the film is the
+     only asset that shows what ODDfest felt like, and every prop needed
+     already existed on `FullbleedVideoHero` from the ODDference rebuild.
+     Nothing new was built. `secondaryCta`/`heroSupport` are declared on
+     the oddfest branch of `content.config.ts`, mirroring how ODDference
+     declares its own.
+   - **"You make the event. ODD builds the shared layer." and "How it
+     works" became one section**, because they were one argument told
+     twice — who is responsible for what, then what actually happens. The
+     `sharedLayer` field is now `ownership` and also carries the label
+     above the steps; `howItWorks` stays a bare `featureCard[]` array
+     rather than being folded in, because ODDspace/ODDagency/ODDstudio all
+     have a field of that name and CloudCannon's `_inputs` are keyed by
+     field name across the whole collection (the `caseTeaser` trap).
+   - **The "shared platform" block was deleted, not moved.** It described
+     2027 programme and discovery-platform features that are neither built
+     nor confirmed — the same promise-ahead-of-the-build this codebase
+     refuses everywhere else. `editorial-integrity.spec.ts` asserts it
+     stays gone.
+   - **The archived 2026 thank-you page is hosted, not rebuilt.** It lives
+     at `public/oddfest-2026/` as a standalone static page: a 63KB
+     self-contained scroll-credits experience with its own type, audio and
+     Flickr-hosted photography, and rebuilding it as an Astro route would
+     have meant rewriting something that was finished and correct. Three
+     things were changed in it — the six `.ttf` faces became this site's
+     own two subset `.woff2` files (114KB → 67KB, and `font-display:block`
+     became `swap`), the audio file lost the spaces in its name, and a
+     dated archive banner was added at the top. The banner exists because
+     the page was written in June 2026 and says 2027 will be "one cohesive
+     concept, one central location", which the current distributed model
+     has since superseded. Nothing in the original copy was rewritten: it
+     is a thank-you letter that was already sent, and the banner dates it
+     rather than revising it.
+
+   One thing that is deliberately _not_ in the rebuild: the "what has
+   happened before" section cites only figures this site already publishes
+   elsewhere (About's 2025 snapshot and /media's archive record). ODDfest
+   2026's own attendance was never published anywhere on this site, and the
+   internal records disagree with each other about 2025's — so the section
+   carries the 2025 numbers, names 2026 qualitatively, and invents nothing.
 
 **Nav breakpoint: 1024px, not 760px.** Originally set because "Work with
 ODD" was a genuinely long label next to the site's other single-word nav

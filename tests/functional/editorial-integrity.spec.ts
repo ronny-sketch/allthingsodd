@@ -88,6 +88,52 @@ test('every audience split on home puts creatives before business', async ({ pag
   }
 });
 
+test('ODDfest tells its story in the order Ronny asked for', async ({ page }) => {
+  await page.goto('/oddfest');
+
+  // The 2026-09-11 rebuild order: hero, what it is, how it works, how to
+  // join, what has happened before, FAQ. Source order, not "the section
+  // exists" — the two are exactly what a screenshot cannot tell apart once a
+  // section moves. See oddfest.astro's own section-order comment for why
+  // each one sits where it does.
+  const order = await page.evaluate(() => {
+    const html = document.documentElement.innerHTML;
+    return {
+      hero: html.indexOf('oddfest-hero'),
+      whatItIs: html.indexOf('oddf-lookback'),
+      howItWorks: html.indexOf('oddf-layer'),
+      join: html.indexOf('id="join"'),
+      history: html.indexOf('oddf-history'),
+      faq: html.indexOf('Practical / FAQ'),
+    };
+  });
+
+  for (const [name, index] of Object.entries(order)) {
+    expect(index, `ODDfest section "${name}" is missing`).toBeGreaterThan(-1);
+  }
+
+  expect(order.hero).toBeLessThan(order.whatItIs);
+  expect(order.whatItIs).toBeLessThan(order.howItWorks);
+  expect(order.howItWorks).toBeLessThan(order.join);
+  // Proof after the ask, deliberately: the reader is told what this is and
+  // invited in, then shown that it is real, then has their remaining
+  // questions answered. Moving history above the ask buries the one thing
+  // the page exists to get someone to do.
+  expect(order.join).toBeLessThan(order.history);
+  expect(order.history).toBeLessThan(order.faq);
+});
+
+test('ODDfest no longer promises an unbuilt shared platform', async ({ request }) => {
+  // The "shared platform" block described 2027 programme/discovery features
+  // that were neither built nor confirmed, and was deleted on 2026-09-11.
+  // This asserts it stays deleted rather than drifting back in as copy — the
+  // same rule that keeps `examples` and `programme` empty until they are real.
+  const body = await (await request.get('/oddfest')).text();
+  expect(body, '/oddfest advertises a platform that does not exist yet').not.toContain(
+    'The shared platform',
+  );
+});
+
 test('the participation band uses the approved final wording', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'The way in is by doing.' })).toBeVisible();
