@@ -12,5 +12,5 @@ const page = entry.data;
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
-  <ContactForm accessKey={page.formAccessKey} />
+  <ContactForm accessKeys={page.formAccessKeys} />
 </Layout>

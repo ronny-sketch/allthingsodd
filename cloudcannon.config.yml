@@ -130,14 +130,21 @@ collections_config:
         options:
           subtype: object
           required: false
-      formAccessKey:
-        type: text
-        label: Web3Forms access key (Contact page only)
+      formAccessKeys:
+        type: object
+        label: Web3Forms access keys (Contact page only)
         comment: >-
-          Free key from web3forms.com — paste it here to make the Contact
-          page's form actually send. Leave blank and the form still shows,
-          but tells visitors it isn't connected yet instead of silently
-          discarding what they type.
+          One free key per topic from web3forms.com, each created with the
+          address that topic should reach: General → hello@oddfest.co,
+          Partnering & ODDference → partners@oddfest.co, ODDspace →
+          space@oddfest.co, ODDfest → fest@oddfest.co. Who sits behind
+          those group addresses is changed in Google Workspace admin, not
+          here. Leave a topic blank and it falls back to the General key;
+          leave General blank too and the form still shows but tells
+          visitors it isn't connected yet instead of silently discarding
+          what they type.
+        options:
+          subtype: object
       heroMedia:
         type: object
         label: Hero video/image

@@ -140,8 +140,8 @@ high-level notes:
   press releases, info packs, assets & photos (with a photo-credit usage
   note), a named press contact, and social media.
 - **Contact**: eyebrow/title/intro text above the contact form. See
-  [Contact form setup](#contact-form-setup) below for the one field that
-  actually makes it send.
+  [Contact form setup](#contact-form-setup) below for the access keys that
+  actually make it send, and for where each topic's message goes.
 
 A field marked "optional" in `cloudcannon.config.yml`'s comments can be left
 out of the page's JSON entirely — the page renders correctly without it. This
@@ -182,11 +182,46 @@ sign-up link above.
 The Contact page's form submits via [Web3Forms](https://web3forms.com) — a
 free service that emails you a submission, no backend of ours required.
 
-1. Get a free access key at web3forms.com (just an email address, no signup).
-2. Paste it into the Contact page's "Web3Forms access key" field.
-3. Publish. The form starts sending for real; until then it renders normally
-   but tells visitors it isn't connected yet, rather than silently discarding
-   what they type.
+The form asks the visitor what their message is about, and each topic goes to
+a different address. A Web3Forms access key is tied to exactly one recipient,
+so there is one key per topic:
+
+| Topic on the form         | Key field    | Sends to              |
+| ------------------------- | ------------ | --------------------- |
+| Something else / not sure | `general`    | `hello@oddfest.co`    |
+| Partnering & ODDference   | `partnering` | `partners@oddfest.co` |
+| ODDspace                  | `oddspace`   | `space@oddfest.co`    |
+| ODDfest                   | `oddfest`    | `fest@oddfest.co`     |
+
+The three `partners@`/`space@`/`fest@` addresses are **Google Groups**, not
+mailboxes. Who receives each topic is the group's membership, changed in
+Google Workspace admin — not here, and not in the code. That is the whole
+point of the setup: teams change more often than this site deploys, and
+deploying needs a manual step (see `docs/deployment.md`), so a list of
+people's addresses living in the repo would quietly go stale and keep mailing
+someone who left. Each group also contains `hello@oddfest.co`, so the shared
+inbox sees every message without being addressed separately.
+
+`hello@allthingsodd.co` is a Workspace **domain alias** of `hello@oddfest.co`
+— the same mailbox, so adding it as a second recipient would only deliver two
+copies of everything to one inbox.
+
+To connect it:
+
+1. In Google Workspace admin, create the three groups above and add the right
+   people plus `hello@oddfest.co` to each.
+2. At web3forms.com, get a free access key for each of the four addresses
+   (just an email address, no signup — the key is mailed to that address, and
+   for a group any member receives it).
+3. Paste each into its field under the Contact page's "Web3Forms access
+   keys".
+4. Publish.
+
+A topic left blank falls back to the General key, so the message still reaches
+a human rather than the visitor being told the form is broken — you can
+connect General first and add the rest later. Until General is set too, the
+form renders normally but tells visitors it isn't connected yet, rather than
+silently discarding what they type.
 
 ## What you can't edit here (and why)
 
