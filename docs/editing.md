@@ -70,9 +70,18 @@ high-level notes:
     (Business/Creative/Stay in touch, or leave blank) to group it under a
     label instead of one flat row — set it to match how a new CTA should
     group, or leave it empty for an ungrouped card.
-- **ODDfest**: what it is, how it works, who can take part, what ODD
-  provides, organiser ownership, programme, open call (optional), for
-  partners, previous edition/proof (optional), FAQ.
+- **ODDfest**: hero (eyebrow/title/hero support line/meta and two buttons),
+  what it is, the two look-back buttons under it, how it works (who does
+  what, then the four numbered steps), how to join, programme (optional —
+  empty until a real 2027 programme exists), what has happened before, 2026
+  examples (optional — empty until real, named ones exist), FAQ.
+  Rebuilt 2026-09-11; the bullet here previously listed a set of fields
+  (who can take part / what ODD provides / organiser ownership / open call /
+  for partners / previous edition) that had already been consolidated away
+  in the V2 rebuild and no longer existed. Two rules on this page in
+  particular: the "what has happened before" section must carry only figures
+  the site already publishes elsewhere, and the deleted "shared platform"
+  block must not come back until there is a platform to describe.
 - **ODDference**: the big question, who it's for, why attend, themes,
   formats, speakers (optional — leave empty until real speakers are
   confirmed), programme (optional), connection & networking, proof (optional,

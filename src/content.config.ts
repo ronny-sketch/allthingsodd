@@ -507,21 +507,78 @@ const pages = defineCollection({
       // this is a website content decision, not one of those).
       subpageBase.extend({
         _template: z.literal('oddfest'),
+        // The hero gained ODDspace's full anatomy on 2026-09-11 at Ronny's
+        // direct request — eyebrow, h1, a support line, meta and two CTAs —
+        // over the aftermovie rather than ODDspace's photo grid, since the
+        // ask was for the same structure, not the same medium. Declared on
+        // this branch rather than on subpageBase for the same reason
+        // ODDference declares them: they are page-specific additions to
+        // FullbleedVideoHero's optional props, not something all five
+        // subpages carry. See oddfest.astro's section-order comment.
+        secondaryCta: linkCta.optional(),
+        heroSupport: z.string(),
         whatItIs: sectionIntro,
-        // NEW SECTION (2026-09-02 copywriting pass) — "You make the event.
-        // ODD builds the shared layer.": a clear host/ODD responsibility
-        // split plus a smaller shared-platform explainer, right after
-        // `whatItIs`. `platform.body` should only promise 2027
-        // programme/map/platform functions that are actually confirmed —
-        // see the doc's [NEEDS PRODUCT/TECH CONFIRMATION] note.
-        sharedLayer: z.object({
+        // The two ways to look back at ODDfest 2026, as a pair of buttons
+        // under `whatItIs` (2026-09-11): the archived thank-you page, now
+        // hosted on this site at /oddfest-2026/ (public/oddfest-2026/ — a
+        // standalone page, deliberately not rebuilt as an Astro route), and
+        // oddfest.co, the 2026 site still live on its own domain. Both are
+        // history rather than the current offer, which is why they sit under
+        // the explainer instead of competing with the hero's own CTAs.
+        // `external: true` on a link opens it in a new tab — set it on
+        // oddfest.co (a different domain) and leave it off the archived
+        // page, which is on this site and carries its own way back.
+        lookBack: z.object({
+          label: z.string(),
+          thankYou: linkCta,
+          oldSite: linkCta,
+        }),
+        // The host/ODD responsibility split. Was `sharedLayer` until
+        // 2026-09-11; renamed because the thing it was named after is gone.
+        //
+        // `sharedLayer.platform` — the "shared platform" sub-block — was
+        // DELETED at Ronny's direct request, not moved. It described 2027
+        // programme and discovery-platform features that are still unbuilt
+        // and unconfirmed, which is precisely the promise-ahead-of-the-build
+        // this file forbids everywhere else (see `examples`, `programme`,
+        // `proof`). Do not reintroduce it until the platform exists.
+        //
+        // `stepsLabel` is the small label above the `howItWorks` steps, which
+        // now render inside this same section: the split and the steps are
+        // one argument — who does what, then what actually happens — and
+        // were two adjacent sections saying it twice.
+        ownership: z.object({
           headline: z.string(),
           host: z.object({ title: z.string(), body: z.string() }),
           odd: z.object({ title: z.string(), body: z.string() }),
-          platform: z.object({ title: z.string(), body: z.string() }),
           closing: z.string(),
+          stepsLabel: z.string(),
         }),
+        // Kept as a bare array of featureCards, NOT folded into `ownership`
+        // above, even though the two now render as one section: `howItWorks`
+        // is also a field on ODDspace, ODDagency and ODDstudio, and
+        // CloudCannon's _inputs are keyed by field name across the whole
+        // collection — changing the shape here would collide with theirs.
+        // See the `caseTeaser` note above for the same trap.
         howItWorks: z.array(featureCard),
+        // "What has happened before" — NEW on 2026-09-11. ODDfest 2026 in
+        // the past tense, honestly, as the reason the 2027 shape is what it
+        // is. This is the page's proof chapter, and it only works if it is
+        // true: same no-invented-figures rule as everywhere else in this
+        // file, and the section reads perfectly well carrying none.
+        // `chapters` is the year/title/body shape About's Timeline component
+        // already renders (named `chapters`, not `milestones`, to stay off
+        // About's CloudCannon key). `cta` links out to the archived 2026
+        // page alongside the same link in `lookBack` — a reader who arrives
+        // at this section has not necessarily seen the one further up.
+        history: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          chapters: z.array(z.object({ year: z.string(), title: z.string(), body: z.string() })),
+          closing: z.string(),
+          cta: linkCta,
+        }),
         // Optional at the object level only in the sense that it renders
         // nothing until real, verified 2027 dates/venues exist — same
         // "leave it out rather than invent it" rule as previousEdition used
@@ -542,10 +599,23 @@ const pages = defineCollection({
           closing: z.string(),
         }),
         examples: z.array(creativeWeekExample),
-        register: z.object({
+        // "How to join" — the page's conversion section. Was `register`
+        // (headline/body/one cta) until 2026-09-11; renamed and widened at
+        // Ronny's request into a clear, unmissable ask with two ways to act
+        // on it. `cta` is the real one: submit an event idea. `altCta` is
+        // for the reader who is interested but has nothing to submit yet,
+        // so the section has no dead end.
+        //
+        // `reassurance` exists because the single biggest reason a host does
+        // not submit is believing the idea is not finished enough to show
+        // anyone. Keep it; it is doing more work than the headline.
+        join: z.object({
+          eyebrow: z.string(),
           headline: z.string(),
           body: z.string(),
+          reassurance: z.string(),
           cta: linkCta,
+          altCta: linkCta,
         }),
         faq: z.array(faqItem),
       }),

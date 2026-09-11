@@ -145,8 +145,19 @@ test('no rendered page advertises a legacy domain as the current website', async
     // mailboxes and stay until @allthingsodd.co can actually receive mail —
     // see docs/IDENTITY_LAUNCH_MATRIX_2026-09-04.md. It is the *site* naming
     // a legacy domain as its own home that is the defect.
+    //
+    // /oddfest carries one deliberate exception, added 2026-09-11: a single
+    // link to oddfest.co in its "look back at 2026" pair, labelled as the
+    // 2026 site. That is the opposite of the defect this test was written
+    // for — it presents oddfest.co as history, explicitly, rather than as
+    // ODD's current home — so the route is checked by its own assertion
+    // below instead of being exempted outright.
     const withoutEmails = html.replace(/[\w.-]+@oddfest\.co/g, '');
-    expect(withoutEmails, `${route} presents oddfest.co as a website`).not.toContain('oddfest.co');
+    if (route !== '/oddfest') {
+      expect(withoutEmails, `${route} presents oddfest.co as a website`).not.toContain(
+        'oddfest.co',
+      );
+    }
 
     // "oddspace.co" appears legitimately as an Instagram handle
     // (instagram.com/oddspace.co, "Follow @oddspace.co"). The domain used as
@@ -155,6 +166,27 @@ test('no rendered page advertises a legacy domain as the current website', async
       /https?:\/\/(www\.)?oddspace\.co/,
     );
   }
+});
+
+test('ODDfest links to oddfest.co only as the labelled 2026 archive', async ({ page }) => {
+  await page.goto('/oddfest');
+
+  // Exactly one link to the legacy domain, and it has to say what it is. A
+  // future edit that drops "2026" from the label, or adds a second oddfest.co
+  // link somewhere the reader has no reason to read it as history, turns a
+  // deliberate archive pointer back into the defect the test above guards.
+  const legacy = page.locator('a[href*="oddfest.co"]').filter({ hasNotText: '@' });
+  await expect(legacy).toHaveCount(1);
+  await expect(legacy).toHaveText(/2026/);
+
+  // It leaves the site, so it opens in a new tab and carries rel=noreferrer —
+  // the same treatment every other outbound link on the site gets.
+  await expect(legacy).toHaveAttribute('target', '_blank');
+  await expect(legacy).toHaveAttribute('rel', 'noreferrer');
+
+  // And the archived thank-you page sits beside it, on our own domain.
+  const archive = page.locator('a[href="/oddfest-2026/"]');
+  await expect(archive.first()).toBeVisible();
 });
 
 test('no public mailto promises an @allthingsodd.co address that cannot receive mail', async ({

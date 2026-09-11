@@ -116,17 +116,17 @@ collections_config:
           The solid button in the hero — "Buy Blind Bird" on ODDference,
           "Become a member" on ODDspace (also reused in ODDspace's "Enter
           the space" section), "Start a conversation" on Work with ODD
-          (scrolls to the enquiry form). Home, ODDfest, ODDagency and About
-          don't use this field.
+          (scrolls to the enquiry form), and the submit-an-event link on
+          ODDfest. Home, ODDagency and About don't use this field.
         options:
           subtype: object
       secondaryCta:
         type: object
-        label: Secondary button (ODDference / ODDspace)
+        label: Secondary button (ODDfest / ODDference / ODDspace)
         comment: >-
           The outline hero button — "Partner with ODDference" on ODDference,
           "Organise an event" on ODDspace (also reused in ODDspace's "Enter
-          the space" section).
+          the space" section), and the look-back-at-2026 link on ODDfest.
         options:
           subtype: object
           required: false
@@ -151,11 +151,13 @@ collections_config:
           subtype: object
       heroSupport:
         type: text
-        label: Hero support line (ODDference only)
+        label: Hero support line (ODDfest / ODDference)
         comment: >-
-          NEW (2026-09-02 copywriting pass): the short practical-value
-          paragraph rendered under the hero's question-headline h1
-          ("title"), above the "meta" line.
+          The short practical-value paragraph rendered under the hero's h1,
+          above the "meta" line. On ODDference it sits under the
+          question-headline; on ODDfest (added 2026-09-11, when that hero
+          took ODDspace's full anatomy) under "Helsinki's creative week."
+          One or two sentences — it shares the screen with two buttons.
       heroPhotos:
         type: array
         label: Hero photo grid (ODDspace only)
@@ -554,26 +556,58 @@ collections_config:
         options:
           subtype: object
           required: false
-      register:
+      join:
         type: object
-        label: '"Register your event" (ODDfest only)'
+        label: '"How to join" (ODDfest only)'
         comment: >-
-          The primary CTA section — headline/body/cta. This is the real,
-          live "we're now collecting ideas for 2027" call, not a
-          leave-it-out-until-ready field like proof elsewhere: keep it
-          populated. Renders directly after "How it works" with a visually
-          larger CTA (2026-09-02 copywriting pass) — don't move it earlier.
+          The page's one ask — eyebrow/headline/body, two buttons and a line
+          of reassurance. This is the real, live "we're now collecting ideas
+          for 2027" call, not a leave-it-out-until-ready field like proof
+          elsewhere: keep it populated. "cta" is the main one (submit an
+          event idea); "altCta" is for a reader who is interested but has
+          nothing to submit yet, so the section has no dead end. Keep
+          "reassurance" — the commonest reason a host never submits is
+          believing their idea isn't finished enough to show anyone, and
+          that one line is what answers it. Renders directly after "How it
+          works"; don't move it earlier. (Was "register" until 2026-09-11.)
         options:
           subtype: object
-      sharedLayer:
+      ownership:
         type: object
-        label: '"You make the event. ODD builds the shared layer." (ODDfest only)'
+        label: '"How it works" — who does what (ODDfest only)'
         comment: >-
-          NEW (2026-09-02 copywriting pass): the host/ODD responsibility
-          split, right after "whatItIs". "platform.body" should only
-          promise 2027 programme/map/platform features that are actually
-          confirmed — don't turn it into a feature promise ahead of the
-          real build.
+          The host/ODD responsibility split, plus the closing line and the
+          small label above the four numbered steps ("How it works" below),
+          which render inside this same section. Was "sharedLayer" until
+          2026-09-11, when its "shared platform" sub-block was deleted: it
+          promised 2027 programme and discovery-platform features nobody had
+          built or confirmed. Don't put that promise back until the platform
+          actually exists and you can describe what it does.
+        options:
+          subtype: object
+      lookBack:
+        type: object
+        label: '"Look back at 2026" buttons (ODDfest only)'
+        comment: >-
+          The two archive links under "What ODDfest is": "thankYou" points at
+          the archived 2026 thank-you page hosted on this site at
+          /oddfest-2026/, and "oldSite" at oddfest.co, the 2026 site still
+          live on its own domain. Set "external: true" on a link to open it
+          in a new tab — it's on for oddfest.co (a different domain) and off
+          for the archived page, which is ours and has its own way back.
+        options:
+          subtype: object
+      history:
+        type: object
+        label: '"What has happened before" (ODDfest only)'
+        comment: >-
+          The page's proof chapter: ODDfest 2026 in the past tense, honestly,
+          as the reason 2027 has the shape it does. "chapters" is a timeline
+          of year/title/body beats. The same rule as everywhere else on this
+          site applies hardest here — never invent an audience, event,
+          venue or partner figure to make the story sound bigger. The
+          section reads perfectly well carrying no numbers at all, and a
+          number nobody can stand behind is worse than none.
         options:
           subtype: object
       examplesIntro:
