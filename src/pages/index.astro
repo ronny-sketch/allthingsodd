@@ -89,10 +89,20 @@ const preloadImage = await mosaicImage(firstArchiveImage);
 
   <div class="whatoddis-wrap">
     <FloatingCloud images={cloudPhotos} />
+    {
+      /* `bodySize="large"` (2026-09-11): this is the page's main explanatory
+         passage, not a supporting note, and at SectionIntro's shared 0.98rem
+         grey default it read as fine print under a very large headline. The
+         headline itself came down to one sentence in the same pass — see
+         index.json — so the weight moves from the display line to the copy
+         that actually explains ODD. The body's blank lines render as real
+         paragraphs; see SectionIntro's own comment. */
+    }
     <SectionIntro
       eyebrow={page.whatOddIs.eyebrow}
       headline={page.whatOddIs.headline}
       body={page.whatOddIs.body}
+      bodySize="large"
       warpHeadline
     />
     {
@@ -120,34 +130,89 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   </div>
 
   {
-    /* "What we do" (ProgramGrid, the three real platform destinations) moves
-       directly under "Why ODD" (2026-09-02 copywriting pass — MOVE + REWRITE:
-       once the reader understands why ODD exists, the next question is what
-       it actually does, not who it's for). "Who ODD is for" (Converge) now
-       follows the proof module instead of sitting glued to this grid — see
-       below. */
+    /* --- Homepage section order, set in the 2026-09-11 reorg. ---
+       Hero → Why ODD → Who it's for → What we do → Work with ODD → Already in
+       motion → Featured in → video → The way in is by doing.
+
+       The reasoning, which is the part worth keeping: the page answers the
+       reader's questions in the order they actually arrive. Why does this
+       exist → is it for me → then what is it, concretely → how do I go
+       deeper → why should I believe any of it → a last look at what it feels
+       like → pick a door.
+
+       Two of those are reversals of earlier passes, deliberately:
+
+       * "Who ODD is for" moves back above "What we do". The 2026-09-02 pass
+         put it after the proof module on the theory that "what" precedes
+         "who". In review that lost the reader: ODDfest/ODDference/ODDspace
+         are three names that mean nothing until you know which of them is
+         aimed at you, and the audience split is what makes the grid legible
+         rather than the other way round.
+       * "Work with ODD" moves back to directly under "What we do". The
+         2026-09-03 pass moved it away because, flush under the grid, it read
+         as a fourth product card. The fix for that is the band's own styling
+         and spacing (both changed here), not its position — its actual job
+         is "interested in something bigger than the three above?", and that
+         question only lands while the three are still on screen. This also
+         restores the nav's own logic on the page: three products, then Work
+         with ODD underneath them. */
   }
+  <Converge
+    audienceEyebrow="Who ODD is for"
+    intro={page.twoWaysIn.intro}
+    business={page.twoWaysIn.business}
+    creative={page.twoWaysIn.creative}
+    creativeFirst
+  />
+
   <ProgramGrid title="What we do" cards={page.platforms} />
 
   {
-    /* "Already in motion" — NEW SECTION (2026-09-02 copywriting pass): the
-       homepage's first hard proof, right after the reader has seen what ODD
-       does. SectionIntro carries the eyebrow/headline/body/cta; the bare
-       ProofGrid underneath (no eyebrow/title of its own — see
-       content.config.ts's proofSection comment) renders the stat row plus
-       the Impact Report link. Guarded on `proofIntro` (not `proof`) since
-       the editorial framing is what makes this a real section, not just a
-       stat grid.
+    /* "Work with ODD" — a quiet organisational pathway, not a fourth equal
+       product card (2026-08-31: it used to be a giant photo card inside the
+       grid above, competing visually with ODDfest/ODDference/ODDspace, which
+       misrepresents the site's real hierarchy — ODDagency / Work with ODD are
+       deeper ways to work with ODD, not equal masterbrand programmes).
 
-       2026-09-04: the numbers are now ODD's cumulative totals across its
-       first two years (5,000+ / 500+ / 100+ / €400K+), not the ODDfest 2025
-       snapshot this launched with — the homepage's job is to say what ODD
-       has built, and a first-event-only row understated it by half. The
-       2025 figures themselves are historically correct and stay where they
-       belong, on About's own year-by-year impact section; this is not a
-       rewrite of history. The report link keeps its 2025 scope explicit via
-       `reportNote` so four cumulative figures never read as though one
-       year's report evidences them. */
+       Restyled 2026-09-11 so it can sit directly under the grid again without
+       reading as a fourth card: it now carries a real eyebrow/title/body
+       stack and a pill-shaped action instead of a single line of small text,
+       an amber keyline that ties it to nothing else in the grid, and enough
+       space above it to read as the next move rather than the last item. */
+  }
+  <div class="wwo-band wrap">
+    <a class="wwo-band-link" href={page.workWithOdd.href}>
+      <span class="wwo-band-text">
+        <span class="eyebrow">{page.workWithOdd.eyebrow}</span>
+        <span class="wwo-band-title">{page.workWithOdd.title}</span>
+        {page.workWithOdd.body && <span class="wwo-band-body">{page.workWithOdd.body}</span>}
+      </span>
+      {
+        /* A span, not the Pill primitive: Pill renders a <button> when it has
+           no href, and the whole band is already one <a>, so a real nested
+           control would be invalid. Styled from the same tokens Pill uses. */
+      }
+      <span class="wwo-band-go">{page.workWithOdd.linkLabel}</span>
+    </a>
+  </div>
+
+  {
+    /* "Already in motion" — the homepage's first hard proof, now that the
+       reader has seen what ODD does and how to work with it. SectionIntro
+       carries the eyebrow/headline/body/cta; the bare ProofGrid underneath
+       (no eyebrow/title of its own — see content.config.ts's proofSection
+       comment) renders the stat row plus the Impact Report link. Guarded on
+       `proofIntro` (not `proof`) since the editorial framing is what makes
+       this a real section, not just a stat grid.
+
+       2026-09-04: the numbers are ODD's cumulative totals across its first
+       two years (5,000+ / 500+ / 100+ / €400K+), not the ODDfest 2025
+       snapshot this launched with — the homepage's job is to say what ODD has
+       built, and a first-event-only row understated it by half. The 2025
+       figures stay where they belong, on About's year-by-year impact section.
+       The report link keeps its 2025 scope explicit via `reportNote` so four
+       cumulative figures never read as though one year's report evidences
+       them. */
   }
   {
     page.proofIntro && (
@@ -173,26 +238,13 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   }
 
   {
-    /* "Who ODD is for" (Converge, audience explanation only — the small
-       per-track destination buttons were removed 2026-08-30, see
-       Converge.astro's own comment) now follows the proof module rather
-       than sitting glued to "What we do" — see the MOVE above. */
-  }
-  <Converge
-    audienceEyebrow="Who ODD is for"
-    intro={page.twoWaysIn.intro}
-    business={page.twoWaysIn.business}
-    creative={page.twoWaysIn.creative}
-  />
-
-  {
-    /* "Featured in" — proof sitting after the audience/product story rather
-       than competing with the hero above the fold. `compact` (see
-       LogoStrip.astro's own comment) drops the bordered section-head so it
-       reads as a continuation of the page, not a new chapter. Filtered to
-       verified press coverage only (see `homePressLogos` above) — the full
-       featuredIn list also carries funders/award bodies/industry
-       organisations, which aren't "featured in" claims. */
+    /* "Featured in" — the second half of one social-proof chapter, reading
+       straight on from the numbers above rather than opening a new one.
+       `compact` (see LogoStrip.astro's own comment) drops the bordered
+       section-head to keep that continuity. Filtered to verified press
+       coverage only (see `homePressLogos` above) — the full featuredIn list
+       also carries funders/award bodies/industry organisations, which aren't
+       "featured in" claims. */
   }
   {
     homePressLogos.length > 0 && (
@@ -206,34 +258,6 @@ const preloadImage = await mosaicImage(firstArchiveImage);
       />
     )
   }
-
-  {
-    /* "Work with ODD" — a quiet organisational pathway, not a fourth equal
-       product card (2026-08-31 final implementation pass: it used to be a
-       giant photo card inside the grid above, competing visually with
-       ODDfest/ODDference/ODDspace, which the brief flags as
-       misrepresenting the site's real hierarchy — ODDnetwork/ODDagency/
-       Work with ODD are deeper ways to work with ODD, not equal masterbrand
-       programmes). A slim single-row banner, not a card and not a photo.
-       2026-09-03 final integration pass: MOVEd down from directly under the
-       three-across platforms grid to here — the home flow puts the
-       organisational path after the proof and the audience routing, and a
-       band sitting immediately under the three product cards read as a
-       fourth one regardless of how quiet its styling was. It used to follow
-       a "What's happening" activity list, removed outright on 2026-09-04
-       (see the All Things ODD identity/launch pass) — this band now closes
-       the organisational chapter directly after "Featured in". */
-  }
-  <div class="wwo-band wrap">
-    <a class="wwo-band-link" href={page.workWithOdd.href}>
-      <span class="wwo-band-text">
-        <span class="eyebrow">{page.workWithOdd.eyebrow}</span>
-        <span class="wwo-band-title">{page.workWithOdd.title}</span>
-        {page.workWithOdd.body && <span class="wwo-band-body">{page.workWithOdd.body}</span>}
-      </span>
-      <span class="wwo-band-go">{page.workWithOdd.linkLabel}</span>
-    </a>
-  </div>
 
   {
     /* The grouped Partners/Media/Supported by/Collaborators logo wall stays
@@ -255,9 +279,13 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   {page.caseTeaser && <CaseGrid items={[page.caseTeaser]} />}
 
   {
-    /* Brand marquee (ODDfest/ODDference/ODDspace banner) is off here — those
-       three names are already the "What we do" cards a few sections above;
-       see Aftermovie.astro's `showBrandMarquee` comment. */
+    /* The one moving-image break on the page, and it earns its place by
+       position: everything above it is argument, everything below it is the
+       ask. A page that goes straight from a logo wall into four CTA cards
+       gives the reader nothing to feel before deciding. Brand marquee
+       (ODDfest/ODDference/ODDspace banner) is off here — those three names
+       are already the "What we do" cards above; see Aftermovie.astro's
+       `showBrandMarquee` comment. */
   }
   <Aftermovie
     poster={page.aftermovie.poster}
@@ -265,7 +293,13 @@ const preloadImage = await mosaicImage(firstArchiveImage);
     showBrandMarquee={false}
   />
 
-  <ParticipateBand title={page.participateTitle} items={page.participate} />
+  {
+    /* Grouped by audience (2026-09-11), creatives first — the order lives in
+       index.json's `participate` array, not here. See ParticipateBand's
+       `groupByAudience` comment for why the Creative/Business labels moved
+       out of the cards and onto headings above them. */
+  }
+  <ParticipateBand title={page.participateTitle} items={page.participate} groupByAudience />
 </Layout>
 
 <style>
@@ -280,19 +314,32 @@ const preloadImage = await mosaicImage(firstArchiveImage);
     margin: 1.8rem auto 0;
     position: relative;
   }
-  /* 2026-08-31 revision: "What ODD is" reads as the homepage's own second
-     hero moment (it's the first real statement after the mosaic), so its
-     scale now matches HeroCentered's h1 — the same opening move About makes
-     with its own "About ODD" hero — instead of the smaller
-     --text-heading-md this used to be scoped down to (a decision from the
-     2026-08-30 revision that read as undersized/secondary against the
-     bigger single-paragraph intro sections on other pages). --text-display-lg
-     is the closest existing token to HeroCentered's own literal
-     clamp(2.2rem, 5.5vw, 4rem) h1 size — reused rather than hand-rolling a
-     near-duplicate value, per the tokens-first rule. */
-  .whatoddis-wrap :global(.section-intro-inner h2),
-  .whatoddis-wrap :global(.section-intro-inner .section-intro-warping-headline) {
-    font: var(--text-display-lg);
+  /* Headline scale, 2026-09-11. This was pinned to --text-display-lg
+     (4.6rem) in the 2026-08-31 revision, when the headline was two short
+     sentences and needed the weight to read as the page's second hero
+     moment. It is now one long sentence, and at 4.6rem inside SectionIntro's
+     42rem block that set as seven lines of display type — a wall, with the
+     body it is supposed to introduce reduced to a footnote underneath. That
+     is the opposite of what this section is for.
+
+     The override is gone: SectionIntro's own clamp(1.9rem, 4vw, 2.9rem) is
+     the size, and the block widens instead, which buys the line count back
+     without shrinking the type twice. Still the largest headline on the page
+     after the hero — just not louder than the thing it introduces. */
+  .whatoddis-wrap :global(.section-intro-inner) {
+    max-width: 52rem;
+  }
+  /* The cloud is decorative (aria-hidden, alt="") and must never paint over
+     the words it frames. FloatingCloud is absolutely positioned and comes
+     first in this wrapper, so by default it painted above the section, which
+     is in normal flow — at the top of the arc that put a photo directly on
+     the "Why ODD" eyebrow. Raising the text, rather than moving the photo,
+     because the arc's apex will keep landing near the section's first line
+     whenever the copy length changes. (.whatoddis-ctas below already carries
+     its own position: relative for the same reason.) */
+  .whatoddis-wrap :global(.section-intro) {
+    position: relative;
+    z-index: 1;
   }
   /* HeroCentered's eyebrow reads brighter (--color-paper-80) than
      SectionIntro's shared default (--color-paper-60) — matched here for the
@@ -300,15 +347,17 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   .whatoddis-wrap :global(.section-intro-inner .eyebrow) {
     color: var(--color-paper-80);
   }
-  /* "Work with ODD" quiet pathway band — one slim row, deliberately far
-     quieter than a product card: a plain bordered strip with a text pair and
-     a link, not a card, not a photo, not its own headed section. It used to
-     sit flush under the platforms grid (margin-top: 1px, with #four's bottom
-     padding trimmed to match); since the 2026-09-03 MOVE it closes the
-     page's organisational chapter instead, so it carries its own section
-     rhythm rather than borrowing the grid's. */
+  /* "Work with ODD" pathway band — one row, deliberately not a product card:
+     no photo, no grid cell, its own full-width strip. It sits directly under
+     the three platform cards again (2026-09-11), which is where its question
+     — "want something bigger than one of those three?" — actually lands.
+     --space-10 above it is the load-bearing number: flush (the original
+     margin-top: 1px) made it read as a fourth card in the grid, and
+     --space-16 (the 2026-09-03 value, from when it closed a different
+     chapter) broke the connection to the grid entirely. This is a clear
+     break, one step down in the same passage. */
   .wwo-band {
-    margin-top: var(--space-16);
+    margin-top: var(--space-10);
   }
   @media (max-width: 640px) {
     .wwo-band {
@@ -366,57 +415,109 @@ const preloadImage = await mosaicImage(firstArchiveImage);
     }
   }
 
-  /* Ties "Featured in" visually to "Who ODD is for" above it without
-     collapsing the gap to zero — enough air to read as its own line of
-     proof, not a new chapter. */
-  :global(.converge + .logo-strip-section.is-compact) {
+  /* "Featured in" now reads straight on from "Already in motion" rather than
+     from "Who ODD is for" (the 2026-09-11 reorg put the two proof modules
+     together) — enough air that the logos are their own line of proof, not so
+     much that they start a new chapter. */
+  .home-proof + :global(.logo-strip-section.is-compact) {
     padding-top: var(--space-6);
   }
+
+  /* The band itself, restyled 2026-09-11. The previous version was a single
+     baseline-aligned row of small text — at the bottom of the page that read
+     as a footnote, which was the point then. Directly under the platform
+     cards it needs to read as a real next step instead, so the eyebrow/title/
+     body now stack the way a card's do, the title is display-scale, and the
+     action is a pill rather than a line of uppercase text. What keeps it from
+     becoming a fourth product card is everything it still doesn't have: no
+     photo, no grid cell, full page width, and a quieter ground. */
   .wwo-band-link {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem 2rem;
-    padding: 1.6rem var(--gutter-wide);
+    gap: 1.4rem 2.5rem;
+    padding: 2.1rem var(--gutter-wide);
     background: var(--color-backstage);
     border: 1px solid var(--color-paper-12);
+    /* The one accent: a keyline in the amber the site already uses for the
+       creative/organisational side, so the band is visibly a different kind
+       of thing from the three cards above without shouting. */
+    border-left: 2px solid var(--color-amber-bright);
     text-decoration: none;
     color: inherit;
-    transition: border-color var(--duration-fast) ease;
+    transition:
+      border-color var(--duration-fast) ease,
+      background-color var(--duration-fast) ease;
   }
-  .wwo-band-link:hover {
-    border-color: var(--color-paper-40);
+  @media (hover: hover) {
+    .wwo-band-link:hover {
+      border-color: var(--color-paper-40);
+      border-left-color: var(--color-amber-bright);
+      background: var(--color-bg);
+    }
   }
+  /* Stacked, not baseline-aligned on one line — a title and a sentence of
+     explanation running into each other horizontally is what made the old
+     version hard to scan. */
   .wwo-band-text {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.4rem 0.9rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+    min-width: 0;
   }
   .wwo-band-title {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 1.15rem;
+    /* Deliberately below ProgramGrid's card titles: this is the step after
+       those three, not a fourth peer. */
+    font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+    line-height: 1.15;
     color: var(--color-paper);
   }
   .wwo-band-body {
     font-family: var(--font-body);
-    font-size: 0.85rem;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    max-width: 52ch;
     color: var(--color-paper-60);
   }
+  /* Pill-shaped, from the same tokens Pill.astro uses — but a <span>, since
+     the whole band is one <a> and a real nested control would be invalid
+     HTML. See the markup comment above. Because it isn't focusable itself,
+     the band's own :focus-visible is what the keyboard shows. */
   .wwo-band-go {
     flex-shrink: 0;
+    display: inline-block;
+    border-radius: 999px;
+    padding: 0.7rem 1.4rem;
+    border: 1px solid rgb(226 223 222 / 35%);
     font-family: var(--font-body);
     font-weight: 600;
-    font-size: 0.78rem;
-    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--color-paper-80);
+    color: var(--color-paper);
+    transition:
+      border-color var(--duration-fast) ease,
+      color var(--duration-fast) ease;
+  }
+  @media (hover: hover) {
+    .wwo-band-link:hover .wwo-band-go {
+      border-color: var(--color-amber-bright);
+      color: var(--color-amber-bright);
+    }
   }
   @media (max-width: 640px) {
     .wwo-band-link {
-      padding: 1.4rem var(--gutter);
+      padding: 1.7rem var(--gutter);
+      /* The action goes full-width under the text rather than sitting in a
+         narrow column beside it — at this width there is no "beside". */
+      align-items: stretch;
+    }
+    .wwo-band-go {
+      text-align: center;
     }
   }
 </style>

@@ -100,18 +100,16 @@ export function buildDeclaration(measurementId: string | null): CategoryDeclarat
       id: 'preferences',
       label: 'Preferences',
       summary:
-        'Lets embedded content from other services load — currently only the ODDspace events calendar.',
-      entries: [
-        {
-          name: 'Google Calendar embed',
-          provider: 'Google Ireland Limited',
-          purpose:
-            'Displays the live ODDspace events calendar. Google sets its own cookies when the calendar loads. Without this consent the calendar is replaced by a button you can press to load it just for this visit.',
-          retention: 'Set and controlled by Google',
-          kind: 'cookie',
-          scope: 'Only on the ODDspace page',
-        },
-      ],
+        'Lets embedded content from other services load. We do not currently embed any — this category is listed so one cannot be added quietly.',
+      // Emptied 2026-09-11: the Google Calendar embed on /oddspace was this
+      // category's only entry, and that page now publishes a hand-kept list
+      // of events instead (see src/pages/oddspace.astro). An empty entries
+      // array collapses the whole category out of the banner via
+      // togglableCategories() below — the same contract `statistics` has
+      // when no GA4 property is configured — so a visitor is no longer asked
+      // to decide about an embed that no longer exists. Re-adding an embed
+      // means re-adding its entry here, which restores the toggle.
+      entries: [],
     },
     {
       id: 'statistics',

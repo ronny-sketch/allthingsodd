@@ -32,7 +32,14 @@ const linkCta = z.object({
 
 const trackItem = z.object({
   label: z.string(),
-  meta: z.string(),
+  // Optional since the 2026-09-11 homepage reorg: Converge now renders each
+  // side's `tracks` as a row of real buttons (Pill), where a second line of
+  // small meta text has nowhere to go and nothing to say — the destination
+  // name *is* the label. Kept in the shape (rather than deleted) because
+  // Converge still renders it as a captioned list row when it's present, and
+  // a future caller stacking several same-kind destinations under one side
+  // would want that distinction back. See Converge.astro.
+  meta: z.string().optional(),
   href: z.string(),
 });
 
@@ -363,7 +370,7 @@ const pages = defineCollection({
     // branches below instead of forced onto all four.
     const subpageBase = z.object({
       seo,
-      _slug: z.enum(['oddfest', 'oddference', 'oddagency', 'oddspace']),
+      _slug: z.enum(['oddfest', 'oddference', 'oddagency', 'oddspace', 'oddstudio']),
       eyebrow: z.string(),
       title: z.string(),
       meta: z.string(),
@@ -681,7 +688,19 @@ const pages = defineCollection({
       //
       // 2026-08-30 rebuild: restructured around two conversion goals
       // (become a member / organise an event) instead of one section per
-      // fact. `heroMedia` (shared, subpageBase) is unused here — the new
+      // fact.
+      //
+      // 2026-09-11 cut, at Ronny's direct request: the page is now seven
+      // sections — hero / what it is / what's here / enter the space / the
+      // bigger picture / what's happening / FAQ. `coCreative`, `community`,
+      // `networkBeyondRoom` and `proof` are gone from the template (not
+      // "hidden"): each was a second, softer restatement of something the
+      // four surviving prose sections already say, and an empty `proof`
+      // had been rendering nothing since 2026-09-02 anyway. The Google
+      // Calendar embed is gone too, replaced by `events` — a hand-kept
+      // list of the things that actually recur or are booked, which is
+      // readable at a glance where a month grid of mostly-empty days was
+      // not. See src/pages/oddspace.astro. `heroMedia` (shared, subpageBase) is unused here — the new
       // hero takes a photo grid via `heroPhotos` instead of one video/image
       // — so oddspace.json just sets `heroMedia: {}`. The old dedicated
       // `location` section and `features` grid are gone (a whole section for
@@ -699,10 +718,6 @@ const pages = defineCollection({
         // follow-up line rendered directly under it, not a hero paragraph.
         intro: z.string(),
         whatItIs: sectionIntro,
-        // NEW SECTION (2026-09-02 copywriting pass) — "Co-creative, not
-        // just coworking": the clearest differentiation from ordinary
-        // coworking, right after `whatItIs`.
-        coCreative: sectionIntro,
         // The real street address + a directions link — shown as one quiet
         // line inside "Enter the space" (section 6), not a dedicated
         // section (see the comment above this extend block). `directionsUrl`
@@ -725,26 +740,38 @@ const pages = defineCollection({
             body: z.string(),
             bullets: z.array(z.string()).optional(),
             image: image().optional(),
+            // The card's own CTA. Added 2026-09-11 for ODDstudio (the one
+            // space with a page of its own) and extended the same day to
+            // every card: "what's here" is where a reader decides which
+            // room they want, so each card now routes straight to the
+            // enquiry for that room instead of making them scroll back to
+            // a generic pair of buttons. Set both or neither; a label with
+            // no href renders nothing (SpaceShowcase.astro).
+            href: z.string().optional(),
+            goLabel: z.string().optional(),
           }),
         ),
-        community: sectionIntro,
-        proof: proofSection,
         // A single tier, not an array like ODDference's tickets/Membership's
         // tiers — ODDspace's real pricing is deliberately one flat rate
         // ("one membership, full access, no tiers"), so this reuses the
         // same pricingTier shape as a single object instead of forcing an
         // N=1 array just for consistency with those other pages.
         membership: pricingTier,
-        // NEW SECTION (2026-09-02 copywriting pass) — "The network is
-        // bigger than the room": the physical member base is the anchor,
-        // not the boundary. [HUMAN DECISION — EXTERNAL MEMBER MODEL] the
-        // doc's own note: no formal external-member product/pricing exists
-        // yet, so this stays a generic "get in touch" CTA, not a paid tier
-        // — see oddspace.json's `cta` value and the final report.
-        networkBeyondRoom: sectionIntro,
+        // The one carve-out from "one membership, full access" (2026-09-11):
+        // ODDstudio is booked separately. This renders directly under the
+        // €150 price rather than further down the page, because a member who
+        // learns this later learns it from an invoice. Required, not
+        // optional — while the carve-out is true, the page must say so.
+        studioCallout: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          cta: linkCta,
+        }),
         // Event-space rental rates (member pricing) — a plain price list,
         // not the fuller pricingTier shape (no benefits list/CTA per row
-        // needed here, just name/price/note).
+        // needed here, just name/price/note). Rendered inside the event
+        // half of "Enter the space", next to the button that acts on them.
         rentalRates: z.array(
           z.object({ name: z.string(), price: z.string(), note: z.string().optional() }),
         ),
@@ -767,18 +794,33 @@ const pages = defineCollection({
         // distinct from `whatItIs` (section 2's concrete "what is this
         // place" explainer) so the two don't repeat each other.
         vision: sectionIntro,
-        // Optional — the live Google Calendar embed. Omit rather than embed
-        // a broken/placeholder calendar if the real one isn't available.
-        calendar: z
+        // "What's happening" (2026-09-11, replacing the consent-gated
+        // Google Calendar embed this field used to describe). A hand-kept
+        // list beats the embed for three reasons that were all true of the
+        // live calendar: a month grid gave a first-time reader no way to
+        // tell a weekly open morning from a one-off festival, half of what
+        // is on that calendar is an internal room booking nobody can
+        // attend, and the embed could not load at all until the visitor
+        // accepted third-party cookies. Reuses `programmeItem` and
+        // ProgrammeList — the same shape ODDfest's programme uses — rather
+        // than a fourth list component.
+        //
+        // Publish only what a stranger can actually turn up to or book,
+        // and only what is confirmed: this list is edited by hand, so a
+        // cancelled or moved date stays wrong until someone fixes it. The
+        // canonical booking calendar stays internal.
+        events: z
           .object({
             eyebrow: z.string(),
             title: z.string(),
             note: z.string().optional(),
-            embedUrl: z.string(),
+            items: z.array(programmeItem),
+            cta: linkCta.optional(),
           })
           .optional(),
-        // The live @oddspace.co Instagram wall under the calendar (2026-09-03
-        // final integration pass). Only the editorial framing lives here —
+        // The live @oddspace.co Instagram wall, under the events list
+        // (2026-09-03 final integration pass; it sat under the calendar
+        // embed until that was replaced on 2026-09-11). Only the editorial framing lives here —
         // which account, which provider and how many posts are technical
         // config, in src/scripts/oddspace-instagram-config.ts, per the CMS
         // rules in AGENTS.md. Optional so the section can be removed from
@@ -791,6 +833,92 @@ const pages = defineCollection({
           })
           .optional(),
         faq: z.array(faqItem),
+      }),
+
+      // ODDstudio (2026-09-11) — the recording/production room inside
+      // ODDspace, run with TUNEMENT. It exists as its own page rather than a
+      // longer section on /oddspace for one commercial reason: it is the one
+      // thing in the building that is NOT covered by the €150 membership, and
+      // burying that in a fourth "spaces" card is how a member finds out by
+      // being invoiced. /oddspace keeps the one-line correction and links
+      // here; the full offer, rates, rules and terms live here.
+      //
+      // Deliberately reuses `subpageBase` (so the rails/hero/SEO behave like
+      // every other subpage) plus ODDspace's own `heroPhotos`, `membership`
+      // and `howItWorks` shapes, per the reuse-before-inventing rule. Only
+      // the genuinely studio-specific fields are new.
+      subpageBase.extend({
+        _template: z.literal('oddstudio'),
+        // Narrowed from subpageBase's optional: this page's whole job is to
+        // get someone to book the room, so the booking CTA is not something
+        // an editor should be able to empty. Same for the hero grid —
+        // SpaceHero has no no-photo state.
+        primaryCta: linkCta,
+        secondaryCta: linkCta,
+        heroPhotos: z.array(z.object({ image: image(), alt: z.string() })),
+        // The short human line under the hero, same role as oddspace's.
+        intro: z.string(),
+        whatItIs: sectionIntro,
+        // Same shape as oddspace's `spaces` — name/body/bullets/photo,
+        // rendered by the same SpaceShowcase component. Here it's the four
+        // equipment groups (monitoring, mics, instruments, the room itself)
+        // rather than four rooms.
+        kit: z.array(
+          z.object({
+            name: z.string(),
+            body: z.string(),
+            bullets: z.array(z.string()).optional(),
+            image: image().optional(),
+          }),
+        ),
+        // The framing above the pricing: says plainly that the studio is not
+        // in the €150 membership. If this text ever stops saying that, the
+        // whole reason this page exists is gone — see the note above and
+        // tests/functional/oddstudio.spec.ts.
+        access: sectionIntro,
+        // The €250/month combined tier (ODDspace + studio). Single object,
+        // not an array, for the same reason oddspace's is — there is one.
+        membership: pricingTier,
+        // Two separate rate lists because they are two different offers, not
+        // one list with a qualifier column: members book at an hourly member
+        // rate, everyone else buys from the standard card. Keeping them apart
+        // is what stops the page implying a non-member can pay the member
+        // rate. Same row shape as oddspace's `rentalRates`.
+        memberRates: z.array(
+          z.object({ name: z.string(), price: z.string(), note: z.string().optional() }),
+        ),
+        publicRates: z.array(
+          z.object({ name: z.string(), price: z.string(), note: z.string().optional() }),
+        ),
+        // VAT + payment terms. One string, under both rate tables.
+        ratesNote: z.string(),
+        howItWorks: z.array(featureCard),
+        houseRules: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          items: z.array(z.string()),
+        }),
+        // The individual-booking terms, rendered in the same accordion as
+        // every FAQ on the site — they are genuinely question-shaped and an
+        // accordion is how people read terms they mostly already accept.
+        terms: z.array(faqItem),
+        // Who actually runs the room. TUNEMENT is a real third party, so this
+        // block carries its own contact and privacy-policy links rather than
+        // implying ODD handles studio bookings or studio booking data.
+        // Jarkko's personal mobile is deliberately NOT a field here — it is
+        // in the internal house-rules document, and publishing a private
+        // number on a public page is a decision for him, not for this repo.
+        operator: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          image: image().optional(),
+          imageAlt: z.string().optional(),
+          cta: linkCta,
+          privacyPolicy: linkCta.optional(),
+        }),
+        // Photographer credit for the whole set on this page.
+        photoCredit: z.string().optional(),
       }),
 
       z.object({

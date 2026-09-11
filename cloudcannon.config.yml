@@ -53,11 +53,14 @@ collections_config:
         type: object
         label: '"Work with ODD" quiet pathway card (Home only)'
         comment: >-
-          A slim organisational banner closing the homepage's
-          organisational chapter, after the proof, audience routing and
-          "What's happening" — deliberately not another giant photo card,
-          since Work with ODD is a deeper way to work with ODD, not a fourth
-          equal masterbrand product.
+          A full-width banner sitting directly under the three platform
+          cards (moved back there 2026-09-11) — the next step after them,
+          for anyone wanting something bigger than one programme.
+          Deliberately not another giant photo card: Work with ODD is a
+          deeper way to work with ODD, not a fourth equal masterbrand
+          product, and what keeps it from reading as one is that it has no
+          photo and no grid cell. Its "body" is one short sentence — this
+          band is a signpost, not a pitch.
         options:
           subtype: object
       pathways:
@@ -91,6 +94,14 @@ collections_config:
           of a single-link `closingCta`). Not on ODDspace — its rebuilt
           "Enter the space" section replaces this with its own dedicated
           membership/event-enquiry pair.
+
+          On Home each card's "audience" ("For creatives" / "For business")
+          renders as a heading ABOVE its run of cards, not as a label inside
+          them (2026-09-11) — so cards sharing an audience must stay next to
+          each other in this list, and the creative ones come first. That
+          creatives-before-business order is a sitewide rule, and a test
+          fails the build if this array is reordered against it. Elsewhere
+          "audience" is just a small label inside the card.
         options:
           structures: _structures.cta
           disable_add: false
@@ -247,7 +258,17 @@ collections_config:
           subtype: object
       whatOddIs:
         type: object
-        label: '"What ODD is" (Home only)'
+        label: '"Why ODD" (Home only)'
+        comment: >-
+          The homepage's main explanatory passage. Keep the headline to ONE
+          sentence — it sets at display scale inside a ring of photography,
+          and a second sentence turns it into a wall of type. The
+          explanation belongs in the body underneath, where it is set larger
+          than a normal section body precisely so it can carry that weight.
+          In the body, leave a BLANK LINE between points and each becomes
+          its own paragraph — three short spaced paragraphs are far easier
+          to take in here than one block, which is what this was until
+          2026-09-11.
         options:
           subtype: object
       whatItIs:
@@ -294,26 +315,6 @@ collections_config:
           paragraph), rendered after the Pathways list, not before it.
         options:
           subtype: object
-      coCreative:
-        type: object
-        label: '"Co-creative, not just coworking" (ODDspace only)'
-        comment: >-
-          NEW (2026-09-02 copywriting pass): the clearest differentiation
-          from ordinary coworking, rendered right after "whatItIs".
-        options:
-          subtype: object
-      networkBeyondRoom:
-        type: object
-        label: '"The network is bigger than the room" (ODDspace only)'
-        comment: >-
-          NEW (2026-09-02 copywriting pass), rendered between the
-          membership zone and the event-use/rental-rates zone. [HUMAN
-          DECISION — EXTERNAL MEMBER MODEL] no formal external-member
-          product/pricing exists yet — keep the "cta" generic ("get in
-          touch"), don't promise a paid tier or specific benefits until
-          that product is defined.
-        options:
-          subtype: object
       visit:
         type: object
         label: Address + directions (ODDspace only)
@@ -324,18 +325,16 @@ collections_config:
           address in "address"; don't point it anywhere else.
         options:
           subtype: object
-      community:
-        type: object
-        label: '"Who it''s for" (ODDspace only)'
-        options:
-          subtype: object
       spaces:
         type: array
         label: The four spaces (ODDspace only)
         comment: >-
           Co-working / event & gallery / auditorium / studio, each with its
-          own photo. The membership benefits list itself now lives on
-          "membership" below, not here.
+          own photo and its own button ("goLabel" + "href" — the label on
+          the button and where it goes; leave both empty for no button).
+          Point each one at the enquiry for that room, or at a real page.
+          The membership benefits list itself now lives on "membership"
+          below, not here.
         options:
           structures: _structures.oddspace_space
           disable_add: false
@@ -352,11 +351,101 @@ collections_config:
           one rate, no tiers.
         options:
           subtype: object
+      studioCallout:
+        type: object
+        label: '"The studio is not included" callout (ODDspace only)'
+        comment: >-
+          Sits directly under the EUR150 membership price and is the one
+          place that page states ODDstudio is booked separately. Edit the
+          wording freely, but it must keep saying that the studio is not in
+          the membership — that is the whole reason the block exists, and
+          tests/functional/oddstudio.spec.ts fails if it stops. Keep the
+          figures in step with the ODDstudio page's own rates.
+        options:
+          subtype: object
+      kit:
+        type: array
+        label: What's in the room (ODDstudio only)
+        comment: >-
+          The four equipment groups — monitoring, microphones, instruments,
+          the room itself. Same card shape as ODDspace's "spaces". Only list
+          equipment that is genuinely in the studio; this is what someone
+          books on.
+        options:
+          required: false
+        cascade: true
+      access:
+        type: object
+        label: Access + pricing intro (ODDstudio only)
+        comment: >-
+          The paragraph that states the studio is not part of the EUR150
+          ODDspace membership. Same rule as studioCallout above — reword it,
+          but do not remove the fact.
+        options:
+          subtype: object
+      memberRates:
+        type: array
+        label: Studio rates for ODDspace members (ODDstudio only)
+        comment: >-
+          Deliberately a separate list from publicRates so the page can never
+          imply a non-member books at the member rate. Real, current prices
+          only.
+        options:
+          required: false
+        cascade: true
+      publicRates:
+        type: array
+        label: Studio rates without a membership (ODDstudio only)
+        comment: >-
+          The standard rate card for anyone without an ODDspace membership.
+        options:
+          required: false
+        cascade: true
+      ratesNote:
+        type: text
+        label: VAT + payment terms (ODDstudio only)
+        comment: >-
+          Shown under both rate tables. VAT treatment and payment terms are a
+          legal requirement on a published price, not a nicety — do not empty
+          this.
+      houseRules:
+        type: object
+        label: Studio house rules (ODDstudio only)
+        comment: >-
+          The short public list of how to treat the room. Operational secrets
+          (the key-box code) and private contact details belong in the
+          internal house-rules document, never here.
+        options:
+          subtype: object
+      terms:
+        type: array
+        label: Individual booking terms (ODDstudio only)
+        comment: >-
+          The booking terms, rendered as an accordion. These are contractual
+          — change them with TUNEMENT, not unilaterally.
+        options:
+          required: false
+        cascade: true
+      operator:
+        type: object
+        label: Who runs the studio (ODDstudio only)
+        comment: >-
+          TUNEMENT is a real third party and this block is what stops the
+          page reading as though ODD takes the bookings. Use the business
+          email only — a personal phone number is that person's to publish,
+          not ours.
+        options:
+          subtype: object
+      photoCredit:
+        type: text
+        label: Photographer credit (ODDstudio only)
+        comment: Credit line for the photography on this page.
       rentalRates:
         type: array
         label: Event space rental rates (ODDspace only)
         comment: >-
-          Member pricing for renting the gallery/auditorium. No invented
+          Member pricing for renting the gallery/auditorium, shown inside
+          the "organise an event" card in "Enter the space". No invented
           prices — these are real, current rates.
         options:
           required: false
@@ -381,14 +470,18 @@ collections_config:
           locations, funding or partners.
         options:
           subtype: object
-      calendar:
+      events:
         type: object
-        label: Events calendar embed (ODDspace only)
+        label: '"What''s happening" events list (ODDspace only)'
         comment: >-
-          "embedUrl" must be a real Google Calendar /calendar/embed?src=...
-          URL (not the "view calendar" share link) — see docs/editing.md.
-          Optional: leave the whole field out rather than embed a broken or
-          placeholder calendar.
+          Replaced the embedded Google Calendar on 2026-09-11. This list is
+          kept by hand, so it is only as right as the last edit — when a
+          date moves or an event is cancelled, change it here, because
+          nothing syncs it from the booking calendar. Only list things a
+          stranger can actually turn up to or book; private bookings stay
+          on the internal calendar. Each item takes a date ("Every Monday",
+          "Sat 26 Sep"), a time, where in the building it is, a short
+          description, and an optional link.
         options:
           subtype: object
           required: false
@@ -397,7 +490,7 @@ collections_config:
         label: Instagram wall framing (ODDspace only)
         comment: >-
           Eyebrow, headline and follow-link label for the live @oddspace.co
-          gallery under the calendar. Editorial framing only — which account
+          gallery under the events list. Editorial framing only — which account
           it pulls from, which provider serves it and how many posts it shows
           are technical config in the codebase, not editable here. The
           section is hidden entirely until the feed is connected.
@@ -406,22 +499,30 @@ collections_config:
           required: false
       twoWaysIn:
         type: object
-        label: '"Two ways in" (Home only)'
-        comment: The business/creative dual-entry section. Keep the framing reciprocal, not "business buys, creatives belong".
+        label: '"Who ODD is for" (Home only)'
+        comment: >-
+          The creative/business dual-entry section. Keep the framing
+          reciprocal, not "business buys, creatives belong". Creatives render
+          on the left and business on the right — a sitewide rule, enforced
+          by a test, not something to flip here. Each side's "tracks" are its
+          destination buttons (creatives: ODDfest, ODDspace; business:
+          ODDference, Work with ODD): give a track a "label" and an "href"
+          and leave "meta" empty for a button. Two or three per side — this
+          section routes people, it does not list everything ODD runs.
         options:
           subtype: object
       proof:
         type: object
         label: Proof / traction
         comment: >-
-          Appears on Home and ODDspace. On ODDspace, "items" is currently
-          empty on purpose — [HIDE UNTIL VERIFIED] the public member-count
-          and square-metre figures are disputed against the canonical
-          Current State doc (2026-09-02); the section renders nothing while
-          empty (see oddspace.astro). Fill "items" in only once real,
-          verified figures are confirmed — never estimate. Elsewhere, leave
-          this field out of the page entirely (delete it) rather than
-          filling it with invented numbers. About uses its own "impact"
+          Home only. It was also on ODDspace with an empty "items" (the
+          public member-count and square-metre figures were disputed
+          against the canonical Current State doc), so it rendered nothing
+          there for nine days and was removed from that page on
+          2026-09-11 — put it back deliberately, with real verified
+          figures, rather than as an empty block. Elsewhere, leave this
+          field out of the page entirely (delete it) rather than filling
+          it with invented numbers. About uses its own "impact"
           field instead (two year-snapshots, not one). ODDference dropped
           its own proof/quote block in the 2027 rebuild (no verified stats
           or quote existed to populate it) — its speaker roster carries the
@@ -956,8 +1057,11 @@ collections_config:
         comment: >-
           Drives the top nav, the footer links and the mobile menu — one edit
           here changes all three. ODDspace opens in a new tab, so leave its
-          "external" toggle on. "Info" has "children" (About/Work with us/
-          Media/Contact) — it shows as a hover dropdown on desktop, a
+          "external" toggle on. "Info" has "children" (Work with ODD/Media/
+          About/Contact, in that order since 2026-09-11 — Work with ODD is
+          the one most visitors opening this menu actually want, so it leads
+          rather than sitting second behind About) — it shows as a hover
+          dropdown on desktop, a
           labeled group on mobile, and flattens into plain links in the
           footer. Add "children" to any other item the same way to group it
           instead of adding a new top-level item. Work with ODD moved in
@@ -1268,6 +1372,8 @@ _structures:
           body: ''
           bullets: []
           image:
+          goLabel: ''
+          href: ''
   oddspace_hero_photo:
     style: select
     values:

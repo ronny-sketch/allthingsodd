@@ -1,8 +1,7 @@
 ---
-// The consent gate — required because ODD is a Finnish association and
-// neither GA4's cookies nor Google's calendar embed are "strictly
-// necessary" under GDPR/ePrivacy, so consent has to come before the
-// request, not after. See src/scripts/analytics.ts for why this is "don't
+// The consent gate — required because ODD is a Finnish association and GA4's
+// cookies are not "strictly necessary" under GDPR/ePrivacy, so consent has to
+// come before the request, not after. See src/scripts/analytics.ts for why this is "don't
 // load gtag.js at all until accepted" rather than Google's Consent Mode
 // default-denied pattern.
 //
@@ -33,7 +32,7 @@ const categories = togglableCategories(buildDeclaration(GA_MEASUREMENT_ID));
       <div class="consent-intro">
         <p>
           We use a small number of cookies: some to make the site work, and — only if you agree —
-          one anonymous analytics tag and one embedded calendar. Nothing loads before you choose.
+          one anonymous analytics tag. Nothing loads before you choose.
         </p>
       </div>
 

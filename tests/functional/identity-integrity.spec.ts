@@ -28,6 +28,7 @@ const ROUTES = [
   '/oddfest',
   '/oddference',
   '/oddspace',
+  '/oddstudio',
   '/work-with-odd',
   '/oddagency',
   '/membership',
@@ -111,6 +112,7 @@ test('the homepage title uses the site name; product pages stay product-first', 
     ['/oddfest', 'ODDfest'],
     ['/oddference', 'ODDference'],
     ['/oddspace', 'ODDspace'],
+    ['/oddstudio', 'ODDstudio'],
   ] as const) {
     const html = await (await request.get(route)).text();
     const title = html.match(/<title>([^<]*)<\/title>/)![1];

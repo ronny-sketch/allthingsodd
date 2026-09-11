@@ -1,7 +1,11 @@
 ---
+import Pill from '../primitives/Pill.astro';
+
 interface TrackItem {
   label: string;
-  meta: string;
+  // Optional — see content.config.ts's trackItem. Present, a track renders as
+  // a captioned list row; absent, as a button.
+  meta?: string;
   href: string;
 }
 interface LinkCta {
@@ -9,26 +13,50 @@ interface LinkCta {
   href: string;
   external?: boolean;
 }
+interface Side {
+  lede: string;
+  body: string;
+  tracks?: TrackItem[];
+  cta?: LinkCta;
+}
 interface Props {
   intro: string;
-  business: { lede: string; body: string; tracks?: TrackItem[]; cta?: LinkCta };
-  creative: { lede: string; body: string; tracks?: TrackItem[]; cta?: LinkCta };
+  business: Side;
+  creative: Side;
   // The section's own title ("Who ODD is for") — renders as a real
   // .section-head h2 (2026-08-31: was a tiny eyebrow-style label with no
   // heading at all above the intro paragraph, which read as under-titled
   // next to ProgramGrid's own "What we do" .section-head directly below it
   // in the same composition). Optional so Converge stays usable exactly as
-  // before for any future caller that doesn't want a title. See
-  // index.astro's merged "Who ODD is for / What we do" composition
-  // (2026-08-30 homepage revision).
+  // before for any future caller that doesn't want a title.
   audienceEyebrow?: string;
   // Reduces the section's own bottom padding — used only when a caller
   // stacks something (ProgramGrid, on Home) directly underneath as part of
   // one continuous composition, so the two don't get double-padded apart.
   // See docs/architecture.md.
   tightBottom?: boolean;
+  // Creatives on the left, business on the right (2026-09-11 homepage
+  // reorg). Sitewide rule from that pass: wherever ODD splits what it does by
+  // audience, the creative side comes first — ODD is a creative organisation
+  // that business is invited into, not the other way round. Default false so
+  // the prop is opt-in rather than silently flipping any future caller, but
+  // on Home it is always on. It reorders the DOM, not just the columns, so
+  // the reading order a screen reader and a phone get matches the desktop
+  // one.
+  creativeFirst?: boolean;
 }
-const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astro.props;
+const {
+  intro,
+  business,
+  creative,
+  audienceEyebrow,
+  tightBottom = false,
+  creativeFirst = false,
+} = Astro.props;
+
+const creativeSide = { key: 'creative', label: 'For creatives', data: creative };
+const businessSide = { key: 'business', label: 'For business', data: business };
+const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, creativeSide];
 ---
 
 <section class={`converge ${tightBottom ? 'is-tight-bottom' : ''}`}>
@@ -42,58 +70,46 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
     }
     <p class="converge-intro reveal">{intro}</p>
     <div class="converge-grid reveal">
-      <div class="converge-col converge-col--business">
-        <span class="converge-label">For business</span>
-        <h2 class="converge-title">{business.lede}</h2>
-        <p class="converge-body">{business.body}</p>
-        {
-          business.tracks && (
-            <div class="track-list">
-              {business.tracks.map((t) => (
-                <a class="track-item" href={t.href}>
-                  <>
-                    <span>{t.label}</span>
-                    <span>{t.meta}</span>
-                  </>
-                </a>
-              ))}
-            </div>
-          )
-        }
-        {
-          business.cta && (
-            <a class="converge-cta" href={business.cta.href}>
-              {business.cta.label}
-            </a>
-          )
-        }
-      </div>
-      <div class="converge-col converge-col--creative">
-        <span class="converge-label">For creatives</span>
-        <h2 class="converge-title">{creative.lede}</h2>
-        <p class="converge-body">{creative.body}</p>
-        {
-          creative.tracks && (
-            <div class="track-list">
-              {creative.tracks.map((t) => (
-                <a class="track-item" href={t.href}>
-                  <>
-                    <span>{t.label}</span>
-                    <span>{t.meta}</span>
-                  </>
-                </a>
-              ))}
-            </div>
-          )
-        }
-        {
-          creative.cta && (
-            <a class="converge-cta" href={creative.cta.href}>
-              {creative.cta.label}
-            </a>
-          )
-        }
-      </div>
+      {
+        sides.map((side, i) => (
+          <div class={`converge-col converge-col--${side.key} ${i === 0 ? 'is-first' : 'is-last'}`}>
+            <span class="converge-label">{side.label}</span>
+            <h3 class="converge-title">{side.data.lede}</h3>
+            <p class="converge-body">{side.data.body}</p>
+            {side.data.tracks && (
+              /* Two shapes from one field: a track carrying `meta` still
+                 renders as the original captioned list row; a track without
+                 it renders as a real button, which is what Home's four
+                 destinations (ODDfest/ODDspace, ODDference/Work with ODD)
+                 now are. Pill rather than a bespoke button — this is the
+                 site's one button shape, per docs/design-system.md. */
+              <div
+                class={`track-list ${side.data.tracks.some((t) => t.meta) ? 'is-rows' : 'is-buttons'}`}
+              >
+                {side.data.tracks.map((t) =>
+                  t.meta ? (
+                    <a class="track-item" href={t.href}>
+                      <>
+                        <span>{t.label}</span>
+                        <span>{t.meta}</span>
+                      </>
+                    </a>
+                  ) : (
+                    <Pill href={t.href} variant="outline" magnetic>
+                      {t.label}
+                    </Pill>
+                  ),
+                )}
+              </div>
+            )}
+            {side.data.cta && (
+              <a class="converge-cta" href={side.data.cta.href}>
+                {side.data.cta.label}
+              </a>
+            )}
+          </div>
+        ))
+      }
     </div>
   </div>
 </section>
@@ -126,22 +142,34 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
     grid-template-columns: 1fr 1fr;
     gap: 0;
   }
+  /* Column placement follows DOM order (2026-09-11) rather than pinning each
+     audience to a fixed `grid-column`. The old version hard-coded business to
+     column 1 and creative to column 2, so `creativeFirst` would have had to
+     fight it with a second set of overrides — and the pinned
+     `grid-column: 2` was itself the cause of a real mobile overflow bug it
+     then needed its own media-query reset for. Which column a side lands in
+     is now purely which one the page asked for first. */
   .converge-col {
     padding: 0 3.5rem;
+    /* Flex column so the button row can be pushed to the bottom (see
+       .track-list.is-buttons) — the two sides' ledes are two and four lines,
+       so without this their buttons sit at two different heights and the row
+       reads as broken rather than as a pair of equal choices. */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  .converge-col--business {
-    grid-column: 1;
+  .converge-col.is-first {
     padding-left: 0;
     border-right: 1px solid var(--color-paper-12);
   }
-  .converge-col--creative {
-    grid-column: 2;
+  .converge-col.is-last {
     padding-right: 0;
   }
   /* Small classification first, subtle but clearly visible — the column's
      actual headline is its lede copy (promoted below), not this label.
-     Color-coded per side (signal/amber) to match the existing per-column
-     hover accents on the track list further down. */
+     Color-coded per audience (not per position), so the accent travels with
+     the side when the order flips. */
   .converge-label {
     display: block;
     font: var(--text-caption);
@@ -176,7 +204,8 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
   }
   /* Single routing CTA per side (2026-09-02 copywriting pass) — same visual
      treatment as SectionIntro's own text link, reused rather than inventing
-     a new link style. */
+     a new link style. Home no longer sets it (its two buttons per side say
+     the same thing more concretely); kept for other callers. */
   .converge-cta {
     display: inline-block;
     margin-top: -0.6rem;
@@ -212,21 +241,24 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
     .converge-col {
       padding: 0;
     }
-    /* .converge-col--creative's grid-column:2 (set unconditionally above,
-       for the 2-column desktop layout) was never reset here — with only one
-       explicit track at this width, Grid was placing it in a phantom
-       implicit second column, pushing it off the right edge of the
-       viewport and causing real horizontal page scroll on every mobile
-       width. Found via an actual document.scrollWidth check, not visible
-       just eyeballing a resized browser window. */
-    .converge-col--creative {
-      grid-column: 1;
-    }
-    .converge-col--business {
+    .converge-col.is-first {
       border-right: none;
       border-bottom: 1px solid var(--color-paper-12);
       padding-bottom: 2.6rem;
     }
+  }
+
+  /* Button row — the shape Home's destinations use. Wraps rather than
+     overflowing: two of these labels ("Work with ODD", "ODDference") are long
+     enough to exceed a narrow column on their own. */
+  .track-list.is-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    /* Bottom-aligned across both columns (see .converge-col). `auto` only
+       ever adds space, so the shorter column gains the difference and the
+       taller one keeps the 2.2rem its body already sets. */
+    margin-top: auto;
   }
 
   .track-item {
@@ -260,6 +292,20 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
   .converge-col--creative .track-item:hover {
     color: var(--color-amber-bright);
   }
+  /* The per-audience accent the list rows already had, carried onto the
+     button row so the two sides stay visually distinguishable at a glance.
+     Hover-capable pointers only — on touch there is no hover state to show
+     and :hover would stick after a tap. */
+  @media (hover: hover) {
+    .converge-col--business .track-list.is-buttons :global(.pill-outline:hover) {
+      border-color: var(--color-signal-bright);
+      color: var(--color-signal-bright);
+    }
+    .converge-col--creative .track-list.is-buttons :global(.pill-outline:hover) {
+      border-color: var(--color-amber-bright);
+      color: var(--color-amber-bright);
+    }
+  }
 
   @media (prefers-reduced-motion: no-preference) {
     :global(html.reveal-js) .converge-grid .converge-col {
@@ -273,7 +319,8 @@ const { intro, business, creative, audienceEyebrow, tightBottom = false } = Astr
       opacity: 1;
       transform: none;
     }
-    .converge-grid.in .converge-col--creative {
+    /* Second column in, whichever audience that now is. */
+    .converge-grid.in .converge-col.is-last {
       transition-delay: 0.12s;
     }
   }

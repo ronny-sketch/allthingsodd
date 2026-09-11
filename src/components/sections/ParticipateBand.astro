@@ -19,8 +19,53 @@ interface Props {
   items: Item[];
   inverted?: boolean;
   noPadTop?: boolean;
+  // Opt-in (2026-09-11 homepage reorg): render each `audience` as a heading
+  // *above* its own run of cards instead of as a small label inside each
+  // card. The label inside a card answers "what is this one?"; a heading over
+  // a group answers "which of these are for me?", which is the actual job of
+  // the page's closing band — a reader scanning it is picking a side, not
+  // reading four cards.
+  //
+  // Desktop keeps the single equal-width row this component is built around:
+  // the headings sit on their own grid row, each spanning its group's
+  // columns, so grouping costs no extra height and every card stays the same
+  // width. Below 1024px the groups simply stack (see the media queries).
+  //
+  // Group order follows the order the audiences first appear in `items` — so
+  // "creatives before business" is a content decision in index.json, not one
+  // hard-coded here. Items with no `audience` are ignored by the grouping and
+  // it falls back to the flat row, so every other caller is unaffected.
+  groupByAudience?: boolean;
 }
-const { title = 'Ways to participate', items, inverted = false, noPadTop = false } = Astro.props;
+const {
+  title = 'Ways to participate',
+  items,
+  inverted = false,
+  noPadTop = false,
+  groupByAudience = false,
+} = Astro.props;
+
+// [audience, items] in first-appearance order. Empty unless every item
+// actually declares an audience — a half-labelled array would render some
+// cards under a heading and orphan the rest, so the flat row is the safer
+// answer there.
+const groups: { audience: string; items: Item[]; start: number }[] = [];
+if (groupByAudience && items.length > 0 && items.every((item) => item.audience)) {
+  let start = 0;
+  for (const item of items) {
+    const audience = item.audience as string;
+    const existing = groups.find((group) => group.audience === audience);
+    if (existing) existing.items.push(item);
+    else groups.push({ audience, items: [item], start: 0 });
+  }
+  // Columns are assigned after grouping, not during: a group's cards are
+  // contiguous on the rendered row even if the source array interleaved them.
+  for (const group of groups) {
+    group.start = start;
+    start += group.items.length;
+  }
+}
+const isGrouped = groups.length > 1;
 ---
 
 <section
@@ -29,17 +74,43 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
 >
   <div class="wrap">
     <div class="section-head"><h2>{title}</h2></div>
-    <div class="participate reveal" style={`--cols: ${items.length}`}>
+    <div
+      class={`participate reveal ${isGrouped ? 'is-grouped' : ''}`}
+      style={`--cols: ${items.length}`}
+    >
       {
-        items.map((item) => (
-          <a class="p-cta" href={item.href}>
-            {(item.eyebrow || item.audience) && (
-              <span class="eyebrow">{item.eyebrow || item.audience}</span>
-            )}
-            <h3>{item.title}</h3>
-            <span class="go">{item.linkLabel}</span>
-          </a>
-        ))
+        isGrouped
+          ? groups.map((group) => (
+              <>
+                {/* --gc/--gs as custom properties, not a literal inline
+                    `grid-column` — an inline style beats every stylesheet
+                    rule regardless of media query, so the narrow-width
+                    reset below could never undo it. Same trap --cols
+                    documents above. */}
+                <span
+                  class="participate-group-head"
+                  style={`--gc: ${group.start + 1}; --gs: ${group.items.length};`}
+                >
+                  {group.audience}
+                </span>
+                {group.items.map((item) => (
+                  <a class="p-cta" href={item.href}>
+                    {item.eyebrow && <span class="eyebrow">{item.eyebrow}</span>}
+                    <h3>{item.title}</h3>
+                    <span class="go">{item.linkLabel}</span>
+                  </a>
+                ))}
+              </>
+            ))
+          : items.map((item) => (
+              <a class="p-cta" href={item.href}>
+                {(item.eyebrow || item.audience) && (
+                  <span class="eyebrow">{item.eyebrow || item.audience}</span>
+                )}
+                <h3>{item.title}</h3>
+                <span class="go">{item.linkLabel}</span>
+              </a>
+            ))
       }
     </div>
   </div>
@@ -72,6 +143,34 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
     grid-template-columns: repeat(var(--cols), 1fr);
     gap: 1.5rem;
     background: transparent;
+  }
+
+  /* Grouped variant (`groupByAudience`) — two rows, not two stacked grids:
+     row 1 holds one heading per group, each spanning that group's columns;
+     row 2 holds every card. Because all the cards share one row of one grid,
+     they stay exactly as equal-width as they are ungrouped, and the headings
+     cost one short row of height rather than splitting the band into
+     separate blocks. */
+  .participate.is-grouped {
+    row-gap: 0.9rem;
+  }
+  .participate-group-head {
+    grid-row: 1;
+    grid-column: var(--gc) / span var(--gs);
+    align-self: end;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  /* Every card on row 2, columns auto-assigned in DOM order — which the
+     grouping above already made contiguous per group. */
+  .participate.is-grouped .p-cta {
+    grid-row: 2;
   }
   .p-cta {
     /* min-width: 0 — a grid item's implicit min-width:auto refuses to shrink
@@ -161,6 +260,35 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
       grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
     }
   }
+  /* Below 1024px the column count is no longer the item count (auto-fit
+     above, one column below), so a heading pinned to specific columns would
+     land over the wrong cards or off the end of the row entirely. The groups
+     stack instead: full-width heading, then that group's cards, then the next
+     heading — which is the DOM order already, so only the explicit placement
+     has to be undone. */
+  @media (max-width: 1023px) {
+    .participate.is-grouped {
+      row-gap: 1.5rem;
+      /* Two, not the auto-fit count above. Auto-fit sizes the track count
+         from the container, which is right when every card is in one row —
+         but once the groups stack, a 4-column track leaves each 2-card group
+         filling half a row and trailing two empty columns. Two columns makes
+         a pair of cards a full row, and a group of three wrap to 2 + 1
+         rather than stranding one. */
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .participate-group-head {
+      grid-row: auto;
+      grid-column: 1 / -1;
+      margin-top: 1rem;
+    }
+    .participate-group-head:first-child {
+      margin-top: 0;
+    }
+    .participate.is-grouped .p-cta {
+      grid-row: auto;
+    }
+  }
   @media (max-width: 760px) {
     .participate-band {
       padding: 3.25rem 0;
@@ -169,6 +297,13 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
       grid-template-columns: 1fr;
       gap: 1rem;
     }
+    /* Needs restating for the grouped variant: `.participate.is-grouped`'s
+       two-column rule above is one class more specific than `.participate`,
+       so it would otherwise keep two columns all the way down to 320px. */
+    .participate.is-grouped {
+      grid-template-columns: 1fr;
+      row-gap: 1rem;
+    }
     .p-cta {
       padding: 2.2rem 1.8rem;
       min-height: 0;
@@ -176,14 +311,16 @@ const { title = 'Ways to participate', items, inverted = false, noPadTop = false
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    :global(html.reveal-js) .participate .p-cta {
+    :global(html.reveal-js) .participate .p-cta,
+    :global(html.reveal-js) .participate .participate-group-head {
       opacity: 0;
       transform: translateY(14px);
       transition:
         opacity 0.55s ease,
         transform 0.55s ease;
     }
-    :global(html.reveal-js) .participate.in .p-cta {
+    :global(html.reveal-js) .participate.in .p-cta,
+    :global(html.reveal-js) .participate.in .participate-group-head {
       opacity: 1;
       transform: none;
     }

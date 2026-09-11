@@ -2,8 +2,8 @@ import { test, expect, type Page } from '@playwright/test';
 
 // The consent gate is the one part of this site whose failure mode is
 // silent, legal, and invisible in a screenshot: if a future change loads
-// gtag.js or the Google Calendar embed before the visitor accepts, nothing
-// looks wrong and nothing throws. These tests assert on the *network*, not
+// gtag.js before the visitor accepts, nothing looks wrong and nothing
+// throws. These tests assert on the *network*, not
 // on the banner's appearance, because the request is the thing that would
 // actually breach ePrivacy Article 5(3).
 //
@@ -11,7 +11,6 @@ import { test, expect, type Page } from '@playwright/test';
 // src/scripts/consent-config.ts for what each category gates.
 
 const GOOGLE_ANALYTICS = /googletagmanager\.com|google-analytics\.com/;
-const GOOGLE_CALENDAR = /calendar\.google\.com/;
 
 /** Records every request the page attempts, so a test can assert on what was
  *  requested rather than on what happened to succeed — a blocked or failed
@@ -89,31 +88,34 @@ test('accepting loads gtag.js with the configured measurement ID', async ({ page
   expect(queue.filter((e) => e.isArray)).toEqual([]);
 });
 
-test('the ODDspace calendar does not load Google before consent', async ({ page }) => {
+// Replaces the two Google Calendar tests this file carried until 2026-09-11,
+// when /oddspace's consent-gated embed was replaced by a hand-kept list of
+// events. The embed was the `preferences` category's only entry, so what is
+// worth asserting now is the state the removal left behind: /oddspace must
+// make no third-party embed request at all, and the banner must not keep
+// asking about a category that no longer gates anything (consent-config.ts's
+// togglableCategories() drops an empty category — this is the test that the
+// mechanism actually fired, rather than leaving a dead toggle in a legal
+// notice).
+test('ODDspace embeds no third-party content, and the banner asks about none', async ({ page }) => {
   const requests = trackRequests(page);
   await page.goto('/oddspace');
   await settle(page);
 
-  expect(requests.filter((url) => GOOGLE_CALENDAR.test(url))).toEqual([]);
-  // The iframe exists in the markup but must carry no src at all — this is
-  // what makes the gate structural rather than dependent on script timing.
-  const src = await page.locator('[data-calendar-embed] iframe').getAttribute('src');
-  expect(src).toBeNull();
-  await expect(page.locator('[data-calendar-placeholder]')).toBeVisible();
-});
+  expect(
+    requests.filter((url) => /calendar\.google\.com|\.google\.com\/calendar/.test(url)),
+  ).toEqual([]);
+  await expect(page.locator('[data-calendar-embed]')).toHaveCount(0);
+  // Broader than the calendar on purpose: this page now embeds nothing at
+  // all, and an iframe appearing here is exactly how a gated third party
+  // would come back without anyone re-reading the declaration.
+  await expect(page.locator('iframe')).toHaveCount(0);
 
-test('the calendar placeholder button loads the embed for this visit only', async ({ page }) => {
-  await page.goto('/oddspace');
-  await page.locator('[data-calendar-load]').click();
-
-  await expect(page.locator('[data-calendar-embed] iframe')).toHaveAttribute(
-    'src',
-    /calendar\.google\.com/,
-  );
-  // Crucially, pressing it must NOT record consent — a one-off view is not
-  // an affirmative act about the category. See calendar-embed.ts.
-  const stored = await page.evaluate(() => localStorage.getItem('odd_consent_v2'));
-  expect(stored).toBeNull();
+  await page.goto('/');
+  await expect(page.locator('#consentBanner')).toBeVisible();
+  await page.locator('#consentCustomise').click();
+  await expect(page.locator('#consentDetail')).toBeVisible();
+  await expect(page.locator('#consent-preferences')).toHaveCount(0);
 });
 
 test('cookie settings in the footer reopens the banner and clears the stored choice', async ({

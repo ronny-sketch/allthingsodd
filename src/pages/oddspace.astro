@@ -1,25 +1,41 @@
 ---
 // Rebuilt 2026-08-30 around ODDspace's two real conversion goals — become a
-// member, organise an event — instead of one section per fact. See
-// content.config.ts's oddspace extend block for the full field-by-field
-// reasoning behind what changed. Section numbers below match the brief's
-// nine-section structure.
+// member, organise an event — instead of one section per fact.
+//
+// Cut back to seven sections on 2026-09-11 at Ronny's direct request:
+//
+//   1 hero · 2 what is ODDspace · 3 what's here · 4 enter the space ·
+//   5 the bigger picture · 6 what's happening · 7 FAQ
+//
+// What went, and why it isn't "hidden for later": "Co-creative, not just
+// coworking", "Who it's for" and "The network is bigger than the room" were
+// three further prose sections restating what `whatItIs` and `vision`
+// already say, so a reader had to get through five essays to reach a price.
+// `proof` had been rendering nothing since 2026-09-02 (no verified figures).
+// The Google Calendar embed is replaced by `events` — see section 6.
+//
+// The two things that didn't just move: every card in section 3 now carries
+// its own CTA (a reader who has just decided they want the auditorium
+// shouldn't have to scroll back to a generic button), and all the
+// commercial detail — price, benefits, the studio carve-out, rental rates,
+// joining steps, address — is consolidated into section 4 instead of being
+// split between a pricing grid up in section 3 and a conversion block
+// further down. See content.config.ts's oddspace extend block for the
+// field-level record.
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SubpageFrame from '../components/sections/SubpageFrame.astro';
 import SpaceHero from '../components/sections/SpaceHero.astro';
 import SpaceShowcase from '../components/sections/SpaceShowcase.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
-import ProofGrid from '../components/sections/ProofGrid.astro';
-import PricingGrid from '../components/sections/PricingGrid.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
+import ProgrammeList from '../components/sections/ProgrammeList.astro';
 import FAQList from '../components/sections/FAQList.astro';
 import InstagramGallery from '../components/sections/InstagramGallery.astro';
 import { ODDSPACE_INSTAGRAM_FEED_ID } from '../scripts/oddspace-instagram-config';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
 import Pill from '../components/primitives/Pill.astro';
 import oddspaceWordmark from '../assets/logos/oddspace-wordmark.svg';
-import photoCommunity from '../assets/oddspace/lounge.jpg';
 import photoVision from '../assets/oddspace/exterior-building.jpg';
 
 const entry = await getEntry('pages', 'oddspace');
@@ -57,114 +73,25 @@ const page = entry.data;
     />
     <p class="odds-intro-line reveal">{page.intro}</p>
 
-    <!-- NEW SECTION (2026-09-02 copywriting pass) — "Co-creative, not just
-         coworking": the clearest differentiation from ordinary coworking,
-         right after the concrete "what is this place" explainer above. -->
-    <SectionIntro
-      eyebrow={page.coCreative.eyebrow}
-      headline={page.coCreative.headline}
-      body={page.coCreative.body}
-    />
-
-    <!-- 3. What the space offers, and how it works — ONE coherent chapter
-         (not three stacked sections): the real spaces, membership, event
-         use and joining all read as internal zones of a single practical
-         product section instead of four separate page chapters. -->
-    <section class="odds-sub odds-offer">
+    <!-- 3. What's here — the four real rooms, each routing to the enquiry
+         for that room (or, for ODDstudio, to its own page). -->
+    <section class="odds-sub">
       <div class="wrap">
         <div class="section-head">
           <span class="eyebrow">What's here</span>
-          <h2>What the space offers — and how it works.</h2>
+          <h2>Four rooms, one roof.</h2>
         </div>
-
-        <div class="odds-offer-zone">
-          <div class="odds-zone-head">
-            <span class="eyebrow">The spaces</span>
-            <h3>Four rooms, one roof.</h3>
-          </div>
-          <SpaceShowcase spaces={page.spaces} />
-        </div>
-
-        <div class="odds-offer-zone">
-          <div class="odds-zone-head">
-            <span class="eyebrow">Membership</span>
-            <h3>One membership, full access.</h3>
-          </div>
-          <PricingGrid items={[page.membership]} />
-          <div class="odds-how">
-            <span class="odds-how-label">Joining</span>
-            <FeatureGrid cards={page.howItWorks} />
-          </div>
-        </div>
-
-        <!-- NEW SECTION (2026-09-02 copywriting pass) — "The network is
-             bigger than the room": the physical member base is the anchor,
-             not the boundary. No formal external-member product exists yet
-             (see content.config.ts's HUMAN DECISION comment on
-             `networkBeyondRoom`), so this is a plain editorial paragraph +
-             a generic "get in touch" link, not a paid tier. -->
-        <div class="odds-offer-zone">
-          <div class="odds-zone-head">
-            <span class="eyebrow">{page.networkBeyondRoom.eyebrow}</span>
-            <h3>{page.networkBeyondRoom.headline}</h3>
-          </div>
-          <p class="odds-network-body reveal">{page.networkBeyondRoom.body}</p>
-          {
-            page.networkBeyondRoom.cta && (
-              <a class="odds-network-cta reveal" href={page.networkBeyondRoom.cta.href}>
-                {page.networkBeyondRoom.cta.label}
-              </a>
-            )
-          }
-        </div>
-
-        <div class="odds-offer-zone">
-          <div class="odds-zone-head">
-            <span class="eyebrow">Event use</span>
-            <h3>Renting the space doesn't require membership.</h3>
-          </div>
-          <span class="odds-rates-label">Selected member rates</span>
-          <div class="odds-rates-list reveal">
-            {
-              page.rentalRates.map((r) => (
-                <div class="odds-rate-row">
-                  <span class="odds-rate-name">{r.name}</span>
-                  <span class="odds-rate-price">{r.price}</span>
-                  {r.note && <span class="odds-rate-note">{r.note}</span>}
-                </div>
-              ))
-            }
-          </div>
-          <p class="odds-rates-nonmember">Non-member pricing: Ask us about your event.</p>
-        </div>
+        <SpaceShowcase spaces={page.spaces} />
       </div>
     </section>
 
-    <!-- 4. ODDspace pilot in numbers — HIDDEN UNTIL VERIFIED (2026-09-02
-         copywriting pass): the public member-count and square-metre figures
-         are disputed against the canonical Current State doc, so `proof`
-         ships with an empty `items` array (see oddspace.json) rather than
-         invented/estimated numbers. The data model stays in schema for
-         when real figures are confirmed; only the render is skipped. -->
-    {
-      page.proof.items.length > 0 && (
-        <ProofGrid eyebrow={page.proof.eyebrow} title={page.proof.title} items={page.proof.items} />
-      )
-    }
-
-    <!-- 5. Who's it for. -->
-    <SectionIntro
-      eyebrow={page.community.eyebrow}
-      headline={page.community.headline}
-      body={page.community.body}
-    />
-    <PhotoBreak image={photoCommunity} alt="A co-working lounge area at ODDspace" />
-
-    <!-- 6. Enter the space — the main conversion section: two equal
-         pathways, membership and event enquiry. -->
+    <!-- 4. Enter the space — the page's conversion chapter, and now the only
+         place prices appear: the two ways in side by side, the one carve-out
+         from the membership, what joining involves, and where to turn up. -->
     <section class="odds-sub odds-enter">
       <div class="wrap">
         <div class="section-head">
+          <span class="eyebrow">Two ways in</span>
           <h2>Enter the space</h2>
         </div>
         <div class="odds-enter-grid reveal">
@@ -176,22 +103,66 @@ const page = entry.data;
               shaping the place.
             </p>
             <div class="odds-enter-price">{page.membership.price}</div>
+            <span class="odds-enter-status">{page.membership.status}</span>
             <ul>
-              {page.membership.benefits.slice(0, 3).map((b) => <li>{b}</li>)}
+              {page.membership.benefits.map((b) => <li>{b}</li>)}
             </ul>
-            <Pill href={page.membership.href} variant="solid" magnetic>
-              {page.membership.ctaLabel}
-            </Pill>
+            <div class="odds-enter-action">
+              <Pill href={page.membership.href} variant="solid" magnetic>
+                {page.membership.ctaLabel}
+              </Pill>
+            </div>
           </div>
           <div class="odds-enter-card">
             <span class="eyebrow">Use the space</span>
             <h3>{page.eventEnquiry.headline}</h3>
             <p>{page.eventEnquiry.body}</p>
-            <Pill href={page.eventEnquiry.cta.href} variant="outline" magnetic>
-              {page.eventEnquiry.cta.label}
-            </Pill>
+            {
+              /* The rates sit in the card whose button acts on them — a
+                 reader deciding whether to enquire about an event is the
+                 only reader these numbers are for. */
+            }
+            <span class="odds-rates-label">Selected member rates</span>
+            <div class="odds-rates-list">
+              {
+                page.rentalRates.map((r) => (
+                  <div class="odds-rate-row">
+                    <span class="odds-rate-name">{r.name}</span>
+                    <span class="odds-rate-price">{r.price}</span>
+                    {r.note && <span class="odds-rate-note">{r.note}</span>}
+                  </div>
+                ))
+              }
+            </div>
+            <p class="odds-rates-nonmember">Non-member pricing: ask us about your event.</p>
+            <div class="odds-enter-action">
+              <Pill href={page.eventEnquiry.cta.href} variant="outline" magnetic>
+                {page.eventEnquiry.cta.label}
+              </Pill>
+            </div>
           </div>
         </div>
+
+        {
+          /* The one carve-out from "one membership, full access" — directly
+            under the price it qualifies, because a member who learns this
+            later learns it from an invoice. See content.config.ts's
+            `studioCallout` and tests/functional/oddstudio.spec.ts. */
+        }
+        <aside class="odds-studio-callout reveal">
+          <span class="eyebrow">{page.studioCallout.eyebrow}</span>
+          <h4>{page.studioCallout.headline}</h4>
+          <p>{page.studioCallout.body}</p>
+          <Pill href={page.studioCallout.cta.href} variant="outline" magnetic>
+            {page.studioCallout.cta.label}
+          </Pill>
+        </aside>
+
+        <div class="odds-how">
+          <span class="odds-how-label">Joining</span>
+          <FeatureGrid cards={page.howItWorks} />
+        </div>
+
         <p class="odds-visit reveal">
           {page.visit.address} —{' '}
           <a href={page.visit.directionsUrl} target="_blank" rel="noreferrer"> Get directions → </a>
@@ -199,7 +170,7 @@ const page = entry.data;
       </div>
     </section>
 
-    <!-- 7. Why ODDspace, and the grand vision — only here. -->
+    <!-- 5. The bigger picture — why ODDspace exists at all. Only here. -->
     <SectionIntro
       eyebrow={page.vision.eyebrow}
       headline={page.vision.headline}
@@ -207,54 +178,39 @@ const page = entry.data;
     />
     <PhotoBreak image={photoVision} alt="The industrial Vallila building that houses ODDspace" />
 
-    <!-- 8. Event calendar. -->
+    <!-- 6. What's happening — a hand-kept list of the things a stranger can
+         actually turn up to, replacing the consent-gated Google Calendar
+         embed (2026-09-11). Reuses ProgrammeList, the same component
+         ODDfest's programme uses. Only public, confirmed things go in;
+         private bookings stay on the internal calendar. -->
     {
-      page.calendar && (
+      page.events && page.events.items.length > 0 && (
         <section class="odds-sub">
           <div class="wrap">
             <div class="section-head">
-              <span class="eyebrow">{page.calendar.eyebrow}</span>
-              <h2>{page.calendar.title}</h2>
+              <span class="eyebrow">{page.events.eyebrow}</span>
+              <h2>{page.events.title}</h2>
             </div>
-            {page.calendar.note && <p class="odds-calendar-note reveal">{page.calendar.note}</p>}
-            {/* Consent-gated: this is a Google embed, and Google sets its
-                 own cookies the moment it loads — which is exactly the
-                 "strictly necessary" exemption ePrivacy does not grant. The
-                 URL is held in data-src, never src, so the request cannot
-                 start before src/scripts/calendar-embed.ts has confirmed
-                 `preferences` consent (or the visitor has pressed the
-                 button below, which loads it for this visit only). */}
-            <div class="odds-calendar-embed reveal" data-calendar-embed>
-              <iframe
-                data-src={page.calendar.embedUrl}
-                title="ODDspace events calendar"
-                loading="lazy"
-                hidden
-              />
-              <div class="odds-calendar-placeholder" data-calendar-placeholder>
-                <p>
-                  The live calendar is embedded from Google Calendar, which sets its own cookies. It
-                  loads once you allow embedded content.
-                </p>
-                <div class="odds-calendar-actions">
-                  <button type="button" class="odds-calendar-btn" data-calendar-load>
-                    Show the calendar
-                  </button>
-                  <a href="/privacy/">Why we ask</a>
-                </div>
+            {page.events.note && <p class="odds-events-note reveal">{page.events.note}</p>}
+            <ProgrammeList items={page.events.items} />
+            {page.events.cta && (
+              <div class="odds-events-cta reveal">
+                <Pill href={page.events.cta.href} variant="outline" magnetic>
+                  {page.events.cta.label}
+                </Pill>
               </div>
-            </div>
+            )}
           </div>
         </section>
       )
     }
 
     {
-      /* 8b. The live @oddspace.co Instagram wall — the visual half of the
-         same "what is happening here" chapter the calendar above opens.
-         Rendered only when a Behold feed is actually connected
-         (PUBLIC_ODDSPACE_INSTAGRAM_FEED_ID): an unconfigured build ships no
-         empty gallery, no skeleton and no dead section. See
+      /* The live @oddspace.co Instagram wall — the visual half of the same
+         "what is happening here" chapter. Rendered only when a Behold feed
+         is actually connected (PUBLIC_ODDSPACE_INSTAGRAM_FEED_ID): an
+         unconfigured build ships no empty gallery, no skeleton and no dead
+         section, which is why it is invisible in production today. See
          src/scripts/oddspace-instagram-config.ts. */
     }
     {
@@ -267,7 +223,7 @@ const page = entry.data;
       )
     }
 
-    <!-- 9. FAQ. -->
+    <!-- 7. FAQ. -->
     <section class="odds-sub">
       <div class="wrap">
         <div class="section-head">
@@ -277,7 +233,6 @@ const page = entry.data;
       </div>
     </section>
   </SubpageFrame>
-  <script src="../scripts/calendar-embed.ts"></script>
 </Layout>
 
 <style>
@@ -305,122 +260,9 @@ const page = entry.data;
     line-height: 1.8;
     color: var(--color-paper-80);
   }
-  /* One "What the space offers" chapter, three internal zones — a shared
-     top section-head (h2) for the chapter, then each zone gets a smaller
-     h3 sub-head instead of repeating the full section-head treatment,
-     so this genuinely reads as one continuous chapter while scrolling,
-     not three sections with the spacing tightened between them. */
-  .odds-offer-zone + .odds-offer-zone {
-    margin-top: var(--space-20);
-    padding-top: var(--space-20);
-    border-top: 1px solid var(--color-paper-12);
-  }
-  .odds-zone-head {
-    text-align: center;
-    margin-bottom: 2.2rem;
-  }
-  .odds-zone-head h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.3rem, 2.2vw, 1.7rem);
-    color: var(--color-paper);
-    margin: 0.5rem 0 0;
-  }
-  .odds-how {
-    margin-top: 3rem;
-  }
-  .odds-how-label {
-    display: block;
-    text-align: center;
-    font: var(--text-utility);
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--color-paper-40);
-    margin-bottom: 1.4rem;
-  }
 
-  /* "The network is bigger than the room" zone — plain paragraph + one link,
-     same width/centering as the zone-head above it, no card chrome. */
-  .odds-network-body {
-    max-width: 40rem;
-    margin: 0 auto;
-    text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.8;
-    color: var(--color-paper-60);
-  }
-  .odds-network-cta {
-    display: block;
-    width: fit-content;
-    margin: 1.4rem auto 0;
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: var(--color-paper-80);
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
-    text-decoration-color: var(--color-paper-20);
-    transition: color var(--duration-fast) ease;
-  }
-  .odds-network-cta:hover {
-    color: var(--color-amber-bright);
-    text-decoration-color: var(--color-amber-bright);
-  }
-
-  .odds-rates-label {
-    display: block;
-    text-align: center;
-    font: var(--text-utility);
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--color-paper-40);
-    margin-bottom: 1.4rem;
-  }
-  .odds-rates-list {
-    max-width: 40rem;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-  }
-  .odds-rate-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: baseline;
-    gap: 0.4rem 1.5rem;
-    padding: 1.1rem 0;
-    border-top: 1px solid var(--color-paper-12);
-  }
-  .odds-rates-list .odds-rate-row:last-child {
-    border-bottom: 1px solid var(--color-paper-12);
-  }
-  .odds-rate-name {
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    color: var(--color-paper-80);
-  }
-  .odds-rate-price {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.2rem;
-    color: var(--color-paper);
-    font-variant-numeric: tabular-nums;
-  }
-  .odds-rate-note {
-    grid-column: 1 / -1;
-    font-family: var(--font-body);
-    font-size: 0.78rem;
-    color: var(--color-paper-40);
-  }
-  .odds-rates-nonmember {
-    margin: 1.2rem 0 0;
-    text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    color: var(--color-paper-40);
-  }
-
+  /* "Enter the space" — two equal ways in, then the carve-out, the joining
+     steps and the address, in that order. */
   .odds-enter-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -451,6 +293,14 @@ const page = entry.data;
     color: var(--color-paper-60);
     margin: 1rem 0 0;
   }
+  /* The CTA wrapper, not the Pill itself, carries the spacing: `auto` pushes
+     each card's button to the bottom so the two line up with each other
+     however unevenly the copy above them falls, and the padding keeps a real
+     gap above it when a card is full enough that `auto` resolves to zero. */
+  .odds-enter-action {
+    margin-top: auto;
+    padding-top: 1.8rem;
+  }
   .odds-enter-price {
     font-family: var(--font-display);
     font-weight: 400;
@@ -458,9 +308,15 @@ const page = entry.data;
     color: var(--color-paper);
     margin-top: 1.2rem;
   }
+  .odds-enter-status {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--color-paper-40);
+    margin-top: 0.3rem;
+  }
   .odds-enter-card ul {
     list-style: none;
-    margin: 1rem 0 0;
+    margin: 1.2rem 0 0;
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -483,9 +339,6 @@ const page = entry.data;
     border-radius: 999px;
     background: var(--color-paper-40);
   }
-  .odds-enter-card :global(.pill) {
-    margin-top: 1.8rem;
-  }
   @media (max-width: 760px) {
     .odds-enter-grid {
       grid-template-columns: 1fr;
@@ -494,8 +347,112 @@ const page = entry.data;
       padding: 2rem 1.6rem;
     }
   }
+
+  /* Rates, inside the event card (they moved there on 2026-09-11 — see the
+     markup comment). Full-width of the card, so the price column still
+     lines up against the right edge the way a price list should. */
+  .odds-rates-label {
+    display: block;
+    align-self: stretch;
+    margin: 1.6rem 0 0.8rem;
+    font: var(--text-utility);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .odds-rates-list {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+  }
+  .odds-rate-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 0.4rem 1.5rem;
+    padding: 0.8rem 0;
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .odds-rates-list .odds-rate-row:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .odds-rate-name {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    color: var(--color-paper-80);
+  }
+  .odds-rate-price {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.1rem;
+    color: var(--color-paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .odds-rate-note {
+    grid-column: 1 / -1;
+    font-family: var(--font-body);
+    font-size: 0.76rem;
+    line-height: 1.6;
+    color: var(--color-paper-40);
+  }
+  .odds-rates-nonmember {
+    font-size: 0.8rem !important;
+    color: var(--color-paper-40) !important;
+    margin-top: 0.9rem !important;
+  }
+
+  /* Bordered, not a filled card: this qualifies the membership price above
+     it, so it should read as an annotation attached to that block rather
+     than a third competing offer. */
+  .odds-studio-callout {
+    max-width: 44rem;
+    margin: var(--space-12) auto 0;
+    padding: 1.6rem 1.8rem 1.8rem;
+    border: 1px solid var(--color-paper-20);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .odds-studio-callout h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+    color: var(--color-paper);
+    margin: 0.5rem 0 0;
+  }
+  .odds-studio-callout p {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--color-paper-60);
+    margin: 0.8rem 0 0;
+    max-width: 34rem;
+  }
+  .odds-studio-callout :global(.pill) {
+    margin-top: 1.4rem;
+  }
+  @media (max-width: 640px) {
+    .odds-studio-callout {
+      padding: 1.3rem 1.1rem 1.5rem;
+    }
+  }
+
+  .odds-how {
+    margin-top: var(--space-12);
+  }
+  .odds-how-label {
+    display: block;
+    text-align: center;
+    font: var(--text-utility);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+    margin-bottom: 1.4rem;
+  }
+
   .odds-visit {
-    margin: 1.6rem 0 0;
+    margin: var(--space-8) 0 0;
     text-align: center;
     font-family: var(--font-body);
     font-size: 0.85rem;
@@ -512,93 +469,18 @@ const page = entry.data;
     text-decoration-color: var(--color-amber-bright);
   }
 
-  .odds-calendar-note {
+  /* "What's happening" — the note above the list, and the one CTA under it. */
+  .odds-events-note {
     max-width: 42rem;
-    margin: -1.5rem auto 2rem;
+    margin: -1.5rem auto 2.4rem;
     text-align: center;
     font-family: var(--font-body);
     font-size: 0.85rem;
     color: var(--color-paper-60);
   }
-  .odds-calendar-embed {
-    max-width: 56rem;
-    margin: 0 auto;
-    border: 1px solid var(--color-paper-12);
-    /* Fixed, not var(--color-paper) — Google's calendar embed renders on a
-       white surface regardless of page theme, so the frame around it should
-       stay light too rather than following ODDspace's own light/dark swap. */
-    background: var(--swatch-paper);
-  }
-  /* :not([hidden]) is load-bearing, not decoration: an explicit `display`
-     here beats the UA stylesheet's `[hidden] { display: none }`, so without
-     it the consent-gated iframe stays laid out at its full 620px while
-     invisible — doubling the container's height and pushing the rest of the
-     page down. Caught by the visual suite on 2026-09-03. */
-  .odds-calendar-embed iframe:not([hidden]) {
-    display: block;
-    width: 100%;
-    height: min(70vh, 620px);
-    border: 0;
-  }
-  /* Same box the iframe would occupy, so granting consent (or pressing
-     "Show the calendar") swaps content in without the page reflowing under
-     the reader — the CLS budget in CLAUDE.md is 0.1 and a 620px jump would
-     spend all of it on its own. */
-  /* :not([hidden]) for the same reason as the iframe rule above — this one
-     is the mirror image: once consent loads the calendar, a placeholder
-     still laid out at 620px would sit under it instead of disappearing. */
-  .odds-calendar-placeholder:not([hidden]) {
+  .odds-events-cta {
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    gap: var(--space-4);
-    height: min(70vh, 620px);
-    padding: var(--space-6);
-    text-align: center;
-  }
-  .odds-calendar-placeholder p {
-    max-width: 34rem;
-    margin: 0;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    line-height: 1.55;
-    /* On the fixed light surface this frame keeps regardless of page theme
-       (see .odds-calendar-embed above), so the ink readings, not paper. */
-    color: var(--color-ink-80);
-  }
-  .odds-calendar-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-4);
-  }
-  .odds-calendar-btn {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 0.7rem 1.4rem;
-    border-radius: 999px;
-    background: var(--color-ink);
-    border: 1px solid var(--color-ink);
-    color: var(--color-paper);
-    cursor: pointer;
-    transition: opacity var(--duration-fast) ease;
-  }
-  .odds-calendar-btn:hover {
-    opacity: 0.85;
-  }
-  .odds-calendar-actions a {
-    font-family: var(--font-body);
-    font-size: 0.78rem;
-    color: var(--color-ink-60);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-  }
-  .odds-calendar-actions a:hover {
-    color: var(--color-ink);
+    margin-top: 2.4rem;
   }
 </style>

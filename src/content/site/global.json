@@ -7,9 +7,9 @@
       "label": "Info",
       "href": "/about",
       "children": [
-        { "label": "About", "href": "/about" },
-        { "label": "Work with us", "href": "/work-with-odd" },
+        { "label": "Work with ODD", "href": "/work-with-odd" },
         { "label": "Media", "href": "/media" },
+        { "label": "About", "href": "/about" },
         { "label": "Contact", "href": "/contact" }
       ]
     }
