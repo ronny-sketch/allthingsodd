@@ -1,0 +1,256 @@
+---
+// ODDspace membership (2026-09-11) — the "become a member" journey the
+// September planning review asked for. /oddspace sells the place; this page
+// exists so somebody already sold on it can answer every question they have
+// before writing to us, including the ones we would rather they asked.
+//
+// Section order is the order those questions arrive: what it is, what's in
+// it, what is NOT in it, what it costs, whether it's for me, how to start.
+// "What's not included" sits above the price on purpose — the studio
+// carve-out and the absence of private desks are what a member would
+// otherwise discover after paying, and a page that hides them converts
+// better and works worse.
+import { getEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SubpageFrame from '../../components/sections/SubpageFrame.astro';
+import SpaceHero from '../../components/sections/SpaceHero.astro';
+import SectionIntro from '../../components/sections/SectionIntro.astro';
+import PricingGrid from '../../components/sections/PricingGrid.astro';
+import FeatureGrid from '../../components/sections/FeatureGrid.astro';
+import AudienceList from '../../components/sections/AudienceList.astro';
+import FAQList from '../../components/sections/FAQList.astro';
+import PhotoBreak from '../../components/sections/PhotoBreak.astro';
+import Pill from '../../components/primitives/Pill.astro';
+
+const entry = await getEntry('pages', 'oddspace-membership');
+if (!entry || entry.data._template !== 'oddspace-membership')
+  throw new Error('oddspace-membership.json content entry missing or malformed');
+const page = entry.data;
+---
+
+<Layout
+  title={page.seo.title}
+  description={page.seo.description}
+  ogImage={page.seo.ogImage}
+  theme="light"
+>
+  <SubpageFrame slug={page._slug} railLeft={page.railLeft} railRight={page.railRight}>
+    <SpaceHero
+      slot="hero"
+      photos={page.heroPhotos}
+      title={page.title}
+      meta={page.meta}
+      primaryCta={page.primaryCta}
+      secondaryCta={page.secondaryCta}
+    />
+
+    <!-- 1. What membership is. -->
+    <SectionIntro
+      eyebrow={page.whatItIs.eyebrow}
+      headline={page.whatItIs.headline}
+      body={page.whatItIs.body}
+    />
+    <p class="odsm-intro-line reveal">{page.intro}</p>
+
+    <!-- 2 + 3. Included and not included, side by side at the same weight.
+         Two columns rather than a long list and a footnote: the comparison
+         IS the information, and a visitor who reads only one of them has
+         been misled by the layout. -->
+    <section class="odsm-sub">
+      <div class="wrap">
+        <div class="odsm-lists">
+          <div class="odsm-list-block">
+            <span class="eyebrow">{page.included.eyebrow}</span>
+            <h2>{page.included.headline}</h2>
+            <ul class="odsm-list reveal">
+              {page.included.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+          <div class="odsm-list-block odsm-list-block--out">
+            <span class="eyebrow">{page.notIncluded.eyebrow}</span>
+            <h2>{page.notIncluded.headline}</h2>
+            <ul class="odsm-list reveal">
+              {page.notIncluded.items.map((item) => <li>{item}</li>)}
+            </ul>
+            {page.notIncluded.note && <p class="odsm-list-note reveal">{page.notIncluded.note}</p>}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Price. Same PricingGrid the tickets and the studio use. -->
+    <section class="odsm-sub odsm-pricing">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">What it costs</span>
+          <h2>€150 a month, or €250 with the studio.</h2>
+        </div>
+        <PricingGrid items={page.tiers} />
+        <p class="odsm-rates-note reveal">{page.ratesNote}</p>
+      </div>
+    </section>
+
+    <PhotoBreak
+      image={page.heroPhotos[1].image}
+      alt="The ODDspace co-working lounge on an ordinary working day"
+    />
+
+    <!-- 5. Who it's for. -->
+    <section class="odsm-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">{page.audiencesIntro.eyebrow}</span>
+          <h2>{page.audiencesIntro.headline}</h2>
+        </div>
+        <AudienceList items={page.audiences} />
+      </div>
+    </section>
+
+    <!-- 6. How joining works. -->
+    <section class="odsm-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Joining</span>
+          <h2>How it works.</h2>
+        </div>
+        <FeatureGrid cards={page.howItWorks} />
+      </div>
+    </section>
+
+    <!-- 7. FAQ. -->
+    <section class="odsm-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Practical</span>
+          <h2>Questions people actually ask.</h2>
+        </div>
+        <FAQList items={page.faq} />
+      </div>
+    </section>
+
+    <!-- 8. The ask. -->
+    <section class="odsm-sub odsm-final">
+      <div class="wrap">
+        <div class="odsm-final-inner reveal">
+          <span class="eyebrow">{page.finalCta.eyebrow}</span>
+          <h2>{page.finalCta.headline}</h2>
+          <p>{page.finalCta.body}</p>
+          <Pill href={page.finalCta.cta.href} variant="solid" magnetic>
+            {page.finalCta.cta.label}
+          </Pill>
+        </div>
+      </div>
+    </section>
+  </SubpageFrame>
+</Layout>
+
+<style>
+  .odsm-sub {
+    padding: var(--space-24) 0;
+  }
+  /* Same mobile rhythm correction as oddspace.astro's .odds-sub. */
+  @media (max-width: 640px) {
+    .odsm-sub {
+      padding: var(--space-12) 0;
+    }
+  }
+
+  .odsm-intro-line {
+    max-width: 40rem;
+    margin: -2rem auto var(--space-24);
+    padding: 0 1.5rem;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    line-height: 1.8;
+    color: var(--color-paper-80);
+  }
+
+  .odsm-lists {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-12);
+  }
+  @media (max-width: 860px) {
+    .odsm-lists {
+      grid-template-columns: 1fr;
+      gap: var(--space-10);
+    }
+  }
+  .odsm-list-block h2 {
+    margin: var(--space-2) 0 var(--space-6);
+    font: var(--text-heading-md);
+  }
+  .odsm-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .odsm-list li {
+    padding-left: 1.4rem;
+    position: relative;
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    line-height: 1.7;
+    color: var(--color-paper-80);
+  }
+  .odsm-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 0.5rem;
+    height: 1px;
+    background: var(--color-paper-40);
+  }
+  /* The exclusions read at the same size as the inclusions — the only
+     difference is the rule down the side, which marks the column rather
+     than demoting it. */
+  .odsm-list-block--out {
+    padding-left: var(--space-8);
+    border-left: 1px solid var(--color-paper-12);
+  }
+  @media (max-width: 860px) {
+    .odsm-list-block--out {
+      padding-left: 0;
+      padding-top: var(--space-8);
+      border-left: 0;
+      border-top: 1px solid var(--color-paper-12);
+    }
+  }
+  .odsm-list-note {
+    margin: var(--space-5) 0 0;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--color-paper-60);
+  }
+
+  .odsm-rates-note {
+    max-width: 44rem;
+    margin: var(--space-8) auto 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.75;
+    color: var(--color-paper-60);
+  }
+
+  .odsm-final-inner {
+    max-width: 44rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .odsm-final-inner h2 {
+    margin: var(--space-2) 0 var(--space-4);
+  }
+  .odsm-final-inner p {
+    margin: 0 auto var(--space-8);
+    max-width: 46ch;
+    font-family: var(--font-body);
+    line-height: 1.75;
+    color: var(--color-paper-80);
+  }
+</style>

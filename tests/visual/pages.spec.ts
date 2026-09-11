@@ -11,6 +11,8 @@ const ROUTES = [
   '/oddference',
   '/oddagency',
   '/oddspace',
+  '/oddspace/membership',
+  '/oddspace/venue',
   '/oddstudio',
   '/work-with-odd',
   '/membership',
@@ -86,7 +88,16 @@ for (const route of ROUTES) {
     // pages at the widest breakpoint (confirmed: ODDspace/wide) can push
     // the test's total wall-clock time past the default on its own,
     // before the screenshot assertion's own budget even starts.
-    test.setTimeout(45_000);
+    //
+    // Raised 45s -> 90s on 2026-09-11, when /oddspace/membership and
+    // /oddspace/venue were added: both are long pages, and at the 2560px
+    // breakpoint the scroll-through alone ran past 45s on several routes
+    // (every one of them failing inside page.waitForTimeout, not in the
+    // screenshot comparison — a wall-clock budget, not a page defect).
+    // This is the cost of a slow scroll that exists to make reveals fire;
+    // shortening the pacing instead would trade a real class of missed
+    // content for a faster run.
+    test.setTimeout(90_000);
     // Pre-seed the "seen" flag NewsletterPopup.astro checks (see
     // src/scripts/newsletter-popup.ts) before any page script runs — added
     // 2026-08-31 after the homepage revision made the popup global (every

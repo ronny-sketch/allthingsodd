@@ -1,0 +1,216 @@
+{
+  "_template": "oddspace-venue",
+  "_slug": "oddspace",
+  "seo": {
+    "title": "Host an event at ODDspace — gallery and auditorium in Vallila",
+    "description": "ODDspace as a venue: a gallery and event floor, an auditorium and a studio in Vallila, Helsinki. Exhibitions, launches, workshops, talks, screenings, shoots and performances. Member and enquiry-based rates.",
+    "ogImage": "/og/oddspace.jpg"
+  },
+  "eyebrow": "ODDspace · As a venue",
+  "title": "Host it here.",
+  "meta": "Vallila · Helsinki · No membership needed",
+  "primaryCta": {
+    "label": "Enquire about a date",
+    "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
+  },
+  "secondaryCta": {
+    "label": "See the spaces",
+    "href": "#spaces"
+  },
+  "heroMedia": {},
+  "heroPhotos": [
+    {
+      "image": "../../assets/oddspace/gallery-floor.jpg",
+      "alt": "The raised, curved gallery and event floor at ODDspace"
+    },
+    {
+      "image": "../../assets/oddspace/auditorium.jpg",
+      "alt": "The ODDspace auditorium with tiered seating for talks and screenings"
+    },
+    {
+      "image": "../../assets/oddspace/lounge.jpg",
+      "alt": "A co-working lounge area at ODDspace with seating and local art on the walls"
+    },
+    {
+      "image": "../../assets/oddspace/podcast-studio.jpg",
+      "alt": "The audio and podcast studio at ODDspace, with recording equipment and a blue curtain backdrop"
+    },
+    {
+      "image": "../../assets/oddspace/entrance-signage.jpg",
+      "alt": "The ODDspace entrance, with the ODDspace mark on the door"
+    },
+    {
+      "image": "../../assets/oddspace/exterior-building.jpg",
+      "alt": "The industrial Vallila building that houses ODDspace"
+    }
+  ],
+  "intro": "You do not need to be a member to book. Tell us the date and what you're planning, and we'll tell you straight away whether the space can do it.",
+  "whatItIs": {
+    "eyebrow": "What it's good for",
+    "headline": "A gallery floor, an auditorium, and a building that already hosts things.",
+    "body": "ODDspace is a working creative space in Vallila with two bookable event rooms in it — a gallery and event floor, and an auditorium with tiered seating. Exhibitions, launches, workshops, talks, screenings, shoots, gatherings, performances and organisational events have all happened here. It does not feel like a hotel conference room, which is usually why people ask about it."
+  },
+  "eventTypes": [
+    "Exhibitions and openings",
+    "Product and brand launches",
+    "Workshops and offsites",
+    "Talks, panels and screenings",
+    "Photo and video shoots",
+    "Performances and club-style nights",
+    "Private and organisational gatherings"
+  ],
+  "spacesIntro": {
+    "eyebrow": "The rooms",
+    "headline": "Two bookable rooms, plus the studio."
+  },
+  "spaces": [
+    {
+      "name": "Event & gallery floor",
+      "body": "The raised, curved main floor — the room most events happen in. Exhibitions, launches, workshops, shoots, receptions and performances.",
+      "bullets": [
+        "The main event room",
+        "Exhibitions, launches and receptions",
+        "Workshops, shoots and performances",
+        "Member rate: €200 for a full day"
+      ],
+      "image": "../../assets/oddspace/gallery-floor.jpg"
+    },
+    {
+      "name": "Auditorium",
+      "body": "Tiered seating for talks, panels, screenings, presentations and smaller events — people facing one direction, without having to build a stage.",
+      "bullets": [
+        "Tiered, fixed seating",
+        "Talks, panels and screenings",
+        "Presentations and workshops",
+        "Member rate: €100 for a half day"
+      ],
+      "image": "../../assets/oddspace/auditorium.jpg"
+    },
+    {
+      "name": "ODDstudio",
+      "body": "The recording and production room, run with TUNEMENT. Booked separately from the event rooms — useful alongside an event for recording, podcasts or live sessions.",
+      "bullets": [
+        "Recording, co-writing and production",
+        "Genelec monitoring and a mic locker",
+        "From €20 / hour for members, from €30 / hour without",
+        "Booked on its own page"
+      ],
+      "image": "../../assets/oddspace/podcast-studio.jpg"
+    }
+  ],
+  "pricing": {
+    "eyebrow": "What it costs",
+    "headline": "Member rates are published. Everything else is quoted.",
+    "body": "Members book the rooms at fixed member rates. For everyone else we quote per event, because the number depends on which room, how long, how much setup and teardown time you need, and whether you want us to help run it. Tell us those four things and you'll have a price."
+  },
+  "memberRates": [
+    { "name": "Full day, 1st floor gallery (members)", "price": "€200" },
+    { "name": "Half day, auditorium (members)", "price": "€100" },
+    {
+      "name": "ODDstudio, per hour (members)",
+      "price": "€20",
+      "note": "Or €100 / month for full studio access. Non-member studio rates are on the ODDstudio page."
+    }
+  ],
+  "ratesNote": "Non-member rates are set per event rather than from a rate card — ask, and you'll get a number for your date. Membership is €150 / month, so for a series of events it is often worth comparing the two.",
+  "whatWeCanDo": {
+    "eyebrow": "Beyond the room",
+    "headline": "We can also help make it.",
+    "body": "ODD produces its own events in this building every week, and works with organisations on events elsewhere. If you want more than a room — concept, programme, production, or people who know how to run a night — say so in your enquiry and we'll tell you what that would take. If you just want the room, that's also completely fine."
+  },
+  "howItWorks": [
+    {
+      "number": "01",
+      "title": "Tell us the date and the idea",
+      "body": "What you're planning, the date or dates, roughly how many people, and what you need the room to do."
+    },
+    {
+      "number": "02",
+      "title": "We come back with availability and a price",
+      "body": "Whether the date is free, which room fits, what the space can and cannot do for that plan, and what it costs."
+    },
+    {
+      "number": "03",
+      "title": "We confirm it in writing",
+      "body": "Times, access, setup and what's included, agreed before anything is booked in."
+    }
+  ],
+  "askUs": {
+    "eyebrow": "Ask us directly",
+    "headline": "Things we answer per event, not on a page.",
+    "body": "Some of what you need to plan a real event depends on your date and your plan — and some of it we are still documenting properly. Rather than publish numbers we cannot stand behind, we answer these in your enquiry, usually the same day:",
+    "items": [
+      "Exact capacities and layouts for your format",
+      "Room dimensions and what fits in them",
+      "AV, sound and lighting — what's in the building and what we bring in",
+      "Accessibility: step-free access, lifts and toilets are still being documented, so we tell you exactly what the space can do today",
+      "Load-in, parking and getting gear through the door",
+      "Catering, drinks and who can serve what",
+      "How late the space can run",
+      "Staffing, technical support and what we can produce for you"
+    ]
+  },
+  "faq": [
+    {
+      "question": "Do I need to be a member to book?",
+      "answer": "No. Renting the gallery or the auditorium doesn't require a membership — members simply pay published member rates, and everyone else is quoted per event."
+    },
+    {
+      "question": "What does it cost?",
+      "answer": "Member rates are €200 for a full day in the 1st floor gallery and €100 for a half day in the auditorium. Non-member pricing is quoted per event, based on the room, the hours, the setup you need and whether you want help running it."
+    },
+    {
+      "question": "How many people fit?",
+      "answer": "It depends on the room and the layout, and we would rather give you a real number for your format than a flattering one on a webpage. Tell us the date and the kind of event and we'll tell you what the room actually takes."
+    },
+    {
+      "question": "What AV and technical equipment is there?",
+      "answer": "Ask us with your plan. What's in the building, what we can bring in and what you should bring yourself depends on what you're doing — and we are still documenting the full inventory properly rather than listing it approximately."
+    },
+    {
+      "question": "Is the space accessible?",
+      "answer": "We do not have verified accessibility information for the building to publish yet — step-free access, lifts, accessible toilets and door widths are still being documented, and we would rather say that than reassure you about something we have not measured. If accessibility matters for your event, email hello@oddfest.co and we will tell you exactly what the space can and cannot do today."
+    },
+    {
+      "question": "Can I bring my own caterer, DJ or production team?",
+      "answer": "Usually yes — tell us who and what in the enquiry so we can check it against the building's own rules and confirm it with you before you book anyone."
+    },
+    {
+      "question": "Can ODD help produce the event, not just rent the room?",
+      "answer": "Yes. We produce our own events here every week. Say what you have in mind and we'll tell you what we could take on and what that would cost."
+    },
+    {
+      "question": "Can we record the event?",
+      "answer": "ODDstudio is in the same building and is booked separately — from €20 / hour for members and from €30 / hour without. Say so in your enquiry and we'll line the two bookings up."
+    },
+    {
+      "question": "Where is it?",
+      "answer": "Teollisuuskatu 9D, Vallila, Helsinki."
+    },
+    {
+      "question": "How far ahead should I ask?",
+      "answer": "As early as you can — the space is in daily use and popular dates go first. If your date is soon, ask anyway; sometimes it works."
+    }
+  ],
+  "finalCta": {
+    "eyebrow": "Get in touch",
+    "headline": "Is your date free?",
+    "body": "Tell us the date, roughly how many people, and what you're planning. You'll get availability, a price and a straight answer about what the space can do.",
+    "cta": {
+      "label": "Enquire about a date",
+      "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
+    }
+  },
+  "railLeft": [
+    { "kind": "logo" },
+    { "kind": "word", "text": "ODDspace" },
+    { "kind": "meta", "text": "Venue" },
+    { "kind": "meta", "text": "Vallila" }
+  ],
+  "railRight": [
+    { "kind": "word", "text": "Helsinki" },
+    { "kind": "meta", "text": "Events" },
+    { "kind": "logo" },
+    { "kind": "word", "text": "ODDspace" }
+  ]
+}

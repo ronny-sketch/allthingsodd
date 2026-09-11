@@ -120,6 +120,25 @@ high-level notes:
     booking calendar**, so when a date moves or an event is cancelled it
     has to be changed here, and only things a stranger can actually turn
     up to or book belong on it.
+- **ODDspace membership** (`/oddspace/membership`, new 2026-09-11) and
+  **ODDspace as a venue** (`/oddspace/venue`, same date): the two pages that
+  let somebody decide, or plan an event, without having to write to us
+  first. Both live in `src/content/pages/oddspace-membership.json` and
+  `oddspace-venue.json`. **Neither is wired into CloudCannon yet** — the CMS
+  side was deliberately deferred in the September review, so these two are
+  edited in the repo for now, unlike every other page above.
+  - The membership page's "what's not included" list is the reason it
+    exists. Do not quietly trim it to make the page read better: the studio
+    carve-out and the absence of a private desk are what a member would
+    otherwise find out after paying.
+  - The venue page publishes only what the site already stands behind —
+    the two member rates — and names capacities, dimensions, AV,
+    accessibility, load-in, catering and non-member pricing as things we
+    answer per enquiry (`askUs`). **Do not fill those in from the internal
+    rental guide.** Its capacities are marked "TBD — confirm before
+    publishing externally" and its prices contradict two other internal
+    lists. When a number is genuinely confirmed, move it into the page and
+    take it out of `askUs`.
 - **Work with ODD** (moved into the "Info" nav dropdown 2026-08-30, route
   unchanged; it was publicly labelled "Work with us" there until 2026-09-11,
   and now leads that dropdown under its real name): hero (eyebrow/title/intro/primary
@@ -147,6 +166,12 @@ high-level notes:
   "no invented numbers" rule as everywhere else), the participate band, and
   a closing photo (leave unset until a real, confirmed photo exists — the
   page shows a plain placeholder panel instead of guessing).
+  - 2026-09-11: the "Why now" section and its editing field were removed
+    outright. Its headline read as strategy-deck writing rather than
+    something that helps an outsider understand ODD; its one real fact is
+    now inside the opening argument, which is three paragraphs instead of
+    five. "What we have learned" keeps only the lessons the timeline and
+    the impact numbers do not already tell.
 - **Media**: a full press kit — accreditation callout, key facts, ODDfest
   highlights (optional — a stats grid, same "leave it out rather than invent
   numbers" rule as everywhere else), the shared "Featured in" press logo

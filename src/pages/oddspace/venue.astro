@@ -1,0 +1,331 @@
+---
+// ODDspace as a venue (2026-09-11) — the "organise an event here" journey.
+// Written so that someone can read it and know almost everything they need
+// before asking "is 27 October free?", which is exactly how the September
+// planning review put it.
+//
+// The one rule this page is built around: it publishes what the site can
+// stand behind (member rates, the rooms, what has happened here) and names
+// what it cannot (capacities, AV inventory, accessibility, load-in) as
+// things we answer in an enquiry. The internal rental guide has capacities
+// marked "TBD — confirm before publishing externally" and three conflicting
+// price lists as of 2026-09-11; none of that is on this page. A useful sales
+// page with honest gaps beats a polished one with invented specifications.
+import { getEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SubpageFrame from '../../components/sections/SubpageFrame.astro';
+import SpaceHero from '../../components/sections/SpaceHero.astro';
+import SectionIntro from '../../components/sections/SectionIntro.astro';
+import SpaceShowcase from '../../components/sections/SpaceShowcase.astro';
+import FeatureGrid from '../../components/sections/FeatureGrid.astro';
+import FAQList from '../../components/sections/FAQList.astro';
+import PhotoBreak from '../../components/sections/PhotoBreak.astro';
+import Pill from '../../components/primitives/Pill.astro';
+
+const entry = await getEntry('pages', 'oddspace-venue');
+if (!entry || entry.data._template !== 'oddspace-venue')
+  throw new Error('oddspace-venue.json content entry missing or malformed');
+const page = entry.data;
+---
+
+<Layout
+  title={page.seo.title}
+  description={page.seo.description}
+  ogImage={page.seo.ogImage}
+  theme="light"
+>
+  <SubpageFrame slug={page._slug} railLeft={page.railLeft} railRight={page.railRight}>
+    <SpaceHero
+      slot="hero"
+      photos={page.heroPhotos}
+      title={page.title}
+      meta={page.meta}
+      primaryCta={page.primaryCta}
+      secondaryCta={page.secondaryCta}
+    />
+
+    <!-- 1. What it's good for, then the formats themselves — a plain list of
+         things that have really happened here, not a promise of what could. -->
+    <SectionIntro
+      eyebrow={page.whatItIs.eyebrow}
+      headline={page.whatItIs.headline}
+      body={page.whatItIs.body}
+    />
+    <p class="odsv-intro-line reveal">{page.intro}</p>
+
+    <section class="odsv-sub odsv-types">
+      <div class="wrap">
+        <ul class="odsv-type-list reveal">
+          {page.eventTypes.map((type) => <li>{type}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <!-- 2. The rooms — same SpaceShowcase component /oddspace uses. -->
+    <section id="spaces" class="odsv-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">{page.spacesIntro.eyebrow}</span>
+          <h2>{page.spacesIntro.headline}</h2>
+        </div>
+        <SpaceShowcase spaces={page.spaces} />
+      </div>
+    </section>
+
+    <!-- 3. Price: what is published, and plainly why the rest is quoted. -->
+    <section class="odsv-sub odsv-pricing">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">{page.pricing.eyebrow}</span>
+          <h2>{page.pricing.headline}</h2>
+        </div>
+        <p class="odsv-pricing-body reveal">{page.pricing.body}</p>
+        <div class="odsv-rates reveal">
+          <span class="odsv-rates-label">ODDspace members</span>
+          {
+            page.memberRates.map((r) => (
+              <div class="odsv-rate-row">
+                <span class="odsv-rate-name">{r.name}</span>
+                <span class="odsv-rate-price">{r.price}</span>
+                {r.note && <span class="odsv-rate-note">{r.note}</span>}
+              </div>
+            ))
+          }
+        </div>
+        <p class="odsv-rates-note reveal">{page.ratesNote}</p>
+      </div>
+    </section>
+
+    <PhotoBreak
+      image={page.heroPhotos[0].image}
+      alt="The ODDspace gallery floor set up for an event"
+    />
+
+    <!-- 4. More than a room. -->
+    <SectionIntro
+      eyebrow={page.whatWeCanDo.eyebrow}
+      headline={page.whatWeCanDo.headline}
+      body={page.whatWeCanDo.body}
+    />
+
+    <!-- 5. How booking works. -->
+    <section class="odsv-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Booking</span>
+          <h2>How it works.</h2>
+        </div>
+        <FeatureGrid cards={page.howItWorks} />
+      </div>
+    </section>
+
+    <!-- 6. The honest half. See the route comment: these are the specs a
+         real event needs that this site cannot yet verify. Naming them as
+         questions we answer is more useful to a planner than silence, and
+         more truthful than a number from an unconfirmed internal draft. -->
+    <section class="odsv-sub odsv-ask">
+      <div class="wrap">
+        <div class="odsv-ask-inner">
+          <span class="eyebrow">{page.askUs.eyebrow}</span>
+          <h2>{page.askUs.headline}</h2>
+          <p class="odsv-ask-body reveal">{page.askUs.body}</p>
+          <ul class="odsv-ask-list reveal">
+            {page.askUs.items.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. FAQ. -->
+    <section class="odsv-sub">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Practical</span>
+          <h2>Questions people actually ask.</h2>
+        </div>
+        <FAQList items={page.faq} />
+      </div>
+    </section>
+
+    <!-- 8. The ask. -->
+    <section class="odsv-sub odsv-final">
+      <div class="wrap">
+        <div class="odsv-final-inner reveal">
+          <span class="eyebrow">{page.finalCta.eyebrow}</span>
+          <h2>{page.finalCta.headline}</h2>
+          <p>{page.finalCta.body}</p>
+          <Pill href={page.finalCta.cta.href} variant="solid" magnetic>
+            {page.finalCta.cta.label}
+          </Pill>
+        </div>
+      </div>
+    </section>
+  </SubpageFrame>
+</Layout>
+
+<style>
+  .odsv-sub {
+    padding: var(--space-24) 0;
+  }
+  @media (max-width: 640px) {
+    .odsv-sub {
+      padding: var(--space-12) 0;
+    }
+  }
+
+  .odsv-intro-line {
+    max-width: 40rem;
+    margin: -2rem auto var(--space-16);
+    padding: 0 1.5rem;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    line-height: 1.8;
+    color: var(--color-paper-80);
+  }
+
+  /* Event types as a wrapping row of chips rather than a bulleted column:
+     this is a scan, not a read — a visitor is looking for their own format
+     in it and leaving as soon as they find it. */
+  .odsv-types {
+    padding-top: 0;
+  }
+  .odsv-type-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .odsv-type-list li {
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--color-paper-12);
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    color: var(--color-paper-80);
+  }
+
+  .odsv-pricing-body {
+    max-width: 44rem;
+    margin: 0 auto var(--space-12);
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--color-paper-80);
+  }
+  .odsv-rates {
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+  .odsv-rates-label {
+    display: block;
+    margin-bottom: var(--space-4);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .odsv-rate-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0 var(--space-6);
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--color-paper-12);
+    font-family: var(--font-body);
+  }
+  .odsv-rate-row:last-of-type {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .odsv-rate-name {
+    font-size: 0.98rem;
+    color: var(--color-paper-80);
+  }
+  .odsv-rate-price {
+    font-size: 0.98rem;
+    text-align: right;
+  }
+  .odsv-rate-note {
+    grid-column: 1 / -1;
+    margin-top: var(--space-2);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-paper-60);
+  }
+  .odsv-rates-note {
+    max-width: 42rem;
+    margin: var(--space-8) auto 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--color-paper-60);
+  }
+
+  .odsv-ask-inner {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: var(--space-10);
+    border: 1px solid var(--color-paper-12);
+    border-radius: var(--radius-panel);
+  }
+  .odsv-ask-inner h2 {
+    margin: var(--space-2) 0 var(--space-4);
+    font: var(--text-heading-md);
+  }
+  .odsv-ask-body {
+    margin: 0 0 var(--space-6);
+    font-family: var(--font-body);
+    line-height: 1.75;
+    color: var(--color-paper-80);
+  }
+  .odsv-ask-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .odsv-ask-list li {
+    position: relative;
+    padding-left: 1.4rem;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--color-paper-80);
+  }
+  .odsv-ask-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 0.5rem;
+    height: 1px;
+    background: var(--color-paper-40);
+  }
+  @media (max-width: 640px) {
+    .odsv-ask-inner {
+      padding: var(--space-6);
+    }
+  }
+
+  .odsv-final-inner {
+    max-width: 44rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .odsv-final-inner h2 {
+    margin: var(--space-2) 0 var(--space-4);
+  }
+  .odsv-final-inner p {
+    margin: 0 auto var(--space-8);
+    max-width: 46ch;
+    font-family: var(--font-body);
+    line-height: 1.75;
+    color: var(--color-paper-80);
+  }
+</style>

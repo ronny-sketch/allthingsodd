@@ -287,6 +287,35 @@ real decisions worth recording:
      alike; not once two are dimmed. Full width fits all three in one row
      and the price progression reads left to right.
 
+9. **The 2026-09-11 editorial alignment pass** worked through the whole site
+   against the September planning review, which asked for editorial
+   simplification rather than a redesign. One rule ran through all of it:
+   one headline = one quickly understood thought, and every section has one
+   job. What changed, and the reasoning that is not obvious from the diff:
+   - **The homepage hero split in two.** Its h1 carried both halves of ODD's
+     mission in one sentence — a headline nobody finishes. The h1 now makes
+     one claim ("Creative work deserves better conditions than starting from
+     zero every time") and `opening.support`, a new optional `Hero` prop,
+     carries the second layer at body weight.
+   - **"Already in motion" stopped saying the numbers twice.** Its paragraph
+     restated all four figures that the stat row underneath it already
+     shows. `identity-integrity.spec.ts` guarded the old wording, so that
+     assertion now guards the timeframe claim rather than one sentence of it.
+   - **About's "Why now" section was removed, not shortened.** Its headline —
+     "When execution gets easier, judgment matters more" — was strategy
+     thinking that read well in a deck and told a visitor nothing about ODD.
+     Its one load-bearing fact (Finland's own creative-economy goals already
+     assume this expertise matters more) survives inside the opening
+     argument, which came down from five paragraphs to three. "What we have
+     learned" lost the two items the timeline and the impact numbers already
+     tell.
+   - **ODDfest gained a partner route.** The page converted hosts and nobody
+     else, while partners are the other audience it genuinely has. It is a
+     bordered band after the proof chapter, deliberately quieter than the
+     host ask, routing into the existing Work with ODD partnerships enquiry
+     rather than a second form.
+   - **ODDnetwork says the name is provisional**, because it is.
+
 **Nav breakpoint: 1024px, not 760px.** Originally set because "Work with
 ODD" was a genuinely long label next to the site's other single-word nav
 items — at anything narrower than 1024px, the 5-item desktop nav collided
@@ -543,6 +572,44 @@ appearance: the requests are the thing that would actually breach ePrivacy
 Article 5(3), and they are invisible in a screenshot. Its ODDspace test now
 asserts the absence — no iframe on the page, no Preferences row in the
 banner — because "we removed the embed" is only true while both hold.
+
+## ODDspace conversion pages
+
+`/oddspace/membership` and `/oddspace/venue` (2026-09-11) are the two
+journeys `/oddspace` deliberately does not carry. That page's job is to make
+someone want the place; these two exist so that someone who already does can
+finish deciding — or plan a real event — without writing to us first. Both
+were asked for directly in the September website review: "someone seriously
+considering membership should be able to get all the necessary information
+before contacting us", and for the venue, "someone should be able to read it
+and know almost everything necessary before asking: is 27 October available?"
+
+Three decisions worth keeping:
+
+- **They are ODDspace pages, not new products.** Both reuse `_slug:
+"oddspace"`, so `SubpageFrame` gives them ODDspace's rails, logo and
+  frame, and both reuse `SpaceHero`/`SpaceShowcase`/`PricingGrid`/
+  `FeatureGrid`/`FAQList` rather than introducing components. Nothing new
+  was built except two page-scoped list/rate blocks.
+- **The membership page puts "what's not included" beside "what's
+  included", at the same size.** The studio carve-out and the absence of a
+  private desk are exactly what a member would otherwise discover after
+  paying. A layout where one column is a list and the other is a footnote
+  converts better and works worse.
+- **The venue page publishes what the site can stand behind and names the
+  rest as questions it answers per enquiry.** Member rates (€200 gallery
+  day, €100 auditorium half-day) are published because `/oddspace` already
+  publishes them. Capacities, dimensions, AV inventory, accessibility,
+  load-in, catering and non-member pricing are not, because nobody has
+  verified them: the internal rental guide marks its capacities "TBD —
+  confirm before publishing externally" and, as of 2026-09-11, carries three
+  mutually contradictory price lists. The `askUs` block is not a placeholder
+  waiting to be filled with plausible numbers — when a figure is genuinely
+  verified it moves into the page proper and leaves that list.
+
+`tests/functional/oddspace-conversion.spec.ts` asserts both halves: the
+commercial facts a visitor came for, and the absence of the internal draft's
+unconfirmed capacities.
 
 ## ODDspace events
 
