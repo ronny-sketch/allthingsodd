@@ -11,6 +11,12 @@ interface Space {
   body: string;
   bullets?: string[];
   image?: ImageMetadata;
+  // Optional per-card link out (2026-09-11, added for ODDstudio). Only a
+  // space that has a real page of its own sets these; every other card
+  // renders exactly as before. Both are required together — a label with
+  // no href would be a dead control.
+  href?: string;
+  goLabel?: string;
 }
 interface Props {
   spaces: Space[];
@@ -36,6 +42,11 @@ const { spaces } = Astro.props;
                 <li>{b}</li>
               ))}
             </ul>
+          )}
+          {s.href && s.goLabel && (
+            <a class="space-card-go" href={s.href}>
+              {s.goLabel} <span aria-hidden="true">→</span>
+            </a>
           )}
         </div>
       </div>
@@ -107,6 +118,27 @@ const { spaces } = Astro.props;
     height: 5px;
     border-radius: 999px;
     background: var(--color-paper-40);
+  }
+  /* Per-card link out (ODDstudio). inline-block with real vertical padding
+     rather than a bare inline <a>: this is a touch target, and the site's
+     own mobile pass put the floor at 24px (WCAG 2.2 target size). */
+  .space-card-go {
+    display: inline-block;
+    margin-top: 1.3rem;
+    padding: 0.35rem 0;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--color-paper-80);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--color-paper-20);
+    transition: color var(--duration-fast) ease;
+  }
+  .space-card-go:hover {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
   }
   @media (max-width: 700px) {
     .space-showcase {

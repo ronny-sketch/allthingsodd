@@ -363,7 +363,7 @@ const pages = defineCollection({
     // branches below instead of forced onto all four.
     const subpageBase = z.object({
       seo,
-      _slug: z.enum(['oddfest', 'oddference', 'oddagency', 'oddspace']),
+      _slug: z.enum(['oddfest', 'oddference', 'oddagency', 'oddspace', 'oddstudio']),
       eyebrow: z.string(),
       title: z.string(),
       meta: z.string(),
@@ -725,6 +725,11 @@ const pages = defineCollection({
             body: z.string(),
             bullets: z.array(z.string()).optional(),
             image: image().optional(),
+            // Optional link out to a space that has a page of its own —
+            // currently only ODDstudio. Set both or neither; a label with no
+            // href renders nothing (SpaceShowcase.astro).
+            href: z.string().optional(),
+            goLabel: z.string().optional(),
           }),
         ),
         community: sectionIntro,
@@ -735,6 +740,17 @@ const pages = defineCollection({
         // same pricingTier shape as a single object instead of forcing an
         // N=1 array just for consistency with those other pages.
         membership: pricingTier,
+        // The one carve-out from "one membership, full access" (2026-09-11):
+        // ODDstudio is booked separately. This renders directly under the
+        // €150 price rather than further down the page, because a member who
+        // learns this later learns it from an invoice. Required, not
+        // optional — while the carve-out is true, the page must say so.
+        studioCallout: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          cta: linkCta,
+        }),
         // NEW SECTION (2026-09-02 copywriting pass) — "The network is
         // bigger than the room": the physical member base is the anchor,
         // not the boundary. [HUMAN DECISION — EXTERNAL MEMBER MODEL] the
@@ -791,6 +807,92 @@ const pages = defineCollection({
           })
           .optional(),
         faq: z.array(faqItem),
+      }),
+
+      // ODDstudio (2026-09-11) — the recording/production room inside
+      // ODDspace, run with TUNEMENT. It exists as its own page rather than a
+      // longer section on /oddspace for one commercial reason: it is the one
+      // thing in the building that is NOT covered by the €150 membership, and
+      // burying that in a fourth "spaces" card is how a member finds out by
+      // being invoiced. /oddspace keeps the one-line correction and links
+      // here; the full offer, rates, rules and terms live here.
+      //
+      // Deliberately reuses `subpageBase` (so the rails/hero/SEO behave like
+      // every other subpage) plus ODDspace's own `heroPhotos`, `membership`
+      // and `howItWorks` shapes, per the reuse-before-inventing rule. Only
+      // the genuinely studio-specific fields are new.
+      subpageBase.extend({
+        _template: z.literal('oddstudio'),
+        // Narrowed from subpageBase's optional: this page's whole job is to
+        // get someone to book the room, so the booking CTA is not something
+        // an editor should be able to empty. Same for the hero grid —
+        // SpaceHero has no no-photo state.
+        primaryCta: linkCta,
+        secondaryCta: linkCta,
+        heroPhotos: z.array(z.object({ image: image(), alt: z.string() })),
+        // The short human line under the hero, same role as oddspace's.
+        intro: z.string(),
+        whatItIs: sectionIntro,
+        // Same shape as oddspace's `spaces` — name/body/bullets/photo,
+        // rendered by the same SpaceShowcase component. Here it's the four
+        // equipment groups (monitoring, mics, instruments, the room itself)
+        // rather than four rooms.
+        kit: z.array(
+          z.object({
+            name: z.string(),
+            body: z.string(),
+            bullets: z.array(z.string()).optional(),
+            image: image().optional(),
+          }),
+        ),
+        // The framing above the pricing: says plainly that the studio is not
+        // in the €150 membership. If this text ever stops saying that, the
+        // whole reason this page exists is gone — see the note above and
+        // tests/functional/oddstudio.spec.ts.
+        access: sectionIntro,
+        // The €250/month combined tier (ODDspace + studio). Single object,
+        // not an array, for the same reason oddspace's is — there is one.
+        membership: pricingTier,
+        // Two separate rate lists because they are two different offers, not
+        // one list with a qualifier column: members book at an hourly member
+        // rate, everyone else buys from the standard card. Keeping them apart
+        // is what stops the page implying a non-member can pay the member
+        // rate. Same row shape as oddspace's `rentalRates`.
+        memberRates: z.array(
+          z.object({ name: z.string(), price: z.string(), note: z.string().optional() }),
+        ),
+        publicRates: z.array(
+          z.object({ name: z.string(), price: z.string(), note: z.string().optional() }),
+        ),
+        // VAT + payment terms. One string, under both rate tables.
+        ratesNote: z.string(),
+        howItWorks: z.array(featureCard),
+        houseRules: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          items: z.array(z.string()),
+        }),
+        // The individual-booking terms, rendered in the same accordion as
+        // every FAQ on the site — they are genuinely question-shaped and an
+        // accordion is how people read terms they mostly already accept.
+        terms: z.array(faqItem),
+        // Who actually runs the room. TUNEMENT is a real third party, so this
+        // block carries its own contact and privacy-policy links rather than
+        // implying ODD handles studio bookings or studio booking data.
+        // Jarkko's personal mobile is deliberately NOT a field here — it is
+        // in the internal house-rules document, and publishing a private
+        // number on a public page is a decision for him, not for this repo.
+        operator: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          image: image().optional(),
+          imageAlt: z.string().optional(),
+          cta: linkCta,
+          privacyPolicy: linkCta.optional(),
+        }),
+        // Photographer credit for the whole set on this page.
+        photoCredit: z.string().optional(),
       }),
 
       z.object({

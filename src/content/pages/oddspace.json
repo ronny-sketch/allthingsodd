@@ -97,26 +97,42 @@
       "image": "../../assets/oddspace/auditorium.jpg"
     },
     {
-      "name": "Audio & podcast studio",
-      "body": "For recording, streaming and production work that needs more than a desk.",
-      "bullets": ["Recording and podcasting", "Streaming setup", "Production space"],
-      "image": "../../assets/oddspace/podcast-studio.jpg"
+      "name": "ODDstudio",
+      "body": "A room built for making sound — recording, co-writing, production. Run with TUNEMENT, and booked separately from membership.",
+      "bullets": [
+        "Genelec monitoring and a mic locker",
+        "Guitars, keys, electronic drums and percussion",
+        "Recording, co-writing and production",
+        "Not included in membership — from €20 / hour"
+      ],
+      "image": "../../assets/oddspace/podcast-studio.jpg",
+      "href": "/oddstudio",
+      "goLabel": "Read more about ODDstudio"
     }
   ],
   "membership": {
     "name": "ODDspace membership",
-    "audience": "One membership. The whole space.",
+    "audience": "One membership. The whole space, except the studio.",
     "price": "€150 / month",
     "status": "Rolling admission — pilot phase",
     "benefits": [
       "24/7 workspace access",
       "Shared facilities and meeting rooms",
-      "Member rates on bookable event spaces",
+      "Member rates on bookable event spaces and ODDstudio",
       "Member/community events and programming as available"
     ],
     "ctaLabel": "Become a member",
     "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form",
-    "note": "Accepted on a rolling basis as space becomes available."
+    "note": "Accepted on a rolling basis as space becomes available. ODDstudio is not included — members add full studio access for €100 / month, or book it at €20 / hour."
+  },
+  "studioCallout": {
+    "eyebrow": "One exception",
+    "headline": "The studio is not included.",
+    "body": "ODDstudio — the recording and production room, run with TUNEMENT — is booked separately from the €150 / month membership. Members add full studio access for €100 / month (€250 / month in total), or book it at €20 / hour. Without a membership the studio rents from €30 / hour.",
+    "cta": {
+      "label": "Read more about ODDstudio",
+      "href": "/oddstudio"
+    }
   },
   "networkBeyondRoom": {
     "eyebrow": "Beyond the desks",
@@ -135,6 +151,11 @@
     {
       "name": "Half-day, auditorium (members)",
       "price": "€100"
+    },
+    {
+      "name": "ODDstudio, per hour (members)",
+      "price": "€20",
+      "note": "Or €100 / month for full studio access. See the ODDstudio page for non-member rates."
     },
     {
       "name": "Co-working spaces",
@@ -195,6 +216,10 @@
   },
   "faq": [
     {
+      "question": "Is the studio included in the membership?",
+      "answer": "No. ODDstudio is the one space that isn't covered by the €150 / month membership. Members can add full studio access for €100 / month — €250 / month in total, including the ODDspace membership — or book the studio at €20 / hour. Booking the studio by the hour does not require a membership. Full rates, equipment and booking terms are on the ODDstudio page."
+    },
+    {
       "question": "What is ODDspace?",
       "answer": "A co-creative workspace and event space in Vallila, Helsinki with coworking areas, meeting rooms, an event/gallery floor, an auditorium and an audio/podcast studio. “Co-creative” means people can work independently while the space also makes it easier to share work, ask for input and collaborate when useful."
     },
@@ -252,15 +277,37 @@
     }
   ],
   "railLeft": [
-    { "kind": "logo" },
-    { "kind": "word", "text": "ODDspace" },
-    { "kind": "meta", "text": "Year-round" },
-    { "kind": "meta", "text": "Vallila" }
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDspace"
+    },
+    {
+      "kind": "meta",
+      "text": "Year-round"
+    },
+    {
+      "kind": "meta",
+      "text": "Vallila"
+    }
   ],
   "railRight": [
-    { "kind": "word", "text": "Helsinki" },
-    { "kind": "meta", "text": "Co-working" },
-    { "kind": "logo" },
-    { "kind": "word", "text": "ODDspace" }
+    {
+      "kind": "word",
+      "text": "Helsinki"
+    },
+    {
+      "kind": "meta",
+      "text": "Co-working"
+    },
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDspace"
+    }
   ]
 }

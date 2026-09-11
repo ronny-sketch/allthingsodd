@@ -352,6 +352,95 @@ collections_config:
           one rate, no tiers.
         options:
           subtype: object
+      studioCallout:
+        type: object
+        label: '"The studio is not included" callout (ODDspace only)'
+        comment: >-
+          Sits directly under the EUR150 membership price and is the one
+          place that page states ODDstudio is booked separately. Edit the
+          wording freely, but it must keep saying that the studio is not in
+          the membership — that is the whole reason the block exists, and
+          tests/functional/oddstudio.spec.ts fails if it stops. Keep the
+          figures in step with the ODDstudio page's own rates.
+        options:
+          subtype: object
+      kit:
+        type: array
+        label: What's in the room (ODDstudio only)
+        comment: >-
+          The four equipment groups — monitoring, microphones, instruments,
+          the room itself. Same card shape as ODDspace's "spaces". Only list
+          equipment that is genuinely in the studio; this is what someone
+          books on.
+        options:
+          required: false
+        cascade: true
+      access:
+        type: object
+        label: Access + pricing intro (ODDstudio only)
+        comment: >-
+          The paragraph that states the studio is not part of the EUR150
+          ODDspace membership. Same rule as studioCallout above — reword it,
+          but do not remove the fact.
+        options:
+          subtype: object
+      memberRates:
+        type: array
+        label: Studio rates for ODDspace members (ODDstudio only)
+        comment: >-
+          Deliberately a separate list from publicRates so the page can never
+          imply a non-member books at the member rate. Real, current prices
+          only.
+        options:
+          required: false
+        cascade: true
+      publicRates:
+        type: array
+        label: Studio rates without a membership (ODDstudio only)
+        comment: >-
+          The standard rate card for anyone without an ODDspace membership.
+        options:
+          required: false
+        cascade: true
+      ratesNote:
+        type: text
+        label: VAT + payment terms (ODDstudio only)
+        comment: >-
+          Shown under both rate tables. VAT treatment and payment terms are a
+          legal requirement on a published price, not a nicety — do not empty
+          this.
+      houseRules:
+        type: object
+        label: Studio house rules (ODDstudio only)
+        comment: >-
+          The short public list of how to treat the room. Operational secrets
+          (the key-box code) and private contact details belong in the
+          internal house-rules document, never here.
+        options:
+          subtype: object
+      terms:
+        type: array
+        label: Individual booking terms (ODDstudio only)
+        comment: >-
+          The booking terms, rendered as an accordion. These are contractual
+          — change them with TUNEMENT, not unilaterally.
+        options:
+          required: false
+        cascade: true
+      operator:
+        type: object
+        label: Who runs the studio (ODDstudio only)
+        comment: >-
+          TUNEMENT is a real third party and this block is what stops the
+          page reading as though ODD takes the bookings. Use the business
+          email only — a personal phone number is that person's to publish,
+          not ours.
+        options:
+          subtype: object
+      photoCredit:
+        type: text
+        label: Photographer credit (ODDstudio only)
+        comment: Credit line for the photography on this page.
       rentalRates:
         type: array
         label: Event space rental rates (ODDspace only)

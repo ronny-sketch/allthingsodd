@@ -1,0 +1,213 @@
+{
+  "_template": "oddstudio",
+  "_slug": "oddstudio",
+  "seo": {
+    "title": "ODDstudio — recording and production studio at ODDspace, Helsinki",
+    "description": "A studio at ODDspace in Vallila, Helsinki for recording, co-writing and production. Genelec monitoring, mics, instruments and room to work as a group. Bookable by the hour, or as a monthly membership.",
+    "ogImage": "/og/oddspace.jpg"
+  },
+  "eyebrow": "ODDstudio · Inside ODDspace",
+  "title": "A room built for making sound.",
+  "meta": "Vallila · Helsinki",
+  "primaryCta": {
+    "label": "Book the studio",
+    "href": "/work-with-odd?interest=oddspace&intent=studio#enquiry-form"
+  },
+  "secondaryCta": {
+    "label": "Back to ODDspace",
+    "href": "/oddspace"
+  },
+  "heroMedia": {},
+  "heroPhotos": [
+    {
+      "image": "../../assets/oddstudio/studio-room-wide.jpg",
+      "alt": "The full ODDstudio room — blue acoustic curtains, a production desk, drums and a sofa"
+    },
+    {
+      "image": "../../assets/oddstudio/instruments-lineup.jpg",
+      "alt": "Four guitars on stands beside congas, percussion and a keyboard"
+    },
+    {
+      "image": "../../assets/oddstudio/desk-monitors.jpg",
+      "alt": "The production desk with monitors, microphone arm and reference speakers"
+    },
+    {
+      "image": "../../assets/oddstudio/microphone-detail.jpg",
+      "alt": "A microphone and pop filter on a boom arm in the studio"
+    },
+    {
+      "image": "../../assets/oddstudio/electronic-drums.jpg",
+      "alt": "The electronic drum kit set up against the acoustic curtains"
+    },
+    {
+      "image": "../../assets/oddstudio/studio-room-sofa.jpg",
+      "alt": "A wide view of the studio with the sofa and low table in the foreground"
+    },
+    {
+      "image": "../../assets/oddstudio/resonator-guitar.jpg",
+      "alt": "Close detail of the resonator guitar's metal cone"
+    },
+    {
+      "image": "../../assets/oddstudio/lounge-corner.jpg",
+      "alt": "The seating corner of the studio with a sofa and armchair"
+    }
+  ],
+  "intro": "Bring the idea. The room is ready.",
+  "whatItIs": {
+    "eyebrow": "What ODDstudio is",
+    "headline": "A space built for creating sound.",
+    "body": "Record, write, produce, or gather a few people and start something from scratch. It's open, comfortable and properly equipped — the kind of room where a session can run from a first idea to a finished take without leaving. There's real space to spread out and work as a group, or to shut the door and go deep on your own. It works for recording, co-writing and songwriting sessions, production, and pretty much any creative sound or music work."
+  },
+  "kit": [
+    {
+      "name": "Monitoring & recording",
+      "body": "An accurate, honest and comfortable listening setup to work with.",
+      "bullets": ["Genelec 8331 reference monitors", "Audient iD24 interface"],
+      "image": "../../assets/oddstudio/desk-monitors.jpg"
+    },
+    {
+      "name": "Microphones",
+      "body": "A small, deliberate set that covers voice, amps and drums.",
+      "bullets": ["Shure SM7B", "Røde NT1-A", "Shure SM58", "Sennheiser Vintage MD 421-N"],
+      "image": "../../assets/oddstudio/microphone-detail.jpg"
+    },
+    {
+      "name": "Instruments",
+      "body": "Enough in the room to start writing without carrying anything in.",
+      "bullets": [
+        "Digital piano and Korg microKEY",
+        "Electronic drums",
+        "Four guitars — two semi-acoustics (nylon and steel), a resonator and an electric",
+        "Percussion instruments"
+      ],
+      "image": "../../assets/oddstudio/instruments-lineup.jpg"
+    },
+    {
+      "name": "The space",
+      "body": "A place to sit, write, play and record — comfortably, and with company if you want it.",
+      "bullets": ["Two sofas and room to spread out", "All the cables and stands you'll need"],
+      "image": "../../assets/oddstudio/studio-room-sofa.jpg"
+    }
+  ],
+  "access": {
+    "eyebrow": "Getting in",
+    "headline": "Two ways to use the studio.",
+    "body": "ODDstudio is not part of the standard €150 / month ODDspace membership. You can add it to your membership as full studio access, or book it by the hour when you need it. Booking by the hour does not require an ODDspace membership."
+  },
+  "membership": {
+    "name": "Full studio membership",
+    "audience": "ODDspace membership and full studio access, together.",
+    "description": "€150 / month ODDspace membership plus €100 / month for the studio.",
+    "price": "€250 / month",
+    "status": "Includes ODDspace membership",
+    "benefits": [
+      "Full access to ODDstudio",
+      "Everything in the ODDspace membership — 24/7 workspace access and shared facilities",
+      "No hourly charge for studio use"
+    ],
+    "ctaLabel": "Ask about studio membership",
+    "href": "/work-with-odd?interest=oddspace&intent=studio#enquiry-form",
+    "note": "Existing ODDspace members add studio access for €100 / month."
+  },
+  "memberRates": [
+    {
+      "name": "Hourly, ODDspace members",
+      "price": "€20",
+      "note": "For members who don't need full studio access every month."
+    }
+  ],
+  "publicRates": [
+    { "name": "Hourly", "price": "€30" },
+    { "name": "Half day (4 hours)", "price": "€100" },
+    { "name": "Full day (8 hours)", "price": "€180" }
+  ],
+  "ratesNote": "All prices include VAT (25.5%). Payment by email invoice, due within 14 days.",
+  "howItWorks": [
+    {
+      "number": "01",
+      "title": "Send a request",
+      "body": "Tell us the date, the hours you want and roughly what you're working on. Slots can be booked up to 14 days ahead."
+    },
+    {
+      "number": "02",
+      "title": "We confirm it",
+      "body": "TUNEMENT confirms the slot and sends you the booking details and the access code for the key box."
+    },
+    {
+      "number": "03",
+      "title": "Work",
+      "body": "Let yourself in, use the room, and leave it the way you found it. Free cancellation up to 24 hours before your slot."
+    }
+  ],
+  "houseRules": {
+    "eyebrow": "House rules",
+    "headline": "Short, and all of it reasonable.",
+    "items": [
+      "Leave it the way you found it — guitars on stands, mics where they belong, cables coiled and back in their places.",
+      "Use it like you own it. If something breaks, say so straight away so the studio stays up and running.",
+      "You're welcome to bring other people, as long as you're using the space together. No subletting.",
+      "Keep the key with you while you're in the studio so you don't lock yourself out, and make sure the door locks behind you when you leave.",
+      "Return the key to the box on your way out, set the same code it came on, and scramble the dials."
+    ]
+  },
+  "terms": [
+    {
+      "question": "Booking",
+      "answer": "Individual slots are open to the ODDspace community and can be booked up to 14 days in advance. Requests are confirmed by TUNEMENT — once confirmed, you'll receive the access code and booking details."
+    },
+    {
+      "question": "Access",
+      "answer": "You'll receive the code for the key box. It's for your booking only — please don't share it. When you leave: lock the studio, return the key to the box, close it with the same code, and scramble the dials."
+    },
+    {
+      "question": "Rates & payment",
+      "answer": "Hourly €30 · Half day (4 h) €100 · Full day (8 h) €180, for bookings without an ODDspace membership. ODDspace members book at €20 / hour. All prices include VAT (25.5%). Payment by email invoice, due within 14 days."
+    },
+    {
+      "question": "Cancellation",
+      "answer": "Free cancellation up to 24 hours before your slot. Later cancellations and no-shows are charged in full."
+    },
+    {
+      "question": "Using the space",
+      "answer": "Leave the studio as you found it — clean, tidy, and cleared of your gear. The rate covers the room and standard setup. Specialist equipment is available only by prior agreement."
+    },
+    {
+      "question": "Equipment & damage",
+      "answer": "Handle all equipment with care. Report any fault or damage immediately. You're responsible for damage caused during your booking."
+    },
+    {
+      "question": "Liability & data",
+      "answer": "Use of the studio is at your own risk; ODDspace isn't liable for personal belongings. Booking data is handled under TUNEMENT's privacy policy."
+    }
+  ],
+  "operator": {
+    "eyebrow": "Who runs it",
+    "headline": "The studio is run with TUNEMENT.",
+    "body": "Jarkko Vilska looks after ODDstudio day to day — bookings, access and keeping the room working. If something isn't right, or you have a request or an idea for the space, he's the person to ask.",
+    "image": "../../assets/oddstudio/jarkko-vilska.jpg",
+    "imageAlt": "Jarkko Vilska working at the ODDstudio production desk",
+    "cta": {
+      "label": "jarkko.vilska@tunement.com",
+      "href": "mailto:jarkko.vilska@tunement.com",
+      "external": true
+    },
+    "privacyPolicy": {
+      "label": "TUNEMENT's privacy policy",
+      "href": "https://www.tunement.com/privacy.html",
+      "external": true
+    }
+  },
+  "photoCredit": "Photography: Erica Dahlström Dezonne",
+  "railLeft": [
+    { "kind": "word", "text": "ODDstudio" },
+    { "kind": "meta", "text": "Vallila" },
+    { "kind": "word", "text": "Record" },
+    { "kind": "meta", "text": "Helsinki" }
+  ],
+  "railRight": [
+    { "kind": "meta", "text": "Inside ODDspace" },
+    { "kind": "word", "text": "Write" },
+    { "kind": "meta", "text": "With TUNEMENT" },
+    { "kind": "word", "text": "Produce" }
+  ]
+}
