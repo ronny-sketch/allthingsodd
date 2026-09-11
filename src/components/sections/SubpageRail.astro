@@ -1,10 +1,52 @@
 ---
-// The fixed side rails on every subpage — a truly infinite vertical ticker (list
-// duplicated once, animated -50%) made of the page's own logo/word/meta beats.
-import { Image } from 'astro:assets';
-import Logo from '../primitives/Logo.astro';
+// The fixed side rails on every subpage — a genuinely endless vertical ticker of
+// the page's own logo/word/meta beats.
+//
+// 2026-09-11: rebuilt, because the previous version was neither endless nor
+// seamless, and its logo beat was illegible.
+//
+// What was wrong, measured rather than guessed:
+//
+//   1. It rendered exactly two copies of `items` and animated translateY(-50%).
+//      That convention is only valid when ONE copy already overfills the
+//      container. Here one copy measured 373-572px against an 833px rail at
+//      1440x900 (and a 1303px rail on a portrait tablet), so between 81px and
+//      865px of rail was *permanently empty* — the "runs out" bug. /oddfest's
+//      left rail was the worst: a 373px period in an 833px rail.
+//   2. `gap` + track `padding` made even that -50% inexact. A flex column of
+//      2N items has 2N-1 gaps, not 2N, so half the track height is short of one
+//      true period by (padding - gap/2) = 32 - 20.8 = 11.2px. Measured: an
+//      11.203px jump, every single cycle.
+//
+// The fix for both is one idea: make the repeat unit *exactly* trackHeight/reps
+// so a percentage translate is exact by construction, at any content length and
+// any viewport, with no measurement and no JS.
+//
+//   - The inter-beat space moves off the flex container's `gap` and onto each
+//     item's own `padding-block-end`, so N items contribute exactly N spaces.
+//     The track's own vertical padding is gone for the same reason.
+//   - `reps` copies are rendered and the track travels translateY(-100%/reps),
+//     i.e. exactly one period. Verified in-browser: the computed matrix at the
+//     keyframe end is exactly -(trackHeight/reps) and the midpoint is exactly
+//     half of it, so the interpolation is exact too, not just the endpoint.
+//   - `reps` is derived from an estimate of the period so that (reps-1) periods
+//     always overfill the tallest window we care about. Only the *count* leans
+//     on the estimate; the seam does not, so being 20% out costs a few DOM
+//     nodes and nothing else.
+//
+// The same estimate sets `animation-duration`, which fixes a third, subtler
+// thing: every rail used to take a flat 20s per period regardless of how long
+// that period was, so /oddfest's left rail drifted at 18.7px/s while its own
+// right rail drifted at 24.3px/s. Both now run at RAIL_SPEED px/s.
+//
+// No client JS. This repo deleted `marquee-breathe.ts` for mutating
+// animation-duration at runtime and causing visible jumps; nothing here runs
+// after paint.
+import { getImage } from 'astro:assets';
 import oddfestWordmark from '../../assets/logos/oddfest-wordmark.svg';
 import oddferenceMark from '../../assets/logos/oddference-mark.png';
+import oddspaceWordmark from '../../assets/logos/oddspace-wordmark.svg';
+import oddMark from '../../assets/logos/odd-mark.svg';
 
 interface RailItem {
   kind: 'logo' | 'word' | 'meta';
@@ -16,27 +58,96 @@ interface Props {
   slug: 'oddfest' | 'oddference' | 'oddagency' | 'oddspace' | 'oddstudio';
 }
 const { items, side, slug } = Astro.props;
-const looped = [...items, ...items];
+
+// Each product's own wordmark, not a generic mark. ODDspace had one all along
+// (oddspace-wordmark.svg) and was falling through to the shared ODD mark
+// because only oddfest and oddference were special-cased.
+const wordmark =
+  slug === 'oddfest'
+    ? oddfestWordmark
+    : slug === 'oddference'
+      ? oddferenceMark
+      : slug === 'oddspace'
+        ? oddspaceWordmark
+        : oddMark;
+
+// How thick the logo reads across the rail, in px. Matched to the optical
+// weight of the 1.35rem vertical wordmark it sits among — before this it was
+// rendering 4-8px thick, a smear rather than a mark.
+const LOGO_THICK = 24;
+// Rotated -90deg, the logo occupies LOGO_THICK across the rail and this much
+// along it. Derived from the asset's own intrinsic size, so replacing any of
+// these files keeps the box correct without touching this component.
+const logoRatio = wordmark.width / wordmark.height;
+const logoLength = Math.round(LOGO_THICK * logoRatio);
+// Through astro:assets rather than referencing the import's raw .src, per
+// CLAUDE.md — getImage() is the CSS-side equivalent of <Image>. It passes the
+// two SVG wordmarks through untouched and emits a correctly-sized asset for
+// ODDference's PNG, which is 1080px wide at source and renders at 155.
+const logoAsset = await getImage({ src: wordmark, width: logoLength * 3 });
+
+// Space after every beat, px. Lives on the item, never on the container — see
+// the header comment; this is what makes the period exact.
+const BEAT_GAP = 42;
+// Measured px-per-character for this rail's two type styles at 1440px
+// (uppercase Forta 1.35rem vertical, and the caption face at 0.22em tracking).
+// Only ever used to estimate a period for `reps` and `duration`, both of which
+// degrade gracefully; the loop's seamlessness does not depend on them.
+const PX_PER_WORD_CHAR = 14.2;
+const PX_PER_META_CHAR = 7.8;
+const beatLength = (item: RailItem) =>
+  item.kind === 'logo'
+    ? logoLength
+    : (item.text?.length ?? 0) * (item.kind === 'word' ? PX_PER_WORD_CHAR : PX_PER_META_CHAR);
+const period = items.reduce((sum, item) => sum + BEAT_GAP + beatLength(item), 0) || 1;
+
+// Overfill target: (reps-1) periods must still cover the rail after the track
+// has travelled one period. 2400px clears a 3840x2160 display's viewport with
+// room to spare.
+const OVERFILL_PX = 2400;
+// The estimate above is only ever allowed to make the track LONGER than it
+// needs to be, never shorter: sizing `reps` against 60% of the estimated
+// period means the real period would have to render ~1.7x shorter than
+// predicted before the tail could run dry, which the per-character figures
+// above are nowhere near capable of being wrong by. Capped at 24 so a rail
+// whose beats are all very short can't inflate into thousands of nodes.
+const SAFETY = 0.6;
+const reps = Math.min(24, Math.max(6, Math.ceil(OVERFILL_PX / (period * SAFETY)) + 2));
+const track = Array.from({ length: reps }, () => items).flat();
+
+// px per second. Framing, not a news crawl — slow enough that the eye reads it
+// as the page breathing rather than as something demanding to be read.
+const RAIL_SPEED = 18;
+const duration = Math.max(12, Math.round(period / RAIL_SPEED));
 ---
 
 <div class={`oddf-rail ${side}`} aria-hidden="true">
-  <div class="rail-track">
-    {
-      looped.map((item) => (
-        <div class="rail-item">
-          {item.kind === 'logo' &&
-            (slug === 'oddfest' ? (
-              <img src={oddfestWordmark.src} alt="" />
-            ) : slug === 'oddference' ? (
-              <Image src={oddferenceMark} alt="" width={52} />
-            ) : (
-              <Logo ariaHidden />
-            ))}
-          {item.kind === 'word' && <span class="rail-word">{item.text}</span>}
-          {item.kind === 'meta' && <span class="rail-meta">{item.text}</span>}
-        </div>
-      ))
-    }
+  {
+    /* The masked window is its own layer so the fade at each end applies to the
+       moving beats only. The opaque fill stays on .oddf-rail itself, which is
+       what lets a full-bleed hero run edge-to-edge underneath without showing
+       through the rail (see SubpageFrame.astro). */
+  }
+  <div class="rail-window">
+    <div
+      class="rail-track"
+      style={`--reps:${reps};--rail-duration:${duration}s;--beat-gap:${BEAT_GAP}px;--logo-thick:${LOGO_THICK}px`}
+    >
+      {
+        track.map((item) => (
+          <div class="rail-item">
+            {item.kind === 'logo' && (
+              <span
+                class="rail-logo"
+                style={`--logo-length:${logoLength}px;--logo-src:url(${logoAsset.src})`}
+              />
+            )}
+            {item.kind === 'word' && <span class="rail-word">{item.text}</span>}
+            {item.kind === 'meta' && <span class="rail-meta">{item.text}</span>}
+          </div>
+        ))
+      }
+    </div>
   </div>
 </div>
 
@@ -59,49 +170,108 @@ const looped = [...items, ...items];
     right: 0;
     border-left: 1px solid var(--color-paper-12);
   }
+  /* Fades the beats in and out at the nav edge and the bottom of the screen,
+     so the ticker reads as something passing through a window rather than
+     text guillotined by two hard edges. Asymmetric on purpose: the top edge
+     butts against the nav bar, which already reads as a boundary, while the
+     bottom is open screen edge and needs the longer run-out to not look cut. */
+  .rail-window {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 64px,
+      #000 calc(100% - 96px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 64px,
+      #000 calc(100% - 96px),
+      transparent 100%
+    );
+  }
   .rail-track {
     position: absolute;
     inset: 0 0 auto 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2.6rem;
-    padding: 2rem 0;
+    /* No `gap` and no vertical padding, deliberately — both break the
+       exactness of the -100%/reps translate. See the header comment. */
     will-change: transform;
   }
   @media (prefers-reduced-motion: no-preference) {
     .rail-track {
-      animation: rail-up 20s linear infinite;
+      animation: rail-up var(--rail-duration, 20s) linear infinite;
+    }
+    /* The two rails travel in opposite directions. It costs nothing, and it
+       reads as deliberate framing rather than the same effect pasted twice. */
+    .oddf-rail.right .rail-track {
+      animation-direction: reverse;
     }
   }
+  /* Exactly one period. `-100%` is the whole track and `--reps` is how many
+     identical copies it holds, so this is one copy to the pixel, whatever the
+     content or the viewport. */
   @keyframes rail-up {
     from {
       transform: translateY(0);
     }
     to {
-      transform: translateY(-50%);
+      transform: translateY(calc(-100% / var(--reps)));
     }
   }
   .rail-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    /* The inter-beat space. On the item, never the container. Fed from the
+       frontmatter's BEAT_GAP so the period estimate there and the spacing
+       actually rendered here can never drift apart. */
+    padding-block-end: var(--beat-gap, 42px);
   }
-  .rail-item img,
-  .rail-item :global(img) {
-    width: 26px;
-    height: auto;
-    display: block;
-    opacity: 0.92;
-    transform: rotate(90deg);
+  /* A box the size the logo occupies *after* rotation. transform doesn't
+     affect layout, so without this the rail would reserve the logo's
+     unrotated 121-155px width and only ~24px of its length.
+     The logo is centred by absolute positioning rather than by grid/flex
+     alignment: the artwork is ~5x wider than this 24px box, and an overflowing
+     grid item is not reliably centred — Chrome aligned it to the start, which
+     put the rotated wordmark 48px outside the 68px rail, where `overflow:
+     hidden` simply swallowed it. top/left 50% + translate(-50%,-50%) pins the
+     artwork's centre to the box's centre first, and the rotation then happens
+     about that same point, so the result is exact by construction. */
+  .rail-logo {
+    position: relative;
+    width: var(--logo-thick, 24px);
+    height: var(--logo-length);
   }
-  .rail-item :global(svg) {
-    width: 24px;
-    height: auto;
-    display: block;
-    color: var(--color-paper);
-    opacity: 0.85;
+  /* Painted as a currentColor silhouette through a mask rather than drawn as
+     an <img>. Both product wordmarks ship a baked-in `fill="#EAE5E1"`, which
+     is the paper colour — correct on ODDfest/ODDference's dark rail and
+     invisible on ODDspace/ODDstudio's, which render under `body.theme-light`
+     with the palette inverted (rail background paper, type ink). A mask only
+     reads the artwork's alpha, so one rule serves an SVG wordmark and the
+     RGBA PNG alike, and the mark always takes the rail's own --color-paper —
+     which is what flips with the theme. Width and height are both explicit,
+     so nothing depends on an intrinsic ratio surviving image resizing. */
+  .rail-logo::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--logo-length);
+    height: var(--logo-thick, 24px);
+    /* -90deg, not +90deg: .rail-word below reads bottom-to-top, and the logo
+       used to read top-to-bottom right next to it. */
+    transform: translate(-50%, -50%) rotate(-90deg);
+    background: var(--color-paper);
+    opacity: 0.88;
+    -webkit-mask: var(--logo-src) center / contain no-repeat;
+    mask: var(--logo-src) center / contain no-repeat;
   }
   .rail-word {
     writing-mode: vertical-rl;

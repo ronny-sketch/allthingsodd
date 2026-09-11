@@ -18,10 +18,11 @@
 // Deliberately one band, not two: the desktop version has a left and a right
 // rail because it has two edges to use. A phone has one place this belongs,
 // and a second competing ticker would read as clutter rather than identity.
-import { Image } from 'astro:assets';
-import Logo from '../primitives/Logo.astro';
+import { getImage } from 'astro:assets';
 import oddfestWordmark from '../../assets/logos/oddfest-wordmark.svg';
 import oddferenceMark from '../../assets/logos/oddference-mark.png';
+import oddspaceWordmark from '../../assets/logos/oddspace-wordmark.svg';
+import oddMark from '../../assets/logos/odd-mark.svg';
 
 interface RailItem {
   kind: 'logo' | 'word' | 'meta';
@@ -33,27 +34,75 @@ interface Props {
 }
 const { items, slug } = Astro.props;
 
-// Repeated to a fixed multiple, then translated by exactly -50% — the same
-// "duplicate the track so the loop has no seam" convention SubpageRail and
-// LogoStrip already use. 6 copies of a short beat list is enough to overfill
-// the widest tablet this renders on.
-const reps = 6;
+// Same geometry contract as SubpageRail: the inter-beat space lives on each
+// item's `padding-inline-end` rather than the flex container's `gap`, so N
+// items contribute exactly N spaces and the track is exactly `reps` identical
+// periods long. The track then travels translateX(-100%/reps) — one period, to
+// the pixel, at any content length and any viewport.
+//
+// The previous version rendered 6 copies but reused the shared `marquee-left`
+// keyframe, which is hard-coded to travel -33.3333% (2 of those 6 copies).
+// With the space on `gap` that undershoots a true period by gap/3 = 12.8px, so
+// the band jumped 12.8px every cycle.
+const BEAT_GAP = 38;
+const LOGO_THICK = 20;
+// Same masked-silhouette treatment as SubpageRail — see the long note in its
+// styles. The short version: both wordmarks bake in a paper-coloured fill, and
+// ODDspace/ODDstudio render under body.theme-light with that palette inverted,
+// so a mask painted with --color-paper is the only treatment that is correct
+// on both themes and on the RGBA PNG as well as the two SVGs.
+const wordmark =
+  slug === 'oddfest'
+    ? oddfestWordmark
+    : slug === 'oddference'
+      ? oddferenceMark
+      : slug === 'oddspace'
+        ? oddspaceWordmark
+        : oddMark;
+const logoLength = Math.round(LOGO_THICK * (wordmark.width / wordmark.height));
+// Through astro:assets rather than referencing the import's raw .src, per
+// CLAUDE.md — getImage() is the CSS-side equivalent of <Image>. It passes the
+// two SVG wordmarks through untouched and emits a correctly-sized asset for
+// ODDference's PNG, which is 1080px wide at source and renders at 130.
+const logoAsset = await getImage({ src: wordmark, width: logoLength * 3 });
+// Measured px-per-character for the two type styles below. Estimate only — it
+// sizes `reps` and the duration, never the seam.
+const PX_PER_WORD_CHAR = 10.5;
+const PX_PER_META_CHAR = 8.4;
+const beatLength = (item: RailItem) =>
+  item.kind === 'logo'
+    ? logoLength
+    : (item.text?.length ?? 0) * (item.kind === 'word' ? PX_PER_WORD_CHAR : PX_PER_META_CHAR);
+const period = items.reduce((sum, item) => sum + BEAT_GAP + beatLength(item), 0) || 1;
+
+// Wide enough that (reps-1) periods still span the widest screen this band
+// renders on (the 820px breakpoint). Same one-directional safety margin on the
+// estimate as SubpageRail — it may only ever over-render, never under-render.
+const OVERFILL_PX = 1000;
+const SAFETY = 0.6;
+const reps = Math.min(16, Math.max(4, Math.ceil(OVERFILL_PX / (period * SAFETY)) + 2));
 const track = Array.from({ length: reps }, () => items).flat();
+
+// px per second — slower than the rails, because a horizontal band at eye
+// level reads faster than a vertical one at the edge of the screen.
+const TICKER_SPEED = 15;
+const duration = Math.max(16, Math.round(period / TICKER_SPEED));
 ---
 
 <div class="oddf-ticker" aria-hidden="true">
-  <div class="oddf-ticker-track">
+  <div
+    class="oddf-ticker-track"
+    style={`--reps:${reps};--ticker-duration:${duration}s;--beat-gap:${BEAT_GAP}px;--logo-thick:${LOGO_THICK}px`}
+  >
     {
       track.map((item) => (
         <span class="oddf-ticker-item">
-          {item.kind === 'logo' &&
-            (slug === 'oddfest' ? (
-              <img src={oddfestWordmark.src} alt="" />
-            ) : slug === 'oddference' ? (
-              <Image src={oddferenceMark} alt="" width={40} />
-            ) : (
-              <Logo ariaHidden />
-            ))}
+          {item.kind === 'logo' && (
+            <span
+              class="oddf-ticker-logo"
+              style={`--logo-length:${logoLength}px;--logo-src:url(${logoAsset.src})`}
+            />
+          )}
           {item.kind === 'word' && <span class="oddf-ticker-word">{item.text}</span>}
           {item.kind === 'meta' && <span class="oddf-ticker-meta">{item.text}</span>}
         </span>
@@ -82,19 +131,43 @@ const track = Array.from({ length: reps }, () => items).flat();
          same `.bleed` geometry as layout.css rather than a new technique. */
       width: 100vw;
       margin-left: calc(50% - 50vw);
+      /* Beats enter and leave through a fade rather than being cut off at the
+         screen edge — the horizontal twin of the rails' end mask. */
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0,
+        #000 32px,
+        #000 calc(100% - 32px),
+        transparent 100%
+      );
+      mask-image: linear-gradient(
+        to right,
+        transparent 0,
+        #000 32px,
+        #000 calc(100% - 32px),
+        transparent 100%
+      );
     }
   }
   .oddf-ticker-track {
     display: flex;
     align-items: center;
-    gap: 2.4rem;
+    /* No `gap` — the space is on each item, so N items give exactly N spaces
+       and the track is exactly `--reps` periods wide. See the frontmatter. */
     width: max-content;
   }
   @media (prefers-reduced-motion: no-preference) {
     .oddf-ticker-track {
-      /* Slow — this is framing, not a news crawl. 38s across one half of a
-         doubled track reads as a drift at the edge of attention. */
-      animation: marquee-left 38s linear infinite;
+      animation: ticker-left var(--ticker-duration, 38s) linear infinite;
+    }
+  }
+  /* Exactly one period, whatever the beats are. */
+  @keyframes ticker-left {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-100% / var(--reps)));
     }
   }
   /* Reduced motion keeps the band and its content, static — the beats are
@@ -103,22 +176,20 @@ const track = Array.from({ length: reps }, () => items).flat();
   .oddf-ticker-item {
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
     flex-shrink: 0;
+    /* Fed from the frontmatter's BEAT_GAP, so the period estimated there and
+       the spacing rendered here can never drift apart. */
+    padding-inline-end: var(--beat-gap, 38px);
   }
-  .oddf-ticker-item img,
-  .oddf-ticker-item :global(img) {
-    height: 13px;
-    width: auto;
+  .oddf-ticker-logo {
     display: block;
-    opacity: 0.9;
-  }
-  .oddf-ticker-item :global(svg) {
-    height: 14px;
-    width: auto;
-    display: block;
-    color: var(--color-paper);
-    opacity: 0.85;
+    width: var(--logo-length);
+    height: var(--logo-thick, 20px);
+    flex-shrink: 0;
+    background: var(--color-paper);
+    opacity: 0.88;
+    -webkit-mask: var(--logo-src) center / contain no-repeat;
+    mask: var(--logo-src) center / contain no-repeat;
   }
   .oddf-ticker-word {
     font-family: var(--font-display);
