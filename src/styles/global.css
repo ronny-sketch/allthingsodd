@@ -53,33 +53,38 @@
   line-gap-override: 0%;
 }
 
-/* WOFF2 first (2026-08-31 final implementation pass) — same glyphs/metrics as
-   the original .ttf files, losslessly recompressed via fontTools
-   (ttLib.woff2), 65-86% smaller (Forta: 340KB → 47.5KB; each Gabarito weight:
-   ~102KB → ~31-35KB). The .ttf stays as the format() fallback for the rare
-   browser without WOFF2 support; every real target here supports it.
-   font-display was `block` (text invisible up to 3s — a real blocking bug),
-   then `optional` to avoid the reflow risk of `swap`. Measured 2026-09-11,
-   `optional` turned out to be the worse bug of the two: on production at
-   Slow 4G the fonts were not even REQUESTED until 2001ms (nothing referenced
-   them except this stylesheet, so the chain was HTML → 32KB render-blocking
-   CSS → WOFF2) and did not finish until 6.5s, while first paint happened at
-   2092ms. `optional` has a ~100ms block window and — by design — never swaps
-   afterwards, so every first-time visitor on anything short of a fast
-   connection got the system fallback for the ENTIRE page view. Forta renders
-   ~36% wider than that fallback, so this was not a subtle degradation.
+/* The real faces. Both are subset and built by scripts/subset-fonts.py from
+   src/assets/fonts/source/ — see that file for the full reasoning; the short
+   version is that these are 67KB over two requests where they used to be
+   114KB over four, because Forta is subset and unhinted and Gabarito is now
+   the upstream VARIABLE font instead of three separate static weights.
 
-   The fix is in three parts, and all three are load-bearing:
-     1. Layout.astro preloads the three above-the-fold faces, which moved the
-        request start from 2001ms to 583ms — ahead of the stylesheet.
-     2. `swap` below, so the real face is ALWAYS adopted once it arrives
-        rather than being discarded for missing a 100ms window. Preload alone
-        was measured as still landing ~370ms after first paint at Slow 4G, so
-        `optional` would still have failed there.
-     3. The two metric-matched fallback faces above, which are what make (2)
+   font-display has been `block` (text invisible up to 3s — a real blocking
+   bug), then `optional`, and is now `swap`. Measured on production
+   2026-09-11, `optional` was the worse bug of the two: nothing but the
+   stylesheet referenced a font, so the chain was HTML → 32KB render-blocking
+   CSS → WOFF2, the fonts were not REQUESTED until 2001ms at Slow 4G and not
+   finished until 6.5s, while first paint happened at 2092ms. `optional` has a
+   ~100ms block window and — by design — never swaps afterwards, so every
+   first-time visitor on anything short of a fast connection got the system
+   fallback for the ENTIRE page view. Forta renders ~36% wider than that
+   fallback, so this was not a subtle degradation.
+
+   The fix is in four parts, and all four are load-bearing:
+     1. Layout.astro preloads both faces, which moved the request start from
+        2001ms to 583ms — ahead of the stylesheet.
+     2. The subsetting above, so what is requested is smaller than the
+        render-blocking stylesheet it races. Preload alone was measured as
+        still landing ~370ms after first paint at Slow 4G.
+     3. `swap` below, so the real face is ALWAYS adopted once it arrives
+        rather than being discarded for missing a 100ms window.
+     4. The two metric-matched fallback faces above, which are what make (3)
         safe for the CLS ≤ 0.1 target that `optional` was protecting: the
-        fallback now occupies almost exactly the same space as the real font,
-        so the swap is a change of letterforms rather than a reflow. */
+        fallback occupies almost exactly the same space as the real font, so
+        the swap is a change of letterforms rather than a reflow.
+
+   The .ttf is the format() fallback for the rare browser without WOFF2; every
+   real target here supports WOFF2 and never downloads it. */
 @font-face {
   font-family: 'Forta';
   src:
@@ -88,28 +93,18 @@
   font-weight: 400;
   font-display: swap;
 }
+
+/* One variable file for every Gabarito weight the site uses. The range must
+   match WGHT_RANGE in scripts/subset-fonts.py, and asking for 500 or 650 here
+   costs nothing extra. Instancing this font at 400/600/700 was verified to
+   reproduce the retired static weights' advance widths glyph-for-glyph, so
+   the Gabarito Fallback metrics above still hold unchanged. */
 @font-face {
   font-family: 'Gabarito';
   src:
-    url('../assets/fonts/gabarito-regular.woff2') format('woff2'),
-    url('../assets/fonts/gabarito-regular.ttf') format('truetype');
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Gabarito';
-  src:
-    url('../assets/fonts/gabarito-semibold.woff2') format('woff2'),
-    url('../assets/fonts/gabarito-semibold.ttf') format('truetype');
-  font-weight: 600;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Gabarito';
-  src:
-    url('../assets/fonts/gabarito-bold.woff2') format('woff2'),
-    url('../assets/fonts/gabarito-bold.ttf') format('truetype');
-  font-weight: 700;
+    url('../assets/fonts/gabarito-variable.woff2') format('woff2'),
+    url('../assets/fonts/gabarito-variable.ttf') format('truetype');
+  font-weight: 400 700;
   font-display: swap;
 }
 

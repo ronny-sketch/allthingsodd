@@ -1,26 +1,23 @@
 ---
 import '../styles/global.css';
 
-/* The three faces that paint above the fold on every route, imported as URLs
-   purely so the <head> below can preload them at their real hashed paths.
-   Before this, the ONLY reference to a font file was inside
-   dist/_astro/Layout.*.css — so a first-time visitor's browser could not
-   even ask for a font until it had downloaded and parsed a ~32KB
-   render-blocking stylesheet, a three-hop chain (HTML → CSS → WOFF2) that
-   `font-display: optional` (see global.css) has no chance of winning: its
-   block window is ~100ms, and it never swaps afterwards, so missing that
-   window means the fallback font is committed to for the WHOLE page view.
-   That is the "wrong font, permanently" bug this fixes — preloading makes
-   the font request start alongside the stylesheet instead of after it, so
-   the real face is usually in memory by the time the render-blocking CSS
-   clears and the first paint happens.
-   Deliberately NOT preloaded: gabarito-bold (700), which is used in exactly
-   one place (PartnerTiers on /work-with-odd) and never above the fold —
-   preloading it would spend ~35KB of first-paint bandwidth competing with
-   the LCP image for no visible gain. It still loads normally from the CSS. */
+/* The two font files the site needs, imported as URLs purely so the <head>
+   below can preload them at their real hashed paths. Before this, the ONLY
+   reference to a font file was inside dist/_astro/Layout.*.css — so a
+   first-time visitor's browser could not even ask for a font until it had
+   downloaded and parsed a ~32KB render-blocking stylesheet, a three-hop chain
+   (HTML → CSS → WOFF2) that no font-display value can win. That is the "wrong
+   font" bug this fixes: preloading makes the font request start alongside the
+   stylesheet instead of after it, and because both files are now subset small
+   enough to win that race (scripts/subset-fonts.py), the real faces are in
+   memory by the time the render-blocking CSS clears and first paint happens.
+
+   Two entries, not four: gabarito-variable.woff2 carries 400, 600 and 700 in
+   one file, so the old trade-off of leaving the bold weight unpreloaded (used
+   on /work-with-odd, never above the fold, not worth 35KB against the LCP
+   image) no longer has to be made — it comes along for free. */
 import fortaRegular from '../assets/fonts/forta-regular.woff2?url';
-import gabaritoRegular from '../assets/fonts/gabarito-regular.woff2?url';
-import gabaritoSemibold from '../assets/fonts/gabarito-semibold.woff2?url';
+import gabaritoVariable from '../assets/fonts/gabarito-variable.woff2?url';
 
 import Nav from '../components/navigation/Nav.astro';
 import Footer from '../components/navigation/Footer.astro';
@@ -153,14 +150,7 @@ const revealOptIn = `(function(){var d=document.documentElement;try{if(!window.m
       rel="preload"
       as="font"
       type="font/woff2"
-      href={gabaritoRegular}
-      crossorigin="anonymous"
-    />
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      href={gabaritoSemibold}
+      href={gabaritoVariable}
       crossorigin="anonymous"
     />
 
