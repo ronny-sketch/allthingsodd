@@ -3,27 +3,90 @@
 @import './layout.css';
 @import './motion.css';
 
+/* Metric-matched fallbacks (2026-09-11). These are not new typefaces — each
+   is the visitor's local Arial, rescaled so it occupies the same space as
+   the real face until the real face arrives. That is what lets the @font-face
+   blocks below use `swap` without the layout shift `swap` normally causes;
+   see the long note there for the measurements behind this.
+
+   Values are computed, not eyeballed. `size-adjust` is the ratio of the real
+   font's rendered width to Arial's, measured in a real browser over 27
+   strings taken from THIS SITE's own headings and body copy — not from OS/2
+   xAvgCharWidth, which was tried first and proved a poor proxy for a display
+   face (it put Forta 17% too wide and Gabarito 26% too wide, i.e. it
+   overshot the very shift it was supposed to remove). The vertical overrides
+   then follow from each font's own hhea metrics, divided by that ratio:
+     size-adjust = rendered width of real font / rendered width of Arial
+     *-override  = real hhea metric / upem / size-adjust
+   Gabarito gets one face per weight because Arial's own 400 and 600 differ
+   in width, so a single ratio cannot serve both. Re-measure all of this if a
+   font file is ever replaced or re-subset.
+
+   `local()` only — nothing is downloaded. Arial and Helvetica share metrics
+   closely enough to be interchangeable here; a platform with neither
+   (most Android) simply falls through to the plain stack in tokens.css,
+   which is the pre-2026-09-11 behaviour and no worse than it was. */
+@font-face {
+  font-family: 'Forta Fallback';
+  src: local('Arial'), local('Helvetica');
+  size-adjust: 128.66%;
+  ascent-override: 69.95%;
+  descent-override: 19.43%;
+  line-gap-override: 7.77%;
+}
+@font-face {
+  font-family: 'Gabarito Fallback';
+  src: local('Arial'), local('Helvetica');
+  font-weight: 400;
+  size-adjust: 98.13%;
+  ascent-override: 95.79%;
+  descent-override: 26.5%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Gabarito Fallback';
+  src: local('Arial Bold'), local('Arial'), local('Helvetica');
+  font-weight: 600 700;
+  size-adjust: 92.58%;
+  ascent-override: 101.53%;
+  descent-override: 28.08%;
+  line-gap-override: 0%;
+}
+
 /* WOFF2 first (2026-08-31 final implementation pass) — same glyphs/metrics as
    the original .ttf files, losslessly recompressed via fontTools
    (ttLib.woff2), 65-86% smaller (Forta: 340KB → 47.5KB; each Gabarito weight:
    ~102KB → ~31-35KB). The .ttf stays as the format() fallback for the rare
    browser without WOFF2 support; every real target here supports it.
-   font-display: optional (not the previous `block`, which could hold text
-   invisible for up to 3s on a slow connection — a real "blocking font
-   loading" bug) and not `swap` either: this site's display type (Forta) is
-   wide/condensed enough vs. the system-font fallback that swapping it in
-   after layout would risk a visible reflow/CLS regression against this
-   project's own CLS ≤ 0.1 target (see CLAUDE.md's performance
-   requirements). `optional` gives the browser a very short block window,
-   then commits to the fallback for that render rather than swapping later —
-   a repeat visit with the font already cached still gets it immediately. */
+   font-display was `block` (text invisible up to 3s — a real blocking bug),
+   then `optional` to avoid the reflow risk of `swap`. Measured 2026-09-11,
+   `optional` turned out to be the worse bug of the two: on production at
+   Slow 4G the fonts were not even REQUESTED until 2001ms (nothing referenced
+   them except this stylesheet, so the chain was HTML → 32KB render-blocking
+   CSS → WOFF2) and did not finish until 6.5s, while first paint happened at
+   2092ms. `optional` has a ~100ms block window and — by design — never swaps
+   afterwards, so every first-time visitor on anything short of a fast
+   connection got the system fallback for the ENTIRE page view. Forta renders
+   ~36% wider than that fallback, so this was not a subtle degradation.
+
+   The fix is in three parts, and all three are load-bearing:
+     1. Layout.astro preloads the three above-the-fold faces, which moved the
+        request start from 2001ms to 583ms — ahead of the stylesheet.
+     2. `swap` below, so the real face is ALWAYS adopted once it arrives
+        rather than being discarded for missing a 100ms window. Preload alone
+        was measured as still landing ~370ms after first paint at Slow 4G, so
+        `optional` would still have failed there.
+     3. The two metric-matched fallback faces above, which are what make (2)
+        safe for the CLS ≤ 0.1 target that `optional` was protecting: the
+        fallback now occupies almost exactly the same space as the real font,
+        so the swap is a change of letterforms rather than a reflow. */
 @font-face {
   font-family: 'Forta';
   src:
     url('../assets/fonts/forta-regular.woff2') format('woff2'),
     url('../assets/fonts/forta-regular.ttf') format('truetype');
   font-weight: 400;
-  font-display: optional;
+  font-display: swap;
 }
 @font-face {
   font-family: 'Gabarito';
@@ -31,7 +94,7 @@
     url('../assets/fonts/gabarito-regular.woff2') format('woff2'),
     url('../assets/fonts/gabarito-regular.ttf') format('truetype');
   font-weight: 400;
-  font-display: optional;
+  font-display: swap;
 }
 @font-face {
   font-family: 'Gabarito';
@@ -39,7 +102,7 @@
     url('../assets/fonts/gabarito-semibold.woff2') format('woff2'),
     url('../assets/fonts/gabarito-semibold.ttf') format('truetype');
   font-weight: 600;
-  font-display: optional;
+  font-display: swap;
 }
 @font-face {
   font-family: 'Gabarito';
@@ -47,7 +110,7 @@
     url('../assets/fonts/gabarito-bold.woff2') format('woff2'),
     url('../assets/fonts/gabarito-bold.ttf') format('truetype');
   font-weight: 700;
-  font-display: optional;
+  font-display: swap;
 }
 
 * {
