@@ -72,8 +72,11 @@ test.describe('feed not configured', () => {
     await expect(page.locator('[data-instagram-gallery]')).toHaveCount(0);
     expect(providerRequests, 'requested the provider with no feed configured').toEqual([]);
 
-    // The calendar chapter it belongs under must be untouched either way.
-    await expect(page.locator('[data-calendar-embed]')).toHaveCount(1);
+    // The "what's happening" chapter it belongs under must be untouched
+    // either way. (It was the Google Calendar embed until 2026-09-11 —
+    // /oddspace now publishes a hand-kept events list instead, so this
+    // asserts on that list rather than on the removed iframe.)
+    await expect(page.locator('.programme-list .programme-row').first()).toBeVisible();
 
     const privacy = await (await request.get('/privacy')).text();
     expect(privacy, '/privacy lists a processor this build never contacts').not.toContain('Behold');
@@ -164,7 +167,7 @@ test.describe('feed configured', () => {
     await expect(gallery.locator('.ig-follow')).toBeVisible();
 
     // The rest of the chapter keeps working.
-    await expect(page.locator('[data-calendar-embed]')).toBeVisible();
+    await expect(page.locator('.programme-list .programme-row').first()).toBeVisible();
     // Each engine narrates a dead cross-origin request in its own words
     // (Chromium: "Failed to load resource", Firefox: "Cross-Origin Request
     // Blocked ... CORS request did not succeed"). None of that is

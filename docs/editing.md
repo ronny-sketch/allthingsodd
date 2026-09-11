@@ -47,7 +47,8 @@ high-level notes:
     nothing to re-enable — a running list of current activity only stays
     true if someone maintains it weekly, and nobody owned that. ODDspace's
     own calendar on `/oddspace` is unaffected and is still the place where
-    live activity is published.
+    live activity is published — as a hand-kept list since 2026-09-11,
+    not the calendar embed this line originally referred to.
   - 2026-09-04: "Already in motion" now carries ODD's **cumulative** totals
     across its whole first two years (5,000+ participants, 500+
     collaborators, 100+ partners, €400K+ into the creative and cultural
@@ -82,10 +83,20 @@ high-level notes:
   (the first repeated "what it is," the second had drifted into internal
   language that had no place staying public) — don't re-add them without
   checking that reasoning first.
-- **ODDspace**: why it exists, who it's for, proof numbers, membership
-  benefits, the single membership tier (no invented pricing), event-space
-  rental rates, how it works, location, an optional live events-calendar
-  embed, FAQ.
+- **ODDspace**: what it is, the four spaces (each with its own button),
+  the single membership tier (no invented pricing), the "studio is not
+  included" callout, event-space rental rates, how joining works, location,
+  the bigger picture, the "what's happening" events list, FAQ.
+  - 2026-09-11: cut from eleven sections to seven at Ronny's request.
+    "Co-creative, not just coworking", "Who it's for", "The network is
+    bigger than the room" and the (empty) proof numbers were removed along
+    with their editing fields — the first three restated what "what is
+    ODDspace" and "why ODDspace" already say, and the fourth had been
+    rendering nothing since 2026-09-02. The Google Calendar embed was
+    replaced by `events`, a hand-kept list: **nothing syncs it from the
+    booking calendar**, so when a date moves or an event is cancelled it
+    has to be changed here, and only things a stranger can actually turn
+    up to or book belong on it.
 - **Work with ODD** (moved into the "Info" nav dropdown 2026-08-30, route
   unchanged; it was publicly labelled "Work with us" there until 2026-09-11,
   and now leads that dropdown under its real name): hero (eyebrow/title/intro/primary

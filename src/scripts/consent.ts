@@ -155,8 +155,8 @@ export function openConsentSettings(): void {
 }
 
 /** Runs `callback` for the current state (if any) and again on every change.
- *  Anything gated on consent — the GA4 loader, the ODDspace calendar embed —
- *  uses this rather than reading storage once at load, so accepting in the
+ *  Anything gated on consent — currently the GA4 loader — uses this rather
+ *  than reading storage once at load, so accepting in the
  *  banner takes effect immediately instead of on the next navigation. */
 export function onConsentChange(callback: (state: ConsentState) => void): void {
   const existing = getConsent();

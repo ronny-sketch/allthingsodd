@@ -62,11 +62,6 @@
     "headline": "A co-creative space for people who make things.",
     "body": "ODDspace is a workspace and event space in Vallila for people working across art, culture, design, media, technology, business and other creative fields. Under one roof there are places to work, meet, record, exhibit, talk and host events. The point is not only to share square metres, but to make it easier for different kinds of work and people to cross paths. It is still a pilot, and the people using it help shape what it becomes."
   },
-  "coCreative": {
-    "eyebrow": "Co-creative space",
-    "headline": "Working next to each other is useful. Working with each other is the point.",
-    "body": "ODDspace is designed so people can do their own work without being forced into “community”, while making collaboration unusually easy when it is useful. Different practices share the same rooms; work in progress can be shown, questions can be asked, someone can be pulled into a project, and an idea can turn into an event or collaboration. By co-creative, we mean a place where independent work and shared making can exist side by side."
-  },
   "spaces": [
     {
       "name": "Co-working space",
@@ -77,7 +72,9 @@
         "WiFi, kitchen and the basics",
         "Meeting rooms where needed"
       ],
-      "image": "../../assets/oddspace/coworking-desks.jpg"
+      "image": "../../assets/oddspace/coworking-desks.jpg",
+      "goLabel": "Become a member",
+      "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form"
     },
     {
       "name": "Event & gallery space",
@@ -88,13 +85,17 @@
         "Shoots and performances",
         "Private and organisational events"
       ],
-      "image": "../../assets/oddspace/gallery-floor.jpg"
+      "image": "../../assets/oddspace/gallery-floor.jpg",
+      "goLabel": "Enquire about the gallery",
+      "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
     },
     {
       "name": "Auditorium",
       "body": "Tiered seating for talks, screenings, presentations, workshops and smaller events.",
       "bullets": ["Talks and screenings", "Presentations", "Workshops", "Smaller events"],
-      "image": "../../assets/oddspace/auditorium.jpg"
+      "image": "../../assets/oddspace/auditorium.jpg",
+      "goLabel": "Enquire about the auditorium",
+      "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
     },
     {
       "name": "ODDstudio",
@@ -134,15 +135,6 @@
       "href": "/oddstudio"
     }
   },
-  "networkBeyondRoom": {
-    "eyebrow": "Beyond the desks",
-    "headline": "The network should be bigger than the room.",
-    "body": "Not everyone who should be part of ODDspace needs a permanent desk. The wider network around the space can include people who come through events, projects, collaborations and open sessions — people who want to stay close to what is happening and contribute when there is a reason to. The physical space is the anchor. It should not be the boundary.",
-    "cta": {
-      "label": "Interested in the wider ODDspace network? Get in touch.",
-      "href": "/work-with-odd?interest=oddspace#enquiry-form"
-    }
-  },
   "rentalRates": [
     {
       "name": "Full-day, 1st floor gallery (members)",
@@ -156,11 +148,6 @@
       "name": "ODDstudio, per hour (members)",
       "price": "€20",
       "note": "Or €100 / month for full studio access. See the ODDstudio page for non-member rates."
-    },
-    {
-      "name": "Co-working spaces",
-      "price": "Included",
-      "note": "Already covered by ODDspace membership."
     }
   ],
   "howItWorks": [
@@ -180,16 +167,6 @@
       "body": "Get your onboarding details and access."
     }
   ],
-  "proof": {
-    "eyebrow": "The pilot, right now",
-    "title": "ODDspace, in numbers.",
-    "items": []
-  },
-  "community": {
-    "eyebrow": "Who it's for",
-    "headline": "Different practices. Same roof — and a wider network around it.",
-    "body": "ODDspace is for people working across art, design, music, media, writing, production, entrepreneurship, technology, research and other creative practices. Some use the space day to day. Others can come through events, projects and collaborations. You do not need to fit one professional label. The useful part is having enough overlap for conversations, shared work and new ideas to start."
-  },
   "eventEnquiry": {
     "headline": "Want to organise an event?",
     "body": "Have an exhibition, workshop, talk, screening, launch, performance, gathering, shoot or another idea you want to make happen here? You do not need to be a member to ask.",
@@ -203,11 +180,49 @@
     "headline": "Creative work needs somewhere to continue.",
     "body": "Too much creative work starts and stops with individual projects, productions and funding cycles. A place cannot solve that on its own, but it can change the rhythm: somewhere people can return to, keep working, see the same faces again and let ideas develop for longer than one project. ODDspace is our current experiment in that. The bigger question is what kind of permanent, useful infrastructure Finland could build around its creative and cultural fields over time."
   },
-  "calendar": {
+  "events": {
     "eyebrow": "What's on",
     "title": "What's happening here.",
-    "note": "Public events and things happening in the space as they are confirmed.",
-    "embedUrl": "https://calendar.google.com/calendar/embed?src=c_2b949751536a12e3c8dcbe7b3ffbdd82a49ffad8bebbbb3db05365ca725975f1%40group.calendar.google.com&ctz=Europe%2FHelsinki"
+    "note": "Public events and open sessions in the space. Private bookings are not listed.",
+    "items": [
+      {
+        "title": "Coffee on the House",
+        "category": "Weekly · open to everyone",
+        "date": "Every Monday",
+        "time": "09:00–10:00",
+        "venue": "ODDspace aula, Teollisuuskatu 9D",
+        "description": "Morning coffee, a deep house DJ and whoever turns up. Free, no membership needed, bring a friend. Some Mondays it travels — we host it at another Helsinki space and say so in advance."
+      },
+      {
+        "title": "ODDbachata",
+        "category": "Weekly · class and social",
+        "date": "Every Friday",
+        "time": "From 17:00",
+        "venue": "ODDspace, Teollisuuskatu 9D",
+        "description": "Bachata class and practice, followed by a social night that runs late. Beginners welcome."
+      },
+      {
+        "title": "One Day Choir Helsinki",
+        "organiser": "Creative Voice",
+        "category": "One-off",
+        "date": "Sat 26 Sep",
+        "time": "12:00–15:00",
+        "venue": "Galleria",
+        "description": "A choir that exists for one afternoon: you arrive without needing to read music or have sung before, and you leave having sung together."
+      },
+      {
+        "title": "Birds Nest Ambient Festival",
+        "category": "One-off",
+        "date": "Sat 21 Nov",
+        "time": "From 16:00",
+        "venue": "ODDspace, Teollisuuskatu 9D",
+        "description": "An evening and night of ambient music across the space, running from late afternoon until the early hours."
+      }
+    ],
+    "cta": {
+      "label": "Want to put something on here? Tell us about it",
+      "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
+    }
   },
   "instagram": {
     "eyebrow": "From ODDspace",

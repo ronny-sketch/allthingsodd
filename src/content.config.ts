@@ -688,7 +688,19 @@ const pages = defineCollection({
       //
       // 2026-08-30 rebuild: restructured around two conversion goals
       // (become a member / organise an event) instead of one section per
-      // fact. `heroMedia` (shared, subpageBase) is unused here — the new
+      // fact.
+      //
+      // 2026-09-11 cut, at Ronny's direct request: the page is now seven
+      // sections — hero / what it is / what's here / enter the space / the
+      // bigger picture / what's happening / FAQ. `coCreative`, `community`,
+      // `networkBeyondRoom` and `proof` are gone from the template (not
+      // "hidden"): each was a second, softer restatement of something the
+      // four surviving prose sections already say, and an empty `proof`
+      // had been rendering nothing since 2026-09-02 anyway. The Google
+      // Calendar embed is gone too, replaced by `events` — a hand-kept
+      // list of the things that actually recur or are booked, which is
+      // readable at a glance where a month grid of mostly-empty days was
+      // not. See src/pages/oddspace.astro. `heroMedia` (shared, subpageBase) is unused here — the new
       // hero takes a photo grid via `heroPhotos` instead of one video/image
       // — so oddspace.json just sets `heroMedia: {}`. The old dedicated
       // `location` section and `features` grid are gone (a whole section for
@@ -706,10 +718,6 @@ const pages = defineCollection({
         // follow-up line rendered directly under it, not a hero paragraph.
         intro: z.string(),
         whatItIs: sectionIntro,
-        // NEW SECTION (2026-09-02 copywriting pass) — "Co-creative, not
-        // just coworking": the clearest differentiation from ordinary
-        // coworking, right after `whatItIs`.
-        coCreative: sectionIntro,
         // The real street address + a directions link — shown as one quiet
         // line inside "Enter the space" (section 6), not a dedicated
         // section (see the comment above this extend block). `directionsUrl`
@@ -732,15 +740,17 @@ const pages = defineCollection({
             body: z.string(),
             bullets: z.array(z.string()).optional(),
             image: image().optional(),
-            // Optional link out to a space that has a page of its own —
-            // currently only ODDstudio. Set both or neither; a label with no
-            // href renders nothing (SpaceShowcase.astro).
+            // The card's own CTA. Added 2026-09-11 for ODDstudio (the one
+            // space with a page of its own) and extended the same day to
+            // every card: "what's here" is where a reader decides which
+            // room they want, so each card now routes straight to the
+            // enquiry for that room instead of making them scroll back to
+            // a generic pair of buttons. Set both or neither; a label with
+            // no href renders nothing (SpaceShowcase.astro).
             href: z.string().optional(),
             goLabel: z.string().optional(),
           }),
         ),
-        community: sectionIntro,
-        proof: proofSection,
         // A single tier, not an array like ODDference's tickets/Membership's
         // tiers — ODDspace's real pricing is deliberately one flat rate
         // ("one membership, full access, no tiers"), so this reuses the
@@ -758,16 +768,10 @@ const pages = defineCollection({
           body: z.string(),
           cta: linkCta,
         }),
-        // NEW SECTION (2026-09-02 copywriting pass) — "The network is
-        // bigger than the room": the physical member base is the anchor,
-        // not the boundary. [HUMAN DECISION — EXTERNAL MEMBER MODEL] the
-        // doc's own note: no formal external-member product/pricing exists
-        // yet, so this stays a generic "get in touch" CTA, not a paid tier
-        // — see oddspace.json's `cta` value and the final report.
-        networkBeyondRoom: sectionIntro,
         // Event-space rental rates (member pricing) — a plain price list,
         // not the fuller pricingTier shape (no benefits list/CTA per row
-        // needed here, just name/price/note).
+        // needed here, just name/price/note). Rendered inside the event
+        // half of "Enter the space", next to the button that acts on them.
         rentalRates: z.array(
           z.object({ name: z.string(), price: z.string(), note: z.string().optional() }),
         ),
@@ -790,18 +794,33 @@ const pages = defineCollection({
         // distinct from `whatItIs` (section 2's concrete "what is this
         // place" explainer) so the two don't repeat each other.
         vision: sectionIntro,
-        // Optional — the live Google Calendar embed. Omit rather than embed
-        // a broken/placeholder calendar if the real one isn't available.
-        calendar: z
+        // "What's happening" (2026-09-11, replacing the consent-gated
+        // Google Calendar embed this field used to describe). A hand-kept
+        // list beats the embed for three reasons that were all true of the
+        // live calendar: a month grid gave a first-time reader no way to
+        // tell a weekly open morning from a one-off festival, half of what
+        // is on that calendar is an internal room booking nobody can
+        // attend, and the embed could not load at all until the visitor
+        // accepted third-party cookies. Reuses `programmeItem` and
+        // ProgrammeList — the same shape ODDfest's programme uses — rather
+        // than a fourth list component.
+        //
+        // Publish only what a stranger can actually turn up to or book,
+        // and only what is confirmed: this list is edited by hand, so a
+        // cancelled or moved date stays wrong until someone fixes it. The
+        // canonical booking calendar stays internal.
+        events: z
           .object({
             eyebrow: z.string(),
             title: z.string(),
             note: z.string().optional(),
-            embedUrl: z.string(),
+            items: z.array(programmeItem),
+            cta: linkCta.optional(),
           })
           .optional(),
-        // The live @oddspace.co Instagram wall under the calendar (2026-09-03
-        // final integration pass). Only the editorial framing lives here —
+        // The live @oddspace.co Instagram wall, under the events list
+        // (2026-09-03 final integration pass; it sat under the calendar
+        // embed until that was replaced on 2026-09-11). Only the editorial framing lives here —
         // which account, which provider and how many posts are technical
         // config, in src/scripts/oddspace-instagram-config.ts, per the CMS
         // rules in AGENTS.md. Optional so the section can be removed from

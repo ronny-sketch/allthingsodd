@@ -331,7 +331,27 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
     flex-wrap: wrap;
     justify-content: center;
     gap: 1rem;
-    margin-top: 0.6rem;
+    margin-top: 0.9rem;
+  }
+  /* Bigger than the site's default Pill, here only (2026-09-11, at Ronny's
+     request). Pill is sized for buttons sitting inside a text column; these
+     two sit alone under a wordmark on a full-viewport photograph, where the
+     default 0.72rem/0.55rem reads as a caption rather than the one thing the
+     hero is asking you to do. Scoped to this hero — the primitive's own
+     proportions, and every other caller, are untouched. The mobile
+     touch-target floor in Pill.astro still applies on top of this: it sets
+     vertical padding to 0.85rem under `(hover: none)`, which is larger than
+     the value here, so the 44px minimum is unaffected. */
+  .space-hero-ctas :global(.pill) {
+    font-size: 0.82rem;
+    padding: 0.8rem 1.9rem;
+    letter-spacing: 0.06em;
+  }
+  @media (max-width: 480px) {
+    .space-hero-ctas :global(.pill) {
+      font-size: 0.78rem;
+      padding: 0.75rem 1.5rem;
+    }
   }
   /* Entrance, replacing the `.reveal` class this header used to carry (see
      the markup comment above) — a CSS animation with `both` fill always ends

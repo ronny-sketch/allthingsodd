@@ -395,7 +395,6 @@ one oddfest.co already shows visitors through its own Cookiebot install.
 src/scripts/consent-config.ts   what exists, in which category  (pure data)
 src/scripts/consent.ts          the store: read/write/subscribe/withdraw
 src/scripts/analytics.ts        GA4, subscribed to `statistics`
-src/scripts/calendar-embed.ts   ODDspace Google Calendar, gated on `preferences`
 ConsentBanner.astro             the banner, rendered from consent-config
 LegalDocument.astro             the cookie table, rendered from consent-config
 ```
@@ -404,7 +403,8 @@ LegalDocument.astro             the cookie table, rendered from consent-config
 `data-blockingmode="auto"` and Google Consent Mode v2 defaults, which is the
 right answer for a site with a marketing stack: Cookiebot auto-blocks
 trackers nobody registered, keeps a server-side consent log, and generates
-its own declaration. This site has one analytics tag and one embed. Adopting
+its own declaration. This site has one analytics tag and, since 2026-09-11, no embeds at all
+(see "ODDspace events" below). Adopting
 a CMP here would add a third-party script on every page and make the site
 _less_ private, because Consent Mode still pings Google before consent —
 cookielessly, but it still contacts them. Not requesting `gtag.js` at all is
@@ -421,29 +421,55 @@ equivalent, and it is client-side only — we cannot prove to a regulator who
 consented when. That is a real, accepted limitation, not an oversight.
 
 **The two gaps this fixed.** Before this, the banner only knew about GA4, so
-the ODDspace calendar embed loaded regardless of the answer; and a stored
+the ODDspace calendar embed (since removed) loaded regardless of the
+answer; and a stored
 choice could not be changed, which GDPR Article 7(3) requires to be as easy
 as giving it. The footer's "Cookie settings" button and the one on
 `/privacy/` both call `openConsentSettings()`, which clears the stored value
 before reopening — so abandoning the reopened banner fails closed.
 
-**Two things that are load-bearing and easy to undo by accident:**
-
-1. The calendar's URL lives in `data-src`, never `src`. That is what makes
-   the gate structural rather than a race against script timing.
-2. Both the iframe and its placeholder are styled `:not([hidden])`. An
-   explicit `display` beats the UA stylesheet's `[hidden] { display: none }`,
-   so without it a hidden element stays laid out at full height — which
-   doubled the calendar container and pushed the whole page down when this
-   was first written. `tests/visual` caught it.
+**`preferences` is now an empty category, and that is deliberate.** The
+Google Calendar embed was its only entry; removing the embed (2026-09-11)
+left the category declared but with `entries: []`, which
+`togglableCategories()` drops from the banner entirely — the same contract
+`statistics` has when no GA4 property is configured. The category stays in
+the file so the next embed has an obvious place to be declared, and so a
+future reader can see that "we ask about embeds" was a considered position,
+not an omission. If you add an embed, add its entry here: that is what
+restores the toggle, and nothing else will.
 
 `tests/functional/consent.spec.ts` asserts on the network, not the banner's
 appearance: the requests are the thing that would actually breach ePrivacy
-Article 5(3), and they are invisible in a screenshot.
+Article 5(3), and they are invisible in a screenshot. Its ODDspace test now
+asserts the absence — no iframe on the page, no Preferences row in the
+banner — because "we removed the embed" is only true while both hold.
+
+## ODDspace events
+
+The consent-gated Google Calendar embed on `/oddspace` was replaced on
+2026-09-11 by `events` in `src/content/pages/oddspace.json`, rendered
+through the existing `ProgrammeList` component. Three reasons, all of them
+true of the embed as it shipped:
+
+1. A month grid could not distinguish a weekly open morning anyone can walk
+   into from a one-off booked festival — and both were on it, alongside
+   internal room bookings nobody can attend.
+2. Nothing rendered at all until the visitor accepted third-party cookies,
+   so the most common first view of "what's happening here" was a consent
+   placeholder.
+3. It was the only thing on the site keeping a third-party embed, and with
+   it gone the `preferences` consent category empties out (above).
+
+The cost is real and worth stating: the list is hand-kept, so a moved or
+cancelled date stays wrong until someone edits the JSON. The internal
+booking calendar stays the operational source of truth; this is a
+deliberately small, curated public subset of it. If it drifts often enough
+to matter, the fix is a build-time fetch of the public feed into the same
+`events` shape — not putting the iframe back.
 
 ## ODDspace Instagram
 
-The wall of recent `@oddspace.co` posts under the ODDspace calendar
+The wall of recent `@oddspace.co` posts under the ODDspace events list
 (`InstagramGallery.astro` + `src/scripts/instagram-gallery.ts`), added
 2026-09-03.
 

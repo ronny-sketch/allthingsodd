@@ -44,7 +44,6 @@
       ],
       "items": [
         "Google Analytics (Google Ireland Limited) — anonymised usage statistics. Only after you accept.",
-        "Google Calendar (Google Ireland Limited) — the embedded events calendar on the ODDspace page. Only after you accept embedded content, or press the button on that page.",
         {
           "text": "Behold (Behold Studio, Inc.) — serves the Instagram gallery on the ODDspace page. It sets no cookies and stores nothing on your device; your browser requests the photographs from Behold’s servers the same way it requests any other image.",
           "onlyWhen": "oddspace-instagram"
@@ -104,7 +103,7 @@
   "cookieSection": {
     "title": "Cookies and similar storage",
     "body": [
-      "Nothing optional loads before you say so. On your first visit the banner appears and no analytics tag and no embedded calendar is requested until you answer it — not a cookieless ping, not a blocked script that loaded anyway. That is a deliberate choice: it is stricter than the usual consent-mode setup, and it is possible because this site runs one analytics tag and one embed rather than a marketing stack.",
+      "Nothing optional loads before you say so. On your first visit the banner appears and no analytics tag is requested until you answer it — not a cookieless ping, not a blocked script that loaded anyway. That is a deliberate choice: it is stricter than the usual consent-mode setup, and it is possible because this site runs one analytics tag rather than a marketing stack.",
       "The table below is the full list. It is generated from the same configuration that the consent banner enforces, so it cannot fall out of date with what the site actually does. Storage marked local or session storage is not technically a cookie, but it is the same thing from your point of view, so we list it too."
     ],
     "settingsLabel": "Change your cookie choices"

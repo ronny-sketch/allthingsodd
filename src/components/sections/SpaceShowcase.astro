@@ -5,14 +5,17 @@
 // before reading much copy about them.
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import Pill from '../primitives/Pill.astro';
 
 interface Space {
   name: string;
   body: string;
   bullets?: string[];
   image?: ImageMetadata;
-  // Optional per-card link out (2026-09-11, added for ODDstudio). Only a
-  // space that has a real page of its own sets these; every other card
+  // The card's own CTA (2026-09-11). Added for ODDstudio, which has a real
+  // page of its own, and extended the same day to every ODDspace card so a
+  // reader who has just decided they want *this* room can act on it there
+  // and then. A caller that sets neither (ODDstudio's own `kit` cards)
   // renders exactly as before. Both are required together — a label with
   // no href would be a dead control.
   href?: string;
@@ -44,9 +47,11 @@ const { spaces } = Astro.props;
             </ul>
           )}
           {s.href && s.goLabel && (
-            <a class="space-card-go" href={s.href}>
-              {s.goLabel} <span aria-hidden="true">→</span>
-            </a>
+            <div class="space-card-go">
+              <Pill href={s.href} variant="outline" magnetic>
+                {s.goLabel}
+              </Pill>
+            </div>
           )}
         </div>
       </div>
@@ -79,6 +84,13 @@ const { spaces } = Astro.props;
   }
   .space-card-body {
     padding: 1.8rem 2rem 2.2rem;
+    /* Grows to fill the card (the photo above it is fixed-ratio) and lays
+       its own children out in a column, so .space-card-go's `margin-top:
+       auto` has something to push against. */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
   .space-card-body h3 {
     font-family: var(--font-display);
@@ -119,26 +131,16 @@ const { spaces } = Astro.props;
     border-radius: 999px;
     background: var(--color-paper-40);
   }
-  /* Per-card link out (ODDstudio). inline-block with real vertical padding
-     rather than a bare inline <a>: this is a touch target, and the site's
-     own mobile pass put the floor at 24px (WCAG 2.2 target size). */
+  /* Per-card CTA. A real Pill rather than the underlined text link this was
+     until 2026-09-11: these are now the page's primary routing controls for
+     each room, not a footnote, and Pill already carries the site's focus,
+     touch-target and long-label-wrapping behaviour (see Pill.astro) instead
+     of this component re-deriving them. `auto` bottoms it out so the CTAs in
+     a row of cards line up with each other whatever length the copy above
+     them runs to. */
   .space-card-go {
-    display: inline-block;
-    margin-top: 1.3rem;
-    padding: 0.35rem 0;
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 0.82rem;
-    color: var(--color-paper-80);
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
-    text-decoration-color: var(--color-paper-20);
-    transition: color var(--duration-fast) ease;
-  }
-  .space-card-go:hover {
-    color: var(--color-amber-bright);
-    text-decoration-color: var(--color-amber-bright);
+    margin-top: auto;
+    padding-top: 1.5rem;
   }
   @media (max-width: 700px) {
     .space-showcase {
