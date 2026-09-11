@@ -9,7 +9,7 @@
     "mosaicAlt": "People, performances, talks and encounters from ODD in Helsinki."
   },
   "opening": {
-    "headline": "ODD exists to bring creative and cultural fields closer to business and wider society — while building better conditions for creative work itself.",
+    "headline": "ODD exists to build better conditions for creative work — and to bring creative and cultural fields closer to business and wider society.",
     "primaryCta": {
       "label": "See what we do",
       "href": "#four"
@@ -17,8 +17,8 @@
   },
   "whatOddIs": {
     "eyebrow": "Why ODD",
-    "headline": "Finland has no shortage of creative talent. What is often missing is what gets built around it.",
-    "body": "Creative work is still rebuilt project by project, production by production and funding cycle by funding cycle. At the same time, the people shaping culture and the people shaping business, institutions and public life spend surprisingly little time working together. ODD works on both problems: creating more continuity around creative work, and more situations where different kinds of expertise can actually meet.",
+    "headline": "Finland has no shortage of creative talent — what's missing is what gets built around it.",
+    "body": "Creative work is still rebuilt from scratch: project by project, production by production, funding cycle by funding cycle.\n\nAt the same time, the people shaping culture and the people shaping business, institutions and public life spend surprisingly little time in the same room.\n\nODD works on both. More continuity around creative work — and more situations where different kinds of expertise actually meet.",
     "cta": {
       "label": "Why we exist →",
       "href": "/about"
@@ -26,21 +26,33 @@
   },
   "twoWaysIn": {
     "intro": "ODD has different doors, depending on why you are here.",
-    "business": {
-      "lede": "Get closer to creative expertise and the people behind it.",
-      "body": "Come to ODDference, build a partnership, or bring us a question or project that needs a different mix of people around it.",
-      "cta": {
-        "label": "Work with ODD →",
-        "href": "/work-with-odd"
-      }
-    },
     "creative": {
       "lede": "Work, show and find your people.",
       "body": "Use ODDspace as a place to keep working. Bring something of your own to ODDfest. Join the parts of ODD that are useful to your practice — without having to become part of a single scene or organisation.",
-      "cta": {
-        "label": "Find your way in →",
-        "href": "/oddspace"
-      }
+      "tracks": [
+        {
+          "label": "ODDfest",
+          "href": "/oddfest"
+        },
+        {
+          "label": "ODDspace",
+          "href": "/oddspace"
+        }
+      ]
+    },
+    "business": {
+      "lede": "Get closer to creative expertise and the people behind it.",
+      "body": "Come to ODDference, build a partnership, or bring us a question or project that needs a different mix of people around it.",
+      "tracks": [
+        {
+          "label": "ODDference",
+          "href": "/oddference"
+        },
+        {
+          "label": "Work with ODD",
+          "href": "/work-with-odd"
+        }
+      ]
     }
   },
   "proof": {
@@ -113,31 +125,31 @@
   "participate": [
     {
       "eyebrow": "",
-      "title": "Come to ODDference",
-      "linkLabel": "Explore →",
-      "href": "/oddference",
-      "audience": "Business"
-    },
-    {
-      "eyebrow": "",
       "title": "Host something at ODDfest",
       "linkLabel": "Find out how →",
       "href": "/oddfest",
-      "audience": "Creative"
+      "audience": "For creatives"
     },
     {
       "eyebrow": "",
       "title": "Join ODDspace",
       "linkLabel": "Explore →",
       "href": "/oddspace",
-      "audience": "Creative"
+      "audience": "For creatives"
+    },
+    {
+      "eyebrow": "",
+      "title": "Come to ODDference",
+      "linkLabel": "Explore →",
+      "href": "/oddference",
+      "audience": "For business"
     },
     {
       "eyebrow": "",
       "title": "Build something with ODD",
       "linkLabel": "Explore →",
       "href": "/work-with-odd",
-      "audience": "Business"
+      "audience": "For business"
     }
   ],
   "aftermovie": {

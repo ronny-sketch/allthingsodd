@@ -32,7 +32,14 @@ const linkCta = z.object({
 
 const trackItem = z.object({
   label: z.string(),
-  meta: z.string(),
+  // Optional since the 2026-09-11 homepage reorg: Converge now renders each
+  // side's `tracks` as a row of real buttons (Pill), where a second line of
+  // small meta text has nowhere to go and nothing to say — the destination
+  // name *is* the label. Kept in the shape (rather than deleted) because
+  // Converge still renders it as a captioned list row when it's present, and
+  // a future caller stacking several same-kind destinations under one side
+  // would want that distinction back. See Converge.astro.
+  meta: z.string().optional(),
   href: z.string(),
 });
 
