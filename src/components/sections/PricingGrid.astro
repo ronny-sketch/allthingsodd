@@ -14,6 +14,21 @@ interface Tier {
   ctaLabel: string;
   href: string;
   recommended?: boolean;
+  // The badge text on the emphasised card. Replaces the hardcoded
+  // "Recommended" (2026-09-11, at Ronny's request): on a ticket ladder where
+  // exactly one tier is purchasable, "Recommended" is meaningless — it reads
+  // as a sales opinion about a choice the reader does not actually have. The
+  // deadline ("Available until 1 Nov 2026") is the real information. Falls
+  // back to "Recommended" so Membership's tiers — a genuine choice between
+  // three live options — are unchanged.
+  badgeLabel?: string;
+  // "The price is real, but you cannot buy this one yet." Renders the card
+  // dimmed with an inert CTA, so the whole ladder is visible (a reader can
+  // see what waiting costs them) without offering a checkout that would fail.
+  // Build-time fallback only: oddference-tickets.ts re-derives it from the
+  // catalog's own status at runtime and can unlock a tier the moment the
+  // backend says it is on sale. Membership omits it entirely.
+  locked?: boolean;
   // Ticket-catalog slug, ODDference only. Present means "this card's price,
   // status, benefits and CTA are owned by the ticket backend, not by this
   // JSON" — src/scripts/oddference-tickets.ts re-reads them from
@@ -37,11 +52,11 @@ const { items } = Astro.props;
   {
     items.map((t) => (
       <div
-        class={`pricing-card ${t.recommended ? 'is-recommended' : ''}`}
+        class={`pricing-card ${t.recommended ? 'is-recommended' : ''} ${t.locked ? 'is-locked' : ''}`}
         data-ticket-slug={t.syncSlug}
       >
         <span class="pricing-badge" hidden={!t.recommended}>
-          Recommended
+          {t.badgeLabel ?? 'Recommended'}
         </span>
         <span class="pricing-name">{t.name}</span>
         {t.audience && <span class="pricing-audience">{t.audience}</span>}
@@ -55,7 +70,12 @@ const { items } = Astro.props;
             <li>{b}</li>
           ))}
         </ul>
-        <Pill href={t.href} variant={t.recommended ? 'solid' : 'outline'} magnetic>
+        <Pill
+          href={t.href}
+          variant={t.recommended ? 'solid' : 'outline'}
+          magnetic
+          ariaDisabled={t.locked}
+        >
           {t.ctaLabel}
         </Pill>
         {t.note && <p class="pricing-note">{t.note}</p>}
@@ -103,6 +123,52 @@ const { items } = Astro.props;
   }
   .pricing-card.is-recommended {
     border-color: var(--color-paper-40);
+  }
+  /* A tier whose price is real but not yet purchasable (2026-09-11). Dimmed
+     as one block rather than by re-coloring each child: the whole card is
+     one "later" object, and a per-element grey would have to be re-tuned
+     every time a child's own color changes.
+
+     0.55, not lower: the point of showing these at all is that a reader can
+     read what the next two tiers will cost, so the price has to stay
+     legible against --color-backstage rather than merely present.
+
+     Set as a variable, not as `opacity` directly, because the reveal rule at
+     the bottom of this file animates the very same property from a much
+     higher-specificity selector (`html.reveal-js .pricing-grid.in
+     .pricing-card`) — a plain `.pricing-card.is-locked { opacity }` would
+     lose to it the moment the section scrolled into view, and the dimming
+     would silently do nothing. Routing both through one custom property
+     means the reveal animates *to* whatever this card's resting opacity is,
+     and neither rule has to know about the other. */
+  .pricing-card {
+    --pricing-card-opacity: 1;
+
+    opacity: var(--pricing-card-opacity);
+    /* So a runtime unlock (see oddference-tickets.ts) fades up rather than
+       popping. The reveal's own transition overrides this while revealing. */
+    transition: opacity var(--duration-slow) ease;
+  }
+  .pricing-card.is-locked {
+    --pricing-card-opacity: 0.55;
+  }
+  /* A locked tier shows no button at all. `.pricing-status` already says
+     "Not on sale yet" two lines above, so an inert button repeating it is
+     pure noise — and a visible-but-dead control is worse than no control,
+     because a reader will try it before believing it.
+
+     `display: none`, not removal from the markup: the anchor has to survive
+     so oddference-tickets.ts can hand it back the moment the catalog opens
+     that tier (it drops `.is-locked`, and the button returns with the right
+     label and variant already set). Same reason the element stays an <a>
+     rather than a <span> — see Pill.astro's `ariaDisabled` prop. */
+  .pricing-card.is-locked :global(.pill) {
+    display: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pricing-card {
+      transition: none;
+    }
   }
   .pricing-badge {
     position: absolute;
@@ -226,8 +292,11 @@ const { items } = Astro.props;
         opacity 0.5s ease,
         transform 0.5s ease;
     }
+    /* `var(--pricing-card-opacity)`, not a literal 1 — a locked tier reveals
+       to its own dimmed resting state instead of being animated back to full
+       opacity. See the `.is-locked` comment above. */
     :global(html.reveal-js) .pricing-grid.in .pricing-card {
-      opacity: 1;
+      opacity: var(--pricing-card-opacity);
       transform: none;
     }
   }

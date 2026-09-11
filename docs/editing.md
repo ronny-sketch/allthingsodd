@@ -82,10 +82,24 @@ high-level notes:
   particular: the "what has happened before" section must carry only figures
   the site already publishes elsewhere, and the deleted "shared platform"
   block must not come back until there is a platform to describe.
-- **ODDference**: the big question, who it's for, why attend, themes,
-  formats, speakers (optional — leave empty until real speakers are
-  confirmed), programme (optional), connection & networking, proof (optional,
-  can carry an attendee quote), tickets (optional — no invented prices), FAQ.
+- **ODDference** (restructured 2026-09-11 — eight sections, in this order):
+  the hero, the premise, the heading + three reasons to come, past speakers,
+  session highlights, who it's for, tickets & partnership, FAQ.
+  - _Past speakers_ and _session highlights_ are both records of ODDference
+    **2026**, not promises about 2027. Don't add a name or a session title
+    that wasn't really there, and don't rewrite a session title into
+    marketing copy — they're quoted from the event's own run sheet.
+  - _Tickets_ now lists the whole ladder, not just the tier on sale. Price,
+    status, benefits and button come from the ticket backend at page load;
+    what's in the content is the fallback if that request fails. Two fields
+    are yours: `badgeLabel` (the badge on the tier currently on sale — now
+    "Available until 1 Nov 2026") and `locked: true` (dims a tier and
+    removes its button while leaving its price readable).
+  - _FAQ_: a lot about 2027 genuinely isn't decided — dates, venues, the
+    programme, exactly what a ticket covers beyond ODDference itself. Say
+    that in the answer rather than filling it in.
+  - "What changes in 2027" was removed in the same pass. Its one real fact
+    (ODDference runs alongside ODDfest week) is now in the FAQ.
 - **ODDagency**: what it is, capabilities (+ types of project, shown in the
   same section), how a project works, cases (optional — hidden until real
   cases exist). 2026-08-31: removed the separate `features`/`whyOdd` fields
