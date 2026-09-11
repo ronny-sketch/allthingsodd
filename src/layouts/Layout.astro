@@ -1,5 +1,24 @@
 ---
 import '../styles/global.css';
+
+/* The two font files the site needs, imported as URLs purely so the <head>
+   below can preload them at their real hashed paths. Before this, the ONLY
+   reference to a font file was inside dist/_astro/Layout.*.css — so a
+   first-time visitor's browser could not even ask for a font until it had
+   downloaded and parsed a ~32KB render-blocking stylesheet, a three-hop chain
+   (HTML → CSS → WOFF2) that no font-display value can win. That is the "wrong
+   font" bug this fixes: preloading makes the font request start alongside the
+   stylesheet instead of after it, and because both files are now subset small
+   enough to win that race (scripts/subset-fonts.py), the real faces are in
+   memory by the time the render-blocking CSS clears and first paint happens.
+
+   Two entries, not four: gabarito-variable.woff2 carries 400, 600 and 700 in
+   one file, so the old trade-off of leaving the bold weight unpreloaded (used
+   on /work-with-odd, never above the fold, not worth 35KB against the LCP
+   image) no longer has to be made — it comes along for free. */
+import fortaRegular from '../assets/fonts/forta-regular.woff2?url';
+import gabaritoVariable from '../assets/fonts/gabarito-variable.woff2?url';
+
 import Nav from '../components/navigation/Nav.astro';
 import Footer from '../components/navigation/Footer.astro';
 import MobileMenu from '../components/navigation/MobileMenu.astro';
@@ -116,6 +135,24 @@ const revealOptIn = `(function(){var d=document.documentElement;try{if(!window.m
         />
       )
     }
+    {
+      /* Font preloads sit AFTER the hero-image preload on purpose: both land
+         in Chrome's "High" priority bucket, which is then served in document
+         order, and the LCP element on an image-hero page is the image — it
+         should keep the head of the queue. `crossorigin` is required even
+         though these are same-origin: font fetches are always CORS-mode
+         anonymous, and a preload whose mode doesn't match the eventual
+         request is simply ignored and downloaded a second time. Keep this
+         list in sync with the @font-face blocks in styles/global.css. */
+    }
+    <link rel="preload" as="font" type="font/woff2" href={fortaRegular} crossorigin="anonymous" />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={gabaritoVariable}
+      crossorigin="anonymous"
+    />
 
     <meta property="og:type" content="website" />
     {

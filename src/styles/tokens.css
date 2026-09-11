@@ -77,8 +77,15 @@
   --color-ticket-blue: #40618c;
 
   /* ---------- typography ---------- */
-  --font-display: 'Forta', ui-sans-serif, system-ui, sans-serif;
-  --font-body: 'Gabarito', ui-sans-serif, system-ui, sans-serif;
+  /* The `* Fallback` entries are not extra typefaces — they are the local
+     Arial/Helvetica rescaled to each real font's metrics, so the pre-swap
+     render occupies the same space as the post-swap one. Defined in
+     global.css, which also carries the measurements that justify them.
+     They must sit immediately after the real family and before the generic
+     stack: a browser without `size-adjust` support, or a device with neither
+     Arial nor Helvetica, skips straight past them to ui-sans-serif. */
+  --font-display: 'Forta', 'Forta Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Gabarito', 'Gabarito Fallback', ui-sans-serif, system-ui, sans-serif;
 
   /* ---------- spacing scale (rem, 4px base) ---------- */
   --space-1: 0.25rem;
