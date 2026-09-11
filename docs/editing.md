@@ -86,8 +86,9 @@ high-level notes:
   benefits, the single membership tier (no invented pricing), event-space
   rental rates, how it works, location, an optional live events-calendar
   embed, FAQ.
-- **Work with ODD** (public label "Work with us" — moved into the "Info" nav
-  dropdown 2026-08-30, route unchanged): hero (eyebrow/title/intro/primary
+- **Work with ODD** (moved into the "Info" nav dropdown 2026-08-30, route
+  unchanged; it was publicly labelled "Work with us" there until 2026-09-11,
+  and now leads that dropdown under its real name): hero (eyebrow/title/intro/primary
   button/photo), "what we do" intro, why ODD (3 reasons), the four pathways
   — ODDference/ODDnetwork/Event partnership/ODDagency (`pathways`, each with
   a number/stage/title/body/CTA — shown as a compact progression list, not a

@@ -105,8 +105,9 @@ real decisions worth recording:
    permanent slot in the primary nav — they're reachable from Work with
    ODD's pathway list and from CTAs throughout the site instead. See
    `src/content/site/global.json`'s `nav` array. **2026-08-30:** Work with
-   ODD itself moved out of the primary nav too, into the "Info" dropdown as
-   "Work with us" (route unchanged) — it stopped being one of the three
+   ODD itself moved out of the primary nav too, into the "Info" dropdown
+   (route unchanged; labelled "Work with us" until 2026-09-11, now "Work
+   with ODD" like everywhere else) — it stopped being one of the three
    primary destinations (ODDfest/ODDference/ODDspace) and became the place
    organisations go to go further, which doesn't need equal top-level
    billing. The page itself was rebuilt around a tighter IA: hero → what we
@@ -136,9 +137,11 @@ real decisions worth recording:
    carries its own partner-logo wall (the `network` field), unlike Work with
    ODD's page-specific curated one — see point 2 above.
 4. **Primary nav grouped via a one-level "Info" dropdown**
-   (About/Work with us/Media/Contact — four flat top-level items:
+   (Work with ODD/Media/About/Contact — four flat top-level items:
    ODDfest/ODDference/ODDspace/Info) instead of growing to a flat list of
-   seven — see `src/content/site/global.json`'s `nav[].children`. `Nav.astro`
+   seven. **Reordered 2026-09-11**: Work with ODD leads the dropdown rather
+   than sitting behind About, because it is what most people opening this
+   menu are actually after — About is the least-visited of the four — see `src/content/site/global.json`'s `nav[].children`. `Nav.astro`
    renders it
    as a CSS-only hover/focus-within dropdown (no JS — a keyboard user tabbing
    onto the "Info" link is itself inside `.nav-dropdown`, which satisfies
@@ -281,6 +284,55 @@ content, so a value wider than its column overflows into the next one
 regardless of what the text says. `min-width: 0` on `.proof-item` plus a wider
 column minimum is the actual fix; short placeholders were only ever a
 workaround for content wide enough to trigger the same underlying bug.
+
+## Homepage order
+
+The homepage's section order is a real editorial decision, not an accident of
+what got built when, and it has been changed by three separate passes — so
+before moving anything, read `src/pages/index.astro`'s own section-order
+comment and `tests/functional/editorial-integrity.spec.ts`, which asserts the
+order on the rendered page. A visual snapshot cannot tell a moved section from
+an unchanged one; that test is the only thing that can.
+
+Current order (2026-09-11 reorg):
+
+```
+Hero
+Why ODD               one sentence + the page's main explanatory passage
+Who ODD is for        creatives left, business right, two buttons each
+What we do            ODDfest / ODDference / ODDspace
+Work with ODD         full-width band, directly under those three
+Already in motion     the cumulative numbers
+Featured in           press logos, same chapter as the numbers
+Aftermovie            the one moving image, between argument and ask
+The way in is by doing  four CTAs, grouped under For creatives / For business
+```
+
+The principle: the page answers a reader's questions in the order they
+actually arrive — _why does this exist → is it for me → what is it, concretely
+→ how do I go deeper → why should I believe any of it → what does it feel like
+→ pick a door._
+
+Two of those positions reverse an earlier pass, deliberately:
+
+- **"Who ODD is for" above "What we do."** The 2026-09-02 pass put the
+  audience split after the proof module, reasoning that "what" precedes "who."
+  In review that lost the reader: ODDfest/ODDference/ODDspace are three
+  invented names that mean nothing until you know which one is aimed at you.
+- **"Work with ODD" directly under "What we do."** The 2026-09-03 pass moved
+  this band away from the product grid because, sitting flush under it, it
+  read as a fourth product card. The real fix for that was the band's own
+  styling (no photo, no grid cell, full width, `--space-10` of air above it),
+  not its position — its question, _"want something bigger than one of those
+  three?"_, only lands while the three are still on screen.
+
+**Creatives before business, everywhere.** Wherever the site splits what ODD
+does by audience, the creative side comes first — ODD is a creative
+organisation that business is invited into, not the other way round. On the
+homepage that is `Converge`'s `creativeFirst` prop and the order of
+`index.json`'s `participate` array; both are asserted by
+`editorial-integrity.spec.ts`, because both take their order from content and
+would otherwise regress silently on a reordered JSON array.
 
 ## Hero variants
 

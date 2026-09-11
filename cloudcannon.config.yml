@@ -53,11 +53,14 @@ collections_config:
         type: object
         label: '"Work with ODD" quiet pathway card (Home only)'
         comment: >-
-          A slim organisational banner closing the homepage's
-          organisational chapter, after the proof, audience routing and
-          "What's happening" — deliberately not another giant photo card,
-          since Work with ODD is a deeper way to work with ODD, not a fourth
-          equal masterbrand product.
+          A full-width banner sitting directly under the three platform
+          cards (moved back there 2026-09-11) — the next step after them,
+          for anyone wanting something bigger than one programme.
+          Deliberately not another giant photo card: Work with ODD is a
+          deeper way to work with ODD, not a fourth equal masterbrand
+          product, and what keeps it from reading as one is that it has no
+          photo and no grid cell. Its "body" is one short sentence — this
+          band is a signpost, not a pitch.
         options:
           subtype: object
       pathways:
@@ -91,6 +94,14 @@ collections_config:
           of a single-link `closingCta`). Not on ODDspace — its rebuilt
           "Enter the space" section replaces this with its own dedicated
           membership/event-enquiry pair.
+
+          On Home each card's "audience" ("For creatives" / "For business")
+          renders as a heading ABOVE its run of cards, not as a label inside
+          them (2026-09-11) — so cards sharing an audience must stay next to
+          each other in this list, and the creative ones come first. That
+          creatives-before-business order is a sitewide rule, and a test
+          fails the build if this array is reordered against it. Elsewhere
+          "audience" is just a small label inside the card.
         options:
           structures: _structures.cta
           disable_add: false
@@ -247,7 +258,17 @@ collections_config:
           subtype: object
       whatOddIs:
         type: object
-        label: '"What ODD is" (Home only)'
+        label: '"Why ODD" (Home only)'
+        comment: >-
+          The homepage's main explanatory passage. Keep the headline to ONE
+          sentence — it sets at display scale inside a ring of photography,
+          and a second sentence turns it into a wall of type. The
+          explanation belongs in the body underneath, where it is set larger
+          than a normal section body precisely so it can carry that weight.
+          In the body, leave a BLANK LINE between points and each becomes
+          its own paragraph — three short spaced paragraphs are far easier
+          to take in here than one block, which is what this was until
+          2026-09-11.
         options:
           subtype: object
       whatItIs:
@@ -495,8 +516,16 @@ collections_config:
           required: false
       twoWaysIn:
         type: object
-        label: '"Two ways in" (Home only)'
-        comment: The business/creative dual-entry section. Keep the framing reciprocal, not "business buys, creatives belong".
+        label: '"Who ODD is for" (Home only)'
+        comment: >-
+          The creative/business dual-entry section. Keep the framing
+          reciprocal, not "business buys, creatives belong". Creatives render
+          on the left and business on the right — a sitewide rule, enforced
+          by a test, not something to flip here. Each side's "tracks" are its
+          destination buttons (creatives: ODDfest, ODDspace; business:
+          ODDference, Work with ODD): give a track a "label" and an "href"
+          and leave "meta" empty for a button. Two or three per side — this
+          section routes people, it does not list everything ODD runs.
         options:
           subtype: object
       proof:
@@ -1045,8 +1074,11 @@ collections_config:
         comment: >-
           Drives the top nav, the footer links and the mobile menu — one edit
           here changes all three. ODDspace opens in a new tab, so leave its
-          "external" toggle on. "Info" has "children" (About/Work with us/
-          Media/Contact) — it shows as a hover dropdown on desktop, a
+          "external" toggle on. "Info" has "children" (Work with ODD/Media/
+          About/Contact, in that order since 2026-09-11 — Work with ODD is
+          the one most visitors opening this menu actually want, so it leads
+          rather than sitting second behind About) — it shows as a hover
+          dropdown on desktop, a
           labeled group on mobile, and flattens into plain links in the
           footer. Add "children" to any other item the same way to group it
           instead of adding a new top-level item. Work with ODD moved in
