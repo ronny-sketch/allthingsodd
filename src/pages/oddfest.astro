@@ -228,7 +228,27 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       )
     }
 
-    <!-- 6. FAQ -->
+    <!-- 6. Partner route (2026-09-11). The host ask above is this page's
+         primary conversion and keeps the loudest treatment; this is the
+         other real audience the page has to serve — an organisation that
+         wants to back the week rather than host inside it. It sits after
+         the proof chapter, where "is this real?" has just been answered,
+         and routes into the existing Work with ODD partnerships enquiry
+         rather than introducing a second form. -->
+    <section class="oddf-sub oddf-partner">
+      <div class="wrap">
+        <div class="oddf-partner-inner reveal">
+          <span class="eyebrow">{page.partnerCta.eyebrow}</span>
+          <h2>{page.partnerCta.title}</h2>
+          <p>{page.partnerCta.body}</p>
+          <Pill href={page.partnerCta.href} variant="outline" magnetic>
+            {page.partnerCta.linkLabel}
+          </Pill>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. FAQ -->
     <section class="oddf-sub">
       <div class="wrap">
         <div class="section-head">
@@ -257,6 +277,28 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
 
   .oddf-sub {
     padding: var(--space-24) 0;
+  }
+
+  /* Partner band. Bordered rather than filled: a solid panel here read as a
+     second primary CTA competing with "How to join", which is the one thing
+     this page most needs a visitor to do. */
+  .oddf-partner-inner {
+    max-width: 46rem;
+    padding: var(--space-10);
+    border: 1px solid var(--color-paper-12);
+    border-radius: var(--radius-panel);
+  }
+  .oddf-partner-inner h2 {
+    margin: var(--space-2) 0 var(--space-4);
+  }
+  .oddf-partner-inner p {
+    margin: 0 0 var(--space-6);
+    max-width: 52ch;
+  }
+  @media (max-width: 640px) {
+    .oddf-partner-inner {
+      padding: var(--space-6);
+    }
   }
   /* Mobile rhythm. 6rem top+bottom is tuned for a desktop column; stacked on
      a phone it puts ~192px of empty screen between two sections (measured

@@ -26,27 +26,18 @@ const page = entry.data;
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <HeroCentered eyebrow={page.eyebrow} title={page.title} intro={page.intro} warpTitle />
 
+  {
+    /* "Why now" is deliberately gone (2026-09-11 editorial pass). Its
+       headline — "When execution gets easier, judgment matters more" — was
+       strategy thinking that read well in a deck and told a visitor nothing
+       about what ODD is. Its one load-bearing fact (Finland's own
+       creative-economy goals already assume this expertise matters more)
+       survives, inside the argument below, where it supports a point the
+       page was already making instead of restating it as a section. */
+  }
   <section class="about-argument">
     <div class="wrap">
       {page.argument.map((paragraph) => <p class="reveal">{paragraph}</p>)}
-    </div>
-  </section>
-
-  {
-    /* "Why now" — NEW SECTION (2026-09-02 copywriting pass). Same plain
-       section-head + stacked-paragraph treatment as the core argument above
-       it, not SectionIntro (whose `body` is a single string and can't carry
-       this section's two real paragraph breaks). */
-  }
-  <section class="about-sub">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">{page.whyNow.eyebrow}</span>
-        <h2>{page.whyNow.headline}</h2>
-      </div>
-      <div class="about-argument-inner">
-        {page.whyNow.body.map((paragraph) => <p class="reveal">{paragraph}</p>)}
-      </div>
     </div>
   </section>
 

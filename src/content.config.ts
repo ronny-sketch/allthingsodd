@@ -667,6 +667,20 @@ const pages = defineCollection({
           cta: linkCta,
           altCta: linkCta,
         }),
+        // The page's second conversion, added 2026-09-11: a week made by
+        // hundreds of independent hosts also has to be able to convert an
+        // organisation that wants to back it. Deliberately a quiet band
+        // after the proof chapter rather than a second loud ask beside
+        // "How to join" — the host ask is this page's primary job, and two
+        // competing CTAs of equal weight would cost it. Routes into the
+        // existing Work with ODD partnerships enquiry, not a new form.
+        partnerCta: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          body: z.string(),
+          linkLabel: z.string(),
+          href: z.string(),
+        }),
         faq: z.array(faqItem),
       }),
 
@@ -1001,6 +1015,102 @@ const pages = defineCollection({
         faq: z.array(faqItem),
       }),
 
+      // ODDspace membership (2026-09-11) and ODDspace as a venue (below) —
+      // the two conversion journeys /oddspace itself deliberately does not
+      // carry. That page's job is to make someone want the place; these two
+      // exist so that someone who already does can get every fact they need
+      // before writing to us, which is what the September planning review
+      // asked for. Both reuse ODDspace's own `_slug`, so the rails, logo and
+      // frame are the ODDspace ones rather than a new identity.
+      //
+      // Both pages publish only what the site already stands behind. Where a
+      // fact is genuinely not verified — capacities, AV inventory,
+      // accessibility — the venue page says so and asks, rather than
+      // printing a number from an internal draft. The internal rental guide
+      // has three conflicting price lists as of 2026-09-11; none of them is
+      // on this site.
+      subpageBase.extend({
+        _template: z.literal('oddspace-membership'),
+        secondaryCta: linkCta.optional(),
+        heroPhotos: z.array(z.object({ image: image(), alt: z.string() })),
+        intro: z.string(),
+        whatItIs: sectionIntro,
+        // Two deliberately symmetrical lists. "notIncluded" is the one that
+        // earns this page: the studio carve-out and the absence of private
+        // desks are exactly what a prospective member otherwise discovers
+        // after joining. Never quietly drop it to make the page read better.
+        included: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          items: z.array(z.string()),
+        }),
+        notIncluded: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          items: z.array(z.string()),
+          note: z.string().optional(),
+        }),
+        // The membership itself plus the studio combination, in the shared
+        // pricing-card shape (same component as ODDference's tickets).
+        tiers: z.array(pricingTier),
+        ratesNote: z.string(),
+        audiencesIntro: z.object({ eyebrow: z.string(), headline: z.string() }),
+        audiences: z.array(audienceItem),
+        howItWorks: z.array(featureCard),
+        faq: z.array(faqItem),
+        finalCta: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          cta: linkCta,
+        }),
+      }),
+
+      subpageBase.extend({
+        _template: z.literal('oddspace-venue'),
+        secondaryCta: linkCta.optional(),
+        heroPhotos: z.array(z.object({ image: image(), alt: z.string() })),
+        intro: z.string(),
+        whatItIs: sectionIntro,
+        eventTypes: z.array(z.string()),
+        spacesIntro: z.object({ eyebrow: z.string(), headline: z.string() }),
+        // Same shape and component as /oddspace's own room cards.
+        spaces: z.array(
+          z.object({
+            name: z.string(),
+            body: z.string(),
+            bullets: z.array(z.string()).optional(),
+            image: image().optional(),
+          }),
+        ),
+        pricing: sectionIntro,
+        memberRates: z.array(
+          z.object({ name: z.string(), price: z.string(), note: z.string().optional() }),
+        ),
+        ratesNote: z.string(),
+        whatWeCanDo: sectionIntro,
+        howItWorks: z.array(featureCard),
+        // The honest half of a venue sales page: the specifications a real
+        // event needs that this site cannot yet verify (capacities, AV,
+        // accessibility, load-in) are named here as things we answer in an
+        // enquiry. This block is not a placeholder to be filled with
+        // plausible numbers later — when a number is genuinely verified it
+        // moves into the page proper and leaves this list.
+        askUs: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          items: z.array(z.string()),
+        }),
+        faq: z.array(faqItem),
+        finalCta: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          cta: linkCta,
+        }),
+      }),
+
       // ODDstudio (2026-09-11) — the recording/production room inside
       // ODDspace, run with TUNEMENT. It exists as its own page rather than a
       // longer section on /oddspace for one commercial reason: it is the one
@@ -1188,17 +1298,6 @@ const pages = defineCollection({
         // one long string) so the editorial rhythm survives in the CMS —
         // see about.json for the real copy.
         argument: z.array(z.string()),
-        // NEW SECTION (2026-09-02 copywriting pass) — "Why now": the
-        // technology/execution-gets-cheaper argument, grounded in Finland's
-        // own creative-economy context. Same multi-paragraph-array shape as
-        // `argument` (not `sectionIntro`, whose `body` is a single string)
-        // since this also needs two real paragraph breaks, rendered by
-        // page-scoped markup in about.astro rather than SectionIntro.
-        whyNow: z.object({
-          eyebrow: z.string(),
-          headline: z.string(),
-          body: z.array(z.string()),
-        }),
         story: z.object({
           eyebrow: z.string(),
           title: z.string(),

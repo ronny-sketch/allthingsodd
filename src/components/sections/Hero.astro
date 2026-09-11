@@ -53,8 +53,13 @@ interface Props {
   // Ronny's direct request, so it's optional here rather than assumed —
   // Hero is still usable text-free if a future caller wants that.
   headline?: string;
+  // The second half of the mission, kept out of the <h1> deliberately
+  // (2026-09-11 editorial pass): ODD works on two connected problems, and
+  // one headline carrying both of them is a headline nobody finishes. The
+  // h1 makes one claim; this line adds the second at body weight.
+  support?: string;
 }
-const { mosaicAlt, headline } = Astro.props;
+const { mosaicAlt, headline, support } = Astro.props;
 ---
 
 <header class="hero">
@@ -95,6 +100,7 @@ const { mosaicAlt, headline } = Astro.props;
   <div class="hero-logo" id="heroLogo">
     <Logo ariaHidden />
     {headline && <h1 class="hero-headline">{headline}</h1>}
+    {support && <p class="hero-support">{support}</p>}
   </div>
 </header>
 
@@ -312,11 +318,26 @@ const { mosaicAlt, headline } = Astro.props;
        the honest number: the headline really is readable within half a
        second. Keep the delay at 0 — reintroducing one puts the metric back
        on a thumbnail with no visible change to the page. */
-    .hero-headline {
+    .hero-headline,
+    .hero-support {
       opacity: 0;
       animation: hero-logo-in 1.2s 0s var(--ease-out-expo) both;
     }
   }
+  .hero-support {
+    margin: 0.9rem auto 0;
+    max-width: 46ch;
+    text-align: center;
+    font: var(--text-body);
+    color: var(--color-paper);
+    /* Same two-layer shadow as the headline — this sits over the same busy
+       photography and needs the same edge contrast, at a weight that keeps
+       it clearly secondary to the h1. */
+    text-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.55),
+      0 2px 18px rgba(0, 0, 0, 0.45);
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     /* The mark used to lead the headline by 0.25s. With the headline moved
        to a 0s delay above, keeping the mark at 0.3s would have inverted that

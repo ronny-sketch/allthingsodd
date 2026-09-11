@@ -225,8 +225,12 @@ test('"Already in motion" renders ODD\'s cumulative under-two-years proof', asyn
   await expect(section.getByText('Already in motion')).toBeVisible();
 
   // The framing is half the claim — four big numbers without a timeframe say
-  // something different from the same four numbers in under two years.
-  await expect(section).toContainText('less than two years');
+  // something different from the same four numbers in under two years. The
+  // exact sentence is editorial and has already changed once (2026-09-11:
+  // "In less than two years…" became "Two years in…" when the prose stopped
+  // restating the figures below it), so this asserts the timeframe survives,
+  // not one wording of it.
+  await expect(section).toContainText(/two years/i);
 
   // All four figures, and no silent reversion to the three 2025-only ones.
   for (const value of ['5,000+', '500+', '100+', '€400K+']) {

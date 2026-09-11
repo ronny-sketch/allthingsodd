@@ -26,7 +26,7 @@
   "whatItIs": {
     "eyebrow": "What ODDfest is",
     "headline": "Made across Helsinki, by the people taking part.",
-    "body": "ODDfest is a week of independently made events across the city. Artists, collectives, venues, organisations, communities and companies make and produce their own programme. Your event stays yours — your idea, your content, your name on it. ODD builds the layer around it: one shared identity, one public programme, the communications for the week, coordination between hosts, and introductions where they help.\n\nThe reasoning is simple. On its own, an event is one night in a city with a lot of nights in it. Put enough of them under one name, in one week, on one programme, and they become something a person can plan around.\n\nThat is not where ODDfest started. The first two editions were programmed from the middle, by us. The 2027 shape is what those years taught us — which is a longer story, further down this page."
+    "body": "ODDfest is a week of independently made events across Helsinki. Artists, collectives, venues, organisations, communities and companies make and produce their own. Your event stays yours — your idea, your content, your name on it.\n\nOn its own, an event is one night in a city with a lot of nights in it. Put enough of them under one name, in one week, on one programme, and they become something a person can plan around."
   },
   "lookBack": {
     "label": "Look back at 2026",
@@ -44,13 +44,13 @@
     "headline": "Your event. One shared week.",
     "host": {
       "title": "You, the host",
-      "body": "You lead the idea, the content, the production and the economics. The event keeps your name, your identity and your decisions. Nothing about taking part asks you to hand any of that over."
+      "body": "You lead the idea, the content, the production and the economics. The event keeps your name and your decisions. Taking part asks you to hand over none of that."
     },
     "odd": {
       "title": "ODD",
-      "body": "We build the shared layer around it: the ODDfest identity, one public programme for the week, communications, coordination between hosts, and introductions when there is a real match — another host, a venue, a partner. The work is to make sure your event is not the only thing happening in the city that week, and that people can find it. What we will not do is decide your programme for you."
+      "body": "We connect your event to the rest of the week: the ODDfest identity, one public programme, the communications, coordination between hosts, and introductions when there is a real match. What we will not do is decide your programme for you."
     },
-    "closing": "ODD is not a central production office, and ODDfest is not a logo placed on top of separate events. The point is to make independent things easier to find, and stronger for being found together.",
+    "closing": "ODD is not a production office, and ODDfest is not a logo placed on top of separate events. The point is to make independent work easier to find, and stronger for being found together.",
     "stepsLabel": "From an idea to the programme"
   },
   "howItWorks": [
@@ -92,7 +92,7 @@
   "history": {
     "eyebrow": "What has happened before",
     "headline": "ODDfest has been made twice. 2027 is what those years taught us.",
-    "body": "The first ODDfest ran over two days in June 2025, inside one city block at Lasipalatsikortteli, built in about six months by people who had not done it before. 2,600+ participants and 350+ contributors. 83 sessions across eight stages, spanning more than seven creative sectors, with over 150 speakers and artists from more than 20 nationalities. Within two months it had catalysed more than 20 new collaborative projects between creative organisations, businesses and cultural institutions. Whatever else was uncertain, the appetite was not.\n\n2026 was deliberately more ambitious: a festival across venues in central Helsinki under the theme Bravery — Bio Rex, Tavastia, Vanha Ylioppilastalo, Kamppi Chapel and more — with ODDference beside it as its own professional event, and a free Creative Week running across the city all week. The people who came found something they loved. But the concept was layered and new, and that made it hard to explain before you had experienced it. Not enough people crossed that threshold. That was our own conclusion at the time, and it has not improved with distance.\n\nThe lesson was not that Helsinki wanted less of this. It was that one organisation producing a city's worth of programme is the wrong shape: expensive, fragile, and impossible to describe in a sentence. We carried the cost and the risk of almost all of it, and that is the part we are not repeating. The part of the week we produced least — Creative Week, free, spread across the city, made by other people — is the part we are keeping. That is our judgement rather than a measurement: nobody counted footfall on a free city-wide programme. But it is the part that felt like a city rather than a schedule, and it is the thing we had already said we would build. Our own 2025 report promised open calls and a programme the community actually shapes, and we only half did it. In 2027 it stops being a strand running alongside a festival and becomes the shape of the whole thing.",
+    "body": "ODDfest has been made twice, and both editions were produced from the middle, by us.\n\n2025 proved the appetite was real. 2026 was bigger and centrally produced — loved by the people who came, and hard to explain to the people who did not. We carried the cost and the risk of nearly all of it, and that is the part we are not repeating. The part we produced least — a free week of events across the city, made by other people — is the part we are keeping.",
     "chapters": [
       {
         "year": "2025",
@@ -110,7 +110,7 @@
         "body": "What we produced centrally, we are not producing centrally again. ODDfest becomes the open week: hosts make and own their own events, and ODD builds the identity, the shared programme and the communications around them — so nobody is carrying a whole city on their own."
       }
     ],
-    "closing": "So 2027 is not a restart. It is the version of this week that two years of making it taught us to build — and it only exists if people bring things to it. That is why this page is an invitation rather than a lineup.",
+    "closing": "So 2027 is not a restart. It is the version two years of making this taught us to build — and it only exists if people bring things to it.",
     "cta": {
       "label": "See who made 2026",
       "href": "/oddfest-2026/"
@@ -199,5 +199,12 @@
       "kind": "word",
       "text": "ODDfest"
     }
-  ]
+  ],
+  "partnerCta": {
+    "eyebrow": "For partners",
+    "title": "Partner with ODDfest",
+    "body": "A week made by hundreds of people needs partners behind it — organisations that want to back the week itself, reach the people in it, or build something of their own inside it. Tell us what you have in mind and we will work out whether there is a real fit.",
+    "linkLabel": "Talk to us about partnering →",
+    "href": "/work-with-odd?interest=strategic_partnership#enquiry-form"
+  }
 }

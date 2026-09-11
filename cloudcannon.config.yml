@@ -190,21 +190,12 @@ collections_config:
         options:
           required: false
         cascade: true
-      whyNow:
-        type: object
-        label: Why now (About only)
-        comment: >-
-          NEW (2026-09-02 copywriting pass): the technology/execution
-          argument, grounded in Finland's creative-economy context. "body"
-          is two real paragraphs (array), same rhythm as "argument" above.
-        options:
-          subtype: object
       howWeMakeItHappen:
         type: object
         label: What we build (About only)
         comment: >-
           The "pillars" (events/spaces/projects, 01-03) render right after
-          "whyNow"; "principles" ("Ways of working") render lower on the
+          the opening argument; "principles" ("Ways of working") render lower on the
           page, after the timeline — both still live in this one field
           (see about.astro), just rendered in two places.
         options:
