@@ -43,10 +43,7 @@
 // animation-duration at runtime and causing visible jumps; nothing here runs
 // after paint.
 import { getImage } from 'astro:assets';
-import oddfestWordmark from '../../assets/logos/oddfest-wordmark.svg';
-import oddferenceMark from '../../assets/logos/oddference-mark.png';
-import oddspaceWordmark from '../../assets/logos/oddspace-wordmark.svg';
-import oddMark from '../../assets/logos/odd-mark.svg';
+import { logoFor, LOGO_ASSET_WIDTH, type SubpageSlug } from './subpage-logo';
 
 interface RailItem {
   kind: 'logo' | 'word' | 'meta';
@@ -55,26 +52,24 @@ interface RailItem {
 interface Props {
   items: RailItem[];
   side: 'left' | 'right';
-  slug: 'oddfest' | 'oddference' | 'oddagency' | 'oddspace' | 'oddstudio';
+  slug: SubpageSlug;
 }
 const { items, side, slug } = Astro.props;
 
 // Each product's own wordmark, not a generic mark. ODDspace had one all along
 // (oddspace-wordmark.svg) and was falling through to the shared ODD mark
 // because only oddfest and oddference were special-cased.
-const wordmark =
-  slug === 'oddfest'
-    ? oddfestWordmark
-    : slug === 'oddference'
-      ? oddferenceMark
-      : slug === 'oddspace'
-        ? oddspaceWordmark
-        : oddMark;
+const wordmark = logoFor(slug);
 
-// How thick the logo reads across the rail, in px. Matched to the optical
-// weight of the 1.35rem vertical wordmark it sits among — before this it was
-// rendering 4-8px thick, a smear rather than a mark.
-const LOGO_THICK = 24;
+// How thick the mark reads across the rail, in px — measured against the type
+// beside it rather than picked. The artwork's ink fills essentially its whole
+// box height, so this number IS the mark's visual height, and Forta's cap
+// height at the adjacent .rail-word's 1.35rem is 17.24px. 18px puts the mark
+// at 1.04x the cap height next to it, which is parity. It was rendering
+// 4-8px thick before this — a smear, not a mark — and an interim 24px
+// overshot the other way, reading as a blob shouting over the very word it
+// sits next to.
+const LOGO_THICK = 18;
 // Rotated -90deg, the logo occupies LOGO_THICK across the rail and this much
 // along it. Derived from the asset's own intrinsic size, so replacing any of
 // these files keeps the box correct without touching this component.
@@ -84,7 +79,7 @@ const logoLength = Math.round(LOGO_THICK * logoRatio);
 // CLAUDE.md — getImage() is the CSS-side equivalent of <Image>. It passes the
 // two SVG wordmarks through untouched and emits a correctly-sized asset for
 // ODDference's PNG, which is 1080px wide at source and renders at 155.
-const logoAsset = await getImage({ src: wordmark, width: logoLength * 3 });
+const logoAsset = await getImage({ src: wordmark, width: LOGO_ASSET_WIDTH });
 
 // Space after every beat, px. Lives on the item, never on the container — see
 // the header comment; this is what makes the period exact.
@@ -102,9 +97,12 @@ const beatLength = (item: RailItem) =>
 const period = items.reduce((sum, item) => sum + BEAT_GAP + beatLength(item), 0) || 1;
 
 // Overfill target: (reps-1) periods must still cover the rail after the track
-// has travelled one period. 2400px clears a 3840x2160 display's viewport with
-// room to spare.
-const OVERFILL_PX = 2400;
+// has travelled one period. Sized for zoomed-OUT browsers, not just big
+// monitors: Chrome's zoom ladder goes down to 33% and 25%, where a 4K display
+// reports 6545 and 8640 CSS px of viewport, and Chrome persists zoom per
+// origin — so one stray Ctrl+- would otherwise bring the empty-tail bug back
+// permanently for that visitor.
+const OVERFILL_PX = 5000;
 // The estimate above is only ever allowed to make the track LONGER than it
 // needs to be, never shorter: sizing `reps` against 60% of the estimated
 // period means the real period would have to render ~1.7x shorter than
@@ -117,8 +115,11 @@ const track = Array.from({ length: reps }, () => items).flat();
 
 // px per second. Framing, not a news crawl — slow enough that the eye reads it
 // as the page breathing rather than as something demanding to be read.
+// Deliberately not rounded: rounding a 25-36s duration to whole seconds put up
+// to 2.8% of speed difference between the two rails flanking one page, which
+// is a smaller helping of the exact defect this normalisation exists to remove.
 const RAIL_SPEED = 18;
-const duration = Math.max(12, Math.round(period / RAIL_SPEED));
+const duration = (period / RAIL_SPEED).toFixed(2);
 ---
 
 <div class={`oddf-rail ${side}`} aria-hidden="true">
@@ -131,17 +132,12 @@ const duration = Math.max(12, Math.round(period / RAIL_SPEED));
   <div class="rail-window">
     <div
       class="rail-track"
-      style={`--reps:${reps};--rail-duration:${duration}s;--beat-gap:${BEAT_GAP}px;--logo-thick:${LOGO_THICK}px`}
+      style={`--reps:${reps};--rail-duration:${duration}s;--beat-gap:${BEAT_GAP}px;--logo-thick:${LOGO_THICK}px;--logo-length:${logoLength}px;--logo-src:url('${logoAsset.src}')`}
     >
       {
         track.map((item) => (
           <div class="rail-item">
-            {item.kind === 'logo' && (
-              <span
-                class="rail-logo"
-                style={`--logo-length:${logoLength}px;--logo-src:url(${logoAsset.src})`}
-              />
-            )}
+            {item.kind === 'logo' && <span class="rail-logo" />}
             {item.kind === 'word' && <span class="rail-word">{item.text}</span>}
             {item.kind === 'meta' && <span class="rail-meta">{item.text}</span>}
           </div>

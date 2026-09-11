@@ -19,10 +19,7 @@
 // rail because it has two edges to use. A phone has one place this belongs,
 // and a second competing ticker would read as clutter rather than identity.
 import { getImage } from 'astro:assets';
-import oddfestWordmark from '../../assets/logos/oddfest-wordmark.svg';
-import oddferenceMark from '../../assets/logos/oddference-mark.png';
-import oddspaceWordmark from '../../assets/logos/oddspace-wordmark.svg';
-import oddMark from '../../assets/logos/odd-mark.svg';
+import { logoFor, LOGO_ASSET_WIDTH, type SubpageSlug } from './subpage-logo';
 
 interface RailItem {
   kind: 'logo' | 'word' | 'meta';
@@ -30,7 +27,7 @@ interface RailItem {
 }
 interface Props {
   items: RailItem[];
-  slug: 'oddfest' | 'oddference' | 'oddagency' | 'oddspace' | 'oddstudio';
+  slug: SubpageSlug;
 }
 const { items, slug } = Astro.props;
 
@@ -45,26 +42,19 @@ const { items, slug } = Astro.props;
 // With the space on `gap` that undershoots a true period by gap/3 = 12.8px, so
 // the band jumped 12.8px every cycle.
 const BEAT_GAP = 38;
-const LOGO_THICK = 20;
+const LOGO_THICK = 16;
 // Same masked-silhouette treatment as SubpageRail — see the long note in its
 // styles. The short version: both wordmarks bake in a paper-coloured fill, and
 // ODDspace/ODDstudio render under body.theme-light with that palette inverted,
 // so a mask painted with --color-paper is the only treatment that is correct
 // on both themes and on the RGBA PNG as well as the two SVGs.
-const wordmark =
-  slug === 'oddfest'
-    ? oddfestWordmark
-    : slug === 'oddference'
-      ? oddferenceMark
-      : slug === 'oddspace'
-        ? oddspaceWordmark
-        : oddMark;
+const wordmark = logoFor(slug);
 const logoLength = Math.round(LOGO_THICK * (wordmark.width / wordmark.height));
 // Through astro:assets rather than referencing the import's raw .src, per
 // CLAUDE.md — getImage() is the CSS-side equivalent of <Image>. It passes the
 // two SVG wordmarks through untouched and emits a correctly-sized asset for
 // ODDference's PNG, which is 1080px wide at source and renders at 130.
-const logoAsset = await getImage({ src: wordmark, width: logoLength * 3 });
+const logoAsset = await getImage({ src: wordmark, width: LOGO_ASSET_WIDTH });
 // Measured px-per-character for the two type styles below. Estimate only — it
 // sizes `reps` and the duration, never the seam.
 const PX_PER_WORD_CHAR = 10.5;
@@ -78,7 +68,7 @@ const period = items.reduce((sum, item) => sum + BEAT_GAP + beatLength(item), 0)
 // Wide enough that (reps-1) periods still span the widest screen this band
 // renders on (the 820px breakpoint). Same one-directional safety margin on the
 // estimate as SubpageRail — it may only ever over-render, never under-render.
-const OVERFILL_PX = 1000;
+const OVERFILL_PX = 2000;
 const SAFETY = 0.6;
 const reps = Math.min(16, Math.max(4, Math.ceil(OVERFILL_PX / (period * SAFETY)) + 2));
 const track = Array.from({ length: reps }, () => items).flat();
@@ -86,23 +76,19 @@ const track = Array.from({ length: reps }, () => items).flat();
 // px per second — slower than the rails, because a horizontal band at eye
 // level reads faster than a vertical one at the edge of the screen.
 const TICKER_SPEED = 15;
-const duration = Math.max(16, Math.round(period / TICKER_SPEED));
+// Not rounded, for the same reason as SubpageRail's — see the note there.
+const duration = (period / TICKER_SPEED).toFixed(2);
 ---
 
 <div class="oddf-ticker" aria-hidden="true">
   <div
     class="oddf-ticker-track"
-    style={`--reps:${reps};--ticker-duration:${duration}s;--beat-gap:${BEAT_GAP}px;--logo-thick:${LOGO_THICK}px`}
+    style={`--reps:${reps};--ticker-duration:${duration}s;--beat-gap:${BEAT_GAP}px;--logo-thick:${LOGO_THICK}px;--logo-length:${logoLength}px;--logo-src:url('${logoAsset.src}')`}
   >
     {
       track.map((item) => (
         <span class="oddf-ticker-item">
-          {item.kind === 'logo' && (
-            <span
-              class="oddf-ticker-logo"
-              style={`--logo-length:${logoLength}px;--logo-src:url(${logoAsset.src})`}
-            />
-          )}
+          {item.kind === 'logo' && <span class="oddf-ticker-logo" />}
           {item.kind === 'word' && <span class="oddf-ticker-word">{item.text}</span>}
           {item.kind === 'meta' && <span class="oddf-ticker-meta">{item.text}</span>}
         </span>
