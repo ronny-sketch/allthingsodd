@@ -167,12 +167,18 @@ Aborted - you do not have permission to publish to allthingsodd.co
 
 `surge tokens add` accepts only one `--domain`, so a domain-scoped token
 cannot cover a site that publishes to two hosts. The secret must hold an
-**account-scoped** token — `surge tokens add` with no `--domain`:
+**account-scoped** token — `surge tokens add` with no `--domain` — and the
+token has to be _extracted_ from that command's output, not piped raw:
 
 ```bash
-npx surge tokens add -m "github-actions-ci-<date>" \
+npx surge tokens add -m "github-actions-ci-$(date +%Y%m%d)" \
+  | tr -d '\r' | awk 'NF{t=$NF} END{printf "%s", t}' \
   | gh secret set SURGE_TOKEN --repo ronny-sketch/allthingsodd
 ```
+
+**The `awk` is load-bearing — see below.** This document prescribed the
+naive pipe (`surge tokens add ... | gh secret set ...`) until 2026-09-11,
+and that command produces a secret Surge rejects.
 
 Worth noting the failure was caught rather than silent: the publish step
 greps surge's own completion line, so an aborted publish failed the job
@@ -203,11 +209,48 @@ The fix is one command, from a terminal where `surge` is logged in as
 
 ```bash
 npx surge tokens add -m "github-actions-ci-$(date +%Y%m%d)" \
+  | tr -d '\r' | awk 'NF{t=$NF} END{printf "%s", t}' \
   | gh secret set SURGE_TOKEN --repo ronny-sketch/allthingsodd
 ```
 
 Then re-run the failed deploy job and confirm `/build-info.json` matches the
 commit, per "Deploy verification" below.
+
+### Why the raw pipe does not work (2026-09-11)
+
+The version of that command without `awk` was run on 2026-09-11, and the
+deploy still failed — with a _different_ error, which is how we know the
+scope problem above was genuinely fixed and this is a second, independent
+bug:
+
+```
+Invalid token
+```
+
+`surge tokens add` does not print a bare token. It prints it decorated —
+indented, with blank lines around it — the same house style as
+`surge tokens list`. Piping that into `gh secret set` stores the decoration
+too, so the secret's value begins with a newline and leading spaces. The
+job's own env dump is where this is visible, because GitHub masks the value
+but not its shape:
+
+```
+SURGE_TOKEN:
+   ***
+```
+
+A secret whose first character is a newline. `awk 'NF{t=$NF} END{printf
+"%s", t}'` takes the last field of the last non-empty line and writes it
+with no trailing newline, which is the token and nothing else. `tr -d '\r'`
+guards the same thing against CRLF.
+
+**When re-testing this, check the error text, not just red/green.**
+`Aborted - you do not have permission` and `Invalid token` are different
+failures with different fixes, and both surface as the same "surge did not
+report a completed publish" step error. Each `surge tokens add` also leaves
+a real token behind whether or not the secret ends up valid, so a few failed
+attempts leave unused tokens in the account — `npx surge tokens list` shows
+them (`used never`), and `npx surge tokens rem <id>` removes them.
 
 ### Plan limits
 
