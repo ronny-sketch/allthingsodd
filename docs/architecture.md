@@ -200,6 +200,44 @@ real decisions worth recording:
    existing plain typographic card; ODDference's real, verified 2026
    speaker photos render the new photo-led card instead).
 
+7. **The 2026-09-11 ODDference restructure** took the page to the eight
+   sections Ronny specified — hero, the premise, three reasons, past
+   speakers, session highlights, who it's for, tickets & partnership, FAQ —
+   in that order. What is worth recording beyond the ordering:
+   - **The 2026 proof moved ahead of "who it's for".** A reader used to meet
+     a list of job titles before seeing anything that had actually happened.
+     The speaker roster also grew from the 10 that were in content to the
+     full, real 25 from the live 2026 page, with their real portraits.
+   - **`sessionHighlights` is new, and its source is not the website.**
+     `oddfest.co/oddference` never published session-level content — only
+     the three programme tracks and the speaker wall (verified against the
+     rendered page and the WordPress REST API, which has a `lineup` post
+     type and nothing programme-shaped). The twelve titles come verbatim
+     from the event's own master stage schedule in Drive ("ODDference
+     Ajolista"), with one typo corrected. Anything added here later must
+     come from a comparable record, not from memory.
+   - **"What changes in 2027" was removed**, not hidden: three cards of
+     intent about an unbuilt programme, sitting between the 2026 proof and
+     the ticket block. Its one load-bearing fact — ODDference runs alongside
+     ODDfest week across Helsinki — is kept, in the FAQ.
+   - **The ticket block stopped saying "Recommended".** On a ladder where
+     exactly one tier can be bought, that word describes a choice the reader
+     does not have; the badge now carries the real deadline instead
+     (`badgeLabel` in content — the catalog has no field for it, so
+     `oddference-tickets.ts` toggles the badge's visibility and never its
+     text). The other two tiers render `locked`: dimmed, priced, and with
+     their button hidden but still in the DOM, so the catalog can hand it
+     back the moment it opens that tier. `locked` is a build-time fallback
+     only — the runtime sync re-derives it from the catalog's `upcoming`
+     status, and deliberately does _not_ apply it to a sold-out or closed
+     tier, where "you missed it" is the thing the reader needs to see.
+   - **The conversion section stacked.** Tickets and the partnership ask
+     were side by side at `1.4fr 1fr`, which left the ticket grid 628px at
+     1440px wide — room for two of `PricingGrid`'s 260px tracks, so the
+     third tier always wrapped alone. Survivable when all three looked
+     alike; not once two are dimmed. Full width fits all three in one row
+     and the price progression reads left to right.
+
 **Nav breakpoint: 1024px, not 760px.** Originally set because "Work with
 ODD" was a genuinely long label next to the site's other single-word nav
 items — at anything narrower than 1024px, the 5-item desktop nav collided
@@ -352,6 +390,19 @@ entirely in the 2026-08-31 final implementation pass (see below).
   default for ODDfest, `'signal'` for ODDference) so the two heroes read as
   distinct product identities from one shared component rather than forking
   it — see the component's own comment and `docs/design-system.md`.
+
+  Since 2026-09-11 it also takes a `frame` prop, and ODDference passes
+  `frame="space"`. That is a second, orthogonal knob: `accent` picks the
+  color identity, `frame` picks the _proportions_. `'default'` is ODDfest's
+  original frame (a small headline under a very wide wordmark, light scrim,
+  standard `Pill` sizing); `'space'` reproduces `SpaceHero`'s — display-sized
+  headline, a darker centred scrim, the larger CTA pills ODDspace got the
+  same day — on ODDference's own video, so the two pages read as siblings
+  without ODDference giving up its film for a photo grid. Every value in that
+  block is lifted from `SpaceHero.astro` rather than re-derived; if one is
+  retuned, retune the other to match. Asked for directly; the alternative
+  considered and rejected was moving ODDference onto `SpaceHero` itself.
+
 - **ODDspace** — `SpaceHero`: an asymmetric grid of real space photography
   instead of one video (its brief asks for the space itself, shown through
   photography, to be the protagonist).

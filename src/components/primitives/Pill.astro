@@ -11,6 +11,16 @@ interface Props {
   ariaLabel?: string;
   id?: string;
   target?: '_blank';
+  // An <a> that is deliberately not actionable yet — ODDference's locked
+  // ticket tiers (see PricingGrid.astro). Deliberately not "just render a
+  // <span>": the element has to stay an anchor so the runtime catalog sync
+  // can make it a working link the moment the backend puts that tier on
+  // sale, without swapping the tag out from under the page. Sets
+  // aria-disabled (what a screen reader announces) and takes it out of the
+  // tab order; `.pill[aria-disabled='true']`'s own `pointer-events: none`
+  // below is what stops a mouse click, so all three input routes are
+  // covered rather than only the visual one.
+  ariaDisabled?: boolean;
 }
 const {
   href,
@@ -21,6 +31,7 @@ const {
   ariaLabel,
   id,
   target,
+  ariaDisabled = false,
 } = Astro.props;
 const classes = ['pill', `pill-${variant}`, magnetic && 'magnetic', className]
   .filter(Boolean)
@@ -36,6 +47,8 @@ const Tag = href ? 'a' : 'button';
   aria-label={ariaLabel}
   target={target}
   rel={target === '_blank' ? 'noreferrer' : undefined}
+  aria-disabled={ariaDisabled ? 'true' : undefined}
+  tabindex={ariaDisabled ? '-1' : undefined}
 >
   <slot />
 </Tag>
@@ -59,6 +72,17 @@ const Tag = href ? 'a' : 'button';
       border-color var(--duration-fast) ease,
       box-shadow var(--duration-fast) ease,
       transform var(--duration-fast) ease;
+  }
+  /* The not-actionable-yet state (see the `ariaDisabled` prop comment).
+     `pointer-events: none` is doing double duty here: it blocks the click,
+     and it also stops the element receiving the `mousemove` that
+     magnetic.ts binds *to the element itself* — so a locked pill doesn't
+     lean toward the cursor as if it were live, with no change to that
+     script. Its listeners stay attached, so a tier the catalog later
+     unlocks becomes magnetic again on its own. */
+  .pill[aria-disabled='true'] {
+    pointer-events: none;
+    cursor: default;
   }
   .pill-outline {
     background: transparent;

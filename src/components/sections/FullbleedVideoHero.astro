@@ -45,6 +45,18 @@ interface Props {
   // subpages that share this hero read as distinct product identities
   // without duplicating the whole component — see docs/design-system.md.
   accent?: 'ultraviolet' | 'signal';
+  // Which of the two hero *proportions* this renders. 'default' is ODDfest's
+  // original frame (small h1 under a very wide wordmark, light scrim,
+  // standard Pill sizing). 'space' matches SpaceHero.astro — ODDspace's hero
+  // — instead: a display-sized h1, a darker centred scrim so centered text
+  // reads over any frame of the film, and the same larger CTA pills ODDspace
+  // got on 2026-09-11. Added 2026-09-11 at Ronny's request so /oddference and
+  // /oddspace read as one family; ODDference keeps its own video and Signal
+  // accent rather than adopting ODDspace's photo grid. Deliberately a
+  // separate knob from `accent` — color identity and frame proportions are
+  // two different decisions, and conflating them would mean a future page
+  // could not have one without the other.
+  frame?: 'default' | 'space';
 }
 const {
   video,
@@ -58,6 +70,7 @@ const {
   primaryCta,
   secondaryCta,
   accent = 'ultraviolet',
+  frame = 'default',
 } = Astro.props;
 ---
 
@@ -69,7 +82,10 @@ const {
      animation instead — see .oddfest-hero-overlay below — which can't fail
      open. */
 }
-<header class={`oddfest-hero oddfest-hero--${accent}`} data-video-stage>
+<header
+  class={`oddfest-hero oddfest-hero--${accent} oddfest-hero--frame-${frame}`}
+  data-video-stage
+>
   {
     /* Real <img>, not the <video poster> attribute. The poster attribute is
        only shown while a video element has no frame of its own, which makes
@@ -345,6 +361,98 @@ const {
     to {
       opacity: 1;
       transform: none;
+    }
+  }
+
+  /* ── frame="space" ──────────────────────────────────────────────────────
+     ODDspace's hero proportions, applied to this video hero (2026-09-11, at
+     Ronny's request: /oddference should read as a sibling of /oddspace).
+     Every value below is lifted from SpaceHero.astro rather than re-guessed,
+     so the two frames stay literally the same size — if one is retuned, the
+     other should be changed to match.
+
+     Only this block is new; `frame="default"` (ODDfest) inherits none of it
+     and renders byte-identically to before. */
+
+  /* SpaceHero's scrim: a centred ellipse that darkens the middle of the frame
+     — where the stack actually sits — plus the bottom-weighted linear wash.
+     This hero's own Signal/Ultraviolet accent survives on top of it, since
+     that wash is this page's product identity and not part of ODDspace's
+     composition (see the .oddfest-hero--signal comment above). Layer order
+     is accent → centre ellipse → linear, so the accent stays a tint rather
+     than being flattened out by the darker layer. */
+  .oddfest-hero--frame-space .oddfest-hero-scrim {
+    background:
+      radial-gradient(ellipse 45% 55% at 84% 14%, var(--hero-accent-wash) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 60% at 50% 55%, rgb(14 9 11 / 45%) 0%, rgb(14 9 11 / 72%) 100%),
+      linear-gradient(
+        to top,
+        rgb(14 9 11 / 82%) 0%,
+        rgb(14 9 11 / 20%) 40%,
+        rgb(14 9 11 / 45%) 100%
+      );
+  }
+  /* The film is already darkened by the shared brightness(0.8) filter above,
+     which ODDspace's photography also carries (brightness(0.82)) — so the
+     scrim change is the only ground adjustment needed. */
+
+  /* min(360px, 64vw), not ODDspace's min(300px, 56vw): the ODDference mark is
+     6.47:1 where the ODDspace wordmark is 5.42:1, so the same *rendered
+     height* (~56px at desktop) needs a proportionally wider box. Matching the
+     width number instead of the height would make this wordmark visibly
+     smaller than ODDspace's, which is the thing being matched. */
+  .oddfest-hero--frame-space .oddfest-hero-logo {
+    width: min(360px, 64vw);
+  }
+  .oddfest-hero--frame-space .oddfest-hero-sub {
+    max-width: 32ch;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    line-height: 1.15;
+    text-wrap: balance;
+    text-shadow:
+      0 1px 3px rgb(14 9 11 / 75%),
+      0 8px 32px rgb(14 9 11 / 50%);
+  }
+  /* SpaceHero has no equivalent of `support`, and the frame is tuned without
+     one — ODDference's content drops it (2026-09-11). The rule stays so a
+     caller that does pass one still gets a legible line rather than the
+     default frame's narrower measure fighting the larger h1 above it. */
+  .oddfest-hero--frame-space .oddfest-hero-support {
+    max-width: 42rem;
+  }
+  /* Bigger than the site's default Pill — the same override, for the same
+     reason, as SpaceHero.astro's: these sit alone under a wordmark on a
+     full-viewport moving image, where 0.72rem/0.55rem reads as a caption
+     rather than the one thing the hero is asking you to do. Pill.astro's own
+     `(hover: none)` 0.85rem vertical padding still applies on top, so the
+     44px mobile touch-target floor is unaffected. */
+  .oddfest-hero--frame-space .oddfest-hero-cta :global(.pill) {
+    font-size: 0.82rem;
+    padding: 0.8rem 1.9rem;
+    letter-spacing: 0.06em;
+  }
+  @media (max-width: 480px) {
+    .oddfest-hero--frame-space .oddfest-hero-cta :global(.pill) {
+      font-size: 0.78rem;
+      padding: 0.75rem 1.5rem;
+    }
+  }
+  /* Short viewports (landscape phones). The shared `max-height: 620px` block
+     above was measured against the *default* frame's densest caller — with a
+     display-sized h1 and no `support` line the arithmetic is different, so
+     this frame gets its own numbers rather than inheriting ones tuned for a
+     stack it no longer has. Same approach as SpaceHero's own short-viewport
+     block: content-sized header, viewport height as a minimum. Declared after
+     that block so it wins at equal specificity. */
+  @media (max-height: 620px) {
+    .oddfest-hero--frame-space .oddfest-hero-logo {
+      width: min(240px, 44vw);
+    }
+    .oddfest-hero--frame-space .oddfest-hero-sub {
+      font-size: clamp(1.2rem, 3vw, 1.7rem);
+    }
+    .oddfest-hero--frame-space .oddfest-hero-overlay {
+      gap: 0.6rem;
     }
   }
 </style>

@@ -151,11 +151,13 @@ collections_config:
           subtype: object
       heroSupport:
         type: text
-        label: Hero support line (ODDference only)
+        label: Hero support line (unused)
         comment: >-
-          NEW (2026-09-02 copywriting pass): the short practical-value
-          paragraph rendered under the hero's question-headline h1
-          ("title"), above the "meta" line.
+          Currently rendered by no page. ODDference used it until
+          2026-09-11, when its hero was retuned to match ODDspace's
+          (wordmark / short headline / meta / buttons, no paragraph) and
+          this line moved into "The premise" below. Leave it empty; adding
+          text here will not appear anywhere.
       heroPhotos:
         type: array
         label: Hero photo grid (ODDspace only)
@@ -703,13 +705,13 @@ collections_config:
           enough"): a single headline/body/link.
         options:
           subtype: object
-      whatsChanging:
+      reasonsIntro:
         type: object
-        label: What changes in 2027 (ODDference only)
+        label: Heading above the three reasons (ODDference only)
         comment: >-
-          One section: a headline/body explainer plus 3 short items (More
-          immersive / More connected / More intentional encounters). Avoid
-          claiming specific installations, artists or venues until confirmed.
+          NEW (2026-09-11): the eyebrow + headline over the three
+          "reasons" blocks. Without it those blocks read as a continuation
+          of "The premise" above rather than as the page's three arguments.
         options:
           subtype: object
       capabilities:
@@ -750,14 +752,34 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
+      sessionHighlights:
+        type: array
+        label: Session highlights (ODDference only)
+        comment: >-
+          NEW (2026-09-11): real sessions from ODDference 2026, as proof of
+          what the event is actually like. Titles are taken verbatim from
+          the event's own run sheet — don't rewrite them into marketing
+          copy, and don't add a session that didn't happen. "Format" is
+          Keynote or Fireside chat; "Speakers" is a plain display line
+          ("A, B & C"). A curated dozen reads better than the full
+          programme; the section doesn't render while this is empty.
+        options:
+          structures: _structures.session_highlight_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
       faq:
         type: array
         label: Practical / FAQ
         comment: >-
-          Appears on ODDfest and ODDspace. Uses a real accordion — no HTML
-          allowed in the answer text. ODDference dropped its own FAQ in the
-          2027 rebuild (no practical info that isn't already on the ticket
-          card) — re-add it there via content.config.ts if that changes.
+          Appears on ODDfest, ODDspace and (since 2026-09-11) ODDference.
+          Uses a real accordion — no HTML allowed in the answer text.
+          ODDference 2027 has a lot that genuinely isn't decided yet
+          (dates, venues, programme, exactly what a ticket covers beyond
+          ODDference itself): say so in the answer rather than filling it
+          in, the same rule the rest of this page's content follows.
         options:
           structures: _structures.faq_item
           disable_add: false
@@ -810,10 +832,18 @@ collections_config:
         type: array
         label: Tickets (ODDference only)
         comment: >-
-          Only the currently active tier belongs here — right now that's
-          Blind Bird (€300). Don't add Early Bird/Standard/Late until each
-          one actually goes on sale. No invented prices or checkout URLs —
-          see each tier's `href`.
+          The whole ticket ladder — Blind Bird, Early Bird, Regular — not
+          only the tier on sale (2026-09-11). Price, status, benefits and
+          button are read from the ticket backend at page load, so what you
+          type here is the fallback a visitor sees if that request fails:
+          keep it truthful, but change a real price in the backend, not
+          here. Two fields are yours alone, because the backend has no
+          equivalent: "badgeLabel" is the label on the badge above the tier
+          currently on sale (now "Available until 1 Nov 2026" — leave empty
+          for the old "Recommended"), and "locked: true" marks a tier as not
+          yet purchasable, which dims the card and removes its button while
+          leaving its real price readable. The backend overrides "locked"
+          the moment it opens that tier.
         options:
           structures: _structures.pricing_tier
           disable_add: false
@@ -1556,6 +1586,23 @@ _structures:
           benefits: []
           ctaLabel: 'Get in touch'
           href: '/contact'
+  session_highlight_item:
+    style: select
+    values:
+      - label: Session
+        default: false
+        preview:
+          text:
+            - key: title
+            - key: speakers
+          icon:
+            - mic
+        place_groups_below: false
+        tabbed: false
+        value:
+          format: 'Keynote'
+          title: ''
+          speakers: ''
   case_study:
     style: select
     values:

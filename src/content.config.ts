@@ -171,6 +171,20 @@ const pricingTier = z.object({
   ctaLabel: z.string(),
   href: z.string(),
   recommended: z.boolean().optional(),
+  // The badge on the emphasised card (2026-09-11). Defaults to
+  // "Recommended" when unset, which is what Membership's three genuinely
+  // alternative tiers still want. ODDference sets it to the real sale
+  // deadline instead — on a ladder where exactly one tier can be bought,
+  // "Recommended" describes a choice the reader does not have. See
+  // PricingGrid.astro.
+  badgeLabel: z.string().optional(),
+  // "Real price, not purchasable yet" — renders the card dimmed with an
+  // inert CTA so the whole price ladder is visible without offering a
+  // checkout that would fail. ODDference only, and a build-time fallback
+  // only: oddference-tickets.ts re-derives it from the catalog's `upcoming`
+  // status at runtime, so the backend opening a tier unlocks it here with
+  // no content edit. See PricingGrid.astro.
+  locked: z.boolean().optional(),
   // ODDference only. The ticket-type slug in the ticket backend's catalog
   // (GET /api/tickets/catalog — see AGENTS.md's ticketing section). Setting
   // it hands price/status/benefits/CTA for that card to the backend at
@@ -570,11 +584,30 @@ const pages = defineCollection({
         // question-headline `title`/h1. Page-specific (not on subpageBase —
         // ODDfest's hero has no equivalent line) — see
         // FullbleedVideoHero.astro's new optional `support` prop.
-        heroSupport: z.string(),
+        //
+        // Optional as of 2026-09-11, and currently unset: the hero was
+        // retuned to match ODDspace's (`frame="space"` — see
+        // FullbleedVideoHero.astro), whose composition is wordmark / short
+        // display headline / meta / CTAs with no supporting paragraph. The
+        // practical-value line that used to live here is now the first thing
+        // `concept` says, where it has room to be a real sentence instead of
+        // a caption competing with a display-sized h1. Kept in the schema
+        // because the prop still exists and a future edition may want it back.
+        heroSupport: z.string().optional(),
         // The one-paragraph concept explainer directly under the hero — same
-        // sectionIntro shape oddfest.whatItIs uses. No separate "Big
-        // Question" section repeats this below.
+        // sectionIntro shape oddfest.whatItIs uses. This is the page's "what
+        // is it" section: as of 2026-09-11 it carries the central question
+        // (previously the hero h1) as its headline, so the hero can hold a
+        // short positioning line the way ODDspace's does.
         concept: sectionIntro,
+        // The section head above `reasons` (2026-09-11). The three blocks
+        // used to start with no heading at all, which made them read as a
+        // continuation of the premise above rather than as the page's three
+        // selling points.
+        reasonsIntro: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+        }),
         // "Three reasons to come" — major editorial blocks (Ideas / People /
         // Experience), not FeatureGrid cards, per the rebuild brief; each can
         // carry its own photo. Rendered by page-scoped markup in
@@ -599,18 +632,45 @@ const pages = defineCollection({
         // what it'll need) — ships empty, same "don't invent it" rule as
         // oddfest.examples. Not rendered while empty.
         programme: z.array(programmeItem).optional(),
-        // "What changes in 2027" — one section: a sectionIntro-shaped
-        // headline plus 3 featureCard items (More immersive / More
-        // connected / More intentional encounters), same shape
-        // oddfest.whatItIs + oddfest.howItWorks already use split across two
-        // sections, combined here into one.
-        whatsChanging: sectionIntro.extend({ items: z.array(featureCard) }),
+        // Real sessions from ODDference 2026 (2026-09-11). The second half of
+        // the same social-proof job `speakers` does: a roster of names proves
+        // who showed up, this proves what was actually discussed — which is
+        // what a business reader is deciding about.
+        //
+        // Source is the event's own master stage schedule ("ODDference
+        // Ajolista", the run sheet the venue was operated from), not the
+        // live oddfest.co/oddference page — that page never published
+        // session-level content, only the three programme tracks and the
+        // speaker wall. Titles are verbatim from the run sheet, with one
+        // typo fixed ("Creative Econony" → "Creative Economy").
+        //
+        // A curated selection, not the full 30-session programme: this is a
+        // "what this event is like" proof block on a 2027 sales page, not an
+        // archive. `format` is the session's real format from the run sheet
+        // (Keynote / Fireside chat); `speakers` is a display string because
+        // half of these are multi-person panels and none of them need to be
+        // individually linkable.
+        sessionHighlights: z
+          .array(
+            z.object({
+              format: z.string(),
+              title: z.string(),
+              speakers: z.string(),
+            }),
+          )
+          .optional(),
         // The active Blind Bird ticket only — ships with exactly one tier.
         // No invented checkout URL (see oddference.json's own comment on
         // each tier's href); the future Early Bird/Standard/Late ladder
         // stays out of both the content and this array until it's live.
         tickets: z.array(pricingTier).optional(),
         partnershipCta: cta,
+        // The page's FAQ (2026-09-11), same `faqItem` shape and same
+        // FAQList component ODDfest and ODDspace use. Answers are held to
+        // the same standard as the rest of this file: only what is actually
+        // settled about 2027 — everything still open (exact dates, venues,
+        // the programme) says so rather than being filled in.
+        faq: z.array(faqItem),
         // No dedicated ODDference aftermovie exists yet (checked the repo
         // and the live 2026 oddfest.co/oddference/ page — neither has one).
         // Ships undefined; the section doesn't render until Ronny supplies
