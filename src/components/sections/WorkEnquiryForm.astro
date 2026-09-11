@@ -21,7 +21,21 @@
 // of the four highlighted pathways — oddspace.json's own CTAs deep-link
 // here with ?interest=oddspace, and removing the option would leave that
 // link landing on a blank "Choose one" select.
+import { getEntry } from 'astro:content';
 import Pill from '../primitives/Pill.astro';
+
+// The partnerships notification (2026-09-11). The Attio write this form has
+// always done is a record, not a message: nobody was told an enquiry had
+// arrived, so real partnership enquiries sat unread in the CRM. The key below
+// emails partners@oddfest.co in parallel with that write — same Web3Forms
+// transport and the same Google Group as /contact's "Partnering &
+// ODDference" topic, deliberately, so the two routes can never disagree
+// about who handles a partnership.
+//
+// Blank key = no notification, and the Attio write behaves exactly as before.
+const site = await getEntry('site', 'global');
+if (!site) throw new Error('Missing site/global.json content entry');
+const notifyKey = site.data.formAccessKeys?.partnering ?? '';
 
 const PRODUCTS = [
   { value: 'oddference_corporate', label: 'ODDference' },
@@ -33,7 +47,7 @@ const PRODUCTS = [
 ];
 ---
 
-<form class="enquiry-form" id="workEnquiryForm">
+<form class="enquiry-form" id="workEnquiryForm" data-notify-key={notifyKey}>
   <input
     type="text"
     name="botcheck"

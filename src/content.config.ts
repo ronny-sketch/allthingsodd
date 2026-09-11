@@ -224,6 +224,36 @@ const site = defineCollection({
       ),
       social: z.array(z.object({ platform: z.string(), href: z.string() })),
       contact: z.array(z.object({ label: z.string(), email: z.string() })),
+      // Where a form's message is emailed, by topic. Global rather than on
+      // contact.json (where it started, 2026-09-11) because two different
+      // pages send to the same places: /contact's form, and /work-with-odd's
+      // business enquiry, which notifies `partnering` on top of its Attio
+      // write. One key pasted once, so the two can never drift into mailing
+      // different people about the same thing.
+      //
+      // A Web3Forms (web3forms.com) access key is bound to exactly one
+      // recipient address, which is why there is one key per topic rather
+      // than one key plus a recipient list. The fan-out to individual people
+      // is NOT done here — each non-general key points at a Google Group on
+      // oddfest.co (partners@/space@/fest@) whose membership is managed in
+      // Workspace admin. That is deliberate: team membership changes far
+      // more often than this site deploys, and the deploy path needs a
+      // manual `npx surge dist` (docs/deployment.md), so a routing table of
+      // people's addresses living in the repo would go stale silently. Each
+      // group already contains hello@oddfest.co, so the shared inbox sees
+      // everything without being addressed separately.
+      //
+      // Any key left blank falls back to `general` rather than failing: a
+      // message reaching the shared inbox with the wrong subject beats a
+      // visitor being told the form is broken.
+      formAccessKeys: z
+        .object({
+          general: z.string().optional(),
+          partnering: z.string().optional(),
+          oddspace: z.string().optional(),
+          oddfest: z.string().optional(),
+        })
+        .optional(),
       footerAddress: z.string(),
       footerTag: z.string(),
       newsletterLabel: z.string(),
@@ -1175,34 +1205,6 @@ const pages = defineCollection({
         eyebrow: z.string(),
         title: z.string(),
         intro: z.string(),
-        // Web3Forms (web3forms.com) needs no backend of ours — just a free
-        // access key pasted here. Left blank until a real key exists; the
-        // form renders either way but only submits once this is set. See
-        // docs/editing.md#contact-form.
-        //
-        // One key per topic (2026-09-11), because a Web3Forms access key is
-        // bound to exactly one recipient address and the four topics go to
-        // four different places. The fan-out to individual people is NOT
-        // done here — each non-general key points at a Google Group on
-        // oddfest.co (partners@/space@/fest@) whose membership is managed in
-        // Workspace admin. That is deliberate: team membership changes far
-        // more often than this site deploys, and the deploy path needs a
-        // manual `npx surge dist` (docs/deployment.md), so a routing table
-        // of people's addresses living in the repo would go stale silently.
-        // Each group already contains hello@oddfest.co, so the shared inbox
-        // sees everything without being addressed separately.
-        //
-        // Any key left blank falls back to `general` rather than failing:
-        // a message reaching the shared inbox with the wrong subject beats a
-        // visitor being told the form is broken.
-        formAccessKeys: z
-          .object({
-            general: z.string().optional(),
-            partnering: z.string().optional(),
-            oddspace: z.string().optional(),
-            oddfest: z.string().optional(),
-          })
-          .optional(),
       }),
       // Media page rebuild (2026-08-30): a public press/asset hub, not a
       // marketing page — see docs/architecture.md's Media page note. Seven

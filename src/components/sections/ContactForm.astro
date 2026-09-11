@@ -14,27 +14,26 @@ import { getEntry } from 'astro:content';
 import Pill from '../primitives/Pill.astro';
 import SocialIcon from '../primitives/SocialIcon.astro';
 import { socialLinkLabel } from '../primitives/social-handle';
-import { CONTACT_TOPICS, type ContactAccessKeys } from '../../scripts/contact-topics';
+import { CONTACT_TOPICS } from '../../scripts/contact-topics';
 
-interface Props {
-  accessKeys?: ContactAccessKeys;
-}
-const { accessKeys } = Astro.props;
+const site = await getEntry('site', 'global');
+if (!site) throw new Error('Missing site/global.json content entry');
+const { contact, social, formAccessKeys } = site.data;
 
 // "Connected" means at least the General key exists: every topic falls back
 // to it, so one key is enough for the form to genuinely send. Checking each
 // topic separately would show the not-connected note to a visitor whose
 // message would in fact arrive.
-const connected = Boolean(accessKeys?.general?.trim());
-
-const site = await getEntry('site', 'global');
-if (!site) throw new Error('Missing site/global.json content entry');
-const { contact, social } = site.data;
+const connected = Boolean(formAccessKeys?.general?.trim());
 ---
 
 <section class="contact-section">
   <div class="wrap contact-grid reveal">
-    <form class="contact-form" id="contactForm" data-access-keys={JSON.stringify(accessKeys ?? {})}>
+    <form
+      class="contact-form"
+      id="contactForm"
+      data-access-keys={JSON.stringify(formAccessKeys ?? {})}
+    >
       {
         /* The subject line the message arrives with in ODD's inbox — the
           site it came from, not the address it goes to. Updated 2026-09-03

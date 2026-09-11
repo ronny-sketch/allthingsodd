@@ -9,7 +9,7 @@ import { test, expect, type Page } from '@playwright/test';
 // the UI saying it worked.
 //
 // Keys are injected by rewriting the server-rendered data-access-keys
-// attribute: src/content/pages/contact.json deliberately ships blank keys
+// attribute: src/content/site/global.json deliberately ships blank keys
 // (only a human can create a real one), and a test that skipped when they
 // were blank would be a test that never ran.
 
@@ -24,20 +24,44 @@ const KEYS = {
 
 type Submission = { access_key: string; subject: string; topic: string };
 
+// Matches the page document only. A `**/contact**` glob also catches Astro's
+// per-page CSS chunk (`/_astro/contact.<hash>.css`), which is not HTML and
+// has no attribute to rewrite.
+const PAGE = /\/contact\/?(\?[^#]*)?$/;
+const KEYS_ATTR = /data-access-keys="[^"]*"/;
+
+// Fetched once, then served from memory to every test in this file. Doing a
+// route.fetch() per test proxies the document through the browser each time,
+// which is fast alone but times out under a full-suite parallel run — it made
+// this file flaky on Firefox for reasons that had nothing to do with routing.
+// The page is static, and no test here depends on the query string reaching
+// the server (the script reads window.location.search, which fulfill leaves
+// intact), so one body serves them all.
+let pageHtml: string;
+
+test.beforeAll(async () => {
+  const base = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:4321';
+  pageHtml = await (await fetch(`${base}/contact`)).text();
+  // Without this the rewrite below would silently no-op and every test in
+  // this file would pass against the real (blank) keys instead.
+  expect(pageHtml, 'the contact form should carry an access-keys attribute').toMatch(KEYS_ATTR);
+});
+
 async function openContact(page: Page, query = '', keys: Partial<typeof KEYS> = KEYS) {
-  await page.route('**/contact**', async (route) => {
-    const res = await route.fetch();
-    const html = await res.text();
-    return route.fulfill({
-      response: res,
-      body: html.replace(
-        /data-access-keys="[^"]*"/,
+  await page.route(PAGE, (route) =>
+    route.fulfill({
+      contentType: 'text/html',
+      body: pageHtml.replace(
+        KEYS_ATTR,
         `data-access-keys="${JSON.stringify(keys).replace(/"/g, '&quot;')}"`,
       ),
-    });
-  });
+    }),
+  );
   await page.goto(`/contact${query}`);
-  await expect(page.locator('#contactForm')).toBeVisible();
+  // Not just visible — ready. The submit handler is attached by a module
+  // script, and clicking before it runs does nothing, which surfaces as an
+  // unexplained waitForRequest timeout rather than as a routing failure.
+  await expect(page.locator('#contactForm')).toHaveAttribute('data-ready', 'true');
 }
 
 // Resolves with what the browser actually posted, or rejects the test via a

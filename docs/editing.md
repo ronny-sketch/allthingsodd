@@ -139,9 +139,10 @@ high-level notes:
   strip (edited under Global — same list shown on the homepage), boilerplate,
   press releases, info packs, assets & photos (with a photo-credit usage
   note), a named press contact, and social media.
-- **Contact**: eyebrow/title/intro text above the contact form. See
-  [Contact form setup](#contact-form-setup) below for the access keys that
-  actually make it send, and for where each topic's message goes.
+- **Contact**: eyebrow/title/intro text above the contact form. The access
+  keys that actually make it send live under Global — see
+  [Contact form setup](#contact-form-setup) below for those and for where
+  each topic's message goes.
 
 A field marked "optional" in `cloudcannon.config.yml`'s comments can be left
 out of the page's JSON entirely — the page renders correctly without it. This
@@ -206,6 +207,13 @@ inbox sees every message without being addressed separately.
 — the same mailbox, so adding it as a second recipient would only deliver two
 copies of everything to one inbox.
 
+The **Work with ODD** enquiry form uses the same `partnering` key: it writes
+the enquiry to Attio as it always has, and now also emails
+`partners@oddfest.co` so somebody is actually told it arrived. That is why the
+keys live under **Global → Form routing**, not on the Contact page — two
+different forms send to the same place, and pasting the key twice would let
+them drift into mailing different people about the same partnership.
+
 To connect it:
 
 1. In Google Workspace admin, create the three groups above and add the right
@@ -213,13 +221,16 @@ To connect it:
 2. At web3forms.com, get a free access key for each of the four addresses
    (just an email address, no signup — the key is mailed to that address, and
    for a group any member receives it).
-3. Paste each into its field under the Contact page's "Web3Forms access
-   keys".
+3. Paste each into its field under **Global → Form routing — Web3Forms access
+   keys**.
 4. Publish.
 
 A topic left blank falls back to the General key, so the message still reaches
 a human rather than the visitor being told the form is broken — you can
-connect General first and add the rest later. Until General is set too, the
+connect General first and add the rest later. (The Work with ODD notification
+is the one exception: with no `partnering` key it simply doesn't send, and
+that form behaves exactly as it did before — the Attio record is still
+written.) Until General is set too, the
 form renders normally but tells visitors it isn't connected yet, rather than
 silently discarding what they type.
 

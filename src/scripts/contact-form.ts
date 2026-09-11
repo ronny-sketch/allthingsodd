@@ -3,6 +3,7 @@
 // own comment: with no access key set yet, this tells the visitor the form
 // isn't connected instead of pretending to send anything.
 import { CONTACT_TOPICS, type ContactAccessKeys, type ContactTopicValue } from './contact-topics';
+import { submitToWeb3Forms } from './web3forms';
 
 // Known ?topic= values from deep links elsewhere on the site (both of them
 // ODDfest's — the "How to join" section's two CTAs, see oddfest.json) — a
@@ -101,27 +102,22 @@ if (form instanceof HTMLFormElement) {
     submitBtn?.setAttribute('disabled', 'true');
     status.textContent = 'Sending…';
 
-    try {
-      const payload = Object.fromEntries(new FormData(form));
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ ...payload, access_key: accessKey }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        form.reset();
-        syncSubject();
-        status.textContent = "Thanks — we'll get back to you soon.";
-      } else {
-        status.textContent = 'Something went wrong — try again, or email us directly.';
-      }
-    } catch {
+    const sent = await submitToWeb3Forms(accessKey, Object.fromEntries(new FormData(form)));
+    if (sent) {
+      form.reset();
+      syncSubject();
+      status.textContent = "Thanks — we'll get back to you soon.";
+    } else {
       status.textContent = 'Something went wrong — try again, or email us directly.';
-    } finally {
-      submitBtn?.removeAttribute('disabled');
     }
+    submitBtn?.removeAttribute('disabled');
   });
+
+  // Same readiness convention as reveal.ts: the handler above is attached by
+  // a module script, so until it runs a click on "Send message" does nothing
+  // at all. Publishing that fact lets a test wait for the real signal instead
+  // of racing it. Nothing in the page's own behaviour depends on this flag.
+  form.dataset.ready = 'true';
 }
 
 export {};

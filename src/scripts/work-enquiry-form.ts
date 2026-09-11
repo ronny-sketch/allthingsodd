@@ -7,6 +7,21 @@
 import { captureFirstTouch } from './utm';
 import { API_BASE } from './api-base';
 import { trackEvent } from './analytics';
+import { submitToWeb3Forms } from './web3forms';
+
+// Human-readable labels for the notification email. The Worker gets the raw
+// enum (it has to — ../odd-growth-os/schemas/products.yml is what Attio maps
+// against), but "oddference_corporate" in a subject line is unreadable to the
+// person being asked to act on it. Falls back to the raw value rather than
+// dropping it, so a newly added product still names itself in the inbox.
+const INTEREST_LABELS: Record<string, string> = {
+  oddference_corporate: 'ODDference',
+  oddmembership: 'ODDnetwork',
+  strategic_partnership: 'Event partnership',
+  oddagency: 'ODDagency / project',
+  oddspace: 'ODDspace',
+  other: 'Something else',
+};
 
 const form = document.getElementById('workEnquiryForm');
 if (form instanceof HTMLFormElement) {
@@ -45,6 +60,25 @@ if (form instanceof HTMLFormElement) {
     if (orgInput) orgInput.required = false;
   }
 
+  const notifyKey = form.dataset.notifyKey?.trim();
+
+  // Emails partners@oddfest.co so a person actually learns the enquiry
+  // exists. Resolves false rather than throwing: a failed notification must
+  // not take down a submission whose CRM write succeeded.
+  async function notifyPartnerships(payload: Record<string, unknown>): Promise<boolean> {
+    if (!notifyKey) return false;
+    const interest = String(payload.interest ?? '');
+    const org = String(payload.organisation ?? '').trim() || 'an individual';
+    return submitToWeb3Forms(notifyKey, {
+      subject: `Work with ODD — ${INTEREST_LABELS[interest] ?? interest} — ${org}`,
+      // Web3Forms treats a field named `email` as the reply-to; this form's
+      // is `work_email`, so say it explicitly or replies go nowhere useful.
+      replyto: payload.work_email,
+      from_name: payload.name,
+      ...payload,
+    });
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!status) return;
@@ -61,27 +95,50 @@ if (form instanceof HTMLFormElement) {
       ...captureFirstTouch(),
     };
 
-    try {
-      const res = await fetch(`${API_BASE}/api/business-enquiry`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+    // Both at once: the CRM write and the notification are independent
+    // deliveries of the same enquiry, and neither should wait on the other.
+    const [crm, notified] = await Promise.all([
+      (async () => {
+        try {
+          const res = await fetch(`${API_BASE}/api/business-enquiry`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          return (await res.json()) as { ok: boolean; message: string };
+        } catch {
+          return null;
+        }
+      })(),
+      notifyPartnerships(payload),
+    ]);
+
+    if (crm?.ok) {
+      status.textContent = crm.message;
+      trackEvent('business_enquiry_submit', {
+        product_interest: (payload as { interest?: string }).interest,
       });
-      const data = (await res.json()) as { ok: boolean; message: string };
-      status.textContent = data.message;
-      if (data.ok) {
-        trackEvent('business_enquiry_submit', {
-          product_interest: (payload as { interest?: string }).interest,
-        });
-        form.reset();
-      }
-    } catch {
+      form.reset();
+    } else if (notified) {
+      // Attio is down or rejected it, but the email carries every field the
+      // team needs to act on — so the enquiry is genuinely not lost, and
+      // telling the visitor to try again would be the false statement here.
+      // The missing CRM record is ODD's problem to reconcile, not theirs.
+      status.textContent = "Thanks — we've received this and will get back to you soon.";
+      trackEvent('business_enquiry_submit', {
+        product_interest: (payload as { interest?: string }).interest,
+      });
+      form.reset();
+    } else {
       status.textContent =
-        "We couldn't submit this right now. Please try again or email us directly.";
-    } finally {
-      submitBtn?.removeAttribute('disabled');
+        crm?.message ?? "We couldn't submit this right now. Please try again or email us directly.";
     }
+    submitBtn?.removeAttribute('disabled');
   });
+
+  // See contact-form.ts — readiness flag so a test can wait for the submit
+  // handler rather than race the module script that attaches it.
+  form.dataset.ready = 'true';
 }
 
 export {};
