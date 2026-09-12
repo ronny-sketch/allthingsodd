@@ -172,64 +172,59 @@ token has to be _extracted_ from that command's output, not piped raw:
 
 ```bash
 npx surge tokens add -m "github-actions-ci-$(date +%Y%m%d)" \
-  | tr -d '\r' | awk 'NF{t=$NF} END{printf "%s", t}' \
+  | LC_ALL=C grep -oE '[0-9a-f]{32}' | head -1 | tr -d '\n' \
   | gh secret set SURGE_TOKEN --repo ronny-sketch/allthingsodd
 ```
 
-**The `awk` is load-bearing — see below.** This document prescribed the
-naive pipe (`surge tokens add ... | gh secret set ...`) until 2026-09-11,
-and that command produces a secret Surge rejects.
+**The extraction is load-bearing — see below.** This document prescribed
+the naive pipe (`surge tokens add ... | gh secret set ...`) until
+2026-09-11, and then an `awk` one-liner that was also wrong. Both produce a
+secret Surge rejects.
 
 Worth noting the failure was caught rather than silent: the publish step
 greps surge's own completion line, so an aborted publish failed the job
 instead of reporting green — the exact protection added after 2026-08-31.
 
-**Still unfixed as of 2026-09-04 — read this before trusting a deploy.** The
-account-scoped token above was written down here but never actually put in
-the repository secret. `SURGE_TOKEN` is still the domain-scoped one, so
-**every push to `main` since the domain migration has failed at this step**
-with the same `Aborted - you do not have permission to publish to
-allthingsodd.co` — confirmed on the merges of PR #19 (run 33801137415) and
-PR #20 (run 33822336466). CI's `checks` and `functional` jobs pass; only the
-publish fails. Production has been kept current by hand in the meantime, via
-the manual publish at the top of this document, which is why the live site
-can be newer than the last green deploy job.
+**Fixed 2026-09-12 — CI deploys again.** For eight days this section said
+the opposite, and the history is worth keeping: the account-scoped token was
+written down here on 2026-09-04 but never actually put in the repository
+secret, so **every push to `main` from the domain migration until 2026-09-12
+failed at this step** — first with `Aborted - you do not have permission to
+publish to allthingsodd.co` (PR #19, run 33801137415; PR #20, run
+33822336466), then, after the secret was finally replaced, twice more with
+`Invalid token` because the command that replaced it extracted the wrong
+line of `surge tokens add`'s output. See the section below. Throughout,
+`checks` and `functional` passed and only the publish failed, and production
+was kept current by hand via the manual publish at the top of this document
+— which is why the live site could be newer than the last green deploy job.
 
-Consequences worth knowing:
+As of run 34665827122 (PR #26) the `Deploy to production` job is green and
+publishes both hosts on its own. Two things follow: a CloudCannon content
+edit reaches the live site again with nobody running a command, and a red
+deploy job on `main` is now a real signal rather than the normal state. It
+should not go back to being normalised.
 
-- A CloudCannon content edit does **not** reach the live site on its own any
-  more. The loop from "edit in CloudCannon" to "live" is broken until the
-  secret is replaced.
-- `main` is red at the deploy job by default. That is a real failure, not
-  noise, and it should not be normalised.
-
-The fix is one command, from a terminal where `surge` is logged in as
+The command, from a terminal where `surge` is logged in as
 `ronny@oddfest.co` and `gh` is authenticated. The token goes straight from
 `surge` into GitHub's secret store and is never printed:
 
 ```bash
 npx surge tokens add -m "github-actions-ci-$(date +%Y%m%d)" \
-  | tr -d '\r' | awk 'NF{t=$NF} END{printf "%s", t}' \
+  | LC_ALL=C grep -oE '[0-9a-f]{32}' | head -1 | tr -d '\n' \
   | gh secret set SURGE_TOKEN --repo ronny-sketch/allthingsodd
 ```
 
 Then re-run the failed deploy job and confirm `/build-info.json` matches the
 commit, per "Deploy verification" below.
 
-### Why the raw pipe does not work (2026-09-11)
+### Why the raw pipe does not work, and why the first fix didn't either
 
-The version of that command without `awk` was run on 2026-09-11, and the
-deploy still failed — with a _different_ error, which is how we know the
-scope problem above was genuinely fixed and this is a second, independent
-bug:
+Two separate wrong commands, on two consecutive days, producing the same
+`Invalid token` at the publish step. Both are worth keeping written down,
+because the second one looked obviously correct.
 
-```
-Invalid token
-```
-
-`surge tokens add` does not print a bare token. It prints it decorated —
-indented, with blank lines around it — the same house style as
-`surge tokens list`. Piping that into `gh secret set` stores the decoration
+**2026-09-11 — the naive pipe.** `surge tokens add` does not print a bare
+token. Piping its output straight into `gh secret set` stores the decoration
 too, so the secret's value begins with a newline and leading spaces. The
 job's own env dump is where this is visible, because GitHub masks the value
 but not its shape:
@@ -239,10 +234,38 @@ SURGE_TOKEN:
    ***
 ```
 
-A secret whose first character is a newline. `awk 'NF{t=$NF} END{printf
-"%s", t}'` takes the last field of the last non-empty line and writes it
-with no trailing newline, which is the token and nothing else. `tr -d '\r'`
-guards the same thing against CRLF.
+**2026-09-12 — the `awk` fix, which was also wrong.** The replacement was
+`awk 'NF{t=$NF} END{printf "%s", t}'` — last field of the last non-empty
+line — on the assumption that the token is the last thing printed. It is
+not. Piped to a file, `surge tokens add -m "<label>"` writes:
+
+```
+$ od -c
+\n   5c8a02d6471e968ea5bc20b6742a9360 \n \n   Full account token — <label> \n \n
+```
+
+The token is on the **first** non-empty line; the **last** non-empty line is
+a description ending in the label you passed with `-m`. So `awk` stored the
+label — `github-actions-ci-20260912` — as the secret, and Surge answered
+`Invalid token`, exactly as it had the day before. The failure mode of the
+wrong fix is indistinguishable from the failure mode it was fixing, which is
+how it survived a re-run and a merge.
+
+Match the token by its own shape instead of its position:
+
+```bash
+| LC_ALL=C grep -oE '[0-9a-f]{32}' | head -1 | tr -d '\n'
+```
+
+32 lowercase hex characters is what a Surge token is; nothing else in that
+output can match it. `LC_ALL=C` because the description line contains an em
+dash, which makes some `grep`/`sed` builds on macOS fail on an illegal byte
+sequence before they reach the token. `head -1` and `tr -d '\n'` keep it to
+exactly one value with no trailing newline.
+
+Verified 2026-09-12: run 34665827122's deploy job went green with a secret
+set this way, publishing both hosts — the first green `Deploy to production`
+in this repository's history.
 
 **When re-testing this, check the error text, not just red/green.**
 `Aborted - you do not have permission` and `Invalid token` are different
@@ -250,7 +273,8 @@ failures with different fixes, and both surface as the same "surge did not
 report a completed publish" step error. Each `surge tokens add` also leaves
 a real token behind whether or not the secret ends up valid, so a few failed
 attempts leave unused tokens in the account — `npx surge tokens list` shows
-them (`used never`), and `npx surge tokens rem <id>` removes them.
+them (`used never`), and `npx surge tokens rem <id>` removes them. There are
+several from 11-12 September worth clearing out.
 
 ### Plan limits
 
