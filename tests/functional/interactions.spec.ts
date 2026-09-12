@@ -251,6 +251,72 @@ test('subpage side rail renders at desktop width', async ({ page }) => {
   await expect(page.locator('.oddf-rail.left')).toBeVisible();
 });
 
+// The rails are an infinite ticker, and until 2026-09-11 they were neither
+// infinite nor seamless — they rendered two copies of the beat list and
+// translated -50%, which only works if one copy already overfills the rail.
+// One copy measured 373-572px against an 833px rail, so up to 460px of rail
+// sat permanently empty, and `gap`+`padding` made even that -50% land 11.2px
+// short of a true period, so it visibly jumped once per cycle. Both are pure
+// geometry, so both are assertable rather than eyeballed. See SubpageRail.astro.
+for (const slug of ['oddfest', 'oddference', 'oddspace', 'oddstudio']) {
+  test(`subpage rails on /${slug} loop seamlessly and never run out`, async ({ page }) => {
+    // Deliberately the tallest viewport this suite uses: an under-filled track
+    // is invisible at 900px and obvious at 1440px, which is how the original
+    // bug survived so long.
+    await page.setViewportSize({ width: 1440, height: 1440 });
+    await page.goto(`/${slug}`);
+
+    const rails = page.locator('.oddf-rail');
+    await expect(rails).toHaveCount(2);
+
+    for (const side of ['left', 'right']) {
+      const metrics = await page.locator(`.oddf-rail.${side}`).evaluate((rail) => {
+        const track = rail.querySelector('.rail-track') as HTMLElement;
+        const reps = Number(getComputedStyle(track).getPropertyValue('--reps'));
+        const items = [...track.children];
+        const trackH = track.getBoundingClientRect().height;
+        // The distance the animation actually travels, versus one real
+        // repetition of the beat list measured off the DOM. Equal => seamless.
+        const travel = trackH / reps;
+        const perCopy = items.length / reps;
+        const truePeriod =
+          items[perCopy].getBoundingClientRect().top - items[0].getBoundingClientRect().top;
+        const logo = track.querySelector('.rail-logo');
+        const railBox = rail.getBoundingClientRect();
+        return {
+          reps,
+          itemCount: items.length,
+          seamError: travel - truePeriod,
+          // What still covers the rail once the track has travelled one period.
+          coverage: trackH - travel,
+          railHeight: railBox.height,
+          logoWithinRail: logo
+            ? logo.getBoundingClientRect().left >= railBox.left - 1 &&
+              logo.getBoundingClientRect().right <= railBox.right + 1
+            : null,
+          logoThickness: logo ? logo.getBoundingClientRect().width : null,
+        };
+      });
+
+      expect(metrics.reps).toBeGreaterThanOrEqual(6);
+      expect(metrics.itemCount % metrics.reps).toBe(0);
+      // Sub-pixel, not "close enough" — the translate is a percentage of a
+      // track built from exactly `reps` identical copies, so this is exact.
+      expect(Math.abs(metrics.seamError)).toBeLessThan(0.5);
+      // The actual "runs out" regression.
+      expect(metrics.coverage).toBeGreaterThan(metrics.railHeight);
+
+      if (metrics.logoWithinRail !== null) {
+        // Rotating the wordmark without giving it a correspondingly rotated
+        // box once pushed it 48px outside the 68px rail, where overflow:hidden
+        // ate it entirely; and at 26px wide a 5:1 wordmark rendered 5px thick.
+        expect(metrics.logoWithinRail).toBe(true);
+        expect(metrics.logoThickness).toBeGreaterThan(16);
+      }
+    }
+  });
+}
+
 test('FAQ accordion opens and closes on click (native details/summary)', async ({ page }) => {
   await page.goto('/oddfest');
   const firstItem = page.locator('.faq-item').first();

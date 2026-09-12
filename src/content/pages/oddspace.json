@@ -11,11 +11,11 @@
   "meta": "Vallila · Helsinki",
   "primaryCta": {
     "label": "Become a member",
-    "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form"
+    "href": "/oddspace/membership"
   },
   "secondaryCta": {
     "label": "Organise an event",
-    "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
+    "href": "/oddspace/venue"
   },
   "intro": "Come here to work. Meet people. Host something. Make something. Or simply have somewhere to keep going between projects.",
   "visit": {
@@ -74,7 +74,7 @@
       ],
       "image": "../../assets/oddspace/coworking-desks.jpg",
       "goLabel": "Become a member",
-      "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form"
+      "href": "/oddspace/membership"
     },
     {
       "name": "Event & gallery space",
@@ -87,7 +87,7 @@
       ],
       "image": "../../assets/oddspace/gallery-floor.jpg",
       "goLabel": "Enquire about the gallery",
-      "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
+      "href": "/oddspace/venue"
     },
     {
       "name": "Auditorium",
@@ -95,7 +95,7 @@
       "bullets": ["Talks and screenings", "Presentations", "Workshops", "Smaller events"],
       "image": "../../assets/oddspace/auditorium.jpg",
       "goLabel": "Enquire about the auditorium",
-      "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
+      "href": "/oddspace/venue"
     },
     {
       "name": "ODDstudio",
@@ -122,8 +122,8 @@
       "Member rates on bookable event spaces and ODDstudio",
       "Member/community events and programming as available"
     ],
-    "ctaLabel": "Become a member",
-    "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form",
+    "ctaLabel": "See what membership includes",
+    "href": "/oddspace/membership",
     "note": "Accepted on a rolling basis as space becomes available. ODDstudio is not included — members add full studio access for €100 / month, or book it at €20 / hour."
   },
   "studioCallout": {
@@ -171,8 +171,8 @@
     "headline": "Want to organise an event?",
     "body": "Have an exhibition, workshop, talk, screening, launch, performance, gathering, shoot or another idea you want to make happen here? You do not need to be a member to ask.",
     "cta": {
-      "label": "Organise an event",
-      "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
+      "label": "See the space as a venue",
+      "href": "/oddspace/venue"
     }
   },
   "vision": {
@@ -221,7 +221,7 @@
     ],
     "cta": {
       "label": "Want to put something on here? Tell us about it",
-      "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
+      "href": "/oddspace/venue"
     }
   },
   "instagram": {
@@ -248,7 +248,7 @@
     },
     {
       "question": "How do I become a member?",
-      "answer": "Apply through the membership enquiry link on this page, with a note on how you'd like to use the space. Memberships are accepted on a rolling basis as space becomes available during the pilot."
+      "answer": "Read the membership page — it has the price, what's included, what isn't, and how joining works — then apply from there. Memberships are accepted on a rolling basis as space becomes available during the pilot."
     },
     {
       "question": "What does membership cost?",
@@ -280,11 +280,11 @@
     },
     {
       "question": "How much does event use cost?",
-      "answer": "Member rates: €200 for a full day in the 1st floor gallery, €100 for a half day in the auditorium. Non-member rates are set case by case — get in touch."
+      "answer": "Member rates: €200 for a full day in the 1st floor gallery, €100 for a half day in the auditorium. Non-member pricing is quoted per event — the venue page explains what shapes the number."
     },
     {
       "question": "How do I enquire about an event?",
-      "answer": "Use the event enquiry link on this page and tell us what you have in mind — you don't need to be a member first."
+      "answer": "Start from the venue page: it covers the rooms, member rates, how booking works and what we confirm per event. You don't need to be a member first."
     },
     {
       "question": "Is ODDspace accessible?",

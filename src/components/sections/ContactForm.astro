@@ -4,24 +4,36 @@
 // the form still renders (so layout/copy stay reviewable) but tells the
 // visitor it isn't connected yet instead of silently discarding input. See
 // docs/editing.md#contact-form.
+//
+// Topic routing (2026-09-11): a Web3Forms key is bound to one recipient
+// address, so the visitor's chosen topic picks the key, and each key points
+// at a Google Group rather than at a list of people — see content.config.ts's
+// `formAccessKeys` note for why the fan-out deliberately lives in Workspace
+// admin and not in this repo.
 import { getEntry } from 'astro:content';
 import Pill from '../primitives/Pill.astro';
 import SocialIcon from '../primitives/SocialIcon.astro';
 import { socialLinkLabel } from '../primitives/social-handle';
-
-interface Props {
-  accessKey?: string;
-}
-const { accessKey } = Astro.props;
+import { CONTACT_TOPICS } from '../../scripts/contact-topics';
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { contact, social } = site.data;
+const { contact, social, formAccessKeys } = site.data;
+
+// "Connected" means at least the General key exists: every topic falls back
+// to it, so one key is enough for the form to genuinely send. Checking each
+// topic separately would show the not-connected note to a visitor whose
+// message would in fact arrive.
+const connected = Boolean(formAccessKeys?.general?.trim());
 ---
 
 <section class="contact-section">
   <div class="wrap contact-grid reveal">
-    <form class="contact-form" id="contactForm" data-access-key={accessKey ?? ''}>
+    <form
+      class="contact-form"
+      id="contactForm"
+      data-access-keys={JSON.stringify(formAccessKeys ?? {})}
+    >
       {
         /* The subject line the message arrives with in ODD's inbox — the
           site it came from, not the address it goes to. Updated 2026-09-03
@@ -37,6 +49,28 @@ const { contact, social } = site.data;
         value="New message from the allthingsodd.co contact form"
       />
       <p class="contact-topic-note" id="cf-topic-note" hidden></p>
+      {
+        /* The routing control. It is a real, visible field rather than a
+          hidden one inferred from the referring page: a visitor arriving on
+          /contact directly has no referring page to infer from, and the
+          person who knows which team should read this is the one writing it.
+          Default is "general" — never guess a topic on the visitor's behalf,
+          since guessing wrong sends their message to three people it isn't
+          for. Deep links (?topic=) preselect it, and the visitor can still
+          change it. */
+      }
+      <div class="field">
+        <label for="cf-topic">What's this about?</label>
+        <select id="cf-topic" name="topic" required>
+          {
+            CONTACT_TOPICS.map((t) => (
+              <option value={t.value} selected={t.value === 'general'}>
+                {t.label}
+              </option>
+            ))
+          }
+        </select>
+      </div>
       <div class="field">
         <label for="cf-name">Name</label>
         <input id="cf-name" name="name" type="text" required autocomplete="name" />
@@ -62,7 +96,7 @@ const { contact, social } = site.data;
         <p class="form-status" role="status" aria-live="polite"></p>
       </div>
       {
-        !accessKey && (
+        !connected && (
           <p class="form-note">
             This form isn't connected yet — email us directly using the addresses alongside it.
           </p>
@@ -137,7 +171,14 @@ const { contact, social } = site.data;
     color: var(--color-paper-40);
   }
   .field input,
+  .field select,
   .field textarea {
+    /* width/min-width: a <select> sizes to its longest option's intrinsic
+       width, and default min-width:auto on a flex item lets it escape the
+       column instead of shrinking — same fix, same reason, as
+       WorkEnquiryForm.astro's select. */
+    width: 100%;
+    min-width: 0;
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--color-paper-20);
@@ -149,15 +190,20 @@ const { contact, social } = site.data;
     resize: vertical;
     transition: border-color var(--duration-fast) ease;
   }
+  .field select {
+    color-scheme: dark;
+  }
   /* iOS Safari auto-zooms the viewport on focus for any input under 16px —
      same fix as Footer.astro's newsletter field, see that comment. */
   @media (max-width: 640px) {
     .field input,
+    .field select,
     .field textarea {
       font-size: 16px;
     }
   }
   .field input:focus,
+  .field select:focus,
   .field textarea:focus {
     border-color: var(--color-paper);
   }

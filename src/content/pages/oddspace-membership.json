@@ -1,0 +1,216 @@
+{
+  "_template": "oddspace-membership",
+  "_slug": "oddspace",
+  "seo": {
+    "title": "ODDspace membership — €150 / month in Vallila, Helsinki",
+    "description": "One flat membership: 24/7 access to the ODDspace co-working space, shared facilities and meeting rooms, and member rates on the event spaces and ODDstudio. Everything you need to decide, before you get in touch.",
+    "ogImage": "/og/oddspace.jpg"
+  },
+  "eyebrow": "ODDspace · Membership",
+  "title": "One membership, one price, the whole space.",
+  "meta": "€150 / month · Vallila, Helsinki",
+  "primaryCta": {
+    "label": "Apply for membership",
+    "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form"
+  },
+  "secondaryCta": {
+    "label": "Come and see it first",
+    "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form"
+  },
+  "heroMedia": {},
+  "heroPhotos": [
+    {
+      "image": "../../assets/oddspace/coworking-desks.jpg",
+      "alt": "Standing desks and workstations in the ODDspace co-working area"
+    },
+    {
+      "image": "../../assets/oddspace/lounge.jpg",
+      "alt": "A co-working lounge area at ODDspace with seating and local art on the walls"
+    },
+    {
+      "image": "../../assets/oddspace/meeting-room.jpg",
+      "alt": "A meeting room at ODDspace with a long table and screen"
+    },
+    {
+      "image": "../../assets/oddspace/gallery-floor.jpg",
+      "alt": "The raised, curved gallery and event floor at ODDspace"
+    },
+    {
+      "image": "../../assets/oddspace/entrance-signage.jpg",
+      "alt": "The ODDspace entrance, with the ODDspace mark on the door"
+    },
+    {
+      "image": "../../assets/oddspace/exterior-building.jpg",
+      "alt": "The industrial Vallila building that houses ODDspace"
+    }
+  ],
+  "intro": "Everything you need to decide is on this page. If something isn't here, ask us — we would rather tell you than let you find out later.",
+  "whatItIs": {
+    "eyebrow": "What membership is",
+    "headline": "A desk, a door code, and people who make things.",
+    "body": "Membership is day-to-day access to ODDspace: somewhere to work, meeting rooms when you need them, and a building where people from art, design, music, media, technology and business are working on their own things under one roof. One flat rate, no tiers, no long-term commitment."
+  },
+  "included": {
+    "eyebrow": "What you get",
+    "headline": "What's included",
+    "items": [
+      "24/7 access to the co-working space",
+      "Shared working areas, WiFi, kitchen and the basics",
+      "Meeting rooms when you need them",
+      "Member rates on the gallery, the auditorium and ODDstudio",
+      "Member and community events in the space, as they run"
+    ]
+  },
+  "notIncluded": {
+    "eyebrow": "Be clear about this part",
+    "headline": "What's not included",
+    "items": [
+      "ODDstudio. The recording and production room is booked separately — add full access for €100 / month on top of membership, or book it at €20 / hour as a member.",
+      "Event bookings. Using the gallery or the auditorium for your own event is booked and priced separately, at member rates.",
+      "A private office or a fixed, reserved desk. ODDspace is a shared working space."
+    ],
+    "note": "If you are weighing the studio add-on, the full rates, equipment and booking terms are on the ODDstudio page."
+  },
+  "tiers": [
+    {
+      "name": "ODDspace membership",
+      "audience": "One membership. The whole space, except the studio.",
+      "price": "€150 / month",
+      "status": "Rolling admission — pilot phase",
+      "benefits": [
+        "24/7 workspace access",
+        "Shared facilities and meeting rooms",
+        "Member rates on bookable event spaces",
+        "Member and community events as they run"
+      ],
+      "ctaLabel": "Apply for membership",
+      "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form",
+      "recommended": true,
+      "badgeLabel": "One flat rate"
+    },
+    {
+      "name": "Membership + ODDstudio",
+      "audience": "For people who work in sound",
+      "price": "€250 / month",
+      "description": "Membership plus full access to ODDstudio, the recording and production room run with TUNEMENT.",
+      "benefits": [
+        "Everything in the membership above",
+        "Full ODDstudio access (€100 / month on top of membership)",
+        "Or book the studio at €20 / hour as a member instead"
+      ],
+      "ctaLabel": "Read about ODDstudio",
+      "href": "/oddstudio"
+    }
+  ],
+  "ratesNote": "Member rates on the event spaces: €200 for a full day in the 1st floor gallery, €100 for a half day in the auditorium. Booking the studio by the hour does not require a membership.",
+  "audiencesIntro": {
+    "eyebrow": "Who it's for",
+    "headline": "Useful if you recognise yourself here."
+  },
+  "audiences": [
+    {
+      "label": "People working for themselves",
+      "description": "Freelancers, artists, designers, producers and founders who work better out of the house and want the day to have other people in it."
+    },
+    {
+      "label": "Small teams",
+      "description": "A few people who need somewhere to work together and a meeting room now and then, without signing an office lease."
+    },
+    {
+      "label": "People between projects",
+      "description": "Creative work comes in bursts. A membership is somewhere to keep going in between, instead of starting from zero each time."
+    },
+    {
+      "label": "People who work in sound",
+      "description": "ODDstudio is in the same building — add it to a membership, or book it by the hour."
+    }
+  ],
+  "howItWorks": [
+    {
+      "number": "01",
+      "title": "Tell us about you",
+      "body": "A short message about what you do and how you would use the space. Say if you want to visit first — most people do."
+    },
+    {
+      "number": "02",
+      "title": "We check the fit and availability",
+      "body": "Memberships are accepted on a rolling basis while the pilot has room. We come back to you either way."
+    },
+    {
+      "number": "03",
+      "title": "Start using the space",
+      "body": "You get your access details and onboarding, and the door code works 24/7 from day one."
+    }
+  ],
+  "faq": [
+    {
+      "question": "What does it cost?",
+      "answer": "€150 per month, one flat rate — no tiers. ODDstudio is the one thing not covered by it."
+    },
+    {
+      "question": "Is there a minimum commitment?",
+      "answer": "No. It is a flexible monthly membership with no long-term commitment during the pilot phase."
+    },
+    {
+      "question": "Can I visit before joining?",
+      "answer": "Yes, and we would rather you did. Mention it in your message and we'll set up a time to show you around."
+    },
+    {
+      "question": "Is it really 24/7?",
+      "answer": "Yes — members have their own access to the co-working space around the clock, not only during office hours."
+    },
+    {
+      "question": "Do I get my own desk?",
+      "answer": "It is a shared working space rather than a set of private offices or reserved desks. If a fixed setup matters for your work, tell us what you need and we'll say honestly whether the space can do it."
+    },
+    {
+      "question": "Can I book meeting rooms?",
+      "answer": "Yes, meeting rooms are part of the membership. For anything bigger — the gallery or the auditorium — see the event spaces, which members book at member rates."
+    },
+    {
+      "question": "Is the studio included?",
+      "answer": "No. ODDstudio is booked separately: €100 / month on top of membership for full access (€250 / month in total), or €20 / hour as a member. Without a membership the studio rents from €30 / hour. Full rates and equipment are on the ODDstudio page."
+    },
+    {
+      "question": "Can I host my own event in the space as a member?",
+      "answer": "Yes. Members book the gallery and the auditorium at member rates — €200 for a full day in the gallery, €100 for a half day in the auditorium — and you don't need to be a member to book them at all."
+    },
+    {
+      "question": "How quickly can I start?",
+      "answer": "Memberships are accepted on a rolling basis as space becomes available during the pilot, so it depends on where we are when you ask. Tell us the date you'd like to start and we'll tell you whether it works."
+    },
+    {
+      "question": "Where is ODDspace?",
+      "answer": "Teollisuuskatu 9D, Vallila, Helsinki."
+    },
+    {
+      "question": "Is ODDspace accessible?",
+      "answer": "We do not have verified accessibility information for the building to publish yet — step-free access, lifts, accessible toilets and door widths are still being documented, and we would rather say that than reassure you about something we have not measured. If accessibility matters for your visit, email hello@oddfest.co and we will tell you exactly what the space can and cannot do today."
+    },
+    {
+      "question": "What if I have a question that isn't here?",
+      "answer": "Email hello@oddfest.co. If it is something we haven't decided yet, we'll say so rather than make something up."
+    }
+  ],
+  "finalCta": {
+    "eyebrow": "Ready when you are",
+    "headline": "Come and see it, then decide.",
+    "body": "Tell us what you do and how you would use the space. A visit is the fastest way to know whether it's right for you.",
+    "cta": {
+      "label": "Apply for membership",
+      "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form"
+    }
+  },
+  "railLeft": [
+    { "kind": "logo" },
+    { "kind": "word", "text": "ODDspace" },
+    { "kind": "meta", "text": "Membership" },
+    { "kind": "meta", "text": "Vallila" }
+  ],
+  "railRight": [
+    { "kind": "word", "text": "Helsinki" },
+    { "kind": "meta", "text": "24/7" },
+    { "kind": "logo" },
+    { "kind": "word", "text": "ODDspace" }
+  ]
+}

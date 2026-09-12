@@ -171,6 +171,20 @@ const pricingTier = z.object({
   ctaLabel: z.string(),
   href: z.string(),
   recommended: z.boolean().optional(),
+  // The badge on the emphasised card (2026-09-11). Defaults to
+  // "Recommended" when unset, which is what Membership's three genuinely
+  // alternative tiers still want. ODDference sets it to the real sale
+  // deadline instead — on a ladder where exactly one tier can be bought,
+  // "Recommended" describes a choice the reader does not have. See
+  // PricingGrid.astro.
+  badgeLabel: z.string().optional(),
+  // "Real price, not purchasable yet" — renders the card dimmed with an
+  // inert CTA so the whole price ladder is visible without offering a
+  // checkout that would fail. ODDference only, and a build-time fallback
+  // only: oddference-tickets.ts re-derives it from the catalog's `upcoming`
+  // status at runtime, so the backend opening a tier unlocks it here with
+  // no content edit. See PricingGrid.astro.
+  locked: z.boolean().optional(),
   // ODDference only. The ticket-type slug in the ticket backend's catalog
   // (GET /api/tickets/catalog — see AGENTS.md's ticketing section). Setting
   // it hands price/status/benefits/CTA for that card to the backend at
@@ -224,6 +238,36 @@ const site = defineCollection({
       ),
       social: z.array(z.object({ platform: z.string(), href: z.string() })),
       contact: z.array(z.object({ label: z.string(), email: z.string() })),
+      // Where a form's message is emailed, by topic. Global rather than on
+      // contact.json (where it started, 2026-09-11) because two different
+      // pages send to the same places: /contact's form, and /work-with-odd's
+      // business enquiry, which notifies `partnering` on top of its Attio
+      // write. One key pasted once, so the two can never drift into mailing
+      // different people about the same thing.
+      //
+      // A Web3Forms (web3forms.com) access key is bound to exactly one
+      // recipient address, which is why there is one key per topic rather
+      // than one key plus a recipient list. The fan-out to individual people
+      // is NOT done here — each non-general key points at a Google Group on
+      // oddfest.co (partners@/space@/fest@) whose membership is managed in
+      // Workspace admin. That is deliberate: team membership changes far
+      // more often than this site deploys, and the deploy path needs a
+      // manual `npx surge dist` (docs/deployment.md), so a routing table of
+      // people's addresses living in the repo would go stale silently. Each
+      // group already contains hello@oddfest.co, so the shared inbox sees
+      // everything without being addressed separately.
+      //
+      // Any key left blank falls back to `general` rather than failing: a
+      // message reaching the shared inbox with the wrong subject beats a
+      // visitor being told the form is broken.
+      formAccessKeys: z
+        .object({
+          general: z.string().optional(),
+          partnering: z.string().optional(),
+          oddspace: z.string().optional(),
+          oddfest: z.string().optional(),
+        })
+        .optional(),
       footerAddress: z.string(),
       footerTag: z.string(),
       newsletterLabel: z.string(),
@@ -405,6 +449,12 @@ const pages = defineCollection({
         // primaryCta/secondaryCta also render (not here) — see index.astro.
         opening: z.object({
           headline: z.string(),
+          // The second half of ODD's mission, deliberately outside the <h1>
+          // (2026-09-11 editorial pass). ODD works on two connected problems;
+          // one headline carrying both was a headline nobody finished. The
+          // h1 makes one claim, this line adds the second. Optional so the
+          // hero still renders with a headline alone.
+          support: z.string().optional(),
           primaryCta: linkCta.optional(),
           secondaryCta: linkCta.optional(),
         }),
@@ -507,21 +557,78 @@ const pages = defineCollection({
       // this is a website content decision, not one of those).
       subpageBase.extend({
         _template: z.literal('oddfest'),
+        // The hero gained ODDspace's full anatomy on 2026-09-11 at Ronny's
+        // direct request — eyebrow, h1, a support line, meta and two CTAs —
+        // over the aftermovie rather than ODDspace's photo grid, since the
+        // ask was for the same structure, not the same medium. Declared on
+        // this branch rather than on subpageBase for the same reason
+        // ODDference declares them: they are page-specific additions to
+        // FullbleedVideoHero's optional props, not something all five
+        // subpages carry. See oddfest.astro's section-order comment.
+        secondaryCta: linkCta.optional(),
+        heroSupport: z.string(),
         whatItIs: sectionIntro,
-        // NEW SECTION (2026-09-02 copywriting pass) — "You make the event.
-        // ODD builds the shared layer.": a clear host/ODD responsibility
-        // split plus a smaller shared-platform explainer, right after
-        // `whatItIs`. `platform.body` should only promise 2027
-        // programme/map/platform functions that are actually confirmed —
-        // see the doc's [NEEDS PRODUCT/TECH CONFIRMATION] note.
-        sharedLayer: z.object({
+        // The two ways to look back at ODDfest 2026, as a pair of buttons
+        // under `whatItIs` (2026-09-11): the archived thank-you page, now
+        // hosted on this site at /oddfest-2026/ (public/oddfest-2026/ — a
+        // standalone page, deliberately not rebuilt as an Astro route), and
+        // oddfest.co, the 2026 site still live on its own domain. Both are
+        // history rather than the current offer, which is why they sit under
+        // the explainer instead of competing with the hero's own CTAs.
+        // `external: true` on a link opens it in a new tab — set it on
+        // oddfest.co (a different domain) and leave it off the archived
+        // page, which is on this site and carries its own way back.
+        lookBack: z.object({
+          label: z.string(),
+          thankYou: linkCta,
+          oldSite: linkCta,
+        }),
+        // The host/ODD responsibility split. Was `sharedLayer` until
+        // 2026-09-11; renamed because the thing it was named after is gone.
+        //
+        // `sharedLayer.platform` — the "shared platform" sub-block — was
+        // DELETED at Ronny's direct request, not moved. It described 2027
+        // programme and discovery-platform features that are still unbuilt
+        // and unconfirmed, which is precisely the promise-ahead-of-the-build
+        // this file forbids everywhere else (see `examples`, `programme`,
+        // `proof`). Do not reintroduce it until the platform exists.
+        //
+        // `stepsLabel` is the small label above the `howItWorks` steps, which
+        // now render inside this same section: the split and the steps are
+        // one argument — who does what, then what actually happens — and
+        // were two adjacent sections saying it twice.
+        ownership: z.object({
           headline: z.string(),
           host: z.object({ title: z.string(), body: z.string() }),
           odd: z.object({ title: z.string(), body: z.string() }),
-          platform: z.object({ title: z.string(), body: z.string() }),
           closing: z.string(),
+          stepsLabel: z.string(),
         }),
+        // Kept as a bare array of featureCards, NOT folded into `ownership`
+        // above, even though the two now render as one section: `howItWorks`
+        // is also a field on ODDspace, ODDagency and ODDstudio, and
+        // CloudCannon's _inputs are keyed by field name across the whole
+        // collection — changing the shape here would collide with theirs.
+        // See the `caseTeaser` note above for the same trap.
         howItWorks: z.array(featureCard),
+        // "What has happened before" — NEW on 2026-09-11. ODDfest 2026 in
+        // the past tense, honestly, as the reason the 2027 shape is what it
+        // is. This is the page's proof chapter, and it only works if it is
+        // true: same no-invented-figures rule as everywhere else in this
+        // file, and the section reads perfectly well carrying none.
+        // `chapters` is the year/title/body shape About's Timeline component
+        // already renders (named `chapters`, not `milestones`, to stay off
+        // About's CloudCannon key). `cta` links out to the archived 2026
+        // page alongside the same link in `lookBack` — a reader who arrives
+        // at this section has not necessarily seen the one further up.
+        history: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          chapters: z.array(z.object({ year: z.string(), title: z.string(), body: z.string() })),
+          closing: z.string(),
+          cta: linkCta,
+        }),
         // Optional at the object level only in the sense that it renders
         // nothing until real, verified 2027 dates/venues exist — same
         // "leave it out rather than invent it" rule as previousEdition used
@@ -542,10 +649,37 @@ const pages = defineCollection({
           closing: z.string(),
         }),
         examples: z.array(creativeWeekExample),
-        register: z.object({
+        // "How to join" — the page's conversion section. Was `register`
+        // (headline/body/one cta) until 2026-09-11; renamed and widened at
+        // Ronny's request into a clear, unmissable ask with two ways to act
+        // on it. `cta` is the real one: submit an event idea. `altCta` is
+        // for the reader who is interested but has nothing to submit yet,
+        // so the section has no dead end.
+        //
+        // `reassurance` exists because the single biggest reason a host does
+        // not submit is believing the idea is not finished enough to show
+        // anyone. Keep it; it is doing more work than the headline.
+        join: z.object({
+          eyebrow: z.string(),
           headline: z.string(),
           body: z.string(),
+          reassurance: z.string(),
           cta: linkCta,
+          altCta: linkCta,
+        }),
+        // The page's second conversion, added 2026-09-11: a week made by
+        // hundreds of independent hosts also has to be able to convert an
+        // organisation that wants to back it. Deliberately a quiet band
+        // after the proof chapter rather than a second loud ask beside
+        // "How to join" — the host ask is this page's primary job, and two
+        // competing CTAs of equal weight would cost it. Routes into the
+        // existing Work with ODD partnerships enquiry, not a new form.
+        partnerCta: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          body: z.string(),
+          linkLabel: z.string(),
+          href: z.string(),
         }),
         faq: z.array(faqItem),
       }),
@@ -570,11 +704,30 @@ const pages = defineCollection({
         // question-headline `title`/h1. Page-specific (not on subpageBase —
         // ODDfest's hero has no equivalent line) — see
         // FullbleedVideoHero.astro's new optional `support` prop.
-        heroSupport: z.string(),
+        //
+        // Optional as of 2026-09-11, and currently unset: the hero was
+        // retuned to match ODDspace's (`frame="space"` — see
+        // FullbleedVideoHero.astro), whose composition is wordmark / short
+        // display headline / meta / CTAs with no supporting paragraph. The
+        // practical-value line that used to live here is now the first thing
+        // `concept` says, where it has room to be a real sentence instead of
+        // a caption competing with a display-sized h1. Kept in the schema
+        // because the prop still exists and a future edition may want it back.
+        heroSupport: z.string().optional(),
         // The one-paragraph concept explainer directly under the hero — same
-        // sectionIntro shape oddfest.whatItIs uses. No separate "Big
-        // Question" section repeats this below.
+        // sectionIntro shape oddfest.whatItIs uses. This is the page's "what
+        // is it" section: as of 2026-09-11 it carries the central question
+        // (previously the hero h1) as its headline, so the hero can hold a
+        // short positioning line the way ODDspace's does.
         concept: sectionIntro,
+        // The section head above `reasons` (2026-09-11). The three blocks
+        // used to start with no heading at all, which made them read as a
+        // continuation of the premise above rather than as the page's three
+        // selling points.
+        reasonsIntro: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+        }),
         // "Three reasons to come" — major editorial blocks (Ideas / People /
         // Experience), not FeatureGrid cards, per the rebuild brief; each can
         // carry its own photo. Rendered by page-scoped markup in
@@ -599,18 +752,45 @@ const pages = defineCollection({
         // what it'll need) — ships empty, same "don't invent it" rule as
         // oddfest.examples. Not rendered while empty.
         programme: z.array(programmeItem).optional(),
-        // "What changes in 2027" — one section: a sectionIntro-shaped
-        // headline plus 3 featureCard items (More immersive / More
-        // connected / More intentional encounters), same shape
-        // oddfest.whatItIs + oddfest.howItWorks already use split across two
-        // sections, combined here into one.
-        whatsChanging: sectionIntro.extend({ items: z.array(featureCard) }),
+        // Real sessions from ODDference 2026 (2026-09-11). The second half of
+        // the same social-proof job `speakers` does: a roster of names proves
+        // who showed up, this proves what was actually discussed — which is
+        // what a business reader is deciding about.
+        //
+        // Source is the event's own master stage schedule ("ODDference
+        // Ajolista", the run sheet the venue was operated from), not the
+        // live oddfest.co/oddference page — that page never published
+        // session-level content, only the three programme tracks and the
+        // speaker wall. Titles are verbatim from the run sheet, with one
+        // typo fixed ("Creative Econony" → "Creative Economy").
+        //
+        // A curated selection, not the full 30-session programme: this is a
+        // "what this event is like" proof block on a 2027 sales page, not an
+        // archive. `format` is the session's real format from the run sheet
+        // (Keynote / Fireside chat); `speakers` is a display string because
+        // half of these are multi-person panels and none of them need to be
+        // individually linkable.
+        sessionHighlights: z
+          .array(
+            z.object({
+              format: z.string(),
+              title: z.string(),
+              speakers: z.string(),
+            }),
+          )
+          .optional(),
         // The active Blind Bird ticket only — ships with exactly one tier.
         // No invented checkout URL (see oddference.json's own comment on
         // each tier's href); the future Early Bird/Standard/Late ladder
         // stays out of both the content and this array until it's live.
         tickets: z.array(pricingTier).optional(),
         partnershipCta: cta,
+        // The page's FAQ (2026-09-11), same `faqItem` shape and same
+        // FAQList component ODDfest and ODDspace use. Answers are held to
+        // the same standard as the rest of this file: only what is actually
+        // settled about 2027 — everything still open (exact dates, venues,
+        // the programme) says so rather than being filled in.
+        faq: z.array(faqItem),
         // No dedicated ODDference aftermovie exists yet (checked the repo
         // and the live 2026 oddfest.co/oddference/ page — neither has one).
         // Ships undefined; the section doesn't render until Ronny supplies
@@ -835,6 +1015,102 @@ const pages = defineCollection({
         faq: z.array(faqItem),
       }),
 
+      // ODDspace membership (2026-09-11) and ODDspace as a venue (below) —
+      // the two conversion journeys /oddspace itself deliberately does not
+      // carry. That page's job is to make someone want the place; these two
+      // exist so that someone who already does can get every fact they need
+      // before writing to us, which is what the September planning review
+      // asked for. Both reuse ODDspace's own `_slug`, so the rails, logo and
+      // frame are the ODDspace ones rather than a new identity.
+      //
+      // Both pages publish only what the site already stands behind. Where a
+      // fact is genuinely not verified — capacities, AV inventory,
+      // accessibility — the venue page says so and asks, rather than
+      // printing a number from an internal draft. The internal rental guide
+      // has three conflicting price lists as of 2026-09-11; none of them is
+      // on this site.
+      subpageBase.extend({
+        _template: z.literal('oddspace-membership'),
+        secondaryCta: linkCta.optional(),
+        heroPhotos: z.array(z.object({ image: image(), alt: z.string() })),
+        intro: z.string(),
+        whatItIs: sectionIntro,
+        // Two deliberately symmetrical lists. "notIncluded" is the one that
+        // earns this page: the studio carve-out and the absence of private
+        // desks are exactly what a prospective member otherwise discovers
+        // after joining. Never quietly drop it to make the page read better.
+        included: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          items: z.array(z.string()),
+        }),
+        notIncluded: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          items: z.array(z.string()),
+          note: z.string().optional(),
+        }),
+        // The membership itself plus the studio combination, in the shared
+        // pricing-card shape (same component as ODDference's tickets).
+        tiers: z.array(pricingTier),
+        ratesNote: z.string(),
+        audiencesIntro: z.object({ eyebrow: z.string(), headline: z.string() }),
+        audiences: z.array(audienceItem),
+        howItWorks: z.array(featureCard),
+        faq: z.array(faqItem),
+        finalCta: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          cta: linkCta,
+        }),
+      }),
+
+      subpageBase.extend({
+        _template: z.literal('oddspace-venue'),
+        secondaryCta: linkCta.optional(),
+        heroPhotos: z.array(z.object({ image: image(), alt: z.string() })),
+        intro: z.string(),
+        whatItIs: sectionIntro,
+        eventTypes: z.array(z.string()),
+        spacesIntro: z.object({ eyebrow: z.string(), headline: z.string() }),
+        // Same shape and component as /oddspace's own room cards.
+        spaces: z.array(
+          z.object({
+            name: z.string(),
+            body: z.string(),
+            bullets: z.array(z.string()).optional(),
+            image: image().optional(),
+          }),
+        ),
+        pricing: sectionIntro,
+        memberRates: z.array(
+          z.object({ name: z.string(), price: z.string(), note: z.string().optional() }),
+        ),
+        ratesNote: z.string(),
+        whatWeCanDo: sectionIntro,
+        howItWorks: z.array(featureCard),
+        // The honest half of a venue sales page: the specifications a real
+        // event needs that this site cannot yet verify (capacities, AV,
+        // accessibility, load-in) are named here as things we answer in an
+        // enquiry. This block is not a placeholder to be filled with
+        // plausible numbers later — when a number is genuinely verified it
+        // moves into the page proper and leaves this list.
+        askUs: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          items: z.array(z.string()),
+        }),
+        faq: z.array(faqItem),
+        finalCta: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          cta: linkCta,
+        }),
+      }),
+
       // ODDstudio (2026-09-11) — the recording/production room inside
       // ODDspace, run with TUNEMENT. It exists as its own page rather than a
       // longer section on /oddspace for one commercial reason: it is the one
@@ -1022,17 +1298,6 @@ const pages = defineCollection({
         // one long string) so the editorial rhythm survives in the CMS —
         // see about.json for the real copy.
         argument: z.array(z.string()),
-        // NEW SECTION (2026-09-02 copywriting pass) — "Why now": the
-        // technology/execution-gets-cheaper argument, grounded in Finland's
-        // own creative-economy context. Same multi-paragraph-array shape as
-        // `argument` (not `sectionIntro`, whose `body` is a single string)
-        // since this also needs two real paragraph breaks, rendered by
-        // page-scoped markup in about.astro rather than SectionIntro.
-        whyNow: z.object({
-          eyebrow: z.string(),
-          headline: z.string(),
-          body: z.array(z.string()),
-        }),
         story: z.object({
           eyebrow: z.string(),
           title: z.string(),
@@ -1105,11 +1370,6 @@ const pages = defineCollection({
         eyebrow: z.string(),
         title: z.string(),
         intro: z.string(),
-        // Web3Forms (web3forms.com) needs no backend of ours — just a free
-        // access key pasted here. Left blank until a real key exists; the
-        // form renders either way but only submits once this is set. See
-        // docs/editing.md#contact-form.
-        formAccessKey: z.string().optional(),
       }),
       // Media page rebuild (2026-08-30): a public press/asset hub, not a
       // marketing page — see docs/architecture.md's Media page note. Seven

@@ -70,13 +70,36 @@ high-level notes:
     (Business/Creative/Stay in touch, or leave blank) to group it under a
     label instead of one flat row — set it to match how a new CTA should
     group, or leave it empty for an ungrouped card.
-- **ODDfest**: what it is, how it works, who can take part, what ODD
-  provides, organiser ownership, programme, open call (optional), for
-  partners, previous edition/proof (optional), FAQ.
-- **ODDference**: the big question, who it's for, why attend, themes,
-  formats, speakers (optional — leave empty until real speakers are
-  confirmed), programme (optional), connection & networking, proof (optional,
-  can carry an attendee quote), tickets (optional — no invented prices), FAQ.
+- **ODDfest**: hero (eyebrow/title/hero support line/meta and two buttons),
+  what it is, the two look-back buttons under it, how it works (who does
+  what, then the four numbered steps), how to join, programme (optional —
+  empty until a real 2027 programme exists), what has happened before, 2026
+  examples (optional — empty until real, named ones exist), FAQ.
+  Rebuilt 2026-09-11; the bullet here previously listed a set of fields
+  (who can take part / what ODD provides / organiser ownership / open call /
+  for partners / previous edition) that had already been consolidated away
+  in the V2 rebuild and no longer existed. Two rules on this page in
+  particular: the "what has happened before" section must carry only figures
+  the site already publishes elsewhere, and the deleted "shared platform"
+  block must not come back until there is a platform to describe.
+- **ODDference** (restructured 2026-09-11 — eight sections, in this order):
+  the hero, the premise, the heading + three reasons to come, past speakers,
+  session highlights, who it's for, tickets & partnership, FAQ.
+  - _Past speakers_ and _session highlights_ are both records of ODDference
+    **2026**, not promises about 2027. Don't add a name or a session title
+    that wasn't really there, and don't rewrite a session title into
+    marketing copy — they're quoted from the event's own run sheet.
+  - _Tickets_ now lists the whole ladder, not just the tier on sale. Price,
+    status, benefits and button come from the ticket backend at page load;
+    what's in the content is the fallback if that request fails. Two fields
+    are yours: `badgeLabel` (the badge on the tier currently on sale — now
+    "Available until 1 Nov 2026") and `locked: true` (dims a tier and
+    removes its button while leaving its price readable).
+  - _FAQ_: a lot about 2027 genuinely isn't decided — dates, venues, the
+    programme, exactly what a ticket covers beyond ODDference itself. Say
+    that in the answer rather than filling it in.
+  - "What changes in 2027" was removed in the same pass. Its one real fact
+    (ODDference runs alongside ODDfest week) is now in the FAQ.
 - **ODDagency**: what it is, capabilities (+ types of project, shown in the
   same section), how a project works, cases (optional — hidden until real
   cases exist). 2026-08-31: removed the separate `features`/`whyOdd` fields
@@ -97,6 +120,25 @@ high-level notes:
     booking calendar**, so when a date moves or an event is cancelled it
     has to be changed here, and only things a stranger can actually turn
     up to or book belong on it.
+- **ODDspace membership** (`/oddspace/membership`, new 2026-09-11) and
+  **ODDspace as a venue** (`/oddspace/venue`, same date): the two pages that
+  let somebody decide, or plan an event, without having to write to us
+  first. Both live in `src/content/pages/oddspace-membership.json` and
+  `oddspace-venue.json`. **Neither is wired into CloudCannon yet** — the CMS
+  side was deliberately deferred in the September review, so these two are
+  edited in the repo for now, unlike every other page above.
+  - The membership page's "what's not included" list is the reason it
+    exists. Do not quietly trim it to make the page read better: the studio
+    carve-out and the absence of a private desk are what a member would
+    otherwise find out after paying.
+  - The venue page publishes only what the site already stands behind —
+    the two member rates — and names capacities, dimensions, AV,
+    accessibility, load-in, catering and non-member pricing as things we
+    answer per enquiry (`askUs`). **Do not fill those in from the internal
+    rental guide.** Its capacities are marked "TBD — confirm before
+    publishing externally" and its prices contradict two other internal
+    lists. When a number is genuinely confirmed, move it into the page and
+    take it out of `askUs`.
 - **Work with ODD** (moved into the "Info" nav dropdown 2026-08-30, route
   unchanged; it was publicly labelled "Work with us" there until 2026-09-11,
   and now leads that dropdown under its real name): hero (eyebrow/title/intro/primary
@@ -124,15 +166,22 @@ high-level notes:
   "no invented numbers" rule as everywhere else), the participate band, and
   a closing photo (leave unset until a real, confirmed photo exists — the
   page shows a plain placeholder panel instead of guessing).
+  - 2026-09-11: the "Why now" section and its editing field were removed
+    outright. Its headline read as strategy-deck writing rather than
+    something that helps an outsider understand ODD; its one real fact is
+    now inside the opening argument, which is three paragraphs instead of
+    five. "What we have learned" keeps only the lessons the timeline and
+    the impact numbers do not already tell.
 - **Media**: a full press kit — accreditation callout, key facts, ODDfest
   highlights (optional — a stats grid, same "leave it out rather than invent
   numbers" rule as everywhere else), the shared "Featured in" press logo
   strip (edited under Global — same list shown on the homepage), boilerplate,
   press releases, info packs, assets & photos (with a photo-credit usage
   note), a named press contact, and social media.
-- **Contact**: eyebrow/title/intro text above the contact form. See
-  [Contact form setup](#contact-form-setup) below for the one field that
-  actually makes it send.
+- **Contact**: eyebrow/title/intro text above the contact form. The access
+  keys that actually make it send live under Global — see
+  [Contact form setup](#contact-form-setup) below for those and for where
+  each topic's message goes.
 
 A field marked "optional" in `cloudcannon.config.yml`'s comments can be left
 out of the page's JSON entirely — the page renders correctly without it. This
@@ -173,11 +222,56 @@ sign-up link above.
 The Contact page's form submits via [Web3Forms](https://web3forms.com) — a
 free service that emails you a submission, no backend of ours required.
 
-1. Get a free access key at web3forms.com (just an email address, no signup).
-2. Paste it into the Contact page's "Web3Forms access key" field.
-3. Publish. The form starts sending for real; until then it renders normally
-   but tells visitors it isn't connected yet, rather than silently discarding
-   what they type.
+The form asks the visitor what their message is about, and each topic goes to
+a different address. A Web3Forms access key is tied to exactly one recipient,
+so there is one key per topic:
+
+| Topic on the form         | Key field    | Sends to              |
+| ------------------------- | ------------ | --------------------- |
+| Something else / not sure | `general`    | `hello@oddfest.co`    |
+| Partnering & ODDference   | `partnering` | `partners@oddfest.co` |
+| ODDspace                  | `oddspace`   | `space@oddfest.co`    |
+| ODDfest                   | `oddfest`    | `fest@oddfest.co`     |
+
+The three `partners@`/`space@`/`fest@` addresses are **Google Groups**, not
+mailboxes. Who receives each topic is the group's membership, changed in
+Google Workspace admin — not here, and not in the code. That is the whole
+point of the setup: teams change more often than this site deploys, and
+deploying needs a manual step (see `docs/deployment.md`), so a list of
+people's addresses living in the repo would quietly go stale and keep mailing
+someone who left. Each group also contains `hello@oddfest.co`, so the shared
+inbox sees every message without being addressed separately.
+
+`hello@allthingsodd.co` is a Workspace **domain alias** of `hello@oddfest.co`
+— the same mailbox, so adding it as a second recipient would only deliver two
+copies of everything to one inbox.
+
+The **Work with ODD** enquiry form uses the same `partnering` key: it writes
+the enquiry to Attio as it always has, and now also emails
+`partners@oddfest.co` so somebody is actually told it arrived. That is why the
+keys live under **Global → Form routing**, not on the Contact page — two
+different forms send to the same place, and pasting the key twice would let
+them drift into mailing different people about the same partnership.
+
+To connect it:
+
+1. In Google Workspace admin, create the three groups above and add the right
+   people plus `hello@oddfest.co` to each.
+2. At web3forms.com, get a free access key for each of the four addresses
+   (just an email address, no signup — the key is mailed to that address, and
+   for a group any member receives it).
+3. Paste each into its field under **Global → Form routing — Web3Forms access
+   keys**.
+4. Publish.
+
+A topic left blank falls back to the General key, so the message still reaches
+a human rather than the visitor being told the form is broken — you can
+connect General first and add the rest later. (The Work with ODD notification
+is the one exception: with no `partnering` key it simply doesn't send, and
+that form behaves exactly as it did before — the Attio record is still
+written.) Until General is set too, the
+form renders normally but tells visitors it isn't connected yet, rather than
+silently discarding what they type.
 
 ## What you can't edit here (and why)
 

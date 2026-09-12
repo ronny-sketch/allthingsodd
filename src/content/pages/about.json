@@ -9,20 +9,10 @@
   "title": "Creativity belongs closer to the centre.",
   "intro": "ODD started from a simple frustration: Finland has extraordinary creative work, but too much of it lives in short bursts — and too much of the knowledge inside it stays inside its own circles.",
   "argument": [
-    "Creative work has a continuity problem. A project gets funded, produced and finished. Then the people involved often have to rebuild the next thing almost from zero: new money, new partners, a new place to work, a new reason to gather. Good work happens, but too much of the knowledge, trust and momentum disappears between projects.",
-    "There is another separation at the same time. The people working with culture, meaning, audiences and new forms of expression rarely spend enough serious time with the people making decisions in companies, institutions and public life. They live in the same society, but often in different professional worlds.",
-    "We think that distance is unnecessary. Creative practice contains expertise in imagination, taste, attention, emotion, identity, cultural change and making things that do not yet exist. None of that transfers neatly into a business method, and it should not have to. But it deserves a place in more of the conversations that shape organisations and society.",
-    "This is not an argument that culture needs a business case in order to matter. Art and culture have value on their own terms. It is also true that creative expertise is underused elsewhere — and that creative work itself deserves better conditions to keep developing.",
-    "ODD is one attempt to work on both problems at once. Not by claiming to represent or own the creative field, but by building practical places and moments where more work can continue, more people can meet, and more useful relationships can survive the first encounter."
+    "Creative work has a continuity problem. A project gets funded, produced and finished — and then the people involved rebuild the next one almost from zero: new money, new partners, a new place to work, a new reason to gather. The work happens. The knowledge, trust and momentum around it mostly disappear in between.",
+    "There is a second separation. The people shaping culture and the people making decisions in companies, institutions and public life rarely spend serious time together. That distance is unnecessary, and it costs both sides. Creative practice holds real expertise in attention, taste, meaning and making things that do not exist yet — and Finland's own creative-economy goals already assume that expertise will matter more, not less, to growth and innovation.",
+    "ODD works on both problems at once. Not by claiming to represent the creative field, but by building places and moments where work can continue, people can meet, and a first encounter can turn into something that lasts."
   ],
-  "whyNow": {
-    "eyebrow": "Why now",
-    "headline": "When execution gets easier, judgment matters more.",
-    "body": [
-      "Technology is making more kinds of execution faster and cheaper. That does not make creative expertise less important. It raises the value of deciding what is worth making, what people will care about, how something should feel, what it means, and why anyone should pay attention. Those are not new questions for creative fields. They are becoming harder to ignore elsewhere.",
-      "Finland's own creative-economy goals already assume that cultural and creative capability will matter more to growth, exports, innovation and the country's international position. The practical question is what structures make that possible rather than leaving it as a policy ambition."
-    ]
-  },
   "story": {
     "eyebrow": "Our story",
     "title": "How we got here.",
@@ -113,26 +103,16 @@
     "items": [
       {
         "number": "01",
-        "title": "A shared moment can create real gravity",
-        "body": "The first ODDfest in 2025 brought more than 2,600 participants, 350+ contributors and 70+ partners into one experiment. It proved there was appetite for a new kind of platform around creative work."
-      },
-      {
-        "number": "02",
         "title": "Not everything should be produced centrally",
         "body": "Creative Week 2026 showed the strength of a distributed model: hosts make their own programme, while ODD makes the whole easier to find and experience together. That model becomes ODDfest in 2027."
       },
       {
-        "number": "03",
+        "number": "02",
         "title": "Creative expertise can carry a professional product",
         "body": "The first ODDference brought roughly 300 people into a programme built for business, public-sector and creative audiences. It gave the clearest signal that this question can stand on its own."
       },
       {
-        "number": "04",
-        "title": "A place changes the rhythm",
-        "body": "ODDspace moved part of the work from annual peaks into everyday life. It is still a pilot, but it gives us a real place to test what continuity can mean in practice."
-      },
-      {
-        "number": "05",
+        "number": "03",
         "title": "Bigger production is not automatically better",
         "body": "The centrally produced Showcase model created too much cost and risk for the demand it had. We are not repeating it in 2027. The lesson is part of the strategy: build what people actually use and pay for, and let the rest stay experimental until the economics are real."
       }
@@ -144,10 +124,23 @@
       "eyebrow": "2025",
       "title": "The first ODDfest, in numbers.",
       "items": [
-        { "value": "2,600+", "label": "Participants", "context": "1,900+ signups" },
-        { "value": "70+", "label": "Partners" },
-        { "value": "350+", "label": "Contributors" },
-        { "value": "1M+", "label": "Total reach" }
+        {
+          "value": "2,600+",
+          "label": "Participants",
+          "context": "1,900+ signups"
+        },
+        {
+          "value": "70+",
+          "label": "Partners"
+        },
+        {
+          "value": "350+",
+          "label": "Contributors"
+        },
+        {
+          "value": "1M+",
+          "label": "Total reach"
+        }
       ],
       "reportLabel": "Read the 2025 Impact Report",
       "reportUrl": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ"

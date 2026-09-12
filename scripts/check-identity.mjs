@@ -129,16 +129,31 @@ const RULES = [
  * allthingsodd.co has no MX record at all, so cutting the addresses over
  * would break every contact route on the site. See the migration record's
  * B13. What is banned is publishing the pretty, dead address.
+ *
+ * 2026-09-11 — the MX premise above has changed and this rule has NOT been
+ * retired on that basis alone. `dig MX allthingsodd.co` now answers
+ * `1 smtp.google.com`, and the domain is a Google Workspace domain alias of
+ * oddfest.co, which makes hello@allthingsodd.co a live address resolving to
+ * the same mailbox as hello@oddfest.co. So the literal `reason` below is now
+ * wrong about the cause while still describing the rule actually in force:
+ * the site publishes one canonical address, `hello@oddfest.co`, and which
+ * address ODD puts in front of the public is a brand decision rather than a
+ * DNS fact. Retire or reword this rule when that decision is made — do not
+ * quietly relax it to unblock a commit.
  */
 const DEAD_ADDRESS = {
   id: 'dead-address',
   re: /[\w.-]+@allthingsodd\.co/,
   reason:
-    'allthingsodd.co has no MX record, so this address cannot receive mail — publishing it would break a real contact route',
+    "the site publishes one canonical contact address, hello@oddfest.co — see this rule's note before publishing an @allthingsodd.co address",
   allow: {
     [MIGRATION_RECORD]: 'documents the address that is not live yet',
     [IDENTITY_SPEC]: 'asserts it is never published',
     [SELF]: 'this file',
+    'docs/editing.md':
+      'contact-form setup explains why the alias is NOT added as a second recipient',
+    'src/scripts/contact-topics.ts':
+      'routing table records the same alias reasoning next to the code it constrains',
   },
 };
 

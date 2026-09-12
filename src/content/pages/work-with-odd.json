@@ -7,9 +7,12 @@
   },
   "eyebrow": "For organisations",
   "title": "What are you trying to make happen?",
-  "intro": "Bring us a brief, a question, an event, a partnership idea or something that is still taking shape. ODD is most useful when the work needs creative and cultural understanding alongside strategy, production or people who do not normally work in the same room.",
+  "intro": "Bring us a brief, a question, an event or a partnership idea — including one that is still taking shape. ODD is most useful when the work needs creative and cultural understanding as well as strategy and production.",
   "heroImage": "../../assets/hero/archive-12.jpg",
-  "primaryCta": { "label": "Start a conversation", "href": "#enquiry-form" },
+  "primaryCta": {
+    "label": "Start a conversation",
+    "href": "#enquiry-form"
+  },
   "whenOddIsUseful": {
     "eyebrow": "When to call us",
     "headline": "Usually when the answer is not just another campaign, event or workshop.",
@@ -34,7 +37,7 @@
   "whatWeDo": {
     "eyebrow": "Why ODD",
     "headline": "We work in the overlap.",
-    "body": "ODD runs its own events and physical space, works with creative practitioners and cultural organisations, and also sells work to companies and institutions. That gives us a practical view of several worlds that often describe each other from a distance. We can move between them without pretending they are the same — and build the team around the work instead of around a fixed service catalogue."
+    "body": "ODD runs its own events and its own space, works with artists and cultural organisations, and sells work to companies and institutions. We know those worlds from the inside rather than describing them from a distance — and we build the team around the work instead of around a service catalogue."
   },
   "pathways": [
     {
@@ -52,7 +55,7 @@
       "stage": "Stay involved",
       "meta": "A year-round organisational relationship",
       "title": "ODDnetwork",
-      "body": "A year-round organisational relationship we are still shaping with the first organisations involved.",
+      "body": "A year-round way to stay involved beyond one event or project. We are still shaping it with the first organisations taking part — including what it is finally called.",
       "goLabel": "Ask about ODDnetwork →",
       "href": "/membership",
       "image": "../../assets/programs/oddmembership-card.jpg"

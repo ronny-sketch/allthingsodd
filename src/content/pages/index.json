@@ -9,16 +9,17 @@
     "mosaicAlt": "People, performances, talks and encounters from ODD in Helsinki."
   },
   "opening": {
-    "headline": "ODD exists to build better conditions for creative work — and to bring creative and cultural fields closer to business and wider society.",
+    "headline": "Creative work deserves better conditions than starting from zero every time.",
     "primaryCta": {
       "label": "See what we do",
       "href": "#four"
-    }
+    },
+    "support": "ODD builds the events, spaces and projects that give it continuity — and brings creative expertise closer to business and the rest of society."
   },
   "whatOddIs": {
     "eyebrow": "Why ODD",
-    "headline": "Finland has no shortage of creative talent — what's missing is what gets built around it.",
-    "body": "Creative work is still rebuilt from scratch: project by project, production by production, funding cycle by funding cycle.\n\nAt the same time, the people shaping culture and the people shaping business, institutions and public life spend surprisingly little time in the same room.\n\nODD works on both. More continuity around creative work — and more situations where different kinds of expertise actually meet.",
+    "headline": "Finland has the talent. What's missing is what gets built around it.",
+    "body": "Creative work is rebuilt from scratch every time: project by project, funding cycle by funding cycle. When one ends, the money, the partners, the place to work and the reason to gather all have to be found again.\n\nThe people making culture and the people running companies and institutions also spend very little time in the same room. ODD works on both: more continuity around creative work, and more places where the two actually meet.",
     "cta": {
       "label": "Why we exist →",
       "href": "/about"
@@ -81,8 +82,8 @@
   },
   "proofIntro": {
     "eyebrow": "Already in motion",
-    "headline": "In less than two years, ODD has already brought thousands of people, collaborators and organisations into the same orbit.",
-    "body": "More than 5,000 people have taken part. We have worked with 500+ collaborators and 100+ partners — and channelled more than €400,000 directly into the creative and cultural industries.",
+    "headline": "Two years in, this is what has already happened.",
+    "body": "ODDfest, ODDference and ODDspace have been built and run since 2025 — the numbers below are what they added up to.",
     "cta": {
       "label": "See how ODD got here →",
       "href": "/about"

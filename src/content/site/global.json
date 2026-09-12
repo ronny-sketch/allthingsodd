@@ -23,6 +23,12 @@
     { "platform": "Discord", "href": "https://discord.gg/ZXtkM6FjBw" }
   ],
   "contact": [{ "label": "Get in touch", "email": "hello@oddfest.co" }],
+  "formAccessKeys": {
+    "general": "c8c057e0-afb6-4912-943e-44c82014dc6d",
+    "partnering": "",
+    "oddspace": "",
+    "oddfest": ""
+  },
   "footerAddress": "New Nordic Way rf · Helsinki",
   "footerTag": "New Nordic Way rf · Helsinki",
   "newsletterLabel": "Keep up with ODD",

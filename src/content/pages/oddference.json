@@ -7,8 +7,7 @@
     "ogImage": "/og/oddference.jpg"
   },
   "eyebrow": "ODDference · 2027",
-  "title": "What can business and the rest of society learn from creative expertise?",
-  "heroSupport": "A professional event for learning from creative and cultural expertise — and meeting potential clients, partners, collaborators and decision-makers outside your usual circuit.",
+  "title": "Where creative expertise meets business and society.",
   "meta": "Helsinki · 2027",
   "primaryCta": {
     "label": "Get your ticket",
@@ -24,8 +23,12 @@
   },
   "concept": {
     "eyebrow": "The premise",
-    "headline": "Creative expertise is more than “being creative”.",
-    "body": "People who work in art, design, music, film, games, media and other creative fields make decisions every day about things that are difficult to measure in advance: what deserves attention, what feels meaningful, what people will remember, when something is culturally wrong, how to work without a clear answer, and how to make something that did not exist before. Those are not magic skills, and an artistic practice cannot be copied into a management framework. But the expertise behind creative work can change the questions people ask about organisations, products, cities, technology and society. ODDference creates a serious place for that exchange."
+    "headline": "What can business and the rest of society learn from creative expertise?",
+    "body": "ODDference is a professional event for learning from creative and cultural expertise — and for meeting clients, partners, collaborators and decision-makers outside your usual circuit.\n\nPeople who work in art, design, music, film, games and media decide every day what deserves attention, what people will remember, and how to make something that did not exist before. Those are useful questions to bring into a business, a city or an institution. ODDference is where that exchange happens in a serious room."
+  },
+  "reasonsIntro": {
+    "eyebrow": "Why come",
+    "headline": "Three reasons to be in the room."
   },
   "reasons": [
     {
@@ -39,14 +42,214 @@
       "number": "02",
       "eyebrow": "Business & people",
       "title": "Meet people worth doing business with.",
-      "body": "ODDference deliberately mixes creative leaders, business leaders, founders, policymakers, institutions and researchers. That makes room for potential clients, partners, collaborators and new projects that are harder to find inside a single-industry conference. We build time and structure for those conversations instead of leaving everything to chance."
+      "body": "ODDference deliberately mixes creative leaders, business leaders, founders, policymakers, institutions and researchers, with time built in for the conversations that follow. That puts clients, partners and collaborators in the room who are hard to find at a single-industry conference.",
+      "image": "../../assets/hero/archive-14.jpg"
     },
     {
       "number": "03",
       "eyebrow": "Experience",
       "title": "The event should prove its own point.",
-      "body": "If ODDference argues that creative expertise matters, the experience cannot stop at the speaker list. Artists and creative practitioners can shape the spaces, scenography, performances, food, music and other parts of how the event feels and behaves.",
-      "image": "../../assets/hero/archive-14.jpg"
+      "body": "If ODDference argues that creative expertise matters, the experience cannot stop at the speaker list. Artists and creative practitioners can shape the spaces, scenography, performances, food, music and other parts of how the event feels and behaves."
+    }
+  ],
+  "speakers": [
+    {
+      "name": "Galit Ariel",
+      "role": "Techno-Futurist & Author",
+      "image": "../../assets/speakers/galit-ariel.png"
+    },
+    {
+      "name": "Perttu Pölönen",
+      "role": "Futurist, Inventor & Author",
+      "image": "../../assets/speakers/perttu-polonen.png"
+    },
+    {
+      "name": "Heikki Slåen",
+      "role": "Director, Cinematographer & Actor",
+      "image": "../../assets/speakers/heikki-slaen.png"
+    },
+    {
+      "name": "Ashley Jex Wagner",
+      "role": "Head of Live Experiences",
+      "organisation": "Supercell",
+      "image": "../../assets/speakers/ashley-jex-wagner.png"
+    },
+    {
+      "name": "Tunna Milonoff",
+      "role": "Cultural Architect",
+      "image": "../../assets/speakers/tunna-milonoff.png"
+    },
+    {
+      "name": "Esa Saarinen",
+      "role": "Philosopher",
+      "image": "../../assets/speakers/esa-saarinen.png"
+    },
+    {
+      "name": "Claus Raasted",
+      "role": "Director",
+      "organisation": "The College of Extraordinary Experiences",
+      "image": "../../assets/speakers/claus-raasted.png"
+    },
+    {
+      "name": "Sanna-Kaisa Niikko",
+      "role": "CMO",
+      "organisation": "Marimekko",
+      "image": "../../assets/speakers/sanna-kaisa-niikko.png"
+    },
+    {
+      "name": "Samppa Lappalainen",
+      "role": "Architect & Entrepreneur",
+      "image": "../../assets/speakers/samppa-lappalainen.png"
+    },
+    {
+      "name": "Karoliina Jarenko",
+      "role": "CEO & Founder",
+      "organisation": "Almanovia",
+      "image": "../../assets/speakers/karoliina-jarenko.png"
+    },
+    {
+      "name": "Karri \"Paleface\" Miettinen",
+      "role": "Artist, Activist & Cultural Commentator",
+      "image": "../../assets/speakers/karri-paleface-miettinen.png"
+    },
+    {
+      "name": "Karoliina Korppoo",
+      "role": "Game Director",
+      "organisation": "Sholf Development",
+      "image": "../../assets/speakers/karoliina-korppoo.png"
+    },
+    {
+      "name": "Rolf Ekroth",
+      "role": "Fashion Designer",
+      "image": "../../assets/speakers/rolf-ekroth.png"
+    },
+    {
+      "name": "Katriina Heljakka",
+      "role": "Researcher of Play",
+      "image": "../../assets/speakers/katriina-heljakka.png"
+    },
+    {
+      "name": "Marley Prudeaux",
+      "role": "Lead Visual Designer",
+      "organisation": "Meow Wolf",
+      "image": "../../assets/speakers/marley-prudeaux.png"
+    },
+    {
+      "name": "Alf Rehn",
+      "role": "Professor of Innovation & Management",
+      "image": "../../assets/speakers/alf-rehn.png"
+    },
+    {
+      "name": "Katja Lindroos",
+      "role": "Creative Economy Strategist",
+      "organisation": "Urban Practice",
+      "image": "../../assets/speakers/katja-lindroos.png"
+    },
+    {
+      "name": "Elisabet Lahti",
+      "role": "Experiential Researcher & Somatic IQ Trainer",
+      "image": "../../assets/speakers/elisabet-lahti.png"
+    },
+    {
+      "name": "Aino Ahlnäs",
+      "role": "Creative Director",
+      "organisation": "Kalevala Koru",
+      "image": "../../assets/speakers/aino-ahlnas.png"
+    },
+    {
+      "name": "Siamäk Naghian",
+      "role": "CEO",
+      "organisation": "Genelec",
+      "image": "../../assets/speakers/siamak-naghian.png"
+    },
+    {
+      "name": "Emmi Kärnä",
+      "role": "Game Designer & Experience Artist",
+      "image": "../../assets/speakers/emmi-karna.png"
+    },
+    {
+      "name": "Jukka-Pekka Heikkilä",
+      "role": "Scholar-activist",
+      "image": "../../assets/speakers/jukka-pekka-heikkila.png"
+    },
+    {
+      "name": "Sonya Lindfors",
+      "role": "Art Director",
+      "organisation": "UrbanApa",
+      "image": "../../assets/speakers/sonya-lindfors.png"
+    },
+    {
+      "name": "Lauri Järvilehto",
+      "role": "Musician, Producer & Philosopher",
+      "image": "../../assets/speakers/lauri-jarvilehto.png"
+    },
+    {
+      "name": "Tero Vanhanen",
+      "role": "Phenomenon Creator",
+      "organisation": "Fira",
+      "image": "../../assets/speakers/tero-vanhanen.png"
+    }
+  ],
+  "sessionHighlights": [
+    {
+      "format": "Keynote",
+      "title": "Histories of Creativity – On Finland, Narratives, and the Dispositif",
+      "speakers": "Alf Rehn"
+    },
+    {
+      "format": "Keynote",
+      "title": "Science Frictions: How We're Getting the Future of Humans & Tech All Wrong",
+      "speakers": "Galit Ariel"
+    },
+    {
+      "format": "Fireside chat",
+      "title": "What World-Class Brands Do Differently: Inside Creative Work at the Highest Level",
+      "speakers": "Alexander Pihlainen, Risto Lähdesmäki & Kivi Sotamaa"
+    },
+    {
+      "format": "Fireside chat",
+      "title": "From Products to Worlds: Who Wins in the Experience Economy?",
+      "speakers": "Ashley Jex Wagner, Marley Prudeaux & Miika Salmi Lipiäinen"
+    },
+    {
+      "format": "Fireside chat",
+      "title": "The Art of Renewal: Rewiring Organizational Change",
+      "speakers": "Karoliina Jarenko, Simo Routarinne & Mikko Heikinpoika"
+    },
+    {
+      "format": "Keynote",
+      "title": "The Science of Play — The Building Blocks of Future Leadership",
+      "speakers": "Katriina Heljakka"
+    },
+    {
+      "format": "Keynote",
+      "title": "Interpretation as a Human Skill — Finding Meaning Beyond the Obvious",
+      "speakers": "Perttu Pölönen"
+    },
+    {
+      "format": "Fireside chat",
+      "title": "Leading Organizational Creativity — How To Make It or Break It",
+      "speakers": "Siamäk Naghian, Aino Ahlnäs, Timo Karanko & Kimmo Timonen"
+    },
+    {
+      "format": "Fireside chat",
+      "title": "City as a Canvas — How Artists Create Environments",
+      "speakers": "Samppa Lappalainen, Karoliina Korppoo, Dennis Schmees & Jani Jalonen"
+    },
+    {
+      "format": "Fireside chat",
+      "title": "Creative Economy — Finland's Next Growth Lever?",
+      "speakers": "Atte Jääskeläinen, Katja Lindroos & Aki Pöntinen"
+    },
+    {
+      "format": "Fireside chat",
+      "title": "What Corporate Events Can Learn From Club Culture",
+      "speakers": "Asaf Peled, Maria Sahlstedt & Ukko-Pekka Itäpelto"
+    },
+    {
+      "format": "Fireside chat",
+      "title": "No Safe Route — What Business Leaders Can Learn from Creative Resilience",
+      "speakers": "Elina Arponen, Jani Pösö, Kati Nuora & Kati Uusi-Rauva"
     }
   ],
   "whoItsFor": [
@@ -75,84 +278,7 @@
       "description": "Bringing creative and cultural expertise into conversations, relationships and projects beyond the cultural sector."
     }
   ],
-  "speakers": [
-    {
-      "name": "Esa Saarinen",
-      "role": "Philosopher",
-      "image": "../../assets/speakers/esa-saarinen.png"
-    },
-    {
-      "name": "Perttu Pölönen",
-      "role": "Futurist, Inventor & Author",
-      "image": "../../assets/speakers/perttu-polonen.png"
-    },
-    {
-      "name": "Sanna-Kaisa Niikko",
-      "role": "CMO",
-      "organisation": "Marimekko",
-      "image": "../../assets/speakers/sanna-kaisa-niikko.png"
-    },
-    {
-      "name": "Tunna Milonoff",
-      "role": "Cultural Architect",
-      "image": "../../assets/speakers/tunna-milonoff.png"
-    },
-    {
-      "name": "Karri \"Paleface\" Miettinen",
-      "role": "Artist, Activist & Cultural Commentator",
-      "image": "../../assets/speakers/karri-paleface-miettinen.png"
-    },
-    {
-      "name": "Galit Ariel",
-      "role": "Techno-Futurist & Author",
-      "image": "../../assets/speakers/galit-ariel.png"
-    },
-    {
-      "name": "Ashley Jex Wagner",
-      "role": "Head of Live Experiences",
-      "organisation": "Supercell",
-      "image": "../../assets/speakers/ashley-jex-wagner.png"
-    },
-    {
-      "name": "Rolf Ekroth",
-      "role": "Fashion Designer",
-      "image": "../../assets/speakers/rolf-ekroth.png"
-    },
-    {
-      "name": "Sonya Lindfors",
-      "role": "Art Director",
-      "organisation": "UrbanApa",
-      "image": "../../assets/speakers/sonya-lindfors.png"
-    },
-    {
-      "name": "Alf Rehn",
-      "role": "Professor of Innovation & Management",
-      "image": "../../assets/speakers/alf-rehn.png"
-    }
-  ],
   "programme": [],
-  "whatsChanging": {
-    "eyebrow": "ODDference 2027",
-    "headline": "The programme is the reason to come. The whole event is part of the programme.",
-    "body": "The first ODDference proved the room and the question. In 2027, we are putting more creative work into the event itself — while keeping the professional content at the centre.",
-    "items": [
-      {
-        "number": "01",
-        "title": "Creative practice in the environment",
-        "body": "Spatial design, performances, installations, food, music and other interventions can become part of how ODDference communicates its ideas, not entertainment added around them."
-      },
-      {
-        "number": "02",
-        "title": "A direct connection to ODDfest",
-        "body": "ODDference takes place alongside the wider ODDfest week across Helsinki, giving the professional event a direct connection to what is happening in the city."
-      },
-      {
-        "number": "03",
-        "title": "Time to actually meet",
-        "body": "We are building real time and structure for people to meet potential clients, partners, collaborators and peers outside their existing networks instead of leaving every useful encounter to chance."
-      }
-    ]
-  },
   "tickets": [
     {
       "name": "Blind Bird",
@@ -169,6 +295,7 @@
       "ctaLabel": "Buy Blind Bird",
       "href": "/tickets",
       "recommended": true,
+      "badgeLabel": "Available until 1 Nov 2026",
       "noteLink": {
         "label": "Want to know more before buying? Email hello@oddfest.co",
         "href": "mailto:hello@oddfest.co"
@@ -183,7 +310,8 @@
       "status": "Not on sale yet",
       "benefits": ["Full ODDference 2027 access"],
       "ctaLabel": "See tickets",
-      "href": "/tickets"
+      "href": "/tickets",
+      "locked": true
     },
     {
       "name": "Regular Ticket",
@@ -194,7 +322,8 @@
       "status": "Not on sale yet",
       "benefits": ["Full ODDference 2027 access"],
       "ctaLabel": "See tickets",
-      "href": "/tickets"
+      "href": "/tickets",
+      "locked": true
     }
   ],
   "partnershipCta": {
@@ -204,6 +333,48 @@
     "linkLabel": "Talk to us about partnering →",
     "href": "/work-with-odd?interest=oddference_corporate#enquiry-form"
   },
+  "faq": [
+    {
+      "question": "What is ODDference?",
+      "answer": "A professional event where creative and cultural practitioners take the stage as experts rather than as entertainment, and business leaders, founders, policymakers and institutions come to learn from them. The 2026 edition ran over two days in central Helsinki with 25 speakers and more than 30 sessions."
+    },
+    {
+      "question": "When and where is ODDference 2027?",
+      "answer": "Helsinki. The exact dates and venues are not confirmed yet — ticket holders hear first as each piece is settled. ODDference takes place alongside the wider ODDfest week across the city."
+    },
+    {
+      "question": "Is the 2027 programme published?",
+      "answer": "Not yet. Blind Bird is deliberately sold before the programme is complete, which is why it is the lowest price the event will be sold at. The 2026 speakers and sessions above are there so you can judge what the event is actually like before the next line-up exists."
+    },
+    {
+      "question": "Why buy before the programme is announced?",
+      "answer": "Price. Blind Bird is €250, Early Bird is €350 and the regular ticket is €450, so committing early is worth €200 against the full price. If you would rather wait for the line-up, the later tiers will be there."
+    },
+    {
+      "question": "Can I buy an Early Bird or regular ticket now?",
+      "answer": "No. One tier is on sale at a time — right now that is Blind Bird. The other two are shown with their real prices so you can see what waiting costs, and they open in turn."
+    },
+    {
+      "question": "Does an ODDference ticket include ODDfest?",
+      "answer": "ODDference 2027 takes place alongside ODDfest week, and the 2026 ODDference Pass included ODDfest access. What the 2027 ticket includes beyond ODDference itself is not settled yet — the ticket page is the source of truth for what each ticket covers."
+    },
+    {
+      "question": "What language is ODDference in?",
+      "answer": "ODDference 2026 ran in English, with speakers from Finland, Denmark, Canada and the US."
+    },
+    {
+      "question": "Who is it for?",
+      "answer": "Business leaders, founders, business development and partnership people, organisational leaders, policymakers and institutions, and creative leaders working beyond the cultural sector. It is built for people who want perspectives and relationships outside their own industry — see \"Who it's for\" above."
+    },
+    {
+      "question": "Can my organisation partner with ODDference?",
+      "answer": "Yes. Partnerships can be an idea, a question, expertise or resources — the ones that work improve the event for the people in the room rather than adding a logo. Use the partnership link on this page and tell us what you have in mind."
+    },
+    {
+      "question": "I have a question that isn't answered here.",
+      "answer": "Email hello@oddfest.co — including anything about an existing ticket order."
+    }
+  ],
   "railLeft": [
     {
       "kind": "logo"

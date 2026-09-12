@@ -145,6 +145,95 @@ test('a sold-out active tier is never sold as available', async ({ page }) => {
   await expect(blindBird.locator('a.pill')).toHaveText('See tickets');
 });
 
+// The 2026-09-11 ticket-block pass. Two separate promises to a reader:
+//   * the badge states a real deadline, not a sales opinion;
+//   * a tier you cannot buy yet is legibly priced and visibly inert.
+// Both are easy to regress silently — the badge text is content, and the
+// locked state is toggled from a script — so they get assertions rather
+// than a screenshot.
+test('the badge on the live tier states the sale deadline', async ({ page }) => {
+  await page.route(CATALOG_ROUTE, (route) =>
+    route.fulfill({ contentType: 'application/json', body: catalogBody() }),
+  );
+  await page.goto('/oddference');
+  await tickets(page);
+
+  const badge = page.locator('[data-ticket-slug="blind-bird"] .pricing-badge');
+  await expect(badge).toBeVisible();
+  await expect(badge).toHaveText('Available until 1 Nov 2026');
+  // The catalog has no field for this text, so the sync must leave it alone
+  // rather than overwrite it with anything of its own.
+  await expect(badge).not.toHaveText(/recommended/i);
+});
+
+test('an upcoming tier shows its real price and cannot be bought', async ({ page }) => {
+  await page.route(CATALOG_ROUTE, (route) =>
+    route.fulfill({ contentType: 'application/json', body: catalogBody() }),
+  );
+  await page.goto('/oddference');
+  await tickets(page);
+
+  for (const [slug, amount] of [
+    ['early-bird', '350'],
+    ['regular', '450'],
+  ] as const) {
+    const card = page.locator(`[data-ticket-slug="${slug}"]`);
+    await expect(card).toHaveClass(/is-locked/);
+    // The price is the whole reason these cards are on the page: a reader
+    // has to be able to see what waiting costs them.
+    await expect(card.locator('.pricing-price')).toBeVisible();
+    expectPrice(await card.locator('.pricing-price').textContent(), amount);
+    // Dimmed, but not to the point of being decorative. Polled rather than
+    // read once: the card has just been scrolled into view, so the shared
+    // `.reveal` transition is still running and a single read catches it
+    // part-way up (measured at 0.04 on the first attempt at this). The
+    // resting value is what the assertion is about.
+    await expect
+      .poll(async () => card.evaluate((el) => parseFloat(getComputedStyle(el).opacity)), {
+        message: `${slug} should settle at its dimmed resting opacity`,
+      })
+      .toBeCloseTo(0.55, 2);
+    // No usable route to checkout — hidden, out of the tab order, and
+    // announced as disabled. Still in the DOM so the sync can restore it.
+    const cta = card.locator('a.pill');
+    await expect(cta).toHaveCount(1);
+    await expect(cta).toBeHidden();
+    await expect(cta).toHaveAttribute('aria-disabled', 'true');
+    await expect(cta).toHaveAttribute('tabindex', '-1');
+  }
+});
+
+test('the catalog opening a tier makes its button real again', async ({ page }) => {
+  // The inverse of the test above, and the reason the anchor is hidden
+  // rather than removed: nothing here may need a content edit or a redeploy
+  // to start selling.
+  await page.route(CATALOG_ROUTE, (route) =>
+    route.fulfill({
+      contentType: 'application/json',
+      body: catalogBody([
+        { status: 'sale_ended', availableToPurchase: 0 },
+        { status: 'active', availableToPurchase: 40 },
+      ]),
+    }),
+  );
+  await page.goto('/oddference');
+  await tickets(page);
+
+  const early = page.locator('[data-ticket-slug="early-bird"]');
+  await expect(early).not.toHaveClass(/is-locked/);
+  const cta = early.locator('a.pill');
+  await expect(cta).toBeVisible();
+  await expect(cta).toHaveText('Buy Early Bird');
+  await expect(cta).not.toHaveAttribute('aria-disabled', 'true');
+  await expect(cta).toHaveAttribute('href', '/tickets');
+
+  // A closed tier is *not* the same as an upcoming one — it must stay at
+  // full contrast, because "you missed it" is the thing the reader needs.
+  const blindBird = page.locator('[data-ticket-slug="blind-bird"]');
+  await expect(blindBird).not.toHaveClass(/is-locked/);
+  await expect(blindBird.locator('a.pill')).toBeVisible();
+});
+
 test('an unreachable backend leaves an honest page, not a broken one', async ({ page }) => {
   await page.route(CATALOG_ROUTE, (route) => route.abort());
   await page.goto('/oddference');

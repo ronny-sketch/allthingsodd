@@ -1,4 +1,36 @@
 ---
+// ODDfest — rebuilt 2026-09-11 at Ronny's direct request, to this order:
+//
+//   1 hero · 2 what is ODDfest · 3 how it works · 4 how to join ·
+//   5 what has happened before · 6 FAQ
+//
+// What changed, and why none of it is "hidden for later":
+//
+// The hero now carries the same anatomy as ODDspace's — eyebrow, logo, h1,
+// a support line, meta, and two CTAs — because a visitor landing here had no
+// way to act without scrolling. It keeps the aftermovie rather than adopting
+// ODDspace's photo grid: the ask was for the same structure, not the same
+// medium, and the film is the one asset that shows what this actually felt
+// like. FullbleedVideoHero already took every one of these props for
+// ODDference; nothing new was built for it.
+//
+// "You make the event. ODD builds the shared layer." and "How it works" were
+// two adjacent sections making one argument — who does what, then what
+// actually happens — so they are now one chapter. The "shared platform"
+// sub-block inside the first one is deleted outright: it promised 2027
+// programme and discovery-platform features that nobody has built or
+// confirmed. See content.config.ts's `ownership` block for the field-level
+// record.
+//
+// "Register your event" became "How to join": same job, but with a second
+// way in for a reader who has no event to submit yet, and a line of
+// reassurance for the one who thinks their idea is too unfinished to show.
+//
+// "What has happened before" is new, and is the page's proof chapter — 2026
+// in the past tense, honestly, as the reason 2027 has the shape it does. It
+// sits after the ask rather than before it because Ronny asked for that
+// order, and it works: explain, ask, then answer "is this real?" and "what
+// else am I wondering?" back to back.
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SubpageFrame from '../components/sections/SubpageFrame.astro';
@@ -7,6 +39,7 @@ import SectionIntro from '../components/sections/SectionIntro.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import ProgrammeList from '../components/sections/ProgrammeList.astro';
 import OddfestExamples from '../components/sections/OddfestExamples.astro';
+import Timeline from '../components/sections/Timeline.astro';
 import FAQList from '../components/sections/FAQList.astro';
 import Pill from '../components/primitives/Pill.astro';
 import oddfestWordmark from '../assets/logos/oddfest-wordmark.svg';
@@ -22,77 +55,100 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <SubpageFrame slug={page._slug} railLeft={page.railLeft} railRight={page.railRight}>
-    <!-- 1. Hero: ODDfest logo + "Helsinki's creative week." (the page's one h1),
-         rendered inside FullbleedVideoHero itself — no separate title/intro
-         block repeats it below, per the 2027 rebuild brief. -->
+    <!-- 1. Hero. Same anatomy as ODDspace's SpaceHero — eyebrow, wordmark,
+         the page's one h1, a support line, meta, and both CTAs — over the
+         aftermovie instead of a photo grid. Every prop here already existed
+         on FullbleedVideoHero for ODDference. -->
     <FullbleedVideoHero
       slot="hero"
       video={page.heroMedia.video}
       poster={page.heroMedia.poster}
+      eyebrow={page.eyebrow}
       sub={page.heroMedia.sub}
+      support={page.heroSupport}
       meta={page.meta}
       logo={oddfestWordmark}
       logoAlt="ODDfest"
+      primaryCta={page.primaryCta}
+      secondaryCta={page.secondaryCta}
     />
 
-    <!-- 2. What ODDfest is: one consolidated section (absorbs the old
-         separate who-can-take-part / what-ODD-provides / organiser-ownership
-         sections into a single body). No CTA here (2026-09-02 copywriting
-         pass, final-review UX note): let the visitor understand How it
-         works first, then present the primary Register CTA at higher
-         visual emphasis further down the page. -->
+    <!-- 2. What ODDfest is — the one consolidated explainer, with the two
+         ways to look back at 2026 directly under it. They belong here and
+         not in the hero: 2026 is context for understanding what this is,
+         not the thing being offered. -->
     <SectionIntro
       eyebrow={page.whatItIs.eyebrow}
       headline={page.whatItIs.headline}
       body={page.whatItIs.body}
     />
+    <div class="oddf-lookback reveal">
+      <span class="oddf-lookback-label">{page.lookBack.label}</span>
+      <div class="oddf-lookback-actions">
+        <Pill
+          href={page.lookBack.thankYou.href}
+          variant="outline"
+          magnetic
+          target={page.lookBack.thankYou.external ? '_blank' : undefined}
+        >
+          {page.lookBack.thankYou.label}
+        </Pill>
+        <Pill
+          href={page.lookBack.oldSite.href}
+          variant="outline"
+          magnetic
+          target={page.lookBack.oldSite.external ? '_blank' : undefined}
+        >
+          {page.lookBack.oldSite.label}
+        </Pill>
+      </div>
+    </div>
 
-    <!-- NEW SECTION (2026-09-02 copywriting pass) — "You make the event.
-         ODD builds the shared layer.": a clear host/ODD responsibility
-         split, plus a smaller shared-platform explainer beneath it. -->
+    <!-- 3. How it works — one chapter, two movements: who is responsible for
+         what, then the four steps that follow from it. These were separate
+         adjacent sections until 2026-09-11; the "shared platform" block that
+         used to sit between them is deleted, not moved. -->
     <section class="oddf-sub oddf-layer">
       <div class="wrap">
         <div class="section-head">
-          <h2>{page.sharedLayer.headline}</h2>
+          <h2>{page.ownership.headline}</h2>
         </div>
         <div class="oddf-layer-grid reveal">
           <div class="oddf-layer-col">
-            <h3>{page.sharedLayer.host.title}</h3>
-            <p>{page.sharedLayer.host.body}</p>
+            <h3>{page.ownership.host.title}</h3>
+            <p>{page.ownership.host.body}</p>
           </div>
           <div class="oddf-layer-col">
-            <h3>{page.sharedLayer.odd.title}</h3>
-            <p>{page.sharedLayer.odd.body}</p>
+            <h3>{page.ownership.odd.title}</h3>
+            <p>{page.ownership.odd.body}</p>
           </div>
         </div>
-        <div class="oddf-layer-platform reveal">
-          <h3>{page.sharedLayer.platform.title}</h3>
-          <p>{page.sharedLayer.platform.body}</p>
+        <p class="oddf-layer-closing reveal">{page.ownership.closing}</p>
+        <div class="oddf-steps">
+          <span class="oddf-steps-label">{page.ownership.stepsLabel}</span>
+          <FeatureGrid cards={page.howItWorks} layout="four-column" />
         </div>
-        <p class="oddf-layer-closing reveal">{page.sharedLayer.closing}</p>
       </div>
     </section>
 
-    <!-- 3. How it works: 4 steps. -->
-    <section class="oddf-sub">
+    <!-- 4. How to join — the page's one ask, at the highest visual weight it
+         has. Two ways to act so the section has no dead end, and the
+         reassurance line directly under them, where someone hesitating over
+         whether their idea is "ready" will actually read it. -->
+    <section id="join" class="oddf-sub oddf-join">
       <div class="wrap">
-        <div class="section-head">
-          <h2>How it works</h2>
+        <span class="eyebrow">{page.join.eyebrow}</span>
+        <h2>{page.join.headline}</h2>
+        <p>{page.join.body}</p>
+        <div class="oddf-join-actions">
+          <Pill href={page.join.cta.href} variant="ticket" magnetic class="oddf-join-cta">
+            {page.join.cta.label}
+          </Pill>
+          <Pill href={page.join.altCta.href} variant="outline" magnetic>
+            {page.join.altCta.label}
+          </Pill>
         </div>
-        <FeatureGrid cards={page.howItWorks} layout="four-column" />
-      </div>
-    </section>
-
-    <!-- 5. Register your event: the primary CTA — moved to sit immediately
-         after How it works (2026-09-02 UX note), with a visibly larger,
-         more conversion-focused Pill than an ordinary tertiary link. -->
-    <section id="register" class="oddf-sub oddf-register">
-      <div class="wrap">
-        <h2>{page.register.headline}</h2>
-        <p>{page.register.body}</p>
-        <Pill href={page.register.cta.href} variant="ticket" magnetic class="oddf-register-cta">
-          {page.register.cta.label}
-        </Pill>
+        <p class="oddf-join-reassurance">{page.join.reassurance}</p>
       </div>
     </section>
 
@@ -113,6 +169,33 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       )
     }
 
+    <!-- 5. What has happened before — the proof chapter. Reuses About's
+         Timeline for the year-by-year beats rather than forking a component
+         for the same year/title/body row. -->
+    <section class="oddf-sub oddf-history">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">{page.history.eyebrow}</span>
+          <h2>{page.history.headline}</h2>
+        </div>
+        <div class="oddf-history-lede reveal">
+          {page.history.body.split(/\r?\n\s*\r?\n/).map((para) => <p>{para.trim()}</p>)}
+        </div>
+        <Timeline items={page.history.chapters} />
+        <p class="oddf-history-closing reveal">{page.history.closing}</p>
+        <div class="oddf-history-cta reveal">
+          <Pill
+            href={page.history.cta.href}
+            variant="outline"
+            magnetic
+            target={page.history.cta.external ? '_blank' : undefined}
+          >
+            {page.history.cta.label}
+          </Pill>
+        </div>
+      </div>
+    </section>
+
     {
       /* No PhotoBreak here (2026-08-31 correction) — the previous image
          (assets/hero/archive-15.jpg, "Performers on stage during ODDfest")
@@ -124,12 +207,12 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     }
 
     {
-      // 4. Examples from 2026 — only renders once real, verified examples
-      // exist (see content.config.ts's `creativeWeekExample` comment: no
-      // invented events ship here). Empty today; this is the one open item
-      // in the rebuild that needs Ronny's real 2026 recap material.
-      // `examplesIntro`'s eyebrow/headline/closing are ready for that
-      // moment (2026-09-02 copywriting pass) — see oddfest.json.
+      // Real, named 2026 examples — only renders once verified ones exist
+      // (see content.config.ts's `creativeWeekExample` comment: no invented
+      // events ship here). Empty today; this is the one open item in the
+      // rebuild that needs Ronny's real 2026 recap material. Sits directly
+      // under "What has happened before", which is the chapter it belongs
+      // to — both are about what already happened.
       page.examples.length > 0 && (
         <section class="oddf-sub">
           <div class="wrap">
@@ -145,7 +228,27 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       )
     }
 
-    <!-- 6. FAQ -->
+    <!-- 6. Partner route (2026-09-11). The host ask above is this page's
+         primary conversion and keeps the loudest treatment; this is the
+         other real audience the page has to serve — an organisation that
+         wants to back the week rather than host inside it. It sits after
+         the proof chapter, where "is this real?" has just been answered,
+         and routes into the existing Work with ODD partnerships enquiry
+         rather than introducing a second form. -->
+    <section class="oddf-sub oddf-partner">
+      <div class="wrap">
+        <div class="oddf-partner-inner reveal">
+          <span class="eyebrow">{page.partnerCta.eyebrow}</span>
+          <h2>{page.partnerCta.title}</h2>
+          <p>{page.partnerCta.body}</p>
+          <Pill href={page.partnerCta.href} variant="outline" magnetic>
+            {page.partnerCta.linkLabel}
+          </Pill>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. FAQ -->
     <section class="oddf-sub">
       <div class="wrap">
         <div class="section-head">
@@ -175,6 +278,28 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
   .oddf-sub {
     padding: var(--space-24) 0;
   }
+
+  /* Partner band. Bordered rather than filled: a solid panel here read as a
+     second primary CTA competing with "How to join", which is the one thing
+     this page most needs a visitor to do. */
+  .oddf-partner-inner {
+    max-width: 46rem;
+    padding: var(--space-10);
+    border: 1px solid var(--color-paper-12);
+    border-radius: var(--radius-panel);
+  }
+  .oddf-partner-inner h2 {
+    margin: var(--space-2) 0 var(--space-4);
+  }
+  .oddf-partner-inner p {
+    margin: 0 0 var(--space-6);
+    max-width: 52ch;
+  }
+  @media (max-width: 640px) {
+    .oddf-partner-inner {
+      padding: var(--space-6);
+    }
+  }
   /* Mobile rhythm. 6rem top+bottom is tuned for a desktop column; stacked on
      a phone it puts ~192px of empty screen between two sections (measured
      across /work-with-odd, /oddference, /oddspace, /about and /media). Halved
@@ -186,39 +311,50 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       padding: var(--space-12) 0;
     }
   }
-  .oddf-register {
-    text-align: center;
-    background: var(--color-backstage);
-  }
-  .oddf-register .wrap {
+
+  /* "Look back at 2026" — the two archive buttons under the explainer.
+     Deliberately quiet (both outline, small label above) so they read as a
+     footnote to "What ODDfest is" rather than a second offer competing with
+     the hero's CTAs or the ask further down. */
+  .oddf-lookback {
     max-width: 40rem;
+    margin: calc(var(--space-12) * -1) auto 0;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
   }
-  .oddf-register h2 {
-    font: var(--text-heading-md);
-    color: var(--color-paper);
-    margin: 0;
+  .oddf-lookback-label {
+    font: var(--text-utility);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+    text-align: center;
   }
-  .oddf-register p {
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    line-height: 1.7;
-    color: var(--color-paper-60);
-    margin: 1.1rem 0 0;
+  .oddf-lookback-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem;
   }
-  .oddf-register :global(.pill) {
-    margin-top: 1.5rem;
-  }
-  /* Prominent registration CTA (2026-09-02 UX note) — visibly larger than
-     an ordinary tertiary Pill, using the `ticket` variant's existing
-     shadow/lift treatment for extra weight rather than inventing a new
-     button style. */
-  .oddf-register :global(.oddf-register-cta.pill) {
-    padding: 1rem 2.4rem;
-    font-size: 0.85rem;
-    letter-spacing: 0.07em;
+  /* The default Pill is `white-space: nowrap`, and these two labels are the
+     longest buttons on the page — below ~420px they would each force the
+     line box wider than the screen. Only these are released from it. */
+  @media (max-width: 460px) {
+    .oddf-lookback-actions {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+    }
+    .oddf-lookback-actions :global(.pill) {
+      white-space: normal;
+      text-align: center;
+    }
   }
 
-  /* "You make the event. ODD builds the shared layer." */
+  /* "How it works" — the responsibility split, its closing line, then the
+     numbered steps, all inside one section. */
   .oddf-layer-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -240,29 +376,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     line-height: 1.7;
     color: var(--color-paper-60);
   }
-  .oddf-layer-platform {
-    max-width: 42rem;
-    margin: var(--space-16) auto 0;
-    padding-top: var(--space-10);
-    border-top: 1px solid var(--color-paper-12);
-    text-align: center;
-  }
-  .oddf-layer-platform h3 {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 0.82rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-paper-40);
-    margin: 0;
-  }
-  .oddf-layer-platform p {
-    margin: 0.9rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    line-height: 1.7;
-    color: var(--color-paper-60);
-  }
   .oddf-layer-closing {
     max-width: 36rem;
     margin: var(--space-10) auto 0;
@@ -279,6 +392,113 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       gap: 2rem;
       text-align: center;
     }
+  }
+  /* The steps, now the second half of this same section rather than their
+     own. The rule above them is what keeps one section from reading as two:
+     it joins the two movements instead of separating them. */
+  .oddf-steps {
+    margin-top: var(--space-16);
+    padding-top: var(--space-10);
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .oddf-steps-label {
+    display: block;
+    text-align: center;
+    font: var(--text-utility);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+    margin-bottom: 1.8rem;
+  }
+
+  /* "How to join" — the page's one ask. Backstage ground and a ticket-variant
+     primary so it is unmistakably the conversion block and not another
+     editorial section. */
+  .oddf-join {
+    text-align: center;
+    background: var(--color-backstage);
+  }
+  .oddf-join .wrap {
+    max-width: 40rem;
+  }
+  .oddf-join .eyebrow {
+    display: block;
+    color: var(--color-paper-40);
+    margin-bottom: 0.9rem;
+  }
+  .oddf-join h2 {
+    font: var(--text-heading-md);
+    color: var(--color-paper);
+    margin: 0;
+  }
+  .oddf-join p {
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--color-paper-60);
+    margin: 1.1rem 0 0;
+  }
+  .oddf-join-actions {
+    margin-top: 1.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  /* Visibly larger than an ordinary tertiary Pill, using the `ticket`
+     variant's existing shadow/lift treatment for extra weight rather than
+     inventing a new button style (2026-09-02 UX note, kept). */
+  .oddf-join-actions :global(.oddf-join-cta.pill) {
+    padding: 1rem 2.4rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.07em;
+  }
+  .oddf-join-reassurance {
+    font-size: 0.85rem !important;
+    color: var(--color-paper-40) !important;
+    margin-top: 1.4rem !important;
+  }
+  @media (max-width: 460px) {
+    .oddf-join-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .oddf-join-actions :global(.pill) {
+      white-space: normal;
+      text-align: center;
+    }
+  }
+
+  /* "What has happened before" — lede paragraphs, the Timeline, a closing
+     line, then the one link out to the archived 2026 page. */
+  .oddf-history-lede {
+    max-width: 40rem;
+    margin: -1.5rem auto var(--space-12);
+  }
+  .oddf-history-lede p {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-paper-60);
+    margin: 0;
+  }
+  .oddf-history-lede p + p {
+    margin-top: 1.1rem;
+  }
+  .oddf-history-closing {
+    max-width: 38rem;
+    margin: var(--space-10) auto 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--color-paper-80);
+  }
+  .oddf-history-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-8);
   }
 
   /* "Last year, this looked like…" examples chapter — lede above the grid,

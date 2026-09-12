@@ -62,16 +62,40 @@ function applyTier(card: HTMLElement, tt: CatalogTicketType): void {
   }
 
   // The active tier gets the conversion emphasis (solid CTA + the badge);
-  // every other tier stays a quiet outline link to the storefront. Pill's
+  // every other tier is locked — a real price the reader can read, with an
+  // inert CTA, because there is nothing for them to buy there yet. Pill's
   // own classes are reused rather than restyled — see PricingGrid.astro.
+  //
+  // `upcoming` is narrower than `!isActive` on purpose: a sold-out or
+  // closed tier is also not purchasable, but dimming it would hide the one
+  // thing a reader needs to see (that they have missed it). Only a tier
+  // whose sale has not started yet gets the "later" treatment.
+  const upcoming = tt.status === 'upcoming';
   const cta = card.querySelector<HTMLAnchorElement>('a.pill');
   if (cta) {
     setText(cta, isActive ? `Buy ${tt.name}` : 'See tickets');
     cta.classList.toggle('pill-solid', isActive);
     cta.classList.toggle('pill-outline', !isActive);
+    // Both attributes together, in both directions — the catalog is the
+    // authority here, so a tier it has just opened must become a real,
+    // focusable link, not merely a brighter-looking one. See Pill.astro's
+    // `ariaDisabled` prop for why this stays an <a> throughout.
+    if (upcoming) {
+      cta.setAttribute('aria-disabled', 'true');
+      cta.setAttribute('tabindex', '-1');
+    } else {
+      cta.removeAttribute('aria-disabled');
+      cta.removeAttribute('tabindex');
+    }
   }
 
   card.classList.toggle('is-recommended', isActive);
+  card.classList.toggle('is-locked', upcoming);
+  // Only the badge's *visibility* is backend-owned. Its text is editorial
+  // (ODDference's is a sale deadline — "Available until 1 Nov 2026"), lives
+  // in oddference.json and is rendered at build time, so it is deliberately
+  // left alone here: the catalog has no field for it, and writing one from
+  // this script would mean inventing copy.
   const badge = card.querySelector<HTMLElement>('.pricing-badge');
   if (badge) badge.hidden = !isActive;
 }

@@ -194,11 +194,127 @@ real decisions worth recording:
 
    Two components changed with blast radius beyond this one page:
    `FullbleedVideoHero.astro` gained optional `primaryCta`/`secondaryCta`
-   props (additive — ODDfest's existing call, which passes neither, is
-   unaffected), and `PersonGrid.astro` gained an optional per-person
+   props (additive — ODDfest's call passed neither at the time; it passes
+   both as of the 2026-09-11 rebuild in point 7), and `PersonGrid.astro`
+   gained an optional per-person
    `image` (also used by `personItem`, so About's photo-less team keeps its
    existing plain typographic card; ODDference's real, verified 2026
    speaker photos render the new photo-led card instead).
+
+7. **The 2026-09-11 ODDfest rebuild**, at Ronny's direct request, put the
+   page in the order a reader actually asks things in: hero, what it is,
+   how it works, how to join, what has happened before, FAQ. Four
+   decisions worth recording:
+   - **The hero took ODDspace's anatomy, not its medium.** The brief was
+     "same structure as the ODDspace page" — eyebrow, wordmark, h1, a
+     support line, meta, two CTAs. It keeps the aftermovie behind all of
+     that rather than adopting `SpaceHero`'s photo grid: the film is the
+     only asset that shows what ODDfest felt like, and every prop needed
+     already existed on `FullbleedVideoHero` from the ODDference rebuild.
+     Nothing new was built. `secondaryCta`/`heroSupport` are declared on
+     the oddfest branch of `content.config.ts`, mirroring how ODDference
+     declares its own.
+   - **"You make the event. ODD builds the shared layer." and "How it
+     works" became one section**, because they were one argument told
+     twice — who is responsible for what, then what actually happens. The
+     `sharedLayer` field is now `ownership` and also carries the label
+     above the steps; `howItWorks` stays a bare `featureCard[]` array
+     rather than being folded in, because ODDspace/ODDagency/ODDstudio all
+     have a field of that name and CloudCannon's `_inputs` are keyed by
+     field name across the whole collection (the `caseTeaser` trap).
+   - **The "shared platform" block was deleted, not moved.** It described
+     2027 programme and discovery-platform features that are neither built
+     nor confirmed — the same promise-ahead-of-the-build this codebase
+     refuses everywhere else. `editorial-integrity.spec.ts` asserts it
+     stays gone.
+   - **The archived 2026 thank-you page is hosted, not rebuilt.** It lives
+     at `public/oddfest-2026/` as a standalone static page: a 63KB
+     self-contained scroll-credits experience with its own type, audio and
+     Flickr-hosted photography, and rebuilding it as an Astro route would
+     have meant rewriting something that was finished and correct. Three
+     things were changed in it — the six `.ttf` faces became this site's
+     own two subset `.woff2` files (114KB → 67KB, and `font-display:block`
+     became `swap`), the audio file lost the spaces in its name, and a
+     dated archive banner was added at the top. The banner exists because
+     the page was written in June 2026 and says 2027 will be "one cohesive
+     concept, one central location", which the current distributed model
+     has since superseded. Nothing in the original copy was rewritten: it
+     is a thank-you letter that was already sent, and the banner dates it
+     rather than revising it.
+
+   One thing that is deliberately _not_ in the rebuild: the "what has
+   happened before" section cites only figures this site already publishes
+   elsewhere (About's 2025 snapshot and /media's archive record). ODDfest
+   2026's own attendance was never published anywhere on this site, and the
+   internal records disagree with each other about 2025's — so the section
+   carries the 2025 numbers, names 2026 qualitatively, and invents nothing.
+
+8. **The 2026-09-11 ODDference restructure** took the page to the eight
+   sections Ronny specified — hero, the premise, three reasons, past
+   speakers, session highlights, who it's for, tickets & partnership, FAQ —
+   in that order. What is worth recording beyond the ordering:
+   - **The 2026 proof moved ahead of "who it's for".** A reader used to meet
+     a list of job titles before seeing anything that had actually happened.
+     The speaker roster also grew from the 10 that were in content to the
+     full, real 25 from the live 2026 page, with their real portraits.
+   - **`sessionHighlights` is new, and its source is not the website.**
+     `oddfest.co/oddference` never published session-level content — only
+     the three programme tracks and the speaker wall (verified against the
+     rendered page and the WordPress REST API, which has a `lineup` post
+     type and nothing programme-shaped). The twelve titles come verbatim
+     from the event's own master stage schedule in Drive ("ODDference
+     Ajolista"), with one typo corrected. Anything added here later must
+     come from a comparable record, not from memory.
+   - **"What changes in 2027" was removed**, not hidden: three cards of
+     intent about an unbuilt programme, sitting between the 2026 proof and
+     the ticket block. Its one load-bearing fact — ODDference runs alongside
+     ODDfest week across Helsinki — is kept, in the FAQ.
+   - **The ticket block stopped saying "Recommended".** On a ladder where
+     exactly one tier can be bought, that word describes a choice the reader
+     does not have; the badge now carries the real deadline instead
+     (`badgeLabel` in content — the catalog has no field for it, so
+     `oddference-tickets.ts` toggles the badge's visibility and never its
+     text). The other two tiers render `locked`: dimmed, priced, and with
+     their button hidden but still in the DOM, so the catalog can hand it
+     back the moment it opens that tier. `locked` is a build-time fallback
+     only — the runtime sync re-derives it from the catalog's `upcoming`
+     status, and deliberately does _not_ apply it to a sold-out or closed
+     tier, where "you missed it" is the thing the reader needs to see.
+   - **The conversion section stacked.** Tickets and the partnership ask
+     were side by side at `1.4fr 1fr`, which left the ticket grid 628px at
+     1440px wide — room for two of `PricingGrid`'s 260px tracks, so the
+     third tier always wrapped alone. Survivable when all three looked
+     alike; not once two are dimmed. Full width fits all three in one row
+     and the price progression reads left to right.
+
+9. **The 2026-09-11 editorial alignment pass** worked through the whole site
+   against the September planning review, which asked for editorial
+   simplification rather than a redesign. One rule ran through all of it:
+   one headline = one quickly understood thought, and every section has one
+   job. What changed, and the reasoning that is not obvious from the diff:
+   - **The homepage hero split in two.** Its h1 carried both halves of ODD's
+     mission in one sentence — a headline nobody finishes. The h1 now makes
+     one claim ("Creative work deserves better conditions than starting from
+     zero every time") and `opening.support`, a new optional `Hero` prop,
+     carries the second layer at body weight.
+   - **"Already in motion" stopped saying the numbers twice.** Its paragraph
+     restated all four figures that the stat row underneath it already
+     shows. `identity-integrity.spec.ts` guarded the old wording, so that
+     assertion now guards the timeframe claim rather than one sentence of it.
+   - **About's "Why now" section was removed, not shortened.** Its headline —
+     "When execution gets easier, judgment matters more" — was strategy
+     thinking that read well in a deck and told a visitor nothing about ODD.
+     Its one load-bearing fact (Finland's own creative-economy goals already
+     assume this expertise matters more) survives inside the opening
+     argument, which came down from five paragraphs to three. "What we have
+     learned" lost the two items the timeline and the impact numbers already
+     tell.
+   - **ODDfest gained a partner route.** The page converted hosts and nobody
+     else, while partners are the other audience it genuinely has. It is a
+     bordered band after the proof chapter, deliberately quieter than the
+     host ask, routing into the existing Work with ODD partnerships enquiry
+     rather than a second form.
+   - **ODDnetwork says the name is provisional**, because it is.
 
 **Nav breakpoint: 1024px, not 760px.** Originally set because "Work with
 ODD" was a genuinely long label next to the site's other single-word nav
@@ -352,6 +468,19 @@ entirely in the 2026-08-31 final implementation pass (see below).
   default for ODDfest, `'signal'` for ODDference) so the two heroes read as
   distinct product identities from one shared component rather than forking
   it — see the component's own comment and `docs/design-system.md`.
+
+  Since 2026-09-11 it also takes a `frame` prop, and ODDference passes
+  `frame="space"`. That is a second, orthogonal knob: `accent` picks the
+  color identity, `frame` picks the _proportions_. `'default'` is ODDfest's
+  original frame (a small headline under a very wide wordmark, light scrim,
+  standard `Pill` sizing); `'space'` reproduces `SpaceHero`'s — display-sized
+  headline, a darker centred scrim, the larger CTA pills ODDspace got the
+  same day — on ODDference's own video, so the two pages read as siblings
+  without ODDference giving up its film for a photo grid. Every value in that
+  block is lifted from `SpaceHero.astro` rather than re-derived; if one is
+  retuned, retune the other to match. Asked for directly; the alternative
+  considered and rejected was moving ODDference onto `SpaceHero` itself.
+
 - **ODDspace** — `SpaceHero`: an asymmetric grid of real space photography
   instead of one video (its brief asks for the space itself, shown through
   photography, to be the protagonist).
@@ -443,6 +572,44 @@ appearance: the requests are the thing that would actually breach ePrivacy
 Article 5(3), and they are invisible in a screenshot. Its ODDspace test now
 asserts the absence — no iframe on the page, no Preferences row in the
 banner — because "we removed the embed" is only true while both hold.
+
+## ODDspace conversion pages
+
+`/oddspace/membership` and `/oddspace/venue` (2026-09-11) are the two
+journeys `/oddspace` deliberately does not carry. That page's job is to make
+someone want the place; these two exist so that someone who already does can
+finish deciding — or plan a real event — without writing to us first. Both
+were asked for directly in the September website review: "someone seriously
+considering membership should be able to get all the necessary information
+before contacting us", and for the venue, "someone should be able to read it
+and know almost everything necessary before asking: is 27 October available?"
+
+Three decisions worth keeping:
+
+- **They are ODDspace pages, not new products.** Both reuse `_slug:
+"oddspace"`, so `SubpageFrame` gives them ODDspace's rails, logo and
+  frame, and both reuse `SpaceHero`/`SpaceShowcase`/`PricingGrid`/
+  `FeatureGrid`/`FAQList` rather than introducing components. Nothing new
+  was built except two page-scoped list/rate blocks.
+- **The membership page puts "what's not included" beside "what's
+  included", at the same size.** The studio carve-out and the absence of a
+  private desk are exactly what a member would otherwise discover after
+  paying. A layout where one column is a list and the other is a footnote
+  converts better and works worse.
+- **The venue page publishes what the site can stand behind and names the
+  rest as questions it answers per enquiry.** Member rates (€200 gallery
+  day, €100 auditorium half-day) are published because `/oddspace` already
+  publishes them. Capacities, dimensions, AV inventory, accessibility,
+  load-in, catering and non-member pricing are not, because nobody has
+  verified them: the internal rental guide marks its capacities "TBD —
+  confirm before publishing externally" and, as of 2026-09-11, carries three
+  mutually contradictory price lists. The `askUs` block is not a placeholder
+  waiting to be filled with plausible numbers — when a figure is genuinely
+  verified it moves into the page proper and leaves that list.
+
+`tests/functional/oddspace-conversion.spec.ts` asserts both halves: the
+commercial facts a visitor came for, and the absence of the internal draft's
+unconfirmed capacities.
 
 ## ODDspace events
 

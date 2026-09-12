@@ -116,28 +116,20 @@ collections_config:
           The solid button in the hero — "Buy Blind Bird" on ODDference,
           "Become a member" on ODDspace (also reused in ODDspace's "Enter
           the space" section), "Start a conversation" on Work with ODD
-          (scrolls to the enquiry form). Home, ODDfest, ODDagency and About
-          don't use this field.
+          (scrolls to the enquiry form), and the submit-an-event link on
+          ODDfest. Home, ODDagency and About don't use this field.
         options:
           subtype: object
       secondaryCta:
         type: object
-        label: Secondary button (ODDference / ODDspace)
+        label: Secondary button (ODDfest / ODDference / ODDspace)
         comment: >-
           The outline hero button — "Partner with ODDference" on ODDference,
           "Organise an event" on ODDspace (also reused in ODDspace's "Enter
-          the space" section).
+          the space" section), and the look-back-at-2026 link on ODDfest.
         options:
           subtype: object
           required: false
-      formAccessKey:
-        type: text
-        label: Web3Forms access key (Contact page only)
-        comment: >-
-          Free key from web3forms.com — paste it here to make the Contact
-          page's form actually send. Leave blank and the form still shows,
-          but tells visitors it isn't connected yet instead of silently
-          discarding what they type.
       heroMedia:
         type: object
         label: Hero video/image
@@ -151,11 +143,16 @@ collections_config:
           subtype: object
       heroSupport:
         type: text
-        label: Hero support line (ODDference only)
+        label: Hero support line (ODDfest only)
         comment: >-
-          NEW (2026-09-02 copywriting pass): the short practical-value
-          paragraph rendered under the hero's question-headline h1
-          ("title"), above the "meta" line.
+          The short practical-value paragraph rendered under the hero's h1,
+          above the "meta" line — on ODDfest (added 2026-09-11, when that
+          hero took ODDspace's full anatomy), under "Helsinki's creative
+          week." One or two sentences — it shares the screen with two
+          buttons. ODDference used it too until 2026-09-11, when its hero was
+          retuned to match ODDspace's (wordmark / short headline / meta /
+          buttons, no paragraph) and this line moved into "The premise"
+          below; on every other page text here appears nowhere.
       heroPhotos:
         type: array
         label: Hero photo grid (ODDspace only)
@@ -193,21 +190,12 @@ collections_config:
         options:
           required: false
         cascade: true
-      whyNow:
-        type: object
-        label: Why now (About only)
-        comment: >-
-          NEW (2026-09-02 copywriting pass): the technology/execution
-          argument, grounded in Finland's creative-economy context. "body"
-          is two real paragraphs (array), same rhythm as "argument" above.
-        options:
-          subtype: object
       howWeMakeItHappen:
         type: object
         label: What we build (About only)
         comment: >-
           The "pillars" (events/spaces/projects, 01-03) render right after
-          "whyNow"; "principles" ("Ways of working") render lower on the
+          the opening argument; "principles" ("Ways of working") render lower on the
           page, after the timeline — both still live in this one field
           (see about.astro), just rendered in two places.
         options:
@@ -554,26 +542,58 @@ collections_config:
         options:
           subtype: object
           required: false
-      register:
+      join:
         type: object
-        label: '"Register your event" (ODDfest only)'
+        label: '"How to join" (ODDfest only)'
         comment: >-
-          The primary CTA section — headline/body/cta. This is the real,
-          live "we're now collecting ideas for 2027" call, not a
-          leave-it-out-until-ready field like proof elsewhere: keep it
-          populated. Renders directly after "How it works" with a visually
-          larger CTA (2026-09-02 copywriting pass) — don't move it earlier.
+          The page's one ask — eyebrow/headline/body, two buttons and a line
+          of reassurance. This is the real, live "we're now collecting ideas
+          for 2027" call, not a leave-it-out-until-ready field like proof
+          elsewhere: keep it populated. "cta" is the main one (submit an
+          event idea); "altCta" is for a reader who is interested but has
+          nothing to submit yet, so the section has no dead end. Keep
+          "reassurance" — the commonest reason a host never submits is
+          believing their idea isn't finished enough to show anyone, and
+          that one line is what answers it. Renders directly after "How it
+          works"; don't move it earlier. (Was "register" until 2026-09-11.)
         options:
           subtype: object
-      sharedLayer:
+      ownership:
         type: object
-        label: '"You make the event. ODD builds the shared layer." (ODDfest only)'
+        label: '"How it works" — who does what (ODDfest only)'
         comment: >-
-          NEW (2026-09-02 copywriting pass): the host/ODD responsibility
-          split, right after "whatItIs". "platform.body" should only
-          promise 2027 programme/map/platform features that are actually
-          confirmed — don't turn it into a feature promise ahead of the
-          real build.
+          The host/ODD responsibility split, plus the closing line and the
+          small label above the four numbered steps ("How it works" below),
+          which render inside this same section. Was "sharedLayer" until
+          2026-09-11, when its "shared platform" sub-block was deleted: it
+          promised 2027 programme and discovery-platform features nobody had
+          built or confirmed. Don't put that promise back until the platform
+          actually exists and you can describe what it does.
+        options:
+          subtype: object
+      lookBack:
+        type: object
+        label: '"Look back at 2026" buttons (ODDfest only)'
+        comment: >-
+          The two archive links under "What ODDfest is": "thankYou" points at
+          the archived 2026 thank-you page hosted on this site at
+          /oddfest-2026/, and "oldSite" at oddfest.co, the 2026 site still
+          live on its own domain. Set "external: true" on a link to open it
+          in a new tab — it's on for oddfest.co (a different domain) and off
+          for the archived page, which is ours and has its own way back.
+        options:
+          subtype: object
+      history:
+        type: object
+        label: '"What has happened before" (ODDfest only)'
+        comment: >-
+          The page's proof chapter: ODDfest 2026 in the past tense, honestly,
+          as the reason 2027 has the shape it does. "chapters" is a timeline
+          of year/title/body beats. The same rule as everywhere else on this
+          site applies hardest here — never invent an audience, event,
+          venue or partner figure to make the story sound bigger. The
+          section reads perfectly well carrying no numbers at all, and a
+          number nobody can stand behind is worse than none.
         options:
           subtype: object
       examplesIntro:
@@ -703,13 +723,13 @@ collections_config:
           enough"): a single headline/body/link.
         options:
           subtype: object
-      whatsChanging:
+      reasonsIntro:
         type: object
-        label: What changes in 2027 (ODDference only)
+        label: Heading above the three reasons (ODDference only)
         comment: >-
-          One section: a headline/body explainer plus 3 short items (More
-          immersive / More connected / More intentional encounters). Avoid
-          claiming specific installations, artists or venues until confirmed.
+          NEW (2026-09-11): the eyebrow + headline over the three
+          "reasons" blocks. Without it those blocks read as a continuation
+          of "The premise" above rather than as the page's three arguments.
         options:
           subtype: object
       capabilities:
@@ -750,14 +770,34 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
+      sessionHighlights:
+        type: array
+        label: Session highlights (ODDference only)
+        comment: >-
+          NEW (2026-09-11): real sessions from ODDference 2026, as proof of
+          what the event is actually like. Titles are taken verbatim from
+          the event's own run sheet — don't rewrite them into marketing
+          copy, and don't add a session that didn't happen. "Format" is
+          Keynote or Fireside chat; "Speakers" is a plain display line
+          ("A, B & C"). A curated dozen reads better than the full
+          programme; the section doesn't render while this is empty.
+        options:
+          structures: _structures.session_highlight_item
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
       faq:
         type: array
         label: Practical / FAQ
         comment: >-
-          Appears on ODDfest and ODDspace. Uses a real accordion — no HTML
-          allowed in the answer text. ODDference dropped its own FAQ in the
-          2027 rebuild (no practical info that isn't already on the ticket
-          card) — re-add it there via content.config.ts if that changes.
+          Appears on ODDfest, ODDspace and (since 2026-09-11) ODDference.
+          Uses a real accordion — no HTML allowed in the answer text.
+          ODDference 2027 has a lot that genuinely isn't decided yet
+          (dates, venues, programme, exactly what a ticket covers beyond
+          ODDference itself): say so in the answer rather than filling it
+          in, the same rule the rest of this page's content follows.
         options:
           structures: _structures.faq_item
           disable_add: false
@@ -810,10 +850,18 @@ collections_config:
         type: array
         label: Tickets (ODDference only)
         comment: >-
-          Only the currently active tier belongs here — right now that's
-          Blind Bird (€300). Don't add Early Bird/Standard/Late until each
-          one actually goes on sale. No invented prices or checkout URLs —
-          see each tier's `href`.
+          The whole ticket ladder — Blind Bird, Early Bird, Regular — not
+          only the tier on sale (2026-09-11). Price, status, benefits and
+          button are read from the ticket backend at page load, so what you
+          type here is the fallback a visitor sees if that request fails:
+          keep it truthful, but change a real price in the backend, not
+          here. Two fields are yours alone, because the backend has no
+          equivalent: "badgeLabel" is the label on the badge above the tier
+          currently on sale (now "Available until 1 Nov 2026" — leave empty
+          for the old "Recommended"), and "locked: true" marks a tier as not
+          yet purchasable, which dims the card and removes its button while
+          leaving its real price readable. The backend overrides "locked"
+          the moment it opens that tier.
         options:
           structures: _structures.pricing_tier
           disable_add: false
@@ -1074,6 +1122,23 @@ collections_config:
         label: Social media links
         comment: Shown in the footer and the fullscreen menu.
         cascade: true
+      formAccessKeys:
+        type: object
+        label: Form routing — Web3Forms access keys
+        comment: >-
+          Where each kind of message is emailed. One free key per topic from
+          web3forms.com, each created with the address that topic should
+          reach: General → hello@oddfest.co, Partnering & ODDference →
+          partners@oddfest.co, ODDspace → space@oddfest.co, ODDfest →
+          fest@oddfest.co. The Partnering key is used twice — the Contact
+          page's "Partnering & ODDference" topic and the Work with ODD
+          enquiry form both notify it. Who sits behind those group addresses
+          is changed in Google Workspace admin, not here. Leave a topic blank
+          and it falls back to the General key; leave General blank too and
+          the contact form still shows but tells visitors it isn't connected
+          yet instead of silently discarding what they type.
+        options:
+          subtype: object
       contact:
         type: array
         label: Contact emails
@@ -1556,6 +1621,23 @@ _structures:
           benefits: []
           ctaLabel: 'Get in touch'
           href: '/contact'
+  session_highlight_item:
+    style: select
+    values:
+      - label: Session
+        default: false
+        preview:
+          text:
+            - key: title
+            - key: speakers
+          icon:
+            - mic
+        place_groups_below: false
+        tabbed: false
+        value:
+          format: 'Keynote'
+          title: ''
+          speakers: ''
   case_study:
     style: select
     values:
