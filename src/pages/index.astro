@@ -85,11 +85,7 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   preloadImageSrcset={preloadImage.srcset}
   preloadImageSizes={MOSAIC_SIZES}
 >
-  <Hero
-    mosaicAlt={page.hero.mosaicAlt}
-    headline={page.opening.headline}
-    support={page.opening.support}
-  />
+  <Hero mosaicAlt={page.hero.mosaicAlt} headline={page.opening.headline} />
 
   <div class="whatoddis-wrap">
     <FloatingCloud images={cloudPhotos} />
