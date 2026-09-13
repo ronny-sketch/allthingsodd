@@ -11,7 +11,7 @@
   "meta": "Vallila · Helsinki",
   "primaryCta": {
     "label": "Book the studio",
-    "href": "/work-with-odd?interest=oddspace&intent=studio#enquiry-form"
+    "href": "/work-with-odd/?interest=oddspace&intent=studio#enquiry-form"
   },
   "secondaryCta": {
     "label": "Back to ODDspace",
@@ -106,7 +106,7 @@
       "No hourly charge for studio use"
     ],
     "ctaLabel": "Ask about studio membership",
-    "href": "/work-with-odd?interest=oddspace&intent=studio#enquiry-form",
+    "href": "/work-with-odd/?interest=oddspace&intent=studio#enquiry-form",
     "note": "Existing ODDspace members add studio access for €100 / month."
   },
   "memberRates": [

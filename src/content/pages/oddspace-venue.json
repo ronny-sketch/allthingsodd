@@ -11,7 +11,7 @@
   "meta": "Vallila · Helsinki · No membership needed",
   "primaryCta": {
     "label": "Enquire about a date",
-    "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
+    "href": "/work-with-odd/?interest=oddspace&intent=event#enquiry-form"
   },
   "secondaryCta": {
     "label": "See the spaces",
@@ -198,7 +198,7 @@
     "body": "Tell us the date, roughly how many people, and what you're planning. You'll get availability, a price and a straight answer about what the space can do.",
     "cta": {
       "label": "Enquire about a date",
-      "href": "/work-with-odd?interest=oddspace&intent=event#enquiry-form"
+      "href": "/work-with-odd/?interest=oddspace&intent=event#enquiry-form"
     }
   },
   "railLeft": [

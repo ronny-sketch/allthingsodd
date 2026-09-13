@@ -57,7 +57,11 @@ async function openContact(page: Page, query = '', keys: Partial<typeof KEYS> = 
       ),
     }),
   );
-  await page.goto(`/contact${query}`);
+  // `/contact/`, not `/contact`: on Surge the un-slashed form 301s to the
+  // slashed one and the redirect drops the query string, so `?topic=` would
+  // never reach the form live. astro preview does not redirect, which is
+  // exactly how that went unnoticed — see query-string-links.spec.ts.
+  await page.goto(`/contact/${query}`);
   // Not just visible — ready. The submit handler is attached by a module
   // script, and clicking before it runs does nothing, which surfaces as an
   // unexplained waitForRequest timeout rather than as a routing failure.

@@ -11,7 +11,7 @@
   "meta": "Helsinki · 2027 · dates to be confirmed",
   "primaryCta": {
     "label": "Submit an event idea",
-    "href": "/contact?topic=oddfest_2027_event"
+    "href": "/contact/?topic=oddfest_2027_event"
   },
   "secondaryCta": {
     "label": "Look back at 2026",
@@ -82,11 +82,11 @@
     "reassurance": "An idea still at the notes-on-your-phone stage is a fine thing to send. Sending it commits you to nothing, and we would far rather hear it early than hear it finished and too late.",
     "cta": {
       "label": "Submit an event idea",
-      "href": "/contact?topic=oddfest_2027_event"
+      "href": "/contact/?topic=oddfest_2027_event"
     },
     "altCta": {
       "label": "Ask us a question first",
-      "href": "/contact?topic=oddfest_2027_question"
+      "href": "/contact/?topic=oddfest_2027_question"
     }
   },
   "history": {
@@ -205,6 +205,6 @@
     "title": "Partner with ODDfest",
     "body": "A week made by hundreds of people needs partners behind it — organisations that want to back the week itself, reach the people in it, or build something of their own inside it. Tell us what you have in mind and we will work out whether there is a real fit.",
     "linkLabel": "Talk to us about partnering →",
-    "href": "/work-with-odd?interest=strategic_partnership#enquiry-form"
+    "href": "/work-with-odd/?interest=strategic_partnership#enquiry-form"
   }
 }

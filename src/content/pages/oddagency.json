@@ -106,7 +106,7 @@
     "title": "Have something worth figuring out?",
     "body": "Send us the brief, the problem, or the unfinished version.",
     "linkLabel": "Start a conversation →",
-    "href": "/work-with-odd?interest=oddagency#enquiry-form"
+    "href": "/work-with-odd/?interest=oddagency#enquiry-form"
   },
   "railLeft": [
     { "kind": "logo" },
