@@ -3,7 +3,7 @@
   "seo": {
     "title": "ODDnetwork — stay involved beyond a single event",
     "description": "A developing year-round model for organisations that want to stay involved with ODD beyond one ticket, partnership or project — being shaped with the first organisations involved.",
-    "ogImage": "/og/membership.jpg"
+    "ogImage": "/og/work-with-odd.jpg"
   },
   "eyebrow": "ODDnetwork · Work with ODD",
   "title": "Some relationships should not reset after every event.",
@@ -19,7 +19,7 @@
     "body": "The working idea includes small conversations and gatherings, relevant ways into ODD activity across the year, and introductions when there is a real reason for people to meet. We do not want to publish a long benefits list before we know which parts are genuinely useful.",
     "cta": {
       "label": "Ask about ODDnetwork →",
-      "href": "/work-with-odd?interest=oddmembership#enquiry-form"
+      "href": "/work-with-odd/?interest=oddmembership#enquiry-form"
     }
   },
   "tiers": [],
@@ -27,6 +27,6 @@
     "eyebrow": "Interested?",
     "title": "Ask about ODDnetwork",
     "linkLabel": "Get in touch →",
-    "href": "/work-with-odd?interest=oddmembership#enquiry-form"
+    "href": "/work-with-odd/?interest=oddmembership#enquiry-form"
   }
 }

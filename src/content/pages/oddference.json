@@ -15,7 +15,7 @@
   },
   "secondaryCta": {
     "label": "Partner with ODDference",
-    "href": "/work-with-odd?interest=oddference_corporate#enquiry-form"
+    "href": "/work-with-odd/?interest=oddference_corporate#enquiry-form"
   },
   "heroMedia": {
     "video": "/video/oddference-hero.mp4",
@@ -331,7 +331,7 @@
     "title": "What could your organisation make possible inside ODDference?",
     "body": "Bring an idea, a question, expertise or resources. The best partnerships should improve the event for the people in the room, not just add a logo.",
     "linkLabel": "Talk to us about partnering →",
-    "href": "/work-with-odd?interest=oddference_corporate#enquiry-form"
+    "href": "/work-with-odd/?interest=oddference_corporate#enquiry-form"
   },
   "faq": [
     {

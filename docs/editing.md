@@ -273,6 +273,22 @@ written.) Until General is set too, the
 form renders normally but tells visitors it isn't connected yet, rather than
 silently discarding what they type.
 
+## Links with a query string need a trailing slash
+
+If a link carries anything after a `?` — `?topic=`, `?interest=`,
+`?intent=` — put a `/` before the `?`:
+
+- **Right:** `/contact/?topic=oddfest_2027_event`
+- **Wrong:** `/contact?topic=oddfest_2027_event`
+
+This is not style. Surge answers `/contact` with a redirect to `/contact/`,
+and that redirect **throws the query string away**. The wrong form still
+loads the page, so it looks fine when you click it — but the form arrives
+with nothing preselected, and a contact message can go to the wrong inbox.
+Found live on 2026-09-13, when eighteen links across the site had been doing
+exactly this. `tests/functional/query-string-links.spec.ts` now fails the
+build if one comes back.
+
 ## What you can't edit here (and why)
 
 - **Layout, spacing, colors, fonts, animation.** These come from the design

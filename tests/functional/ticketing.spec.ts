@@ -216,7 +216,7 @@ test.describe('/tickets/confirmation', () => {
         },
       ],
     });
-    await page.goto('/tickets/confirmation?order_token=test-token-123');
+    await page.goto('/tickets/confirmation/?order_token=test-token-123');
     await page.waitForLoadState('load');
 
     await expect(page.locator('h1')).toHaveCount(1);
@@ -239,7 +239,7 @@ test.describe('/tickets/confirmation', () => {
       currency: 'EUR',
       tickets: [],
     });
-    await page.goto('/tickets/confirmation?order_token=test-token-expired');
+    await page.goto('/tickets/confirmation/?order_token=test-token-expired');
     await page.waitForLoadState('load');
 
     await expect(page.locator('h1')).toHaveCount(1);
