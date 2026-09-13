@@ -211,9 +211,7 @@ const categories = togglableCategories(buildDeclaration(GA_MEASUREMENT_ID));
     }
   }
   .consent-banner p {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    line-height: 1.5;
+    font: var(--text-body);
     color: var(--color-paper-80);
     margin: 0;
   }
@@ -251,22 +249,21 @@ const categories = togglableCategories(buildDeclaration(GA_MEASUREMENT_ID));
   .consent-row-fixed .consent-row-head {
     cursor: default;
   }
+  /* Forta for the category name, at the Body size — a label inside a compact
+     panel, not a heading competing with the banner's own message. */
   .consent-row-label {
     font-family: var(--font-display);
-    font-size: 0.9rem;
+    font-size: var(--font-size-body);
     color: var(--color-paper);
   }
   .consent-row-state {
-    font-family: var(--font-body);
-    font-size: 0.66rem;
+    font: var(--text-small);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-caps);
     color: var(--color-paper-40);
   }
   .consent-row-summary {
-    font-family: var(--font-body);
-    font-size: 0.78rem;
-    line-height: 1.45;
+    font: var(--text-small);
     color: var(--color-paper-60);
   }
   .consent-check {
@@ -282,12 +279,14 @@ const categories = togglableCategories(buildDeclaration(GA_MEASUREMENT_ID));
   /* Separated from the last category rather than sitting directly under
      its summary line, where it read as part of that category rather than
      as a note about all of them. */
-  .consent-detail-note {
+  /* Scoped under .consent-banner so it outranks `.consent-banner p` by
+     specificity rather than by !important. */
+  .consent-banner .consent-detail-note {
     margin-top: var(--space-4);
     padding-top: var(--space-4);
     border-top: 1px solid var(--color-paper-12);
-    font-size: 0.75rem !important;
-    color: var(--color-paper-60) !important;
+    font: var(--text-small);
+    color: var(--color-paper-60);
   }
   .consent-detail-note a {
     color: var(--color-paper);
@@ -301,11 +300,10 @@ const categories = togglableCategories(buildDeclaration(GA_MEASUREMENT_ID));
     justify-content: flex-end;
   }
   .consent-btn {
-    font-family: var(--font-body);
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: var(--tracking-caps);
     padding: 0.6rem 1.2rem;
     border-radius: 999px;
     cursor: pointer;

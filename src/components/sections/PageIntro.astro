@@ -95,19 +95,15 @@ const { eyebrow, title, intro, primaryCta, secondaryCta, warpTitle = false } = A
      non-warped (default) case. */
   .page-intro-head h1,
   .page-intro-head :global(.page-intro-warping-title) {
-    font-family: var(--font-display);
-    font-weight: 400;
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
     color: var(--color-paper);
-    font-size: clamp(2.2rem, 5.5vw, 4rem);
-    line-height: 1.08;
     margin: 0.9rem 0 0;
   }
   .page-intro-head p {
     max-width: 38ch;
     margin: 1.6rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.8;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   .page-intro-ctas {

@@ -178,32 +178,27 @@ const page = entry.data;
     padding: 0 0 var(--space-16);
   }
   .about-argument p {
-    max-width: 40rem;
+    max-width: var(--measure-prose);
     margin: 0 auto;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.85;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   .about-argument p + p {
     margin-top: 1.4rem;
   }
   .about-lede {
-    max-width: 40rem;
+    max-width: var(--measure-prose);
     margin: -1.5rem auto 0;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.8;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   .about-legal-note {
     margin: var(--space-10) auto 0;
     max-width: 40rem;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.8rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
 
@@ -233,26 +228,28 @@ const page = entry.data;
     border-bottom: 1px solid var(--color-paper-12);
   }
   .about-principles-number {
-    font: var(--text-caption);
-    letter-spacing: 0.24em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     color: var(--color-paper-40);
   }
   /* h3, not h4: these sit directly under the section's own h2, and an
      h2 -> h4 jump is a real heading-order break for anyone navigating by
-     headings. The type scale below is unchanged — the level is semantic,
-     the size is a design choice. Found in the 2026-09-03 a11y sweep. */
+     headings. The type role below (Gabarito 600 at the Body size, a run-in
+     title for the paragraph under it) is independent of the level — the
+     level is semantic, the role is a design choice. Found in the 2026-09-03
+     a11y sweep. */
   .about-principles-list h3 {
-    font-family: var(--font-body);
+    max-width: var(--measure-prose);
+    font: var(--text-body);
     font-weight: 600;
-    font-size: 0.95rem;
     color: var(--color-paper);
     margin: 0;
   }
   .about-principles-list p {
+    max-width: var(--measure-prose);
     margin: 0.4rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    line-height: 1.6;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   @media (max-width: 640px) {
@@ -282,24 +279,26 @@ const page = entry.data;
   }
   .about-continue-list a {
     display: flex;
+    /* Wraps so the link drops under a long title on a narrow phone instead
+       of pushing the row past the screen edge. */
+    flex-wrap: wrap;
     align-items: baseline;
     justify-content: space-between;
-    gap: 1rem;
+    gap: 0.4rem 1rem;
     padding: 1.3rem 0;
     text-decoration: none;
     color: inherit;
   }
   .about-continue-title {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
+    text-wrap: balance;
   }
   .about-continue-go {
     flex-shrink: 0;
-    font-family: var(--font-body);
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.8rem;
     color: var(--color-paper-60);
     text-decoration: underline;
     text-decoration-thickness: 2px;

@@ -147,15 +147,15 @@ const KIND_LABEL: Record<string, string> = {
   }
   .legal .wrap {
     /* Narrower than the site's default wrap — this is the one page on the
-       site that is genuinely read top to bottom, and a 75ch measure is the
-       difference between a policy someone reads and one they scroll past. */
+       site that is genuinely read top to bottom, and a comfortable measure
+       is the difference between a policy someone reads and one they scroll
+       past. The paragraphs themselves hold to --measure-prose. */
     max-width: 46rem;
   }
   .legal-updated {
-    font-family: var(--font-body);
-    font-size: 0.78rem;
+    font: var(--text-small);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-caps);
     color: var(--color-paper-40);
     margin: 0 0 var(--space-10);
   }
@@ -163,17 +163,17 @@ const KIND_LABEL: Record<string, string> = {
     margin-bottom: var(--space-12);
   }
   .legal-section h2 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.35rem, 2.6vw, 1.9rem);
-    line-height: 1.2;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin: 0 0 var(--space-4);
   }
+  /* A subsection label inside running legal text: Forta for continuity with
+     the h2 above, at the Body size so it stays in the reading flow instead of
+     competing with the section title. */
   .legal-section h3 {
     font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.05rem;
+    font-size: var(--font-size-body);
     color: var(--color-paper);
     margin: 0 0 var(--space-2);
     display: flex;
@@ -182,9 +182,8 @@ const KIND_LABEL: Record<string, string> = {
   }
   .legal-section p,
   .legal-section li {
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.8;
+    max-width: var(--measure-prose);
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   .legal-section p {
@@ -206,10 +205,9 @@ const KIND_LABEL: Record<string, string> = {
     margin-bottom: var(--space-4);
   }
   .legal-tag {
-    font-family: var(--font-body);
-    font-size: 0.62rem;
+    font: var(--text-small);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-caps);
     color: var(--color-paper-40);
     border: 1px solid var(--color-paper-20);
     border-radius: 999px;
@@ -236,9 +234,7 @@ const KIND_LABEL: Record<string, string> = {
   }
   .legal-table-scroll th,
   .legal-table-scroll td {
-    font-family: var(--font-body);
-    font-size: 0.8rem;
-    line-height: 1.6;
+    font: var(--text-small);
     text-align: left;
     vertical-align: top;
     padding: var(--space-3) var(--space-4);
@@ -247,9 +243,8 @@ const KIND_LABEL: Record<string, string> = {
   }
   .legal-table-scroll thead th {
     font-family: var(--font-display);
-    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-caps);
     color: var(--color-paper-80);
     white-space: nowrap;
   }
@@ -262,24 +257,25 @@ const KIND_LABEL: Record<string, string> = {
     color: var(--color-paper-80);
   }
   .legal-table-scroll code {
+    /* The platform monospace for storage keys, at the Small size like the
+       rest of the table — the one place the site sets a third family. */
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.76rem;
+    font-size: var(--font-size-small);
     color: var(--color-paper);
     display: block;
   }
   .legal-scope {
     display: block;
     margin-top: 0.3rem;
-    font-size: 0.72rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
   .legal-settings-btn {
     margin-top: var(--space-8);
-    font-family: var(--font-body);
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: var(--tracking-caps);
     padding: 0.7rem 1.4rem;
     border-radius: 999px;
     background: var(--color-signal);
@@ -292,9 +288,7 @@ const KIND_LABEL: Record<string, string> = {
     opacity: 0.85;
   }
   .legal-section address {
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.8;
+    font: var(--text-body);
     font-style: normal;
     color: var(--color-paper-60);
   }

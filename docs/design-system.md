@@ -56,16 +56,103 @@ new low-opacity text color.
 
 ## Typography
 
-Two font families: `--font-display` (Forta — headlines) and `--font-body`
-(Gabarito — everything else). Roles in `typography.css`:
+Two faces: `--font-display` (Forta — the expressive, display face) and
+`--font-body` (Gabarito — the functional, reading face). Three kinds of text —
+display, body, UI — set on **one five-step ladder** for the entire site,
+defined in `src/styles/typography.css` (2026-09-13; it replaced a ten-role
+scale that components had drifted away from with dozens of local sizes).
 
-`display-xl` → `display-lg` → `heading-lg` → `heading-md` → `heading-sm` →
-`body-lg` → `body` → `small` → `utility` → `caption` (the `.eyebrow` label
-style).
+| Role    | Shorthand        | Face         | Size                                            | Line-height | Tracking   | For                                                                |
+| ------- | ---------------- | ------------ | ----------------------------------------------- | ----------- | ---------- | ------------------------------------------------------------------ |
+| Hero    | `--text-hero`    | Forta 400    | `clamp(3.25rem, 6vw, 5.25rem)`                  | `0.98`      | `-0.02em`  | Rare, genuinely dominant page statements                           |
+| Display | `--text-display` | Forta 400    | `clamp(2.125rem, 4vw, 3.25rem)`                 | `1.04`      | `-0.015em` | Page titles, major editorial statements, headline figures          |
+| Heading | `--text-heading` | Forta 400    | `clamp(1.5rem, 2.4vw, 2rem)`                    | `1.12`      | `-0.01em`  | Section, card, column, list, FAQ and pricing titles                |
+| Body    | `--text-body`    | Gabarito 400 | `clamp(1rem, calc(0.96rem + 0.2vw), 1.0625rem)` | `1.55`      | normal     | Every sentence a visitor is meant to read, and every form field    |
+| Small   | `--text-small`   | Gabarito     | `0.875rem`                                      | `1.4`       | normal     | Eyebrows, metadata, dates, labels, buttons, helper and status text |
 
-All fluid via `clamp()` — the exact values were lifted from the real site,
-not re-derived, so a heading that "looks like" an existing one almost
-certainly already has a role here.
+The size, line-height and tracking of each step also exist on their own
+(`--font-size-*`, `--line-height-*`, `--tracking-*`), plus two tracking values
+for uppercase Small: `--tracking-eyebrow` (0.16em) and `--tracking-caps`
+(0.05em).
+
+### Rules
+
+- **These are the only five font sizes.** There is no body-large, caption,
+  utility or heading-small. Hierarchy inside a role comes from weight, colour,
+  measure, position, spacing and capitalisation — never from a near-identical
+  sixth size. If larger type exposes a cramped component, fix its spacing or
+  layout; don't shrink that one component's text.
+- **Use the shorthand with its tracking:**
+
+  ```css
+  font: var(--text-heading);
+  letter-spacing: var(--tracking-heading);
+  ```
+
+  `font` resets weight to 400, so emphasis goes after it (`font-weight: 600`).
+
+- **Reading copy is Body — including inside cards.** Small is for supporting
+  information only. Nothing on the site is set below 14px.
+- **Only the display steps are fluid.** Body moves one pixel across the whole
+  range (16px → 17px) and Small doesn't move. Don't add breakpoint-specific
+  sizes; the tokens already work at every width.
+- **Body's 1rem floor is the iOS no-zoom guarantee.** Every input, select and
+  textarea uses Body, so no component needs its own `font-size: 16px` mobile
+  override — and a smaller desktop override on a field is a bug (one in the
+  newsletter popup silently re-enabled zoom-on-focus before this pass).
+- **Heading level is semantics, the role is design.** Pick `h2`/`h3` by
+  document structure, then pick the role by what the text is.
+- **Wrapping:** `h1`–`h4` get `text-wrap: balance` and `p`/`li`/`dd` get
+  `text-wrap: pretty` globally, from `typography.css`. Balance never changes a
+  heading's line count, which WarpingText's measured replacement relies on.
+- **Measure:** running prose holds to `--measure-prose` (52ch, roughly 65
+  characters of Body a line); short centred editorial intros can sit
+  narrower. Paragraph spacing is margin or gap, never extra line-height.
+
+### Two reuse patterns that are not new sizes
+
+- **Forta at the Small size** for the footer nav — the same brand voice as
+  the header, one step quieter, and it keeps the footer's top row on one line.
+- **Forta at the Body size** for compact, brand-voiced UI: primary nav
+  links, the SubpageRail/SubpageTicker word beats, price figures in
+  a rate list, order totals and the ticket label on `/tickets`, consent
+  category names, and legal subsection (`h3`) labels.
+  `font-family: var(--font-display); font-size: var(--font-size-body);`
+- **Gabarito 600 at the Body size** for run-in titles that sit directly on
+  their own paragraph: Timeline rows, About's "Ways of working", Work with
+  ODD's "When ODD is useful".
+
+Emphasis without size: `SectionIntro`'s `lead` prop (Home's "Why ODD",
+ODDference's big question) keeps Body and sets it in `--color-paper-80` on a
+wider measure; ODDstudio's "not included" paragraph uses full `--color-paper`.
+
+### Component mapping
+
+| Role    | Where                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Hero    | `HeroCentered` title when it carries a photograph (Work with ODD)                                                                                                                                                                                                                                                                                                                                                  |
+| Display | `PageIntro`, `SplitHero`, plain `HeroCentered` (About), `SpaceHero` and `FullbleedVideoHero frame="space"` h1s; `SectionIntro` headlines; `ProofGrid` figures; mobile menu links; 404 and ticketing page titles                                                                                                                                                                                                    |
+| Heading | Home hero line under the logo; ODDfest's default-frame hero line; `.section-head h2`; `Converge` column titles; `ProgramGrid`, `FeatureGrid`, `CaseGrid`, `OddfestExamples`, `SpaceShowcase` and `PersonGrid` titles; Work-with-ODD band; pricing tier names and prices; FAQ questions; resource, programme, pathway, audience and archive-year titles; filmstrip captions; newsletter popup; every closing-ask h2 |
+| Body    | All explanatory paragraphs, card descriptions, intros, FAQ answers, benefit lists, legal prose, notices, form fields, dropdown menu links                                                                                                                                                                                                                                                                          |
+| Small   | `.eyebrow` and every label/meta/category/date line, `Pill` and all other buttons, form labels, status and helper notes, footer contact and legal line, stat labels, rate-list notes, cookie table                                                                                                                                                                                                                  |
+
+Eyebrows are Small at 600, uppercase, `--tracking-eyebrow` (the `.eyebrow`
+class). Buttons and CTA labels are Small at 600, uppercase, `--tracking-caps`.
+
+### Documented exceptions
+
+1. **Mobile menu on short viewports.** Links are Display, and step down to
+   Heading below 560px of viewport height so seven links and both bars fit.
+   The step is to the next role, not to a height-scaled size.
+2. **`FullbleedVideoHero frame="space"` on short viewports.** The h1 steps from
+   Display to Heading below 620px of height, for the same reason.
+3. **`HeroCentered`** takes Hero only with a photograph; its plain variant is
+   laid out like `PageIntro` and takes Display.
+4. **Icon glyphs.** The Instagram tile badge and the ticket stepper's +/− use
+   `line-height: 1` so the glyph centres in its box; the ticket sheet's ×
+   close glyph uses the Heading size. None of them is text.
+5. **Cookie table storage keys** on `/privacy` use the platform monospace at
+   the Small size — the only third family on the site.
 
 ## Spacing & layout
 

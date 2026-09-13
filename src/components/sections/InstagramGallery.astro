@@ -132,7 +132,9 @@ const tiles = Array.from({ length: ODDSPACE_INSTAGRAM_POST_COUNT });
     position: absolute;
     top: 0.55rem;
     right: 0.7rem;
-    font-size: 0.85rem;
+    /* An icon glyph over the photograph, not text: Small size, on a line box
+       exactly the glyph's height so it pins to the corner. */
+    font-size: var(--font-size-small);
     line-height: 1;
     color: #fff;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
@@ -154,9 +156,7 @@ const tiles = Array.from({ length: ODDSPACE_INSTAGRAM_POST_COUNT });
   .ig-unavailable {
     display: none;
     margin: 0;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    line-height: 1.7;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   .ig-gallery[data-state='loading'] .ig-grid,
@@ -179,19 +179,16 @@ const tiles = Array.from({ length: ODDSPACE_INSTAGRAM_POST_COUNT });
     margin-top: 1.4rem;
   }
   .ig-follow {
-    font-family: var(--font-body);
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.8rem;
-    letter-spacing: 0.06em;
+    letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     /* Comfortably past the 24px WCAG target floor without moving anything
        around it — same hit-slop pattern as the section-intro CTA links. */
     padding: 0.7rem 0;
   }
   .ig-credit {
-    font-family: var(--font-body);
-    font-size: 0.68rem;
-    letter-spacing: 0.04em;
+    font: var(--text-small);
     opacity: 0.55;
     padding: 0.7rem 0;
   }

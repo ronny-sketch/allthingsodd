@@ -22,14 +22,15 @@ interface Props {
   // that happens to reuse this shape. Same convention as PageIntro/
   // SplitHero's warpTitle prop.
   warpHeadline?: boolean;
-  // Opt-in larger body setting (default off) — for the one or two places
-  // where this component is carrying the page's main explanatory passage
-  // rather than a short supporting note. Home's "Why ODD" uses it: it is the
-  // first thing a reader actually reads after the hero, and at the shared
-  // 0.98rem it set as a small grey block under a very large headline.
-  bodySize?: 'default' | 'large';
+  // Opt-in lead treatment (default off) — for the one or two places where
+  // this component carries the page's main explanatory passage rather than a
+  // short supporting note (Home's "Why ODD", ODDference's big question). It
+  // was a larger body size until the 2026-09-13 typography pass; the ladder
+  // has exactly one Body size, so the passage now gains its presence from
+  // brighter ink and a wider measure instead. See typography.css.
+  lead?: boolean;
 }
-const { eyebrow, headline, body, cta, warpHeadline = false, bodySize = 'default' } = Astro.props;
+const { eyebrow, headline, body, cta, warpHeadline = false, lead = false } = Astro.props;
 
 // Blank lines in `body` become real paragraphs (2026-09-11): several of these
 // sections carry three distinct points, and as one unbroken block a reader has
@@ -45,7 +46,7 @@ const paragraphs = body
 
 <section class="section-intro">
   <div class="wrap">
-    <div class={`section-intro-inner reveal ${bodySize === 'large' ? 'is-body-large' : ''}`}>
+    <div class={`section-intro-inner reveal ${lead ? 'is-lead' : ''}`}>
       <span class="eyebrow">{eyebrow}</span>
       {
         warpHeadline ? (
@@ -94,20 +95,15 @@ const paragraphs = body
      doesn't carry over to it (same pattern as PageIntro/SplitHero). */
   .section-intro-inner h2,
   .section-intro-inner :global(.section-intro-warping-headline) {
-    font-family: var(--font-display);
-    font-weight: 400;
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
     color: var(--color-paper);
-    font-size: clamp(1.9rem, 4vw, 2.9rem);
-    line-height: 1.1;
     margin: 0.9rem 0 0;
-    text-wrap: balance;
   }
   .section-intro-inner p {
     max-width: 44ch;
     margin: 1.4rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.98rem;
-    line-height: 1.8;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   /* Between two paragraphs the 1.4rem above is measuring from the headline,
@@ -117,22 +113,17 @@ const paragraphs = body
   .section-intro-inner p + p {
     margin-top: 1.1rem;
   }
-  /* `bodySize="large"` — bigger type, brighter ink and a wider measure, for
-     the one or two sections carrying a page's main explanatory passage. The
-     measure has to grow with the type or the larger size just buys more
-     lines at the same ~44 characters. */
-  .section-intro-inner.is-body-large p {
-    max-width: 52ch;
-    font-size: 1.12rem;
-    line-height: 1.75;
+  /* `lead` — the same Body size in brighter ink on a wider measure, for the
+     one or two sections carrying a page's main explanatory passage. */
+  .section-intro-inner.is-lead p {
+    max-width: var(--measure-prose);
     color: var(--color-paper-80);
   }
   .section-intro-link {
     display: inline-block;
     margin-top: 1.4rem;
-    font-family: var(--font-body);
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.82rem;
     color: var(--color-paper-80);
     text-decoration: underline;
     text-decoration-thickness: 2px;
@@ -144,29 +135,18 @@ const paragraphs = body
     color: var(--color-amber-bright);
     text-decoration-color: var(--color-amber-bright);
   }
-  /* Mobile typography (2026-09-02 mobile experience pass). The eyebrow and
-     headline stay centered — that centered editorial opening is the shape of
-     this component and reads correctly at any width. The body paragraph does
-     not: at 390px the measure is ~28 characters, and several of these
-     sections run 9-11 lines, so centered setting leaves every line starting
-     and ending in a different place with no left edge for the eye to return
-     to. Ragged-right at this measure is simply easier to read, and the block
-     itself stays centered in the column, so the composition is unchanged.
-
-     Line-height comes down with it: 1.8 is generous for a wide desktop
-     measure and turns into a very loose, sprawling column once the same
-     paragraph is three times as tall. */
+  /* Mobile (2026-09-02 mobile experience pass). The eyebrow and headline stay
+     centered — that centered editorial opening is the shape of this component
+     and reads correctly at any width. The body paragraph does not: on a phone
+     the measure is short and several of these sections run nine lines or
+     more, so centered setting leaves every line starting and ending in a
+     different place with no left edge for the eye to return to. Ragged-right
+     is simply easier to read there, and the block itself stays centered in
+     the column, so the composition is unchanged. Size and line-height stay on
+     the shared Body role at every width. */
   @media (max-width: 640px) {
     .section-intro-inner p {
       text-align: left;
-      line-height: 1.65;
-    }
-    /* 1.12rem is a desktop size against a desktop measure; at ~28 characters
-       per line it turns the same passage into a very tall column. Still a
-       step above the default body, just a smaller one. */
-    .section-intro-inner.is-body-large p {
-      font-size: 1.04rem;
-      line-height: 1.6;
     }
   }
   @media (max-width: 760px) {

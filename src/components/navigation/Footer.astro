@@ -143,8 +143,11 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     display: flex;
     flex-wrap: wrap;
     gap: 1.7rem;
+    /* Forta at the Small size — compact supporting navigation, one step
+       quieter than the header's primary links (Forta at Body). At Body it
+       also pushed the newsletter field off this row at desktop widths. */
     font-family: var(--font-display);
-    font-size: 1rem;
+    font-size: var(--font-size-small);
   }
   .foot-nav a {
     position: relative;
@@ -181,8 +184,9 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     scroll-margin-top: var(--nav-h);
   }
   .foot-nl-label {
-    font: var(--text-caption);
-    letter-spacing: 0.2em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
   }
@@ -202,8 +206,7 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem 2rem;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
+    font: var(--text-small);
   }
   .foot-contact a {
     color: var(--color-paper-60);
@@ -270,8 +273,9 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     border-top: 1px solid var(--color-paper-12);
   }
   .foot-supported-label {
-    font: var(--text-caption);
-    letter-spacing: 0.2em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
     flex-shrink: 0;
@@ -305,8 +309,7 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     border-top: 1px solid var(--color-paper-12);
     /* Clay itself measures 4.3:1 here — just under WCAG AA for text this small, so this
        spot uses a lightened reading of it (5.2:1) rather than the literal archive value. */
-    font-family: var(--font-body);
-    font-size: 0.72rem;
+    font: var(--text-small);
     color: #967e79;
   }
   /* The lightened clay above is tuned for a dark ground; under .theme-light

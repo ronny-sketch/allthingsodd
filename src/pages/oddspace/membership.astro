@@ -156,13 +156,11 @@ const page = entry.data;
   }
 
   .odsm-intro-line {
-    max-width: 40rem;
+    max-width: var(--measure-prose);
     margin: -2rem auto var(--space-24);
     padding: 0 1.5rem;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.98rem;
-    line-height: 1.8;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
 
@@ -179,7 +177,8 @@ const page = entry.data;
   }
   .odsm-list-block h2 {
     margin: var(--space-2) 0 var(--space-6);
-    font: var(--text-heading-md);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
   }
   .odsm-list {
     margin: 0;
@@ -191,9 +190,7 @@ const page = entry.data;
   .odsm-list li {
     padding-left: 1.4rem;
     position: relative;
-    font-family: var(--font-body);
-    font-size: 0.98rem;
-    line-height: 1.7;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
   .odsm-list li::before {
@@ -222,19 +219,15 @@ const page = entry.data;
   }
   .odsm-list-note {
     margin: var(--space-5) 0 0;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    line-height: 1.7;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
 
   .odsm-rates-note {
-    max-width: 44rem;
+    max-width: var(--measure-prose);
     margin: var(--space-8) auto 0;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    line-height: 1.75;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
 
@@ -245,12 +238,13 @@ const page = entry.data;
   }
   .odsm-final-inner h2 {
     margin: var(--space-2) 0 var(--space-4);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
   }
   .odsm-final-inner p {
     margin: 0 auto var(--space-8);
     max-width: 46ch;
-    font-family: var(--font-body);
-    line-height: 1.75;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
 </style>

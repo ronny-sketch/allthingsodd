@@ -64,17 +64,14 @@ import Layout from '../../layouts/Layout.astro';
     margin: 0 auto var(--space-16);
   }
   .tix-head h1 {
-    font-family: var(--font-display);
-    font-weight: 400;
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
     color: var(--color-paper);
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    line-height: 1.08;
     margin: 0.9rem 0 0;
   }
   .tix-head p {
     margin: 1.2rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
 
@@ -99,8 +96,7 @@ import Layout from '../../layouts/Layout.astro';
   .tix-loading,
   .tix-error,
   .tix-empty {
-    font-family: var(--font-body);
-    font-size: 0.9rem;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   :global(.tix-cart-notice) {
@@ -108,8 +104,7 @@ import Layout from '../../layouts/Layout.astro';
     padding: 0.8rem 1rem;
     background: var(--color-backstage);
     border: 1px solid var(--color-paper-12);
-    font-family: var(--font-body);
-    font-size: 0.82rem;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
 
@@ -135,16 +130,14 @@ import Layout from '../../layouts/Layout.astro';
   }
   :global(.tix-row-name) {
     display: block;
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.25rem;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
+    text-wrap: balance;
   }
   :global(.tix-row-desc) {
     margin: 0.5rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    line-height: 1.6;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   :global(.tix-row-benefits) {
@@ -156,8 +149,7 @@ import Layout from '../../layouts/Layout.astro';
     gap: 0.4rem;
   }
   :global(.tix-row-benefits li) {
-    font-family: var(--font-body);
-    font-size: 0.8rem;
+    font: var(--text-body);
     color: var(--color-paper-80);
     padding-left: 1rem;
     position: relative;
@@ -174,9 +166,8 @@ import Layout from '../../layouts/Layout.astro';
   }
   :global(.tix-row-price) {
     flex-shrink: 0;
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.4rem;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     white-space: nowrap;
   }
@@ -185,10 +176,9 @@ import Layout from '../../layouts/Layout.astro';
     justify-content: flex-end;
   }
   :global(.tix-status-badge) {
-    font-family: var(--font-body);
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--color-paper-40);
   }
@@ -209,8 +199,10 @@ import Layout from '../../layouts/Layout.astro';
     border: 1px solid var(--color-paper-20);
     background: transparent;
     color: var(--color-paper);
+    /* A +/− glyph centred in a 44px circle: the Body size, on a line box
+       exactly one glyph tall. */
     font-family: var(--font-body);
-    font-size: 1.1rem;
+    font-size: var(--font-size-body);
     line-height: 1;
     cursor: pointer;
     transition:
@@ -228,7 +220,7 @@ import Layout from '../../layouts/Layout.astro';
     min-width: 1.6rem;
     text-align: center;
     font-family: var(--font-display);
-    font-size: 1.1rem;
+    font-size: var(--font-size-body);
     color: var(--color-paper);
   }
 
@@ -250,8 +242,7 @@ import Layout from '../../layouts/Layout.astro';
     margin-bottom: 1.2rem;
   }
   .tix-summary :global(.tix-summary-empty) {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
   .tix-summary :global(.tix-summary-lines) {
@@ -263,10 +254,10 @@ import Layout from '../../layouts/Layout.astro';
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font: var(--text-small);
     color: var(--color-paper-80);
   }
+  /* Forta at the Body size — the order total in a compact summary panel. */
   .tix-summary :global(.tix-summary-total-row) {
     display: flex;
     justify-content: space-between;
@@ -274,13 +265,12 @@ import Layout from '../../layouts/Layout.astro';
     padding-top: 1.2rem;
     border-top: 1px solid var(--color-paper-12);
     font-family: var(--font-display);
-    font-size: 1.15rem;
+    font-size: var(--font-size-body);
     color: var(--color-paper);
   }
   .tix-summary :global(.tix-summary-vat-note) {
     margin: 0.4rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.7rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
   .tix-summary :global(.tix-checkout-btn) {
@@ -317,8 +307,7 @@ import Layout from '../../layouts/Layout.astro';
       background: var(--color-ink);
       border: none;
       border-top: 1px solid var(--color-paper-20);
-      font-family: var(--font-body);
-      font-size: 0.85rem;
+      font: var(--text-small);
       color: var(--color-paper);
       cursor: pointer;
       min-height: 44px;
@@ -374,7 +363,8 @@ import Layout from '../../layouts/Layout.astro';
     background: transparent;
     border: none;
     color: var(--color-paper-60);
-    font-size: 1.5rem;
+    /* The × is an icon glyph, sized on the Heading step. */
+    font-size: var(--font-size-heading);
     cursor: pointer;
   }
   .tix-sheet :global(.eyebrow) {
@@ -390,8 +380,7 @@ import Layout from '../../layouts/Layout.astro';
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font: var(--text-small);
     color: var(--color-paper-80);
   }
   .tix-sheet :global(.tix-summary-total-row) {
@@ -401,13 +390,12 @@ import Layout from '../../layouts/Layout.astro';
     padding-top: 1.2rem;
     border-top: 1px solid var(--color-paper-12);
     font-family: var(--font-display);
-    font-size: 1.15rem;
+    font-size: var(--font-size-body);
     color: var(--color-paper);
   }
   .tix-sheet :global(.tix-summary-vat-note) {
     margin: 0.4rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.7rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
   .tix-sheet :global(.tix-checkout-btn) {

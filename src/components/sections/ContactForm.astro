@@ -165,8 +165,9 @@ const connected = Boolean(formAccessKeys?.general?.trim());
     gap: 0.5rem;
   }
   .field label {
-    font: var(--text-caption);
-    letter-spacing: 0.2em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
   }
@@ -183,8 +184,9 @@ const connected = Boolean(formAccessKeys?.general?.trim());
     border: none;
     border-bottom: 1px solid var(--color-paper-20);
     padding: 0.6rem 0;
-    font-family: var(--font-body);
-    font-size: 1rem;
+    /* Body — whose 1rem floor is also what stops iOS Safari zooming the page
+       when a field receives focus, so no mobile override is needed. */
+    font: var(--text-body);
     color: var(--color-paper);
     outline: none;
     resize: vertical;
@@ -192,15 +194,6 @@ const connected = Boolean(formAccessKeys?.general?.trim());
   }
   .field select {
     color-scheme: dark;
-  }
-  /* iOS Safari auto-zooms the viewport on focus for any input under 16px —
-     same fix as Footer.astro's newsletter field, see that comment. */
-  @media (max-width: 640px) {
-    .field input,
-    .field select,
-    .field textarea {
-      font-size: 16px;
-    }
   }
   .field input:focus,
   .field select:focus,
@@ -222,20 +215,17 @@ const connected = Boolean(formAccessKeys?.general?.trim());
   }
   .form-status {
     margin: 0;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
+    font: var(--text-small);
     color: var(--color-paper-60);
   }
   .form-note {
     margin: -0.6rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.78rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
   .contact-topic-note {
     margin: -0.8rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
+    font: var(--text-small);
     color: var(--color-paper-60);
   }
 
@@ -252,7 +242,8 @@ const connected = Boolean(formAccessKeys?.general?.trim());
     }
   }
   .contact-direct h2 {
-    font: var(--text-heading-sm);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin: 0 0 1.4rem;
   }
@@ -266,8 +257,9 @@ const connected = Boolean(formAccessKeys?.general?.trim());
   }
   .contact-label {
     display: block;
-    font: var(--text-caption);
-    letter-spacing: 0.1em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
     margin-bottom: 0.2rem;
@@ -275,8 +267,7 @@ const connected = Boolean(formAccessKeys?.general?.trim());
   .contact-emails a {
     color: var(--color-paper-60);
     text-decoration: none;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
+    font: var(--text-body);
     transition: color var(--duration-fast) ease;
   }
   .contact-emails a:hover {

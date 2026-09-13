@@ -251,13 +251,11 @@ const page = entry.data;
     }
   }
   .odds-intro-line {
-    max-width: 40rem;
+    max-width: var(--measure-prose);
     margin: -2rem auto var(--space-24);
     padding: 0 1.5rem;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.98rem;
-    line-height: 1.8;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
 
@@ -280,16 +278,13 @@ const page = entry.data;
     color: var(--color-paper-60);
   }
   .odds-enter-card h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin: 0.7rem 0 0;
   }
   .odds-enter-card p {
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    line-height: 1.7;
+    font: var(--text-body);
     color: var(--color-paper-60);
     margin: 1rem 0 0;
   }
@@ -302,15 +297,13 @@ const page = entry.data;
     padding-top: 1.8rem;
   }
   .odds-enter-price {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.5rem;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin-top: 1.2rem;
   }
   .odds-enter-status {
-    font-family: var(--font-body);
-    font-size: 0.78rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
     margin-top: 0.3rem;
   }
@@ -323,8 +316,7 @@ const page = entry.data;
     gap: 0.5rem;
   }
   .odds-enter-card li {
-    font-family: var(--font-body);
-    font-size: 0.82rem;
+    font: var(--text-body);
     color: var(--color-paper-60);
     padding-left: 1rem;
     position: relative;
@@ -355,8 +347,9 @@ const page = entry.data;
     display: block;
     align-self: stretch;
     margin: 1.6rem 0 0.8rem;
-    font: var(--text-utility);
-    letter-spacing: 0.24em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
   }
@@ -377,26 +370,25 @@ const page = entry.data;
     border-bottom: 1px solid var(--color-paper-12);
   }
   .odds-rate-name {
-    font-family: var(--font-body);
-    font-size: 0.88rem;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
+  /* Forta at the Body size: a figure in a price list, set against the name
+     beside it — not a card title. */
   .odds-rate-price {
     font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.1rem;
+    font-size: var(--font-size-body);
     color: var(--color-paper);
     font-variant-numeric: tabular-nums;
   }
   .odds-rate-note {
     grid-column: 1 / -1;
-    font-family: var(--font-body);
-    font-size: 0.76rem;
-    line-height: 1.6;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
   .odds-rates-nonmember {
-    font-size: 0.8rem !important;
+    font-size: var(--font-size-small) !important;
+    line-height: var(--line-height-small) !important;
     color: var(--color-paper-40) !important;
     margin-top: 0.9rem !important;
   }
@@ -415,19 +407,16 @@ const page = entry.data;
     align-items: center;
   }
   .odds-studio-callout h4 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin: 0.5rem 0 0;
   }
   .odds-studio-callout p {
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    line-height: 1.7;
+    font: var(--text-body);
     color: var(--color-paper-60);
     margin: 0.8rem 0 0;
-    max-width: 34rem;
+    max-width: var(--measure-prose);
   }
   .odds-studio-callout :global(.pill) {
     margin-top: 1.4rem;
@@ -444,8 +433,9 @@ const page = entry.data;
   .odds-how-label {
     display: block;
     text-align: center;
-    font: var(--text-utility);
-    letter-spacing: 0.24em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
     margin-bottom: 1.4rem;
@@ -454,8 +444,7 @@ const page = entry.data;
   .odds-visit {
     margin: var(--space-8) 0 0;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font: var(--text-small);
     color: var(--color-paper-60);
   }
   .odds-visit a {
@@ -471,11 +460,10 @@ const page = entry.data;
 
   /* "What's happening" — the note above the list, and the one CTA under it. */
   .odds-events-note {
-    max-width: 42rem;
+    max-width: var(--measure-prose);
     margin: -1.5rem auto 2.4rem;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   .odds-events-cta {

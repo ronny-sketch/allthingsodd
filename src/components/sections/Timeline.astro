@@ -43,24 +43,23 @@ const { items } = Astro.props;
     border-bottom: 1px solid var(--color-paper-12);
   }
   .timeline-year {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.3rem;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     font-variant-numeric: tabular-nums;
   }
+  /* Gabarito 600 at the Body size: a run-in title for the paragraph under
+     it. The year beside it carries the Forta heading for the row. */
   .timeline-body h3 {
-    font-family: var(--font-body);
+    font: var(--text-body);
     font-weight: 600;
-    font-size: 0.95rem;
     color: var(--color-paper);
     margin: 0;
   }
   .timeline-body p {
+    max-width: var(--measure-prose);
     margin: 0.5rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    line-height: 1.65;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   @media (max-width: 600px) {

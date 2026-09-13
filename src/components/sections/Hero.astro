@@ -279,13 +279,12 @@ const { mosaicAlt, headline } = Astro.props;
     margin: 0;
     max-width: 48ch;
     text-align: center;
-    /* --text-heading-lg, not the huge --text-display-* roles the same
-       sentence used in its old OpeningLine placement — this now sits under
-       the logo mark over busy photography, so it reads as a companion line
-       to the mark rather than competing with it for the same visual weight. */
-    font: var(--text-heading-lg);
-    letter-spacing: -0.01em;
-    text-wrap: balance;
+    /* Heading, not Hero or Display — the logo mark directly above is already
+       the dominant object in this frame, so the sentence under it reads as a
+       companion line to the mark rather than competing with it for the same
+       visual weight. */
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     /* Two layers: a tight near-black pass for edge contrast against bright
        mosaic cells directly behind the glyphs, plus a soft wide falloff so

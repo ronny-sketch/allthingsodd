@@ -232,27 +232,24 @@ const page = entry.data;
   }
 
   .odst-intro-line {
-    max-width: 40rem;
+    max-width: var(--measure-prose);
     margin: -2rem auto var(--space-24);
     padding: 0 1.5rem;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.98rem;
-    line-height: 1.8;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
 
-  /* The "not included in the €150" paragraph. Given a little more weight
-     than ordinary body copy on purpose — it is the one thing on this page
-     a reader cannot afford to skim past. */
+  /* The "not included in the €150" paragraph. Given more presence than
+     ordinary body copy on purpose — it is the one thing on this page a
+     reader cannot afford to skim past — through full-strength ink rather
+     than a larger size. */
   .odst-access-body {
-    max-width: 42rem;
+    max-width: var(--measure-prose);
     margin: 0 auto var(--space-16);
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 1.02rem;
-    line-height: 1.75;
-    color: var(--color-paper-80);
+    font: var(--text-body);
+    color: var(--color-paper);
   }
 
   .odst-access-zone + .odst-access-zone {
@@ -265,9 +262,8 @@ const page = entry.data;
     margin-bottom: 2.2rem;
   }
   .odst-zone-head h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin: 0.5rem 0 0;
   }
@@ -292,8 +288,9 @@ const page = entry.data;
   .odst-rates-label {
     display: block;
     text-align: center;
-    font: var(--text-utility);
-    letter-spacing: 0.24em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
     margin-bottom: 1.4rem;
@@ -314,30 +311,26 @@ const page = entry.data;
     border-bottom: 1px solid var(--color-paper-12);
   }
   .odst-rate-name {
-    font-family: var(--font-body);
-    font-size: 0.95rem;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
+  /* Forta at the Body size, same as ODDspace's rate list. */
   .odst-rate-price {
     font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.2rem;
+    font-size: var(--font-size-body);
     color: var(--color-paper);
     font-variant-numeric: tabular-nums;
   }
   .odst-rate-note {
     grid-column: 1 / -1;
-    font-family: var(--font-body);
-    font-size: 0.78rem;
-    line-height: 1.5;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
   .odst-rates-note {
     max-width: 42rem;
     margin: 1.6rem auto 0;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
   .odst-access-cta {
@@ -355,9 +348,7 @@ const page = entry.data;
     flex-direction: column;
   }
   .odst-rules-list li {
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.7;
+    font: var(--text-body);
     color: var(--color-paper-80);
     padding: 1.1rem 0 1.1rem 1.6rem;
     border-top: 1px solid var(--color-paper-12);
@@ -395,19 +386,16 @@ const page = entry.data;
     height: auto;
   }
   .odst-operator-copy h2 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin: 0.6rem 0 0;
   }
   .odst-operator-copy p {
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.8;
+    font: var(--text-body);
     color: var(--color-paper-60);
     margin: 1.1rem 0 1.8rem;
-    max-width: 34rem;
+    max-width: var(--measure-prose);
   }
 
   .odst-terms-note,
@@ -415,8 +403,7 @@ const page = entry.data;
     max-width: 42rem;
     margin: 2rem auto 0;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.8rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
   .odst-credit {

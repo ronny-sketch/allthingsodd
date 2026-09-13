@@ -79,18 +79,12 @@ const {
     border: none;
     background: transparent;
     padding: 0.7rem 0 0.7rem 1.1rem;
-    font-family: var(--font-body);
-    font-size: 0.8rem;
+    /* Body at every width. Its 1rem floor is also the iOS guarantee — Safari
+       zooms the page on focus for any field under 16px — so no mobile-only
+       override is needed, and none should be layered on top. */
+    font: var(--text-body);
     color: var(--color-paper);
     outline: none;
-  }
-  /* iOS Safari auto-zooms the viewport on focus for any input under 16px —
-     the 0.8rem above is a deliberate desktop size, kept there; this
-     mobile-only override just avoids the zoom, not a visual redesign. */
-  @media (max-width: 640px) {
-    .nl-form input {
-      font-size: 16px;
-    }
   }
   .nl-form button {
     border: none;
@@ -99,11 +93,10 @@ const {
     padding: 0 1.2rem;
     margin: 3px;
     border-radius: 999px;
-    font-family: var(--font-body);
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.68rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-caps);
     cursor: pointer;
     white-space: nowrap;
     transition: opacity var(--duration-fast) ease;
@@ -120,8 +113,7 @@ const {
   }
   .nl-status {
     margin: 0.5rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.72rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
 </style>

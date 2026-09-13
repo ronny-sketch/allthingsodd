@@ -158,10 +158,9 @@ const isGrouped = groups.length > 1;
     grid-row: 1;
     grid-column: var(--gc) / span var(--gs);
     align-self: end;
-    font-family: var(--font-body);
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.72rem;
-    letter-spacing: 0.24em;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-60);
     padding-bottom: 0.7rem;
@@ -220,22 +219,19 @@ const isGrouped = groups.length > 1;
     color: rgb(226 223 222 / 55%);
   }
   .p-cta h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    /* Small enough that the longest realistic single word ("ODDference",
-       "something") fits the available card width without needing to wrap —
-       confirmed via getComputedStyle at 1440px: 133px available at the old
-       1.75rem cap wasn't enough for a 10-character word in this display
-       font, so it broke mid-word instead of wrapping at a space. */
-    font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+    /* Heading, like every other card title. What keeps the longest single
+       word ("ODDference") inside a card at this size is the card's width and
+       padding — see the grid rules — not a smaller type size. */
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     margin: 1rem 0 0;
     overflow-wrap: break-word;
     max-width: 100%;
   }
   .p-cta .go {
-    font-family: var(--font-body);
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     margin-top: auto;
     padding-top: 1.5rem;

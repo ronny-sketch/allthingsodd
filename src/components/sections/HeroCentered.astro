@@ -134,21 +134,27 @@ const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.pro
   /* :global() on the warping variant's class — WarpingText renders its <h1>
      inside its own component file, so this file's scoped-CSS attribute
      doesn't carry over to it. */
+  /* Hero, not Display: with a photograph behind it and nothing else in the
+     frame, this title is the whole first screen — the one composition on the
+     site that earns the rarest step of the ladder (Work with ODD). The plain
+     variant has no photograph and lays out exactly like PageIntro, so it
+     takes PageIntro's Display step instead (About). */
   .hero-centered-head h1,
   .hero-centered-head :global(.hero-centered-warping-title) {
-    font-family: var(--font-display);
-    font-weight: 400;
+    font: var(--text-hero);
+    letter-spacing: var(--tracking-hero);
     color: var(--color-paper);
-    font-size: clamp(2.2rem, 5.5vw, 4rem);
-    line-height: 1.08;
     margin: 0.9rem 0 0;
+  }
+  .hero-centered.is-plain .hero-centered-head h1,
+  .hero-centered.is-plain .hero-centered-head :global(.hero-centered-warping-title) {
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
   }
   .hero-centered-head p {
     max-width: 38ch;
     margin: 1.6rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.8;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
   .hero-centered-cta {

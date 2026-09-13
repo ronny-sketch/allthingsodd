@@ -148,14 +148,13 @@ const { newsletterHref } = site.data;
   }
   .nl-popup h2 {
     margin: 0;
-    font: var(--text-heading-lg);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-ink);
   }
   .nl-popup-body {
     margin: 0.9rem auto 0;
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    line-height: 1.7;
+    font: var(--text-body);
     color: var(--color-ink-60);
     max-width: 36ch;
   }
@@ -170,7 +169,6 @@ const { newsletterHref } = site.data;
   }
   .nl-popup :global(.nl-form input) {
     padding: 0.95rem 0 0.95rem 1.4rem;
-    font-size: 0.9rem;
     color: var(--color-ink);
   }
   /* NewsletterForm's button is paper-fill/ink-text by default (built for
@@ -179,7 +177,6 @@ const { newsletterHref } = site.data;
      real contrast against the panel. */
   .nl-popup :global(.nl-form button) {
     padding: 0 1.6rem;
-    font-size: 0.72rem;
     background: var(--color-ink);
     color: var(--color-paper);
   }
@@ -219,14 +216,9 @@ const { newsletterHref } = site.data;
          the iPhone home indicator. */
       padding-bottom: max(var(--space-6), env(safe-area-inset-bottom));
     }
-    /* This popup's own desktop override (0.9rem = 14.4px, above) wins over
-       NewsletterForm.astro's scoped 16px mobile rule by specificity — Safari
-       then auto-zooms the whole page on focus, since iOS treats any input
-       under 16px as "the user must be zooming in to read this." Re-asserting
-       16px here at the same specificity this popup already writes at is what
-       actually restores the behaviour that rule was meant to guarantee. */
-    .nl-popup :global(.nl-form input) {
-      font-size: 16px;
-    }
+    /* No font-size override for the field, here or above (2026-09-13). It
+       inherits NewsletterForm's Body role, whose 1rem floor is what stops
+       iOS zooming the page on focus. An earlier 0.9rem override in this file
+       silently beat that guarantee by specificity — don't reintroduce one. */
   }
 </style>
