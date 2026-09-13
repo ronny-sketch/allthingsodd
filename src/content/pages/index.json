@@ -9,12 +9,11 @@
     "mosaicAlt": "People, performances, talks and encounters from ODD in Helsinki."
   },
   "opening": {
-    "headline": "Creative work deserves better conditions than starting from zero every time.",
+    "headline": "ODD exists to build better conditions for creative work — and to bring creative and cultural fields closer to business and wider society.",
     "primaryCta": {
       "label": "See what we do",
       "href": "#four"
-    },
-    "support": "ODD builds the events, spaces and projects that give it continuity — and brings creative expertise closer to business and the rest of society."
+    }
   },
   "whatOddIs": {
     "eyebrow": "Why ODD",
