@@ -292,11 +292,13 @@ real decisions worth recording:
    simplification rather than a redesign. One rule ran through all of it:
    one headline = one quickly understood thought, and every section has one
    job. What changed, and the reasoning that is not obvious from the diff:
-   - **The homepage hero split in two.** Its h1 carried both halves of ODD's
-     mission in one sentence — a headline nobody finishes. The h1 now makes
-     one claim ("Creative work deserves better conditions than starting from
-     zero every time") and `opening.support`, a new optional `Hero` prop,
-     carries the second layer at body weight.
+   - **The homepage hero split in two — reverted 2026-09-13.** The pass
+     replaced the two-part mission h1 with a one-claim headline ("Creative
+     work deserves better conditions than starting from zero every time")
+     plus an `opening.support` line under it. Ronny judged the new copy
+     weaker than the original and asked for the original headline back with
+     no line beneath it, so the h1 is the full mission sentence again and the
+     `support` prop, schema field and styles are gone.
    - **"Already in motion" stopped saying the numbers twice.** Its paragraph
      restated all four figures that the stat row underneath it already
      shows. `identity-integrity.spec.ts` guarded the old wording, so that

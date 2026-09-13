@@ -449,12 +449,6 @@ const pages = defineCollection({
         // primaryCta/secondaryCta also render (not here) — see index.astro.
         opening: z.object({
           headline: z.string(),
-          // The second half of ODD's mission, deliberately outside the <h1>
-          // (2026-09-11 editorial pass). ODD works on two connected problems;
-          // one headline carrying both was a headline nobody finished. The
-          // h1 makes one claim, this line adds the second. Optional so the
-          // hero still renders with a headline alone.
-          support: z.string().optional(),
           primaryCta: linkCta.optional(),
           secondaryCta: linkCta.optional(),
         }),
