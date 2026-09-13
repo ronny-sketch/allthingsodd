@@ -393,7 +393,7 @@ test.describe('ODDspace intent (?interest=oddspace&intent=...)', () => {
         });
       });
 
-      await page.goto(`/work-with-odd?interest=oddspace&intent=${intent}#enquiry-form`);
+      await page.goto(`/work-with-odd/?interest=oddspace&intent=${intent}#enquiry-form`);
       await expect(page.locator('#we-email-label')).toHaveText('Email');
       await expect(page.locator('#we-org')).not.toHaveAttribute('required', '');
 

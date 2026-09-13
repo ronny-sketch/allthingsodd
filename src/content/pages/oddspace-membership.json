@@ -11,11 +11,11 @@
   "meta": "€150 / month · Vallila, Helsinki",
   "primaryCta": {
     "label": "Apply for membership",
-    "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form"
+    "href": "/work-with-odd/?interest=oddspace&intent=membership#enquiry-form"
   },
   "secondaryCta": {
     "label": "Come and see it first",
-    "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form"
+    "href": "/work-with-odd/?interest=oddspace&intent=membership#enquiry-form"
   },
   "heroMedia": {},
   "heroPhotos": [
@@ -84,7 +84,7 @@
         "Member and community events as they run"
       ],
       "ctaLabel": "Apply for membership",
-      "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form",
+      "href": "/work-with-odd/?interest=oddspace&intent=membership#enquiry-form",
       "recommended": true,
       "badgeLabel": "One flat rate"
     },
@@ -198,7 +198,7 @@
     "body": "Tell us what you do and how you would use the space. A visit is the fastest way to know whether it's right for you.",
     "cta": {
       "label": "Apply for membership",
-      "href": "/work-with-odd?interest=oddspace&intent=membership#enquiry-form"
+      "href": "/work-with-odd/?interest=oddspace&intent=membership#enquiry-form"
     }
   },
   "railLeft": [

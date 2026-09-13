@@ -403,7 +403,9 @@ session, since the token goes straight from `surge` to GitHub's secret
 store):
 
 ```bash
-npx surge token | gh secret set SURGE_TOKEN --repo ronny-sketch/allthingsodd
+npx surge tokens add -m "github-actions-ci-$(date +%Y%m%d)" \
+  | LC_ALL=C grep -oE '[0-9a-f]{32}' | head -1 | tr -d '\n' \
+  | gh secret set SURGE_TOKEN --repo ronny-sketch/allthingsodd
 ```
 
 **Corrected 2026-08-31 — this was wrong, see "Deploy verification" below**:
