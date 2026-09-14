@@ -7,10 +7,11 @@ import Pill from '../primitives/Pill.astro';
 interface Props {
   video: string;
   poster: ImageMetadata;
-  // Optional small caption above the logo/h1 (e.g. "ODDference · 2027") —
-  // added 2026-09-02 for ODDference's hero, which the copywriting master
-  // doc asks to carry a visible eyebrow; ODDfest's hero (the only other
-  // caller) omits it and renders exactly as before.
+  // Optional small caption between the wordmark and the h1 (e.g.
+  // "ODDference · 2027") — added 2026-09-02 for ODDference's hero. Neither
+  // caller passes one any more: ODDference dropped it on 2026-09-11 and
+  // ODDfest on 2026-09-14, because in the `space` frame it sits between a
+  // wordmark and a meta line that already say the same thing.
   eyebrow?: string;
   // The one visible line of copy over the video — rendered as the page's
   // real <h1>. Shared by ODDfest and ODDference (both full-bleed-video
@@ -19,9 +20,9 @@ interface Props {
   // child (see SubpageFrame.astro's 2026-08-31 hero-frame comment).
   sub: string;
   // Optional supporting paragraph under the h1 (2026-09-02 copywriting
-  // pass) — ODDference's hero needs a short practical-value line under its
-  // question-headline h1 that meta's single small caption can't carry.
-  // ODDfest omits it and renders exactly as before.
+  // pass). Neither caller passes one any more — ODDference's line moved into
+  // its premise section on 2026-09-11 and ODDfest's was cut on 2026-09-14 —
+  // because the `space` frame's composition has no paragraph.
   support?: string;
   // Optional small secondary line under the h1/support (e.g. "Helsinki · 2027").
   meta?: string;
@@ -31,10 +32,9 @@ interface Props {
   // its own real logo asset.
   logo?: ImageMetadata;
   logoAlt?: string;
-  // Optional in-hero CTA pair — ODDfest's hero (the only other caller) has
-  // none; ODDference's does (Get your ticket / Partner with ODDference), so
-  // these stay optional additions rather than forcing every caller to pass
-  // both.
+  // Optional in-hero CTA pair. Both callers pass both (Get your ticket /
+  // Partner with ODDference; Submit an event idea / Look back at 2026), but
+  // they stay optional rather than forcing every future caller to.
   primaryCta?: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
   // Which archive accent tints the hero scrim — 'ultraviolet' (default) is
@@ -45,17 +45,18 @@ interface Props {
   // subpages that share this hero read as distinct product identities
   // without duplicating the whole component — see docs/design-system.md.
   accent?: 'ultraviolet' | 'signal';
-  // Which of the two hero *proportions* this renders. 'default' is ODDfest's
+  // Which of the two hero *proportions* this renders. 'default' is the
   // original frame (small h1 under a very wide wordmark, light scrim,
   // standard Pill sizing). 'space' matches SpaceHero.astro — ODDspace's hero
   // — instead: a display-sized h1, a darker centred scrim so centered text
   // reads over any frame of the film, and the same larger CTA pills ODDspace
   // got on 2026-09-11. Added 2026-09-11 at Ronny's request so /oddference and
-  // /oddspace read as one family; ODDference keeps its own video and Signal
-  // accent rather than adopting ODDspace's photo grid. Deliberately a
-  // separate knob from `accent` — color identity and frame proportions are
-  // two different decisions, and conflating them would mean a future page
-  // could not have one without the other.
+  // /oddspace read as one family; /oddfest joined them on 2026-09-14, so no
+  // page currently renders 'default'. Both keep their own video and accent
+  // rather than adopting ODDspace's photo grid. Deliberately a separate knob
+  // from `accent` — color identity and frame proportions are two different
+  // decisions, and conflating them would mean a future page could not have
+  // one without the other.
   frame?: 'default' | 'space';
 }
 const {
@@ -72,6 +73,16 @@ const {
   accent = 'ultraviolet',
   frame = 'default',
 } = Astro.props;
+
+// The `space` frame sizes the wordmark to one rendered *height*, not one
+// width. Its width values (see .oddfest-hero--frame-space .oddfest-hero-logo)
+// were tuned on the ODDference mark, 1080×167; any other wordmark scales them
+// by its own aspect ratio relative to that one. ODDfest's wordmark is 709×141
+// — squarer, 5.03:1 against 6.47:1 — so at ODDference's widths it rendered
+// ~72px tall beside ODDference's ~56px and ODDspace's ~55px. ODDference's own
+// scale is exactly 1, so its hero is unchanged.
+const SPACE_FRAME_LOGO_RATIO = 1080 / 167;
+const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
 ---
 
 {
@@ -84,6 +95,7 @@ const {
 }
 <header
   class={`oddfest-hero oddfest-hero--${accent} oddfest-hero--frame-${frame}`}
+  style={`--logo-scale: ${logoScale}`}
   data-video-stage
 >
   {
@@ -291,10 +303,10 @@ const {
     width: 100%;
     height: auto;
   }
-  /* Optional caption above the logo/h1 (ODDference only — see Props
-     comment). Reuses the sitewide `.eyebrow` utility class for color/
-     tracking, this rule only trims the spacing the flex-column gap already
-     handles for every other child. */
+  /* Optional caption between the wordmark and the h1 (no current caller —
+     see Props comment). Reuses the sitewide `.eyebrow` utility class for
+     color/tracking, this rule only trims the spacing the flex-column gap
+     already handles for every other child. */
   .oddfest-hero-eyebrow {
     margin: 0;
   }
@@ -310,7 +322,7 @@ const {
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
   }
-  /* Optional supporting paragraph under the h1 (ODDference only) — a real
+  /* Optional supporting paragraph under the h1 (no current caller) — a real
      sentence, not another caption, so it gets body-font sizing/line-height
      rather than the meta line's small-caps treatment. */
   .oddfest-hero-support {
@@ -374,8 +386,8 @@ const {
      so the two frames stay literally the same size — if one is retuned, the
      other should be changed to match.
 
-     Only this block is new; `frame="default"` (ODDfest) inherits none of it
-     and renders byte-identically to before. */
+     ODDference has used this frame since 2026-09-11 and ODDfest since
+     2026-09-14; `frame="default"` inherits none of it. */
 
   /* SpaceHero's scrim: a centred ellipse that darkens the middle of the frame
      — where the stack actually sits — plus the bottom-weighted linear wash.
@@ -404,9 +416,14 @@ const {
      *rendered height* (~56px at the default root, ~70px from 1440px) needs a
      proportionally wider box. Matching the
      width number instead of the height would make this wordmark visibly
-     smaller than ODDspace's, which is the thing being matched. */
+     smaller than ODDspace's, which is the thing being matched.
+
+     Those numbers are the ODDference mark's. `--logo-scale` (set on the
+     header from the wordmark's own aspect ratio — see the frontmatter)
+     carries the same rendered height to any other wordmark: it is 1 for
+     ODDference and ~0.78 for ODDfest's squarer 5.03:1 wordmark. */
   .oddfest-hero--frame-space .oddfest-hero-logo {
-    width: min(22.5rem, 64vw);
+    width: calc(min(22.5rem, 64vw) * var(--logo-scale, 1));
   }
   .oddfest-hero--frame-space .oddfest-hero-sub {
     max-width: 32ch;
@@ -417,7 +434,8 @@ const {
       0 8px 32px rgb(14 9 11 / 50%);
   }
   /* SpaceHero has no equivalent of `support`, and the frame is tuned without
-     one — ODDference's content drops it (2026-09-11). The rule stays so a
+     one — neither caller passes it (ODDference since 2026-09-11, ODDfest
+     since 2026-09-14). The rule stays so a
      caller that does pass one still gets a legible line rather than the
      default frame's narrower measure fighting the larger h1 above it. */
   .oddfest-hero--frame-space .oddfest-hero-support {
@@ -438,6 +456,18 @@ const {
       padding: 0.75rem 1.5rem;
     }
   }
+  /* SpaceHero's narrowest-phone padding, missed when this frame was first
+     copied from it: 1rem each side instead of 2rem gives the Display h1 back
+     enough measure to avoid one-word lines. At 360px wide, without it,
+     ODDfest's headline broke as "Bring / something / …" and ODDference's as
+     "… / expertise / …". It outranks the shared short-viewport block's
+     padding by specificity, so a short narrow phone gets it too — as on
+     ODDspace. */
+  @media (max-width: 400px) {
+    .oddfest-hero--frame-space .oddfest-hero-overlay {
+      padding-inline: 1rem;
+    }
+  }
   /* Short viewports (landscape phones). The shared `max-height: 620px` block
      above was measured against the *default* frame's densest caller — with a
      display-sized h1 and no `support` line the arithmetic is different, so
@@ -447,7 +477,7 @@ const {
      that block so it wins at equal specificity. */
   @media (max-height: 620px) {
     .oddfest-hero--frame-space .oddfest-hero-logo {
-      width: min(15rem, 44vw);
+      width: calc(min(15rem, 44vw) * var(--logo-scale, 1));
     }
     /* The one place this h1 steps down a role: Display under a wordmark does
        not fit a landscape phone's height, so it takes Heading — the next
