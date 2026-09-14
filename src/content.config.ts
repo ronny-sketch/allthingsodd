@@ -99,9 +99,8 @@ const proofSection = z.object({
   // The button under the figures — see ProofGrid.astro's `cta`. Home points
   // it at the ODDfest 2026 thank-you page (2026-09-14); it used to link the
   // 2025 Impact Report through `reportLabel`/`reportUrl`, plus a `reportNote`
-  // scope caveat that the thank-you page doesn't need. About's impact
-  // snapshots keep their own `reportLabel`/`reportUrl` fields (they predate
-  // this fragment) and about.astro maps them onto the same prop.
+  // scope caveat that the thank-you page doesn't need. About's `impact`
+  // carries two buttons instead, as `ctas` (see its schema below).
   cta: linkCta.optional(),
   // One short line set above that button.
   ctaLead: z.string().optional(),
@@ -165,6 +164,10 @@ const pricingTier = z.object({
   audience: z.string().optional(),
   description: z.string().optional(),
   price: z.string(),
+  // Small text beside the price, e.g. ODDference's "+ VAT 13.5%"
+  // (2026-09-14, prices became ex-VAT). A synced ticket card re-derives it
+  // from the catalog, so for ODDference this is the fallback, like price.
+  priceNote: z.string().optional(),
   status: z.string().optional(),
   benefits: z.array(z.string()),
   ctaLabel: z.string(),
@@ -630,24 +633,10 @@ const pages = defineCollection({
         // collection — changing the shape here would collide with theirs.
         // See the `caseTeaser` note above for the same trap.
         howItWorks: z.array(featureCard),
-        // "What has happened before" — NEW on 2026-09-11. ODDfest 2026 in
-        // the past tense, honestly, as the reason the 2027 shape is what it
-        // is. This is the page's proof chapter, and it only works if it is
-        // true: same no-invented-figures rule as everywhere else in this
-        // file, and the section reads perfectly well carrying none.
-        // `chapters` is the year/title/body shape About's Timeline component
-        // already renders (named `chapters`, not `milestones`, to stay off
-        // About's CloudCannon key). `cta` links out to the archived 2026
-        // page alongside the same link in `lookBack` — a reader who arrives
-        // at this section has not necessarily seen the one further up.
-        history: z.object({
-          eyebrow: z.string(),
-          headline: z.string(),
-          body: z.string(),
-          chapters: z.array(z.object({ year: z.string(), title: z.string(), body: z.string() })),
-          closing: z.string(),
-          cta: linkCta,
-        }),
+        // `history` ("What has happened before", the 2025/2026/2027
+        // timeline chapter) was deleted on 2026-09-14 at Ronny's request.
+        // Removed rather than made optional, so CloudCannon shows no control
+        // for text that renders nowhere.
         // Optional at the object level only in the sense that it renders
         // nothing until real, verified 2027 dates/venues exist — same
         // "leave it out rather than invent it" rule as previousEdition used
@@ -1384,46 +1373,37 @@ const pages = defineCollection({
           // top-level field) since it's a sub-part of the same section.
           principles: z.array(featureCard),
         }),
-        // NEW SECTION (2026-09-02 copywriting pass) — "What 2025–2026 taught
-        // us": candid, numbered lessons from the first two years. Same
-        // sectionIntro-extended-with-featureCard-items shape ODDference's
-        // `whatsChanging` already uses, reused rather than inventing a
-        // near-duplicate.
-        whatWeLearned: sectionIntro.extend({ items: z.array(featureCard) }),
-        // Two fixed snapshots (2025 real, 2026 pending) — an array, not the
-        // shared `proofSection` object other pages use, precisely because
-        // About needs two of them side by side. `items` is deliberately
-        // allowed to be empty (2026's real numbers don't exist yet — see
-        // ProofGrid.astro's `placeholder` prop): never fabricate a number to
-        // fill it.
-        impact: z.array(
-          z.object({
-            year: z.string(),
-            eyebrow: z.string(),
-            title: z.string(),
-            items: z.array(proofItem),
-            reportLabel: z.string().optional(),
-            reportUrl: z.string().optional(),
-            // Shown instead of the grid when `items` is empty — e.g. "The
-            // 2026 Impact Report is being compiled — verified numbers will
-            // replace this once it's published." Never invent items instead
-            // of using this.
-            placeholder: z.string().optional(),
-          }),
-        ),
-        participate: z.array(cta),
-        // The full-bleed 2026 launch photo the page ends on. `image` is
-        // optional on purpose: no verified 2026 launch photo could be
-        // identified from the archive at rebuild time (2026-08-30) — see
-        // PhotoBreak.astro's empty-state handling. Do not point this at a
-        // guessed/random crowd photo; leave it unset until a real one is
-        // confirmed.
-        closingImage: z
+        // `whatWeLearned` ("What we have learned") was deleted on 2026-09-14
+        // at Ronny's request, field and all.
+        // The ODDfest 2026 launch group photo, full-bleed right after the
+        // opening argument (2026-09-14). It replaced `closingImage`, an
+        // empty slot at the foot of the page that had been waiting for
+        // exactly this photo since the 2026-08-30 rebuild.
+        launchPhoto: z.object({ image: image(), alt: z.string() }).optional(),
+        // One figures row since 2026-09-14: ODD's cumulative 2025–2026
+        // numbers, the same four as Home's "Already in motion" (index.json
+        // `proof.items`) — change one and change the other. It replaced two
+        // year snapshots (ODDfest 2025's own figures, and an empty 2026 one
+        // with a "still being compiled" note). `ctas` are the buttons under
+        // it: the 2025 Impact Report and the ODDfest 2026 thank-you page.
+        impact: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          items: z.array(proofItem),
+          ctas: z.array(linkCta),
+        }),
+        // A PhotoWall of ODDfest 2025 and 2026 (both Flickr photobanks),
+        // host events and ODDspace, under the figures (2026-09-14). Same
+        // shape as ODDspace's `gallery`.
+        gallery: z
           .object({
-            image: image().optional(),
-            alt: z.string().optional(),
+            eyebrow: z.string().optional(),
+            title: z.string(),
+            note: z.string().optional(),
+            photos: z.array(z.object({ image: image(), alt: z.string() })),
           })
           .optional(),
+        participate: z.array(cta),
       }),
 
       z.object({

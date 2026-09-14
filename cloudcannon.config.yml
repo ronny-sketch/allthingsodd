@@ -199,37 +199,30 @@ collections_config:
           (see about.astro), just rendered in two places.
         options:
           subtype: object
-      whatWeLearned:
+      impact:
         type: object
-        label: What we have learned (About only)
+        label: 2025–2026 in numbers (About only)
         comment: >-
-          NEW (2026-09-02 copywriting pass): 5 candid numbered lessons from
-          2025-2026, rendered between "What we build" and the timeline.
-          Flagged for fact-check before publish — see item 3's ODDference
-          attendance figure and item 5's Showcase-economics detail.
+          ODD's cumulative figures — the same four as the homepage's
+          "Already in motion" row. Change a number here and change it on the
+          homepage too. Never add a figure that hasn't been verified.
+          "ctas" are the buttons under the figures (today: the 2025 Impact
+          Report and the ODDfest 2026 thank-you page).
         options:
           subtype: object
-      impact:
+      ctas:
         type: array
-        label: Impact snapshots — 2025 / 2026 (About only)
+        label: Buttons
         comment: >-
-          Exactly two entries: a 2025 snapshot (real, verified numbers) and a
-          2026 snapshot. Leave a snapshot's "items" empty and fill in
-          "placeholder" instead until real, verified numbers exist for that
-          year — never invent participant/reach/partner figures to fill the
-          gap. "reportLabel"/"reportUrl" link out to that year's Impact
-          Report; leave both blank if no report exists yet.
-        options:
-          required: false
+          One button per entry, shown side by side under the figures. The
+          arrow is added automatically — don't type one into the label.
         cascade: true
-      closingImage:
+      launchPhoto:
         type: object
-        label: Closing photo (About only)
+        label: ODDfest 2026 launch photo (About only)
         comment: >-
-          The full-bleed photo the page ends on — ideally a real photo from
-          the 2026 ODD launch. Leave "image" unset until a specific, verified
-          photo has been chosen; the page shows a plain placeholder panel
-          instead of guessing at one.
+          The full-bleed group photo from the ODDfest 2026 launch, right
+          after the opening argument. Remove the whole field to hide it.
         options:
           subtype: object
           required: false
@@ -494,12 +487,13 @@ collections_config:
           required: false
       gallery:
         type: object
-        label: '"Life at ODDspace" photo wall (ODDspace only)'
+        label: Photo wall (ODDspace and About)
         comment: >-
-          The wall of photos of the space in use, under the events list. Add
-          as many as you like, portrait or landscape, in any order — the wall
-          arranges them by shape, so it can't be left with gaps. Remove the
-          whole section to hide the wall.
+          ODDspace: photos of the space in use, under the events list. About:
+          ODDfest 2025 and 2026, host events and ODDspace, under the figures.
+          Add as many as you like, portrait or landscape, in any order — the
+          wall arranges them by shape, so it can't be left with gaps. Remove
+          the whole section to hide the wall.
         options:
           subtype: object
           required: false
@@ -507,8 +501,8 @@ collections_config:
         type: array
         label: Photos
         comment: >-
-          Real photos of people using the space. Each needs its own alt text
-          describing what's actually shown — don't name people in it.
+          Real photos of people at ODD's events and spaces. Each needs its own
+          alt text describing what's actually shown — don't name people in it.
         options:
           structures: _structures.oddspace_gallery_photo
           disable_add: false
@@ -612,19 +606,6 @@ collections_config:
           live on its own domain. Set "external: true" on a link to open it
           in a new tab — it's on for oddfest.co (a different domain) and off
           for the archived page, which is ours and has its own way back.
-        options:
-          subtype: object
-      history:
-        type: object
-        label: '"What has happened before" (ODDfest only)'
-        comment: >-
-          The page's proof chapter: ODDfest 2026 in the past tense, honestly,
-          as the reason 2027 has the shape it does. "chapters" is a timeline
-          of year/title/body beats. The same rule as everywhere else on this
-          site applies hardest here — never invent an audience, event,
-          venue or partner figure to make the story sound bigger. The
-          section reads perfectly well carrying no numbers at all, and a
-          number nobody can stand behind is worse than none.
         options:
           subtype: object
       examplesIntro:
@@ -923,8 +904,9 @@ collections_config:
         label: Tickets (ODDference only)
         comment: >-
           The whole ticket ladder — Blind Bird, Early Bird, Regular — not
-          only the tier on sale (2026-09-11). Price, status, benefits and
-          button are read from the ticket backend at page load, so what you
+          only the tier on sale (2026-09-11). Price, the VAT note beside it
+          ("priceNote", now "+ VAT 13.5%" — prices are ex-VAT), status,
+          benefits and button are read from the ticket backend at page load, so what you
           type here is the fallback a visitor sees if that request fails:
           keep it truthful, but change a real price in the backend, not
           here. Two fields are yours alone, because the backend has no

@@ -61,8 +61,8 @@ high-level notes:
   - 2026-09-14: both of "Already in motion"'s links are buttons now. The one
     under the figures (`proof.cta`, with `proof.ctaLead` as the line above
     it) goes to the ODDfest 2026 thank-you page instead of the 2025 Impact
-    Report, so the old `reportNote` scope caveat is gone with it. About's
-    impact snapshots still link the report.
+    Report, so the old `reportNote` scope caveat is gone with it. About
+    links both the report and the thank-you page under the same figures.
   - 2026-08-30 homepage revision: the separate "For organisations / Work
     with ODD." teaser section (and its `workWithOdd` field) was removed —
     the platform grid immediately above it already includes a Work with ODD
@@ -79,9 +79,8 @@ high-level notes:
   the hero and there is no support line, the same as ODDference),
   what it is, the two look-back buttons under it, how it works (who does
   what, then the four numbered steps), how to join, programme (optional —
-  empty until a real 2027 programme exists), what has happened before,
-  highlights (`examples` — real, named Creative Week 2026 events and one
-  ODDfest 2025 keynote, each card with an optional photo and `external` for
+  empty until a real 2027 programme exists), highlights (`examples` — real, named Creative Week and ODDfest 2026
+  events, each card with an optional photo and `external` for
   a partner's own page), "On the programme" (`programmeHighlights` — grouped
   lines of names that actually took part), the "Want your event in the next
   one?" band (`hostCta`), the partner route, FAQ. The last three were added
@@ -89,10 +88,10 @@ high-level notes:
   Rebuilt 2026-09-11; the bullet here previously listed a set of fields
   (who can take part / what ODD provides / organiser ownership / open call /
   for partners / previous edition) that had already been consolidated away
-  in the V2 rebuild and no longer existed. Two rules on this page in
-  particular: the "what has happened before" section must carry only figures
-  the site already publishes elsewhere, and the deleted "shared platform"
-  block must not come back until there is a platform to describe.
+  in the V2 rebuild and no longer existed. The "what has happened before"
+  section was removed on 2026-09-14. One rule on this page in particular:
+  the deleted "shared platform" block must not come back until there is a
+  platform to describe.
 - **ODDference** (restructured 2026-09-11 — eight sections, in this order):
   the hero, the premise, the heading + three reasons to come, past speakers,
   session highlights, who it's for, tickets & partnership, FAQ.
@@ -102,7 +101,8 @@ high-level notes:
     marketing copy — they're quoted from the event's own run sheet.
   - _Tickets_ now lists the whole ladder, not just the tier on sale. Price,
     status, benefits and button come from the ticket backend at page load;
-    what's in the content is the fallback if that request fails. Two fields
+    what's in the content is the fallback if that request fails. That
+    includes `priceNote` ("+ VAT 13.5%" — prices are ex-VAT). Two fields
     are yours: `badgeLabel` (the badge on the tier currently on sale — now
     "Available until 1 Nov 2026") and `locked: true` (dims a tier and
     removes its button while leaving its price readable).
@@ -181,17 +181,24 @@ high-level notes:
   (as separate paragraphs), Story/timeline (with the New Nordic Way rf legal
   note underneath it), "How we make it happen" (the Events/Spaces/
   Relationships & projects pillars, plus a short ways-of-working principles
-  list), two impact snapshots — 2025 and 2026 (leave a year's numbers out
-  and use its placeholder note instead until they're verified — same
-  "no invented numbers" rule as everywhere else), the participate band, and
-  a closing photo (leave unset until a real, confirmed photo exists — the
-  page shows a plain placeholder panel instead of guessing).
+  list), the 2025–2026 figures with their two buttons, the photo wall, and
+  the participate band.
+  - 2026-09-14: "What we have learned" was removed. The figures are now the
+    homepage's cumulative four (`impact.items` — change a number in both
+    places, never add an unverified one), with the 2025 Impact Report and
+    the ODDfest 2026 thank-you page as `impact.ctas`; the old 2025-only
+    snapshot and the empty 2026 one are gone. The ODDfest 2026 launch group
+    photo (`launchPhoto`) now follows the opening argument, and a photo wall
+    (`gallery` — ODDfest 2025 and 2026 from Flickr, host events, ODDspace)
+    sits under the figures. Same wall rules as ODDspace's: any number of
+    photos, any orientation, real alt text, no names.
   - 2026-09-11: the "Why now" section and its editing field were removed
     outright. Its headline read as strategy-deck writing rather than
     something that helps an outsider understand ODD; its one real fact is
     now inside the opening argument, which is three paragraphs instead of
-    five. "What we have learned" keeps only the lessons the timeline and
-    the impact numbers do not already tell.
+    five.
+  - 2026-09-14: "What we have learned" and its editing field were removed
+    outright.
 - **Media**: a full press kit — accreditation callout, key facts, ODDfest
   highlights (optional — a stats grid, same "leave it out rather than invent
   numbers" rule as everywhere else), the shared "Featured in" press logo

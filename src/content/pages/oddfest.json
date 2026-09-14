@@ -88,38 +88,11 @@
       "href": "/contact/?topic=oddfest_2027_question"
     }
   },
-  "history": {
-    "eyebrow": "What has happened before",
-    "headline": "ODDfest has been made twice. 2027 is what those years taught us.",
-    "body": "ODDfest has been made twice, and both editions were produced from the middle, by us.\n\n2025 proved the appetite was real. 2026 was bigger and centrally produced — loved by the people who came, and hard to explain to the people who did not. We carried the cost and the risk of nearly all of it, and that is the part we are not repeating. The part we produced least — a free week of events across the city, made by other people — is the part we are keeping.",
-    "chapters": [
-      {
-        "year": "2025",
-        "title": "The appetite turned out to be real",
-        "body": "Two days at Lasipalatsikortteli under the theme Chaos & Acceleration. Eight stages, 83 sessions, 2,600+ participants, and speakers and artists from more than 20 nationalities. No previous edition to copy from, and about six months to do it in."
-      },
-      {
-        "year": "2026",
-        "title": "We built it bigger, and centrally",
-        "body": "A festival across Helsinki venues under the theme Bravery, ODDference alongside it as its own professional event, and a free Creative Week across the city. Ambitious by design. Loved by the people who came, and hard to explain to the people who did not."
-      },
-      {
-        "year": "2027",
-        "title": "The week belongs to its hosts",
-        "body": "What we produced centrally, we are not producing centrally again. ODDfest becomes the open week: hosts make and own their own events, and ODD builds the identity, the shared programme and the communications around them — so nobody is carrying a whole city on their own."
-      }
-    ],
-    "closing": "So 2027 is not a restart. It is the version two years of making this taught us to build — and it only exists if people bring things to it.",
-    "cta": {
-      "label": "See who made 2026",
-      "href": "/oddfest-2026/"
-    }
-  },
   "programme": [],
   "examplesIntro": {
     "eyebrow": "Highlights",
     "headline": "One week, many different hosts.",
-    "body": "Creative Week 2026 brought more than 1,000 people to events made with partners across Helsinki. A few of them, and one moment from 2025.",
+    "body": "Creative Week 2026 brought more than 1,000 people to events made with partners across Helsinki. A few of them.",
     "closing": "The point is not that these events look alike. It is that, for one week, they become easier to discover together."
   },
   "examples": [
@@ -157,15 +130,6 @@
       "body": "A public panel, in Swedish, on where culture's value lies as funding tightens — with voices from the Kordelin Foundation, Kulturanalys Norden, Way Out West and Espoo Theatre.",
       "image": "../../assets/examples/hanaholmen-oodi-panel.jpg",
       "href": "https://hanaholmen.fi/en/events/decoration-product-or-societal-structure",
-      "external": true
-    },
-    {
-      "category": "ODDfest 2025 · Keynote",
-      "title": "Arthur C. Brooks in Helsinki",
-      "host": "With Humak and the Bo and Allan Hjelt Art Foundation",
-      "body": "The Harvard professor and happiness researcher on ODDfest's Chaos Stage, on why entrepreneurship is measured by the good it does rather than the money it makes.",
-      "image": "../../assets/examples/arthur-brooks-oddfest-2025.jpg",
-      "href": "https://www.humak.fi/julkaisut/yrittajyytta-ei-mitata-rahassa-vaan-siinamita-hyvaa-saimme-aikaan/",
       "external": true
     }
   ],

@@ -7,7 +7,7 @@
 // the CSS is shared).
 import { fetchCatalog, type CatalogTicketType } from './api';
 import { loadCart, saveCart, revalidateCart, cartTotalQuantity, type Cart } from './cart';
-import { formatMinor } from './money';
+import { formatMinor, formatRate, previewOrder, vatSuffix, type OrderPreview } from './money';
 import { EVENT_SLUG } from './config';
 import { trackEvent } from '../analytics';
 
@@ -51,6 +51,7 @@ if (
 ) {
   let ticketTypes: CatalogTicketType[] = [];
   let currency = 'EUR';
+  let pricesIncludeTax = true;
   let cart: Cart = {};
 
   function ticketById(id: string): CatalogTicketType | undefined {
@@ -62,8 +63,17 @@ if (
     return tt ? tt.displayPriceMinor * qty : 0;
   }
 
+  function orderPreview(): OrderPreview {
+    const lines = Object.entries(cart).flatMap(([id, quantity]) => {
+      const tt = ticketById(id);
+      return tt && quantity > 0 ? [{ tt, quantity }] : [];
+    });
+    return previewOrder(lines, pricesIncludeTax);
+  }
+
+  // What checkout will charge — including VAT added on top of ex-VAT prices.
   function cartTotal(): number {
-    return Object.entries(cart).reduce((sum, [id, qty]) => sum + lineTotal(id, qty), 0);
+    return orderPreview().totalMinor;
   }
 
   function renderRows(): void {
@@ -76,7 +86,10 @@ if (
       .map((tt) => {
         const qty = cart[tt.id] ?? 0;
         const isActive = tt.status === 'active';
-        const priceHtml = `<div class="tix-row-price">${formatMinor(tt.displayPriceMinor, tt.currency)}</div>`;
+        const vat = vatSuffix(tt, pricesIncludeTax);
+        const priceHtml = `<div class="tix-row-price">${formatMinor(tt.displayPriceMinor, tt.currency)}${
+          vat ? `<span class="tix-row-price-vat">${vat}</span>` : ''
+        }</div>`;
         const benefitsHtml = tt.benefits.length
           ? `<ul class="tix-row-benefits">${tt.benefits.map((b) => `<li>${escapeHtml(b)}</li>`).join('')}</ul>`
           : '';
@@ -120,19 +133,37 @@ if (
       .join('');
   }
 
+  // Subtotal + one VAT row per rate, only when VAT is added on top.
+  function vatRowsHtml(totals: OrderPreview): string {
+    if (totals.vat.length === 0) return '';
+    const rows = [
+      ['Subtotal', totals.subtotalMinor] as const,
+      ...totals.vat.map((v) => [`VAT ${formatRate(v.rateBps)}`, v.amountMinor] as const),
+    ];
+    return `<div class="tix-summary-lines tix-summary-vat">${rows
+      .map(
+        ([label, amount]) => `<div class="tix-summary-line">
+          <span>${label}</span>
+          <span>${formatMinor(amount, currency)}</span>
+        </div>`,
+      )
+      .join('')}</div>`;
+  }
+
   function summaryBodyHtml(): string {
-    const total = cartTotal();
-    const hasItems = total > 0;
+    const totals = orderPreview();
+    const hasItems = totals.totalMinor > 0;
     return `
       <span class="eyebrow">Your order</span>
       <div class="tix-summary-lines">${summaryLinesHtml()}</div>
       ${
         hasItems
-          ? `<div class="tix-summary-total-row">
+          ? `${vatRowsHtml(totals)}
+            <div class="tix-summary-total-row">
               <span>Total</span>
-              <span>${formatMinor(total, currency)}</span>
+              <span>${formatMinor(totals.totalMinor, currency)}</span>
             </div>
-            <p class="tix-summary-vat-note">VAT included where applicable</p>`
+            ${pricesIncludeTax ? '<p class="tix-summary-vat-note">VAT included where applicable</p>' : ''}`
           : ''
       }
       <button type="button" class="pill pill-solid tix-checkout-btn" id="tixCheckoutBtn" ${hasItems ? '' : 'disabled'}>
@@ -230,6 +261,7 @@ if (
     }
     ticketTypes = catalog.ticketTypes;
     currency = catalog.event.currency;
+    pricesIncludeTax = catalog.event.pricesIncludeTax !== false;
 
     const persisted = loadCart();
     const { cart: revalidated, changed, messages } = revalidateCart(persisted, ticketTypes);
