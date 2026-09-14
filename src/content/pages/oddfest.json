@@ -91,8 +91,8 @@
   "programme": [],
   "examplesIntro": {
     "eyebrow": "Highlights",
-    "headline": "One week, many different hosts.",
-    "body": "Creative Week 2026 brought more than 1,000 people to events made with partners across Helsinki. A few of them.",
+    "headline": "One week. Many hosts.",
+    "body": "Creative Week 2026 brought more than 1,000 people to partner events across Helsinki. Then ODDfest 2026 took over five venues with more than 150 acts. A few highlights from both, each one made with someone else.",
     "closing": "The point is not that these events look alike. It is that, for one week, they become easier to discover together."
   },
   "examples": [
@@ -130,6 +130,42 @@
       "body": "A public panel, in Swedish, on where culture's value lies as funding tightens — with voices from the Kordelin Foundation, Kulturanalys Norden, Way Out West and Espoo Theatre.",
       "image": "../../assets/examples/hanaholmen-oodi-panel.jpg",
       "href": "https://hanaholmen.fi/en/events/decoration-product-or-societal-structure",
+      "external": true
+    },
+    {
+      "category": "ODDfest 2026 · Tavastia",
+      "title": "ODDgames",
+      "host": "With Espoo Game LAB and Super Bario",
+      "body": "Games shared Tavastia with the live music. Espoo Game LAB's Indie Game Corner put titles from new Finnish studios, like Lakeside Games' Twilight Ferry, in front of players, together with Konepaja's gaming bar Super Bario.",
+      "image": "../../assets/examples/oddgames-tavastia.jpg",
+      "href": "https://www.espoo.fi/en/working-life/espoo-game-lab-game-development-programme",
+      "external": true
+    },
+    {
+      "category": "ODDfest 2026 · Vanha Ylioppilastalo",
+      "title": "ODDtheatre",
+      "host": "With more than ten collectives",
+      "body": "Club Theatre took over the main hall: dancers, DJs, actors, models and visual artists building one night in real time, directed by Tyre. Among them the House of Xclusive Lanvin, contemporary circus group Nuua, Wanda O'rly and Maryisonacid.",
+      "image": "../../assets/examples/oddtheatre-vanha-ylioppilastalo.jpg",
+      "href": "https://www.flickr.com/photos/204686183@N06/albums/72177720334181557",
+      "external": true
+    },
+    {
+      "category": "ODDfest 2026 · Kamppi Chapel",
+      "title": "ODD Deep Space",
+      "host": "Curated by Simo Vassinen",
+      "body": "For two days the wooden chapel became a somatic laboratory. Seven sessions of movement, ritual and DJ sets took on AI, money, feminism and crisis, with Islaja, Maria Ritola, Roope Mokka and others.",
+      "image": "../../assets/examples/odd-deep-space-kamppi-chapel.jpg",
+      "href": "https://www.flickr.com/photos/204686183@N06/albums/72177720334101885",
+      "external": true
+    },
+    {
+      "category": "ODDfest 2026 · Bio Rex",
+      "title": "Smell the Art",
+      "host": "With Helsinki Perfume Club and Artishok.me",
+      "body": "An exhibition for two senses: artworks paired with chosen fragrances, so scent could deepen, disrupt or extend what the eye saw. Created by Katia Los and Adriana Knispel.",
+      "image": "../../assets/examples/smell-the-art-bio-rex.jpg",
+      "href": "https://www.flickr.com/photos/204686183@N06/albums/72177720334101885",
       "external": true
     }
   ],
