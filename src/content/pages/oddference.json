@@ -285,7 +285,8 @@
       "syncSlug": "blind-bird",
       "audience": "The earliest ticket",
       "description": "The lowest-price ticket for people ready to commit before the programme is complete.",
-      "price": "€250",
+      "price": "€299",
+      "priceNote": "+ VAT 13.5%",
       "status": "On sale now",
       "benefits": [
         "Full ODDference 2027 access",
@@ -306,7 +307,8 @@
       "syncSlug": "early-bird",
       "audience": "The second tier",
       "description": "The next ticket tier after Blind Bird.",
-      "price": "€350",
+      "price": "€399",
+      "priceNote": "+ VAT 13.5%",
       "status": "Not on sale yet",
       "benefits": ["Full ODDference 2027 access"],
       "ctaLabel": "See tickets",
@@ -318,7 +320,8 @@
       "syncSlug": "regular",
       "audience": "Full price",
       "description": "Standard ODDference 2027 ticket.",
-      "price": "€450",
+      "price": "€499",
+      "priceNote": "+ VAT 13.5%",
       "status": "Not on sale yet",
       "benefits": ["Full ODDference 2027 access"],
       "ctaLabel": "See tickets",
@@ -348,7 +351,7 @@
     },
     {
       "question": "Why buy before the programme is announced?",
-      "answer": "Price. Blind Bird is €250, Early Bird is €350 and the regular ticket is €450, so committing early is worth €200 against the full price. If you would rather wait for the line-up, the later tiers will be there."
+      "answer": "Price. Blind Bird is €299, Early Bird is €399 and the regular ticket is €499, each plus VAT 13.5%, so committing early is worth €200 against the full price. If you would rather wait for the line-up, the later tiers will be there."
     },
     {
       "question": "Can I buy an Early Bird or regular ticket now?",

@@ -3,7 +3,7 @@
 // "Stripe flow" for the sequence this drives.
 import { fetchCatalog, createCheckout, type CatalogTicketType } from './api';
 import { loadCart, saveCart, revalidateCart, cartTotalQuantity, type Cart } from './cart';
-import { formatMinor } from './money';
+import { formatMinor, formatRate, previewOrder, vatSuffix, type OrderPreview } from './money';
 import { EVENT_SLUG, STRIPE_PUBLISHABLE_KEY } from './config';
 import { loadStripe, type EmbeddedCheckout } from './stripe-loader';
 import { captureFirstTouch } from '../utm';
@@ -47,6 +47,7 @@ if (
 ) {
   let ticketTypes: CatalogTicketType[] = [];
   let currency = 'EUR';
+  let pricesIncludeTax = true;
   let cart: Cart = {};
   let embeddedCheckout: EmbeddedCheckout | null = null;
 
@@ -54,11 +55,29 @@ if (
     return ticketTypes.find((t) => t.id === id);
   }
 
-  function cartTotal(): number {
-    return Object.entries(cart).reduce((sum, [id, qty]) => {
+  function preview(entries: Array<[string, number]>): OrderPreview {
+    const lines = entries.flatMap(([id, quantity]) => {
       const tt = ticketById(id);
-      return sum + (tt ? tt.displayPriceMinor * qty : 0);
-    }, 0);
+      return tt && quantity > 0 ? [{ tt, quantity }] : [];
+    });
+    return previewOrder(lines, pricesIncludeTax);
+  }
+
+  // Subtotal + one VAT row per rate, only when VAT is added on top.
+  function vatRowsHtml(totals: OrderPreview): string {
+    if (totals.vat.length === 0) return '';
+    const rows = [
+      ['Subtotal', totals.subtotalMinor] as const,
+      ...totals.vat.map((v) => [`VAT ${formatRate(v.rateBps)}`, v.amountMinor] as const),
+    ];
+    return `<div class="tixc-summary-lines tixc-summary-vat">${rows
+      .map(
+        ([label, amount]) => `<div class="tixc-summary-line">
+          <span>${label}</span>
+          <span>${formatMinor(amount, currency)}</span>
+        </div>`,
+      )
+      .join('')}</div>`;
   }
 
   function renderSummary(): void {
@@ -73,14 +92,16 @@ if (
         </div>`;
       })
       .join('');
+    const totals = preview(entries);
     summary.innerHTML = `
       <span class="eyebrow">ODDference 2027</span>
       <div class="tixc-summary-lines">${lines}</div>
+      ${vatRowsHtml(totals)}
       <div class="tixc-summary-total-row">
         <span>Total</span>
-        <span>${formatMinor(cartTotal(), currency)}</span>
+        <span>${formatMinor(totals.totalMinor, currency)}</span>
       </div>
-      <p class="tixc-summary-vat-note">VAT included where applicable</p>
+      ${pricesIncludeTax ? '<p class="tixc-summary-vat-note">VAT included where applicable</p>' : ''}
     `;
   }
 
@@ -104,15 +125,21 @@ if (
     const line = tt
       ? `${quantity} x ${tt.name} - ${formatMinor(tt.displayPriceMinor * quantity, tt.currency)}`
       : `${quantity} x (ticket type unavailable)`;
-    const total = tt ? formatMinor(tt.displayPriceMinor * quantity, tt.currency) : '—';
+    const totals = preview([[ticketTypeId, quantity]]);
+    const total = tt ? formatMinor(totals.totalMinor, tt.currency) : '—';
     const body = [
       'Hi Ronny,',
       '',
       "I'd like to request an invoice for the following ODDference 2027 tickets:",
       '',
       line,
+      ...(tt
+        ? totals.vat.map(
+            (v) => `VAT ${formatRate(v.rateBps)}: ${formatMinor(v.amountMinor, tt.currency)}`,
+          )
+        : []),
       '',
-      `Total: ${total} (VAT included where applicable)`,
+      `Total: ${total}${pricesIncludeTax ? ' (VAT included where applicable)' : ''}`,
       '',
       `Name: ${name}`,
       `Email: ${email}`,
@@ -257,12 +284,13 @@ if (
     }
     ticketTypes = catalog.ticketTypes;
     currency = catalog.event.currency;
+    pricesIncludeTax = catalog.event.pricesIncludeTax !== false;
 
     invoiceTicketSelect.innerHTML = ticketTypes
-      .map(
-        (tt) =>
-          `<option value="${tt.id}">${escapeHtml(tt.name)} — ${formatMinor(tt.displayPriceMinor, tt.currency)}</option>`,
-      )
+      .map((tt) => {
+        const price = `${formatMinor(tt.displayPriceMinor, tt.currency)} ${vatSuffix(tt, pricesIncludeTax)}`;
+        return `<option value="${tt.id}">${escapeHtml(tt.name)} — ${price.trim()}</option>`;
+      })
       .join('');
     const firstCartEntry = Object.entries(cart).find(([, qty]) => qty > 0);
     if (firstCartEntry) {

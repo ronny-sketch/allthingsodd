@@ -164,6 +164,10 @@ const pricingTier = z.object({
   audience: z.string().optional(),
   description: z.string().optional(),
   price: z.string(),
+  // Small text beside the price, e.g. ODDference's "+ VAT 13.5%"
+  // (2026-09-14, prices became ex-VAT). A synced ticket card re-derives it
+  // from the catalog, so for ODDference this is the fallback, like price.
+  priceNote: z.string().optional(),
   status: z.string().optional(),
   benefits: z.array(z.string()),
   ctaLabel: z.string(),
