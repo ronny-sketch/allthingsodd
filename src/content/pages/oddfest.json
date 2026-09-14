@@ -92,7 +92,7 @@
   "examplesIntro": {
     "eyebrow": "Highlights",
     "headline": "One week, many different hosts.",
-    "body": "Creative Week 2026 brought more than 1,000 people to events made with partners across Helsinki. A few of them, and one moment from 2025.",
+    "body": "Creative Week 2026 brought more than 1,000 people to events made with partners across Helsinki. A few of them.",
     "closing": "The point is not that these events look alike. It is that, for one week, they become easier to discover together."
   },
   "examples": [
@@ -130,15 +130,6 @@
       "body": "A public panel, in Swedish, on where culture's value lies as funding tightens — with voices from the Kordelin Foundation, Kulturanalys Norden, Way Out West and Espoo Theatre.",
       "image": "../../assets/examples/hanaholmen-oodi-panel.jpg",
       "href": "https://hanaholmen.fi/en/events/decoration-product-or-societal-structure",
-      "external": true
-    },
-    {
-      "category": "ODDfest 2025 · Keynote",
-      "title": "Arthur C. Brooks in Helsinki",
-      "host": "With Humak and the Bo and Allan Hjelt Art Foundation",
-      "body": "The Harvard professor and happiness researcher on ODDfest's Chaos Stage, on why entrepreneurship is measured by the good it does rather than the money it makes.",
-      "image": "../../assets/examples/arthur-brooks-oddfest-2025.jpg",
-      "href": "https://www.humak.fi/julkaisut/yrittajyytta-ei-mitata-rahassa-vaan-siinamita-hyvaa-saimme-aikaan/",
       "external": true
     }
   ],

@@ -79,8 +79,8 @@ high-level notes:
   the hero and there is no support line, the same as ODDference),
   what it is, the two look-back buttons under it, how it works (who does
   what, then the four numbered steps), how to join, programme (optional —
-  empty until a real 2027 programme exists), highlights (`examples` — real, named Creative Week 2026 events and one
-  ODDfest 2025 keynote, each card with an optional photo and `external` for
+  empty until a real 2027 programme exists), highlights (`examples` — real, named Creative Week and ODDfest 2026
+  events, each card with an optional photo and `external` for
   a partner's own page), "On the programme" (`programmeHighlights` — grouped
   lines of names that actually took part), the "Want your event in the next
   one?" band (`hostCta`), the partner route, FAQ. The last three were added
