@@ -305,6 +305,23 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
     width: 100%;
     height: auto;
   }
+  /* Above 820px SubpageFrame's fixed 68px rails paint over both edges of this
+     full-bleed frame, so the text column keeps clear of them — at the Display
+     step the title otherwise ran to within 2px of the rails at 1024-1280px.
+     Declared after the short-viewport block so a wide landscape screen gets
+     the clearance too. */
+  @media (min-width: 821px) {
+    .space-hero-overlay {
+      padding-inline: calc(68px + var(--space-8));
+    }
+  }
+  /* The narrowest phones: 1rem each side instead of 2rem gives the Display
+     title back enough measure to avoid one-word first and last lines. */
+  @media (max-width: 400px) {
+    .space-hero-overlay {
+      padding-inline: 1rem;
+    }
+  }
   .space-hero-title {
     margin: 0;
     max-width: 32ch;

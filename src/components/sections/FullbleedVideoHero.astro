@@ -257,12 +257,23 @@ const {
        Sized from the content, not guessed — the logo is the biggest
        contributor, so it takes the reduction. The type stays on its roles
        (2026-09-13): the h1 is already Heading in this frame and Body/Small do
-       not scale, so only the support line's measure widens to save a line. */
+       not scale. (Both rules below sit before the base .oddfest-hero-logo and
+       .oddfest-hero-support rules in this file, so at equal specificity the
+       base rules currently win — a pre-existing ordering issue, not a type
+       one.) */
     .oddfest-hero-logo {
       width: min(230px, 30vw);
     }
     .oddfest-hero-support {
       max-width: 46ch;
+    }
+  }
+  /* Above 820px SubpageFrame's fixed 68px rails paint over both edges of this
+     full-bleed frame; keep the text column clear of them (same fix as
+     SpaceHero.astro). */
+  @media (min-width: 821px) {
+    .oddfest-hero-overlay {
+      padding-inline: calc(68px + var(--space-8));
     }
   }
   .oddfest-hero-logo {

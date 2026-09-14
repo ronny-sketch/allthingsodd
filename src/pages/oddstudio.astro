@@ -348,6 +348,7 @@ const page = entry.data;
     flex-direction: column;
   }
   .odst-rules-list li {
+    max-width: var(--measure-prose);
     font: var(--text-body);
     color: var(--color-paper-80);
     padding: 1.1rem 0 1.1rem 1.6rem;
@@ -376,7 +377,9 @@ const page = entry.data;
   }
   @media (max-width: 820px) {
     .odst-operator-grid {
-      grid-template-columns: 1fr;
+      /* minmax(0, 1fr): the operator's email-address pill has no break
+         opportunity, and a plain 1fr track would size to its full width. */
+      grid-template-columns: minmax(0, 1fr);
       gap: var(--space-8);
     }
   }

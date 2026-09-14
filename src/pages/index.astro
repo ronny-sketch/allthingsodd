@@ -499,6 +499,10 @@ const preloadImage = await mosaicImage(firstArchiveImage);
       align-items: stretch;
     }
     .wwo-band-go {
+      /* Full row width and allowed to wrap — flex-shrink: 0 kept its one-line
+         width, which ran 21px out of the band at 320px. */
+      flex: 1 1 100%;
+      min-width: 0;
       text-align: center;
     }
   }

@@ -560,7 +560,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
      copy beside it needs. */
   @media (max-width: 760px) {
     .oddc-convert-partner {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       grid-template-areas:
         'eyebrow'
         'title'
@@ -574,6 +574,22 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
     }
   }
   @media (max-width: 480px) {
+    /* 1.5rem, not 2.2rem, so "organisation" in the Heading-size title fits
+       a 320px phone's card. */
+    .oddc-convert-partner {
+      padding: 1.5rem;
+    }
+    .oddc-convert-partner h2 {
+      overflow-wrap: break-word;
+    }
+  }
+  /* The narrowest phones: inside SubpageFrame's column the card is only
+     206px wide at 320px, and "organisation" needs 180px at the Heading
+     role's floor, so the inline padding gives way first. */
+  @media (max-width: 360px) {
+    .oddc-convert-partner {
+      padding-inline: 0.75rem;
+    }
     .oddc-convert-partner :global(.pill) {
       white-space: normal;
       text-align: center;

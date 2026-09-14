@@ -189,9 +189,11 @@ const { title, cards } = Astro.props;
 
   @media (max-width: 700px) {
     .pathway-row {
-      /* auto, not a fixed 4rem: the stage label under the number ("Stay
-         involved") is set in Small-role capitals, which run wider than 4rem. */
-      grid-template-columns: auto 1fr;
+      /* 6rem, the desktop number column's width, not the old 4rem: the stage
+         label under the number ("Stay involved") is Small-role capitals and
+         needs ~90px for its longest word. Fixed rather than auto, so every
+         row's thumbnail keeps the same 7rem size. */
+      grid-template-columns: 6rem 1fr;
       grid-template-areas:
         'number media'
         'body body';

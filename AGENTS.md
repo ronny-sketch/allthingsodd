@@ -90,9 +90,10 @@ GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
   media, contact, privacy) and
   `src/content/site/global.json` (nav, footer, social, partner/press logos —
   shared across every page). Schema: `src/content.config.ts`.
-- **Design system** lives in `src/styles/` — `tokens.css` (color/type/space/motion
-  tokens, all with provenance comments — read them before adding a value),
-  `typography.css`, `layout.css`, `motion.css`.
+- **Design system** lives in `src/styles/` — `tokens.css` (color/space/motion
+  tokens and the two font families, all with provenance comments — read them
+  before adding a value), `typography.css` (the five-step type ladder — see
+  `docs/design-system.md#typography`), `layout.css`, `motion.css`.
 - **Components** follow `src/components/{primitives,navigation,media,sections}/`.
   Primitives are dumb and reusable (Logo, Pill, SocialIcon). Sections are
   page-specific composition (Hero, Converge, SubpageRail, AboutPanels, …).
@@ -111,9 +112,11 @@ GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
 
 ## Design-system rules
 
-1. **Tokens first.** A color, font size, spacing value, or easing curve that
-   isn't already a token in `src/styles/tokens.css` needs a reason to exist as a
-   new one-off — check there before writing a raw value.
+1. **Tokens first.** A color, spacing value, or easing curve that isn't already
+   a token in `src/styles/tokens.css` needs a reason to exist as a new one-off —
+   check there before writing a raw value. Font sizes have no one-offs at all:
+   text takes one of the five roles in `src/styles/typography.css` (see
+   `docs/design-system.md#typography`).
 2. **Reuse before inventing.** A new card/button/section that looks like an
    existing one should extend that component, not fork a near-duplicate.
 3. **Component hierarchy:** tokens → primitives → sections → pages. Pages

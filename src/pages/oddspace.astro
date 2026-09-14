@@ -263,7 +263,8 @@ const page = entry.data;
      steps and the address, in that order. */
   .odds-enter-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    /* minmax(0, 1fr) — same reason as SpaceShowcase's grid. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1px;
     background: var(--color-paper-12);
   }
@@ -295,6 +296,11 @@ const page = entry.data;
   .odds-enter-action {
     margin-top: auto;
     padding-top: 1.8rem;
+  }
+  .odds-enter-action :global(.pill) {
+    white-space: normal;
+    max-width: 100%;
+    text-align: center;
   }
   .odds-enter-price {
     font: var(--text-heading);

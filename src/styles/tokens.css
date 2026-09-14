@@ -107,7 +107,7 @@
   --width-wide: 1280px;
   --gutter: 1.75rem;
   --gutter-wide: clamp(2.5rem, 8vw, 7.5rem);
-  --nav-h: 65px; /* JS overwrites this at runtime with the nav's real measured height */
+  --nav-h: 69px; /* JS overwrites this at runtime with the nav's real measured height */
 
   /* ---------- surfaces (raised panels: nav dropdown, newsletter modal) ----------
      One shared shape/elevation for every "floating card over the page" surface

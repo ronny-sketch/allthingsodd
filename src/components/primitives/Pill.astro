@@ -156,9 +156,13 @@ const Tag = href ? 'a' : 'button';
       max-width: 100%;
       text-align: center;
       /* A label with no spaces at all — an email address, like ODDstudio's
-         operator contact — can still break rather than flooring its column
-         at its full min-content width. */
-      overflow-wrap: anywhere;
+         operator contact — may break inside the word once it would overflow.
+         break-word, not anywhere: `anywhere` also lowers the button's
+         min-content width, which let a flex row (a form's submit button beside
+         its status message) squeeze "Send message" into "MESSAG / E". A grid
+         column that holds such a pill allows shrinking instead, with
+         minmax(0, 1fr). */
+      overflow-wrap: break-word;
     }
   }
   /* Touch (2026-09-02 mobile experience pass). Two separate problems, one

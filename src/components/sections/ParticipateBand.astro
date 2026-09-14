@@ -182,9 +182,8 @@ const isGrouped = groups.length > 1;
     color: var(--color-ink);
     /* 1.4rem horizontal, not 2.2rem — at 5 equal columns (real instances run
        2-5 items) there wasn't enough width left for a single long word like
-       "ODDference" to fit without breaking mid-word even after the h3
-       font-size below was already reduced once; freeing up padding was the
-       other half of the fix (see h3's own comment). */
+       "ODDference" to fit without breaking mid-word. Freeing up padding is
+       the fix; the h3 itself stays on the Heading role (see its comment). */
     padding: 3rem 1.4rem;
     border: 1px solid transparent;
     text-decoration: none;

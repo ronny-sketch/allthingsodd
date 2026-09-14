@@ -56,7 +56,8 @@ const logoLength = Math.round(LOGO_THICK * (wordmark.width / wordmark.height));
 // ODDference's PNG, which is 1080px wide at source and renders at 130.
 const logoAsset = await getImage({ src: wordmark, width: LOGO_ASSET_WIDTH });
 // Measured px-per-character for the two type styles below (re-measured
-// 2026-09-13 at 10.55 and 10.07 once both moved onto the typography ladder).
+// 2026-09-13 at 10.55 and 10.07 once both moved onto the typography ladder,
+// then rounded up about 5% — the margin the original figures carried).
 // Estimate only — it sizes `reps` and the duration, never the seam.
 const PX_PER_WORD_CHAR = 11.2;
 const PX_PER_META_CHAR = 10.6;

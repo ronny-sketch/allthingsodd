@@ -125,6 +125,14 @@ import Layout from '../../layouts/Layout.astro';
     align-items: flex-start;
     gap: 1.5rem;
   }
+  /* Phones: the Heading-size price beside the name left the name,
+     description and benefits a 130-200px column. They stack instead. */
+  @media (max-width: 480px) {
+    :global(.tix-row-main) {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
   :global(.tix-row-info) {
     min-width: 0;
   }

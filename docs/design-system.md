@@ -109,32 +109,35 @@ for uppercase Small: `--tracking-eyebrow` (0.16em) and `--tracking-caps`
   characters of Body a line); short centred editorial intros can sit
   narrower. Paragraph spacing is margin or gap, never extra line-height.
 
-### Two reuse patterns that are not new sizes
+### Reuse patterns that are not new sizes
 
-- **Forta at the Small size** for the footer nav — the same brand voice as
-  the header, one step quieter, and it keeps the footer's top row on one line.
-- **Forta at the Body size** for compact, brand-voiced UI: primary nav
-  links, the SubpageRail/SubpageTicker word beats, price figures in
-  a rate list, order totals and the ticket label on `/tickets`, consent
-  category names, and legal subsection (`h3`) labels.
+- **Forta at the Small size** for the footer nav (one step quieter than the
+  header, and it keeps the footer's top row on one line from about 1150px),
+  ODDference's reason numbers and the cookie-table header row.
+- **Forta at the Body size** for compact, brand-voiced UI: primary nav links,
+  the SubpageRail/SubpageTicker word beats, Media's resource-row titles,
+  price figures in the ODDspace and ODDstudio rate lists, the order total and
+  stepper count on `/tickets`, the ticket label on `/tickets/confirmation`,
+  consent category names, and legal subsection (`h3`) labels. The nav, rail
+  and ticker words keep their own small literal tracking (0.01–0.02em).
   `font-family: var(--font-display); font-size: var(--font-size-body);`
 - **Gabarito 600 at the Body size** for run-in titles that sit directly on
   their own paragraph: Timeline rows, About's "Ways of working", Work with
   ODD's "When ODD is useful".
 
 Emphasis without size: `SectionIntro`'s `lead` prop (Home's "Why ODD",
-ODDference's big question) keeps Body and sets it in `--color-paper-80` on a
+ODDference's premise) keeps Body and sets it in `--color-paper-80` on a
 wider measure; ODDstudio's "not included" paragraph uses full `--color-paper`.
 
 ### Component mapping
 
-| Role    | Where                                                                                                                                                                                                                                                                                                                                                                                                              |
-| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Hero    | `HeroCentered` title when it carries a photograph (Work with ODD)                                                                                                                                                                                                                                                                                                                                                  |
-| Display | `PageIntro`, `SplitHero`, plain `HeroCentered` (About), `SpaceHero` and `FullbleedVideoHero frame="space"` h1s; `SectionIntro` headlines; `ProofGrid` figures; mobile menu links; 404 and ticketing page titles                                                                                                                                                                                                    |
-| Heading | Home hero line under the logo; ODDfest's default-frame hero line; `.section-head h2`; `Converge` column titles; `ProgramGrid`, `FeatureGrid`, `CaseGrid`, `OddfestExamples`, `SpaceShowcase` and `PersonGrid` titles; Work-with-ODD band; pricing tier names and prices; FAQ questions; resource, programme, pathway, audience and archive-year titles; filmstrip captions; newsletter popup; every closing-ask h2 |
-| Body    | All explanatory paragraphs, card descriptions, intros, FAQ answers, benefit lists, legal prose, notices, form fields, dropdown menu links                                                                                                                                                                                                                                                                          |
-| Small   | `.eyebrow` and every label/meta/category/date line, `Pill` and all other buttons, form labels, status and helper notes, footer contact and legal line, stat labels, rate-list notes, cookie table                                                                                                                                                                                                                  |
+| Role    | Where                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hero    | `HeroCentered` title when it carries a photograph (Work with ODD, ODDagency), above 640px                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Display | `PageIntro`, `SplitHero`, plain `HeroCentered` (About), `SpaceHero` and `FullbleedVideoHero frame="space"` h1s; `SectionIntro` headlines; `ProofGrid` figures; mobile menu links; 404 and ticketing page titles                                                                                                                                                                                                                                                                                                                                                                                   |
+| Heading | Home hero line under the logo; ODDfest's default-frame hero line; `.section-head h2` and every closing-ask h2; `Converge` column titles; `ProgramGrid`, `FeatureGrid`, `CaseGrid`, `OddfestExamples`, `SpaceShowcase`, `PersonGrid` and `ParticipateBand` titles; CaseGrid figures, Timeline years and PathwayList numbers; the Work-with-ODD band; pricing tier names and prices; FAQ questions; programme, pathway, audience and archive-year titles; the filmstrip heading and captions; the LogoStrip label; legal section h2s; the Contact aside and Media section h2s; the newsletter popup |
+| Body    | All explanatory paragraphs, card descriptions, intros, FAQ answers, benefit lists, legal prose, notices, form fields, dropdown menu links                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Small   | `.eyebrow` and every label/meta/category/date line, `Pill` and the site's other button styles, form labels, status and helper notes, footer contact and legal line, stat labels, rate-list notes, cookie table                                                                                                                                                                                                                                                                                                                                                                                    |
 
 Eyebrows are Small at 600, uppercase, `--tracking-eyebrow` (the `.eyebrow`
 class). Buttons and CTA labels are Small at 600, uppercase, `--tracking-caps`.
@@ -146,13 +149,20 @@ class). Buttons and CTA labels are Small at 600, uppercase, `--tracking-caps`.
    The step is to the next role, not to a height-scaled size.
 2. **`FullbleedVideoHero frame="space"` on short viewports.** The h1 steps from
    Display to Heading below 620px of height, for the same reason.
-3. **`HeroCentered`** takes Hero only with a photograph; its plain variant is
-   laid out like `PageIntro` and takes Display.
+3. **`HeroCentered`** takes Hero only with a photograph and only above 640px:
+   on phones Hero's 3.25rem floor is wider than a column for one long word,
+   so the title steps to Display. Its plain variant is laid out like
+   `PageIntro` and takes Display at every width.
 4. **Icon glyphs.** The Instagram tile badge and the ticket stepper's +/− use
    `line-height: 1` so the glyph centres in its box; the ticket sheet's ×
    close glyph uses the Heading size. None of them is text.
 5. **Cookie table storage keys** on `/privacy` use the platform monospace at
-   the Small size — the only third family on the site.
+   the Small size — the only deliberate third family on the site.
+
+Known gap, pre-existing and tracked separately: the ticket-flow buttons on
+`/tickets`, `/tickets/checkout` and `/tickets/confirmation` are written as raw
+`class="pill"` markup, which Pill.astro's scoped styles never reach, so they
+still render in the browser's default button font and size.
 
 ## Spacing & layout
 

@@ -89,7 +89,8 @@ const BEAT_GAP = 42;
 // Measured px-per-character for this rail's two type styles at 1440px
 // (uppercase Forta at the Body size, vertical, and Small-role capitals at the
 // eyebrow tracking — re-measured 2026-09-13 at 10.96 and 10.06 when the rail
-// moved onto the typography ladder, so the drift speed below stays the same).
+// moved onto the typography ladder, and rounded up about 2% as the original
+// figures were, so the drift speed below stays the same).
 // Only ever used to estimate a period for `reps` and `duration`, both of which
 // degrade gracefully; the loop's seamlessness does not depend on them.
 const PX_PER_WORD_CHAR = 11.2;

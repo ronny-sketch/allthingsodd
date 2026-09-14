@@ -107,6 +107,10 @@ const PRODUCTS = [
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.6rem;
+    /* Fields line up by their inputs, not their labels — a deep-linked label
+       ("Organisation (leave blank if applying as an individual)") wraps to
+       two lines and would otherwise drop its input below its neighbour's. */
+    align-items: end;
   }
   @media (max-width: 640px) {
     .field-row {

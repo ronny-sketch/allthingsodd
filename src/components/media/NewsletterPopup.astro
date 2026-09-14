@@ -180,6 +180,12 @@ const { newsletterHref } = site.data;
     background: var(--color-ink);
     color: var(--color-paper);
   }
+  @media (max-width: 400px) {
+    /* So the email placeholder isn't clipped beside the button at 360px. */
+    .nl-popup :global(.nl-form button) {
+      padding: 0 1.1rem;
+    }
+  }
   .nl-popup :global(.nl-status) {
     text-align: center;
     color: var(--color-ink-40);

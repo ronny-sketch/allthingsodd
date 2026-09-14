@@ -13,22 +13,15 @@ interface Props {
   // future case a caller needs a different level rather than forcing every
   // page's heading hierarchy through one fixed tag.
   headingLevel?: 'h2' | 'h3' | 'h4';
-  // Opt-in only (default 'auto', every other caller unaffected). The default
-  // wraps cards to however many fit the *container's* real width, which for
-  // ODDfest's exactly-4-step "How it works" would be a 2x2 block even on a
-  // desktop wide enough for one deliberate 01|02|03|04 row — see
-  // docs/architecture.md and the .is-four-column rule below.
-  layout?: 'auto' | 'four-column';
 }
-const { cards, headingLevel = 'h3', layout = 'auto' } = Astro.props;
+const { cards, headingLevel = 'h3' } = Astro.props;
 const Heading = headingLevel;
 // How many cards one full row may hold. Four cards go two-by-two rather than
 // three-and-one; five go three-and-two. The card width itself lives in CSS.
 const perRow = cards.length === 4 ? 2 : Math.min(cards.length, 3);
-const gridClass = `oddf-grid reveal${layout === 'four-column' ? ' is-four-column' : ''}`;
 ---
 
-<div class={gridClass} style={`--per-row: ${perRow}`}>
+<div class="oddf-grid reveal" style={`--per-row: ${perRow}`}>
   {
     cards.map((c) => (
       <div>
@@ -45,8 +38,8 @@ const gridClass = `oddf-grid reveal${layout === 'four-column' ? ' is-four-column
      was `repeat(auto-fit, minmax(240px, 280px))`).
 
      The card width is derived from the Heading role its title is set in:
-     9em of title — room for the longest single words these cards carry,
-     "availability" and "collaboration" — plus the card's own padding. A
+     9em of title — room for the widest single words these cards carry,
+     "collaboration" and "automatically" — plus the card's own padding. A
      fixed pixel track could not do that. Heading is fluid (1.5rem to 2rem),
      so a track wide enough for "availability" at 2rem was too wide to keep
      three cards on a row in the 60rem container, and one narrow enough to
@@ -72,23 +65,11 @@ const gridClass = `oddf-grid reveal${layout === 'four-column' ? ' is-four-column
     justify-content: center;
     gap: 1px;
   }
-  /* Forces exactly four equal columns, one deliberate row, from 1200px. Inside
-     SubpageFrame's rails and .oddf-center's gutters this section runs ~232px
-     narrower than the viewport (792px at 1024, 1048px at 1280 — measured with
-     getBoundingClientRect), so 1200px is where four cards first clear the
-     240px floor tests/functional/interactions.spec.ts asserts. ODDfest's step
-     titles are short (no word over nine characters), so they fit a card
-     narrower than --feature-card. Below 1200px the default wrap applies,
-     which for four cards is the 2x2 block. */
-  @media (min-width: 1200px) {
-    .oddf-grid.is-four-column {
-      max-width: 72rem;
-      flex-wrap: nowrap;
-    }
-    .oddf-grid.is-four-column > div {
-      flex: 1 1 0;
-    }
-  }
+  /* There is no forced four-across variant any more. ODDfest's four steps
+     used to be pinned to one row from 1200px, but with their titles on the
+     Heading role a ~280px card set "Start with something you already want to
+     make" in five or six lines — so four cards take the same 2x2 block as
+     any other four-card grid. */
   .oddf-grid > div {
     /* Shrinks (never grows) — so a single card on a phone narrower than
        --feature-card still fits its column. */
@@ -106,7 +87,7 @@ const gridClass = `oddf-grid reveal${layout === 'four-column' ? ' is-four-column
     text-align: center;
   }
   /* The narrowest phones: a 264px column can't also give 1.6rem each side to
-     "availability" at the Heading role's 1.5rem floor. */
+     the longest title words at the Heading role's 1.5rem floor. */
   @media (max-width: 360px) {
     .oddf-grid > div {
       padding-inline: 1.2rem;

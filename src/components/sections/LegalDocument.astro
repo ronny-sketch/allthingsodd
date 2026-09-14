@@ -174,6 +174,9 @@ const KIND_LABEL: Record<string, string> = {
   .legal-section h3 {
     font-family: var(--font-display);
     font-size: var(--font-size-body);
+    /* Forta ships a single 400 face. Without this the h3 takes the browser's
+       default bold, which the browser then synthesises. */
+    font-weight: 400;
     color: var(--color-paper);
     margin: 0 0 var(--space-2);
     display: flex;
@@ -213,7 +216,9 @@ const KIND_LABEL: Record<string, string> = {
     border-radius: 999px;
     padding: 0.15rem 0.55rem;
   }
-  .legal-empty {
+  /* Scoped under .legal-section so it outranks `.legal-section p` — whose
+     `font` shorthand would otherwise reset the italic. */
+  .legal-section .legal-empty {
     font-style: italic;
     margin: 0;
   }
@@ -230,7 +235,7 @@ const KIND_LABEL: Record<string, string> = {
        most people read this on — below that the five columns would wrap
        into unreadable slivers, and the scroll container above takes over
        instead. */
-    min-width: 36rem;
+    min-width: 42rem;
   }
   .legal-table-scroll th,
   .legal-table-scroll td {

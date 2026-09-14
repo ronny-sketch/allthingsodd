@@ -67,8 +67,8 @@ const hasItems = items.length > 0;
                squeezed each column so narrow that overflow-wrap:anywhere on
                .proof-value fractured numbers mid-character ("2,600" → "2," /
                "600", confirmed via screenshot). Capping at 4 wraps to a
-               second row instead — every real usage today (1/2/3/8 items)
-               divides cleanly with no orphaned row. */}
+               second row instead. (Today's callers, Home and About, both
+               pass four.) */}
           <div
             class={`proof-grid reveal ${items.length >= 4 ? 'is-four' : ''}`}
             style={`--cols: ${Math.min(items.length, 4)}`}
@@ -143,8 +143,8 @@ const hasItems = items.length > 0;
     border-left: none;
   }
   /* A four-across row goes two-by-two on tablet. Between 701 and 1024px a
-     quarter of the column is ~170px, which cannot hold a Display figure and
-     a Small-capitals label ("Contributors") without breaking either one.
+     quarter of the column is roughly 160-240px, which cannot reliably hold a
+     Display figure and a Small-capitals label ("Contributors") unbroken.
      This lived as a Home-only override until About's impact row grew to
      four figures as well. */
   @media (min-width: 701px) and (max-width: 1024px) {
