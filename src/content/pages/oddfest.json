@@ -97,6 +97,15 @@
   },
   "examples": [
     {
+      "category": "ODDfest 2026 · Vanha Ylioppilastalo",
+      "title": "ODDtheatre",
+      "host": "With more than ten collectives",
+      "body": "Club Theatre took over the main hall: dancers, DJs, actors, models and visual artists building one night in real time, directed by Tyre. Among them the House of Xclusive Lanvin, contemporary circus group Nuua, Wanda O'rly and Maryisonacid.",
+      "image": "../../assets/examples/oddtheatre-vanha-ylioppilastalo.jpg",
+      "href": "https://www.flickr.com/photos/204686183@N06/albums/72177720334181557",
+      "external": true
+    },
+    {
       "category": "Creative Week 2026 · Maria 01",
       "title": "Creative x Tech: Ecosystem Convergence",
       "host": "With Junction and Maria 01",
@@ -106,12 +115,12 @@
       "external": true
     },
     {
-      "category": "Creative Week 2026 · Amos Rex",
-      "title": "Creative Capital Gathering",
-      "host": "With FiBAN and Joy for Innovation",
-      "body": "Investors, foundations, funds and angels around one question: what does it really mean to invest in the creative industries? A conversation rather than a pitch session, with Solar Films founder Markus Selin and a Meow Wolf case among the speakers.",
-      "image": "../../assets/examples/creative-capital-gathering.jpg",
-      "href": "https://luma.com/CCG2026",
+      "category": "ODDfest 2026 · Bio Rex",
+      "title": "Smell the Art",
+      "host": "With Helsinki Perfume Club and Artishok.me",
+      "body": "An exhibition for two senses: artworks paired with chosen fragrances, so scent could deepen, disrupt or extend what the eye saw. Created by Katia Los and Adriana Knispel.",
+      "image": "../../assets/examples/smell-the-art-bio-rex.jpg",
+      "href": "https://www.flickr.com/photos/204686183@N06/albums/72177720334101885",
       "external": true
     },
     {
@@ -135,36 +144,27 @@
     {
       "category": "ODDfest 2026 · Tavastia",
       "title": "ODDgames",
-      "host": "With Espoo Game LAB and Super Bario",
-      "body": "Games shared Tavastia with the live music. Espoo Game LAB's Indie Game Corner put titles from new Finnish studios, like Lakeside Games' Twilight Ferry, in front of players, together with Konepaja's gaming bar Super Bario.",
+      "host": "With Espoo Game LAB, Odd Latent and Super Bario",
+      "body": "ODDgames transformed Tavastia into a multi-layered playground where games, creativity and new technology came together. Across two days, visitors explored indie games from Espoo Game LAB, experimented with AI-assisted vibe coding, experienced live game-making and creative sessions, and played together at Super Bario.",
       "image": "../../assets/examples/oddgames-tavastia.jpg",
       "href": "https://www.espoo.fi/en/working-life/espoo-game-lab-game-development-programme",
       "external": true
     },
     {
-      "category": "ODDfest 2026 · Vanha Ylioppilastalo",
-      "title": "ODDtheatre",
-      "host": "With more than ten collectives",
-      "body": "Club Theatre took over the main hall: dancers, DJs, actors, models and visual artists building one night in real time, directed by Tyre. Among them the House of Xclusive Lanvin, contemporary circus group Nuua, Wanda O'rly and Maryisonacid.",
-      "image": "../../assets/examples/oddtheatre-vanha-ylioppilastalo.jpg",
-      "href": "https://www.flickr.com/photos/204686183@N06/albums/72177720334181557",
+      "category": "Creative Week 2026 · Amos Rex",
+      "title": "Creative Capital Gathering",
+      "host": "With FiBAN and Joy for Innovation",
+      "body": "Investors, foundations, funds and angels around one question: what does it really mean to invest in the creative industries? A conversation rather than a pitch session, with Solar Films founder Markus Selin and a Meow Wolf case among the speakers.",
+      "image": "../../assets/examples/creative-capital-gathering.jpg",
+      "href": "https://luma.com/CCG2026",
       "external": true
     },
     {
       "category": "ODDfest 2026 · Kamppi Chapel",
       "title": "ODD Deep Space",
-      "host": "Curated by Simo Vassinen",
-      "body": "For two days the wooden chapel became a somatic laboratory. Seven sessions of movement, ritual and DJ sets took on AI, money, feminism and crisis, with Islaja, Maria Ritola, Roope Mokka and others.",
+      "host": "With Simo Vassinen and 13 facilitators",
+      "body": "ODD Deep Space transformed Kamppi Chapel into a dreamlike satellite where body, mind and urgent questions about the future came together through movement, sound and experimental formats. Across two days, visitors explored themes from work, wellbeing and money to AI, planetary limits and feminist futures, guided by artist and somatic facilitator Simo Vassinen and a diverse group of thinkers, movers and makers.",
       "image": "../../assets/examples/odd-deep-space-kamppi-chapel.jpg",
-      "href": "https://www.flickr.com/photos/204686183@N06/albums/72177720334101885",
-      "external": true
-    },
-    {
-      "category": "ODDfest 2026 · Bio Rex",
-      "title": "Smell the Art",
-      "host": "With Helsinki Perfume Club and Artishok.me",
-      "body": "An exhibition for two senses: artworks paired with chosen fragrances, so scent could deepen, disrupt or extend what the eye saw. Created by Katia Los and Adriana Knispel.",
-      "image": "../../assets/examples/smell-the-art-bio-rex.jpg",
       "href": "https://www.flickr.com/photos/204686183@N06/albums/72177720334101885",
       "external": true
     }
@@ -175,16 +175,20 @@
     "body": "ODDfest 2025 and 2026 were made with artists, speakers, collectives and organisations like these.",
     "groups": [
       {
-        "label": "Music & performance",
-        "description": "Valerie June (US) · Föllakzoid (CL) · Paleface & Avanti! · Stacy Epps (US) · Dominga (CL) · Kaukolampi · YOTTO · A. Blomqvist · Gone Future (SE) · Salomé Daoudi (DK) · Clavert · Electric Elisa"
+        "label": "Music",
+        "description": "Valerie June (US) · Föllakzoid (CL) · Paleface & Avanti! · Stacy Epps (US) · Dominga (CL) · Kaukolampi · A. Blomqvist · Gone Future (SE) · Clavert · Electric Elisa · Heith (IT) · Lauer & DENA (DE)"
+      },
+      {
+        "label": "Performance & live art",
+        "description": "Nuua Company · Ballroom Extravaganza · DanceWorks Helsinki · Q-teatteri · Espoo Theatre · Tyre"
       },
       {
         "label": "Talks & ideas",
-        "description": "Arthur C. Brooks (US) · Esa Saarinen · Claus Raasted (DK) · Alf Rehn · Meow Wolf (US) · Tunna Milonoff · Elisabet Lahti · Sonya Lindfors · Irene Campolmi · Elina Anttila"
+        "description": "Arthur C. Brooks (US) · Otto “YOTTO” Yliperttula · Salomé Daoudi (DK) · Juska “DJ Orion” Wendland · Pascal Fischer (DE) · Lotta Savolainen · Oki Tåg · Filip Hiltmann (SE) · Heidi Backman · Lottaliina Pokkinen"
       },
       {
         "label": "Collectives & culture makers",
-        "description": "Ballroom Extravaganza · DanceWorks Helsinki · Q-teatteri · Espoo Theatre · DocPoint · Bar25 — Days Out of Time (DE) · Indie Showcase · Aavistus · Uneton48 · Tanssin talo"
+        "description": "DocPoint · Bar25 — Days Out of Time (DE) · Indie Showcase · Aavistus · Uneton48 · Tanssin talo · Espoo Game LAB · Helsinki Film Lab"
       },
       {
         "label": "Partners",
