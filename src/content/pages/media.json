@@ -25,9 +25,9 @@
   },
   "background": [
     {
-      "title": "Event Formats Explained",
-      "description": "A short explainer of ODD's event formats.",
-      "href": "https://drive.google.com/file/d/1VxcygxFTBO_dxMDkUYEGQjA_kUPSQNf8/view?usp=drive_link"
+      "title": "ODDfest 2026 — Thank you",
+      "description": "The thank-you page and credits for everyone who co-created ODDfest 2026.",
+      "href": "/oddfest-2026/"
     }
   ],
   "mediaBank": {
@@ -78,14 +78,6 @@
         "year": "2025",
         "description": "Flickr",
         "href": "https://www.flickr.com/photos/202979718@N07/",
-        "usageNote": "Editorial use — credit \"ODDfest / photographer's name\"."
-      },
-      {
-        "title": "ODDfest 2026 Lineup Images",
-        "type": "Photos",
-        "year": "2026",
-        "description": "Google Drive",
-        "href": "https://drive.google.com/drive/folders/1hjN_7EIuRJ_EeGXqABoM2QdBvCw-vjwW?usp=sharing",
         "usageNote": "Editorial use — credit \"ODDfest / photographer's name\"."
       }
     ],
