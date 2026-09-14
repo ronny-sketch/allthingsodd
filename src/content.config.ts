@@ -96,16 +96,15 @@ const proofSection = z.object({
   eyebrow: z.string().optional(),
   title: z.string().optional(),
   items: z.array(proofItem),
-  // Optional link to the underlying report (e.g. "2025 Impact Report") —
-  // Home's new proof module uses this; About's own impact section declares
-  // the same two fields separately rather than via this shared fragment
-  // (predates it), so this stays optional/unused there.
-  reportLabel: z.string().optional(),
-  reportUrl: z.string().optional(),
-  // A scope caveat under the report link — see ProofGrid.astro's
-  // `reportNote`. Home needs it because its stat row is cumulative across
-  // ODD's first two years while the only published report covers 2025.
-  reportNote: z.string().optional(),
+  // The button under the figures — see ProofGrid.astro's `cta`. Home points
+  // it at the ODDfest 2026 thank-you page (2026-09-14); it used to link the
+  // 2025 Impact Report through `reportLabel`/`reportUrl`, plus a `reportNote`
+  // scope caveat that the thank-you page doesn't need. About's impact
+  // snapshots keep their own `reportLabel`/`reportUrl` fields (they predate
+  // this fragment) and about.astro maps them onto the same prop.
+  cta: linkCta.optional(),
+  // One short line set above that button.
+  ctaLead: z.string().optional(),
 });
 
 const caseStudy = z.object({
@@ -461,14 +460,20 @@ const pages = defineCollection({
         // separate light-band placement below the hero). Only a headline —
         // the old "subline" was a second, overlapping description of what
         // ODD builds; that idea now lives, unified with "whatOddIs"'s own
-        // body, in the "More than one event" section below, where
-        // primaryCta/secondaryCta also render (not here) — see index.astro.
+        // body, in the "Why ODD" section below, where primaryCta/secondaryCta
+        // also render (not here) — see index.astro.
         opening: z.object({
           headline: z.string(),
           primaryCta: linkCta.optional(),
           secondaryCta: linkCta.optional(),
         }),
-        whatOddIs: sectionIntro,
+        // "Why ODD" (BuiltAround.astro, 2026-09-14). `missingPieces` label the
+        // empty grid cells around the section's photograph — what the body
+        // says has to be found again after every project. The grid has four
+        // places, so four at most.
+        whatOddIs: sectionIntro.extend({
+          missingPieces: z.array(z.string()).max(4).optional(),
+        }),
         // "tracks" (the small ODDference/Work with ODD/ODDfest/ODDspace
         // destination buttons under each audience blurb) is optional as of
         // the 2026-08-30 homepage revision — those destinations now live in

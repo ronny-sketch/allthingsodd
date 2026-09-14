@@ -427,7 +427,7 @@ Current order (2026-09-11 reorg):
 
 ```
 Hero
-Why ODD               one sentence + the page's main explanatory passage
+Why ODD               premise + point, one photo in an emptied grid, the passage
 Who ODD is for        creatives left, business right, two buttons each
 What we do            ODDfest / ODDference / ODDspace
 Work with ODD         full-width band, directly under those three

@@ -121,22 +121,26 @@ for uppercase Small: `--tracking-eyebrow` (0.16em) and `--tracking-caps`
   the SubpageRail/SubpageTicker word beats, Media's resource-row titles,
   price figures in the ODDspace and ODDstudio rate lists, the order total and
   stepper count on `/tickets`, the ticket label on `/tickets/confirmation`,
-  consent category names, and legal subsection (`h3`) labels. The nav, rail
+  consent category names, legal subsection (`h3`) labels, and the cell
+  labels in Home's "Why ODD" grid on phones. The nav, rail
   and ticker words keep their own small literal tracking (0.01–0.02em).
   `font-family: var(--font-display); font-size: var(--font-size-body);`
 - **Gabarito 600 at the Body size** for run-in titles that sit directly on
   their own paragraph: Timeline rows, About's "Ways of working", Work with
   ODD's "When ODD is useful".
 
-Emphasis without size: `SectionIntro`'s `lead` prop (Home's "Why ODD",
-ODDference's premise) keeps Body and sets it in `--color-paper-80` on a
-wider measure; ODDstudio's "not included" paragraph uses full `--color-paper`.
+Emphasis without size: `SectionIntro`'s `lead` prop (ODDference's premise)
+keeps Body and sets it in `--color-paper-80` on a wider measure; ODDstudio's
+"not included" paragraph uses full `--color-paper`. `BuiltAround` (Home's
+"Why ODD") splits its Hero headline at the first sentence end and sets the
+premise in `--color-paper-40` and the point in full `--color-paper` — one
+size, two weights of ink.
 
 ### Component mapping
 
 | Role    | Where                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Hero    | `HeroCentered` title when it carries a photograph (Work with ODD, ODDagency), above 640px                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Hero    | `HeroCentered` title when it carries a photograph (Work with ODD, ODDagency), above 640px; the `BuiltAround` headline (Home's "Why ODD"), above 560px                                                                                                                                                                                                                                                                                                                                                                                                          |
 | Display | `PageIntro`, `SplitHero`, plain `HeroCentered` (About), `SpaceHero` and `FullbleedVideoHero frame="space"` h1s; `SectionIntro` headlines; `ProofGrid` figures; mobile menu links; 404 and ticketing page titles                                                                                                                                                                                                                                                                                                                                                |
 | Heading | Home hero line under the logo; `.section-head h2` and every closing-ask h2; `Converge` column titles; `ProgramGrid`, `FeatureGrid`, `CaseGrid`, `OddfestExamples`, `SpaceShowcase`, `PersonGrid` and `ParticipateBand` titles; CaseGrid figures, Timeline years and PathwayList numbers; the Work-with-ODD band; pricing tier names and prices; FAQ questions; programme, pathway, audience and archive-year titles; the filmstrip heading and captions; the LogoStrip label; legal section h2s; the Contact aside and Media section h2s; the newsletter popup |
 | Body    | All explanatory paragraphs, card descriptions, intros, FAQ answers, benefit lists, legal prose, notices, form fields, dropdown menu links                                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -163,6 +167,9 @@ class). Buttons and CTA labels are Small at 600, uppercase, `--tracking-caps`.
    close glyph uses the Heading size. None of them is text.
 5. **Cookie table storage keys** on `/privacy` use the platform monospace at
    the Small size — the only deliberate third family on the site.
+6. **`BuiltAround`** (Home's "Why ODD") takes Hero above 560px and steps to
+   Display below it, for the same reason as `HeroCentered`: at Hero's 3.25rem
+   floor its two sentences set as a column of one- and two-word lines.
 
 Known gap, pre-existing and tracked separately: the ticket-flow buttons on
 `/tickets`, `/tickets/checkout` and `/tickets/confirmation` are written as raw
@@ -224,7 +231,10 @@ stop at those caps — Display from about 1300px, Heading from 1330px, Hero from
 1180px at the default root) and `.wrap-wide` (80rem / 1280px, wider gutters)
 are the two container widths the entire site uses; `.bleed` breaks a contained element to full viewport width (used by
 the news filmstrip and program grid). `section` gets a consistent
-`--space-24` vertical rhythm by default.
+`--space-24` vertical rhythm by default. An element that is also a `.wrap`
+sets `padding-block`, never a `padding` shorthand: `padding: 3rem 0` zeroes
+the container's side gutter, which is how the footer ran to the screen edges
+until 2026-09-14.
 
 ## Motion
 

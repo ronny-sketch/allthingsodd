@@ -84,5 +84,18 @@ const { slug, railLeft, railRight } = Astro.props;
       padding-left: 88px;
       padding-right: 88px;
     }
+    /* Layout renders the footer after <main>, outside this frame, but the
+       fixed, opaque rails still paint over its edges at the bottom of the
+       page. Its rows get the same clearance as the column above: content at
+       88px + the gutter from the viewport edge, less however far the centred
+       container already sits in, and never under the plain gutter — so on
+       wide screens, where the container clears the rails by itself, the
+       footer simply lines up with the page content, as on every other page. */
+    :global(body:has(.oddf-frame) footer > .wrap) {
+      padding-inline: max(
+        var(--gutter),
+        calc(88px + var(--gutter) - max(0px, (100% - var(--width-contained)) / 2))
+      );
+    }
   }
 </style>

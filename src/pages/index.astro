@@ -12,19 +12,11 @@ import CaseGrid from '../components/sections/CaseGrid.astro';
 import Aftermovie from '../components/sections/Aftermovie.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
 import PartnerTiers from '../components/sections/PartnerTiers.astro';
-import FloatingCloud from '../components/media/FloatingCloud.astro';
-import Pill from '../components/primitives/Pill.astro';
-import cloudPhoto1 from '../assets/hero/archive-03.jpg';
-import cloudPhoto2 from '../assets/hero/archive-04.jpg';
-import cloudPhoto3 from '../assets/hero/archive-06.jpg';
-import cloudPhoto4 from '../assets/hero/archive-09.jpg';
-import cloudPhoto5 from '../assets/hero/archive-11.jpg';
-import cloudPhoto6 from '../assets/hero/archive-14.jpg';
-import cloudPhoto7 from '../assets/hero/archive-01.jpg';
-import cloudPhoto8 from '../assets/hero/archive-02.jpg';
-import cloudPhoto9 from '../assets/hero/archive-07.jpg';
-import cloudPhoto10 from '../assets/hero/archive-17.jpg';
-import cloudPhoto11 from '../assets/hero/archive-21.jpg';
+import BuiltAround from '../components/sections/BuiltAround.astro';
+// The one photograph left in "Why ODD"'s grid. Also one of the hero mosaic's
+// first twenty cells, which is deliberate: it is the photo that stays when the
+// grid above is emptied. Portrait, so it fills the two-row cell uncropped.
+import talentPhoto from '../assets/hero/archive-20.jpg';
 
 // Content file is named index.json (not home.json) so CloudCannon's
 // filename-based [slug] URL placeholder resolves to "" for it, matching the
@@ -47,19 +39,12 @@ const { featuredIn, logoWall } = site.data;
 // they're curated in site/global.json.
 const homePressLogos = featuredIn.filter((item) => item.pressCoverage).slice(0, 12);
 
-const cloudPhotos = [
-  cloudPhoto1,
-  cloudPhoto2,
-  cloudPhoto3,
-  cloudPhoto4,
-  cloudPhoto5,
-  cloudPhoto6,
-  cloudPhoto7,
-  cloudPhoto8,
-  cloudPhoto9,
-  cloudPhoto10,
-  cloudPhoto11,
-];
+// "Why ODD"'s calls to action — the same pair this section has carried since
+// SectionIntro's own text-link cta was dropped here, so there is one CTA
+// style in the section, not two.
+const whyOddCtas = [page.opening.primaryCta, page.opening.secondaryCta].filter(
+  (cta) => cta !== undefined,
+);
 
 // A head start on the hero mosaic's first cell — the first photograph the
 // page paints. Built through the same helper Hero.astro uses, and passed to
@@ -87,45 +72,19 @@ const preloadImage = await mosaicImage(firstArchiveImage);
 >
   <Hero mosaicAlt={page.hero.mosaicAlt} headline={page.opening.headline} />
 
-  <div class="whatoddis-wrap">
-    <FloatingCloud images={cloudPhotos} />
-    {
-      /* `lead` (2026-09-11, reworked 2026-09-13): this is the page's main
-         explanatory passage, not a supporting note, so it is set in brighter
-         ink on a wider measure than SectionIntro's grey default — at the same
-         Body size as every other paragraph on the site. The body's blank
-         lines render as real paragraphs; see SectionIntro's own comment. */
-    }
-    <SectionIntro
-      eyebrow={page.whatOddIs.eyebrow}
-      headline={page.whatOddIs.headline}
-      body={page.whatOddIs.body}
-      lead
-      warpHeadline
-    />
-    {
-      /* One integrated action pair, not two competing CTA mechanisms — this
-         used to also render SectionIntro's own text-link cta
-         (page.whatOddIs.cta) directly above this row, so the section carried
-         two different CTA styles doing two different things back to back.
-         SectionIntro's `cta` prop is intentionally unused here; these Pills
-         are the section's only calls to action. */
-      (page.opening.primaryCta || page.opening.secondaryCta) && (
-        <div class="whatoddis-ctas reveal">
-          {page.opening.primaryCta && (
-            <Pill href={page.opening.primaryCta.href} variant="solid" magnetic>
-              {page.opening.primaryCta.label}
-            </Pill>
-          )}
-          {page.opening.secondaryCta && (
-            <Pill href={page.opening.secondaryCta.href} variant="outline" magnetic>
-              {page.opening.secondaryCta.label}
-            </Pill>
-          )}
-        </div>
-      )
-    }
-  </div>
+  {
+    /* "Why ODD" — the hero's mosaic again, emptied down to one photograph,
+       with what is missing around it named in the empty cells. See
+       BuiltAround.astro for the reasoning. */
+  }
+  <BuiltAround
+    eyebrow={page.whatOddIs.eyebrow}
+    headline={page.whatOddIs.headline}
+    body={page.whatOddIs.body}
+    pieces={page.whatOddIs.missingPieces}
+    image={talentPhoto}
+    ctas={whyOddCtas}
+  />
 
   {
     /* --- Homepage section order, set in the 2026-09-11 reorg. ---
@@ -199,7 +158,7 @@ const preloadImage = await mosaicImage(firstArchiveImage);
        reader has seen what ODD does and how to work with it. SectionIntro
        carries the eyebrow/headline/body/cta; the bare ProofGrid underneath
        (no eyebrow/title of its own — see content.config.ts's proofSection
-       comment) renders the stat row plus the Impact Report link. Guarded on
+       comment) renders the stat row plus the button under it. Guarded on
        `proofIntro` (not `proof`) since the editorial framing is what makes
        this a real section, not just a stat grid.
 
@@ -208,9 +167,11 @@ const preloadImage = await mosaicImage(firstArchiveImage);
        snapshot this launched with — the homepage's job is to say what ODD has
        built, and a first-event-only row understated it by half. The 2025
        figures stay where they belong, on About's year-by-year impact section.
-       The report link keeps its 2025 scope explicit via `reportNote` so four
-       cumulative figures never read as though one year's report evidences
-       them. */
+
+       2026-09-14: both links are buttons, and the one under the figures is
+       the ODDfest 2026 thank-you page instead of the 2025 Impact Report —
+       which also retires the scope note that report needed here. About
+       still links the report. */
   }
   {
     page.proofIntro && (
@@ -220,15 +181,15 @@ const preloadImage = await mosaicImage(firstArchiveImage);
           headline={page.proofIntro.headline}
           body={page.proofIntro.body}
           cta={page.proofIntro.cta}
+          ctaAs="button"
         />
         {page.proof && (
           <ProofGrid
             eyebrow={page.proof.eyebrow}
             title={page.proof.title}
             items={page.proof.items}
-            reportLabel={page.proof.reportLabel}
-            reportUrl={page.proof.reportUrl}
-            reportNote={page.proof.reportNote}
+            cta={page.proof.cta}
+            ctaLead={page.proof.ctaLead}
           />
         )}
       </div>
@@ -301,59 +262,6 @@ const preloadImage = await mosaicImage(firstArchiveImage);
 </Layout>
 
 <style>
-  .whatoddis-wrap {
-    position: relative;
-  }
-  .whatoddis-ctas {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.9rem;
-    margin: 1.8rem auto 0;
-    position: relative;
-  }
-  /* Headline scale. This was pinned to a 4.6rem display size in the
-     2026-08-31 revision, when the headline was two short sentences and
-     needed the weight to read as the page's second hero moment. It is now
-     one long sentence, and at 4.6rem inside SectionIntro's 42rem block that
-     set as seven lines of display type — a wall, with the body it is
-     supposed to introduce reduced to a footnote underneath.
-
-     No size override here: SectionIntro's own Display role is the size, and
-     the block widens instead, which buys the line count back without
-     inventing a size. Still the largest headline on the page after the hero
-     — just not louder than the thing it introduces. */
-  .whatoddis-wrap :global(.section-intro-inner) {
-    max-width: 52rem;
-  }
-  @media (min-width: 1025px) {
-    /* 70vw caps it where the desktop scale's larger rem would otherwise run
-       the copy into the photo cloud's outer slots (at 90% of the section's
-       width) up to ~1500px. Desktop only: below 1025px the root size is the
-       browser default, and the cap would only narrow the column on tablets
-       and phones. */
-    .whatoddis-wrap :global(.section-intro-inner) {
-      max-width: min(52rem, 70vw);
-    }
-  }
-  /* The cloud is decorative (aria-hidden, alt="") and must never paint over
-     the words it frames. FloatingCloud is absolutely positioned and comes
-     first in this wrapper, so by default it painted above the section, which
-     is in normal flow — at the top of the arc that put a photo directly on
-     the "Why ODD" eyebrow. Raising the text, rather than moving the photo,
-     because the arc's apex will keep landing near the section's first line
-     whenever the copy length changes. (.whatoddis-ctas below already carries
-     its own position: relative for the same reason.) */
-  .whatoddis-wrap :global(.section-intro) {
-    position: relative;
-    z-index: 1;
-  }
-  /* HeroCentered's eyebrow reads brighter (--color-paper-80) than
-     SectionIntro's shared default (--color-paper-60) — matched here for the
-     same "second hero" alignment as the headline above. */
-  .whatoddis-wrap :global(.section-intro-inner .eyebrow) {
-    color: var(--color-paper-80);
-  }
   /* "Work with ODD" pathway band — one row, deliberately not a product card:
      no photo, no grid cell, its own full-width strip. It sits directly under
      the three platform cards again (2026-09-11), which is where its question
@@ -376,16 +284,18 @@ const preloadImage = await mosaicImage(firstArchiveImage);
      body/cta) directly above a bare ProofGrid stat row. Both render as full
      default-padded <section>s on their own (see layout.css), which stacks a
      12rem gap between the closing line and the numbers backing it up —
-     trimmed here so the two read as one connected passage. */
+     trimmed here so the two read as one connected passage. Since the intro's
+     link became a button (2026-09-14) the trim is a step less tight: a
+     bordered pill at the old 1rem phone gap sat on the first figure. */
   .home-proof :global(.section-intro) {
-    padding-bottom: var(--space-6);
+    padding-bottom: var(--space-10);
   }
   .home-proof :global(.proof-section) {
     padding-top: 0;
   }
   @media (max-width: 640px) {
     .home-proof :global(.section-intro) {
-      padding-bottom: var(--space-4);
+      padding-bottom: var(--space-8);
     }
   }
 
