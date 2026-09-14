@@ -492,6 +492,29 @@ collections_config:
         options:
           subtype: object
           required: false
+      gallery:
+        type: object
+        label: '"Life at ODDspace" photo wall (ODDspace only)'
+        comment: >-
+          The wall of photos of the space in use, under the events list. Add
+          as many as you like, portrait or landscape, in any order — the wall
+          arranges them by shape, so it can't be left with gaps. Remove the
+          whole section to hide the wall.
+        options:
+          subtype: object
+          required: false
+      photos:
+        type: array
+        label: Photos
+        comment: >-
+          Real photos of people using the space. Each needs its own alt text
+          describing what's actually shown — don't name people in it.
+        options:
+          structures: _structures.oddspace_gallery_photo
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
       twoWaysIn:
         type: object
         label: '"Who ODD is for" (Home only)'
@@ -1457,6 +1480,23 @@ _structures:
             - key: alt
           icon:
             - image
+          image:
+            - key: image
+        place_groups_below: false
+        tabbed: false
+        value:
+          image:
+          alt: ''
+  oddspace_gallery_photo:
+    style: select
+    values:
+      - label: Photo
+        default: false
+        preview:
+          text:
+            - key: alt
+          icon:
+            - photo_camera
           image:
             - key: image
         place_groups_below: false

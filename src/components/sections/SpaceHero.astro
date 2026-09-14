@@ -133,9 +133,10 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
     display: block;
     filter: contrast(1.05) saturate(1.1) brightness(0.82);
   }
-  /* An asymmetric 8-cell layout — cell-1 (the lounge) anchors the grid as
-     the largest cell, the rest fill in around it. Deliberately not a plain
-     N-up grid: the brief asks the space to read as "entered", not tiled. */
+  /* An asymmetric 8-cell layout — cell-1 (the first of heroPhotos) anchors
+     the grid as the largest cell, the rest fill in around it. Deliberately
+     not a plain N-up grid: the brief asks the space to read as "entered",
+     not tiled. */
   .cell-1 {
     grid-column: 1 / 4;
     grid-row: 1 / 4;
