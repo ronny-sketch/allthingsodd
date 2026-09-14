@@ -1,9 +1,20 @@
 ---
 // Reusable case/story card grid — Work with ODD "Selected work", ODDagency
 // "Selected cases", and Home's single-case teaser (via CaseGrid with one
-// item) all use this. No image field: this site has no real case photography
-// yet, so these read as strong typographic editorial cards instead of
-// forcing a stock/placeholder image — see content.config.ts's `caseStudy`.
+// item) all use this. Typographic by default: ODDagency and Home still have
+// no real case photography, so their cards stay strong editorial cards
+// instead of forcing a stock/placeholder image — see content.config.ts's
+// `caseStudy`.
+//
+// 2026-09-14: Work with ODD's references are real ODDfest work with real
+// photos (BajaMyArt, the 2025 aftermovie, the two Flickr archives), so a
+// card can now carry an optional photo, its own link label, and `external`.
+// Every one of those references points off-site, where a same-tab
+// "Read more →" was wrong on all counts. A card that sets none of the three
+// renders exactly as before. See content.config.ts's `referenceCase`.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
 interface Metric {
   value: string;
   label: string;
@@ -15,17 +26,37 @@ interface CaseItem {
   summary: string;
   metrics?: Metric[];
   href: string;
+  image?: ImageMetadata;
+  linkLabel?: string;
+  external?: boolean;
 }
 interface Props {
   items: CaseItem[];
+  // Caps how many cards share a row. Work with ODD passes 2 so its four
+  // references read as a 2×2 block instead of three plus a stranded fourth.
+  // Layout, not content — which is why it's a prop and not a CMS field.
+  maxColumns?: number;
 }
-const { items } = Astro.props;
+const { items, maxColumns } = Astro.props;
 ---
 
-<div class="case-grid reveal">
+<div
+  class="case-grid reveal"
+  style={maxColumns ? `--case-grid-max-cols: ${maxColumns}` : undefined}
+>
   {
     items.map((c) => (
-      <a class="case-card" href={c.href}>
+      <a
+        class="case-card"
+        href={c.href}
+        target={c.external ? '_blank' : undefined}
+        rel={c.external ? 'noreferrer' : undefined}
+      >
+        {c.image && (
+          <div class="case-media">
+            <Image class="case-media-img" src={c.image} alt="" width={800} />
+          </div>
+        )}
         <span class="case-category">
           {c.category}
           {c.partner && ` · ${c.partner}`}
@@ -42,7 +73,7 @@ const { items } = Astro.props;
             ))}
           </div>
         )}
-        <span class="case-go">Read more →</span>
+        <span class="case-go">{c.linkLabel ?? 'Read more →'}</span>
       </a>
     ))
   }
@@ -64,6 +95,13 @@ const { items } = Astro.props;
     justify-content: center;
     gap: 1px;
   }
+  /* `maxColumns` — narrows the container to exactly N 20rem tracks plus
+     their 1px gaps, so auto-fit can't open an (N+1)th column. Unset, nothing
+     here applies and the grid is as wide as its parent. */
+  .case-grid[style*='--case-grid-max-cols'] {
+    max-width: calc(var(--case-grid-max-cols) * 20rem + (var(--case-grid-max-cols) - 1) * 1px);
+    margin-inline: auto;
+  }
   .case-card {
     background: var(--color-backstage);
     padding: 2.4rem;
@@ -76,6 +114,33 @@ const { items } = Astro.props;
   @media (hover: hover) {
     .case-card:hover {
       background: color-mix(in srgb, var(--color-backstage) 85%, var(--color-paper) 15%);
+    }
+  }
+  /* Optional photo (2026-09-14). It bleeds to the card's edges by cancelling
+     the card's own padding, so a photo card and a typographic card keep one
+     grid rhythm. 4:3 with the same grade as OddfestExamples' media. The
+     alt is empty on purpose: the photo illustrates the card's own title,
+     which is the link's accessible name. */
+  .case-media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    margin: -2.4rem -2.4rem 1.8rem;
+    background: var(--color-backstage);
+  }
+  .case-media :global(.case-media-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: contrast(1.05) saturate(1.15) brightness(0.92);
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .case-media :global(.case-media-img) {
+      transition: transform 0.6s ease;
+    }
+    .case-card:hover .case-media :global(.case-media-img) {
+      transform: scale(1.05);
     }
   }
   .case-category {

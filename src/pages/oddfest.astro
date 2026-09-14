@@ -41,6 +41,7 @@ import SectionIntro from '../components/sections/SectionIntro.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import ProgrammeList from '../components/sections/ProgrammeList.astro';
 import OddfestExamples from '../components/sections/OddfestExamples.astro';
+import AudienceList from '../components/sections/AudienceList.astro';
 import Timeline from '../components/sections/Timeline.astro';
 import FAQList from '../components/sections/FAQList.astro';
 import Pill from '../components/primitives/Pill.astro';
@@ -220,12 +221,13 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     }
 
     {
-      // Real, named 2026 examples — only renders once verified ones exist
-      // (see content.config.ts's `creativeWeekExample` comment: no invented
-      // events ship here). Empty today; this is the one open item in the
-      // rebuild that needs Ronny's real 2026 recap material. Sits directly
-      // under "What has happened before", which is the chapter it belongs
-      // to — both are about what already happened.
+      // Real, named examples — only renders while verified ones exist (see
+      // content.config.ts's `creativeWeekExample` comment: no invented events
+      // ship here). Filled 2026-09-14 with Creative Week 2026 events and one
+      // ODDfest 2025 keynote, each checked against its partner's own event
+      // page and the ODDfest photo archive. Sits directly under "What has
+      // happened before", which is the chapter it belongs to — both are about
+      // what already happened.
       page.examples.length > 0 && (
         <section class="oddf-sub">
           <div class="wrap">
@@ -240,6 +242,45 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
         </section>
       )
     }
+
+    {
+      /* Programme highlights (2026-09-14): who was on the 2025 and 2026
+         programmes, grouped, directly under the examples. The examples show
+         what the formats looked like; this shows who was in them. Reuses
+         AudienceList's label + line treatment rather than inventing a logo
+         wall or tag cloud for what is, in the end, a list of names. */
+      page.programmeHighlights.groups.length > 0 && (
+        <section class="oddf-sub oddf-names">
+          <div class="wrap">
+            <div class="section-head">
+              <span class="eyebrow">{page.programmeHighlights.eyebrow}</span>
+              <h2>{page.programmeHighlights.headline}</h2>
+            </div>
+            <p class="oddf-names-lede reveal">{page.programmeHighlights.body}</p>
+            <AudienceList items={page.programmeHighlights.groups} />
+          </div>
+        </section>
+      )
+    }
+
+    <!-- "Want your event in the next one?" (2026-09-14). The proof chapter
+         ends by handing the reader straight back to the page's primary
+         conversion: having just seen who and what ODDfest has been, a
+         would-be host is asked for theirs. Same destination as "How to join"
+         but deliberately lighter (no backstage ground), so the page still has
+         one loudest ask. -->
+    <section class="oddf-sub oddf-bring">
+      <div class="wrap">
+        <div class="oddf-bring-inner reveal">
+          <span class="eyebrow">{page.hostCta.eyebrow}</span>
+          <h2>{page.hostCta.headline}</h2>
+          <p>{page.hostCta.body}</p>
+          <Pill href={page.hostCta.cta.href} variant="ticket" magnetic class="oddf-bring-cta">
+            {page.hostCta.cta.label}
+          </Pill>
+        </div>
+      </div>
+    </section>
 
     <!-- 6. Partner route (2026-09-11). The host ask above is this page's
          primary conversion and keeps the loudest treatment; this is the
@@ -526,5 +567,49 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     text-align: center;
     font: var(--text-body);
     color: var(--color-paper-40);
+  }
+
+  /* Programme highlights — a lede above AudienceList's grouped names, same
+     negative top margin as the examples lede so it tucks under its heading. */
+  .oddf-names-lede {
+    max-width: var(--measure-prose);
+    margin: -1.5rem auto 0;
+    text-align: center;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+  }
+
+  /* "Want your event in the next one?" — centered, unboxed, with the same
+     roomier ticket Pill as "How to join" so the two asks read as one route. */
+  .oddf-bring-inner {
+    max-width: 40rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .oddf-bring-inner .eyebrow {
+    display: block;
+    color: var(--color-paper-40);
+    margin-bottom: 0.9rem;
+  }
+  .oddf-bring-inner h2 {
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+    margin: 0;
+  }
+  .oddf-bring-inner p {
+    font: var(--text-body);
+    color: var(--color-paper-60);
+    max-width: var(--measure-prose);
+    margin: 1.1rem auto 1.8rem;
+  }
+  .oddf-bring-inner :global(.oddf-bring-cta.pill) {
+    padding: 1rem 2.4rem;
+  }
+  @media (max-width: 460px) {
+    .oddf-bring-inner :global(.pill) {
+      white-space: normal;
+      text-align: center;
+    }
   }
 </style>

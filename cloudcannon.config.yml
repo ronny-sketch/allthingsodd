@@ -597,12 +597,39 @@ collections_config:
           subtype: object
       examplesIntro:
         type: object
-        label: '"2026 examples" section framing (ODDfest only)'
+        label: '"Highlights" section framing (ODDfest only)'
         comment: >-
           The eyebrow/headline/body/closing shown above the real "examples"
-          list below — kept separate so this editorial framing is ready the
-          moment real, verified Creative Week 2026 examples exist. This
-          section only renders once "examples" is non-empty.
+          cards below. This section only renders while "examples" is
+          non-empty.
+        options:
+          subtype: object
+      programmeHighlights:
+        type: object
+        label: '"On the programme" names (ODDfest only)'
+        comment: >-
+          Names from past ODDfest programmes, grouped under a label (Music &
+          performance, Talks & ideas, Partners, ...) with one line of names
+          per group, separated by " · ". Only list people and organisations
+          that actually took part, not ones that were only announced. The
+          section is hidden while "groups" is empty.
+        options:
+          subtype: object
+      hostCta:
+        type: object
+        label: '"Want your event in the next one?" band (ODDfest only)'
+        comment: >-
+          The short ask under the programme names, sending hosts to the event
+          submission form. Keep its link on the same route as "How to join"
+          (/contact/?topic=oddfest_2027_event) so both asks land in one place.
+        options:
+          subtype: object
+      casesIntro:
+        type: object
+        label: '"What we have built with our partners" heading (Work with ODD only)'
+        comment: >-
+          Eyebrow, headline and an optional one-line intro above the case
+          cards. The section is hidden while "Case studies" is empty.
         options:
           subtype: object
       concept:
@@ -754,16 +781,30 @@ collections_config:
         cascade: true
       examples:
         type: array
-        label: '"Last year, this looked like…" examples (ODDfest only)'
+        label: '"Highlights" cards (ODDfest only)'
         comment: >-
-          Real, named 2026 Creative Week examples — exhibitions,
-          performances, screenings, club nights, workshops, talks. Photo is
-          optional (a card without one gets a plain surface instead). Leave
-          this empty until real, verified 2026 events/hosts exist — the
-          section itself doesn't render while it's empty. No placeholder or
-          invented events.
+          Real, named events that actually happened — Creative Week talks,
+          gatherings, salons, panels, performances. Photo is optional (a card
+          without one gets a plain surface instead). Set "external: true" when
+          the link goes to a partner's own page, so it opens in a new tab. No
+          placeholder or invented events; the section is hidden while this is
+          empty.
         options:
           structures: _structures.creative_week_example
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+          required: false
+        cascade: true
+      groups:
+        type: array
+        label: Name groups ("On the programme", ODDfest only)
+        comment: >-
+          One group per row: a short label (e.g. "Music & performance") and a
+          single line of names separated by " · ". Only names that actually
+          took part.
+        options:
+          structures: _structures.audience_item
           disable_add: false
           disable_remove: false
           disable_reorder: false
@@ -911,7 +952,12 @@ collections_config:
       cases:
         type: array
         label: Case studies
-        comment: Appears on ODDagency and Work with ODD — the same real case can be listed on both.
+        comment: >-
+          Appears on ODDagency and Work with ODD — the same real case can be
+          listed on both. On Work with ODD only, a case can also carry a
+          photo ("image"), its own link text ("linkLabel", instead of "Read
+          more →") and "external: true" for a link that leaves this site
+          (opens in a new tab).
         options:
           structures: _structures.case_study
           disable_add: false
@@ -1677,6 +1723,7 @@ _structures:
           host: ''
           body: ''
           href: ''
+          external: false
   resource_link_item:
     style: select
     values:
