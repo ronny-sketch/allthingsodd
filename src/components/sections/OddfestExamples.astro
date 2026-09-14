@@ -25,34 +25,38 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<div class="examples-grid reveal">
-  {
-    items.map((item) => {
-      const Tag = item.href ? 'a' : 'div';
-      // `external` (2026-09-14): the verified examples link out to their
-      // partners' own event pages and write-ups — a new tab with
-      // rel=noreferrer, the same treatment Pill gives any external link.
-      const linkProps = item.href
-        ? {
-            href: item.href,
-            ...(item.external ? { target: '_blank', rel: 'noreferrer' } : {}),
-          }
-        : {};
-      return (
-        <Tag class="example-card" {...linkProps}>
-          <div class={`example-media ${item.image ? '' : 'example-media--empty'}`}>
-            {item.image && <Image class="example-media-img" src={item.image} alt="" width={640} />}
-          </div>
-          <div class="example-body">
-            <span class="example-category">{item.category}</span>
-            <h3>{item.title}</h3>
-            {item.host && <span class="example-host">{item.host}</span>}
-            <p>{item.body}</p>
-          </div>
-        </Tag>
-      );
-    })
-  }
+<div class="examples">
+  <div class="examples-grid reveal">
+    {
+      items.map((item) => {
+        const Tag = item.href ? 'a' : 'div';
+        // `external` (2026-09-14): the verified examples link out to their
+        // partners' own event pages and write-ups — a new tab with
+        // rel=noreferrer, the same treatment Pill gives any external link.
+        const linkProps = item.href
+          ? {
+              href: item.href,
+              ...(item.external ? { target: '_blank', rel: 'noreferrer' } : {}),
+            }
+          : {};
+        return (
+          <Tag class="example-card" {...linkProps}>
+            <div class={`example-media ${item.image ? '' : 'example-media--empty'}`}>
+              {item.image && (
+                <Image class="example-media-img" src={item.image} alt="" width={960} />
+              )}
+            </div>
+            <div class="example-body">
+              <span class="example-category">{item.category}</span>
+              <h3>{item.title}</h3>
+              {item.host && <span class="example-host">{item.host}</span>}
+              <p>{item.body}</p>
+            </div>
+          </Tag>
+        );
+      })
+    }
+  </div>
 </div>
 
 <style>
@@ -61,11 +65,59 @@ const { items } = Astro.props;
      doesn't divide evenly per row (five). The container's background is what
      painted an incomplete last row's empty cell as a bare solid card; each
      card's own background plus the 1px gap is what reads as the hairline
-     grid, and it still does. */
+     grid, and it still does.
+
+     Column counts (2026-09-14, eight cards): the same 16.25rem-per-card
+     steps the old `auto-fit` grid took — 1, 2, 3, 4 columns — but set
+     against the grid's own width with a container query, so the three-column
+     step can be written as six half-tracks. That lets a last row of two
+     cards share the whole row (three half-tracks each) instead of leaving an
+     empty cell beside them; their photos go 2:1 so the row keeps the same
+     image height as the 4:3 cards above it. A single leftover card stays one
+     column wide — stretched across the page it would be a banner, not a
+     card. */
+  .examples {
+    container: examples / inline-size;
+  }
   .examples-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(16.25rem, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 1px;
+  }
+  @container examples (min-width: 32.5rem) {
+    .examples-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @container examples (min-width: 48.75rem) {
+    .examples-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .example-card {
+      grid-column: span 2;
+    }
+    .example-card:nth-child(3n + 1):nth-last-child(2),
+    .example-card:nth-child(3n + 2):last-child {
+      grid-column: span 3;
+    }
+    .example-card:nth-child(3n + 1):nth-last-child(2) .example-media,
+    .example-card:nth-child(3n + 2):last-child .example-media {
+      aspect-ratio: 2 / 1;
+    }
+  }
+  @container examples (min-width: 65rem) {
+    .examples-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .example-card,
+    .example-card:nth-child(3n + 1):nth-last-child(2),
+    .example-card:nth-child(3n + 2):last-child {
+      grid-column: auto;
+    }
+    .example-card:nth-child(3n + 1):nth-last-child(2) .example-media,
+    .example-card:nth-child(3n + 2):last-child .example-media {
+      aspect-ratio: 4 / 3;
+    }
   }
   .example-card {
     display: flex;
