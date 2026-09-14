@@ -143,16 +143,15 @@ collections_config:
           subtype: object
       heroSupport:
         type: text
-        label: Hero support line (ODDfest only)
+        label: Hero support line (not currently shown)
         comment: >-
-          The short practical-value paragraph rendered under the hero's h1,
-          above the "meta" line — on ODDfest (added 2026-09-11, when that
-          hero took ODDspace's full anatomy), under "Helsinki's creative
-          week." One or two sentences — it shares the screen with two
-          buttons. ODDference used it too until 2026-09-11, when its hero was
-          retuned to match ODDspace's (wordmark / short headline / meta /
-          buttons, no paragraph) and this line moved into "The premise"
-          below; on every other page text here appears nowhere.
+          A short paragraph under the hero's h1. No page renders it at the
+          moment: ODDference and ODDfest both use ODDspace's hero composition
+          (wordmark / short headline / meta / buttons, no paragraph) —
+          ODDference since 2026-09-11, when this line moved into "The
+          premise" below, and ODDfest since 2026-09-14, when it was cut.
+          Only ODDference's content model still accepts the field, and text
+          here appears nowhere.
       heroPhotos:
         type: array
         label: Hero photo grid (ODDspace only)

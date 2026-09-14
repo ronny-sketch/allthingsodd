@@ -213,7 +213,11 @@ real decisions worth recording:
      already existed on `FullbleedVideoHero` from the ODDference rebuild.
      Nothing new was built. `secondaryCta`/`heroSupport` are declared on
      the oddfest branch of `content.config.ts`, mirroring how ODDference
-     declares its own.
+     declares its own. **Superseded on 2026-09-14:** the hero moved to
+     `frame="space"`, the same change ODDference got on 2026-09-11 — see
+     the hero-variants note below. The eyebrow and support line are no
+     longer rendered, `heroSupport` is removed from the oddfest branch, and
+     `meta` is "Helsinki · 2027".
    - **"You make the event. ODD builds the shared layer." and "How it
      works" became one section**, because they were one argument told
      twice — who is responsible for what, then what actually happens. The
@@ -477,17 +481,22 @@ entirely in the 2026-08-31 final implementation pass (see below).
   distinct product identities from one shared component rather than forking
   it — see the component's own comment and `docs/design-system.md`.
 
-  Since 2026-09-11 it also takes a `frame` prop, and ODDference passes
-  `frame="space"`. That is a second, orthogonal knob: `accent` picks the
-  color identity, `frame` picks the _proportions_. `'default'` is ODDfest's
-  original frame (a small headline under a very wide wordmark, light scrim,
-  standard `Pill` sizing); `'space'` reproduces `SpaceHero`'s — display-sized
-  headline, a darker centred scrim, the larger CTA pills ODDspace got the
-  same day — on ODDference's own video, so the two pages read as siblings
-  without ODDference giving up its film for a photo grid. Every value in that
-  block is lifted from `SpaceHero.astro` rather than re-derived; if one is
-  retuned, retune the other to match. Asked for directly; the alternative
-  considered and rejected was moving ODDference onto `SpaceHero` itself.
+  Since 2026-09-11 it also takes a `frame` prop. That is a second,
+  orthogonal knob: `accent` picks the color identity, `frame` picks the
+  _proportions_. `'default'` is the original frame (a small headline under a
+  very wide wordmark, light scrim, standard `Pill` sizing); `'space'`
+  reproduces `SpaceHero`'s — display-sized headline, a darker centred scrim,
+  the larger CTA pills ODDspace got the same day — on each page's own video,
+  so the pages read as siblings without giving up their film for a photo
+  grid. ODDference moved to `frame="space"` on 2026-09-11 and ODDfest on
+  2026-09-14, so no page currently renders `'default'`. In that frame the
+  wordmark is sized to one rendered _height_, not one width: each wordmark
+  scales the tuned widths by its own aspect ratio (`logoScale` in the
+  component), so ODDfest's squarer wordmark does not render taller than
+  ODDference's. Every other value in that block is lifted from
+  `SpaceHero.astro` rather than re-derived; if one is retuned, retune the
+  other to match. Asked for directly; the alternative considered and
+  rejected was moving ODDference onto `SpaceHero` itself.
 
 - **ODDspace** — `SpaceHero`: an asymmetric grid of real space photography
   instead of one video (its brief asks for the space itself, shown through

@@ -551,16 +551,20 @@ const pages = defineCollection({
       // this is a website content decision, not one of those).
       subpageBase.extend({
         _template: z.literal('oddfest'),
-        // The hero gained ODDspace's full anatomy on 2026-09-11 at Ronny's
-        // direct request — eyebrow, h1, a support line, meta and two CTAs —
-        // over the aftermovie rather than ODDspace's photo grid, since the
-        // ask was for the same structure, not the same medium. Declared on
-        // this branch rather than on subpageBase for the same reason
-        // ODDference declares them: they are page-specific additions to
-        // FullbleedVideoHero's optional props, not something all five
-        // subpages carry. See oddfest.astro's section-order comment.
+        // The hero's second CTA ("Look back at 2026"). Declared on this
+        // branch rather than on subpageBase for the same reason ODDference
+        // declares its own: a page-specific addition to FullbleedVideoHero's
+        // optional props, not something all five subpages carry.
+        //
+        // `heroSupport` was removed from this branch on 2026-09-14, when the
+        // hero moved to ODDspace's composition (`frame="space"` — wordmark /
+        // short display headline / meta / CTAs, no paragraph), the same
+        // change ODDference got on 2026-09-11. Removed rather than made
+        // optional: oddfest.astro no longer passes it, so an optional field
+        // would be a CMS control whose text appears nowhere. What it said —
+        // independently made events, you make yours, ODD builds the week —
+        // is `whatItIs` and `ownership` directly below the hero, at length.
         secondaryCta: linkCta.optional(),
-        heroSupport: z.string(),
         whatItIs: sectionIntro,
         // The two ways to look back at ODDfest 2026, as a pair of buttons
         // under `whatItIs` (2026-09-11): the archived thank-you page, now
@@ -687,9 +691,8 @@ const pages = defineCollection({
       // generic-FAQ sections that didn't map to any of those jobs.
       subpageBase.extend({
         _template: z.literal('oddference'),
-        // A second hero CTA (ODDfest's FullbleedVideoHero call doesn't pass
-        // one) — declared here, not on subpageBase, since it's genuinely
-        // page-specific: "Get your ticket" + "Partner with ODDference" only
+        // A second hero CTA — declared here, not on subpageBase, since it's
+        // genuinely page-specific (ODDfest declares its own the same way): "Get your ticket" + "Partner with ODDference" only
         // makes sense once there's something to sell and someone to court.
         secondaryCta: linkCta.optional(),
         // The hero's practical-value support line (2026-09-02 copywriting
