@@ -117,12 +117,94 @@
   },
   "programme": [],
   "examplesIntro": {
-    "eyebrow": "What this can look like",
+    "eyebrow": "Highlights",
     "headline": "One week, many different hosts.",
-    "body": "Real examples from Creative Week 2026 — different hosts, formats and places across the city.",
+    "body": "Creative Week 2026 brought more than 1,000 people to events made with partners across Helsinki. A few of them, and one moment from 2025.",
     "closing": "The point is not that these events look alike. It is that, for one week, they become easier to discover together."
   },
-  "examples": [],
+  "examples": [
+    {
+      "category": "Creative Week 2026 · Maria 01",
+      "title": "Creative x Tech: Ecosystem Convergence",
+      "host": "With Junction and Maria 01",
+      "body": "Founders, artists, hackers, designers, musicians and cultural operators in one room — people who usually build in separate circles. Talks, fireside chats and participatory programme opened the week.",
+      "image": "../../assets/examples/creative-x-tech-maria01.jpg",
+      "href": "https://maria.io/events/creative-x-tech-ecosystem-convergence/",
+      "external": true
+    },
+    {
+      "category": "Creative Week 2026 · Amos Rex",
+      "title": "Creative Capital Gathering",
+      "host": "With FiBAN and Joy for Innovation",
+      "body": "Investors, foundations, funds and angels around one question: what does it really mean to invest in the creative industries? A conversation rather than a pitch session, with Solar Films founder Markus Selin and a Meow Wolf case among the speakers.",
+      "image": "../../assets/examples/creative-capital-gathering.jpg",
+      "href": "https://luma.com/CCG2026",
+      "external": true
+    },
+    {
+      "category": "Creative Week 2026 · Taidehalli",
+      "title": "Soirée of Serendipity",
+      "host": "Curated by Vivian White Futures Studio",
+      "body": "An invitation-only evening on the soul of tomorrow — what a good life in the future is made of. Around 300 leaders, entrepreneurs, artists and thinkers from business, culture and society.",
+      "image": "../../assets/examples/soiree-of-serendipity.jpg",
+      "href": "https://www.flickr.com/photos/204686183@N06/albums/72177720334107461",
+      "external": true
+    },
+    {
+      "category": "ODDfest 2026 · Oodi",
+      "title": "Decoration, product or societal structure?",
+      "host": "With Hanaholmen and Nordic Culture Point",
+      "body": "A public panel, in Swedish, on where culture's value lies as funding tightens — with voices from the Kordelin Foundation, Kulturanalys Norden, Way Out West and Espoo Theatre.",
+      "image": "../../assets/examples/hanaholmen-oodi-panel.jpg",
+      "href": "https://hanaholmen.fi/en/events/decoration-product-or-societal-structure",
+      "external": true
+    },
+    {
+      "category": "ODDfest 2025 · Keynote",
+      "title": "Arthur C. Brooks in Helsinki",
+      "host": "With Humak and the Bo and Allan Hjelt Art Foundation",
+      "body": "The Harvard professor and happiness researcher on ODDfest's Chaos Stage, on why entrepreneurship is measured by the good it does rather than the money it makes.",
+      "image": "../../assets/examples/arthur-brooks-oddfest-2025.jpg",
+      "href": "https://www.humak.fi/julkaisut/yrittajyytta-ei-mitata-rahassa-vaan-siinamita-hyvaa-saimme-aikaan/",
+      "external": true
+    }
+  ],
+  "programmeHighlights": {
+    "eyebrow": "On the programme",
+    "headline": "Who has been part of it so far.",
+    "body": "ODDfest 2025 and 2026 were made with artists, speakers, collectives and organisations like these.",
+    "groups": [
+      {
+        "label": "Music & performance",
+        "description": "Valerie June (US) · Föllakzoid (CL) · Paleface & Avanti! · Stacy Epps (US) · Dominga (CL) · Kaukolampi · YOTTO · A. Blomqvist · Gone Future (SE) · Salomé Daoudi (DK) · Clavert · Electric Elisa"
+      },
+      {
+        "label": "Talks & ideas",
+        "description": "Arthur C. Brooks (US) · Esa Saarinen · Claus Raasted (DK) · Alf Rehn · Meow Wolf (US) · Tunna Milonoff · Elisabet Lahti · Sonya Lindfors · Irene Campolmi · Elina Anttila"
+      },
+      {
+        "label": "Collectives & culture makers",
+        "description": "Ballroom Extravaganza · DanceWorks Helsinki · Q-teatteri · Espoo Theatre · DocPoint · Bar25 — Days Out of Time (DE) · Indie Showcase · Aavistus · Uneton48 · Tanssin talo"
+      },
+      {
+        "label": "Partners",
+        "description": "Genelec · Marimekko · Holvi · Junction · Maria 01 · FiBAN · Amos Rex · Hanaholmen · Nordic Culture Point · Humak · Lassila & Tikanoja · Helsinki Film Lab · Innovestor · Radio Helsinki · Bonnier News · EIT Culture & Creativity"
+      },
+      {
+        "label": "Supported by",
+        "description": "City of Helsinki · Finnish Cultural Foundation · Alfred Kordelin Foundation · Yksityisyrittäjäin Säätiö · Amos Anderson Foundation · Bo and Allan Hjelt Art Foundation"
+      }
+    ]
+  },
+  "hostCta": {
+    "eyebrow": "ODDfest 2027",
+    "headline": "Want your event in the next one?",
+    "body": "An exhibition, a club night, a talk, a dinner, an open studio — or a format nobody has tried yet. We are collecting ideas for 2027 now, and yours does not need to be finished.",
+    "cta": {
+      "label": "Submit your event",
+      "href": "/contact/?topic=oddfest_2027_event"
+    }
+  },
   "faq": [
     {
       "question": "Do I need to be an established organisation to host something?",

@@ -366,6 +366,19 @@ const pages = defineCollection({
       stage: z.string(),
     });
 
+    // Work with ODD's "What we've built with our partners" references
+    // (2026-09-14): caseStudy plus an optional photo, a per-card link label
+    // and an `external` flag. These references are real ODDfest work with
+    // real photography, and every one of them points off-site (Flickr,
+    // YouTube), where a same-tab "Read more →" was wrong. Lives in this
+    // closure for `image()`; ODDagency and Home keep the plain caseStudy
+    // and render exactly as before. See CaseGrid.astro.
+    const referenceCase = caseStudy.extend({
+      image: image().optional(),
+      linkLabel: z.string().optional(),
+      external: z.boolean().optional(),
+    });
+
     // ODDfest's "Last year, this looked like…" grid — real, named 2026
     // Creative Week examples across varied formats (exhibition, performance,
     // screening, club night, workshop, talk, ...). image is optional (falls
@@ -383,6 +396,9 @@ const pages = defineCollection({
       body: z.string(),
       image: image().optional(),
       href: z.string().optional(),
+      // true when href leaves this site (a partner's event page or write-up)
+      // — opens in a new tab with rel=noreferrer. See OddfestExamples.astro.
+      external: z.boolean().optional(),
     });
 
     // Speaker/team grid shape — About's team (no photos yet) and
@@ -652,6 +668,27 @@ const pages = defineCollection({
           closing: z.string(),
         }),
         examples: z.array(creativeWeekExample),
+        // Programme highlights (2026-09-14): names from the 2025 and 2026
+        // programmes, grouped under a label ("Music & performance",
+        // "Partners", ...) and rendered with AudienceList's label + line
+        // treatment directly under the examples. Only names that verifiably
+        // took part — not names that were merely announced. Renders nothing
+        // while `groups` is empty.
+        programmeHighlights: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          groups: z.array(audienceItem),
+        }),
+        // "Want your event in the next one?" (2026-09-14): the proof chapter's
+        // closing ask, pointing back at the same submission route as "How to
+        // join". A quieter band than `join`, so the page keeps one loudest ask.
+        hostCta: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          cta: linkCta,
+        }),
         // "How to join" — the page's conversion section. Was `register`
         // (headline/body/one cta) until 2026-09-11; renamed and widened at
         // Ronny's request into a clear, unmissable ask with two ways to act
@@ -1234,7 +1271,15 @@ const pages = defineCollection({
         // work-with-odd.astro).
         whatWeDo: sectionIntro,
         pathways: z.array(pathwayCard),
-        cases: z.array(caseStudy),
+        // The references section's own heading (2026-09-14) — was hardcoded
+        // as "Selected work" / "Things we've built together" in the page
+        // markup. `body` is an optional one-line lede under it.
+        casesIntro: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string().optional(),
+        }),
+        cases: z.array(referenceCase),
         // Page-specific curated logo set for organisations ODD has actually
         // worked with — deliberately NOT the sitewide `partners`/`featuredIn`
         // lists (those mix festival sponsors, press and historical
