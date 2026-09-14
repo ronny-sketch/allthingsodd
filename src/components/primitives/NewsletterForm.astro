@@ -62,7 +62,12 @@ const {
     display: flex;
     border: 1px solid var(--color-paper-20);
     border-radius: 999px;
-    max-width: 20rem;
+    /* Capped by its container too: the email field's intrinsic width, and so
+       this pill's natural width, depends on the platform's font metrics — on
+       Linux it reaches the 20rem cap, which in a 320px footer row with its
+       gutters pushed the page 28px wide. The field has min-width: 0, so it
+       gives up the space instead. */
+    max-width: min(20rem, 100%);
     flex-shrink: 0;
     overflow: hidden;
   }

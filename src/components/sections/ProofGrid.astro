@@ -3,6 +3,13 @@
 // Deliberately optional at the page-schema level (see content.config.ts's
 // `proofSection`), so a page can omit this component entirely rather than
 // render fabricated numbers.
+import Pill from '../primitives/Pill.astro';
+
+interface LinkCta {
+  label: string;
+  href: string;
+  external?: boolean;
+}
 interface ProofItem {
   value: string;
   label: string;
@@ -25,18 +32,15 @@ interface Props {
   eyebrow?: string;
   title?: string;
   items: ProofItem[];
-  // A link to the underlying report (e.g. "Read the 2025 Impact Report") —
-  // rendered under the grid when both are set. Omit entirely rather than
-  // link to a report that doesn't exist yet.
-  reportLabel?: string;
-  reportUrl?: string;
-  // A qualifying line under the report link (2026-09-04). Home's stat row is
-  // now cumulative across ODD's whole first two years, while the only
-  // published report covers 2025 alone — so the link has to say what it does
-  // and does not evidence, rather than sitting under four numbers it cannot
-  // substantiate on its own. Omit where the report and the numbers are the
-  // same scope.
-  reportNote?: string;
+  // The row's one next step, under the grid — About's "2025 Impact Report",
+  // Home's ODDfest 2026 thank-you page. An outline Pill since 2026-09-14, not
+  // an underlined text link. Omit entirely rather than point at something
+  // that doesn't exist yet.
+  cta?: LinkCta;
+  // One short line set above that button (Home: "ODDfest 2026 was a
+  // co-created effort."). Replaced `reportNote`, a scope caveat that existed
+  // only because Home linked a 2025-only report under cumulative figures.
+  ctaLead?: string;
   // Shown instead of the grid when `items` is empty — About's 2026 impact
   // snapshot, whose real numbers aren't verified yet, uses this rather than
   // fabricating figures or silently omitting the section. A deliberate,
@@ -45,8 +49,7 @@ interface Props {
   // pending, not nonexistent.
   placeholder?: string;
 }
-const { eyebrow, title, items, reportLabel, reportUrl, reportNote, placeholder } = Astro.props;
-const showReport = Boolean(reportLabel && reportUrl);
+const { eyebrow, title, items, cta, ctaLead, placeholder } = Astro.props;
 const hasItems = items.length > 0;
 ---
 
@@ -90,12 +93,17 @@ const hasItems = items.length > 0;
               </div>
             ))}
           </div>
-          {showReport && (
-            <div class="proof-report">
-              <a class="proof-report-link" href={reportUrl}>
-                {reportLabel} →
-              </a>
-              {reportNote && <p class="proof-report-note">{reportNote}</p>}
+          {cta && (
+            <div class="proof-follow">
+              {ctaLead && <p class="proof-follow-lead">{ctaLead}</p>}
+              <Pill
+                href={cta.href}
+                variant="outline"
+                magnetic
+                target={cta.external ? '_blank' : undefined}
+              >
+                {cta.label} →
+              </Pill>
             </div>
           )}
         </>
@@ -175,34 +183,22 @@ const hasItems = items.length > 0;
     font: var(--text-small);
     color: var(--color-paper-40);
   }
-  .proof-report {
+  .proof-follow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
     margin-top: 2.4rem;
     text-align: center;
   }
-  .proof-report-link {
-    display: block;
-    width: fit-content;
-    margin: 0 auto;
-    font: var(--text-small);
-    font-weight: 600;
-    color: var(--color-paper-80);
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
-    text-decoration-color: var(--color-paper-20);
-    transition: color var(--duration-fast) ease;
-  }
-  .proof-report-link:hover {
-    color: var(--color-amber-bright);
-    text-decoration-color: var(--color-amber-bright);
-  }
-  /* Deliberately quieter than the link above it — this is a scope caveat,
-     not a second call to action. */
-  .proof-report-note {
+  /* A lead-in to the button, not a caption under the figures — one step
+     brighter than the stat labels' quietest ink so it reads as the sentence
+     the button finishes. */
+  .proof-follow-lead {
     max-width: 34rem;
-    margin: 0.7rem auto 0;
+    margin: 0;
     font: var(--text-small);
-    color: var(--color-paper-40);
+    color: var(--color-paper-60);
   }
   /* Quiet, subordinate — this section's own padding shrinks too (see
      .proof-section.is-pending below) so missing 2026 data reads as a small

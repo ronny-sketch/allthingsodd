@@ -36,7 +36,8 @@ high-level notes:
 - SEO title/description/social image — what shows in a browser tab, a Google
   result, and the preview card when the page is shared on social media, on
   every page.
-- **Home**: hero proposition + two buttons, "What ODD is", the two-ways-in
+- **Home**: hero proposition + two buttons, "Why ODD" (headline, body, and
+  up to four short labels for the grid around its photo), the two-ways-in
   business/creative section (audience explanation only, as of 2026-08-30 —
   see below), the platform grid (not fixed at four cards), the "Already in
   motion" proof module (its editorial intro plus the four cumulative
@@ -55,10 +56,13 @@ high-level notes:
     industries), not ODDfest 2025's figures alone. If you change a number
     here, change the intro paragraph above it too — they state the same
     facts twice, deliberately, and one of them going stale is the failure
-    mode. Two supporting fields: `srValue` on a shortened number is what a
-    screen reader says instead of the abbreviation ("More than €400,000"),
-    and `reportNote` under the report link is what keeps that link's scope
-    honest ("the 2025 report covers ODDfest 2025 alone").
+    mode. `srValue` on a shortened number is what a screen reader says
+    instead of the abbreviation ("More than €400,000").
+  - 2026-09-14: both of "Already in motion"'s links are buttons now. The one
+    under the figures (`proof.cta`, with `proof.ctaLead` as the line above
+    it) goes to the ODDfest 2026 thank-you page instead of the 2025 Impact
+    Report, so the old `reportNote` scope caveat is gone with it. About's
+    impact snapshots still link the report.
   - 2026-08-30 homepage revision: the separate "For organisations / Work
     with ODD." teaser section (and its `workWithOdd` field) was removed —
     the platform grid immediately above it already includes a Work with ODD

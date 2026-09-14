@@ -102,7 +102,8 @@ const INVISIBLE_BY_DESIGN = [
  * Elements that are laid out and take real space but are painted at opacity
  * 0 — i.e. content a visitor cannot see. Anything inside a `display: none`
  * ancestor is excluded: it isn't rendered at all, so it is hidden by design
- * (FloatingCloud is hidden wholesale below 820px), not invisible content.
+ * (BuiltAround's outer grid columns are hidden below 1024px), not invisible
+ * content.
  */
 export async function invisibleContent(page: Page): Promise<HiddenElement[]> {
   return page.evaluate((allow: string[]) => {
