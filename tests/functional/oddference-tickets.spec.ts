@@ -29,7 +29,7 @@ async function tickets(page: Page) {
   await page.locator('#tickets').scrollIntoViewIfNeeded();
 }
 
-function catalogBody(overrides: Record<string, unknown>[] = []) {
+function catalogBody(overrides: Record<string, unknown>[] = [], pricesIncludeTax = false) {
   const base = [
     {
       id: 'tt_blind_bird',
@@ -38,7 +38,8 @@ function catalogBody(overrides: Record<string, unknown>[] = []) {
       description: 'x',
       status: 'active',
       currency: 'EUR',
-      displayPriceMinor: 25000,
+      displayPriceMinor: 29900,
+      taxRateBps: 1350,
       maxPerOrder: 10,
       admissionsPerUnit: 1,
       benefits: ['Full ODDference 2027 access'],
@@ -51,7 +52,8 @@ function catalogBody(overrides: Record<string, unknown>[] = []) {
       description: 'x',
       status: 'upcoming',
       currency: 'EUR',
-      displayPriceMinor: 35000,
+      displayPriceMinor: 39900,
+      taxRateBps: 1350,
       maxPerOrder: 10,
       admissionsPerUnit: 1,
       benefits: ['Full ODDference 2027 access'],
@@ -64,7 +66,8 @@ function catalogBody(overrides: Record<string, unknown>[] = []) {
       description: 'x',
       status: 'upcoming',
       currency: 'EUR',
-      displayPriceMinor: 45000,
+      displayPriceMinor: 49900,
+      taxRateBps: 1350,
       maxPerOrder: 10,
       admissionsPerUnit: 1,
       benefits: ['Full ODDference 2027 access'],
@@ -74,7 +77,7 @@ function catalogBody(overrides: Record<string, unknown>[] = []) {
   const merged = base.map((tt, i) => ({ ...tt, ...(overrides[i] ?? {}) }));
   return JSON.stringify({
     ok: true,
-    event: { slug: 'oddference-2027', name: 'ODDference 2027', currency: 'EUR' },
+    event: { slug: 'oddference-2027', name: 'ODDference 2027', currency: 'EUR', pricesIncludeTax },
     ticketTypes: merged,
   });
 }
@@ -88,20 +91,35 @@ test('ticket prices and states come from the catalog, not the page', async ({ pa
 
   const blindBird = page.locator('[data-ticket-slug="blind-bird"]');
   await expect(blindBird.locator('.pricing-status')).toHaveText('On sale now');
-  expectPrice(await blindBird.locator('.pricing-price').textContent(), '250');
+  expectPrice(await blindBird.locator('.pricing-price').textContent(), '299');
+  await expect(blindBird.locator('.pricing-price-note')).toHaveText('+ VAT 13.5%');
   await expect(blindBird.locator('a.pill')).toHaveText('Buy Blind Bird');
   await expect(blindBird.locator('a.pill')).toHaveClass(/pill-solid/);
   await expect(blindBird.locator('.pricing-badge')).toBeVisible();
 
   const early = page.locator('[data-ticket-slug="early-bird"]');
   await expect(early.locator('.pricing-status')).toHaveText('Not on sale yet');
-  expectPrice(await early.locator('.pricing-price').textContent(), '350');
+  expectPrice(await early.locator('.pricing-price').textContent(), '399');
   await expect(early.locator('.pricing-badge')).toBeHidden();
 
   expectPrice(
     await page.locator('[data-ticket-slug="regular"] .pricing-price').textContent(),
-    '450',
+    '499',
   );
+});
+
+test('the VAT note follows whether the catalog price includes VAT', async ({ page }) => {
+  // A VAT-included catalog must not keep the content's "+ VAT" fallback —
+  // that would tell the reader to add tax to a price that already has it.
+  await page.route(CATALOG_ROUTE, (route) =>
+    route.fulfill({ contentType: 'application/json', body: catalogBody([], true) }),
+  );
+  await page.goto('/oddference');
+  await tickets(page);
+
+  const blindBird = page.locator('[data-ticket-slug="blind-bird"]');
+  await expect(blindBird.locator('.pricing-status')).toHaveText('On sale now');
+  await expect(blindBird.locator('.pricing-price-note')).toBeHidden();
 });
 
 test('the sale-phase boundary moves the conversion emphasis with it', async ({ page }) => {
@@ -174,8 +192,8 @@ test('an upcoming tier shows its real price and cannot be bought', async ({ page
   await tickets(page);
 
   for (const [slug, amount] of [
-    ['early-bird', '350'],
-    ['regular', '450'],
+    ['early-bird', '399'],
+    ['regular', '499'],
   ] as const) {
     const card = page.locator(`[data-ticket-slug="${slug}"]`);
     await expect(card).toHaveClass(/is-locked/);
@@ -242,7 +260,10 @@ test('an unreachable backend leaves an honest page, not a broken one', async ({ 
   // The server-rendered fallback is a complete, truthful ticket section —
   // this is why the sync is an enhancement and not the only source. It is
   // content, so it is the literal string an editor wrote, not Intl output.
-  await expect(page.locator('[data-ticket-slug="blind-bird"] .pricing-price')).toHaveText('€250');
+  await expect(page.locator('[data-ticket-slug="blind-bird"] .pricing-price')).toHaveText('€299');
+  await expect(page.locator('[data-ticket-slug="blind-bird"] .pricing-price-note')).toHaveText(
+    '+ VAT 13.5%',
+  );
   await expect(page.locator('[data-ticket-slug="blind-bird"] a.pill')).toBeVisible();
 });
 
@@ -258,7 +279,8 @@ test('the build-time fallback still matches the live catalog', async ({ page, re
   test.skip(!res || !res.ok(), 'ticket catalog unreachable from this machine');
 
   const catalog = (await res!.json()) as {
-    ticketTypes: { slug: string; displayPriceMinor: number; currency: string }[];
+    event: { pricesIncludeTax?: boolean };
+    ticketTypes: { slug: string; displayPriceMinor: number; taxRateBps?: number }[];
   };
 
   await page.route(CATALOG_ROUTE, (route) => route.abort());
@@ -273,5 +295,11 @@ test('the build-time fallback still matches the live catalog', async ({ page, re
       rendered.replace(/[^0-9]/g, ''),
       `${tt.slug}: page copy and ticket backend disagree`,
     ).toBe(String(tt.displayPriceMinor / 100));
+    if (catalog.event.pricesIncludeTax === false && tt.taxRateBps) {
+      await expect(
+        card.locator('.pricing-price-note'),
+        `${tt.slug}: page copy and ticket backend disagree about VAT`,
+      ).toHaveText(`+ VAT ${tt.taxRateBps / 100}%`);
+    }
   }
 });

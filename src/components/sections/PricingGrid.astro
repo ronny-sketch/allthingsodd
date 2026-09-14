@@ -9,6 +9,11 @@ interface Tier {
   audience?: string;
   description?: string;
   price: string;
+  // Small text beside the price — ODDference's "+ VAT 13.5%" (2026-09-14).
+  // Kept out of `price` so the price stays a bare amount the catalog sync
+  // and the drift test can compare. Re-derived from the catalog at runtime
+  // like the price itself.
+  priceNote?: string;
   status?: string;
   benefits: string[];
   ctaLabel: string;
@@ -60,7 +65,12 @@ const { items } = Astro.props;
         </span>
         <span class="pricing-name">{t.name}</span>
         {t.audience && <span class="pricing-audience">{t.audience}</span>}
-        <div class="pricing-price">{t.price}</div>
+        <div class="pricing-price-row">
+          <div class="pricing-price">{t.price}</div>
+          <span class="pricing-price-note" hidden={!t.priceNote}>
+            {t.priceNote}
+          </span>
+        </div>
         <span class="pricing-status" hidden={!t.status}>
           {t.status}
         </span>
@@ -204,11 +214,21 @@ const { items } = Astro.props;
   }
   /* Same Heading step as the tier name above — the price is set apart by its
      own line and the space above it, not by a size in between. */
-  .pricing-price {
+  .pricing-price-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.5rem;
     margin-top: 1.2rem;
+  }
+  .pricing-price {
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
+  }
+  .pricing-price-note {
+    font: var(--text-small);
+    color: var(--color-paper-60);
   }
   /* .pricing-badge and .pricing-status are always in the DOM and toggled
      with the `hidden` attribute (rather than conditionally rendered) so
@@ -217,6 +237,7 @@ const { items } = Astro.props;
      its own `display`, which outranks the UA sheet's `[hidden]` rule — hence
      the explicit override; without it, hiding it would silently do nothing. */
   .pricing-badge[hidden],
+  .pricing-price-note[hidden],
   .pricing-status[hidden] {
     display: none;
   }

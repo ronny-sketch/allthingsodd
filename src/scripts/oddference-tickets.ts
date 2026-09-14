@@ -20,7 +20,7 @@
 // fetch, an offline visitor or a crawler sees a complete, honest ticket
 // section rather than a spinner. This only ever *corrects* it.
 import { fetchCatalog, type CatalogTicketType } from './tickets/api';
-import { formatMinor } from './tickets/money';
+import { formatMinor, vatSuffix } from './tickets/money';
 import { EVENT_SLUG } from './tickets/config';
 
 const STATUS_LABEL: Record<CatalogTicketType['status'], string> = {
@@ -35,10 +35,24 @@ function setText(el: Element | null, value: string): void {
   if (el && el.textContent !== value) el.textContent = value;
 }
 
-function applyTier(card: HTMLElement, tt: CatalogTicketType): void {
+function applyTier(
+  card: HTMLElement,
+  tt: CatalogTicketType,
+  pricesIncludeTax: boolean | undefined,
+): void {
   const isActive = tt.status === 'active' && tt.availableToPurchase > 0;
 
   setText(card.querySelector('.pricing-price'), formatMinor(tt.displayPriceMinor, tt.currency));
+
+  // "+ VAT 13.5%" beside an ex-VAT price. A catalog that does not say
+  // whether its prices include VAT (a Worker older than 2026-09-14) leaves
+  // the content's own priceNote alone rather than guessing either way.
+  const priceNote = card.querySelector<HTMLElement>('.pricing-price-note');
+  if (priceNote && pricesIncludeTax !== undefined) {
+    const label = vatSuffix(tt, pricesIncludeTax);
+    setText(priceNote, label);
+    priceNote.hidden = label === '';
+  }
 
   const status = card.querySelector<HTMLElement>('.pricing-status');
   if (status) {
@@ -116,7 +130,7 @@ async function sync(cards: HTMLElement[]): Promise<void> {
       card.remove();
       continue;
     }
-    applyTier(card, tt);
+    applyTier(card, tt, catalog.event.pricesIncludeTax);
   }
 }
 

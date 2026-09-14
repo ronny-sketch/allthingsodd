@@ -469,6 +469,14 @@ no-JS/offline fallback, not a second source of truth — they had already
 drifted once (page said €300, backend charged €250). If you edit a ticket
 price in content, you are editing a fallback; change the backend.
 
+Since 2026-09-14 ODDference prices are ex-VAT (€299 / €399 / €499 + VAT
+13.5%). The catalog says so with `event.pricesIncludeTax: false` and a
+per-ticket `taxRateBps`; the cards' "+ VAT 13.5%" (`priceNote` in content is
+its fallback) and the storefront/checkout Subtotal + VAT rows are derived
+from those. `src/scripts/tickets/money.ts`'s `previewOrder` mirrors the
+Worker's rounding so the summary matches what Stripe charges, but the
+Worker still computes the real total.
+
 ## Scope-creep guardrail
 
 Before implementing a newly discovered requirement, classify it:

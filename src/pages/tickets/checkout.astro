@@ -379,6 +379,13 @@ import Layout from '../../layouts/Layout.astro';
     font-size: var(--font-size-body);
     color: var(--color-paper);
   }
+  /* Subtotal + VAT rows between the ticket lines and the total, only when
+     VAT is added on top of an ex-VAT price. */
+  .tixc-summary :global(.tixc-summary-vat) {
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--color-paper-12);
+  }
   .tixc-summary :global(.tixc-summary-vat-note) {
     margin: 0.4rem 0 0;
     font: var(--text-small);

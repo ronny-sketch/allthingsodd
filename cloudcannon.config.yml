@@ -900,8 +900,9 @@ collections_config:
         label: Tickets (ODDference only)
         comment: >-
           The whole ticket ladder — Blind Bird, Early Bird, Regular — not
-          only the tier on sale (2026-09-11). Price, status, benefits and
-          button are read from the ticket backend at page load, so what you
+          only the tier on sale (2026-09-11). Price, the VAT note beside it
+          ("priceNote", now "+ VAT 13.5%" — prices are ex-VAT), status,
+          benefits and button are read from the ticket backend at page load, so what you
           type here is the fallback a visitor sees if that request fails:
           keep it truthful, but change a real price in the backend, not
           here. Two fields are yours alone, because the backend has no

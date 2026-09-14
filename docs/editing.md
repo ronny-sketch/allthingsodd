@@ -102,7 +102,8 @@ high-level notes:
     marketing copy — they're quoted from the event's own run sheet.
   - _Tickets_ now lists the whole ladder, not just the tier on sale. Price,
     status, benefits and button come from the ticket backend at page load;
-    what's in the content is the fallback if that request fails. Two fields
+    what's in the content is the fallback if that request fails. That
+    includes `priceNote` ("+ VAT 13.5%" — prices are ex-VAT). Two fields
     are yours: `badgeLabel` (the badge on the tier currently on sale — now
     "Available until 1 Nov 2026") and `locked: true` (dims a tier and
     removes its button while leaving its price readable).
