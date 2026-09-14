@@ -292,8 +292,11 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
      level). Seven Display-size links plus the top and bottom bars run taller
      than the screen here, so the links take the next step down the ladder —
      Heading — rather than a height-scaled size of their own. overflow-y:auto
-     on the overlay stays the fallback for anything shorter still. */
-  @media (max-height: 560px) {
+     on the overlay stays the fallback for anything shorter still. From 1300px
+     wide the desktop scale in global.css makes the links and both bars
+     taller (the stack needs ~613px at 1366, ~645px at 1440 and ~707px at
+     1920), so there the step comes at 710px of height rather than 560px. */
+  @media (max-height: 560px), (min-width: 1300px) and (max-height: 710px) {
     .menu-links a {
       font: var(--text-heading);
       letter-spacing: var(--tracking-heading);

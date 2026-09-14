@@ -95,9 +95,9 @@ for uppercase Small: `--tracking-eyebrow` (0.16em) and `--tracking-caps`
   information only. Nothing on the site is set below 14px.
 - **Only the display steps are fluid.** At a given root size Body moves one
   pixel across the whole range (16px → 17px) and Small doesn't move. The
-  desktop scale below then enlarges every role together from 1024px (Body
-  reaches 21.25px and Small 17.5px at 1440px and wider). Don't add
-  breakpoint-specific sizes; the tokens already work at every width.
+  desktop scale below raises the root itself between 1024px and 1440px (Body
+  reaches 21.25px and Small 17.5px from 1440px). Don't add breakpoint-specific
+  sizes; the tokens already work at every width.
 - **Body's 1rem floor is the iOS no-zoom guarantee.** Every input, select and
   textarea uses Body, so no component needs its own `font-size: 16px` mobile
   override — and a smaller desktop override on a field is a bug (one in the
@@ -148,7 +148,9 @@ class). Buttons and CTA labels are Small at 600, uppercase, `--tracking-caps`.
 ### Documented exceptions
 
 1. **Mobile menu on short viewports.** Links are Display, and step down to
-   Heading below 560px of viewport height so seven links and both bars fit.
+   Heading below 560px of viewport height so seven links and both bars fit —
+   or below 710px from 1300px wide, where the desktop scale makes the stack
+   taller.
    The step is to the next role, not to a height-scaled size.
 2. **`FullbleedVideoHero frame="space"` on short viewports.** The h1 steps from
    Display to Heading below 620px of height, for the same reason.
@@ -179,9 +181,14 @@ html {
 }
 ```
 
-That is exactly the browser default (16px) up to 1024px, rising linearly to
-125% (20px) at 1440px, and held there on wider screens. It changes what `1rem`
-is, not the roles.
+With the default 16px browser font size that is exactly 16px up to 1024px,
+rising linearly to 125% (20px) at 1440px, and held there on wider screens. It
+changes what `1rem` is, not the roles.
+
+Body and Small grow across the whole ramp. The display steps are already
+viewport-fluid below their caps, so they only start to grow where they used to
+stop at those caps — Display from about 1300px, Heading from 1330px, Hero from
+1400px — and reach 125% of them at about 1625px, 1670px and 1750px.
 
 - **Anything that should grow with the page is in rem:** the type ladder,
   the spacing tokens, both container widths, `--nav-h`'s fallback, grid track
@@ -190,16 +197,26 @@ is, not the roles.
 - **What must not grow stays in px:** media-query breakpoints (they describe
   the viewport) and the custom cursor, which browser zoom enlarged and this
   deliberately doesn't.
-- **Phones and tablets are untouched** — below 1024px the clamp resolves to
-  exactly 100%.
-- **Percentages, not px,** so a visitor's own browser font-size setting and
-  browser zoom still multiply on top.
+- **Phones and portrait tablets are untouched** — at 1024px and below the
+  clamp resolves to exactly 100%. Landscape tablets are wider (iPad 1080px,
+  iPad Air 1180px, iPad Pro 12.9" 1366px) and get part of the ramp, so check
+  them as you would a small laptop.
+- **Percentages, not px,** so a visitor's own browser font-size setting still
+  sets the base. The `vw` term doesn't follow that setting, so a larger default
+  moves the ramp to wider screens (a 20px default ramps from 1280px to 1800px)
+  rather than multiplying with it.
+- **Browser zoom is partly absorbed inside the ramp.** Zoom shrinks the CSS
+  viewport, which lowers the `vw` term: on a 1440px laptop 125% zoom enlarges
+  text only about 8% and 200% zoom about 1.6×, reaching 2× at around 250–300%.
+  Outside the ramp zoom behaves normally, text is never smaller than it was
+  before the scale at any zoom level, and WCAG 1.4.4 is still met.
 - A new px width in desktop layout (a `minmax(260px, …)` track, a
   `max-width: 480px` panel) won't grow with the type inside it: write it in
   rem (px ÷ 16).
-- `SubpageRail` sets its beat in rem and multiplies its animation duration by
-  `tan(atan2(1rem, 16px))` — the root ratio as a plain number — so the drift
-  speed stays the same at every width.
+- `SubpageRail` sets its beat in rem and keeps its animation duration fixed,
+  so the drift speeds up with the root just as it did under 125% zoom.
+  Rescaling the duration by the root would jump both rails on every window
+  resize, because the root changes continuously with width.
 
 ## Spacing & layout
 

@@ -4,7 +4,12 @@
 const navEl = document.querySelector('nav');
 if (navEl) {
   const sync = () =>
-    document.documentElement.style.setProperty('--nav-h', `${navEl.offsetHeight}px`);
+    // Unrounded: under the desktop root scale the nav's height is fractional,
+    // and offsetHeight's whole-pixel rounding left a half-pixel seam under it.
+    document.documentElement.style.setProperty(
+      '--nav-h',
+      `${navEl.getBoundingClientRect().height}px`,
+    );
   (window as unknown as { __syncNavHeight?: () => void }).__syncNavHeight = sync;
   window.addEventListener('resize', sync);
   sync();

@@ -119,9 +119,15 @@ html {
      there. Everything sized in rem grows with it the way browser zoom would —
      the whole type ladder, spacing, container widths, the nav mark, logos —
      while px breakpoints, the viewport-based parts of the fluid clamps and the
-     custom cursor do not. Below 1024px this resolves to exactly 100%, so
-     phones and tablets are untouched. Percentages rather than px, so a
-     visitor's own browser font-size setting still scales the whole site.
+     custom cursor do not. At 1024px and below this resolves to exactly 100%,
+     so phones and portrait tablets are untouched; landscape tablets (iPads
+     report 1080-1376px) get part of the ramp. Percentages rather than px, so a
+     visitor's own browser font-size setting still sets the base — but the vw
+     term is a fixed length, so a larger default moves the ramp to wider
+     screens (a 20px default ramps from 1280px to 1800px) rather than
+     multiplying with it. Browser zoom shrinks the CSS viewport, so inside the
+     ramp part of each zoom step is absorbed (200% zoom at 1440px enlarges
+     text ~1.6x, 2x by ~250%); text is never smaller than before at any zoom.
      The roles in typography.css are unchanged; this changes what 1rem is. */
   font-size: clamp(100%, calc(38.4615% + 0.9615vw), 125%);
 }
