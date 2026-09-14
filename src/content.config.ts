@@ -630,24 +630,10 @@ const pages = defineCollection({
         // collection — changing the shape here would collide with theirs.
         // See the `caseTeaser` note above for the same trap.
         howItWorks: z.array(featureCard),
-        // "What has happened before" — NEW on 2026-09-11. ODDfest 2026 in
-        // the past tense, honestly, as the reason the 2027 shape is what it
-        // is. This is the page's proof chapter, and it only works if it is
-        // true: same no-invented-figures rule as everywhere else in this
-        // file, and the section reads perfectly well carrying none.
-        // `chapters` is the year/title/body shape About's Timeline component
-        // already renders (named `chapters`, not `milestones`, to stay off
-        // About's CloudCannon key). `cta` links out to the archived 2026
-        // page alongside the same link in `lookBack` — a reader who arrives
-        // at this section has not necessarily seen the one further up.
-        history: z.object({
-          eyebrow: z.string(),
-          headline: z.string(),
-          body: z.string(),
-          chapters: z.array(z.object({ year: z.string(), title: z.string(), body: z.string() })),
-          closing: z.string(),
-          cta: linkCta,
-        }),
+        // `history` ("What has happened before", the 2025/2026/2027
+        // timeline chapter) was deleted on 2026-09-14 at Ronny's request.
+        // Removed rather than made optional, so CloudCannon shows no control
+        // for text that renders nowhere.
         // Optional at the object level only in the sense that it renders
         // nothing until real, verified 2027 dates/venues exist — same
         // "leave it out rather than invent it" rule as previousEdition used
@@ -1369,12 +1355,8 @@ const pages = defineCollection({
           // top-level field) since it's a sub-part of the same section.
           principles: z.array(featureCard),
         }),
-        // NEW SECTION (2026-09-02 copywriting pass) — "What 2025–2026 taught
-        // us": candid, numbered lessons from the first two years. Same
-        // sectionIntro-extended-with-featureCard-items shape ODDference's
-        // `whatsChanging` already uses, reused rather than inventing a
-        // near-duplicate.
-        whatWeLearned: sectionIntro.extend({ items: z.array(featureCard) }),
+        // `whatWeLearned` ("What we have learned") was deleted on 2026-09-14
+        // at Ronny's request, field and all.
         // Two fixed snapshots (2025 real, 2026 pending) — an array, not the
         // shared `proofSection` object other pages use, precisely because
         // About needs two of them side by side. `items` is deliberately

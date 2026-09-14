@@ -1,8 +1,7 @@
 ---
 // ODDfest — rebuilt 2026-09-11 at Ronny's direct request, to this order:
 //
-//   1 hero · 2 what is ODDfest · 3 how it works · 4 how to join ·
-//   5 what has happened before · 6 FAQ
+//   1 hero · 2 what is ODDfest · 3 how it works · 4 how to join · 5 FAQ
 //
 // What changed, and why none of it is "hidden for later":
 //
@@ -28,11 +27,11 @@
 // way in for a reader who has no event to submit yet, and a line of
 // reassurance for the one who thinks their idea is too unfinished to show.
 //
-// "What has happened before" is new, and is the page's proof chapter — 2026
-// in the past tense, honestly, as the reason 2027 has the shape it does. It
-// sits after the ask rather than before it because Ronny asked for that
-// order, and it works: explain, ask, then answer "is this real?" and "what
-// else am I wondering?" back to back.
+// "What has happened before" — the 2025/2026/2027 timeline chapter that sat
+// between How to join and the FAQ — was deleted on 2026-09-14 at Ronny's
+// request, field and all. The highlights and programme names below still
+// show what past editions were, and the look-back buttons under "What
+// ODDfest is" still link to the 2026 archive.
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SubpageFrame from '../components/sections/SubpageFrame.astro';
@@ -42,7 +41,6 @@ import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import ProgrammeList from '../components/sections/ProgrammeList.astro';
 import OddfestExamples from '../components/sections/OddfestExamples.astro';
 import AudienceList from '../components/sections/AudienceList.astro';
-import Timeline from '../components/sections/Timeline.astro';
 import FAQList from '../components/sections/FAQList.astro';
 import Pill from '../components/primitives/Pill.astro';
 import oddfestWordmark from '../assets/logos/oddfest-wordmark.svg';
@@ -183,33 +181,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       )
     }
 
-    <!-- 5. What has happened before — the proof chapter. Reuses About's
-         Timeline for the year-by-year beats rather than forking a component
-         for the same year/title/body row. -->
-    <section class="oddf-sub oddf-history">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="eyebrow">{page.history.eyebrow}</span>
-          <h2>{page.history.headline}</h2>
-        </div>
-        <div class="oddf-history-lede reveal">
-          {page.history.body.split(/\r?\n\s*\r?\n/).map((para) => <p>{para.trim()}</p>)}
-        </div>
-        <Timeline items={page.history.chapters} />
-        <p class="oddf-history-closing reveal">{page.history.closing}</p>
-        <div class="oddf-history-cta reveal">
-          <Pill
-            href={page.history.cta.href}
-            variant="outline"
-            magnetic
-            target={page.history.cta.external ? '_blank' : undefined}
-          >
-            {page.history.cta.label}
-          </Pill>
-        </div>
-      </div>
-    </section>
-
     {
       /* No PhotoBreak here (2026-08-31 correction) — the previous image
          (assets/hero/archive-15.jpg, "Performers on stage during ODDfest")
@@ -225,9 +196,9 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       // content.config.ts's `creativeWeekExample` comment: no invented events
       // ship here). Filled 2026-09-14 with Creative Week 2026 events and one
       // ODDfest 2025 keynote, each checked against its partner's own event
-      // page and the ODDfest photo archive. Sits directly under "What has
-      // happened before", which is the chapter it belongs to — both are about
-      // what already happened.
+      // page and the ODDfest photo archive. Since 2026-09-14 it follows How
+      // to join directly: the "What has happened before" chapter it used to
+      // sit under is gone.
       page.examples.length > 0 && (
         <section class="oddf-sub">
           <div class="wrap">
@@ -523,33 +494,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       white-space: normal;
       text-align: center;
     }
-  }
-
-  /* "What has happened before" — lede paragraphs, the Timeline, a closing
-     line, then the one link out to the archived 2026 page. */
-  .oddf-history-lede {
-    max-width: var(--measure-prose);
-    margin: -1.5rem auto var(--space-12);
-  }
-  .oddf-history-lede p {
-    font: var(--text-body);
-    color: var(--color-paper-60);
-    margin: 0;
-  }
-  .oddf-history-lede p + p {
-    margin-top: 1.1rem;
-  }
-  .oddf-history-closing {
-    max-width: var(--measure-prose);
-    margin: var(--space-10) auto 0;
-    text-align: center;
-    font: var(--text-body);
-    color: var(--color-paper-80);
-  }
-  .oddf-history-cta {
-    display: flex;
-    justify-content: center;
-    margin-top: var(--space-8);
   }
 
   /* "Last year, this looked like…" examples chapter — lede above the grid,

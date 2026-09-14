@@ -92,7 +92,8 @@ test('ODDfest tells its story in the order Ronny asked for', async ({ page }) =>
   await page.goto('/oddfest');
 
   // The 2026-09-11 rebuild order: hero, what it is, how it works, how to
-  // join, what has happened before, FAQ. Source order, not "the section
+  // join, FAQ ("What has happened before" sat between the last two until it
+  // was deleted on 2026-09-14). Source order, not "the section
   // exists" — the two are exactly what a screenshot cannot tell apart once a
   // section moves. See oddfest.astro's own section-order comment for why
   // each one sits where it does.
@@ -103,7 +104,6 @@ test('ODDfest tells its story in the order Ronny asked for', async ({ page }) =>
       whatItIs: html.indexOf('oddf-lookback'),
       howItWorks: html.indexOf('oddf-layer'),
       join: html.indexOf('id="join"'),
-      history: html.indexOf('oddf-history'),
       faq: html.indexOf('Practical / FAQ'),
     };
   });
@@ -115,12 +115,7 @@ test('ODDfest tells its story in the order Ronny asked for', async ({ page }) =>
   expect(order.hero).toBeLessThan(order.whatItIs);
   expect(order.whatItIs).toBeLessThan(order.howItWorks);
   expect(order.howItWorks).toBeLessThan(order.join);
-  // Proof after the ask, deliberately: the reader is told what this is and
-  // invited in, then shown that it is real, then has their remaining
-  // questions answered. Moving history above the ask buries the one thing
-  // the page exists to get someone to do.
-  expect(order.join).toBeLessThan(order.history);
-  expect(order.history).toBeLessThan(order.faq);
+  expect(order.join).toBeLessThan(order.faq);
 });
 
 test('ODDfest no longer promises an unbuilt shared platform', async ({ request }) => {

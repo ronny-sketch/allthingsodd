@@ -253,6 +253,9 @@ real decisions worth recording:
    2026's own attendance was never published anywhere on this site, and the
    internal records disagree with each other about 2025's — so the section
    carries the 2025 numbers, names 2026 qualitatively, and invents nothing.
+   **Superseded on 2026-09-14:** the "what has happened before" section was
+   deleted at Ronny's request, along with its `history` field, and About's
+   "What we have learned" (`whatWeLearned`) went with it.
 
 8. **The 2026-09-11 ODDference restructure** took the page to the eight
    sections Ronny specified — hero, the premise, three reasons, past

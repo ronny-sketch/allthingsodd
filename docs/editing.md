@@ -79,8 +79,7 @@ high-level notes:
   the hero and there is no support line, the same as ODDference),
   what it is, the two look-back buttons under it, how it works (who does
   what, then the four numbered steps), how to join, programme (optional —
-  empty until a real 2027 programme exists), what has happened before,
-  highlights (`examples` — real, named Creative Week 2026 events and one
+  empty until a real 2027 programme exists), highlights (`examples` — real, named Creative Week 2026 events and one
   ODDfest 2025 keynote, each card with an optional photo and `external` for
   a partner's own page), "On the programme" (`programmeHighlights` — grouped
   lines of names that actually took part), the "Want your event in the next
@@ -89,10 +88,10 @@ high-level notes:
   Rebuilt 2026-09-11; the bullet here previously listed a set of fields
   (who can take part / what ODD provides / organiser ownership / open call /
   for partners / previous edition) that had already been consolidated away
-  in the V2 rebuild and no longer existed. Two rules on this page in
-  particular: the "what has happened before" section must carry only figures
-  the site already publishes elsewhere, and the deleted "shared platform"
-  block must not come back until there is a platform to describe.
+  in the V2 rebuild and no longer existed. The "what has happened before"
+  section was removed on 2026-09-14. One rule on this page in particular:
+  the deleted "shared platform" block must not come back until there is a
+  platform to describe.
 - **ODDference** (restructured 2026-09-11 — eight sections, in this order):
   the hero, the premise, the heading + three reasons to come, past speakers,
   session highlights, who it's for, tickets & partnership, FAQ.
@@ -183,8 +182,9 @@ high-level notes:
     outright. Its headline read as strategy-deck writing rather than
     something that helps an outsider understand ODD; its one real fact is
     now inside the opening argument, which is three paragraphs instead of
-    five. "What we have learned" keeps only the lessons the timeline and
-    the impact numbers do not already tell.
+    five.
+  - 2026-09-14: "What we have learned" and its editing field were removed
+    outright.
 - **Media**: a full press kit — accreditation callout, key facts, ODDfest
   highlights (optional — a stats grid, same "leave it out rather than invent
   numbers" rule as everywhere else), the shared "Featured in" press logo
