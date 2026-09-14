@@ -93,9 +93,11 @@ for uppercase Small: `--tracking-eyebrow` (0.16em) and `--tracking-caps`
 
 - **Reading copy is Body — including inside cards.** Small is for supporting
   information only. Nothing on the site is set below 14px.
-- **Only the display steps are fluid.** Body moves one pixel across the whole
-  range (16px → 17px) and Small doesn't move. Don't add breakpoint-specific
-  sizes; the tokens already work at every width.
+- **Only the display steps are fluid.** At a given root size Body moves one
+  pixel across the whole range (16px → 17px) and Small doesn't move. The
+  desktop scale below then enlarges every role together from 1024px (Body
+  reaches 21.25px and Small 17.5px at 1440px and wider). Don't add
+  breakpoint-specific sizes; the tokens already work at every width.
 - **Body's 1rem floor is the iOS no-zoom guarantee.** Every input, select and
   textarea uses Body, so no component needs its own `font-size: 16px` mobile
   override — and a smaller desktop override on a field is a bug (one in the
@@ -112,7 +114,8 @@ for uppercase Small: `--tracking-eyebrow` (0.16em) and `--tracking-caps`
 ### Reuse patterns that are not new sizes
 
 - **Forta at the Small size** for the footer nav (one step quieter than the
-  header, and it keeps the footer's top row on one line from about 1150px),
+  header, and it keeps the footer's top row on one line from 1440px up; between
+  1024px and 1440px the newsletter field drops to its own row),
   ODDference's reason numbers and the cookie-table header row.
 - **Forta at the Body size** for compact, brand-voiced UI: primary nav links,
   the SubpageRail/SubpageTicker word beats, Media's resource-row titles,
@@ -164,11 +167,45 @@ Known gap, pre-existing and tracked separately: the ticket-flow buttons on
 `class="pill"` markup, which Pill.astro's scoped styles never reach, so they
 still render in the browser's default button font and size.
 
+## Desktop scale
+
+A 13–14" laptop reports roughly 1440 CSS px. At 100% browser zoom the site
+read small there, and at 125% it read right, so the root size in `global.css`
+ramps between the two (2026-09-14):
+
+```css
+html {
+  font-size: clamp(100%, calc(38.4615% + 0.9615vw), 125%);
+}
+```
+
+That is exactly the browser default (16px) up to 1024px, rising linearly to
+125% (20px) at 1440px, and held there on wider screens. It changes what `1rem`
+is, not the roles.
+
+- **Anything that should grow with the page is in rem:** the type ladder,
+  the spacing tokens, both container widths, `--nav-h`'s fallback, grid track
+  minimums, logo and mark sizes. At 1440px a page renders the way the same
+  laptop showed it at 125% zoom.
+- **What must not grow stays in px:** media-query breakpoints (they describe
+  the viewport) and the custom cursor, which browser zoom enlarged and this
+  deliberately doesn't.
+- **Phones and tablets are untouched** — below 1024px the clamp resolves to
+  exactly 100%.
+- **Percentages, not px,** so a visitor's own browser font-size setting and
+  browser zoom still multiply on top.
+- A new px width in desktop layout (a `minmax(260px, …)` track, a
+  `max-width: 480px` panel) won't grow with the type inside it: write it in
+  rem (px ÷ 16).
+- `SubpageRail` sets its beat in rem and multiplies its animation duration by
+  `tan(atan2(1rem, 16px))` — the root ratio as a plain number — so the drift
+  speed stays the same at every width.
+
 ## Spacing & layout
 
-`--space-1` through `--space-32` (4px base). `.wrap` (1180px contained) and
-`.wrap-wide` (1280px, wider gutters) are the two container widths the entire
-site uses; `.bleed` breaks a contained element to full viewport width (used by
+`--space-1` through `--space-32` (0.25rem base). `.wrap` (73.75rem contained,
+1180px at the default root) and `.wrap-wide` (80rem / 1280px, wider gutters)
+are the two container widths the entire site uses; `.bleed` breaks a contained element to full viewport width (used by
 the news filmstrip and program grid). `section` gets a consistent
 `--space-24` vertical rhythm by default.
 

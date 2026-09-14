@@ -113,6 +113,17 @@
 }
 html {
   scroll-behavior: smooth;
+  /* Desktop scale (2026-09-14). On a 13" laptop (~1440 CSS px wide) the site
+     read small at 100% browser zoom and right at 125%, so the root size ramps
+     from the browser default at 1024px to 125% of it at 1440px, and holds
+     there. Everything sized in rem grows with it the way browser zoom would —
+     the whole type ladder, spacing, container widths, the nav mark, logos —
+     while px breakpoints, the viewport-based parts of the fluid clamps and the
+     custom cursor do not. Below 1024px this resolves to exactly 100%, so
+     phones and tablets are untouched. Percentages rather than px, so a
+     visitor's own browser font-size setting still scales the whole site.
+     The roles in typography.css are unchanged; this changes what 1rem is. */
+  font-size: clamp(100%, calc(38.4615% + 0.9615vw), 125%);
 }
 
 body {

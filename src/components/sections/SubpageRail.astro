@@ -137,7 +137,7 @@ const duration = (period / RAIL_SPEED).toFixed(2);
   <div class="rail-window">
     <div
       class="rail-track"
-      style={`--reps:${reps};--rail-duration:${duration}s;--beat-gap:${BEAT_GAP}px;--logo-thick:${LOGO_THICK}px;--logo-length:${logoLength}px;--logo-src:url('${logoAsset.src}')`}
+      style={`--reps:${reps};--rail-duration:${duration}s;--beat-gap:${BEAT_GAP / 16}rem;--logo-thick:${LOGO_THICK / 16}rem;--logo-length:${logoLength / 16}rem;--logo-src:url('${logoAsset.src}')`}
     >
       {
         track.map((item) => (
@@ -207,7 +207,12 @@ const duration = (period / RAIL_SPEED).toFixed(2);
   }
   @media (prefers-reduced-motion: no-preference) {
     .rail-track {
-      animation: rail-up var(--rail-duration, 20s) linear infinite;
+      /* Everything in a beat is rem (the word, and the gap, mark thickness
+         and length set inline above), so the whole period scales with the
+         desktop root size in global.css. Multiplying the duration by that
+         same ratio — tan(atan2(1rem, 16px)) is 1rem ÷ 16px as a plain number
+         — keeps the drift at RAIL_SPEED px/s at every width. */
+      animation: rail-up calc(var(--rail-duration, 20s) * tan(atan2(1rem, 16px))) linear infinite;
     }
     /* The two rails travel in opposite directions. It costs nothing, and it
        reads as deliberate framing rather than the same effect pasted twice. */
