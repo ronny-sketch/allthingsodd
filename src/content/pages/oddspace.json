@@ -41,8 +41,8 @@
       "alt": "Guests talking around a table with drinks at the ODDspace opening"
     },
     {
-      "image": "../../assets/oddspace/podcast-studio.jpg",
-      "alt": "The audio and podcast studio at ODDspace, with recording equipment and a blue curtain backdrop"
+      "image": "../../assets/oddstudio/studio-room-sofa.jpg",
+      "alt": "ODDstudio: a producer at the desk between blue curtains, with guitars, percussion, keys and drums around a sofa"
     },
     {
       "image": "../../assets/oddspace/opening-audience.jpg",
@@ -106,7 +106,7 @@
         "Recording, co-writing and production",
         "Not included in membership — from €20 / hour for members, €30 without"
       ],
-      "image": "../../assets/oddspace/podcast-studio.jpg",
+      "image": "../../assets/oddstudio/studio-room-sofa.jpg",
       "href": "/oddstudio",
       "goLabel": "Read more about ODDstudio"
     }
