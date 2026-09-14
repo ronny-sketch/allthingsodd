@@ -7,6 +7,10 @@
 //   1 hero · 2 what is ODDspace · 3 what's here · 4 enter the space ·
 //   5 the bigger picture · 6 what's happening · 7 FAQ
 //
+// 2026-09-14: every photo except ODDstudio's replaced with people-and-activity
+// photography, and a photo wall (`gallery`, 6b) added to section 6 — pictures,
+// not another prose section. See docs/architecture.md#oddspace-photography.
+//
 // What went, and why it isn't "hidden for later": "Co-creative, not just
 // coworking", "Who it's for" and "The network is bigger than the room" were
 // three further prose sections restating what `whatItIs` and `vision`
@@ -34,9 +38,10 @@ import FAQList from '../components/sections/FAQList.astro';
 import InstagramGallery from '../components/sections/InstagramGallery.astro';
 import { ODDSPACE_INSTAGRAM_FEED_ID } from '../scripts/oddspace-instagram-config';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
+import PhotoWall from '../components/sections/PhotoWall.astro';
 import Pill from '../components/primitives/Pill.astro';
 import oddspaceWordmark from '../assets/logos/oddspace-wordmark.svg';
-import photoVision from '../assets/oddspace/exterior-building.jpg';
+import photoVision from '../assets/oddspace/opening-audience-close.jpg';
 
 const entry = await getEntry('pages', 'oddspace');
 if (!entry || entry.data._template !== 'oddspace')
@@ -176,7 +181,10 @@ const page = entry.data;
       headline={page.vision.headline}
       body={page.vision.body}
     />
-    <PhotoBreak image={photoVision} alt="The industrial Vallila building that houses ODDspace" />
+    <PhotoBreak
+      image={photoVision}
+      alt="An audience listening, glasses in hand, at the ODDspace opening"
+    />
 
     <!-- 6. What's happening — a hand-kept list of the things a stranger can
          actually turn up to, replacing the consent-gated Google Calendar
@@ -200,6 +208,25 @@ const page = entry.data;
                 </Pill>
               </div>
             )}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- 6b. Life at ODDspace (2026-09-14) — a wall of real photographs of
+         the space in use, under the list of what's on: the list says what a
+         stranger could turn up to, the wall shows what that looks like.
+         PhotoWall lays out any number of photos by orientation. -->
+    {
+      page.gallery && page.gallery.photos.length > 0 && (
+        <section class="odds-sub">
+          <div class="wrap">
+            <div class="section-head">
+              {page.gallery.eyebrow && <span class="eyebrow">{page.gallery.eyebrow}</span>}
+              <h2>{page.gallery.title}</h2>
+            </div>
+            {page.gallery.note && <p class="odds-gallery-note reveal">{page.gallery.note}</p>}
+            <PhotoWall photos={page.gallery.photos} />
           </div>
         </section>
       )
@@ -464,8 +491,10 @@ const page = entry.data;
     text-decoration-color: var(--color-amber-bright);
   }
 
-  /* "What's happening" — the note above the list, and the one CTA under it. */
-  .odds-events-note {
+  /* "What's happening" — the note above the list, and the one CTA under it.
+     The photo wall's note under it is the same kind of line. */
+  .odds-events-note,
+  .odds-gallery-note {
     max-width: var(--measure-prose);
     margin: -1.5rem auto 2.4rem;
     text-align: center;
