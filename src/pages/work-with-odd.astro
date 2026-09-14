@@ -73,14 +73,22 @@ const page = entry.data;
   </section>
 
   {
+    /* "What we've built with our partners" (2026-09-14) — real references
+       from ODDfest 2025/2026, after "Why ODD" so the claim ("we work in the
+       overlap") is followed straight away by the proof. The heading moved
+       out of this markup into `casesIntro`: it is editorial copy, and was the
+       one section on the page an editor couldn't retitle. */
+  }
+  {
     page.cases.length > 0 && (
       <section class="wwo-sub">
         <div class="wrap">
           <div class="section-head">
-            <span class="eyebrow">Selected work</span>
-            <h2>Things we've built together</h2>
+            <span class="eyebrow">{page.casesIntro.eyebrow}</span>
+            <h2>{page.casesIntro.headline}</h2>
           </div>
-          <CaseGrid items={page.cases} />
+          {page.casesIntro.body && <p class="wwo-cases-lede reveal">{page.casesIntro.body}</p>}
+          <CaseGrid items={page.cases} maxColumns={2} />
         </div>
       </section>
     )
@@ -162,6 +170,13 @@ const page = entry.data;
   .wwo-lede {
     max-width: var(--measure-prose);
     margin: -1.5rem auto 0;
+    text-align: center;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+  }
+  .wwo-cases-lede {
+    max-width: var(--measure-prose);
+    margin: -1.5rem auto var(--space-10);
     text-align: center;
     font: var(--text-body);
     color: var(--color-paper-60);

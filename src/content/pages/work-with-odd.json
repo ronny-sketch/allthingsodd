@@ -81,7 +81,50 @@
       "image": "../../assets/programs/oddagency-card.jpg"
     }
   ],
-  "cases": [],
+  "casesIntro": {
+    "eyebrow": "Selected work",
+    "headline": "What we've built with our partners",
+    "body": "A few things from ODDfest 2025 and 2026 that only happened because partners built them with us."
+  },
+  "cases": [
+    {
+      "category": "Public art",
+      "title": "BajaMyArt",
+      "partner": "Humak · Lassila & Tikanoja",
+      "summary": "At ODDfest 2025 the festival's portable toilets became artworks. Humak's cultural-production students produced it, Lassila & Tikanoja provided the units, and an open call brought in artists, a collective and a community workshop — including a gold-draped shrine people queued for.",
+      "image": "../../assets/cases/bajamyart-golden-blessing.jpg",
+      "href": "https://www.flickr.com/photos/oddfest/albums/72177720328472563",
+      "linkLabel": "See the photos →",
+      "external": true
+    },
+    {
+      "category": "Film",
+      "title": "ODDfest 2025 Aftermovie",
+      "summary": "Two days at Lasipalatsikortteli under the theme Chaos & Acceleration, eight stages and a city block full of people — the quickest way to see what the first ODDfest felt like.",
+      "image": "../../assets/cases/oddfest-2025-aftermovie-still.jpg",
+      "href": "https://www.youtube.com/watch?v=lBM1Lc3noQE",
+      "linkLabel": "Watch on YouTube →",
+      "external": true
+    },
+    {
+      "category": "Photo archive",
+      "title": "ODDfest 2025 in pictures",
+      "summary": "Nearly 900 photos from the first edition: the Chaos, Focus and Love stages, Genelec's immersive sound room, BajaMyArt in the yard, and the afterparty.",
+      "image": "../../assets/cases/oddfest-2025-lasipalatsi-yard.jpg",
+      "href": "https://www.flickr.com/photos/oddfest/albums/",
+      "linkLabel": "Browse on Flickr →",
+      "external": true
+    },
+    {
+      "category": "Photo archive",
+      "title": "ODDfest 2026 in pictures",
+      "summary": "Nearly 1,500 photos from a week across Helsinki: Tavastia, Vanha Ylioppilastalo, Bio Rex, ODDference and the Creative Week events around them.",
+      "image": "../../assets/cases/oddfest-2026-valerie-june.jpg",
+      "href": "https://www.flickr.com/photos/204686183@N06/albums",
+      "linkLabel": "Browse on Flickr →",
+      "external": true
+    }
+  ],
   "logos": [],
   "network": {
     "eyebrow": "Who we've worked with",

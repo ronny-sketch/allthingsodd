@@ -79,8 +79,13 @@ high-level notes:
   the hero and there is no support line, the same as ODDference),
   what it is, the two look-back buttons under it, how it works (who does
   what, then the four numbered steps), how to join, programme (optional —
-  empty until a real 2027 programme exists), what has happened before, 2026
-  examples (optional — empty until real, named ones exist), FAQ.
+  empty until a real 2027 programme exists), what has happened before,
+  highlights (`examples` — real, named Creative Week 2026 events and one
+  ODDfest 2025 keynote, each card with an optional photo and `external` for
+  a partner's own page), "On the programme" (`programmeHighlights` — grouped
+  lines of names that actually took part), the "Want your event in the next
+  one?" band (`hostCta`), the partner route, FAQ. The last three were added
+  2026-09-14.
   Rebuilt 2026-09-11; the bullet here previously listed a set of fields
   (who can take part / what ODD provides / organiser ownership / open call /
   for partners / previous edition) that had already been consolidated away
@@ -158,8 +163,10 @@ high-level notes:
   button/photo), "what we do" intro, why ODD (3 reasons), the four pathways
   — ODDference/ODDnetwork/Event partnership/ODDagency (`pathways`, each with
   a number/stage/title/body/CTA — shown as a compact progression list, not a
-  funnel: any card can be the starting point), cases (optional — hidden
-  until real cases exist), a page-specific curated logo list ("Organisations
+  funnel: any card can be the starting point), "What we've built with our
+  partners" (`casesIntro` heading + `cases`; since 2026-09-14 a case here can
+  carry a photo, its own link label and `external` for an off-site link —
+  hidden while empty), a page-specific curated logo list ("Organisations
   we've worked with" — `logos`, deliberately separate from the sitewide
   Partner logos, also hidden until curated), the contact intro above the
   embedded enquiry form.

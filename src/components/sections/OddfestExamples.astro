@@ -17,6 +17,7 @@ interface ExampleItem {
   body: string;
   image?: ImageMetadata;
   href?: string;
+  external?: boolean;
 }
 interface Props {
   items: ExampleItem[];
@@ -28,7 +29,15 @@ const { items } = Astro.props;
   {
     items.map((item) => {
       const Tag = item.href ? 'a' : 'div';
-      const linkProps = item.href ? { href: item.href } : {};
+      // `external` (2026-09-14): the verified examples link out to their
+      // partners' own event pages and write-ups — a new tab with
+      // rel=noreferrer, the same treatment Pill gives any external link.
+      const linkProps = item.href
+        ? {
+            href: item.href,
+            ...(item.external ? { target: '_blank', rel: 'noreferrer' } : {}),
+          }
+        : {};
       return (
         <Tag class="example-card" {...linkProps}>
           <div class={`example-media ${item.image ? '' : 'example-media--empty'}`}>
@@ -47,11 +56,16 @@ const { items } = Astro.props;
 </div>
 
 <style>
+  /* No container background (2026-09-14) — the same fix CaseGrid got on
+     2026-08-31, reached here the first time this grid carried a count that
+     doesn't divide evenly per row (five). The container's background is what
+     painted an incomplete last row's empty cell as a bare solid card; each
+     card's own background plus the 1px gap is what reads as the hairline
+     grid, and it still does. */
   .examples-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(16.25rem, 1fr));
     gap: 1px;
-    background: var(--color-paper-12);
   }
   .example-card {
     display: flex;
