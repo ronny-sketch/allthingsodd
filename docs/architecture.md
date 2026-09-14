@@ -128,12 +128,16 @@ real decisions worth recording:
    Way rf operator fact — About no longer has a separate People/organisation
    section for it); `howWeMakeItHappen` (`FeatureGrid` pillars — Events /
    Spaces / Relationships & projects — plus a `principles` "ways of working"
-   `FeatureGrid`); `impact` (two `ProofGrid` snapshots, 2025 and 2026 — see
-   "Field-name collisions" below for why this isn't the shared `proof`
-   field); `participate` (`ParticipateBand`, unchanged shape); and a closing
-   `closingImage` (`PhotoBreak`, optional — no verified 2026 launch photo
-   existed in the archive at rebuild time, so this renders `PhotoBreak`'s
-   empty-surface state rather than guessing at one). See
+   `FeatureGrid`); `impact` (one `ProofGrid` row — see "Field-name
+   collisions" below for why this isn't the shared `proof` field);
+   `participate` (`ParticipateBand`, unchanged shape); and a closing
+   `closingImage` (`PhotoBreak`). 2026-09-14: `closingImage` became
+   `launchPhoto`, the ODDfest 2026 launch group photo, moved up to follow
+   the argument; `impact` went from two year snapshots (2025's figures, an
+   empty 2026 one) to Home's cumulative 2025–2026 figures with two buttons
+   (`ctas`: the 2025 Impact Report, the ODDfest 2026 thank-you page); a
+   `gallery` `PhotoWall` (ODDfest 2025/2026 Flickr, host events, ODDspace)
+   follows it; and "What we have learned" was deleted. See
    `content.config.ts`'s `about` schema for the full shape. About no longer
    carries its own partner-logo wall (the `network` field), unlike Work with
    ODD's page-specific curated one — see point 2 above.
@@ -392,11 +396,10 @@ silently break the CloudCannon editing UI for one of them. Home's is
 `caseTeaser`; About's stays `story`. Membership's closing CTA is `finalCta`
 (not `contact`, which Work with ODD uses for its embedded-form intro), and
 its pre-logo-strip note is `network` (not `proof`, which means a stats grid —
-`proofSection` — everywhere else it's used). Same reason About's 2025/2026
-impact snapshots are their own `impact` field (an array of year-stamped
-objects), not `proof` — `proof` is `proofSection` (one object) everywhere
-else it appears (Home/ODDference/ODDspace), a different shape a shared
-`_inputs.proof` cascade entry can't also describe. Adding a new field name:
+`proofSection` — everywhere else it's used). Same reason About's figures
+are their own `impact` field, not `proof` — About's carries a `ctas` array
+of buttons where `proofSection` (Home/ODDference/ODDspace) has one `cta`, a
+different shape a shared `_inputs.proof` cascade entry can't also describe. Adding a new field name:
 grep `src/content.config.ts` for it first.
 
 **Narrow-column placeholder text.** A few components lay real content into a

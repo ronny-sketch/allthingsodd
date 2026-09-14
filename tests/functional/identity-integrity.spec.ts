@@ -258,6 +258,31 @@ test('"Already in motion" renders ODD\'s cumulative under-two-years proof', asyn
   await expect(section.locator('a[href*="impact_report"]')).toHaveCount(0);
 });
 
+test('About carries the two-year figures, both buttons, the launch photo and the wall', async ({
+  page,
+}) => {
+  // 2026-09-14: About's figures are Home's cumulative four, not ODDfest 2025's
+  // alone, and the empty 2026 snapshot ("still being compiled") is gone. The
+  // buttons under them are the 2025 Impact Report and the 2026 thank-you page.
+  await page.goto('/about');
+  const section = page.locator('.proof-section');
+  for (const value of ['5,000+', '500+', '100+', '€400K+']) {
+    await expect(
+      section.locator('.proof-value', { hasText: value }),
+      `stat "${value}" is missing from About's figures`,
+    ).toHaveCount(1);
+  }
+  await expect(page.getByText('still being compiled')).toHaveCount(0);
+
+  const buttons = section.locator('.proof-follow a.pill');
+  await expect(buttons).toHaveCount(2);
+  await expect(buttons.nth(0)).toHaveAttribute('href', /impact_report/);
+  await expect(buttons.nth(1)).toHaveAttribute('href', '/oddfest-2026/');
+
+  await expect(page.locator('.photo-break img')).toHaveAttribute('alt', /ODDfest 2026 launch/);
+  expect(await page.locator('.photo-wall img').count()).toBeGreaterThan(0);
+});
+
 test('the four-stat proof row does not overflow at supported mobile widths', async ({ page }) => {
   for (const width of [320, 375, 390, 430, 768, 1024]) {
     await page.setViewportSize({ width, height: 900 });

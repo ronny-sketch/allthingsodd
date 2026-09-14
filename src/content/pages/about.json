@@ -96,41 +96,106 @@
       }
     ]
   },
-  "impact": [
-    {
-      "year": "2025",
-      "eyebrow": "2025",
-      "title": "The first ODDfest, in numbers.",
-      "items": [
-        {
-          "value": "2,600+",
-          "label": "Participants",
-          "context": "1,900+ signups"
-        },
-        {
-          "value": "70+",
-          "label": "Partners"
-        },
-        {
-          "value": "350+",
-          "label": "Contributors"
-        },
-        {
-          "value": "1M+",
-          "label": "Total reach"
-        }
-      ],
-      "reportLabel": "Read the 2025 Impact Report",
-      "reportUrl": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ"
-    },
-    {
-      "year": "2026",
-      "eyebrow": "2026",
-      "title": "The 2026 edition.",
-      "items": [],
-      "placeholder": "The 2026 Impact Report is still being compiled. Verified numbers will replace this once it's published — nothing here is estimated."
-    }
-  ],
+  "launchPhoto": {
+    "image": "../../assets/about/oddfest-2026-launch-group.jpg",
+    "alt": "The ODDfest 2026 launch: a large group of people gathered on a theatre stage under a screen reading ODDfest 2026 Launch"
+  },
+  "impact": {
+    "eyebrow": "2025–2026",
+    "title": "Two years of ODD, in numbers.",
+    "items": [
+      {
+        "value": "5,000+",
+        "label": "Participants"
+      },
+      {
+        "value": "500+",
+        "label": "Collaborators"
+      },
+      {
+        "value": "100+",
+        "label": "Partners"
+      },
+      {
+        "value": "€400K+",
+        "label": "Directly into creative & cultural industries",
+        "srValue": "More than €400,000"
+      }
+    ],
+    "ctas": [
+      {
+        "label": "Read the 2025 Impact Report",
+        "href": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ"
+      },
+      {
+        "label": "See the 2026 thank-you page",
+        "href": "/oddfest-2026/"
+      }
+    ]
+  },
+  "gallery": {
+    "eyebrow": "In pictures",
+    "title": "Stages, tables and rooms full of people.",
+    "note": "From ODDfest 2025 and 2026, events hosted across Helsinki, and ODDspace.",
+    "photos": [
+      {
+        "image": "../../assets/about/oddfest-2026-tavastia-band.jpg",
+        "alt": "A band playing under red stage lights at Tavastia"
+      },
+      {
+        "image": "../../assets/about/oddfest-2026-confetti.jpg",
+        "alt": "People dancing under falling confetti, one in an ODD T-shirt"
+      },
+      {
+        "image": "../../assets/about/oddfest-2026-performer.jpg",
+        "alt": "A performer on a smoke-covered stage under purple light"
+      },
+      {
+        "image": "../../assets/about/oddfest-2025-terrace-crowd.jpg",
+        "alt": "People eating and talking on a sunny café terrace"
+      },
+      {
+        "image": "../../assets/oddspace/opening-painting-floor.jpg",
+        "alt": "People painting together on paper spread across the floor"
+      },
+      {
+        "image": "../../assets/examples/soiree-of-serendipity.jpg",
+        "alt": "A standing crowd listening in a white-walled hall"
+      },
+      {
+        "image": "../../assets/about/oddfest-2026-talk.jpg",
+        "alt": "A speaker in a dark suit addressing a seated audience beside a projected slide"
+      },
+      {
+        "image": "../../assets/about/oddfest-2025-shared-table.jpg",
+        "alt": "People reaching for pizza across a long shared table"
+      },
+      {
+        "image": "../../assets/oddspace/opening-djs.jpg",
+        "alt": "Two DJs playing at a wooden booth by the windows"
+      },
+      {
+        "image": "../../assets/oddspace/opening-performer-gold.jpg",
+        "alt": "A performer in a gold jacket speaking into a microphone"
+      },
+      {
+        "image": "../../assets/oddspace/opening-full-house.jpg",
+        "alt": "A full room at the ODDspace opening, people seated and standing to listen"
+      },
+      {
+        "image": "../../assets/examples/creative-x-tech-maria01.jpg",
+        "alt": "Five people in a fireside chat on stage under a screen reading Art Meets Tech"
+      },
+      {
+        "image": "../../assets/cases/oddfest-2025-lasipalatsi-yard.jpg",
+        "alt": "A crowd sitting on the sunlit steps of the Lasipalatsi yard"
+      },
+      {
+        "image": "../../assets/about/oddfest-2026-workshop.jpg",
+        "alt": "Two hosts leading a session for a small seated group in a bright room"
+      }
+    ]
+  },
   "participate": [
     {
       "eyebrow": "Experience ODD",
