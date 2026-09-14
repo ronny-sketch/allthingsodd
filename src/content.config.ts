@@ -1023,6 +1023,21 @@ const pages = defineCollection({
             cta: linkCta.optional(),
           })
           .optional(),
+        // "Life at ODDspace" (2026-09-14): a wall of real photographs of the
+        // space in use, directly under the events list — the list says what
+        // you could turn up to, the wall shows what that looks like. Any
+        // number of photos, any mix of portrait and landscape: PhotoWall.astro
+        // packs them by orientation, so an editor can't open a hole in it.
+        // Each photo needs alt text describing what is actually shown.
+        // Optional so the section can be removed without touching the page.
+        gallery: z
+          .object({
+            eyebrow: z.string().optional(),
+            title: z.string(),
+            note: z.string().optional(),
+            photos: z.array(z.object({ image: image(), alt: z.string() })),
+          })
+          .optional(),
         // The live @oddspace.co Instagram wall, under the events list
         // (2026-09-03 final integration pass; it sat under the calendar
         // embed until that was replaced on 2026-09-11). Only the editorial framing lives here —

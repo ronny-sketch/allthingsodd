@@ -25,36 +25,36 @@
   "heroMedia": {},
   "heroPhotos": [
     {
-      "image": "../../assets/oddspace/lounge.jpg",
-      "alt": "A co-working lounge area at ODDspace with seating and local art on the walls"
+      "image": "../../assets/oddspace/opening-crowd-dj.jpg",
+      "alt": "A packed room at the ODDspace opening, with a DJ set-up by the windows"
     },
     {
-      "image": "../../assets/oddspace/studio-desks.jpg",
-      "alt": "Standing desks and workstations in the ODDspace co-working area"
+      "image": "../../assets/oddspace/opening-painting-floor.jpg",
+      "alt": "People painting together on paper spread across the floor"
     },
     {
-      "image": "../../assets/oddspace/gallery-floor.jpg",
-      "alt": "The raised, curved gallery and event floor at ODDspace"
+      "image": "../../assets/oddspace/opening-mural-painting.jpg",
+      "alt": "An artist in a hooded top painting a black-ink mural on a white wall"
     },
     {
-      "image": "../../assets/oddspace/auditorium.jpg",
-      "alt": "The ODDspace auditorium with tiered seating for talks and screenings"
+      "image": "../../assets/oddspace/opening-table-conversation.jpg",
+      "alt": "Guests talking around a table with drinks at the ODDspace opening"
     },
     {
       "image": "../../assets/oddspace/podcast-studio.jpg",
       "alt": "The audio and podcast studio at ODDspace, with recording equipment and a blue curtain backdrop"
     },
     {
-      "image": "../../assets/oddspace/meeting-room.jpg",
-      "alt": "A meeting room at ODDspace with a long table and screen"
+      "image": "../../assets/oddspace/opening-audience.jpg",
+      "alt": "A smiling audience packed onto sofas and chairs at the ODDspace opening"
     },
     {
-      "image": "../../assets/oddspace/entrance-signage.jpg",
-      "alt": "The ODDspace entrance, with the ODDspace mark on the door"
+      "image": "../../assets/oddspace/opening-mingling.jpg",
+      "alt": "People standing and talking in the ODDspace lounge"
     },
     {
-      "image": "../../assets/oddspace/exterior-building.jpg",
-      "alt": "The industrial Vallila building that houses ODDspace"
+      "image": "../../assets/oddspace/opening-panel.jpg",
+      "alt": "A panel conversation on sofas and chairs, one speaker holding the microphone"
     }
   ],
   "whatItIs": {
@@ -72,7 +72,7 @@
         "WiFi, kitchen and the basics",
         "Meeting rooms where needed"
       ],
-      "image": "../../assets/oddspace/coworking-desks.jpg",
+      "image": "../../assets/oddspace/coworking-laptop-sofa.jpg",
       "goLabel": "Become a member",
       "href": "/oddspace/membership"
     },
@@ -85,7 +85,7 @@
         "Shoots and performances",
         "Private and organisational events"
       ],
-      "image": "../../assets/oddspace/gallery-floor.jpg",
+      "image": "../../assets/oddspace/opening-full-house.jpg",
       "goLabel": "Enquire about the gallery",
       "href": "/oddspace/venue"
     },
@@ -93,7 +93,7 @@
       "name": "Auditorium",
       "body": "Tiered seating for talks, screenings, presentations, workshops and smaller events.",
       "bullets": ["Talks and screenings", "Presentations", "Workshops", "Smaller events"],
-      "image": "../../assets/oddspace/auditorium.jpg",
+      "image": "../../assets/oddspace/auditorium-tiered.jpg",
       "goLabel": "Enquire about the auditorium",
       "href": "/oddspace/venue"
     },
@@ -223,6 +223,69 @@
       "label": "Want to put something on here? Tell us about it",
       "href": "/oddspace/venue"
     }
+  },
+  "gallery": {
+    "eyebrow": "Life at ODDspace",
+    "title": "Talks, sets, lunches, work.",
+    "note": "From the ODDspace opening and ordinary working days.",
+    "photos": [
+      {
+        "image": "../../assets/oddspace/opening-audience-laughing.jpg",
+        "alt": "An audience laughing during a talk at the ODDspace opening"
+      },
+      {
+        "image": "../../assets/oddspace/opening-performer-gold.jpg",
+        "alt": "A performer in a gold jacket speaking into a microphone"
+      },
+      {
+        "image": "../../assets/oddspace/opening-djs.jpg",
+        "alt": "Two DJs playing at a wooden booth by the windows"
+      },
+      {
+        "image": "../../assets/oddspace/opening-mic-duo.jpg",
+        "alt": "One host listening while another speaks into the microphone"
+      },
+      {
+        "image": "../../assets/oddspace/opening-talk-audience.jpg",
+        "alt": "A seated crowd facing a speaker in the ODDspace lounge"
+      },
+      {
+        "image": "../../assets/oddspace/opening-ambient-set.jpg",
+        "alt": "A musician performing in front of a projected forest, the audience in silhouette"
+      },
+      {
+        "image": "../../assets/oddspace/opening-mural-finished.jpg",
+        "alt": "A finished black-ink Valio Beats mural on a white wall"
+      },
+      {
+        "image": "../../assets/oddspace/opening-talk-stage.jpg",
+        "alt": "A talk in front of the DJ booth and speakers, seen from the back of the audience"
+      },
+      {
+        "image": "../../assets/oddspace/opening-speaker.jpg",
+        "alt": "A speaker mid-sentence with a microphone"
+      },
+      {
+        "image": "../../assets/oddspace/opening-live-electronics.jpg",
+        "alt": "A musician playing live electronics under blue light"
+      },
+      {
+        "image": "../../assets/oddspace/everyday-desk-work.jpg",
+        "alt": "Someone working on a laptop at a desk by the window"
+      },
+      {
+        "image": "../../assets/oddspace/everyday-lunch.jpg",
+        "alt": "People having lunch together around a table"
+      },
+      {
+        "image": "../../assets/oddspace/opening-presenters.jpg",
+        "alt": "Two presenters with a microphone at the DJ booth"
+      },
+      {
+        "image": "../../assets/oddspace/opening-bar.jpg",
+        "alt": "A guest sitting at a bar table with drinks"
+      }
+    ]
   },
   "instagram": {
     "eyebrow": "From ODDspace",

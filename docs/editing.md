@@ -119,7 +119,14 @@ high-level notes:
 - **ODDspace**: what it is, the four spaces (each with its own button),
   the single membership tier (no invented pricing), the "studio is not
   included" callout, event-space rental rates, how joining works, location,
-  the bigger picture, the "what's happening" events list, FAQ.
+  the bigger picture, the "what's happening" events list, the "Life at
+  ODDspace" photo wall, FAQ.
+  - 2026-09-14: all photography replaced with people-and-activity shots from
+    the ODDspace Drive folder (ODDstudio's photo kept), and the photo wall
+    (`gallery`) added under the events list. Add, remove or reorder wall
+    photos freely, portrait or landscape — it arranges them by shape and
+    can't be left with gaps. Give every photo alt text that describes what
+    is in it, without naming people.
   - 2026-09-11: cut from eleven sections to seven at Ronny's request.
     "Co-creative, not just coworking", "Who it's for", "The network is
     bigger than the room" and the (empty) proof numbers were removed along
