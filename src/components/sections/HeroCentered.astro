@@ -14,8 +14,9 @@
 // on-brand photo and a real primary action (Work with ODD) gets the full
 // photographic treatment; a more reflective page with neither yet (About,
 // until a genuine 2026-era photo is chosen — see about.astro's closingImage
-// note for the same "don't guess" rule) still gets the same head layout,
-// widths and typography, just without the media panel and CTA pill.
+// note for the same "don't guess" rule) still gets the same head layout and
+// widths, just without the media panel and CTA pill — and its title takes
+// Display rather than Hero (see the styles).
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Pill from '../primitives/Pill.astro';
@@ -134,21 +135,44 @@ const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.pro
   /* :global() on the warping variant's class — WarpingText renders its <h1>
      inside its own component file, so this file's scoped-CSS attribute
      doesn't carry over to it. */
+  /* Hero, not Display: with a photograph behind it and nothing else in the
+     frame, this title is the whole first screen — the one composition on the
+     site that earns the rarest step of the ladder (Work with ODD). The plain
+     variant has no photograph and lays out exactly like PageIntro, so it
+     takes PageIntro's Display step instead (About). */
   .hero-centered-head h1,
   .hero-centered-head :global(.hero-centered-warping-title) {
-    font-family: var(--font-display);
-    font-weight: 400;
+    font: var(--text-hero);
+    letter-spacing: var(--tracking-hero);
     color: var(--color-paper);
-    font-size: clamp(2.2rem, 5.5vw, 4rem);
-    line-height: 1.08;
     margin: 0.9rem 0 0;
+  }
+  .hero-centered.is-plain .hero-centered-head h1,
+  .hero-centered.is-plain .hero-centered-head :global(.hero-centered-warping-title) {
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
+  }
+  /* The Hero step needs a wider line than the plain 40rem head: at 84px that
+     measure holds about twelve characters, which stacked ODDagency's title
+     into four lines of one or two words. The intro keeps its own 38ch. */
+  .hero-centered:not(.is-plain) .hero-centered-head {
+    max-width: 52rem;
+  }
+  /* Phones: Hero's 3.25rem floor is wider than a phone column for one long
+     word ("something" is ~350px at 52px, against 264px of column at 320px),
+     so the title steps to Display — the next role down, the same kind of
+     step the mobile menu takes on short screens. */
+  @media (max-width: 640px) {
+    .hero-centered-head h1,
+    .hero-centered-head :global(.hero-centered-warping-title) {
+      font: var(--text-display);
+      letter-spacing: var(--tracking-display);
+    }
   }
   .hero-centered-head p {
     max-width: 38ch;
     margin: 1.6rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.8;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
   .hero-centered-cta {

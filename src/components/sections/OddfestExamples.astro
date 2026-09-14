@@ -116,29 +116,26 @@ const { items } = Astro.props;
     flex-direction: column;
   }
   .example-category {
-    font: var(--text-caption);
-    letter-spacing: 0.16em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
   }
   .example-body h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.2rem, 2vw, 1.45rem);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin: 0.6rem 0 0;
   }
   .example-host {
     display: block;
-    font-family: var(--font-body);
-    font-size: 0.78rem;
+    font: var(--text-small);
     color: var(--color-paper-60);
     margin-top: 0.3rem;
   }
   .example-body p {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    line-height: 1.65;
+    font: var(--text-body);
     color: var(--color-paper-60);
     margin: 0.8rem 0 0;
     flex: 1;

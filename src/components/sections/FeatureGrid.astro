@@ -13,26 +13,15 @@ interface Props {
   // future case a caller needs a different level rather than forcing every
   // page's heading hierarchy through one fixed tag.
   headingLevel?: 'h2' | 'h3' | 'h4';
-  // Opt-in only (default 'auto', every existing caller unaffected). The
-  // default track (`repeat(auto-fit, minmax(240px, 280px))`) sizes columns
-  // to the *container's* real width, which at some in-between desktop/
-  // laptop widths silently produced an accidental 3+1 or 2x2 split for
-  // ODDfest's exactly-4-step "How it works" instead of one deliberate
-  // 01|02|03|04 row — see docs/architecture.md and the .is-four-column rule
-  // below. Every other FeatureGrid instance (3-, 5-step grids) keeps the
-  // exact auto-fit behavior it already has.
-  layout?: 'auto' | 'four-column';
 }
-const { cards, headingLevel = 'h3', layout = 'auto' } = Astro.props;
+const { cards, headingLevel = 'h3' } = Astro.props;
 const Heading = headingLevel;
-// A wider cap for 4+ cards (was a flat 60rem, tuned for the original
-// fixed-3-column grid) — otherwise a 4- or 5-card row gets squeezed
-// narrower than it needs to be relative to the page's own .wrap container.
-const maxWidth = cards.length <= 3 ? '60rem' : '72rem';
-const gridClass = `oddf-grid reveal${layout === 'four-column' ? ' is-four-column' : ''}`;
+// How many cards one full row may hold. Four cards go two-by-two rather than
+// three-and-one; five go three-and-two. The card width itself lives in CSS.
+const perRow = cards.length === 4 ? 2 : Math.min(cards.length, 3);
 ---
 
-<div class={gridClass} style={`max-width: ${maxWidth}`}>
+<div class="oddf-grid reveal" style={`--per-row: ${perRow}`}>
   {
     cards.map((c) => (
       <div>
@@ -45,100 +34,84 @@ const gridClass = `oddf-grid reveal${layout === 'four-column' ? ' is-four-column
 </div>
 
 <style>
+  /* A centred, wrapping row of equal cards (2026-09-13 typography pass; this
+     was `repeat(auto-fit, minmax(240px, 280px))`).
+
+     The card width is derived from the Heading role its title is set in:
+     9em of title — room for the widest single words these cards carry,
+     "collaboration" and "automatically" — plus the card's own padding. A
+     fixed pixel track could not do that. Heading is fluid (1.5rem to 2rem),
+     so a track wide enough for "availability" at 2rem was too wide to keep
+     three cards on a row in the 60rem container, and one narrow enough to
+     keep them clipped the word; tying the width to --font-size-heading keeps
+     card and title in proportion at every viewport.
+
+     Flex rather than grid for what a short last row does. A grid's explicit
+     columns leave a lone final card in column one with an empty cell beside
+     it (the 2026-08-31 pass hit this twice, once as a stretched 1fr card and
+     once as a painted empty cell); a flex row centres it at the same width
+     as every other card. There is still no background on the container —
+     each card's own background plus the 1px gap is the hairline grid, so
+     nothing is ever painted where there is no card. `max-width` caps a row
+     at --per-row cards (set from the card count above); the extra 1px per
+     card is rounding slack so the last card on a full row never wraps. */
   .oddf-grid {
+    --feature-card: calc(var(--font-size-heading) * 9 + 3.2rem);
+
     margin: 4rem auto 0;
-    display: grid;
-    /* minmax(240px, 280px), not minmax(240px, 1fr) — a fixed N-column count
-       was tried first (matching --cols, set inline per instance) but a
-       card's longest single word ("Organisational", "Entrepreneurs") needs
-       ~250px to avoid overflowing its own cell, and no single fixed-column
-       count is safe at every viewport: the container's real width varies a
-       lot (SubpageFrame's rails add a constant 176px regardless of
-       viewport; the font-size clamp below also hits its own max well
-       before typical desktop widths), so a column count safe at one width
-       overflowed at another (confirmed via screenshots at
-       834/1100/1440/1920px, not assumed — "Organisational" silently lost
-       letters at both a "narrow desktop" and a "wide desktop" width with a
-       fixed 5-column layout).
-       Capping the track's max at 280px (not 1fr), corrected 2026-08-31
-       (final implementation pass): 1fr let a lone last-row card (5 cards,
-       4 fit per row) stretch to fill the entire row width, reading as one
-       oversized card next to four normal ones — confirmed via a real
-       screenshot (ODDagency's 5-step "How a project works"). `justify-
-       content: center` centers a partial last row instead of leaving it
-       flush left. No container background any more either (see the removed
-       `background: var(--color-paper-12)` that used to live here) — CSS
-       Grid's explicit column count applies to every row uniformly, so a
-       background on this element was never scoped to "cells with a real
-       card in them," it painted the *whole* track structure including an
-       incomplete last row's genuinely empty cells, which showed as a bare
-       solid-color box next to the one real card there (confirmed via a
-       real screenshot: capping the track width alone fixed the oversized
-       card but not this). Each card's own `background: var(--color-
-       backstage)` below plus the `gap` is what actually reads as a hairline
-       grid now — real cards only, nothing painted where there isn't one. */
-    grid-template-columns: repeat(auto-fit, minmax(240px, 280px));
+    max-width: calc((var(--feature-card) + 1px) * var(--per-row));
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 1px;
   }
-  /* Forces exactly four columns, one deliberate row, once the container is
-     wide enough for four ~240px cards without squeezing below the same
-     240px floor the default auto-fit track already treats as a hard
-     minimum. Below this width it falls back to the identical responsive
-     stacking every other FeatureGrid instance uses (no separate mobile/
-     tablet branch needed).
-
-     1200px, not a rounder 1024/1080 — measured directly (not assumed):
-     inside SubpageFrame's rails + .oddf-center's gutters, this section's
-     real container width runs ~232px narrower than the raw viewport (792px
-     container at a 1024px viewport, 808px at 1040px — confirmed via two
-     live getBoundingClientRect() checks, linear across both). Four 240px
-     columns plus 3px of gap need a ~963px container, i.e. a ~1195px
-     viewport; 1200px leaves a small safety margin rather than sitting
-     exactly on that edge. Below it, 1024/1040 measured out to a squeezed
-     ~201px/column — under the established minimum, a real regression this
-     breakpoint is specifically here to avoid. Verified via a real
-     screenshot pass at 1024/1200/1280/1440/1920 — see
-     tests/functional/interactions.spec.ts's geometry assertion. */
-  @media (min-width: 1200px) {
-    .oddf-grid.is-four-column {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
+  /* There is no forced four-across variant any more. ODDfest's four steps
+     used to be pinned to one row from 1200px, but with their titles on the
+     Heading role a ~280px card set "Start with something you already want to
+     make" in five or six lines — so four cards take the same 2x2 block as
+     any other four-card grid. */
   .oddf-grid > div {
-    /* overflow: hidden — a safety net, not the primary fix (that's the
-       240px auto-fit floor below): without it, a single long word that
-       still doesn't fit its cell doesn't get clipped, it bleeds into the
-       next cell and renders invisibly underneath that cell's own opaque
-       background (DOM-order paint stacking) — confirmed via an actual
-       tablet screenshot where "Organisational Leaders" silently lost its
-       "L" this way, not assumed. */
+    /* Shrinks (never grows) — so a single card on a phone narrower than
+       --feature-card still fits its column. */
+    flex: 0 1 var(--feature-card);
+    min-width: 0;
+    /* overflow: hidden — a safety net, not the primary fix (that's the card
+       width above): without it, a single long word that still doesn't fit
+       doesn't get clipped, it bleeds into the next card and renders
+       invisibly underneath that card's own opaque background (DOM-order paint
+       stacking) — confirmed via an actual tablet screenshot where
+       "Organisational Leaders" silently lost its "L" this way. */
     overflow: hidden;
     background: var(--color-backstage);
-    padding: 2.2rem;
+    padding: 1.6rem;
     text-align: center;
   }
+  /* The narrowest phones: a 264px column can't also give 1.6rem each side to
+     the longest title words at the Heading role's 1.5rem floor. */
+  @media (max-width: 360px) {
+    .oddf-grid > div {
+      padding-inline: 1.2rem;
+    }
+  }
   .band-meta {
-    font: var(--text-caption);
-    letter-spacing: 0.32em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
   }
   .oddf-grid h2,
   .oddf-grid h3,
   .oddf-grid h4 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.25rem, 2vw, 1.55rem);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin: 0.7rem 0 0;
   }
   .oddf-grid p {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font: var(--text-body);
     color: var(--color-paper-60);
     margin: 0.7rem 0 0;
-    line-height: 1.6;
   }
   @media (prefers-reduced-motion: no-preference) {
     :global(html.reveal-js) .oddf-grid > div {

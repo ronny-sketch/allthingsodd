@@ -82,16 +82,14 @@ import Layout from '../../layouts/Layout.astro';
     max-width: 40rem;
   }
   #tixfHeading {
-    font-family: var(--font-display);
-    font-weight: 400;
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
     color: var(--color-paper);
-    font-size: clamp(1.8rem, 4vw, 2.6rem);
     margin: 0.6rem 0 0;
   }
   .tixf-state p {
     margin: 1rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   #tixfSuccess {
@@ -133,15 +131,15 @@ import Layout from '../../layouts/Layout.astro';
     align-items: baseline;
     gap: 1rem;
   }
+  /* Forta at the Body size — a ticket's own label inside its card. */
   :global(.tixf-ticket-number) {
     font-family: var(--font-display);
-    font-size: 1.05rem;
+    font-size: var(--font-size-body);
     color: var(--color-paper);
   }
   :global(.tixf-ticket-code) {
-    font-family: var(--font-body);
-    font-size: 0.68rem;
-    letter-spacing: 0.05em;
+    font: var(--text-small);
+    letter-spacing: var(--tracking-caps);
     color: var(--color-paper-40);
   }
   :global(.tixf-ticket-qr) {
@@ -168,8 +166,9 @@ import Layout from '../../layouts/Layout.astro';
     gap: 0.4rem;
   }
   :global(.tixf-assign-form label) {
-    font: var(--text-caption);
-    letter-spacing: 0.15em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
   }
@@ -178,23 +177,17 @@ import Layout from '../../layouts/Layout.astro';
     border: none;
     border-bottom: 1px solid var(--color-paper-20);
     padding: 0.5rem 0;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
+    /* Body — whose 1rem floor is also the iOS no-zoom guarantee. */
+    font: var(--text-body);
     color: var(--color-paper);
     outline: none;
-  }
-  @media (max-width: 640px) {
-    :global(.tixf-assign-form input) {
-      font-size: 16px;
-    }
   }
   :global(.tixf-assign-form) :global(.pill) {
     align-self: flex-start;
   }
   :global(.tixf-assign-status) {
     margin: 0;
-    font-family: var(--font-body);
-    font-size: 0.78rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
 </style>

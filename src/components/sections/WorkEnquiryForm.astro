@@ -107,6 +107,10 @@ const PRODUCTS = [
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.6rem;
+    /* Fields line up by their inputs, not their labels — a deep-linked label
+       ("Organisation (leave blank if applying as an individual)") wraps to
+       two lines and would otherwise drop its input below its neighbour's. */
+    align-items: end;
   }
   @media (max-width: 640px) {
     .field-row {
@@ -119,8 +123,9 @@ const PRODUCTS = [
     gap: 0.5rem;
   }
   .field label {
-    font: var(--text-caption);
-    letter-spacing: 0.2em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
   }
@@ -145,8 +150,9 @@ const PRODUCTS = [
     border: none;
     border-bottom: 1px solid var(--color-paper-20);
     padding: 0.6rem 0;
-    font-family: var(--font-body);
-    font-size: 1rem;
+    /* Body — whose 1rem floor is also what stops iOS Safari zooming the page
+       when a field receives focus, so no mobile override is needed. */
+    font: var(--text-body);
     color: var(--color-paper);
     outline: none;
     resize: vertical;
@@ -154,15 +160,6 @@ const PRODUCTS = [
   }
   .field select {
     color-scheme: dark;
-  }
-  /* iOS Safari auto-zooms the viewport on focus for any input under 16px —
-     same fix as Footer.astro's newsletter field. */
-  @media (max-width: 640px) {
-    .field input,
-    .field select,
-    .field textarea {
-      font-size: 16px;
-    }
   }
   .field input:focus,
   .field select:focus,
@@ -184,8 +181,7 @@ const PRODUCTS = [
   }
   .form-status {
     margin: 0;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
+    font: var(--text-small);
     color: var(--color-paper-60);
   }
 </style>

@@ -55,10 +55,12 @@ const logoLength = Math.round(LOGO_THICK * (wordmark.width / wordmark.height));
 // two SVG wordmarks through untouched and emits a correctly-sized asset for
 // ODDference's PNG, which is 1080px wide at source and renders at 130.
 const logoAsset = await getImage({ src: wordmark, width: LOGO_ASSET_WIDTH });
-// Measured px-per-character for the two type styles below. Estimate only — it
-// sizes `reps` and the duration, never the seam.
-const PX_PER_WORD_CHAR = 10.5;
-const PX_PER_META_CHAR = 8.4;
+// Measured px-per-character for the two type styles below (re-measured
+// 2026-09-13 at 10.55 and 10.07 once both moved onto the typography ladder,
+// then rounded up about 5% — the margin the original figures carried).
+// Estimate only — it sizes `reps` and the duration, never the seam.
+const PX_PER_WORD_CHAR = 11.2;
+const PX_PER_META_CHAR = 10.6;
 const beatLength = (item: RailItem) =>
   item.kind === 'logo'
     ? logoLength
@@ -177,18 +179,20 @@ const duration = (period / TICKER_SPEED).toFixed(2);
     -webkit-mask: var(--logo-src) center / contain no-repeat;
     mask: var(--logo-src) center / contain no-repeat;
   }
+  /* Forta at the Body size, the same setting as SubpageRail's word beat —
+     the two are one idea on two axes. */
   .oddf-ticker-word {
     font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 0.95rem;
+    font-size: var(--font-size-body);
     letter-spacing: 0.02em;
     text-transform: uppercase;
     color: var(--color-paper);
     white-space: nowrap;
   }
   .oddf-ticker-meta {
-    font: var(--text-caption);
-    letter-spacing: 0.22em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
     white-space: nowrap;

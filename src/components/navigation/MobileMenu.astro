@@ -228,10 +228,9 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
     color: var(--color-ink);
     border-radius: 999px;
     padding: 0.5rem 1.1rem;
-    font-family: var(--font-body);
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
+    letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     cursor: pointer;
     transition: border-color var(--duration-fast) ease;
@@ -244,9 +243,10 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
      didn't (a real bug, not hypothetical: 7 links at the old flat
      2.1-4.6rem/6.5vw sizing ran 600-630px tall on their own, before topbar/
      bottom chrome, which already overflows a ~700px-tall browser window).
-     Fixed by making every section's vertical rhythm height-aware — font
-     size and padding both respond to svh, not just vw — so short viewports
-     shrink automatically instead of only ever growing with width.
+     Fixed by making every section's vertical rhythm height-aware — padding
+     responds to svh, and the link type steps down from Display to Heading on
+     short viewports (below) — so a short screen tightens instead of the menu
+     only ever growing with width.
      overflow-y:auto stays on .menu-overlay itself as the safety fallback
      for genuinely extreme heights/zoom levels this can't fully solve (see
      the file-level comment above), not the primary fit strategy. */
@@ -259,15 +259,11 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
   }
   .menu-links a {
     display: block;
-    font-family: var(--font-display);
-    font-weight: 400;
+    /* Display: the open menu is a full-screen typographic moment, one step
+       below a hero. */
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
     text-transform: uppercase;
-    /* min(vw, svh) — whichever dimension is actually tight wins. A tall
-       narrow phone stays vw-limited (unchanged from before: plenty of
-       height there already). A short wide viewport (laptop window, tablet
-       landscape) becomes svh-limited instead of overflowing. */
-    font-size: clamp(1.7rem, min(6.5vw, 8.2svh), 4.6rem);
-    line-height: 1.14;
     color: var(--color-ink);
     text-decoration: none;
     padding: clamp(0.05rem, 0.6svh, 0.15rem) 0.6rem;
@@ -292,12 +288,15 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
     align-items: center;
     justify-content: space-between;
   }
-  /* Extreme short heights (landscape phone, a badly cramped browser zoom
-     level) — tighten line-height further on top of the svh-based sizing
-     above rather than relying on overflow-y:auto alone. */
-  @media (max-height: 480px) {
+  /* Short viewports (landscape phone, a small laptop window, a cramped zoom
+     level). Seven Display-size links plus the top and bottom bars run taller
+     than the screen here, so the links take the next step down the ladder —
+     Heading — rather than a height-scaled size of their own. overflow-y:auto
+     on the overlay stays the fallback for anything shorter still. */
+  @media (max-height: 560px) {
     .menu-links a {
-      line-height: 1.05;
+      font: var(--text-heading);
+      letter-spacing: var(--tracking-heading);
     }
   }
   .menu-social {
@@ -325,8 +324,7 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
     transform: translateY(-2px);
   }
   .menu-tag {
-    font-family: var(--font-body);
-    font-size: 0.72rem;
+    font: var(--text-small);
     color: rgb(36 34 32 / 55%);
     white-space: nowrap;
   }

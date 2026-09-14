@@ -63,12 +63,14 @@ const wordmark = logoFor(slug);
 
 // How thick the mark reads across the rail, in px — measured against the type
 // beside it rather than picked. The artwork's ink fills essentially its whole
-// box height, so this number IS the mark's visual height, and Forta's cap
-// height at the adjacent .rail-word's 1.35rem is 17.24px. 18px puts the mark
-// at 1.04x the cap height next to it, which is parity. It was rendering
-// 4-8px thick before this — a smear, not a mark — and an interim 24px
-// overshot the other way, reading as a blob shouting over the very word it
-// sits next to.
+// box height, so this number IS the mark's visual height. It was tuned when
+// the adjacent .rail-word was 1.35rem (cap height 17.24px), where 18px sat at
+// parity. It was rendering 4-8px thick before that — a smear, not a mark —
+// and an interim 24px overshot the other way, reading as a blob shouting over
+// the very word it sits next to. Since 2026-09-13 the word is on the Body
+// size (cap height ~13.6px); the mark was deliberately left at 18px so the
+// wordmark itself did not change in a typography-only pass, and now reads a
+// step heavier than the word beside it.
 const LOGO_THICK = 18;
 // Rotated -90deg, the logo occupies LOGO_THICK across the rail and this much
 // along it. Derived from the asset's own intrinsic size, so replacing any of
@@ -85,11 +87,14 @@ const logoAsset = await getImage({ src: wordmark, width: LOGO_ASSET_WIDTH });
 // the header comment; this is what makes the period exact.
 const BEAT_GAP = 42;
 // Measured px-per-character for this rail's two type styles at 1440px
-// (uppercase Forta 1.35rem vertical, and the caption face at 0.22em tracking).
+// (uppercase Forta at the Body size, vertical, and Small-role capitals at the
+// eyebrow tracking — re-measured 2026-09-13 at 10.96 and 10.06 when the rail
+// moved onto the typography ladder, and rounded up about 2% as the original
+// figures were, so the drift speed below stays the same).
 // Only ever used to estimate a period for `reps` and `duration`, both of which
 // degrade gracefully; the loop's seamlessness does not depend on them.
-const PX_PER_WORD_CHAR = 14.2;
-const PX_PER_META_CHAR = 7.8;
+const PX_PER_WORD_CHAR = 11.2;
+const PX_PER_META_CHAR = 10.1;
 const beatLength = (item: RailItem) =>
   item.kind === 'logo'
     ? logoLength
@@ -272,9 +277,9 @@ const duration = (period / RAIL_SPEED).toFixed(2);
   .rail-word {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
+    /* Forta for brand character, at the Body size — framing, not a heading. */
     font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.35rem;
+    font-size: var(--font-size-body);
     letter-spacing: 0.01em;
     text-transform: uppercase;
     color: var(--color-paper);
@@ -283,8 +288,9 @@ const duration = (period / RAIL_SPEED).toFixed(2);
   .rail-meta {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    font: var(--text-caption);
-    letter-spacing: 0.2em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
     white-space: nowrap;

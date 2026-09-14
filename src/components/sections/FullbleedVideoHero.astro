@@ -254,21 +254,26 @@ const {
        copy being dropped: a landscape phone still gets the whole message,
        just set at the size that viewport can hold.
 
-       Sized from the content, not guessed — `support` and the logo are the
-       two biggest contributors, so they take the largest reductions. */
+       Sized from the content, not guessed — the logo is the biggest
+       contributor, so it takes the reduction. The type stays on its roles
+       (2026-09-13): the h1 is already Heading in this frame and Body/Small do
+       not scale. (Both rules below sit before the base .oddfest-hero-logo and
+       .oddfest-hero-support rules in this file, so at equal specificity the
+       base rules currently win — a pre-existing ordering issue, not a type
+       one.) */
     .oddfest-hero-logo {
       width: min(230px, 30vw);
     }
-    .oddfest-hero-sub {
-      font-size: clamp(1rem, 1.9vw, 1.25rem);
-    }
     .oddfest-hero-support {
-      font-size: 0.78rem;
-      line-height: 1.4;
       max-width: 46ch;
     }
-    .oddfest-hero-meta {
-      font-size: 0.7rem;
+  }
+  /* Above 820px SubpageFrame's fixed 68px rails paint over both edges of this
+     full-bleed frame; keep the text column clear of them (same fix as
+     SpaceHero.astro). */
+  @media (min-width: 821px) {
+    .oddfest-hero-overlay {
+      padding-inline: calc(68px + var(--space-8));
     }
   }
   .oddfest-hero-logo {
@@ -298,11 +303,12 @@ const {
      default browser h1 sizing. */
   .oddfest-hero-sub {
     margin: 0;
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.15rem, 2.4vw, 1.7rem);
+    /* Heading: in the default frame the very wide wordmark above is the hero
+       and this line is its companion. The `space` frame promotes it to
+       Display (below). */
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    letter-spacing: 0.01em;
   }
   /* Optional supporting paragraph under the h1 (ODDference only) — a real
      sentence, not another caption, so it gets body-font sizing/line-height
@@ -310,16 +316,13 @@ const {
   .oddfest-hero-support {
     margin: 0;
     max-width: 34rem;
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    line-height: 1.6;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
   .oddfest-hero-meta {
     margin: 0;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    letter-spacing: 0.08em;
+    font: var(--text-small);
+    letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--color-paper-60);
   }
@@ -406,9 +409,8 @@ const {
   }
   .oddfest-hero--frame-space .oddfest-hero-sub {
     max-width: 32ch;
-    font-size: clamp(1.6rem, 4vw, 2.6rem);
-    line-height: 1.15;
-    text-wrap: balance;
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
     text-shadow:
       0 1px 3px rgb(14 9 11 / 75%),
       0 8px 32px rgb(14 9 11 / 50%);
@@ -420,20 +422,18 @@ const {
   .oddfest-hero--frame-space .oddfest-hero-support {
     max-width: 42rem;
   }
-  /* Bigger than the site's default Pill — the same override, for the same
+  /* Roomier than the site's default Pill — the same override, for the same
      reason, as SpaceHero.astro's: these sit alone under a wordmark on a
-     full-viewport moving image, where 0.72rem/0.55rem reads as a caption
-     rather than the one thing the hero is asking you to do. Pill.astro's own
-     `(hover: none)` 0.85rem vertical padding still applies on top, so the
-     44px mobile touch-target floor is unaffected. */
+     full-viewport moving image, where the default padding reads as a caption
+     rather than the one thing the hero is asking you to do. Padding only; the
+     label stays on the Small role like every other button (2026-09-13).
+     Pill.astro's own `(hover: none)` 0.85rem vertical padding still applies
+     on top, so the 44px mobile touch-target floor is unaffected. */
   .oddfest-hero--frame-space .oddfest-hero-cta :global(.pill) {
-    font-size: 0.82rem;
     padding: 0.8rem 1.9rem;
-    letter-spacing: 0.06em;
   }
   @media (max-width: 480px) {
     .oddfest-hero--frame-space .oddfest-hero-cta :global(.pill) {
-      font-size: 0.78rem;
       padding: 0.75rem 1.5rem;
     }
   }
@@ -448,8 +448,12 @@ const {
     .oddfest-hero--frame-space .oddfest-hero-logo {
       width: min(240px, 44vw);
     }
+    /* The one place this h1 steps down a role: Display under a wordmark does
+       not fit a landscape phone's height, so it takes Heading — the next
+       step on the ladder, not a size of its own. */
     .oddfest-hero--frame-space .oddfest-hero-sub {
-      font-size: clamp(1.2rem, 3vw, 1.7rem);
+      font: var(--text-heading);
+      letter-spacing: var(--tracking-heading);
     }
     .oddfest-hero--frame-space .oddfest-hero-overlay {
       gap: 0.6rem;

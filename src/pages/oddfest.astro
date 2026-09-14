@@ -126,7 +126,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
         <p class="oddf-layer-closing reveal">{page.ownership.closing}</p>
         <div class="oddf-steps">
           <span class="oddf-steps-label">{page.ownership.stepsLabel}</span>
-          <FeatureGrid cards={page.howItWorks} layout="four-column" />
+          <FeatureGrid cards={page.howItWorks} />
         </div>
       </div>
     </section>
@@ -289,11 +289,14 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     border-radius: var(--radius-panel);
   }
   .oddf-partner-inner h2 {
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
     margin: var(--space-2) 0 var(--space-4);
   }
   .oddf-partner-inner p {
     margin: 0 0 var(--space-6);
-    max-width: 52ch;
+    max-width: var(--measure-prose);
   }
   @media (max-width: 640px) {
     .oddf-partner-inner {
@@ -326,8 +329,9 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     gap: 1rem;
   }
   .oddf-lookback-label {
-    font: var(--text-utility);
-    letter-spacing: 0.24em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
     text-align: center;
@@ -363,27 +367,22 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     margin: 0 auto;
   }
   .oddf-layer-col h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin: 0;
   }
   .oddf-layer-col p {
     margin: 0.9rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    line-height: 1.7;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   .oddf-layer-closing {
-    max-width: 36rem;
+    max-width: var(--measure-prose);
     margin: var(--space-10) auto 0;
     text-align: center;
-    font-family: var(--font-body);
+    font: var(--text-body);
     font-style: italic;
-    font-size: 0.88rem;
-    line-height: 1.7;
     color: var(--color-paper-40);
   }
   @media (max-width: 700px) {
@@ -404,8 +403,9 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
   .oddf-steps-label {
     display: block;
     text-align: center;
-    font: var(--text-utility);
-    letter-spacing: 0.24em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
     margin-bottom: 1.8rem;
@@ -427,16 +427,16 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     margin-bottom: 0.9rem;
   }
   .oddf-join h2 {
-    font: var(--text-heading-md);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin: 0;
   }
   .oddf-join p {
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    line-height: 1.7;
+    font: var(--text-body);
     color: var(--color-paper-60);
-    margin: 1.1rem 0 0;
+    max-width: var(--measure-prose);
+    margin: 1.1rem auto 0;
   }
   .oddf-join-actions {
     margin-top: 1.8rem;
@@ -447,17 +447,18 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     gap: 0.8rem;
   }
   /* Visibly larger than an ordinary tertiary Pill, using the `ticket`
-     variant's existing shadow/lift treatment for extra weight rather than
-     inventing a new button style (2026-09-02 UX note, kept). */
+     variant's existing shadow/lift treatment and roomier padding for extra
+     weight rather than inventing a new button style (2026-09-02 UX note,
+     kept). The label stays on the Small role like every other button. */
   .oddf-join-actions :global(.oddf-join-cta.pill) {
     padding: 1rem 2.4rem;
-    font-size: 0.85rem;
-    letter-spacing: 0.07em;
   }
-  .oddf-join-reassurance {
-    font-size: 0.85rem !important;
-    color: var(--color-paper-40) !important;
-    margin-top: 1.4rem !important;
+  /* Scoped under .oddf-join so it outranks `.oddf-join p` by specificity
+     rather than by !important. */
+  .oddf-join .oddf-join-reassurance {
+    font: var(--text-small);
+    color: var(--color-paper-40);
+    margin-top: 1.4rem;
   }
   @media (max-width: 460px) {
     .oddf-join-actions {
@@ -473,13 +474,11 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
   /* "What has happened before" — lede paragraphs, the Timeline, a closing
      line, then the one link out to the archived 2026 page. */
   .oddf-history-lede {
-    max-width: 40rem;
+    max-width: var(--measure-prose);
     margin: -1.5rem auto var(--space-12);
   }
   .oddf-history-lede p {
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.8;
+    font: var(--text-body);
     color: var(--color-paper-60);
     margin: 0;
   }
@@ -487,12 +486,10 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     margin-top: 1.1rem;
   }
   .oddf-history-closing {
-    max-width: 38rem;
+    max-width: var(--measure-prose);
     margin: var(--space-10) auto 0;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.75;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
   .oddf-history-cta {
@@ -504,21 +501,17 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
   /* "Last year, this looked like…" examples chapter — lede above the grid,
      closing line below it. */
   .oddf-examples-lede {
-    max-width: 40rem;
+    max-width: var(--measure-prose);
     margin: -1.5rem auto var(--space-10);
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.8;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   .oddf-examples-closing {
-    max-width: 36rem;
+    max-width: var(--measure-prose);
     margin: var(--space-10) auto 0;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    line-height: 1.7;
+    font: var(--text-body);
     color: var(--color-paper-40);
   }
 </style>

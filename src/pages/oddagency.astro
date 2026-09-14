@@ -127,8 +127,7 @@ const page = entry.data;
     margin-top: var(--space-10);
   }
   .odda-type-tag {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font: var(--text-small);
     color: var(--color-paper-80);
     background: var(--color-backstage);
     border: 1px solid var(--color-paper-12);
@@ -142,18 +141,17 @@ const page = entry.data;
     max-width: 34rem;
     text-align: center;
   }
+  /* Heading — the same step as every other closing ask on the site
+     (ODDfest's "How to join", the ODDspace pages' final CTA). */
   .odda-closing h2 {
-    font-family: var(--font-display);
-    font-weight: 400;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    font-size: clamp(1.7rem, 3.4vw, 2.4rem);
     margin: 0;
   }
   .odda-closing p {
     margin: 1.1rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.7;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   .odda-closing :global(.pill) {

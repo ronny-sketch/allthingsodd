@@ -59,10 +59,13 @@ const Tag = href ? 'a' : 'button';
     border-radius: 999px;
     padding: 0.55rem 1.25rem;
     white-space: nowrap;
-    font-family: var(--font-body);
+    /* Small at 600 — the ladder's UI step. The shorthand also sets
+       line-height on the element itself, so a Pill rendered as a <button>
+       (whose UA stylesheet declares its own line-height, which would beat an
+       inherited one) measures exactly the same as a Pill rendered as a link. */
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.72rem;
-    letter-spacing: 0.05em;
+    letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     text-decoration: none;
     cursor: pointer;
@@ -152,6 +155,14 @@ const Tag = href ? 'a' : 'button';
       white-space: normal;
       max-width: 100%;
       text-align: center;
+      /* A label with no spaces at all — an email address, like ODDstudio's
+         operator contact — may break inside the word once it would overflow.
+         break-word, not anywhere: `anywhere` also lowers the button's
+         min-content width, which let a flex row (a form's submit button beside
+         its status message) squeeze "Send message" into "MESSAG / E". A grid
+         column that holds such a pill allows shrinking instead, with
+         minmax(0, 1fr). */
+      overflow-wrap: break-word;
     }
   }
   /* Touch (2026-09-02 mobile experience pass). Two separate problems, one
@@ -179,15 +190,6 @@ const Tag = href ? 'a' : 'button';
          CI, where the string measures slightly wider than on macOS. The
          44px target is a height requirement, so height is all this needs. */
       padding: 0.85rem 1.25rem;
-      /* A <button>'s UA stylesheet sets its own `line-height: normal`
-         directly on the element, which beats inheritance regardless of
-         specificity — so a Pill rendered as a button (the Menu trigger) came
-         out several px shorter than the identical Pill rendered as a link,
-         and landed at 42px where the anchors reached 44. Same UA quirk
-         Nav.astro documents for its Info trigger. Asserting body's 1.5 here
-         makes both tags measure the same. Scoped to this touch block so the
-         approved desktop button proportions are untouched. */
-      line-height: 1.5;
       -webkit-tap-highlight-color: transparent;
     }
     .pill:active {

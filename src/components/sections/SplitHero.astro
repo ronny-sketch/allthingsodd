@@ -153,16 +153,13 @@ const {
      non-warped (default) case. */
   .oddf-head h1,
   .oddf-head :global(.oddf-warping-title) {
-    font-family: var(--font-display);
-    font-weight: 400;
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
     color: var(--color-paper);
-    font-size: clamp(2.2rem, 5.5vw, 4rem);
-    line-height: 1.08;
     margin: 0.9rem 0 0;
   }
   .oddf-meta {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font: var(--text-small);
     color: var(--color-paper-60);
     margin-top: 1rem;
   }
@@ -170,9 +167,7 @@ const {
     max-width: 42rem;
     margin: 2.2rem auto 0;
     text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.8;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
 </style>

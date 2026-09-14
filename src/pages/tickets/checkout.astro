@@ -143,14 +143,13 @@ import Layout from '../../layouts/Layout.astro';
     margin-bottom: var(--space-12);
   }
   .tixc-head h1 {
-    font-family: var(--font-display);
-    font-weight: 400;
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
     color: var(--color-paper);
-    font-size: clamp(1.8rem, 4vw, 2.6rem);
     margin: 0.6rem 0 0;
   }
   .tixc-empty {
-    font-family: var(--font-body);
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   .tixc-empty a {
@@ -184,15 +183,13 @@ import Layout from '../../layouts/Layout.astro';
     padding: 0.8rem 1rem;
     background: var(--color-backstage);
     border: 1px solid var(--color-paper-12);
-    font-family: var(--font-body);
-    font-size: 0.82rem;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
 
   .tixc-main h2 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.1rem;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin: 0 0 1.4rem;
   }
@@ -208,8 +205,9 @@ import Layout from '../../layouts/Layout.astro';
     gap: 0.5rem;
   }
   .field label {
-    font: var(--text-caption);
-    letter-spacing: 0.2em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
   }
@@ -218,17 +216,11 @@ import Layout from '../../layouts/Layout.astro';
     border: none;
     border-bottom: 1px solid var(--color-paper-20);
     padding: 0.6rem 0;
-    font-family: var(--font-body);
-    font-size: 1rem;
+    /* Body — whose 1rem floor is also the iOS no-zoom guarantee. */
+    font: var(--text-body);
     color: var(--color-paper);
     outline: none;
     transition: border-color var(--duration-fast) ease;
-  }
-  /* iOS Safari auto-zoom fix — same pattern as ContactForm.astro. */
-  @media (max-width: 640px) {
-    .field input {
-      font-size: 16px;
-    }
   }
   .field input:focus {
     border-color: var(--color-paper);
@@ -240,8 +232,7 @@ import Layout from '../../layouts/Layout.astro';
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font: var(--text-body);
     color: var(--color-paper-80);
     cursor: pointer;
   }
@@ -258,8 +249,7 @@ import Layout from '../../layouts/Layout.astro';
   }
   .tixc-status {
     margin: 0;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
+    font: var(--text-small);
     color: var(--color-paper-60);
     min-height: 1.2em;
   }
@@ -268,8 +258,7 @@ import Layout from '../../layouts/Layout.astro';
     padding: 0.9rem 1rem;
     background: var(--color-backstage);
     border: 1px solid var(--color-paper-12);
-    font-family: var(--font-body);
-    font-size: 0.82rem;
+    font: var(--text-body);
     color: var(--color-paper-80);
   }
   .tixc-not-connected a {
@@ -296,8 +285,7 @@ import Layout from '../../layouts/Layout.astro';
     padding: 0.9rem 1rem;
     background: rgb(154 67 43 / 12%);
     border: 1px solid rgb(154 67 43 / 40%);
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font: var(--text-body);
     color: var(--color-paper);
   }
 
@@ -310,8 +298,7 @@ import Layout from '../../layouts/Layout.astro';
     background: none;
     border: none;
     padding: 0;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font: var(--text-small);
     color: var(--color-paper-60);
     text-decoration: underline;
     text-underline-offset: 0.2em;
@@ -336,19 +323,17 @@ import Layout from '../../layouts/Layout.astro';
     display: none;
   }
   .tixc-invoice-intro {
+    max-width: var(--measure-prose);
     margin: -0.6rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
+    font: var(--text-body);
     color: var(--color-paper-60);
-    line-height: 1.6;
   }
   .tixc-invoice-form select {
     background: var(--color-ink);
     border: none;
     border-bottom: 1px solid var(--color-paper-20);
     padding: 0.6rem 0;
-    font-family: var(--font-body);
-    font-size: 1rem;
+    font: var(--text-body);
     color: var(--color-paper);
     outline: none;
   }
@@ -380,10 +365,10 @@ import Layout from '../../layouts/Layout.astro';
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font: var(--text-small);
     color: var(--color-paper-80);
   }
+  /* Forta at the Body size — the order total in a compact summary panel. */
   .tixc-summary :global(.tixc-summary-total-row) {
     display: flex;
     justify-content: space-between;
@@ -391,13 +376,12 @@ import Layout from '../../layouts/Layout.astro';
     padding-top: 1.2rem;
     border-top: 1px solid var(--color-paper-12);
     font-family: var(--font-display);
-    font-size: 1.15rem;
+    font-size: var(--font-size-body);
     color: var(--color-paper);
   }
   .tixc-summary :global(.tixc-summary-vat-note) {
     margin: 0.4rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.7rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
 </style>

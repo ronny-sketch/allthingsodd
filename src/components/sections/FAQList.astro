@@ -45,10 +45,18 @@ const { items } = Astro.props;
     padding: 1.3rem 0;
     cursor: pointer;
     list-style: none;
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
+  }
+  /* The narrowest phones: at 320px a subpage's FAQ column leaves the
+     question 174px beside the icon, and "organisation" needs 180px at the
+     Heading role's floor. Half the gap gives it the room rather than
+     breaking the word. */
+  @media (max-width: 360px) {
+    .faq-item summary {
+      gap: 0.5rem;
+    }
   }
   .faq-item summary::-webkit-details-marker {
     display: none;
@@ -85,13 +93,16 @@ const { items } = Astro.props;
   }
   .faq-item p {
     margin: 0 0 1.4rem;
-    max-width: 60ch;
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    line-height: 1.75;
+    max-width: var(--measure-prose);
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   .faq-item summary span:first-child {
+    /* min-width: 0 lets the question shrink beside the icon; break-word only
+       splits a word that could not fit the column at all (320px). */
+    min-width: 0;
+    overflow-wrap: break-word;
+    text-wrap: balance;
     transition: color var(--duration-fast) ease;
   }
   .faq-item summary:hover span:first-child {

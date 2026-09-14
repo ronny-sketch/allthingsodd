@@ -90,19 +90,17 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   <div class="whatoddis-wrap">
     <FloatingCloud images={cloudPhotos} />
     {
-      /* `bodySize="large"` (2026-09-11): this is the page's main explanatory
-         passage, not a supporting note, and at SectionIntro's shared 0.98rem
-         grey default it read as fine print under a very large headline. The
-         headline itself came down to one sentence in the same pass — see
-         index.json — so the weight moves from the display line to the copy
-         that actually explains ODD. The body's blank lines render as real
-         paragraphs; see SectionIntro's own comment. */
+      /* `lead` (2026-09-11, reworked 2026-09-13): this is the page's main
+         explanatory passage, not a supporting note, so it is set in brighter
+         ink on a wider measure than SectionIntro's grey default — at the same
+         Body size as every other paragraph on the site. The body's blank
+         lines render as real paragraphs; see SectionIntro's own comment. */
     }
     <SectionIntro
       eyebrow={page.whatOddIs.eyebrow}
       headline={page.whatOddIs.headline}
       body={page.whatOddIs.body}
-      bodySize="large"
+      lead
       warpHeadline
     />
     {
@@ -314,18 +312,17 @@ const preloadImage = await mosaicImage(firstArchiveImage);
     margin: 1.8rem auto 0;
     position: relative;
   }
-  /* Headline scale, 2026-09-11. This was pinned to --text-display-lg
-     (4.6rem) in the 2026-08-31 revision, when the headline was two short
-     sentences and needed the weight to read as the page's second hero
-     moment. It is now one long sentence, and at 4.6rem inside SectionIntro's
-     42rem block that set as seven lines of display type — a wall, with the
-     body it is supposed to introduce reduced to a footnote underneath. That
-     is the opposite of what this section is for.
+  /* Headline scale. This was pinned to a 4.6rem display size in the
+     2026-08-31 revision, when the headline was two short sentences and
+     needed the weight to read as the page's second hero moment. It is now
+     one long sentence, and at 4.6rem inside SectionIntro's 42rem block that
+     set as seven lines of display type — a wall, with the body it is
+     supposed to introduce reduced to a footnote underneath.
 
-     The override is gone: SectionIntro's own clamp(1.9rem, 4vw, 2.9rem) is
-     the size, and the block widens instead, which buys the line count back
-     without shrinking the type twice. Still the largest headline on the page
-     after the hero — just not louder than the thing it introduces. */
+     No size override here: SectionIntro's own Display role is the size, and
+     the block widens instead, which buys the line count back without
+     inventing a size. Still the largest headline on the page after the hero
+     — just not louder than the thing it introduces. */
   .whatoddis-wrap :global(.section-intro-inner) {
     max-width: 52rem;
   }
@@ -383,13 +380,11 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   }
 
   /* Four cumulative figures since 2026-09-04, not the three 2025-only ones
-     this module launched with. The shared ProofGrid goes four-across above
-     700px and one-per-row below it, which was right for three short labels
-     and is not right for these: "Directly into creative & cultural
-     industries" is four times the length of "Participants", so the tablet
-     band would render it inside a ~110px column. Scoped to this instance
-     rather than changed in ProofGrid itself, because Media's eight-stat row
-     and About's two-stat row both want the existing behaviour. */
+     this module launched with. "Directly into creative & cultural
+     industries" is four times the length of "Participants", so this
+     instance balances its labels and trims the column padding. The
+     two-by-two tablet layout it used to set here now lives in ProofGrid
+     itself, for every four-figure row. */
   .home-proof :global(.proof-label) {
     /* One long label among three short ones breaks into an unbalanced
        ragged block by default; `balance` evens the lines so the four read
@@ -402,16 +397,6 @@ const preloadImage = await mosaicImage(firstArchiveImage);
        columns. */
     .home-proof :global(.proof-item) {
       padding: 0 1.2rem;
-    }
-  }
-  @media (min-width: 701px) and (max-width: 1024px) {
-    .home-proof :global(.proof-grid) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    /* The shared component drops the divider on every 4th item because it
-       assumes four columns; at two, that has to be every other one. */
-    .home-proof :global(.proof-item:nth-child(2n + 1)) {
-      border-left: none;
     }
   }
 
@@ -427,7 +412,7 @@ const preloadImage = await mosaicImage(firstArchiveImage);
      baseline-aligned row of small text — at the bottom of the page that read
      as a footnote, which was the point then. Directly under the platform
      cards it needs to read as a real next step instead, so the eyebrow/title/
-     body now stack the way a card's do, the title is display-scale, and the
+     body now stack the way a card's do, the title is a Forta Heading, and the
      action is a pill rather than a line of uppercase text. What keeps it from
      becoming a fourth product card is everything it still doesn't have: no
      photo, no grid cell, full page width, and a quieter ground. */
@@ -468,19 +453,17 @@ const preloadImage = await mosaicImage(firstArchiveImage);
     min-width: 0;
   }
   .wwo-band-title {
-    font-family: var(--font-display);
-    font-weight: 400;
-    /* Deliberately below ProgramGrid's card titles: this is the step after
-       those three, not a fourth peer. */
-    font-size: clamp(1.35rem, 2.2vw, 1.75rem);
-    line-height: 1.15;
+    /* The same Heading step as ProgramGrid's card titles. What keeps it the
+       step after those three rather than a fourth peer is everything around
+       it — no photo, no grid cell, the quieter ground — not a smaller size. */
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
+    text-wrap: balance;
   }
   .wwo-band-body {
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    line-height: 1.6;
-    max-width: 52ch;
+    font: var(--text-body);
+    max-width: var(--measure-prose);
     color: var(--color-paper-60);
   }
   /* Pill-shaped, from the same tokens Pill.astro uses — but a <span>, since
@@ -493,10 +476,9 @@ const preloadImage = await mosaicImage(firstArchiveImage);
     border-radius: 999px;
     padding: 0.7rem 1.4rem;
     border: 1px solid rgb(226 223 222 / 35%);
-    font-family: var(--font-body);
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.72rem;
-    letter-spacing: 0.05em;
+    letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--color-paper);
     transition:
@@ -517,6 +499,10 @@ const preloadImage = await mosaicImage(firstArchiveImage);
       align-items: stretch;
     }
     .wwo-band-go {
+      /* Full row width and allowed to wrap — flex-shrink: 0 kept its one-line
+         width, which ran 21px out of the band at 320px. */
+      flex: 1 1 100%;
+      min-width: 0;
       text-align: center;
     }
   }

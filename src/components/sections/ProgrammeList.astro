@@ -65,28 +65,26 @@ const { items } = Astro.props;
     gap: 0.2rem;
   }
   .programme-date {
-    font-family: var(--font-body);
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.88rem;
     color: var(--color-paper);
     font-variant-numeric: tabular-nums;
   }
   .programme-time {
-    font-family: var(--font-body);
-    font-size: 0.76rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
     font-variant-numeric: tabular-nums;
   }
   .programme-category {
-    font: var(--text-caption);
-    letter-spacing: 0.14em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
   }
   .programme-body h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin: 0.4rem 0 0;
     transition: color var(--duration-fast) ease;
@@ -113,17 +111,14 @@ const { items } = Astro.props;
 
   .programme-body p {
     margin: 0.5rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    line-height: 1.6;
+    font: var(--text-body);
     color: var(--color-paper-60);
-    max-width: 56ch;
+    max-width: var(--measure-prose);
   }
   .programme-meta {
     display: block;
     margin-top: 0.6rem;
-    font-family: var(--font-body);
-    font-size: 0.72rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
   @media (max-width: 640px) {

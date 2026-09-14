@@ -349,33 +349,53 @@ test('ODDagency, Media and Contact are reachable even though they left primary n
   }
 });
 
-test('requirement 11: ODDfest "How it works" is one real 01|02|03|04 row at desktop width', async ({
+test('requirement 11: ODDfest "How it works" is one deliberate 2x2 block of equal, unclipped cards at desktop width', async ({
   page,
 }) => {
-  // 1280px, not 1024px — the container inside SubpageFrame's rails is
-  // narrower than the raw viewport, and 1024px measures out to a real
-  // squeeze below FeatureGrid's own 240px column-width floor (a graceful
-  // 2x2 fallback there is correct, not a bug — see FeatureGrid.astro's
-  // is-four-column comment for the measured numbers behind the 1200px
-  // breakpoint). 1280px is comfortably above it.
+  // Was a forced 01|02|03|04 row from 1200px. Once the step titles moved onto
+  // the Heading type role (2026-09-13), a ~280px card set "Start with
+  // something you already want to make" in five or six lines, so four cards
+  // now take the same 2x2 block as any other four-card FeatureGrid — see
+  // FeatureGrid.astro. The requirement this guards is unchanged in spirit:
+  // one deliberate arrangement, never an accidental 3+1, never a squeezed or
+  // clipped card.
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/oddfest');
-  const cards = page.locator('.oddf-grid.is-four-column > div');
+  const cards = page.locator('.oddf-grid > div');
   await expect(cards).toHaveCount(4);
 
-  const tops = await cards.evaluateAll((els) =>
-    els.map((el) => Math.round(el.getBoundingClientRect().top)),
+  const boxes = await cards.evaluateAll((els) =>
+    els.map((el) => {
+      const r = el.getBoundingClientRect();
+      const title = el.querySelector('h2, h3, h4');
+      return {
+        top: Math.round(r.top),
+        width: Math.round(r.width),
+        clipped: title ? title.scrollWidth > title.clientWidth + 1 : false,
+      };
+    }),
   );
-  expect(new Set(tops).size, `card top offsets: ${tops.join(', ')}`).toBe(1);
+  const rows = new Map<number, number>();
+  for (const b of boxes) rows.set(b.top, (rows.get(b.top) ?? 0) + 1);
+  expect(
+    [...rows.values()],
+    `cards per row: ${[...rows.entries()].map(([t, n]) => `${t}:${n}`).join(', ')}`,
+  ).toEqual([2, 2]);
 
-  const widths = await cards.evaluateAll((els) =>
-    els.map((el) => Math.round(el.getBoundingClientRect().width)),
-  );
+  const widths = boxes.map((b) => b.width);
+  expect(
+    Math.max(...widths) - Math.min(...widths),
+    `card widths: ${widths.join(', ')}`,
+  ).toBeLessThanOrEqual(1);
   for (const w of widths) {
-    expect(w, `column width ${w}px fell below the established 240px floor`).toBeGreaterThanOrEqual(
+    expect(w, `card width ${w}px fell below the established 240px floor`).toBeGreaterThanOrEqual(
       240,
     );
   }
+  expect(
+    boxes.filter((b) => b.clipped),
+    'a step title is wider than its card',
+  ).toEqual([]);
 });
 
 test.describe('ODDspace intent (?interest=oddspace&intent=...)', () => {

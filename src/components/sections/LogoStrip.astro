@@ -90,7 +90,7 @@ const sizeClass = size === 'large' ? 'is-large' : '';
     border-top: none;
     padding: var(--space-4) 0 var(--space-20);
   }
-  /* Real heading typography (same --text-heading-md/--color-paper the
+  /* Real heading typography (same --text-heading/--color-paper the
      non-compact .section-head h2 above uses — Media's own "Featured in" is
      the source of truth) without the bordered/padded "new chapter" scaffold
      .section-head carries — that's what keeps this reading as supportive
@@ -107,7 +107,8 @@ const sizeClass = size === 'large' ? 'is-large' : '';
     color: var(--color-paper-60);
   }
   .logo-strip-label h2 {
-    font: var(--text-heading-md);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     margin: 0;
     color: var(--color-paper);
   }

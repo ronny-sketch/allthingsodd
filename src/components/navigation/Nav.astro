@@ -163,9 +163,10 @@ const infoItem = nav.find((item) => item.children);
     gap: 1.9rem;
     align-items: center;
     flex-shrink: 0;
+    /* Forta for brand character, at the Body size — the nav keeps the
+       display face without adding a size to the ladder. */
     font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.05rem;
+    font-size: var(--font-size-body);
     letter-spacing: 0.01em;
     color: var(--color-paper);
   }
@@ -251,8 +252,9 @@ const infoItem = nav.find((item) => item.children);
      hierarchy rather than a bare browser-default link list. */
   .nav-dropdown-label {
     display: block;
-    font: var(--text-caption);
-    letter-spacing: 0.28em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-ink-40);
     padding: 0.4rem 0.8rem 0.7rem;
@@ -276,7 +278,7 @@ const infoItem = nav.find((item) => item.children);
     display: block;
     padding: 0.65rem 0.8rem;
     border-radius: 6px;
-    font-size: 0.92rem;
+    font: var(--text-body);
     text-decoration: none;
     white-space: nowrap;
     color: var(--swatch-ink);
@@ -310,21 +312,14 @@ const infoItem = nav.find((item) => item.children);
     gap: 0.4rem;
     border-radius: 999px;
     padding: 0.55rem 1.1rem 0.55rem 1.25rem;
-    font-family: var(--font-body);
+    /* Same as Pill.astro: the shorthand sets line-height on the element
+       itself. A <button>'s UA stylesheet declares its own line-height, which
+       an inherited value would lose to — this trigger would then measure a
+       few px shorter than the Menu pill beside it, and through nav-height.ts
+       shift every page's --nav-h. */
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.72rem;
-    /* A <button>'s UA stylesheet declares its own line-height (usually
-       "normal") directly on the element, which wins over inheritance
-       regardless of specificity — so swapping this trigger from <a> to
-       <button> silently shrank it a few px versus the old anchor (which
-       inherited body's unitless 1.5 here, same as .nav-links a still does),
-       shaving the same few px off nav's own offsetHeight and, through
-       nav-height.ts's --nav-h, every page's total height sitewide (caught
-       via a real Playwright visual-regression diff, not assumed). Restoring
-       the same 1.5 ratio keeps this pixel-identical to the anchor it
-       replaced. */
-    line-height: 1.5;
-    letter-spacing: 0.05em;
+    letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--color-paper);
     background: transparent;

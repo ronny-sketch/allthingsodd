@@ -104,23 +104,20 @@ const { items } = Astro.props;
   }
   .person-name {
     display: block;
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 1.25rem;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
+    text-wrap: balance;
   }
   .person-role {
     display: block;
     margin-top: 0.35rem;
-    font-family: var(--font-body);
-    font-size: 0.78rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
   .person-bio {
     margin: 0.9rem 0 0;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    line-height: 1.6;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
 

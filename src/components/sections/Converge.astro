@@ -130,11 +130,9 @@ const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, crea
   }
   .converge-intro {
     text-align: center;
-    max-width: 46rem;
+    max-width: var(--measure-prose);
     margin: 0 auto 3.8rem;
-    font-family: var(--font-body);
-    font-size: 1.02rem;
-    line-height: 1.8;
+    font: var(--text-body);
     color: var(--color-paper-60);
   }
   .converge-grid {
@@ -172,8 +170,9 @@ const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, crea
      the side when the order flips. */
   .converge-label {
     display: block;
-    font: var(--text-caption);
-    letter-spacing: 0.3em;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     margin: 0 0 1rem;
   }
@@ -184,20 +183,14 @@ const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, crea
     color: var(--color-amber-bright);
   }
   .converge-title {
-    font-family: var(--font-display);
-    font-weight: 400;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    font-size: clamp(1.9rem, 3.1vw, 2.6rem);
-    line-height: 1.14;
-    letter-spacing: -0.01em;
     margin: 0 0 1.2rem;
     max-width: 19ch;
-    text-wrap: balance;
   }
   .converge-body {
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.7;
+    font: var(--text-body);
     color: var(--color-paper-60);
     max-width: 38ch;
     margin: 0 0 2.2rem;
@@ -210,9 +203,8 @@ const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, crea
     display: inline-block;
     margin-top: -0.6rem;
     margin-bottom: 1.6rem;
-    font-family: var(--font-body);
+    font: var(--text-small);
     font-weight: 600;
-    font-size: 0.82rem;
     color: var(--color-paper-80);
     text-decoration: underline;
     text-decoration-thickness: 2px;
@@ -279,8 +271,7 @@ const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, crea
     font-weight: 500;
   }
   .track-item span:last-child {
-    font-family: var(--font-body);
-    font-size: 0.7rem;
+    font: var(--text-small);
     color: var(--color-paper-40);
   }
   .track-item:hover {

@@ -62,7 +62,9 @@ const { spaces } = Astro.props;
 <style>
   .space-showcase {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    /* minmax(0, 1fr): with 1fr, a card's one-line CTA label set the column's
+       minimum and pushed the grid past its wrap at tablet widths. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1px;
     background: var(--color-paper-12);
   }
@@ -93,16 +95,13 @@ const { spaces } = Astro.props;
     align-items: flex-start;
   }
   .space-card-body h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
     margin: 0;
   }
   .space-card-body p {
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    line-height: 1.7;
+    font: var(--text-body);
     color: var(--color-paper-60);
     margin: 0.7rem 0 0;
   }
@@ -115,8 +114,7 @@ const { spaces } = Astro.props;
     gap: 0.45rem;
   }
   .space-card-body li {
-    font-family: var(--font-body);
-    font-size: 0.8rem;
+    font: var(--text-body);
     color: var(--color-paper-60);
     padding-left: 1rem;
     position: relative;
@@ -141,6 +139,11 @@ const { spaces } = Astro.props;
   .space-card-go {
     margin-top: auto;
     padding-top: 1.5rem;
+  }
+  .space-card-go :global(.pill) {
+    white-space: normal;
+    max-width: 100%;
+    text-align: center;
   }
   @media (max-width: 700px) {
     .space-showcase {

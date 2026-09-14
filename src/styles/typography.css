@@ -1,61 +1,93 @@
 /*
-  Typography roles — fluid clamp() sizes lifted directly from the real site (opening
-  line, converge headings, card titles, body copy) and given names so new components
-  reuse a role instead of inventing a new clamp(). See docs/design-system.md.
+  Typography — one ladder for the whole site (2026-09-13 typography pass).
+
+  Two faces, three kinds of text, five sizes:
+
+    DISPLAY  Hero      Forta     rare, genuinely dominant page statements
+             Display   Forta     page titles and major editorial statements
+             Heading   Forta     section, card, column and list titles
+    BODY     Body      Gabarito  every sentence a visitor is meant to read
+    UI       Small     Gabarito  eyebrows, meta, dates, labels, buttons, helper text
+
+  These are the only font sizes on the site. There is deliberately no
+  body-large, no caption, no heading-small: variation inside a role comes from
+  weight, colour, measure, position, spacing and capitalisation, never from
+  another near-identical size. A component that seems to need a sixth size
+  almost always needs a spacing or layout fix instead. The mapping and the
+  handful of documented exceptions live in docs/design-system.md#typography.
+
+  Only the three display steps are fluid. Body barely moves (16px on a phone,
+  17px from roughly 820px up) and Small does not move at all, so reading copy
+  never drifts with the window. Body's 1rem floor is also what keeps every
+  form field at 16px or more — the size below which iOS zooms the page when a
+  field receives focus.
+
+  Line-height tightens as type grows, and so does tracking. Components use the
+  `--text-*` shorthand together with its matching `--tracking-*`:
+
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+
+  The `font` shorthand resets weight to 400, so UI emphasis goes after it
+  (`font-weight: 600`). A component that keeps Forta for brand character at a
+  reading size (nav links, the subpage rails) reuses a size token rather than
+  a shorthand: `font-family: var(--font-display); font-size: var(--font-size-body);`.
 */
 :root {
-  --text-display-xl: 400 clamp(2.3rem, 6vw, 5.2rem) / 1.04 var(--font-display);
-  --text-display-lg: 400 clamp(2.2rem, 5.5vw, 4.6rem) / 1 var(--font-display);
-  --text-heading-lg: 400 clamp(1.7rem, 3.2vw, 2.4rem) / 1.08 var(--font-display);
-  --text-heading-md: 400 clamp(1.6rem, 2.6vw, 2.1rem) / 1.15 var(--font-display);
-  --text-heading-sm: 400 clamp(1.25rem, 2vw, 1.55rem) / 1.2 var(--font-display);
-  --text-body-lg: 400 clamp(1.15rem, 2.2vw, 1.55rem) / 1.35 var(--font-display);
-  --text-body: 400 0.95rem / 1.7 var(--font-body);
-  --text-small: 400 0.85rem / 1.6 var(--font-body);
-  --text-utility: 600 0.72rem / 1.4 var(--font-body);
-  --text-caption: 600 0.64rem / 1.4 var(--font-body);
+  --font-size-hero: clamp(3.25rem, 6vw, 5.25rem);
+  --font-size-display: clamp(2.125rem, 4vw, 3.25rem);
+  --font-size-heading: clamp(1.5rem, 2.4vw, 2rem);
+  --font-size-body: clamp(1rem, calc(0.96rem + 0.2vw), 1.0625rem);
+  --font-size-small: 0.875rem;
+
+  --line-height-hero: 0.98;
+  --line-height-display: 1.04;
+  --line-height-heading: 1.12;
+  --line-height-body: 1.55;
+  --line-height-small: 1.4;
+
+  --tracking-hero: -0.02em;
+  --tracking-display: -0.015em;
+  --tracking-heading: -0.01em;
+  /* Uppercase Small only: eyebrows and section labels take the wide setting,
+     buttons and other compact capitals the narrow one. */
+  --tracking-eyebrow: 0.16em;
+  --tracking-caps: 0.05em;
+
+  /* Reading measure for running prose: roughly 65 characters of Body a line.
+     Short centred intros may sit narrower; nothing meant to be read in full
+     should sit wider. `ch` resolves against the element's own face, so this
+     tracks Body wherever it is used. */
+  --measure-prose: 52ch;
+
+  --text-hero: 400 var(--font-size-hero) / var(--line-height-hero) var(--font-display);
+  --text-display: 400 var(--font-size-display) / var(--line-height-display) var(--font-display);
+  --text-heading: 400 var(--font-size-heading) / var(--line-height-heading) var(--font-display);
+  --text-body: 400 var(--font-size-body) / var(--line-height-body) var(--font-body);
+  --text-small: 400 var(--font-size-small) / var(--line-height-small) var(--font-body);
 }
 
-.text-display-xl {
-  font: var(--text-display-xl);
-  letter-spacing: -0.01em;
+/* Wrapping defaults. `balance` evens out a multi-line heading without ever
+   changing how many lines it takes (WarpingText's measured replacement
+   depends on that), and `pretty` only stops a paragraph ending on one word. */
+h1,
+h2,
+h3,
+h4 {
   text-wrap: balance;
 }
-.text-display-lg {
-  font: var(--text-display-lg);
-  letter-spacing: -0.01em;
-  text-wrap: balance;
-}
-.text-heading-lg {
-  font: var(--text-heading-lg);
-}
-.text-heading-md {
-  font: var(--text-heading-md);
-}
-.text-heading-sm {
-  font: var(--text-heading-sm);
-}
-.text-body-lg {
-  font: var(--text-body-lg);
-}
-.text-body {
-  font: var(--text-body);
-  color: var(--color-paper-60);
-}
-.text-small {
-  font: var(--text-small);
-  color: var(--color-paper-60);
-}
-.text-utility {
-  font: var(--text-utility);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+p,
+li,
+dd {
+  text-wrap: pretty;
 }
 
-/* eyebrow: the small uppercase label above every headline on the site */
+/* Eyebrow: the small uppercase label above a headline. Small size — the label
+   gets its hierarchy from weight, capitals and tracking, not a smaller size. */
 .eyebrow {
-  font: var(--text-caption);
-  letter-spacing: 0.32em;
+  font: var(--text-small);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-paper-40);
 }

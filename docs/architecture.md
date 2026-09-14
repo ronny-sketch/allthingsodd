@@ -30,7 +30,7 @@ src/
                             contact, privacy
   styles/
     tokens.css             Color, spacing, motion tokens (with provenance)
-    typography.css         Fluid type-scale roles (display-xl → caption)
+    typography.css         Five-step type ladder (hero → small), wrapping defaults
     layout.css              Container widths, section rhythm
     motion.css               Reveal-on-scroll + marquee keyframes
   components/
@@ -354,7 +354,13 @@ style always beats a stylesheet rule. `ProofGrid`/`CaseGrid`/`PersonGrid`
 deliberately keep `auto-fit` wrapping instead — those can legitimately hold
 many items (Media's 8-stat highlight grid, a large speaker roster), where
 forcing one row would recreate the very overflow bug documented above instead
-of fixing anything.
+of fixing anything. (`FeatureGrid` has since moved on twice: a capped
+auto-fit track in the 2026-08-31 pass, and in the 2026-09-13 typography pass
+a centred flex-wrap whose card width is derived from the Heading type role,
+so a short last row centres rather than stranding a card, and ODDfest's
+forced four-across row was retired for the same 2x2 block as any four-card
+grid — see `FeatureGrid.astro`. `ProofGrid` rows of four figures go
+two-by-two between 701 and 1024px.)
 
 **Photo interludes on the subpages.** `PhotoBreak.astro` — a full-bleed,
 uncaptioned image, real ODD archive photography (`src/assets/hero/`), used as
