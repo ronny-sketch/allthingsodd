@@ -120,7 +120,7 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
   <div class="oddfest-hero-scrim"></div>
   <div class="oddfest-hero-overlay">
     <div class="oddfest-hero-logo">
-      {logo ? <Image src={logo} alt={logoAlt} width={720} /> : <Logo ariaHidden />}
+      {logo ? <Image src={logo} alt={logoAlt} width={960} /> : <Logo ariaHidden />}
     </div>
     {eyebrow && <span class="oddfest-hero-eyebrow eyebrow">{eyebrow}</span>}
     <h1 class="oddfest-hero-sub">{sub}</h1>
@@ -274,7 +274,7 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
        base rules currently win — a pre-existing ordering issue, not a type
        one.) */
     .oddfest-hero-logo {
-      width: min(230px, 30vw);
+      width: min(14.375rem, 30vw);
     }
     .oddfest-hero-support {
       max-width: 46ch;
@@ -293,7 +293,7 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
        asset (oddfest-wordmark.svg) is closer to 5:1, so it needs a wider
        box at the same visual weight — width is the only constraint,
        height stays auto so either asset's own aspect ratio is respected. */
-    width: min(520px, 78vw);
+    width: min(32.5rem, 78vw);
     filter: drop-shadow(0 4px 30px rgb(0 0 0 / 50%));
     color: var(--color-paper);
   }
@@ -411,9 +411,10 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
      which ODDspace's photography also carries (brightness(0.82)) — so the
      scrim change is the only ground adjustment needed. */
 
-  /* min(360px, 64vw), not ODDspace's min(300px, 56vw): the ODDference mark is
-     6.47:1 where the ODDspace wordmark is 5.42:1, so the same *rendered
-     height* (~56px at desktop) needs a proportionally wider box. Matching the
+  /* min(22.5rem, 64vw), not ODDspace's min(18.75rem, 56vw): the ODDference
+     mark is 6.47:1 where the ODDspace wordmark is 5.42:1, so the same
+     *rendered height* (~56px at the default root, ~70px from 1440px) needs a
+     proportionally wider box. Matching the
      width number instead of the height would make this wordmark visibly
      smaller than ODDspace's, which is the thing being matched.
 
@@ -422,7 +423,7 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
      carries the same rendered height to any other wordmark: it is 1 for
      ODDference and ~0.78 for ODDfest's squarer 5.03:1 wordmark. */
   .oddfest-hero--frame-space .oddfest-hero-logo {
-    width: calc(min(360px, 64vw) * var(--logo-scale, 1));
+    width: calc(min(22.5rem, 64vw) * var(--logo-scale, 1));
   }
   .oddfest-hero--frame-space .oddfest-hero-sub {
     max-width: 32ch;
@@ -476,7 +477,7 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
      that block so it wins at equal specificity. */
   @media (max-height: 620px) {
     .oddfest-hero--frame-space .oddfest-hero-logo {
-      width: calc(min(240px, 44vw) * var(--logo-scale, 1));
+      width: calc(min(15rem, 44vw) * var(--logo-scale, 1));
     }
     /* The one place this h1 steps down a role: Display under a wordmark does
        not fit a landscape phone's height, so it takes Heading — the next

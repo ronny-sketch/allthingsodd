@@ -103,11 +103,14 @@
   --space-32: 8rem;
 
   /* ---------- layout ---------- */
-  --width-contained: 1180px;
-  --width-wide: 1280px;
+  /* rem, so the containers widen with the desktop scale in global.css the way
+     the type inside them does (73.75rem / 80rem = 1180px / 1280px at the
+     default root size). */
+  --width-contained: 73.75rem;
+  --width-wide: 80rem;
   --gutter: 1.75rem;
   --gutter-wide: clamp(2.5rem, 8vw, 7.5rem);
-  --nav-h: 69px; /* JS overwrites this at runtime with the nav's real measured height */
+  --nav-h: 4.3125rem; /* 69px at the default root; JS overwrites this at runtime with the nav's real measured height */
 
   /* ---------- surfaces (raised panels: nav dropdown, newsletter modal) ----------
      One shared shape/elevation for every "floating card over the page" surface

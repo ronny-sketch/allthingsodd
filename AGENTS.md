@@ -116,7 +116,9 @@ GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
    a token in `src/styles/tokens.css` needs a reason to exist as a new one-off —
    check there before writing a raw value. Font sizes have no one-offs at all:
    text takes one of the five roles in `src/styles/typography.css` (see
-   `docs/design-system.md#typography`).
+   `docs/design-system.md#typography`). Sizes that should grow with the
+   desktop root scale (widths, tracks, logos) are written in rem, not px (see
+   `docs/design-system.md#desktop-scale`).
 2. **Reuse before inventing.** A new card/button/section that looks like an
    existing one should extend that component, not fork a near-duplicate.
 3. **Component hierarchy:** tokens → primitives → sections → pages. Pages

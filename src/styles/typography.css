@@ -16,9 +16,11 @@
   almost always needs a spacing or layout fix instead. The mapping and the
   handful of documented exceptions live in docs/design-system.md#typography.
 
-  Only the three display steps are fluid. Body barely moves (16px on a phone,
-  17px from roughly 820px up) and Small does not move at all, so reading copy
-  never drifts with the window. Body's 1rem floor is also what keeps every
+  Only the three display steps are fluid. At a given root size Body barely
+  moves (16px on a phone, 17px from roughly 820px up) and Small does not move
+  at all. The one deliberate, global exception: between 1024px and 1440px the
+  desktop scale in global.css raises the root size itself, so every role grows
+  together the way browser zoom would. Body's 1rem floor is also what keeps every
   form field at 16px or more — the size below which iOS zooms the page when a
   field receives focus.
 
