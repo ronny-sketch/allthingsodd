@@ -71,7 +71,9 @@ high-level notes:
     (Business/Creative/Stay in touch, or leave blank) to group it under a
     label instead of one flat row — set it to match how a new CTA should
     group, or leave it empty for an ungrouped card.
-- **ODDfest**: hero (eyebrow/title/hero support line/meta and two buttons),
+- **ODDfest**: hero (headline — "Hero video/image" → sub — meta and two
+  buttons, over the aftermovie; since 2026-09-14 the eyebrow is not shown in
+  the hero and there is no support line, the same as ODDference),
   what it is, the two look-back buttons under it, how it works (who does
   what, then the four numbered steps), how to join, programme (optional —
   empty until a real 2027 programme exists), what has happened before, 2026

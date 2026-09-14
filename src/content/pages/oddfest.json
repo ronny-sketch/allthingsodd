@@ -8,7 +8,7 @@
   },
   "eyebrow": "ODDfest · Helsinki 2027",
   "title": "ODDfest 2027",
-  "meta": "Helsinki · 2027 · dates to be confirmed",
+  "meta": "Helsinki · 2027",
   "primaryCta": {
     "label": "Submit an event idea",
     "href": "/contact/?topic=oddfest_2027_event"
@@ -22,7 +22,6 @@
     "poster": "../../assets/video/oddfest-hero-poster.jpg",
     "sub": "Bring something to Helsinki's creative week."
   },
-  "heroSupport": "A week of independently made events across the city. You make yours — ODD builds the shared week around it.",
   "whatItIs": {
     "eyebrow": "What ODDfest is",
     "headline": "Made across Helsinki, by the people taking part.",

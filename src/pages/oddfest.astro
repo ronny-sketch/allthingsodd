@@ -6,13 +6,15 @@
 //
 // What changed, and why none of it is "hidden for later":
 //
-// The hero now carries the same anatomy as ODDspace's — eyebrow, logo, h1,
-// a support line, meta, and two CTAs — because a visitor landing here had no
-// way to act without scrolling. It keeps the aftermovie rather than adopting
-// ODDspace's photo grid: the ask was for the same structure, not the same
-// medium, and the film is the one asset that shows what this actually felt
-// like. FullbleedVideoHero already took every one of these props for
-// ODDference; nothing new was built for it.
+// The hero carries the same composition as ODDspace's and ODDference's —
+// wordmark, one short h1, meta, and two CTAs — because a visitor landing
+// here had no way to act without scrolling. It keeps the aftermovie rather
+// than adopting ODDspace's photo grid: the ask was for the same structure,
+// not the same medium, and the film is the one asset that shows what this
+// actually felt like. On 2026-09-14 it also took ODDspace's proportions
+// (`frame="space"`: display-sized h1, darker scrim, larger buttons) and lost
+// its eyebrow and support line — exactly the change ODDference got on
+// 2026-09-11, so the three product heroes now read as one family.
 //
 // "You make the event. ODD builds the shared layer." and "How it works" were
 // two adjacent sections making one argument — who does what, then what
@@ -55,22 +57,33 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <SubpageFrame slug={page._slug} railLeft={page.railLeft} railRight={page.railRight}>
-    <!-- 1. Hero. Same anatomy as ODDspace's SpaceHero — eyebrow, wordmark,
-         the page's one h1, a support line, meta, and both CTAs — over the
-         aftermovie instead of a photo grid. Every prop here already existed
-         on FullbleedVideoHero for ODDference. -->
+    <!-- 1. Hero: ODDfest wordmark + a short positioning line (the page's one
+         h1), meta, and Submit an event idea / Look back at 2026 right in the
+         hero, over the aftermovie. `frame="space"` gives it ODDspace's and
+         ODDference's proportions — see FullbleedVideoHero.astro's `frame`
+         prop. The Ultraviolet accent (the component default) stays: that
+         wash is ODDfest's own identity, as Signal is ODDference's. -->
+    {
+      /* Deliberately not passed (2026-09-14), the same cut ODDference made on
+         2026-09-11: `page.eyebrow` ("ODDfest · Helsinki 2027") sat between
+         the ODDfest wordmark and a meta line that already says "Helsinki ·
+         2027", repeating all of it. The field stays in the content — it is
+         part of the shared subpageBase shape. The support paragraph is gone
+         from the content altogether (see content.config.ts), and `meta` lost
+         "dates to be confirmed": the FAQ's "When is ODDfest 2027?" and How to
+         join both say it, where a reader is actually asking. */
+    }
     <FullbleedVideoHero
       slot="hero"
       video={page.heroMedia.video}
       poster={page.heroMedia.poster}
-      eyebrow={page.eyebrow}
       sub={page.heroMedia.sub}
-      support={page.heroSupport}
       meta={page.meta}
       logo={oddfestWordmark}
       logoAlt="ODDfest"
       primaryCta={page.primaryCta}
       secondaryCta={page.secondaryCta}
+      frame="space"
     />
 
     <!-- 2. What ODDfest is — the one consolidated explainer, with the two
