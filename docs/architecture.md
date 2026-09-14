@@ -652,6 +652,29 @@ deliberately small, curated public subset of it. If it drifts often enough
 to matter, the fix is a build-time fetch of the public feed into the same
 `events` shape — not putting the iframe back.
 
+## ODDspace photography
+
+Replaced 2026-09-14 at Ronny's request: the previous set (an empty-rooms
+office shoot) was out of date. Everything on `/oddspace` now comes from the
+shared ODDspace Drive folder — the opening shoot, everyday phone pictures and,
+for the auditorium only, a frame from the office shoot. The rule is people and
+activity first, rooms second.
+
+- `heroPhotos` and the room cards show the space in use wherever a truthful
+  photo exists. The auditorium card is the exception, because no photo of that
+  room in use exists yet. ODDstudio's photo (`podcast-studio.jpg`) was
+  deliberately kept, in both the hero and its card.
+- `gallery` renders `PhotoWall.astro` under the events list. See that
+  component's header for how it packs any number of mixed-orientation photos
+  without leaving holes.
+- Alt text describes what is visible. Nobody in these photos is named.
+- Sources are resized to 1800px on the long edge (2400px for the hero's lead
+  cell and the full-bleed `PhotoBreak`), re-encoded, and stripped of EXIF — the
+  phone originals carried GPS coordinates. `public/og/oddspace.jpg` was
+  regenerated from the same opening shoot.
+- As of 2026-09-14, `/oddspace/membership` and `/oddspace/venue` still use the
+  older set.
+
 ## ODDspace Instagram
 
 The wall of recent `@oddspace.co` posts under the ODDspace events list
