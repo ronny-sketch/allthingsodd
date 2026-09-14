@@ -200,26 +200,29 @@ collections_config:
         options:
           subtype: object
       impact:
-        type: array
-        label: Impact snapshots — 2025 / 2026 (About only)
-        comment: >-
-          Exactly two entries: a 2025 snapshot (real, verified numbers) and a
-          2026 snapshot. Leave a snapshot's "items" empty and fill in
-          "placeholder" instead until real, verified numbers exist for that
-          year — never invent participant/reach/partner figures to fill the
-          gap. "reportLabel"/"reportUrl" link out to that year's Impact
-          Report; leave both blank if no report exists yet.
-        options:
-          required: false
-        cascade: true
-      closingImage:
         type: object
-        label: Closing photo (About only)
+        label: 2025–2026 in numbers (About only)
         comment: >-
-          The full-bleed photo the page ends on — ideally a real photo from
-          the 2026 ODD launch. Leave "image" unset until a specific, verified
-          photo has been chosen; the page shows a plain placeholder panel
-          instead of guessing at one.
+          ODD's cumulative figures — the same four as the homepage's
+          "Already in motion" row. Change a number here and change it on the
+          homepage too. Never add a figure that hasn't been verified.
+          "ctas" are the buttons under the figures (today: the 2025 Impact
+          Report and the ODDfest 2026 thank-you page).
+        options:
+          subtype: object
+      ctas:
+        type: array
+        label: Buttons
+        comment: >-
+          One button per entry, shown side by side under the figures. The
+          arrow is added automatically — don't type one into the label.
+        cascade: true
+      launchPhoto:
+        type: object
+        label: ODDfest 2026 launch photo (About only)
+        comment: >-
+          The full-bleed group photo from the ODDfest 2026 launch, right
+          after the opening argument. Remove the whole field to hide it.
         options:
           subtype: object
           required: false
@@ -484,12 +487,13 @@ collections_config:
           required: false
       gallery:
         type: object
-        label: '"Life at ODDspace" photo wall (ODDspace only)'
+        label: Photo wall (ODDspace and About)
         comment: >-
-          The wall of photos of the space in use, under the events list. Add
-          as many as you like, portrait or landscape, in any order — the wall
-          arranges them by shape, so it can't be left with gaps. Remove the
-          whole section to hide the wall.
+          ODDspace: photos of the space in use, under the events list. About:
+          ODDfest 2025 and 2026, host events and ODDspace, under the figures.
+          Add as many as you like, portrait or landscape, in any order — the
+          wall arranges them by shape, so it can't be left with gaps. Remove
+          the whole section to hide the wall.
         options:
           subtype: object
           required: false
@@ -497,8 +501,8 @@ collections_config:
         type: array
         label: Photos
         comment: >-
-          Real photos of people using the space. Each needs its own alt text
-          describing what's actually shown — don't name people in it.
+          Real photos of people at ODD's events and spaces. Each needs its own
+          alt text describing what's actually shown — don't name people in it.
         options:
           structures: _structures.oddspace_gallery_photo
           disable_add: false

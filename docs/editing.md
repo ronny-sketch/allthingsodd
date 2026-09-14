@@ -61,8 +61,8 @@ high-level notes:
   - 2026-09-14: both of "Already in motion"'s links are buttons now. The one
     under the figures (`proof.cta`, with `proof.ctaLead` as the line above
     it) goes to the ODDfest 2026 thank-you page instead of the 2025 Impact
-    Report, so the old `reportNote` scope caveat is gone with it. About's
-    impact snapshots still link the report.
+    Report, so the old `reportNote` scope caveat is gone with it. About
+    links both the report and the thank-you page under the same figures.
   - 2026-08-30 homepage revision: the separate "For organisations / Work
     with ODD." teaser section (and its `workWithOdd` field) was removed —
     the platform grid immediately above it already includes a Work with ODD
@@ -180,11 +180,17 @@ high-level notes:
   (as separate paragraphs), Story/timeline (with the New Nordic Way rf legal
   note underneath it), "How we make it happen" (the Events/Spaces/
   Relationships & projects pillars, plus a short ways-of-working principles
-  list), two impact snapshots — 2025 and 2026 (leave a year's numbers out
-  and use its placeholder note instead until they're verified — same
-  "no invented numbers" rule as everywhere else), the participate band, and
-  a closing photo (leave unset until a real, confirmed photo exists — the
-  page shows a plain placeholder panel instead of guessing).
+  list), the 2025–2026 figures with their two buttons, the photo wall, and
+  the participate band.
+  - 2026-09-14: "What we have learned" was removed. The figures are now the
+    homepage's cumulative four (`impact.items` — change a number in both
+    places, never add an unverified one), with the 2025 Impact Report and
+    the ODDfest 2026 thank-you page as `impact.ctas`; the old 2025-only
+    snapshot and the empty 2026 one are gone. The ODDfest 2026 launch group
+    photo (`launchPhoto`) now follows the opening argument, and a photo wall
+    (`gallery` — ODDfest 2025 and 2026 from Flickr, host events, ODDspace)
+    sits under the figures. Same wall rules as ODDspace's: any number of
+    photos, any orientation, real alt text, no names.
   - 2026-09-11: the "Why now" section and its editing field were removed
     outright. Its headline read as strategy-deck writing rather than
     something that helps an outsider understand ODD; its one real fact is

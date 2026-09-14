@@ -4,11 +4,10 @@
 // instead of the older PageIntro/ParticipateBand shape work-with-odd.astro
 // itself has since moved on from — see HeroCentered.astro's Props comment
 // and docs/architecture.md#v2-about-rebuild. About stays more reflective
-// than Work with ODD (no primaryCta pill, no hero photo until a real,
-// verified 2026-era one exists — same "don't guess" rule as closingImage
-// below), but shares its hero head layout/typography, its section rhythm,
-// and a light closing set of links instead of ParticipateBand's sales-wall
-// card treatment.
+// than Work with ODD (no primaryCta pill, no photo behind the hero title),
+// but shares its hero head layout/typography, its section rhythm, and a
+// light closing set of links instead of ParticipateBand's sales-wall card
+// treatment.
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import HeroCentered from '../components/sections/HeroCentered.astro';
@@ -16,6 +15,7 @@ import Timeline from '../components/sections/Timeline.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import ProofGrid from '../components/sections/ProofGrid.astro';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
+import PhotoWall from '../components/sections/PhotoWall.astro';
 
 const entry = await getEntry('pages', 'about');
 if (!entry || entry.data._template !== 'about')
@@ -40,6 +40,16 @@ const page = entry.data;
       {page.argument.map((paragraph) => <p class="reveal">{paragraph}</p>)}
     </div>
   </section>
+
+  {
+    /* The ODDfest 2026 launch group photo (2026-09-14). It sits straight
+       after the argument, not at the foot of the page where `closingImage`
+       used to wait for it: a stage full of the people behind ODD is the
+       case the argument has just made. */
+    page.launchPhoto && (
+      <PhotoBreak image={page.launchPhoto.image} alt={page.launchPhoto.alt} tall />
+    )
+  }
 
   {
     /* "What we build" (howWeMakeItHappen's pillars only) — "Ways of working"
@@ -104,19 +114,36 @@ const page = entry.data;
   </section>
 
   {
-    page.impact.map((snapshot) => (
-      <ProofGrid
-        eyebrow={snapshot.eyebrow}
-        title={snapshot.title}
-        items={snapshot.items}
-        cta={
-          snapshot.reportLabel && snapshot.reportUrl
-            ? { label: snapshot.reportLabel, href: snapshot.reportUrl }
-            : undefined
-        }
-        placeholder={snapshot.placeholder}
-      />
-    ))
+    /* 2025–2026 in numbers: Home's cumulative figures, with the 2025 Impact
+       Report and the ODDfest 2026 thank-you page as the two buttons under
+       them (2026-09-14). It replaced two year snapshots — ODDfest 2025's own
+       figures, and an empty 2026 one waiting on its report. */
+  }
+  <ProofGrid
+    eyebrow={page.impact.eyebrow}
+    title={page.impact.title}
+    items={page.impact.items}
+    ctas={page.impact.ctas}
+  />
+
+  {
+    /* The photo wall under the figures (2026-09-14): ODDfest 2025 and 2026
+       from their Flickr photobanks, events hosted across Helsinki, and
+       ODDspace — what those numbers looked like. */
+    page.gallery && page.gallery.photos.length > 0 && (
+      <section class="about-sub">
+        <div class="wrap">
+          <div class="section-head">
+            {page.gallery.eyebrow && <span class="eyebrow">{page.gallery.eyebrow}</span>}
+            <h2>{page.gallery.title}</h2>
+          </div>
+          {page.gallery.note && <p class="about-lede reveal">{page.gallery.note}</p>}
+          <div class="about-gallery-wall">
+            <PhotoWall photos={page.gallery.photos} />
+          </div>
+        </div>
+      </section>
+    )
   }
 
   <section class="about-sub about-continue">
@@ -138,17 +165,14 @@ const page = entry.data;
       </ul>
     </div>
   </section>
-
-  {
-    page.closingImage?.image && (
-      <PhotoBreak image={page.closingImage.image} alt={page.closingImage.alt} tall />
-    )
-  }
 </Layout>
 
 <style>
   .about-sub {
     padding: var(--space-24) 0;
+  }
+  .about-gallery-wall {
+    margin-top: var(--space-10);
   }
   /* Mobile rhythm. 6rem top+bottom is tuned for a desktop column; stacked on
      a phone it puts ~192px of empty screen between two sections (measured
