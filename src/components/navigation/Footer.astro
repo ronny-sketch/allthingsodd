@@ -116,8 +116,11 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
 </script>
 
 <style>
+  /* 1px, not the 4px bar it launched with (2026-09-14) — the same rule weight
+     and ink CaseGrid, ProgramGrid and PathwayList divide with, so the footer
+     opens the way every other boundary on the page does. */
   footer {
-    border-top: 4px solid var(--color-paper);
+    border-top: 1px solid var(--color-paper-40);
     padding-top: 0;
   }
   .foot-top {

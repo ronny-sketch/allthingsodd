@@ -76,9 +76,11 @@
         "srValue": "More than €400,000"
       }
     ],
-    "reportLabel": "2025 Impact Report",
-    "reportUrl": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ",
-    "reportNote": "The 2025 report covers ODDfest 2025 alone. The figures above are cumulative across everything ODD has run since."
+    "ctaLead": "ODDfest 2026 was a co-created effort.",
+    "cta": {
+      "label": "Check out the thank-you page",
+      "href": "/oddfest-2026/"
+    }
   },
   "proofIntro": {
     "eyebrow": "Already in motion",

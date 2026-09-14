@@ -525,8 +525,9 @@ collections_config:
           leave "eyebrow"/"title" blank here (the editorial framing lives in
           proofIntro instead). Home's four figures are ODD's cumulative
           totals across its whole first two years (2026-09-04), not one
-          event's: keep them and proofIntro's wording in step, and keep
-          "reportNote" honest about what the linked report actually covers.
+          event's: keep them and proofIntro's wording in step. "cta" is the
+          button under the figures (the ODDfest 2026 thank-you page since
+          2026-09-14) and "ctaLead" the one short line set above it.
           "srValue" on an item is the spoken form of an abbreviated number
           ("€400K+" -> "More than €400,000") — set it whenever a value is
           shortened for the design, leave it blank otherwise.

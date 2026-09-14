@@ -125,8 +125,11 @@ const page = entry.data;
         eyebrow={snapshot.eyebrow}
         title={snapshot.title}
         items={snapshot.items}
-        reportLabel={snapshot.reportLabel}
-        reportUrl={snapshot.reportUrl}
+        cta={
+          snapshot.reportLabel && snapshot.reportUrl
+            ? { label: snapshot.reportLabel, href: snapshot.reportUrl }
+            : undefined
+        }
         placeholder={snapshot.placeholder}
       />
     ))

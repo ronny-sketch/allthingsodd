@@ -249,10 +249,13 @@ test('"Already in motion" renders ODD\'s cumulative under-two-years proof', asyn
   // The abbreviation must not cost the claim its meaning for a screen reader.
   await expect(section.locator('.proof-value .sr-only')).toHaveText('More than €400,000');
 
-  // The one published report covers 2025 alone and must say so, rather than
-  // reading as the source for four cumulative figures.
-  await expect(section.locator('.proof-report-link')).toHaveText(/2025 Impact Report/);
-  await expect(section.locator('.proof-report-note')).toContainText('2025');
+  // 2026-09-14: both of the section's links are buttons, and the one under the
+  // figures is the ODDfest 2026 thank-you page. The 2025 Impact Report — and
+  // the scope note it needed under cumulative figures — is About's to link.
+  await expect(section.locator('.section-intro a.pill')).toHaveAttribute('href', '/about');
+  await expect(section.locator('.proof-follow a.pill')).toHaveAttribute('href', '/oddfest-2026/');
+  await expect(section.locator('.proof-follow-lead')).toContainText('co-created');
+  await expect(section.locator('a[href*="impact_report"]')).toHaveCount(0);
 });
 
 test('the four-stat proof row does not overflow at supported mobile widths', async ({ page }) => {

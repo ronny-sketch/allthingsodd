@@ -158,7 +158,7 @@ const preloadImage = await mosaicImage(firstArchiveImage);
        reader has seen what ODD does and how to work with it. SectionIntro
        carries the eyebrow/headline/body/cta; the bare ProofGrid underneath
        (no eyebrow/title of its own — see content.config.ts's proofSection
-       comment) renders the stat row plus the Impact Report link. Guarded on
+       comment) renders the stat row plus the button under it. Guarded on
        `proofIntro` (not `proof`) since the editorial framing is what makes
        this a real section, not just a stat grid.
 
@@ -167,9 +167,11 @@ const preloadImage = await mosaicImage(firstArchiveImage);
        snapshot this launched with — the homepage's job is to say what ODD has
        built, and a first-event-only row understated it by half. The 2025
        figures stay where they belong, on About's year-by-year impact section.
-       The report link keeps its 2025 scope explicit via `reportNote` so four
-       cumulative figures never read as though one year's report evidences
-       them. */
+
+       2026-09-14: both links are buttons, and the one under the figures is
+       the ODDfest 2026 thank-you page instead of the 2025 Impact Report —
+       which also retires the scope note that report needed here. About
+       still links the report. */
   }
   {
     page.proofIntro && (
@@ -179,15 +181,15 @@ const preloadImage = await mosaicImage(firstArchiveImage);
           headline={page.proofIntro.headline}
           body={page.proofIntro.body}
           cta={page.proofIntro.cta}
+          ctaAs="button"
         />
         {page.proof && (
           <ProofGrid
             eyebrow={page.proof.eyebrow}
             title={page.proof.title}
             items={page.proof.items}
-            reportLabel={page.proof.reportLabel}
-            reportUrl={page.proof.reportUrl}
-            reportNote={page.proof.reportNote}
+            cta={page.proof.cta}
+            ctaLead={page.proof.ctaLead}
           />
         )}
       </div>
@@ -282,16 +284,18 @@ const preloadImage = await mosaicImage(firstArchiveImage);
      body/cta) directly above a bare ProofGrid stat row. Both render as full
      default-padded <section>s on their own (see layout.css), which stacks a
      12rem gap between the closing line and the numbers backing it up —
-     trimmed here so the two read as one connected passage. */
+     trimmed here so the two read as one connected passage. Since the intro's
+     link became a button (2026-09-14) the trim is a step less tight: a
+     bordered pill at the old 1rem phone gap sat on the first figure. */
   .home-proof :global(.section-intro) {
-    padding-bottom: var(--space-6);
+    padding-bottom: var(--space-10);
   }
   .home-proof :global(.proof-section) {
     padding-top: 0;
   }
   @media (max-width: 640px) {
     .home-proof :global(.section-intro) {
-      padding-bottom: var(--space-4);
+      padding-bottom: var(--space-8);
     }
   }
 

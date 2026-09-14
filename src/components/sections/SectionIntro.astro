@@ -5,6 +5,7 @@
 // sections across V2 — one component, many pages. See content.config.ts's
 // `sectionIntro` fragment.
 import WarpingText from '../media/WarpingText.astro';
+import Pill from '../primitives/Pill.astro';
 
 interface LinkCta {
   label: string;
@@ -30,8 +31,21 @@ interface Props {
   // has exactly one Body size, so the passage now gains its presence from
   // brighter ink and a wider measure instead. See typography.css.
   lead?: boolean;
+  // How `cta` renders (2026-09-14). The underlined text link stays the
+  // default — most intros end on a quiet "read more". Where the link is the
+  // section's real next step (Home's "Already in motion"), `button` renders
+  // the site's outline Pill instead.
+  ctaAs?: 'link' | 'button';
 }
-const { eyebrow, headline, body, cta, warpHeadline = false, lead = false } = Astro.props;
+const {
+  eyebrow,
+  headline,
+  body,
+  cta,
+  warpHeadline = false,
+  lead = false,
+  ctaAs = 'link',
+} = Astro.props;
 
 // Blank lines in `body` become real paragraphs (2026-09-11): several of these
 // sections carry three distinct points, and as one unbroken block a reader has
@@ -64,16 +78,28 @@ const paragraphs = body
       }
       {paragraphs.map((para) => <p>{para}</p>)}
       {
-        cta && (
-          <a
-            class="section-intro-link"
-            href={cta.href}
-            target={cta.external ? '_blank' : undefined}
-            rel={cta.external ? 'noreferrer' : undefined}
-          >
-            {cta.label}
-          </a>
-        )
+        cta &&
+          (ctaAs === 'button' ? (
+            <div class="section-intro-cta">
+              <Pill
+                href={cta.href}
+                variant="outline"
+                magnetic
+                target={cta.external ? '_blank' : undefined}
+              >
+                {cta.label}
+              </Pill>
+            </div>
+          ) : (
+            <a
+              class="section-intro-link"
+              href={cta.href}
+              target={cta.external ? '_blank' : undefined}
+              rel={cta.external ? 'noreferrer' : undefined}
+            >
+              {cta.label}
+            </a>
+          ))
       }
     </div>
   </div>
@@ -135,6 +161,12 @@ const paragraphs = body
   .section-intro-link:hover {
     color: var(--color-amber-bright);
     text-decoration-color: var(--color-amber-bright);
+  }
+  /* A button sits further off the body than the text link does — the same
+     1.8rem Home's other intro-plus-Pills rows use. Pill carries its own
+     44px touch height, so the link's mobile hit-slop below doesn't apply. */
+  .section-intro-cta {
+    margin-top: 1.8rem;
   }
   /* Mobile (2026-09-02 mobile experience pass). The eyebrow and headline stay
      centered — that centered editorial opening is the shape of this component
