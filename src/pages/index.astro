@@ -326,6 +326,16 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   .whatoddis-wrap :global(.section-intro-inner) {
     max-width: 52rem;
   }
+  @media (min-width: 1025px) {
+    /* 70vw caps it where the desktop scale's larger rem would otherwise run
+       the copy into the photo cloud's outer slots (at 90% of the section's
+       width) up to ~1500px. Desktop only: below 1025px the root size is the
+       browser default, and the cap would only narrow the column on tablets
+       and phones. */
+    .whatoddis-wrap :global(.section-intro-inner) {
+      max-width: min(52rem, 70vw);
+    }
+  }
   /* The cloud is decorative (aria-hidden, alt="") and must never paint over
      the words it frames. FloatingCloud is absolutely positioned and comes
      first in this wrapper, so by default it painted above the section, which

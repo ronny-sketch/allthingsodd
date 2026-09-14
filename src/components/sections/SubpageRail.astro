@@ -37,7 +37,8 @@
 // The same estimate sets `animation-duration`, which fixes a third, subtler
 // thing: every rail used to take a flat 20s per period regardless of how long
 // that period was, so /oddfest's left rail drifted at 18.7px/s while its own
-// right rail drifted at 24.3px/s. Both now run at RAIL_SPEED px/s.
+// right rail drifted at 24.3px/s. Both now run at RAIL_SPEED px/s at the
+// default root size (the desktop scale speeds every rail up by the same ratio).
 //
 // No client JS. This repo deleted `marquee-breathe.ts` for mutating
 // animation-duration at runtime and causing visible jumps; nothing here runs
@@ -61,7 +62,8 @@ const { items, side, slug } = Astro.props;
 // because only oddfest and oddference were special-cased.
 const wordmark = logoFor(slug);
 
-// How thick the mark reads across the rail, in px — measured against the type
+// How thick the mark reads across the rail, in px at the default 16px root
+// (emitted as rem below, so it scales with the desktop root) — measured against the type
 // beside it rather than picked. The artwork's ink fills essentially its whole
 // box height, so this number IS the mark's visual height. It was tuned when
 // the adjacent .rail-word was 1.35rem (cap height 17.24px), where 18px sat at
@@ -83,10 +85,12 @@ const logoLength = Math.round(LOGO_THICK * logoRatio);
 // ODDference's PNG, which is 1080px wide at source and renders at 155.
 const logoAsset = await getImage({ src: wordmark, width: LOGO_ASSET_WIDTH });
 
-// Space after every beat, px. Lives on the item, never on the container — see
+// Space after every beat, px at the default root (emitted as rem). Lives on the item, never on the container — see
 // the header comment; this is what makes the period exact.
 const BEAT_GAP = 42;
-// Measured px-per-character for this rail's two type styles at 1440px
+// Measured px-per-character for this rail's two type styles at a 16px root —
+// re-measure at 1024px or narrower, since from 1440px the desktop scale renders
+// the rail 25% larger than these figures
 // (uppercase Forta at the Body size, vertical, and Small-role capitals at the
 // eyebrow tracking — re-measured 2026-09-13 at 10.96 and 10.06 when the rail
 // moved onto the typography ladder, and rounded up about 2% as the original
@@ -118,7 +122,7 @@ const SAFETY = 0.6;
 const reps = Math.min(24, Math.max(6, Math.ceil(OVERFILL_PX / (period * SAFETY)) + 2));
 const track = Array.from({ length: reps }, () => items).flat();
 
-// px per second. Framing, not a news crawl — slow enough that the eye reads it
+// px per second at the default root. Framing, not a news crawl — slow enough that the eye reads it
 // as the page breathing rather than as something demanding to be read.
 // Deliberately not rounded: rounding a 25-36s duration to whole seconds put up
 // to 2.8% of speed difference between the two rails flanking one page, which
@@ -137,7 +141,7 @@ const duration = (period / RAIL_SPEED).toFixed(2);
   <div class="rail-window">
     <div
       class="rail-track"
-      style={`--reps:${reps};--rail-duration:${duration}s;--beat-gap:${BEAT_GAP}px;--logo-thick:${LOGO_THICK}px;--logo-length:${logoLength}px;--logo-src:url('${logoAsset.src}')`}
+      style={`--reps:${reps};--rail-duration:${duration}s;--beat-gap:${BEAT_GAP / 16}rem;--logo-thick:${LOGO_THICK / 16}rem;--logo-length:${logoLength / 16}rem;--logo-src:url('${logoAsset.src}')`}
     >
       {
         track.map((item) => (
@@ -207,6 +211,14 @@ const duration = (period / RAIL_SPEED).toFixed(2);
   }
   @media (prefers-reduced-motion: no-preference) {
     .rail-track {
+      /* Everything in a beat is rem (the word, plus the gap, mark thickness
+         and length set inline above), so the period scales with the desktop
+         root size in global.css while the duration stays fixed: the drift
+         speeds up with the root exactly as it did under 125% browser zoom
+         (18px/s at the default root, 22.5px/s from 1440px). Deliberately not
+         rescaled by the root — the root changes continuously with window
+         width, and changing a running animation's duration jumps its phase,
+         which moved both rails on every resize. */
       animation: rail-up var(--rail-duration, 20s) linear infinite;
     }
     /* The two rails travel in opposite directions. It costs nothing, and it

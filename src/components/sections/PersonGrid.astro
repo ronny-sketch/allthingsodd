@@ -44,7 +44,8 @@ const { items } = Astro.props;
 </div>
 
 <style>
-  /* minmax(220px, 260px), not minmax(220px, 1fr) — with a roster count (10
+  /* minmax(13.75rem, 16.25rem) — 220px/260px at the default root — not an
+     uncapped 1fr maximum: with a roster count (10
      speakers today) that doesn't divide evenly by the columns-per-row a
      given width fits, an uncapped 1fr track stretches the final row's few
      remaining cards to fill the gap, reading as visually oversized speaker
@@ -60,7 +61,7 @@ const { items } = Astro.props;
      grid on its own, real cards only. */
   .person-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 260px));
+    grid-template-columns: repeat(auto-fit, minmax(13.75rem, 16.25rem));
     justify-content: center;
     gap: 1px;
   }
