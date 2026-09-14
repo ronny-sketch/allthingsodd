@@ -16,7 +16,7 @@
   reproduced failure modes this replaced.
 
   Every component with its own `.reveal`-driven entrance (ProgramGrid's
-  staggered cards, FloatingCloud's scatter, ProofGrid's counters, …) follows
+  staggered cards, BuiltAround's grid labels, ProofGrid's counters, …) follows
   the same convention: gate the hidden half on `:global(html.reveal-js)`.
 */
 @media (prefers-reduced-motion: no-preference) {

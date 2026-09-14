@@ -241,24 +241,32 @@ collections_config:
           The headline that renders directly under the ODD logo inside the
           hero mosaic itself — this is the page's real "what is ODD" moment.
           Its two optional buttons render further down the page instead, in
-          the "More than one event" section (see index.astro).
+          the "Why ODD" section (see index.astro).
         options:
           subtype: object
       whatOddIs:
         type: object
         label: '"Why ODD" (Home only)'
         comment: >-
-          The homepage's main explanatory passage. Keep the headline to ONE
-          sentence — it sets at display scale inside a ring of photography,
-          and a second sentence turns it into a wall of type. The
-          explanation belongs in the body underneath, where it is set larger
-          than a normal section body precisely so it can carry that weight.
-          In the body, leave a BLANK LINE between points and each becomes
-          its own paragraph — three short spaced paragraphs are far easier
-          to take in here than one block, which is what this was until
-          2026-09-11.
+          The homepage's main explanatory passage, set around a grid with
+          one photograph in it. The headline sets at the site's largest size:
+          keep it to two short sentences — the first renders quieter as the
+          premise, the second at full brightness as the point. In the body,
+          leave a BLANK LINE between points and each becomes its own
+          paragraph; two paragraphs sit side by side on desktop.
         options:
           subtype: object
+      missingPieces:
+        type: array
+        label: Labels around the photo (Home "Why ODD" only)
+        comment: >-
+          Up to four short labels set in the empty grid cells around the
+          photograph, read left to right, top to bottom. They name what the
+          body says has to be found again — keep each to a few words so it
+          fits its cell on a phone.
+        options:
+          required: false
+        cascade: true
       whatItIs:
         type: object
         label: '"What it is" intro'

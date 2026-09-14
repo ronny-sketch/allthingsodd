@@ -445,14 +445,20 @@ const pages = defineCollection({
         // separate light-band placement below the hero). Only a headline —
         // the old "subline" was a second, overlapping description of what
         // ODD builds; that idea now lives, unified with "whatOddIs"'s own
-        // body, in the "More than one event" section below, where
-        // primaryCta/secondaryCta also render (not here) — see index.astro.
+        // body, in the "Why ODD" section below, where primaryCta/secondaryCta
+        // also render (not here) — see index.astro.
         opening: z.object({
           headline: z.string(),
           primaryCta: linkCta.optional(),
           secondaryCta: linkCta.optional(),
         }),
-        whatOddIs: sectionIntro,
+        // "Why ODD" (BuiltAround.astro, 2026-09-14). `missingPieces` label the
+        // empty grid cells around the section's photograph — what the body
+        // says has to be found again after every project. The grid has four
+        // places, so four at most.
+        whatOddIs: sectionIntro.extend({
+          missingPieces: z.array(z.string()).max(4).optional(),
+        }),
         // "tracks" (the small ODDference/Work with ODD/ODDfest/ODDspace
         // destination buttons under each audience blurb) is optional as of
         // the 2026-08-30 homepage revision — those destinations now live in

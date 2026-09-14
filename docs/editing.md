@@ -36,7 +36,8 @@ high-level notes:
 - SEO title/description/social image — what shows in a browser tab, a Google
   result, and the preview card when the page is shared on social media, on
   every page.
-- **Home**: hero proposition + two buttons, "What ODD is", the two-ways-in
+- **Home**: hero proposition + two buttons, "Why ODD" (headline, body, and
+  up to four short labels for the grid around its photo), the two-ways-in
   business/creative section (audience explanation only, as of 2026-08-30 —
   see below), the platform grid (not fixed at four cards), the "Already in
   motion" proof module (its editorial intro plus the four cumulative

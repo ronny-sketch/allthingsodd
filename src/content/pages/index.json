@@ -19,6 +19,7 @@
     "eyebrow": "Why ODD",
     "headline": "Finland has the talent. What's missing is what gets built around it.",
     "body": "Creative work is rebuilt from scratch every time: project by project, funding cycle by funding cycle. When one ends, the money, the partners, the place to work and the reason to gather all have to be found again.\n\nThe people making culture and the people running companies and institutions also spend very little time in the same room. ODD works on both: more continuity around creative work, and more places where the two actually meet.",
+    "missingPieces": ["The money", "The partners", "The place to work", "The reason to gather"],
     "cta": {
       "label": "Why we exist →",
       "href": "/about"
