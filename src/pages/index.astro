@@ -324,10 +324,17 @@ const preloadImage = await mosaicImage(firstArchiveImage);
      inventing a size. Still the largest headline on the page after the hero
      — just not louder than the thing it introduces. */
   .whatoddis-wrap :global(.section-intro-inner) {
-    /* 70vw caps it where the scaled rem width would otherwise run the copy
-       into the photo cloud's outer slots (at 90% of the section's width)
-       between the tablet breakpoint and ~1500px. */
-    max-width: min(52rem, 70vw);
+    max-width: 52rem;
+  }
+  @media (min-width: 1025px) {
+    /* 70vw caps it where the desktop scale's larger rem would otherwise run
+       the copy into the photo cloud's outer slots (at 90% of the section's
+       width) up to ~1500px. Desktop only: below 1025px the root size is the
+       browser default, and the cap would only narrow the column on tablets
+       and phones. */
+    .whatoddis-wrap :global(.section-intro-inner) {
+      max-width: min(52rem, 70vw);
+    }
   }
   /* The cloud is decorative (aria-hidden, alt="") and must never paint over
      the words it frames. FloatingCloud is absolutely positioned and comes
