@@ -224,7 +224,10 @@ stop at those caps — Display from about 1300px, Heading from 1330px, Hero from
 1180px at the default root) and `.wrap-wide` (80rem / 1280px, wider gutters)
 are the two container widths the entire site uses; `.bleed` breaks a contained element to full viewport width (used by
 the news filmstrip and program grid). `section` gets a consistent
-`--space-24` vertical rhythm by default.
+`--space-24` vertical rhythm by default. An element that is also a `.wrap`
+sets `padding-block`, never a `padding` shorthand: `padding: 3rem 0` zeroes
+the container's side gutter, which is how the footer ran to the screen edges
+until 2026-09-14.
 
 ## Motion
 

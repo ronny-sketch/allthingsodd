@@ -126,7 +126,12 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem 2.5rem;
-    padding: 3rem 0 2.4rem;
+    /* Block padding only, on every row below too: each row is also a .wrap,
+       and a `padding: 3rem 0` shorthand here zeroed that container's side
+       gutter. The footer ran to the screen edges on phones and tablets, and
+       on laptops once the desktop scale made the rem container wider than
+       the window. */
+    padding-block: 3rem 2.4rem;
   }
   .foot-mark {
     color: var(--color-paper);
@@ -199,7 +204,7 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     align-items: center;
     justify-content: space-between;
     gap: 1rem 2.5rem;
-    padding: 1.8rem 0;
+    padding-block: 1.8rem;
     border-top: 1px solid var(--color-paper-12);
   }
   .foot-contact {
@@ -272,7 +277,7 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     flex-wrap: wrap;
     align-items: center;
     gap: 1rem 1.5rem;
-    padding: 1.4rem 0;
+    padding-block: 1.4rem;
     border-top: 1px solid var(--color-paper-12);
   }
   .foot-supported-label {
@@ -308,7 +313,7 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     align-items: center;
     justify-content: space-between;
     gap: 0.6rem 2rem;
-    padding: 1.5rem 0 2.2rem;
+    padding-block: 1.5rem 2.2rem;
     border-top: 1px solid var(--color-paper-12);
     /* Clay itself measures 4.3:1 here — just under WCAG AA for text this small, so this
        spot uses a lightened reading of it (5.2:1) rather than the literal archive value. */
