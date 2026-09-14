@@ -31,6 +31,7 @@ src/
   styles/
     tokens.css             Color, spacing, motion tokens (with provenance)
     typography.css         Five-step type ladder (hero → small), wrapping defaults
+    global.css             Base element styles; the desktop root scale (1024 → 1440px)
     layout.css              Container widths, section rhythm
     motion.css               Reveal-on-scroll + marquee keyframes
   components/
