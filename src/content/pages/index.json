@@ -1,7 +1,7 @@
 {
   "_template": "home",
   "seo": {
-    "title": "All Things ODD — creative and cultural fields, business and society",
+    "title": "ODD — ODDfest, ODDference & ODDspace | Helsinki",
     "description": "ODD builds events, spaces and projects that strengthen creative work and bring creative and cultural expertise closer to business and wider society.",
     "ogImage": "/og/home.jpg"
   },
@@ -17,19 +17,24 @@
   },
   "whatOddIs": {
     "eyebrow": "Why ODD",
-    "headline": "Finland has the talent. What's missing is what gets built around it.",
-    "body": "Creative work is rebuilt from scratch every time: project by project, funding cycle by funding cycle. When one ends, the money, the partners, the place to work and the reason to gather all have to be found again.\n\nThe people making culture and the people running companies and institutions also spend very little time in the same room. ODD works on both: more continuity around creative work, and more places where the two actually meet.",
-    "missingPieces": ["The money", "The partners", "The place to work", "The reason to gather"],
+    "headline": "Finland has creative talent. What’s missing are the structures that help it grow, connect and last.",
+    "body": "Creative work in Finland is strong, but the support around it is often fragmented. Projects, funding, spaces, networks and partnerships exist — but they do not always connect in ways that make it easy for good work, relationships and opportunities to build on each other over time.\n\nThere is also still more potential in bringing creative and cultural expertise into closer contact with business, institutions and wider society. ODD creates places, events and projects where those connections can happen more naturally — while helping creative work find new audiences, partners and contexts.",
+    "missingPieces": [
+      "Places to work",
+      "Reasons to gather",
+      "Networks to collaborate",
+      "Funding to grow"
+    ],
     "cta": {
       "label": "Why we exist →",
       "href": "/about"
     }
   },
   "twoWaysIn": {
-    "intro": "ODD has different doors, depending on why you are here.",
+    "intro": "ODD brings two worlds together — creative and cultural people, and businesses that want to work with them.",
     "creative": {
-      "lede": "Work, show and find your people.",
-      "body": "Use ODDspace as a place to keep working. Bring something of your own to ODDfest. Join the parts of ODD that are useful to your practice — without having to become part of a single scene or organisation.",
+      "lede": "Work, create and connect with other creatives.",
+      "body": "Work from ODDspace. Bring something of your own to ODDfest. Use the parts of ODD that are useful to your practice — without having to become part of a single scene or organisation.",
       "tracks": [
         {
           "label": "ODDfest",
@@ -43,7 +48,7 @@
     },
     "business": {
       "lede": "Get closer to creative expertise and the people behind it.",
-      "body": "Come to ODDference, build a partnership, or bring us a question or project that needs a different mix of people around it.",
+      "body": "Come to ODDference, build a partnership, or bring us a brief that needs cultural understanding, creative expertise and people from more than one field.",
       "tracks": [
         {
           "label": "ODDference",
@@ -85,7 +90,7 @@
   "proofIntro": {
     "eyebrow": "Already in motion",
     "headline": "Two years in, this is what has already happened.",
-    "body": "ODDfest, ODDference and ODDspace have been built and run since 2025 — the numbers below are what they added up to.",
+    "body": "ODD began with the first ODDfest in 2025. Since then, ODDference and ODDspace have joined it, alongside project work with organisations. The figures below are cumulative across that work.",
     "cta": {
       "label": "See how ODD got here →",
       "href": "/about"
@@ -95,7 +100,7 @@
     {
       "meta": "Across Helsinki · Made by its hosts",
       "title": "ODDfest",
-      "body": "Helsinki's creative week, made by the people taking part. Hosts make and produce their own programme; ODD brings it together into one shared week.",
+      "body": "Helsinki’s creative week, made by the people taking part. ODDfest brings independent events, ideas and creative communities across the city together into one shared week.",
       "goLabel": "See ODDfest →",
       "href": "/oddfest",
       "image": "../../assets/programs/oddfest-card.jpg"
@@ -103,7 +108,7 @@
     {
       "meta": "Creative expertise · Business & society",
       "title": "ODDference",
-      "body": "A professional event built around one question: what can business and the rest of society learn from creative expertise?",
+      "body": "A business conference powered by creative expertise — exploring what business and society can learn from the creative world.",
       "goLabel": "Explore ODDference →",
       "href": "/oddference",
       "image": "../../assets/programs/oddference-card.jpg"
@@ -111,7 +116,7 @@
     {
       "meta": "Vallila · Year-round",
       "title": "ODDspace",
-      "body": "A place to work, meet, record, host things and keep projects moving — with different creative practices under the same roof.",
+      "body": "A year-round home for creative work — bringing workspace, studios, events and community under one roof.",
       "goLabel": "Explore ODDspace →",
       "href": "/oddspace",
       "image": "../../assets/programs/oddspace-card.jpg"
@@ -120,11 +125,11 @@
   "workWithOdd": {
     "eyebrow": "For organisations",
     "title": "Work with ODD",
-    "body": "Bring us a question, brief, event or partnership idea. We'll work out what it actually needs.",
+    "body": "Bring us a question, brief, event or partnership idea. We build the right team, format and creative expertise around it.",
     "linkLabel": "Explore Work with ODD →",
     "href": "/work-with-odd"
   },
-  "participateTitle": "The way in is by doing.",
+  "participateTitle": "Ways to take part.",
   "participate": [
     {
       "eyebrow": "",

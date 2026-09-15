@@ -23,7 +23,7 @@ test('home tells the story in the order the copy master specifies', async ({ pag
       featuredIn: html.indexOf('Featured in'),
       workWithOdd: html.indexOf('wwo-band'),
       video: html.indexOf('aftermovie-section'),
-      participate: html.indexOf('The way in is by doing'),
+      participate: html.indexOf('Ways to take part'),
     };
   });
 
@@ -68,7 +68,7 @@ test('every audience split on home puts creatives before business', async ({ pag
   const splits = await page.evaluate(() => {
     const html = document.documentElement.innerHTML;
     const audience = html.indexOf('Who ODD is for');
-    const participate = html.indexOf('The way in is by doing');
+    const participate = html.indexOf('Ways to take part');
     return {
       converge: {
         creative: html.indexOf('For creatives', audience),
@@ -131,7 +131,7 @@ test('ODDfest no longer promises an unbuilt shared platform', async ({ request }
 
 test('the participation band uses the approved final wording', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'The way in is by doing.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Ways to take part.' })).toBeVisible();
 });
 
 test('no page still carries the superseded participation wording', async ({ page, request }) => {
