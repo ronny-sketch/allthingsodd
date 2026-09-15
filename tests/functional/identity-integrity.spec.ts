@@ -99,11 +99,9 @@ test('the WebSite entity is named All Things ODD and keeps the publisher factual
   expect(organization!.alternateName).toBe('ODD');
 });
 
-test('the homepage title uses the site name; product pages stay product-first', async ({
-  request,
-}) => {
+test('the homepage title leads with ODD; product pages stay product-first', async ({ request }) => {
   const home = await (await request.get('/')).text();
-  expect(home).toMatch(/<title>All Things ODD\b/);
+  expect(home).toMatch(/<title>ODD — ODDfest, ODDference &amp; ODDspace \| Helsinki<\/title>/);
 
   // The rename must not have been swept across every page — ODDfest,
   // ODDference and ODDspace are still their own products and still lead
