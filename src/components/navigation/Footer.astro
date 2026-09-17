@@ -128,13 +128,16 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 1.5rem 2.5rem;
+    gap: var(--space-5) 2.5rem;
     /* Block padding only, on every row below too: each row is also a .wrap,
        and a `padding: 3rem 0` shorthand here zeroed that container's side
        gutter. The footer ran to the screen edges on phones and tablets, and
        on laptops once the desktop scale made the rem container wider than
-       the window. */
-    padding-block: 3rem 2.4rem;
+       the window.
+       The footer's two outer edges pad half a section gap (the last section
+       above pads the other half, so the top rule sits mid-gap); every
+       rule-to-rule joint inside it is --space-6. */
+    padding-block: calc(var(--space-section) / 2) var(--space-6);
   }
   .foot-mark {
     color: var(--color-paper);
@@ -150,7 +153,9 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
   .foot-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.7rem;
+    /* Row gap only matters once the links wrap (phones, tablets); the links'
+       own 0.4rem block padding already adds to it. */
+    gap: var(--space-3) 1.7rem;
     /* Forta at the Small size — compact supporting navigation, one step
        quieter than the header's primary links (Forta at Body). At Body it
        also pushed the newsletter field off this row at 1200px and up. */
@@ -189,11 +194,10 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
   .foot-nl {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: var(--space-2);
     align-items: flex-start;
     flex-shrink: 0;
     max-width: 100%;
-    scroll-margin-top: var(--nav-h);
   }
   .foot-nl-label {
     font: var(--text-small);
@@ -207,8 +211,8 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem 2.5rem;
-    padding-block: 1.8rem;
+    gap: var(--space-4) 2.5rem;
+    padding-block: var(--space-6);
     border-top: 1px solid var(--color-paper-12);
   }
   .foot-contact {
@@ -217,7 +221,7 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem 2rem;
+    gap: var(--space-2) 2rem;
     font: var(--text-small);
   }
   .foot-contact a {
@@ -280,8 +284,8 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1rem 1.5rem;
-    padding-block: 1.4rem;
+    gap: var(--space-4) 1.5rem;
+    padding-block: var(--space-6);
     border-top: 1px solid var(--color-paper-12);
   }
   .foot-supported-label {
@@ -316,8 +320,8 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 0.6rem 2rem;
-    padding-block: 1.5rem 2.2rem;
+    gap: var(--space-2) 2rem;
+    padding-block: var(--space-6) calc(var(--space-section) / 2);
     border-top: 1px solid var(--color-paper-12);
     /* Clay itself measures 4.3:1 here — just under WCAG AA for text this small, so this
        spot uses a lightened reading of it (5.2:1) rather than the literal archive value. */
@@ -347,7 +351,7 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.6rem 1.4rem;
+    gap: var(--space-2) 1.4rem;
   }
   /* Inherits the row's own colour/size rather than restating the two clay
      readings above — a button doesn't inherit font or colour from its

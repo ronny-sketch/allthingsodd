@@ -54,11 +54,13 @@ const perRow = cards.length === 4 ? 2 : Math.min(cards.length, 3);
      each card's own background plus the 1px gap is the hairline grid, so
      nothing is ever painted where there is no card. `max-width` caps a row
      at --per-row cards (set from the card count above); the extra 1px per
-     card is rounding slack so the last card on a full row never wraps. */
+     card is rounding slack so the last card on a full row never wraps.
+
+     No block margin: the caller places the grid with `.flow`. */
   .oddf-grid {
     --feature-card: calc(var(--font-size-heading) * 9 + 3.2rem);
 
-    margin: 4rem auto 0;
+    margin-inline: auto;
     max-width: calc((var(--feature-card) + 1px) * var(--per-row));
     display: flex;
     flex-wrap: wrap;
@@ -106,12 +108,12 @@ const perRow = cards.length === 4 ? 2 : Math.min(cards.length, 3);
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0.7rem 0 0;
+    margin: var(--space-3) 0 0;
   }
   .oddf-grid p {
     font: var(--text-body);
     color: var(--color-paper-60);
-    margin: 0.7rem 0 0;
+    margin: var(--space-3) 0 0;
   }
   @media (prefers-reduced-motion: no-preference) {
     :global(html.reveal-js) .oddf-grid > div {

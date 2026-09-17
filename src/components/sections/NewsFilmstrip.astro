@@ -16,7 +16,7 @@ const { items } = Astro.props;
 const looped = [...items, ...items];
 ---
 
-<section>
+<section class="flow">
   <div class="wrap">
     <div class="news-head">
       <div>
@@ -51,7 +51,7 @@ const looped = [...items, ...items];
   .news-head-title {
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
-    margin: 0.5rem 0 0;
+    margin: var(--space-3) 0 0;
     color: var(--color-paper);
   }
   .news-head {
@@ -59,8 +59,8 @@ const looped = [...items, ...items];
     align-items: flex-end;
     justify-content: space-between;
     gap: 1rem;
-    padding-bottom: 1.6rem;
-    margin-bottom: 2rem;
+    /* The .section-head rule step; the strip below is the section's flow. */
+    padding-bottom: var(--space-4);
     border-bottom: 1px solid var(--color-paper-12);
   }
   .news-duo {

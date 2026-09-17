@@ -29,16 +29,11 @@ const { year, items } = Astro.props;
 </div>
 
 <style>
-  .archive-year {
-    margin-top: var(--space-16);
-  }
-  .archive-year:first-child {
-    margin-top: 0;
-  }
+  /* No block margin on the root: the caller's `.flow` places every year. */
   .archive-year h3 {
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0 0 0.6rem;
+    margin: 0 0 var(--space-3);
   }
 </style>

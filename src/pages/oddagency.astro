@@ -36,7 +36,7 @@ const page = entry.data;
        old capabilities list didn't. Four concise panels via FeatureGrid
        (reused, not forked — same shape as capabilities/howItWorks below). -->
   <section class="odda-sub">
-    <div class="wrap">
+    <div class="wrap flow">
       <div class="section-head">
         <span class="eyebrow">{page.whenThisWorks.eyebrow}</span>
         <h2>{page.whenThisWorks.headline}</h2>
@@ -50,7 +50,7 @@ const page = entry.data;
          `features` grid, which repeated this same "what ODDagency can do"
          idea, and the old `whyOdd` grid). -->
   <section class="odda-sub">
-    <div class="wrap">
+    <div class="wrap flow">
       <div class="section-head">
         <span class="eyebrow">Capabilities</span>
         <h2>What ODDagency contributes</h2>
@@ -68,7 +68,7 @@ const page = entry.data;
   {
     page.cases.length > 0 && (
       <section class="odda-sub">
-        <div class="wrap">
+        <div class="wrap flow">
           <div class="section-head">
             <span class="eyebrow">Selected work</span>
             <h2>The work is easier to understand through the work.</h2>
@@ -81,7 +81,7 @@ const page = entry.data;
 
   <!-- Compact how-we-work process. -->
   <section class="odda-sub">
-    <div class="wrap">
+    <div class="wrap flow">
       <div class="section-head">
         <span class="eyebrow">Process</span>
         <h2>How a project works</h2>
@@ -105,26 +105,11 @@ const page = entry.data;
 </Layout>
 
 <style>
-  .odda-sub {
-    padding: var(--space-24) 0;
-  }
-  /* Mobile rhythm. 6rem top+bottom is tuned for a desktop column; stacked on
-     a phone it puts ~192px of empty screen between two sections (measured
-     across /work-with-odd, /oddference, /oddspace, /about and /media). Halved
-     to match layout.css's own `section` reduction at the same breakpoint, so
-     page-level and component-level sections stay on one rhythm — see that
-     file's comment, which flags exactly this class of override. */
-  @media (max-width: 640px) {
-    .odda-sub {
-      padding: var(--space-12) 0;
-    }
-  }
   .odda-type-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.6rem;
-    margin-top: var(--space-10);
   }
   .odda-type-tag {
     font: var(--text-small);
@@ -150,11 +135,11 @@ const page = entry.data;
     margin: 0;
   }
   .odda-closing p {
-    margin: 1.1rem 0 0;
+    margin: var(--space-4) 0 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
   .odda-closing :global(.pill) {
-    margin-top: 1.8rem;
+    margin-top: var(--space-6);
   }
 </style>

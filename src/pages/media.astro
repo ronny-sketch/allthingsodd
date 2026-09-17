@@ -63,7 +63,7 @@ const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteU
   }
 
   <section class="media-sub" id="about-odd">
-    <div class="wrap">
+    <div class="wrap flow">
       <div class="section-head">
         <span class="eyebrow">{page.boilerplate.eyebrow}</span>
         <h2>{page.boilerplate.headline}</h2>
@@ -108,7 +108,7 @@ const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteU
   </section>
 
   <section class="media-sub" id="media-bank">
-    <div class="wrap">
+    <div class="wrap flow">
       <div class="section-head">
         <span class="eyebrow">{page.mediaBank.eyebrow}</span>
         <h2>{page.mediaBank.title}</h2>
@@ -173,7 +173,7 @@ const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteU
   {
     page.archive.length > 0 && (
       <section class="media-sub" id="archive">
-        <div class="wrap">
+        <div class="wrap flow">
           <div class="section-head">
             <span class="eyebrow">Archive</span>
             <h2>Past editions and press material.</h2>
@@ -239,28 +239,19 @@ const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteU
 </Layout>
 
 <style>
-  .media-sub {
-    padding: var(--space-24) 0;
-  }
-  /* Mobile rhythm. 6rem top+bottom is tuned for a desktop column; stacked on
-     a phone it puts ~192px of empty screen between two sections (measured
-     across /work-with-odd, /oddference, /oddspace, /about and /media). Halved
-     to match layout.css's own `section` reduction at the same breakpoint, so
-     page-level and component-level sections stay on one rhythm — see that
-     file's comment, which flags exactly this class of override. */
-  @media (max-width: 640px) {
-    .media-sub {
-      padding: var(--space-12) 0;
-    }
-  }
+  /* .media-sub's rhythm is layout.css's section rule; inside, each `.flow`
+     wrap spaces its blocks. */
+  /* The jump links belong to the intro above them, so its half gap is all
+     they take on top; below, as a standalone block between sections, they
+     contribute their own half (layout.css, section rhythm). */
   .media-jumplinks {
-    padding-bottom: var(--space-8);
+    margin-block-end: calc(var(--space-section) / 2);
   }
   .media-jumplinks ul {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.5rem 1.6rem;
+    gap: var(--space-2) 1.6rem;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -279,14 +270,16 @@ const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteU
 
   .boilerplate-block {
     max-width: 46rem;
-    margin: 0 auto;
+    margin-inline: auto;
     padding: 1.6rem 1.8rem;
     border: 1px solid var(--color-paper-12);
     background: var(--color-paper-4, rgba(255, 255, 255, 0.03));
     position: relative;
   }
+  /* The Finnish boilerplate is the same text, not a new block: a tighter
+     replacement for the flow step. */
   .boilerplate-block + .boilerplate-block {
-    margin-top: 1rem;
+    margin-block-start: var(--space-4);
   }
   .boilerplate-block p {
     /* The prose measure plus the padding that clears the copy button. */
@@ -332,12 +325,14 @@ const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteU
 
   .key-facts {
     max-width: 46rem;
-    margin: 1.6rem auto 0;
+    margin-inline: auto;
+    margin-block-end: 0;
   }
+  /* row-gap only shows once dt stacks over dd on phones. */
   .key-fact-row {
     display: grid;
     grid-template-columns: 11rem 1fr;
-    gap: 1.5rem;
+    gap: var(--space-2) 1.5rem;
     padding: 1.1rem 0;
     border-top: 1px solid var(--color-paper-12);
   }
@@ -361,16 +356,15 @@ const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteU
   @media (max-width: 640px) {
     .key-fact-row {
       grid-template-columns: 1fr;
-      gap: 0.3rem;
     }
   }
 
   .media-background {
     max-width: 46rem;
-    margin: 1.6rem auto 0;
+    margin-inline: auto;
   }
   .media-background-label {
-    margin: 0 0 0.4rem;
+    margin: 0 0 var(--space-2);
     font: var(--text-small);
     font-weight: 600;
     letter-spacing: var(--tracking-eyebrow);
@@ -378,38 +372,52 @@ const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteU
     color: var(--color-paper-40);
   }
 
+  /* Media bank: Logos, Photography and Video are three groups in one flow.
+     Each h3 sits tight on what it heads (a Heading-role title → its rows);
+     the joint between two groups is the larger group step. The `:global(*)`
+     reaches ResourceList's root, which carries its own scope. */
   .media-bank-heading {
-    margin: var(--space-16) 0 0.8rem;
+    margin-block-end: 0;
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
   }
-  .media-bank-heading:first-of-type {
-    margin-top: 0.6rem;
+  .media-bank-heading + :global(*) {
+    margin-block-start: var(--space-3);
+  }
+  .media-bank-heading ~ .media-bank-heading {
+    margin-block-start: var(--space-group);
   }
   .media-bank-note {
     max-width: 46rem;
-    margin: 0 0 1.2rem;
+    margin-block-end: 0;
     font: var(--text-small);
     color: var(--color-paper-40);
   }
+  /* Not a flow child: the note under each photobank row, and the rows
+     themselves, are spaced inside .photo-resource-list. */
   .photo-usage-note {
-    margin: -0.6rem 0 1.2rem;
+    margin: var(--space-2) 0 0;
   }
   .photo-resource-item + .photo-resource-item {
-    margin-top: 0.2rem;
+    margin-top: var(--space-grid);
+  }
+
+  /* Archive: each year after the first is a new group in the section's flow.
+     `:global()` because ArchiveYear's root carries its own scope. */
+  .flow > :global(.archive-year) + :global(.archive-year) {
+    margin-block-start: var(--space-group);
   }
 
   .logo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.4rem;
+    gap: var(--space-grid);
   }
   .logo-card {
     display: flex;
     flex-direction: column;
-    gap: 0.7rem;
+    gap: var(--space-3);
     padding: 1.1rem;
     border: 1px solid var(--color-paper-12);
     text-decoration: none;
@@ -437,7 +445,7 @@ const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteU
   .logo-card-body {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: var(--space-2);
   }
   .logo-card-name {
     font: var(--text-small);
@@ -459,28 +467,30 @@ const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteU
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0.8rem 0 0;
+    margin: var(--space-3) 0 0;
   }
+  /* Press contact and Follow are single centred blocks, not flows: their
+     internal steps come straight from the spacing hierarchy. */
   .media-contact-body {
     max-width: var(--measure-prose);
-    margin: 1rem auto 0;
+    margin: var(--space-3) auto 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
   .media-contact-name {
-    margin: 1.6rem 0 0;
+    margin: var(--space-6) 0 0;
     font: var(--text-body);
     font-weight: 600;
     color: var(--color-paper);
   }
   .media-contact-role {
-    margin: 0.3rem 0 0;
+    margin: var(--space-2) 0 0;
     font: var(--text-small);
     color: var(--color-paper-40);
   }
   .media-contact-email {
     display: inline-block;
-    margin-top: 1.1rem;
+    margin-top: var(--space-5);
     font: var(--text-body);
     font-weight: 600;
     color: var(--color-paper-80);
@@ -494,7 +504,7 @@ const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteU
   }
   .media-accreditation-notice {
     max-width: var(--measure-prose);
-    margin: 1.6rem auto 0;
+    margin: var(--space-6) auto 0;
     padding: 1rem 1.2rem;
     border: 1px solid var(--color-paper-12);
     font: var(--text-body);
@@ -513,7 +523,7 @@ const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteU
 
   .media-social-note {
     max-width: 30rem;
-    margin: 0.6rem auto 0;
+    margin: var(--space-3) auto 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
@@ -521,8 +531,8 @@ const keyFacts = [...page.boilerplate.keyFacts, { label: 'Website', value: siteU
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 0.8rem 1.6rem;
-    margin: 1.6rem 0 0;
+    gap: var(--space-3) 1.6rem;
+    margin: var(--space-6) 0 0;
     padding: 0;
     list-style: none;
   }

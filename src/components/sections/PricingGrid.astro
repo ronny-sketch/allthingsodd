@@ -100,11 +100,25 @@ const { items } = Astro.props;
 </div>
 
 <style>
+  /* No outer margin: the caller's flow places the grid. column-gap stays
+     1.25rem — ODDference's three-across ladder math depends on it (see
+     .oddc-convert in oddference.astro). */
   .pricing-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(16.25rem, 1fr));
-    gap: 1.25rem;
+    column-gap: 1.25rem;
+    row-gap: var(--space-grid);
     align-items: stretch;
+  }
+  /* A showing badge straddles its card's top border, 0.9rem outside the
+     card's box, and oddference-tickets.ts can move it to any tier — so on a
+     wrapped or stacked grid it can land on a card in the second row. The
+     grid makes room for it above the first row and in every row gap, so the
+     caller's flow step and --space-grid measure to the badge, not to the
+     card edge it overhangs. */
+  .pricing-grid:has(.pricing-badge:not([hidden])) {
+    padding-block-start: 0.9rem;
+    row-gap: calc(var(--space-grid) + 0.9rem);
   }
   /* minmax(16.25rem, …)'s 16.25rem (260px at the default root, which is what
      applies at these widths) is a hard floor, not content-based — auto-fit
@@ -204,7 +218,7 @@ const { items } = Astro.props;
   }
   .pricing-audience {
     display: block;
-    margin-top: 0.3rem;
+    margin-top: var(--space-2);
     text-wrap: balance;
     font: var(--text-small);
     font-weight: 600;
@@ -219,7 +233,7 @@ const { items } = Astro.props;
     flex-wrap: wrap;
     align-items: baseline;
     column-gap: 0.5rem;
-    margin-top: 1.2rem;
+    margin-top: var(--space-5);
   }
   .pricing-price {
     font: var(--text-heading);
@@ -243,22 +257,22 @@ const { items } = Astro.props;
   }
   .pricing-status {
     display: inline-block;
-    margin-top: 0.5rem;
+    margin-top: var(--space-2);
     font: var(--text-small);
     color: var(--color-paper-60);
   }
   .pricing-desc {
-    margin: 0.9rem 0 0;
+    margin: var(--space-3) 0 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
   .pricing-benefits {
     list-style: none;
-    margin: 1.4rem 0;
+    margin: var(--space-5) 0 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: var(--space-2);
     flex: 1;
   }
   .pricing-benefits li {
@@ -277,18 +291,20 @@ const { items } = Astro.props;
     border-radius: 999px;
     background: var(--color-paper-40);
   }
+  /* Benefits → button is one step owned here (it used to be the list's
+     bottom margin plus this one, stacked). */
   .pricing-card :global(.pill) {
     align-self: flex-start;
-    margin-top: 0.4rem;
+    margin-top: var(--space-6);
   }
   .pricing-note {
-    margin: 0.8rem 0 0;
+    margin: var(--space-3) 0 0;
     font: var(--text-small);
     color: var(--color-paper-40);
   }
   .pricing-note-link {
     display: inline-block;
-    margin: 0.8rem 0 0;
+    margin: var(--space-3) 0 0;
     font: var(--text-small);
     font-weight: 600;
     color: var(--color-paper-60);

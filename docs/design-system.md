@@ -121,8 +121,10 @@ for uppercase Small: `--tracking-eyebrow` (0.16em) and `--tracking-caps`
   the SubpageRail/SubpageTicker word beats, Media's resource-row titles,
   price figures in the ODDspace and ODDstudio rate lists, the order total and
   stepper count on `/tickets`, the ticket label on `/tickets/confirmation`,
-  consent category names, legal subsection (`h3`) labels, and the cell
-  labels in Home's "Why ODD" grid on phones. The nav, rail
+  consent category names, legal subsection (`h3`) labels, the cell
+  labels in Home's "Why ODD" grid on phones, ODDference's session-highlight
+  titles, and speaker names in `PersonGrid`'s photo cards (from 1024px; see
+  exception 7). The nav, rail
   and ticker words keep their own small literal tracking (0.01–0.02em).
   `font-family: var(--font-display); font-size: var(--font-size-body);`
 - **Gabarito 600 at the Body size** for run-in titles that sit directly on
@@ -138,13 +140,13 @@ size, two weights of ink.
 
 ### Component mapping
 
-| Role    | Where                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Hero    | `HeroCentered` title when it carries a photograph (Work with ODD, ODDagency), above 640px; the `BuiltAround` headline (Home's "Why ODD"), above 560px                                                                                                                                                                                                                                                                                                                                                                                                          |
-| Display | `PageIntro`, `SplitHero`, plain `HeroCentered` (About), `SpaceHero` and `FullbleedVideoHero frame="space"` h1s; `SectionIntro` headlines; `ProofGrid` figures; mobile menu links; 404 and ticketing page titles                                                                                                                                                                                                                                                                                                                                                |
-| Heading | Home hero line under the logo; `.section-head h2` and every closing-ask h2; `Converge` column titles; `ProgramGrid`, `FeatureGrid`, `CaseGrid`, `OddfestExamples`, `SpaceShowcase`, `PersonGrid` and `ParticipateBand` titles; CaseGrid figures, Timeline years and PathwayList numbers; the Work-with-ODD band; pricing tier names and prices; FAQ questions; programme, pathway, audience and archive-year titles; the filmstrip heading and captions; the LogoStrip label; legal section h2s; the Contact aside and Media section h2s; the newsletter popup |
-| Body    | All explanatory paragraphs, card descriptions, intros, FAQ answers, benefit lists, legal prose, notices, form fields, dropdown menu links                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Small   | `.eyebrow` and every label/meta/category/date line, `Pill` and the site's other button styles, form labels, status and helper notes, footer contact and legal line, stat labels, rate-list notes, cookie table                                                                                                                                                                                                                                                                                                                                                 |
+| Role    | Where                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hero    | `HeroCentered` title when it carries a photograph (Work with ODD, ODDagency), above 640px; the `BuiltAround` headline (Home's "Why ODD"), above 560px                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Display | `PageIntro`, `SplitHero`, plain `HeroCentered` (About), `SpaceHero` and `FullbleedVideoHero frame="space"` h1s; `SectionIntro` headlines; `ProofGrid` figures; mobile menu links; 404 and ticketing page titles                                                                                                                                                                                                                                                                                                                                                                           |
+| Heading | Home hero line under the logo; `.section-head h2` and every closing-ask h2; `Converge` column titles; `ProgramGrid`, `FeatureGrid`, `CaseGrid`, `OddfestExamples`, `SpaceShowcase`, `PersonGrid`'s plain (photo-less) cards and `ParticipateBand` titles; CaseGrid figures, Timeline years and PathwayList numbers; the Work-with-ODD band; pricing tier names and prices; FAQ questions; programme, pathway, audience and archive-year titles; the filmstrip heading and captions; the LogoStrip label; legal section h2s; the Contact aside and Media section h2s; the newsletter popup |
+| Body    | All explanatory paragraphs, card descriptions, intros, FAQ answers, benefit lists, legal prose, notices, form fields, dropdown menu links                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Small   | `.eyebrow` and every label/meta/category/date line, `Pill` and the site's other button styles, form labels, status and helper notes, footer contact and legal line, stat labels, rate-list notes, cookie table                                                                                                                                                                                                                                                                                                                                                                            |
 
 Eyebrows are Small at 600, uppercase, `--tracking-eyebrow` (the `.eyebrow`
 class). Buttons and CTA labels are Small at 600, uppercase, `--tracking-caps`.
@@ -170,6 +172,12 @@ class). Buttons and CTA labels are Small at 600, uppercase, `--tracking-caps`.
 6. **`BuiltAround`** (Home's "Why ODD") takes Hero above 560px and steps to
    Display below it, for the same reason as `HeroCentered`: at Hero's 3.25rem
    floor its two sentences set as a column of one- and two-word lines.
+7. **`PersonGrid` photo-card names** (ODDference's speakers) are Forta at
+   Body from 1024px and Forta at Small below it. The grid is a fixed 5 × 2
+   (2 × 5 up to 720px), so between 721px and 1023px a card is 117–157px wide,
+   and "Jääskeläinen" at Body does not fit it. The step is to the next reuse
+   size, not a new one. Below 357px even Small does not fit a two-column
+   card, and the name wraps inside it (`overflow-wrap: break-word`).
 
 Known gap, pre-existing and tracked separately: the ticket-flow buttons on
 `/tickets`, `/tickets/checkout` and `/tickets/confirmation` are written as raw
@@ -225,16 +233,105 @@ stop at those caps — Display from about 1300px, Heading from 1330px, Hero from
   Rescaling the duration by the root would jump both rails on every window
   resize, because the root changes continuously with width.
 
-## Spacing & layout
+## Spacing
 
-`--space-1` through `--space-32` (0.25rem base). `.wrap` (73.75rem contained,
-1180px at the default root) and `.wrap-wide` (80rem / 1280px, wider gutters)
-are the two container widths the entire site uses; `.bleed` breaks a contained element to full viewport width (used by
-the news filmstrip and program grid). `section` gets a consistent
-`--space-24` vertical rhythm by default. An element that is also a `.wrap`
-sets `padding-block`, never a `padding` shorthand: `padding: 3rem 0` zeroes
-the container's side gutter, which is how the footer ran to the screen edges
-until 2026-09-14.
+Rebuilt 2026-09-17. Before, every `<section>` padded 6rem top and bottom
+(240px between two sections at 1440px), a dozen pages redeclared that with
+their own mobile override, and components added outer margins that later
+blocks clawed back with negative margins. The rule now is **one owner per
+gap, and every gap is explainable**.
+
+### Scale and rhythm tokens
+
+`--space-1` through `--space-32` (0.25rem base) are the fixed steps.
+`tokens.css` adds four fluid rhythm tokens on top (px at 390 / 1024 / 1440):
+
+| Token             | 390 | 1024 | 1440 | For                                            |
+| ----------------- | --- | ---- | ---- | ---------------------------------------------- |
+| `--space-grid`    | 16  | 22   | 30   | Row gap between repeated cards and items       |
+| `--space-content` | 24  | 29   | 38   | A heading or intro → what it introduces        |
+| `--space-group`   | 32  | 39   | 51   | One content group → the next, inside a section |
+| `--space-section` | 48  | 64   | 80   | The gap between two sections                   |
+
+They are fluid so the space between things shrinks on a phone faster than the
+things do. No component needs a mobile override for them.
+
+### The hierarchy
+
+Inside a component = tight · inside a section = moderate · between sections =
+generous.
+
+| Relationship                                      | Value                                    |
+| ------------------------------------------------- | ---------------------------------------- |
+| Eyebrow → heading                                 | `--space-3`                              |
+| Label/meta → value                                | `--space-2`                              |
+| Heading-role title → its body (cards, rows)       | `--space-3`                              |
+| Display/Hero headline → body                      | `--space-5`                              |
+| Paragraph → paragraph                             | `--space-4`                              |
+| Body → text link / → button row                   | `--space-5` / `--space-6`                |
+| Heading or intro → grid, list, form, closing line | `--space-content` (the `.flow` step)     |
+| Lede directly under a `.section-head`             | `--space-4`                              |
+| Grid rows                                         | `--space-grid`                           |
+| Group → group inside a section                    | `--space-group`                          |
+| Section → section                                 | `--space-section`, owned by `layout.css` |
+
+Horizontal spacing (column gaps, gutters) and hairline 1–3px grid gaps are
+not part of this system.
+
+### Who owns what
+
+1. **Between sections: `layout.css`.** `section` pads half of
+   `--space-section` on each side, so two neighbours add up to one gap and
+   neither knows what sits next to it. Pages never redeclare section padding.
+   A section-level block with an **edge** instead of padding (a hero, a
+   full-bleed `PhotoBreak`) contributes its half as `margin-block` outside the
+   edge. A section with **its own ground** (ODDfest's "How to join") pads a
+   whole `--space-section` inside and keeps the outer half as margin. When two
+   `<section>`s are one idea (Home's "Already in motion" intro + figures), the
+   joint gets one owner: the upper drops its end padding, the lower pads
+   `--space-content`.
+2. **Hero and page intros.** A page intro sits `--nav-h + --space-section`
+   under the fixed nav. Hero → first content is one `--space-section`
+   (`SubpageFrame`'s `.oddf-center` pads the hero side's half).
+3. **Inside a section: the parent, via `.flow`.** A container whose children
+   are separate blocks (heading, lede, grid, closing line) gets `class="flow"`;
+   each child sits `--space-content` below the one before. Children carry no
+   outer margin. A block that belongs to the one above replaces the step with a
+   tighter one by setting `margin-block-start` itself (a lede takes
+   `--space-4`; a later group takes `--space-group`) — a replacement, never an
+   addition.
+4. **Reusable components carry no outer block margin.** `FeatureGrid`,
+   `AudienceList`, `FAQList`, `PricingGrid` and the rest are placed by their
+   caller's `.flow`. Their internal spacing stays inside them.
+5. **`.section-head` owns only its rule** (`--space-4` above the line). The
+   space from the line to what follows is the parent's flow, so every
+   `.section-head` sits in a `.flow` container.
+
+### Pitfalls
+
+- **Astro scopes styles with an attribute selector**, so any margin a child
+  declares (0,2,0) beats `.flow > * + *` (0,1,0). Centre flow children with
+  `margin-inline: auto`, never `margin: 0 auto` — the shorthand zeroes the flow
+  step.
+- **There is no global margin reset.** A `<p>`/`<ul>` that ends a flow
+  container needs `margin-block-end: 0`, or the browser's 1em comes back.
+- `margin-bottom` is never used for the space between blocks, and a negative
+  margin that claws back someone else's space is always a bug.
+- `.flow > * + *` also spaces a block that follows an `.sr-only` or absolutely
+  positioned sibling.
+- In-page anchors clear the fixed nav through one site-wide
+  `html { scroll-padding-top: var(--nav-h) }` in `global.css`; don't add
+  per-target `scroll-margin` on top.
+
+## Layout
+
+`.wrap` (73.75rem contained, 1180px at the default root) and `.wrap-wide`
+(80rem / 1280px, wider gutters) are the two container widths the entire site
+uses; `.bleed` breaks a contained element to full viewport width (used by the
+news filmstrip and program grid). Both containers set only inline margin and
+padding. An element that is also a `.wrap` sets `padding-block`, never a
+`padding` shorthand: `padding: 3rem 0` zeroes the container's side gutter,
+which is how the footer ran to the screen edges until 2026-09-14.
 
 ## Motion
 

@@ -52,7 +52,8 @@ const { items } = Astro.props;
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 1.5rem;
+    /* row-gap only shows once body stacks over meta on phones. */
+    gap: var(--space-2) 1.5rem;
     padding: 1.3rem 0;
     border-top: 1px solid var(--color-paper-12);
     text-decoration: none;
@@ -63,7 +64,7 @@ const { items } = Astro.props;
   }
   .resource-badge {
     display: block;
-    margin-bottom: 0.35rem;
+    margin-bottom: var(--space-2);
     font: var(--text-small);
     font-weight: 600;
     letter-spacing: var(--tracking-eyebrow);
@@ -101,7 +102,7 @@ const { items } = Astro.props;
   }
 
   .resource-desc {
-    margin: 0.4rem 0 0;
+    margin: var(--space-2) 0 0;
     font: var(--text-body);
     color: var(--color-paper-60);
     max-width: var(--measure-prose);
@@ -130,7 +131,6 @@ const { items } = Astro.props;
     .resource-row {
       flex-direction: column;
       align-items: flex-start;
-      gap: 0.5rem;
     }
   }
 

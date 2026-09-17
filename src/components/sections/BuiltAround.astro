@@ -59,7 +59,7 @@ const paragraphs = body
 const PIECE_SLOTS = ['tl', 'tr', 'bl', 'br'] as const;
 ---
 
-<section class="built-around">
+<section class="built-around flow">
   <div class="wrap ba-head reveal">
     <span class="eyebrow">{eyebrow}</span>
     <h2 class="ba-title">
@@ -134,7 +134,7 @@ const PIECE_SLOTS = ['tl', 'tr', 'bl', 'br'] as const;
     font: var(--text-hero);
     letter-spacing: var(--tracking-hero);
     color: var(--color-paper);
-    margin: var(--space-5) 0 0;
+    margin: var(--space-3) 0 0;
   }
   .ba-premise,
   .ba-point {
@@ -159,7 +159,7 @@ const PIECE_SLOTS = ['tl', 'tr', 'bl', 'br'] as const;
     gap: 2px;
     padding-block: 2px;
     max-width: 100rem;
-    margin: var(--space-16) auto 0;
+    margin-inline: auto;
     background: var(--color-paper-12);
     mask-image: linear-gradient(to right, transparent 0%, #000 16%, #000 84%, transparent 100%);
   }
@@ -229,13 +229,10 @@ const PIECE_SLOTS = ['tl', 'tr', 'bl', 'br'] as const;
     text-wrap: balance;
   }
 
-  .ba-body {
-    margin-top: var(--space-16);
-  }
   .ba-text {
     display: grid;
     grid-template-columns: repeat(var(--cols, 1), minmax(0, 1fr));
-    gap: var(--space-8) var(--space-16);
+    gap: var(--space-4) var(--space-16);
     max-width: 62rem;
     margin: 0 auto;
   }
@@ -248,8 +245,8 @@ const PIECE_SLOTS = ['tl', 'tr', 'bl', 'br'] as const;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.9rem;
-    margin-top: var(--space-12);
+    gap: var(--space-3) 0.9rem;
+    margin-top: var(--space-6);
   }
 
   /* Below the laptop range the outer columns go and the three that carry the
@@ -280,17 +277,8 @@ const PIECE_SLOTS = ['tl', 'tr', 'bl', 'br'] as const;
     }
   }
   @media (max-width: 760px) {
-    .ba-grid {
-      margin-top: var(--space-10);
-    }
-    .ba-body {
-      margin-top: var(--space-10);
-    }
     .ba-text {
       grid-template-columns: minmax(0, 1fr);
-    }
-    .ba-actions {
-      margin-top: var(--space-8);
     }
   }
   /* Phones: square cells give a three-line label the height it needs, and the

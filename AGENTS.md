@@ -138,6 +138,12 @@ GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
    Any new entrance animation follows the same convention: gate the _hidden_
    half on `:global(html.reveal-js)`, and gate the `.in` half too so the
    relative specificity still resolves. See `src/styles/motion.css`.
+6. **Every vertical gap has one owner** (2026-09-17). Section → section is
+   `layout.css`'s `section` rhythm (`--space-section`) — never redeclare section
+   padding in a page. Blocks inside a section are spaced by their parent's
+   `.flow`, not by their own margins; reusable components carry no outer block
+   margin; no `margin-bottom` between blocks, no negative claw-back margins.
+   See `docs/design-system.md#spacing`.
 
 ## CMS rules
 

@@ -1,15 +1,17 @@
-/* Layout primitives: contained/wide/full-bleed widths, section rhythm, grid gutters. */
+/* Layout primitives: contained/wide/full-bleed widths, section rhythm, flow. */
 
+/* Logical inline properties only, so a .wrap never sets a block margin or
+   padding that a parent's flow or a section's rhythm would have to fight. */
 .wrap {
   max-width: var(--width-contained);
-  margin: 0 auto;
-  padding: 0 var(--gutter);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
 
 .wrap-wide {
   max-width: var(--width-wide);
-  margin: 0 auto;
-  padding: 0 var(--gutter-wide);
+  margin-inline: auto;
+  padding-inline: var(--gutter-wide);
 }
 
 /* full-bleed: escapes any centered parent to span the viewport, used by the news
@@ -19,31 +21,51 @@
   margin-left: calc(50% - 50vw);
 }
 
+/* Section rhythm (2026-09-17 spacing pass). --space-section is the gap
+   between two sections, and it has one owner: this rule. Every section pads
+   HALF of it on each side, so two neighbours add up to exactly one gap and
+   neither has to know what sits next to it. The token is fluid (48px on a
+   phone, 80px at 1440), so no page needs its own mobile override — the
+   6rem/3rem pair that used to be redeclared in a dozen page files is gone.
+
+   Anything else at section level follows the same half-and-half contract:
+   - a block with an edge instead of padding (a full-bleed photo, a hero)
+     contributes its half as margin-block, outside the edge;
+   - a section with its own ground (ODDfest's "How to join") pads a WHOLE
+     --space-section inside it — nothing across its edge shares its air —
+     and keeps the outer half as margin.
+   Do not give a section a padding of its own to make one gap bigger; a
+   deliberate chapter break is a documented exception, not a new value. */
 section {
-  padding: var(--space-24) 0;
-}
-/* Sections that don't set their own padding (SectionIntro, and any other
-   default-rhythm section) still need to shrink on mobile — 6rem top+bottom
-   never scaled down for small viewports, leaving a proportionally huge dead
-   gap between short stacked sections (confirmed via screenshot, not just
-   eyeballed: ~190px of empty space between two single-paragraph blocks on a
-   390px-wide screen). Components with their own explicit padding override
-   this rule and need their own matching mobile reduction — see
-   Converge/ParticipateBand/mem-includes etc. */
-@media (max-width: 640px) {
-  section {
-    padding: var(--space-12) 0;
-  }
+  padding-block: calc(var(--space-section) / 2);
 }
 
+/* Flow: the parent owns the space between its children. Put `.flow` on a
+   container whose children are separate blocks (a section's heading, its
+   lede, the grid, a closing line) and each block sits --space-content below
+   the one before it. The children carry no outer margin of their own.
+
+   The one sanctioned exception: a block that belongs to the one above it (a
+   lede directly under its heading) replaces the flow step with a tighter one
+   by setting margin-block-start itself. A replacement, never an addition —
+   margin-block-end is never used for spacing between blocks, and a negative
+   margin to claw back someone else's space is always a bug.
+
+   Beware `margin: 0 auto` on a flow child: the shorthand also resets the top
+   margin and, scoped, outranks this rule. Centre with margin-inline. */
+.flow > * + * {
+  margin-block-start: var(--space-content);
+}
+
+/* A section's heading. Its bottom rule belongs to it (--space-4 above the
+   line); the space from the line to whatever follows is the parent's flow. */
 .section-head {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: var(--space-2);
-  padding-bottom: var(--space-6);
-  margin-bottom: var(--space-10);
+  padding-bottom: var(--space-4);
   border-bottom: 1px solid var(--color-paper-12);
 }
 .section-head h2 {

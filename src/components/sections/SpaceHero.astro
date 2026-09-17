@@ -103,8 +103,9 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
      FullbleedVideoHero.astro's identical change: nav + hero should read as
      one first viewport, svh avoids the mobile-Safari toolbar jump, the
      fixed min-height floor protects the logo/title/meta/CTA stack on short
-     viewports, and there's no more margin-bottom here — that gap is now
-     owned once by SubpageFrame's `.oddf-center` top padding. */
+     viewports, and there's no more margin-bottom here — the hero's half of
+     the hero→content gap is SubpageFrame's `.oddf-center` top padding (the
+     first section pads the other half). */
   .space-hero {
     position: relative;
     height: calc(100vh - var(--nav-h));
@@ -270,7 +271,7 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
     align-items: center;
     justify-content: center;
     text-align: center;
-    gap: 1.1rem;
+    gap: var(--space-5);
     padding: 2rem;
   }
   /* Short viewports — same reasoning and same fix as
@@ -291,7 +292,7 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
       inset: auto;
       flex: 1;
       padding: 2rem 1.5rem;
-      gap: 0.8rem;
+      gap: var(--space-3);
     }
     .space-hero-logo {
       width: min(15rem, 44vw);
@@ -344,8 +345,10 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 1rem;
-    margin-top: 0.9rem;
+    gap: var(--space-4);
+    /* On top of the overlay's --space-5 gap: together the hero's body →
+       actions step, --space-6. */
+    margin-top: var(--space-1);
   }
   /* Bigger than the site's default Pill, here only (2026-09-11, at Ronny's
      request). Pill is sized for buttons sitting inside a text column; these
