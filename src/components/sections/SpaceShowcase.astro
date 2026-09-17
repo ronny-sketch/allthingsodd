@@ -156,6 +156,11 @@ const { spaces } = Astro.props;
     .space-card-body {
       padding: 1.4rem 1.1rem 1.8rem;
     }
+    /* The card ground is the page ground, so the last card's bottom padding
+       would stack on the section padding; the section owns that gap. */
+    .space-card:last-child .space-card-body {
+      padding-block-end: 0;
+    }
   }
 
   @media (prefers-reduced-motion: no-preference) {

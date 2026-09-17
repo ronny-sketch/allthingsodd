@@ -75,10 +75,11 @@ const { eyebrow, title, intro, primaryCta, secondaryCta, warpTitle = false } = A
 </section>
 
 <style>
-  /* One section gap under the fixed nav; half a gap below, like any other
-     section (layout.css, section rhythm). */
+  /* One section gap under the nav; half a gap below, like any other section
+     (layout.css, section rhythm). The nav is `position: sticky`, so it
+     already takes its own height in the flow — don't add --nav-h here. */
   .page-intro {
-    padding-block: calc(var(--nav-h) + var(--space-section)) calc(var(--space-section) / 2);
+    padding-block: var(--space-section) calc(var(--space-section) / 2);
   }
   .page-intro-head {
     max-width: 40rem;

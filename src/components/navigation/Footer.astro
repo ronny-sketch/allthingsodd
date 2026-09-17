@@ -122,6 +122,10 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
   footer {
     border-top: 1px solid var(--color-paper-40);
     padding-top: 0;
+    /* The rule is an edge (layout.css, section rhythm): the footer's half of
+       the section gap sits outside it, so the last section's content is a
+       full --space-section above the rule, as it is above any other edge. */
+    margin-block-start: calc(var(--space-section) / 2);
   }
   .foot-top {
     display: flex;
@@ -134,9 +138,9 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
        gutter. The footer ran to the screen edges on phones and tablets, and
        on laptops once the desktop scale made the rem container wider than
        the window.
-       The footer's two outer edges pad half a section gap (the last section
-       above pads the other half, so the top rule sits mid-gap); every
-       rule-to-rule joint inside it is --space-6. */
+       Below its top rule the footer pads half a section gap (the full gap
+       sits above the rule — see `footer`); every rule-to-rule joint inside
+       it is --space-6. */
     padding-block: calc(var(--space-section) / 2) var(--space-6);
   }
   .foot-mark {

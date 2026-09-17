@@ -124,7 +124,9 @@ const buttons = ctas ?? (cta ? [cta] : []);
        ParticipateBand's identical comment/fix; same failure mode, found here
        too via a real screenshot (3 stats, 2-then-1 at tablet width). */
     grid-template-columns: repeat(var(--cols), 1fr);
-    row-gap: var(--space-grid);
+    /* Not --space-grid: the figures have no card ground, so once they wrap or
+       stack the row gap alone is what pairs each label with its own number. */
+    row-gap: var(--space-content);
   }
   .proof-item {
     min-width: 0;

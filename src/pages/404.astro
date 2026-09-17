@@ -24,9 +24,9 @@ import Pill from '../components/primitives/Pill.astro';
     align-items: center;
     justify-content: center;
     text-align: center;
-    /* PageIntro's rhythm: one section gap under the fixed nav, half a gap
+    /* PageIntro's rhythm: one section gap under the nav, half a gap
        below. The min-height still centres the message in what's left. */
-    padding-block: calc(var(--nav-h) + var(--space-section)) calc(var(--space-section) / 2);
+    padding-block: var(--space-section) calc(var(--space-section) / 2);
   }
   .not-found h1 {
     font: var(--text-display);
