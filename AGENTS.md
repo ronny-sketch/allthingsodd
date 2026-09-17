@@ -85,9 +85,10 @@ GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
   → Surge — allthingsodd.co (production)
 ```
 
-- **Content** lives in `src/content/pages/*.json` (11 fixed pages: home,
-  oddfest, oddference, oddagency, oddspace, work-with-odd, membership, about,
-  media, contact, privacy) and
+- **Content** lives in `src/content/pages/*.json` (fixed pages: home,
+  oddfest, oddference, oddagency, oddspace, oddspace-membership,
+  oddspace-venue, oddstudio, work-with-odd, membership, about, media, contact,
+  privacy, and oddfest-2026 — the ODDfest 2026 thank-you page) and
   `src/content/site/global.json` (nav, footer, social, partner/press logos —
   shared across every page). Schema: `src/content.config.ts`.
 - **Design system** lives in `src/styles/` — `tokens.css` (color/space/motion

@@ -10,6 +10,7 @@ import { test, expect, type Page } from '@playwright/test';
 const ROUTES = [
   '/',
   '/oddfest',
+  '/oddfest-2026',
   '/oddference',
   '/oddagency',
   '/oddspace',

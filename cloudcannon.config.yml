@@ -79,7 +79,7 @@ collections_config:
         cascade: true
       participateTitle:
         type: text
-        label: Participation band headline (Home only)
+        label: Participation band headline (Home and the ODDfest 2026 thank-you)
         comment: >-
           The headline over Home's closing "ways to participate" cards —
           "The way in is by doing." Editorial copy, so it lives in content
@@ -90,8 +90,9 @@ collections_config:
         type: array
         label: '"Ways to participate" cards'
         comment: >-
-          Home and About only (2026-09-02: removed from ODDagency in favour
-          of a single-link `closingCta`). Not on ODDspace — its rebuilt
+          Home, About and the ODDfest 2026 thank-you page ("What comes
+          next") only (2026-09-02: removed from ODDagency in favour of a
+          single-link `closingCta`). Not on ODDspace — its rebuilt
           "Enter the space" section replaces this with its own dedicated
           membership/event-enquiry pair.
 
@@ -117,7 +118,10 @@ collections_config:
           "Become a member" on ODDspace (also reused in ODDspace's "Enter
           the space" section), "Start a conversation" on Work with ODD
           (scrolls to the enquiry form), and the submit-an-event link on
-          ODDfest. Home, ODDagency and About don't use this field.
+          ODDfest. On the ODDfest 2026 thank-you page it is "Play the
+          credits": keep its link as "#credits", which is what starts the
+          soundtrack and the credits roll. Home, ODDagency and About don't
+          use this field.
         options:
           subtype: object
       secondaryCta:
@@ -126,7 +130,8 @@ collections_config:
         comment: >-
           The outline hero button — "Partner with ODDference" on ODDference,
           "Organise an event" on ODDspace (also reused in ODDspace's "Enter
-          the space" section), and the look-back-at-2026 link on ODDfest.
+          the space" section), the look-back-at-2026 link on ODDfest, and
+          "See the photos" on the ODDfest 2026 thank-you page.
         options:
           subtype: object
           required: false
@@ -154,11 +159,11 @@ collections_config:
           here appears nowhere.
       heroPhotos:
         type: array
-        label: Hero photo grid (ODDspace only)
+        label: Hero photo grid (ODDspace and the ODDfest 2026 thank-you)
         comment: >-
-          Real photos of the space for the hero's photo grid — roughly 6-8
-          reads best. Each needs its own alt text describing what's actually
-          shown.
+          Real photos for the hero's photo grid — roughly 6-8 reads best on
+          ODDspace, exactly 8 on the thank-you page. The first is the largest
+          cell. Each needs its own alt text describing what's actually shown.
         options:
           structures: _structures.oddspace_hero_photo
           disable_add: false
@@ -487,10 +492,11 @@ collections_config:
           required: false
       gallery:
         type: object
-        label: Photo wall (ODDspace and About)
+        label: Photo wall (ODDspace, About and the ODDfest 2026 thank-you)
         comment: >-
           ODDspace: photos of the space in use, under the events list. About:
           ODDfest 2025 and 2026, host events and ODDspace, under the figures.
+          Thank-you page: ODDfest 2026, with "link" to the full photobank.
           Add as many as you like, portrait or landscape, in any order — the
           wall arranges them by shape, so it can't be left with gaps. Remove
           the whole section to hide the wall.
@@ -606,6 +612,54 @@ collections_config:
           live on its own domain. Set "external: true" on a link to open it
           in a new tab — it's on for oddfest.co (a different domain) and off
           for the archived page, which is ours and has its own way back.
+        options:
+          subtype: object
+      letter:
+        type: object
+        label: Opening letter (ODDfest 2026 thank-you only)
+        comment: >-
+          One sentence under the hero, in two inks: "premise" is set dim and
+          "point" ("thank you.") in full white straight after it.
+        options:
+          subtype: object
+      quote:
+        type: object
+        label: Quote (ODDfest 2026 thank-you only)
+        comment: >-
+          "emphasis" must be copied exactly from inside "text" — that part is
+          set in full white. Leave it empty for no emphasis.
+        options:
+          subtype: object
+      reflection:
+        type: object
+        label: Looking back, looking ahead (ODDfest 2026 thank-you only)
+        comment: >-
+          One entry per year, paragraphs separated by a blank line. "note" is
+          a dated caveat shown above that year's text — 2027's says the plan
+          has changed since June 2026. Remove it only if the text is updated.
+        options:
+          subtype: object
+      photoBreak:
+        type: object
+        label: Full-width photo (ODDfest 2026 thank-you only)
+        comment: The photograph between "Looking back" and the credits.
+        options:
+          subtype: object
+      credits:
+        type: object
+        label: Credits (ODDfest 2026 thank-you only)
+        comment: >-
+          The thank-you list, in order. A list whose names have a "role" shows
+          as film credits (the core team); one without shows as columns of
+          names (artists, volunteers); "subgroups" show as labelled rows (the
+          partners). A name with an "href" becomes a link that opens in a new
+          tab. Only people and organisations that actually took part in 2026.
+        options:
+          subtype: object
+      signoff:
+        type: object
+        label: Sign-off (ODDfest 2026 thank-you only)
+        comment: The closing line ("Stay ODD.") and the sentence under it.
         options:
           subtype: object
       examplesIntro:

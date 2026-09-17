@@ -1,0 +1,488 @@
+---
+// ODDfest 2026 — Thank you (/oddfest-2026/). Rebuilt 2026-09-17 at Ronny's
+// request: until then a standalone 63KB static page under public/ with its
+// own type scale, palette and Flickr hotlinks (see docs/architecture.md). It
+// now sits inside the site like any other page — ODDfest's rails and
+// ODDspace's photo-grid hero, the five-step type ladder, the spacing rhythm,
+// photographs through astro:assets, every word in oddfest-2026.json.
+//
+//   1 hero · 2 the letter · 3 looking back, looking ahead · 4 credits ·
+//   5 photographs · 6 what comes next · 7 sign-off
+//
+// What the old page had and this one deliberately does not:
+// - A feedback form that sent nothing (its submit handler only changed the
+//   button text). "What moved you?" now routes to the contact form.
+// - Two `href="#"` buttons (pre-register, ODDspace membership), now the
+//   newsletter and /oddspace/membership.
+// - A runtime Flickr API call with a key in the page source, fetching up to
+//   1,500 photos to shuffle. The 25 photos the page had curated are now local.
+// - The link to oddfest.co: /oddfest carries the site's one labelled link to
+//   it (identity-integrity.spec.ts).
+// The "play the credits" roll survives: the hero's `#credits` link starts
+// the soundtrack and a slow scroll (src/scripts/oddfest-2026-credits.ts).
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import SubpageFrame from '../components/sections/SubpageFrame.astro';
+import SpaceHero from '../components/sections/SpaceHero.astro';
+import PhotoBreak from '../components/sections/PhotoBreak.astro';
+import PhotoWall from '../components/sections/PhotoWall.astro';
+import ParticipateBand from '../components/sections/ParticipateBand.astro';
+import Pill from '../components/primitives/Pill.astro';
+import oddfestWordmark from '../assets/logos/oddfest-wordmark.svg';
+
+const entry = await getEntry('pages', 'oddfest-2026');
+if (!entry || entry.data._template !== 'oddfest2026')
+  throw new Error('oddfest-2026.json content entry missing or malformed');
+const page = entry.data;
+
+const paragraphs = (body: string) =>
+  body
+    .split(/\r?\n\s*\r?\n/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+// The quote's emphasis is a substring of its text, not markup in content.
+const [quoteBefore, quoteAfter] = page.quote.emphasis
+  ? page.quote.text.split(page.quote.emphasis)
+  : [page.quote.text, undefined];
+---
+
+<Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
+  <SubpageFrame slug="oddfest" railLeft={page.railLeft} railRight={page.railRight}>
+    <SpaceHero
+      slot="hero"
+      photos={page.heroPhotos}
+      title={page.title}
+      meta={page.meta}
+      logo={oddfestWordmark}
+      logoAlt="ODDfest"
+      primaryCta={page.primaryCta}
+      secondaryCta={page.secondaryCta}
+    />
+
+    <!-- 2. The letter: one sentence in two inks, and the quote under it. -->
+    <section class="ty-letter">
+      <div class="wrap flow">
+        <p class="ty-letter-text reveal">
+          <span class="ty-dim">{page.letter.premise}</span>{' '}{page.letter.point}
+        </p>
+        <figure class="ty-quote reveal">
+          <blockquote>
+            <p>
+              {quoteBefore}
+              {
+                quoteAfter !== undefined && (
+                  <>
+                    <span class="ty-quote-em">{page.quote.emphasis}</span>
+                    {quoteAfter}
+                  </>
+                )
+              }
+            </p>
+          </blockquote>
+          <figcaption>{page.quote.attribution}</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 3. Looking back, looking ahead. 2027's text is the June 2026 plan,
+         so it carries a dated note pointing at the current one. -->
+    <section class="ty-sub">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.reflection.eyebrow}</span>
+          <h2>{page.reflection.title}</h2>
+        </div>
+        <div class="ty-years">
+          {
+            page.reflection.years.map((y) => (
+              <div class="ty-year reveal">
+                <h3 class="ty-year-label">{y.year}</h3>
+                <div class="ty-year-body">
+                  {y.note && (
+                    <p class="ty-year-note">
+                      {y.note.text} <a href={y.note.link.href}>{y.note.link.label} →</a>
+                    </p>
+                  )}
+                  {paragraphs(y.body).map((p) => (
+                    <p>{p}</p>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <PhotoBreak image={page.photoBreak.image} alt={page.photoBreak.alt} tall />
+
+    <!-- 4. The credits. `#credits` is where the hero's play link lands
+         without JS. -->
+    <section class="ty-sub" id="credits">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.credits.eyebrow}</span>
+          <h2>{page.credits.title}</h2>
+        </div>
+        <p class="ty-lede reveal">{page.credits.lede}</p>
+        {
+          page.credits.lists.map((group) => (
+            <div class="ty-group">
+              <h3 class="ty-group-title">{group.title}</h3>
+              {group.intro && <p class="ty-group-intro">{group.intro}</p>}
+              {group.items &&
+                (group.items.some((item) => item.role) ? (
+                  <dl class="ty-roles reveal">
+                    {group.items.map((item) => (
+                      <div class="ty-role">
+                        <dt>{item.role}</dt>
+                        <dd>{item.name}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                ) : (
+                  <ul class="ty-names reveal">
+                    {group.items.map((item) => (
+                      <li>{item.name}</li>
+                    ))}
+                  </ul>
+                ))}
+              {group.subgroups?.map((sub) => (
+                <div class="ty-subgroup reveal">
+                  <h4 class="eyebrow">{sub.label}</h4>
+                  <ul class="ty-names is-row">
+                    {sub.items.map((item) => (
+                      <li>
+                        {item.href ? (
+                          <a href={item.href} target="_blank" rel="noreferrer">
+                            {item.name}
+                          </a>
+                        ) : (
+                          item.name
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 5. Photographs. -->
+    <section class="ty-sub" id="photos">
+      <div class="wrap flow">
+        <div class="section-head">
+          {page.gallery.eyebrow && <span class="eyebrow">{page.gallery.eyebrow}</span>}
+          <h2>{page.gallery.title}</h2>
+        </div>
+        {page.gallery.note && <p class="ty-lede reveal">{page.gallery.note}</p>}
+        <PhotoWall photos={page.gallery.photos} />
+        <div class="ty-actions">
+          <Pill
+            href={page.gallery.link.href}
+            variant="outline"
+            magnetic
+            target={page.gallery.link.external ? '_blank' : undefined}
+          >
+            {page.gallery.link.label}
+          </Pill>
+        </div>
+      </div>
+    </section>
+
+    <ParticipateBand title={page.participateTitle} items={page.participate} />
+
+    <section class="ty-signoff">
+      <div class="wrap">
+        <h2 class="reveal">{page.signoff.title}</h2>
+        <p class="reveal">{page.signoff.body}</p>
+      </div>
+    </section>
+  </SubpageFrame>
+
+  <!-- The credits roll's own control, shown once it has started. -->
+  <div class="ty-player" data-credits-player data-src="/audio/oddfest-2026-aftermovie.mp3" hidden>
+    <Pill type="button" variant="solid" id="creditsToggle">Pause the credits</Pill>
+  </div>
+</Layout>
+
+<script src="../scripts/oddfest-2026-credits.ts"></script>
+
+<style>
+  /* The letter: Heading size, centred on a short measure. The premise is
+     dim and the point is full ink — one size, two inks, as in BuiltAround. */
+  .ty-letter .wrap {
+    text-align: center;
+  }
+  .ty-letter-text {
+    max-width: 34ch;
+    margin-inline: auto;
+    margin-block: 0;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+  }
+  .ty-dim {
+    color: var(--color-paper-40);
+  }
+  .ty-quote {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    margin-block-end: 0;
+  }
+  .ty-quote blockquote {
+    margin: 0;
+  }
+  .ty-quote p {
+    margin: 0;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+  }
+  .ty-quote p::before {
+    content: '“';
+  }
+  .ty-quote p::after {
+    content: '”';
+  }
+  .ty-quote-em {
+    color: var(--color-paper);
+  }
+  .ty-quote figcaption {
+    margin-top: var(--space-3);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .ty-quote figcaption::before {
+    content: '— ';
+  }
+
+  /* A lede tucked under its section head replaces the flow step. */
+  .ty-lede {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    margin-block: var(--space-4) 0;
+    text-align: center;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+  }
+
+  /* Looking back, looking ahead: the year in Display beside its text. */
+  .ty-years {
+    max-width: 58rem;
+    margin-inline: auto;
+  }
+  .ty-year {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
+    gap: var(--space-3) var(--space-8);
+    padding-block: var(--space-content);
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .ty-year:first-child {
+    border-top: 0;
+    padding-block-start: 0;
+  }
+  .ty-year-label {
+    margin: 0;
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
+    color: var(--color-paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .ty-year-body p {
+    max-width: var(--measure-prose);
+    margin: 0;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+  }
+  .ty-year-body p + p {
+    margin-top: var(--space-4);
+  }
+  .ty-year-body .ty-year-note {
+    margin-bottom: var(--space-5);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-paper-12);
+    font: var(--text-small);
+    color: var(--color-paper-80);
+  }
+  .ty-year-note a {
+    font-weight: 600;
+    color: var(--color-paper);
+    text-decoration: underline;
+    text-decoration-color: var(--color-paper-40);
+    text-underline-offset: 3px;
+    white-space: nowrap;
+  }
+  .ty-year-note a:hover {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
+  }
+  @media (max-width: 700px) {
+    .ty-year {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Credits: each group is a new group in the section's flow. */
+  .flow > .ty-group + .ty-group {
+    margin-block-start: var(--space-group);
+    padding-top: var(--space-group);
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .ty-group {
+    text-align: center;
+  }
+  .ty-group-title {
+    margin: 0;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+  }
+  .ty-group-intro {
+    max-width: 30rem;
+    margin: var(--space-3) auto 0;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+  }
+  .ty-group-title ~ :is(.ty-roles, .ty-names, .ty-subgroup) {
+    margin-top: var(--space-content);
+  }
+  .ty-group-title ~ .ty-subgroup + .ty-subgroup {
+    margin-top: var(--space-group);
+  }
+
+  /* The core team as film credits: role right-aligned, name left-aligned,
+     meeting at the centre line. Stacks on phones. */
+  .ty-roles {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 64rem;
+    margin-inline: auto;
+    margin-block-end: 0;
+  }
+  .ty-role {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: var(--space-6);
+  }
+  .ty-role dt {
+    text-align: right;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .ty-role dd {
+    margin: 0;
+    text-align: left;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+  }
+  @media (max-width: 640px) {
+    .ty-role {
+      grid-template-columns: 1fr;
+      row-gap: var(--space-1);
+    }
+    .ty-role dt,
+    .ty-role dd {
+      text-align: center;
+    }
+    .ty-role dd {
+      grid-row: 1;
+    }
+  }
+
+  /* Everyone else as balanced columns of names. */
+  .ty-names {
+    columns: 12rem auto;
+    column-gap: var(--space-6);
+    margin-block-end: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ty-names li {
+    break-inside: avoid;
+    padding-block: var(--space-1);
+    font: var(--text-body);
+    color: var(--color-paper-80);
+  }
+  .ty-names a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--color-paper-20);
+    text-underline-offset: 3px;
+    transition:
+      color var(--duration-fast) ease,
+      text-decoration-color var(--duration-fast) ease;
+  }
+  .ty-names a:hover {
+    color: var(--color-amber-bright);
+    text-decoration-color: var(--color-amber-bright);
+  }
+  .ty-subgroup .eyebrow {
+    margin: 0 0 var(--space-3);
+  }
+  @media (max-width: 420px) {
+    .ty-names {
+      columns: 2;
+      column-gap: var(--space-4);
+    }
+  }
+  /* The partners' groups are short, and columns sized for 120 names would
+     leave two names off-centre in a four-column grid: centred rows instead. */
+  .ty-names.is-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: var(--space-6);
+    max-width: 56rem;
+    margin-inline: auto;
+  }
+
+  .ty-actions {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Sign-off: the page's last word, at Hero size. */
+  .ty-signoff {
+    text-align: center;
+  }
+  .ty-signoff h2 {
+    margin: 0;
+    font: var(--text-hero);
+    letter-spacing: var(--tracking-hero);
+    color: var(--color-paper);
+  }
+  .ty-signoff p {
+    margin: var(--space-5) 0 0;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+  }
+
+  /* The credits roll's control: bottom centre, clear of the home indicator. */
+  .ty-player {
+    position: fixed;
+    left: 50%;
+    bottom: calc(var(--space-5) + env(safe-area-inset-bottom));
+    z-index: 40;
+    transform: translateX(-50%);
+  }
+  .ty-player[hidden] {
+    display: none;
+  }
+  .ty-player :global(.pill) {
+    padding: 0.8rem 1.9rem;
+    box-shadow: var(--shadow-panel);
+  }
+</style>

@@ -1,9 +1,0 @@
-# The archived ODDfest 2026 thank-you page is a finished artefact, copied in
-# verbatim rather than rebuilt: 63KB of hand-authored HTML/CSS/JS with its own
-# formatting, shipped as a static file under public/. Reformatting it would
-# produce a large, unreviewable diff over code nobody is going to maintain
-# line by line, and this repo's own Prettier settings have nothing to say
-# about a document that isn't part of the Astro source. The three edits it
-# did receive (fonts, audio filename, archive banner) are recorded in
-# docs/architecture.md, point 7.
-public/oddfest-2026/index.html

@@ -591,9 +591,8 @@ const pages = defineCollection({
         secondaryCta: linkCta.optional(),
         whatItIs: sectionIntro,
         // The two ways to look back at ODDfest 2026, as a pair of buttons
-        // under `whatItIs` (2026-09-11): the archived thank-you page, now
-        // hosted on this site at /oddfest-2026/ (public/oddfest-2026/ — a
-        // standalone page, deliberately not rebuilt as an Astro route), and
+        // under `whatItIs` (2026-09-11): the thank-you page at /oddfest-2026/
+        // (a real route since 2026-09-17 — the `oddfest2026` template), and
         // oddfest.co, the 2026 site still live on its own domain. Both are
         // history rather than the current offer, which is why they sit under
         // the explainer instead of competing with the hero's own CTAs.
@@ -711,6 +710,97 @@ const pages = defineCollection({
           href: z.string(),
         }),
         faq: z.array(faqItem),
+      }),
+
+      // The ODDfest 2026 thank-you page at /oddfest-2026/ (2026-09-17). Until
+      // then a standalone static file under public/ with its own type scale,
+      // colours and Flickr hotlinks; rebuilt on the site's own components at
+      // Ronny's request so it follows the same design system as every other
+      // page. The letter, the reflection and the credits are the ones sent in
+      // June 2026 — edit the lists, not the voice. See docs/architecture.md.
+      z.object({
+        _template: z.literal('oddfest2026'),
+        seo,
+        // The hero: SpaceHero's photo grid (8 photos) under the ODDfest
+        // wordmark. `title` is the page's h1.
+        title: z.string(),
+        meta: z.string(),
+        // Links, not buttons, so they work without JS. A primary CTA pointing
+        // at `#credits` is also the "play the credits" control: with JS it
+        // starts the soundtrack and the slow scroll (oddfest-2026-credits.ts).
+        primaryCta: linkCta,
+        secondaryCta: linkCta,
+        heroPhotos: z.array(z.object({ image: image(), alt: z.string() })).length(8),
+        railLeft: z.array(railItem),
+        railRight: z.array(railItem),
+        // One sentence in two inks: the premise dim, the point bright — the
+        // same device as Home's "Why ODD" headline.
+        letter: z.object({ premise: z.string(), point: z.string() }),
+        // `emphasis` must be a substring of `text`; it is set in full ink.
+        quote: z.object({
+          text: z.string(),
+          emphasis: z.string().optional(),
+          attribution: z.string(),
+        }),
+        reflection: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          years: z.array(
+            z.object({
+              year: z.string(),
+              // Paragraphs separated by a blank line.
+              body: z.string(),
+              // A dated caveat shown above the year's text — 2027's, because
+              // the plan it describes has changed since June 2026.
+              note: z.object({ text: z.string(), link: linkCta }).optional(),
+            }),
+          ),
+        }),
+        photoBreak: z.object({ image: image(), alt: z.string() }),
+        credits: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          lede: z.string(),
+          // A list renders its `items` as film credits when they carry a
+          // role, as columns of names when they don't, and `subgroups` as
+          // labelled rows (the partners). Not called `groups`: CloudCannon
+          // keys inputs by field name, and ODDfest's `groups` is another shape.
+          lists: z.array(
+            z.object({
+              title: z.string(),
+              intro: z.string().optional(),
+              items: z
+                .array(
+                  z.object({
+                    name: z.string(),
+                    role: z.string().optional(),
+                    href: z.string().optional(),
+                  }),
+                )
+                .optional(),
+              subgroups: z
+                .array(
+                  z.object({
+                    label: z.string(),
+                    items: z.array(z.object({ name: z.string(), href: z.string().optional() })),
+                  }),
+                )
+                .optional(),
+            }),
+          ),
+        }),
+        // Same shape as ODDspace's and About's `gallery`, plus the link to the
+        // full photobank.
+        gallery: z.object({
+          eyebrow: z.string().optional(),
+          title: z.string(),
+          note: z.string().optional(),
+          photos: z.array(z.object({ image: image(), alt: z.string() })),
+          link: linkCta,
+        }),
+        participateTitle: z.string(),
+        participate: z.array(cta),
+        signoff: z.object({ title: z.string(), body: z.string() }),
       }),
 
       // The 2027 ODDference rebuild: the centrally-produced professional

@@ -26,6 +26,7 @@ const ROUTES = [
   '/',
   '/about',
   '/oddfest',
+  '/oddfest-2026',
   '/oddference',
   '/oddspace',
   '/oddstudio',

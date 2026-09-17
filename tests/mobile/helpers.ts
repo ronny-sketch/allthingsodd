@@ -4,6 +4,7 @@ import type { Page } from '@playwright/test';
 export const ROUTES = [
   '/',
   '/oddfest',
+  '/oddfest-2026',
   '/oddference',
   '/oddspace',
   '/work-with-odd',
