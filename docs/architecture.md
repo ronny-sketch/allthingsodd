@@ -251,7 +251,7 @@ real decisions worth recording:
      at a 2027 plan that has since changed) was rewritten the same day at
      Ronny's request: 2027 is gone, and the section tells what happened in
      2026 around one figure — the number of different names in the credits,
-     counted by the page itself (276 at the time: 286 lines, ten names listed
+     counted by the page itself (274 at the time: 284 lines, ten names listed
      twice). Its facts are only ones the site already published (Media's
      archive entry, ODDfest's highlights, ODDference's FAQ). What did not survive, on purpose: a feedback form whose submit
      handler only changed its button text (the card now links to the
