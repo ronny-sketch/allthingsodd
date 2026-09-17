@@ -2,8 +2,8 @@
   "_template": "oddference",
   "_slug": "oddference",
   "seo": {
-    "title": "ODDference — what can business and society learn from creative expertise?",
-    "description": "ODDference is a professional event exploring what business and wider society can learn from creative and cultural expertise. Helsinki, 2027.",
+    "title": "ODDference 2027 — Business Conference Powered by Creative Expertise",
+    "description": "ODDference is a business conference powered by creative expertise — bringing business leaders, founders and decision-makers together with people from culture, design, media, music, games and more. Helsinki, 2027.",
     "ogImage": "/og/oddference.jpg"
   },
   "eyebrow": "ODDference · 2027",
@@ -24,7 +24,7 @@
   "concept": {
     "eyebrow": "The premise",
     "headline": "What can business and the rest of society learn from creative expertise?",
-    "body": "ODDference is a professional event for learning from creative and cultural expertise — and for meeting clients, partners, collaborators and decision-makers outside your usual circuit.\n\nPeople who work in art, design, music, film, games and media decide every day what deserves attention, what people will remember, and how to make something that did not exist before. Those are useful questions to bring into a business, a city or an institution. ODDference is where that exchange happens in a serious room."
+    "body": "ODDference is a business conference built around creative and cultural expertise. People who work in art, design, music, film, games and media think constantly about attention, experience, meaning, emotion and how to make something that did not exist before. ODDference brings that expertise into questions facing business and society.\n\nIt is also a place to meet people outside your usual circuit — creative leaders, business leaders, founders, policymakers, institutions and researchers — and turn those encounters into partners, collaborators and new ideas."
   },
   "reasonsIntro": {
     "eyebrow": "Why come",
@@ -34,22 +34,22 @@
     {
       "number": "01",
       "eyebrow": "Learn",
-      "title": "Take a different kind of expertise back to work.",
-      "body": "ODDference brings creative and cultural practice into questions about leadership, technology, organisations and society. The point is not inspiration for its own sake, but new ways to look at problems you already have.",
+      "title": "See familiar problems through a different lens.",
+      "body": "Creative professionals work with attention, emotion, experience, meaning and differentiation every day. ODDference brings that expertise into the questions business and society are facing now.",
       "image": "../../assets/hero/archive-03.jpg"
     },
     {
       "number": "02",
-      "eyebrow": "Business & people",
-      "title": "Meet people worth doing business with.",
-      "body": "ODDference deliberately mixes creative leaders, business leaders, founders, policymakers, institutions and researchers, with time built in for the conversations that follow. That puts clients, partners and collaborators in the room who are hard to find at a single-industry conference.",
+      "eyebrow": "Meet",
+      "title": "Connect with people outside your usual circuit.",
+      "body": "ODDference brings together creative leaders, business leaders, founders, policymakers, institutions and researchers — putting potential clients, partners and collaborators in the same room who rarely meet at a single-industry conference.",
       "image": "../../assets/hero/archive-14.jpg"
     },
     {
       "number": "03",
       "eyebrow": "Experience",
-      "title": "The event should prove its own point.",
-      "body": "If ODDference argues that creative expertise matters, the experience cannot stop at the speaker list. Artists and creative practitioners can shape the spaces, scenography, performances, food, music and other parts of how the event feels and behaves."
+      "title": "Don't just hear the argument. Experience it.",
+      "body": "If creative expertise is the point, the event itself should prove it. Artists and creative practitioners shape the spaces, scenography, performances, soundscape and other parts of how ODDference feels."
     }
   ],
   "speakers": [
@@ -330,16 +330,16 @@
     }
   ],
   "partnershipCta": {
-    "eyebrow": "For organisations",
-    "title": "What could your organisation make possible inside ODDference?",
-    "body": "Bring an idea, a question, expertise or resources. The best partnerships should improve the event for the people in the room, not just add a logo.",
+    "eyebrow": "For partners",
+    "title": "What could your organisation enable inside ODDference?",
+    "body": "Bring an idea, a question, expertise or resources. The best partnerships should improve the event for the people in the room, not just add another logo on a wall.",
     "linkLabel": "Talk to us about partnering →",
     "href": "/work-with-odd/?interest=oddference_corporate#enquiry-form"
   },
   "faq": [
     {
       "question": "What is ODDference?",
-      "answer": "A professional event where creative and cultural practitioners take the stage as experts rather than as entertainment, and business leaders, founders, policymakers and institutions come to learn from them. The 2026 edition ran over two days in central Helsinki with 25 speakers and more than 30 sessions."
+      "answer": "A business conference where creative and cultural practitioners take the stage as experts rather than as entertainment, and business leaders, founders, policymakers and institutions come to learn from them. The 2026 edition ran over two days in central Helsinki with 25 speakers and more than 30 sessions."
     },
     {
       "question": "When and where is ODDference 2027?",
@@ -363,7 +363,7 @@
     },
     {
       "question": "What language is ODDference in?",
-      "answer": "ODDference 2026 ran in English, with speakers from Finland, Denmark, Canada and the US."
+      "answer": "ODDference 2026 ran in English, with speakers from Finland, Denmark, Canada and the US. The working language for 2027 will be confirmed with the programme."
     },
     {
       "question": "Who is it for?",

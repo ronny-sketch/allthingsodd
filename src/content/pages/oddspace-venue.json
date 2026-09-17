@@ -7,7 +7,7 @@
     "ogImage": "/og/oddspace.jpg"
   },
   "eyebrow": "ODDspace · As a venue",
-  "title": "Host it here.",
+  "title": "Host your event at ODDspace.",
   "meta": "Vallila · Helsinki · No membership needed",
   "primaryCta": {
     "label": "Enquire about a date",
@@ -44,11 +44,11 @@
       "alt": "The industrial Vallila building that houses ODDspace"
     }
   ],
-  "intro": "You do not need to be a member to book. Tell us the date and what you're planning, and we'll tell you straight away whether the space can do it.",
+  "intro": "You do not need to be a member to book. Tell us the date and what you're planning, and we'll tell you whether the space can do it.",
   "whatItIs": {
     "eyebrow": "What it's good for",
-    "headline": "A gallery floor, an auditorium, and a building that already hosts things.",
-    "body": "ODDspace is a working creative space in Vallila with two bookable event rooms in it — a gallery and event floor, and an auditorium with tiered seating. Exhibitions, launches, workshops, talks, screenings, shoots, gatherings, performances and organisational events have all happened here. It does not feel like a hotel conference room, which is usually why people ask about it."
+    "headline": "A gallery floor, an auditorium, and flexible space for events.",
+    "body": "ODDspace is a working creative space in Vallila with two bookable event rooms in it — a gallery and event floor, and an auditorium with tiered seating. Exhibitions, launches, workshops, talks, screenings, shoots, gatherings, performances and organisational events have all happened here. It does not feel like a hotel conference room — which is exactly why many choose it."
   },
   "eventTypes": [
     "Exhibitions and openings",
@@ -115,8 +115,8 @@
   "ratesNote": "Non-member rates are set per event rather than from a rate card — ask, and you'll get a number for your date. Membership is €150 / month, so for a series of events it is often worth comparing the two.",
   "whatWeCanDo": {
     "eyebrow": "Beyond the room",
-    "headline": "We can also help make it.",
-    "body": "ODD produces its own events in this building every week, and works with organisations on events elsewhere. If you want more than a room — concept, programme, production, or people who know how to run a night — say so in your enquiry and we'll tell you what that would take. If you just want the room, that's also completely fine."
+    "headline": "Need more than a venue?",
+    "body": "The team behind ODDspace also develops and produces events, programmes and creative projects. If you need help with the concept, programme, production or bringing the right people together, tell us in your enquiry. We can build a wider collaboration around the event — or simply give you the room and let you run with it."
   },
   "howItWorks": [
     {
@@ -138,7 +138,7 @@
   "askUs": {
     "eyebrow": "Ask us directly",
     "headline": "Things we answer per event, not on a page.",
-    "body": "Some of what you need to plan a real event depends on your date and your plan — and some of it we are still documenting properly. Rather than publish numbers we cannot stand behind, we answer these in your enquiry, usually the same day:",
+    "body": "Tell us what you're planning and when. We'll confirm the relevant capacities, technical setup, access, availability and anything else you need to know for your event.",
     "items": [
       "Exact capacities and layouts for your format",
       "Room dimensions and what fits in them",

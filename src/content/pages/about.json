@@ -2,16 +2,16 @@
   "_template": "about",
   "seo": {
     "title": "About ODD — why we exist and what we are building",
-    "description": "ODD works on two connected problems: creative work needs more continuity, and creative and cultural expertise needs stronger links to business and wider society.",
+    "description": "ODD builds events, spaces and projects that create more continuity around creative work and stronger connections between creative and cultural fields, business and wider society.",
     "ogImage": "/og/about.jpg"
   },
   "eyebrow": "About ODD",
   "title": "Creativity belongs closer to the centre.",
-  "intro": "ODD started from a simple frustration: Finland has extraordinary creative work, but too much of it lives in short bursts — and too much of the knowledge inside it stays inside its own circles.",
+  "intro": "ODD grew from a simple idea: Finland has extraordinary creative talent, and there is more potential in what can happen around it — when people, places, resources and different parts of society connect more easily.",
   "argument": [
-    "Creative work has a continuity problem. A project gets funded, produced and finished — and then the people involved rebuild the next one almost from zero: new money, new partners, a new place to work, a new reason to gather. The work happens. The knowledge, trust and momentum around it mostly disappear in between.",
-    "There is a second separation. The people shaping culture and the people making decisions in companies, institutions and public life rarely spend serious time together. That distance is unnecessary, and it costs both sides. Creative practice holds real expertise in attention, taste, meaning and making things that do not exist yet — and Finland's own creative-economy goals already assume that expertise will matter more, not less, to growth and innovation.",
-    "ODD works on both problems at once. Not by claiming to represent the creative field, but by building places and moments where work can continue, people can meet, and a first encounter can turn into something that lasts."
+    "Finland already has strong artists, organisations, institutions, funding and creative communities. What is often harder is continuity: projects, spaces, networks and partnerships do not always connect in ways that let relationships, knowledge and opportunities build on each other over time.",
+    "There is also more potential in bringing creative and cultural expertise into closer contact with business, institutions and public life. Creative practice carries real expertise in attention, taste, meaning, experimentation and making things that did not exist before — capabilities that matter far beyond the cultural sector.",
+    "ODD builds places, events and projects where those connections can happen more naturally. We do not claim to represent the creative field; we create conditions for different people and practices to meet, work together and keep going."
   ],
   "story": {
     "eyebrow": "Our story",
@@ -25,7 +25,7 @@
       {
         "year": "2024",
         "title": "Finding the gap",
-        "body": "The question becomes clearer: Finland has strong creative talent, but too little continuity around the work and too few structures connecting creative fields with the rest of society."
+        "body": "The question becomes clearer: Finland has strong creative talent, and more can happen when there is greater continuity around the work and stronger links between creative fields and the rest of society."
       },
       {
         "year": "2025",
@@ -40,7 +40,7 @@
       {
         "year": "2027",
         "title": "A clearer portfolio",
-        "body": "Creative Week becomes ODDfest. ODDference stands as its own professional event. ODDspace continues year-round. Projects, partnerships and a developing organisational network create further ways to work together. This is the structure we are building, not a finished system."
+        "body": "Creative Week becomes ODDfest. ODDference stands as its own business conference. ODDspace continues year-round. Projects, partnerships and a developing organisational network create further ways to work together. This is the structure we are building, not a finished system."
       }
     ],
     "legalNote": "ODD is operated by New Nordic Way rf, a Finnish non-profit association based in Helsinki."

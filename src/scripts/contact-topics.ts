@@ -43,7 +43,7 @@ export const CONTACT_TOPICS: readonly ContactTopic[] = [
   },
   {
     value: 'partnering',
-    label: 'Partnering & ODDference',
+    label: 'Partnerships & ODDference',
     subject: 'Partnering / ODDference',
   },
   { value: 'oddspace', label: 'ODDspace', subject: 'ODDspace' },

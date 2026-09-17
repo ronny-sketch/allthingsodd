@@ -3,7 +3,7 @@
   "_slug": "oddfest",
   "seo": {
     "title": "ODDfest 2027 — Helsinki's creative week",
-    "description": "ODDfest is a city-wide week of independently made events across Helsinki. Hosts make the programme; ODD brings it together. Bring an event idea for 2027.",
+    "description": "ODDfest 2027 is Helsinki's creative week: independently made events across the city, bringing cultural and creative scenes together in one shared programme.",
     "ogImage": "/og/oddfest.jpg"
   },
   "eyebrow": "ODDfest · Helsinki 2027",
@@ -20,12 +20,12 @@
   "heroMedia": {
     "video": "/video/oddfest-hero.mp4",
     "poster": "../../assets/video/oddfest-hero-poster.jpg",
-    "sub": "Bring something to Helsinki's creative week."
+    "sub": "Helsinki's creative week, bringing cultural and creative scenes together."
   },
   "whatItIs": {
     "eyebrow": "What ODDfest is",
-    "headline": "Made across Helsinki, by the people taking part.",
-    "body": "ODDfest is a week of independently made events across Helsinki. Artists, collectives, venues, organisations, communities and companies make and produce their own. Your event stays yours — your idea, your content, your name on it.\n\nOn its own, an event is one night in a city with a lot of nights in it. Put enough of them under one name, in one week, on one programme, and they become something a person can plan around."
+    "headline": "One shared week, made by Helsinki's creative communities.",
+    "body": "ODDfest is a week of independently made events across Helsinki. Artists, collectives, venues, organisations, communities and companies make and produce their own. Bring what you do best — ODDfest gives it a place in a bigger shared week.\n\nOn its own, an event reaches its own audience. Brought together with many others across one week, it becomes part of a bigger citywide moment — connecting different scenes, audiences and ideas that might not otherwise meet."
   },
   "lookBack": {
     "label": "Look back at 2026",
@@ -42,20 +42,20 @@
   "ownership": {
     "headline": "Your event. One shared week.",
     "host": {
-      "title": "You, the host",
-      "body": "You lead the idea, the content, the production and the economics. The event keeps your name and your decisions. Taking part asks you to hand over none of that."
+      "title": "You bring the idea.",
+      "body": "Create the event, experience or programme you want to make, in your own way."
     },
     "odd": {
-      "title": "ODD",
-      "body": "We connect your event to the rest of the week: the ODDfest identity, one public programme, the communications, coordination between hosts, and introductions when there is a real match. What we will not do is decide your programme for you."
+      "title": "ODD brings the week together.",
+      "body": "We build the shared identity, programme, communications, PR and map around the week — and help connect hosts with venues, partners and each other where useful."
     },
-    "closing": "ODD is not a production office, and ODDfest is not a logo placed on top of separate events. The point is to make independent work easier to find, and stronger for being found together.",
+    "closing": "ODDfest doesn't produce the events for you. It brings independently made events together so they're easier to discover, reach wider audiences and become part of one bigger citywide week.",
     "stepsLabel": "From an idea to the programme"
   },
   "howItWorks": [
     {
       "number": "01",
-      "title": "Start with something you already want to make",
+      "title": "Start with what you do best",
       "body": "An exhibition, a performance, a workshop, a screening, a dinner, an open studio, a club night, a conversation — or a format nobody has tried yet. If it belongs in Helsinki's creative life, it belongs in the week."
     },
     {
@@ -66,7 +66,7 @@
     {
       "number": "03",
       "title": "Build it your way",
-      "body": "You lead the production and keep control of the content, the budget and the practical decisions. Where there is a real fit, we can connect you with other hosts, venues, partners or resources. That help is case by case — ODD does not automatically fund or produce host events, and we would rather be plain about that now than let anyone plan around it."
+      "body": "You shape and produce your event. Where useful, we can help connect you with other hosts, venues, partners or resources. Tell us what would make the biggest difference and we'll be clear about what we can help with."
     },
     {
       "number": "04",
@@ -92,7 +92,7 @@
   "examplesIntro": {
     "eyebrow": "Highlights",
     "headline": "One week. Many hosts.",
-    "body": "Creative Week 2026 brought more than 1,000 people to partner events across Helsinki. Then ODDfest 2026 took over five venues with more than 150 acts. A few highlights from both, each one made with someone else.",
+    "body": "In 2026, Creative Week brought more than 1,000 people to partner events across Helsinki, while ODDfest brought more than 150 acts to five venues. A few highlights from both — each one made with someone else.",
     "closing": "The point is not that these events look alike. It is that, for one week, they become easier to discover together."
   },
   "examples": [

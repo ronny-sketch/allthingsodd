@@ -17,7 +17,7 @@ import { submitToWeb3Forms } from './web3forms';
 const INTEREST_LABELS: Record<string, string> = {
   oddference_corporate: 'ODDference',
   oddmembership: 'ODDnetwork',
-  strategic_partnership: 'Event partnership',
+  strategic_partnership: 'Partnership',
   oddagency: 'ODDagency / project',
   oddspace: 'ODDspace',
   other: 'Something else',

@@ -256,7 +256,7 @@ so there is one key per topic:
 | Topic on the form         | Key field    | Sends to              |
 | ------------------------- | ------------ | --------------------- |
 | Something else / not sure | `general`    | `hello@oddfest.co`    |
-| Partnering & ODDference   | `partnering` | `partners@oddfest.co` |
+| Partnerships & ODDference | `partnering` | `partners@oddfest.co` |
 | ODDspace                  | `oddspace`   | `space@oddfest.co`    |
 | ODDfest                   | `oddfest`    | `fest@oddfest.co`     |
 
