@@ -1,8 +1,8 @@
 ---
-// Speaker/team grid — ODDference's Speakers section and About's People
-// section. `image` is optional: About's team has no photos yet and keeps
-// the clean typographic card; ODDference's 2026 speaker roster has real,
-// verified photos, which render as a photo-led card instead.
+// Speaker grid — ODDference's past speakers, its only caller since About
+// dropped its People section. `image` is optional: a card without one keeps
+// the plain typographic treatment; ODDference's speakers have real, verified
+// photos, which render as a photo-led card instead.
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
@@ -44,26 +44,22 @@ const { items } = Astro.props;
 </div>
 
 <style>
-  /* minmax(13.75rem, 16.25rem) — 220px/260px at the default root — not an
-     uncapped 1fr maximum: with a roster count (10
-     speakers today) that doesn't divide evenly by the columns-per-row a
-     given width fits, an uncapped 1fr track stretches the final row's few
-     remaining cards to fill the gap, reading as visually oversized speaker
-     cards next to normal ones above (2026-08-31 final implementation pass:
-     this is exactly the "incomplete final row" failure requirement 5 warns
-     about — confirmed via a real screenshot). `justify-content: center`
-     centers a short final row rather than leaving it flush left. No
-     container background either (see FeatureGrid.astro's identical fix and
-     comment) — CSS Grid's explicit columns apply to every row uniformly, so
-     a background here painted an incomplete last row's genuinely empty
-     cells too, showing as a bare solid-color box next to the one real card
-     there. Each card's own background below plus `gap` reads as a hairline
-     grid on its own, real cards only. */
+  /* Ten speakers as 5 × 2, and 2 × 5 on phones (2026-09-17 — this was an
+     auto-fit wall of 13.75rem cards that ran to five rows). Fixed columns
+     only divide evenly at ten, which is why the CMS asks editors to keep it
+     there. 720px, not the site's usual 640px, because 5 columns between
+     641px and 720px leave a card too narrow for "Jääskeläinen" at any role.
+     No container background: the cards' own backgrounds plus the 1px gap
+     read as a hairline grid. */
   .person-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(13.75rem, 16.25rem));
-    justify-content: center;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 1px;
+  }
+  @media (max-width: 720px) {
+    .person-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
   .person-card {
     background: var(--color-backstage);
@@ -76,7 +72,7 @@ const { items } = Astro.props;
      of the card edge-to-edge, name/role sit in the same padded footer as
      the plain typographic card below. */
   .person-card.has-photo {
-    padding: 0 0 var(--space-6);
+    padding: 0 0 var(--space-4);
   }
   .person-photo {
     aspect-ratio: 4 / 5;
@@ -84,6 +80,10 @@ const { items } = Astro.props;
     background: #000;
     margin-bottom: var(--space-5);
   }
+  .person-card.has-photo .person-photo {
+    margin-bottom: var(--space-3);
+  }
+
   .person-photo :global(img) {
     width: 100%;
     height: 100%;
@@ -100,8 +100,41 @@ const { items } = Astro.props;
   .person-card.has-photo .person-name,
   .person-card.has-photo .person-role,
   .person-card.has-photo .person-bio {
-    padding-left: 1.8rem;
-    padding-right: 1.8rem;
+    padding-inline: 0.9rem;
+  }
+  /* A fifth of a column is a narrow card, so the photo card's name is Forta
+     at Body rather than Heading, and at Small below 1024px, where a card is
+     117–157px wide (design-system.md, documented exception 7). The inline
+     padding gives way in the same range, back to 0.6rem once two columns
+     leave room. `break-word` catches a word that still does not fit — phones
+     narrower than 357px, or a larger browser default font size — so it
+     wraps inside its card instead of running under the next one. */
+  .person-card.has-photo .person-name {
+    font-size: var(--font-size-body);
+  }
+  .person-card.has-photo .person-role {
+    margin-top: 0.25rem;
+  }
+  .person-name,
+  .person-role {
+    overflow-wrap: break-word;
+  }
+  @media (max-width: 1023px) {
+    .person-card.has-photo .person-name {
+      font-size: var(--font-size-small);
+    }
+    .person-card.has-photo .person-name,
+    .person-card.has-photo .person-role,
+    .person-card.has-photo .person-bio {
+      padding-inline: 0.4rem;
+    }
+  }
+  @media (max-width: 720px) {
+    .person-card.has-photo .person-name,
+    .person-card.has-photo .person-role,
+    .person-card.has-photo .person-bio {
+      padding-inline: 0.6rem;
+    }
   }
   .person-name {
     display: block;

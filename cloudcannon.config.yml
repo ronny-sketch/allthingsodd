@@ -832,8 +832,9 @@ collections_config:
           the event's own run sheet — don't rewrite them into marketing
           copy, and don't add a session that didn't happen. "Format" is
           Keynote or Fireside chat; "Speakers" is a plain display line
-          ("A, B & C"). A curated dozen reads better than the full
-          programme; the section doesn't render while this is empty.
+          ("A, B & C"). Five, shown as a compact list under the speakers
+          (2026-09-17) — keep it short; the section doesn't render while
+          this is empty.
         options:
           structures: _structures.session_highlight_item
           disable_add: false
@@ -858,20 +859,6 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
-      whoItsFor:
-        type: array
-        label: Who it's for (ODDference only)
-        comment: >-
-          (2026-09-02: Membership's own three-card audience list was
-          removed and folded into "whatWeAreShaping" above — see that
-          field's comment.)
-        options:
-          structures: _structures.audience_item
-          disable_add: false
-          disable_remove: false
-          disable_reorder: false
-          required: false
-        cascade: true
       reasons:
         type: array
         label: Three reasons to come (ODDference only)
@@ -891,7 +878,8 @@ collections_config:
         comment: >-
           ODDference 2026's confirmed speaker roster (social proof, not a
           2027 line-up) — real names, roles and photos only. Leave empty
-          rather than adding placeholder names.
+          rather than adding placeholder names. Ten, laid out 5 × 2 on
+          desktop and 2 × 5 on phones (2026-09-17): keep it at ten.
         options:
           structures: _structures.person_item
           disable_add: false
