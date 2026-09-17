@@ -374,9 +374,10 @@ Both now size to `repeat(var(--cols), 1fr)` with `--cols` set inline per
 instance to the real item count, via a CSS custom property rather than a
 direct inline `grid-template-columns` — the latter would out-rank the mobile
 media query's single-column override regardless of viewport, since an inline
-style always beats a stylesheet rule. `ProofGrid`/`CaseGrid`/`PersonGrid`
-deliberately keep `auto-fit` wrapping instead — those can legitimately hold
-many items (Media's 8-stat highlight grid, a large speaker roster), where
+style always beats a stylesheet rule. `ProofGrid`/`CaseGrid` (and, until
+2026-09-17, `PersonGrid`) deliberately keep `auto-fit` wrapping instead —
+those can legitimately hold many items (Media's 8-stat highlight grid, a
+large speaker roster), where
 forcing one row would recreate the very overflow bug documented above instead
 of fixing anything. (`FeatureGrid` has since moved on twice: a capped
 auto-fit track in the 2026-08-31 pass, and in the 2026-09-13 typography pass

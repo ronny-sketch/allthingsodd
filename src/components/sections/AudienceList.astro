@@ -3,8 +3,9 @@
 // aren't parallel features or steps, so FeatureGrid's bordered card grid
 // overstates them as another chapter of cards. This scans as a plain list:
 // a bold label, a short description, nothing else. See content.config.ts's
-// `audienceItem` fragment (oddference.json/membership.json both use this
-// shape) and docs/design-system.md's FeatureGrid usage rule.
+// `audienceItem` fragment (oddfest.json's `programmeHighlights.groups` and
+// oddspace-membership.json's `audiences` use this shape) and
+// docs/design-system.md's FeatureGrid usage rule.
 interface Item {
   label: string;
   description: string;

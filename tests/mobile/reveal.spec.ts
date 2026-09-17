@@ -61,9 +61,11 @@ test.describe('reveal system (normal motion)', () => {
   test('a reveal element taller than the viewport still reveals', async ({ page }) => {
     // The exact shape of failure mode 1: IntersectionObserver's ratio is
     // measured against the *target*, so a target several screens tall can
-    // never reach a percentage threshold. /oddference's speaker grid and
-    // /oddspace's showcase are the two real instances on this site — both
-    // measured over 2600px against a phone viewport.
+    // never reach a percentage threshold. /oddspace's showcase is the real
+    // instance on this site (over 2600px against a phone viewport).
+    // /oddference's speaker grid was one too until it was cut to ten speakers
+    // on 2026-09-17; at about 1,400px it is now only a taller-than-viewport
+    // check.
     for (const [route, selector] of [
       ['/oddference', '.person-grid'],
       ['/oddspace', '.space-showcase'],

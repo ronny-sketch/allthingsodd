@@ -794,7 +794,7 @@ const pages = defineCollection({
         // 30-session programme: this is a "what this event is like" proof
         // block on a 2027 sales page, not an archive. `format` is the session's real format from the run sheet
         // (Keynote / Fireside chat); `speakers` is a display string because
-        // half of these are multi-person panels and none of them need to be
+        // these are multi-person panels and none of the names need to be
         // individually linkable.
         sessionHighlights: z
           .array(

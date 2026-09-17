@@ -154,7 +154,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
          roster, same convention as programme/aftermovie/partners). -->
     {
       page.speakers && page.speakers.length > 0 && (
-        <section class="oddc-sub oddc-speakers">
+        <section class="oddc-sub">
           <div class="wrap">
             <div class="section-head">
               <span class="eyebrow">Past speakers · ODDference 2026</span>
@@ -390,62 +390,14 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
     }
   }
 
-  /* 4. Speakers — ten across two rows of five (2026-09-17), not
-     PersonGrid's default auto-fit wall of 13.75rem cards, which ran to four
-     or five rows and made this the longest section on the page. Overridden
-     here rather than in PersonGrid because About's team grid shares it. The
-     name drops from Heading to Forta at Body size — at a fifth of the
-     column a Heading-size name breaks into three lines — and the card's
-     inline padding tightens to match. */
-  .oddc-speakers :global(.person-grid) {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-  .oddc-speakers :global(.person-grid .person-card.has-photo) {
-    padding-bottom: 1rem;
-  }
-  .oddc-speakers :global(.person-grid .person-card .person-photo) {
-    margin-bottom: 0.75rem;
-  }
-  .oddc-speakers :global(.person-grid .person-card.has-photo .person-name),
-  .oddc-speakers :global(.person-grid .person-card.has-photo .person-role) {
-    padding-inline: 0.9rem;
-  }
-  .oddc-speakers :global(.person-grid .person-card .person-name) {
-    font-family: var(--font-display);
-    font-size: var(--font-size-body);
-  }
-  .oddc-speakers :global(.person-grid .person-card .person-role) {
-    margin-top: 0.25rem;
-  }
-  /* Below 960px a card is 104–145px wide (a fifth of a tablet column, half
-     of a phone's), too narrow for "Jääskeläinen" at Body size, so names drop
-     to Small. `break-word` is only the 320px fallback, where even that does
-     not fit — same as the partnership title below. */
-  @media (max-width: 959px) {
-    .oddc-speakers :global(.person-grid .person-card.has-photo .person-name),
-    .oddc-speakers :global(.person-grid .person-card.has-photo .person-role) {
-      padding-inline: 0.6rem;
-    }
-    .oddc-speakers :global(.person-grid .person-card .person-name) {
-      font-size: var(--font-size-small);
-      overflow-wrap: break-word;
-    }
-  }
-  @media (max-width: 640px) {
-    .oddc-speakers :global(.person-grid) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
   /* 5. Session highlights — five, as a ruled list directly under the
      speakers (2026-09-17; was twelve in a two-column grid of tall cells).
      The section follows the speaker grid with no top padding of its own, so
      the two read as one block of 2026 proof. An <ol>: a deliberate
-     selection in a deliberate order. On desktop the title takes the wide
-     column at Heading size and format + speakers sit beside it. At 1024px
-     and below they stack and the title drops to Forta at Body size: at
-     Heading size a tablet or phone column broke every title into four or
-     five lines. */
+     selection in a deliberate order. Titles are Forta at Body, like Media's
+     resource rows: at Heading size a phone column broke every title into
+     four or five lines. Above 1024px format + speakers sit beside the
+     title; at 1024px and below they stack under it. */
   .oddc-sessions-sub {
     padding-top: 0;
   }
@@ -469,12 +421,11 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
   }
   .oddc-session h3 {
     margin: 0;
-    font-family: var(--font-display);
-    font-size: var(--font-size-heading);
-    line-height: var(--line-height-heading);
+    font: var(--text-heading);
+    font-size: var(--font-size-body);
     letter-spacing: var(--tracking-heading);
-    font-weight: 400;
     color: var(--color-paper);
+    overflow-wrap: break-word;
   }
   .oddc-session-meta {
     margin: 0;
@@ -492,9 +443,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
     .oddc-session {
       grid-template-columns: minmax(0, 1fr);
       row-gap: 0.4rem;
-    }
-    .oddc-session h3 {
-      font-size: var(--font-size-body);
     }
   }
 
