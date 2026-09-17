@@ -652,11 +652,12 @@ collections_config:
         type: object
         label: Credits (ODDfest 2026 thank-you only)
         comment: >-
-          The thank-you list, in order. A list whose names have a "role" shows
-          as film credits (the core team); one without shows as columns of
-          names (artists, volunteers); "subgroups" show as labelled rows (the
-          partners). A name with an "href" becomes a link that opens in a new
-          tab. Only people and organisations that actually took part in 2026.
+          The thank-you list. Every list shows as columns of names and the
+          page sorts them alphabetically itself, so the order you see here
+          doesn't matter — add a name anywhere. "subgroups" show as labelled
+          rows (the partners). A name with an "href" becomes a link that opens
+          in a new tab. Only people and organisations that actually took part
+          in 2026.
         options:
           subtype: object
       signoff:

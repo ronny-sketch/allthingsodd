@@ -252,7 +252,8 @@ real decisions worth recording:
      Ronny's request: 2027 is gone, and the section tells what happened in
      2026 around one figure — the number of different names in the credits,
      counted by the page itself (274 at the time: 284 lines, ten names listed
-     twice). Its facts are only ones the site already published (Media's
+     twice). Every credit list is sorted alphabetically by the page, and the
+     core team's roles were dropped on 2026-09-17 so all four lists read alike. Its facts are only ones the site already published (Media's
      archive entry, ODDfest's highlights, ODDference's FAQ). What did not survive, on purpose: a feedback form whose submit
      handler only changed its button text (the card now links to the
      contact form, `?topic=oddfest_2026_feedback`); two `href="#"` buttons

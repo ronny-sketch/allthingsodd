@@ -21,12 +21,21 @@ test('the thank-you page is a site page with its credits and no dead ends', asyn
   await expect(page.locator('footer')).toHaveCount(1);
   await expect(page.locator('h1')).toHaveText('You are the heroes of ODD.');
 
-  await expect(page.locator('#credits .ty-roles dd', { hasText: 'Ronny Eriksson' })).toHaveCount(1);
+  await expect(page.locator('#credits .ty-names li', { hasText: 'Ronny Eriksson' })).toHaveCount(1);
   expect(await page.locator('#credits .ty-names li').count()).toBeGreaterThan(200);
+
+  // Every list reads alphabetically, whichever order the content is stored in.
+  for (const list of await page.locator('#credits .ty-names').all()) {
+    const names = (await list.locator('li').allTextContents()).map((n) => n.trim());
+    const sorted = [...names].sort((a, b) =>
+      a.localeCompare(b, 'fi', { sensitivity: 'base', numeric: true }),
+    );
+    expect(names, 'a credit list is out of alphabetical order').toEqual(sorted);
+  }
   expect(await page.locator('#photos .photo-wall img').count()).toBeGreaterThan(0);
 
   // The headline figure is every different name in the credits, once.
-  const names = await page.locator('#credits :is(.ty-roles dd, .ty-names li)').allTextContents();
+  const names = await page.locator('#credits .ty-names li').allTextContents();
   const unique = new Set(names.map((n) => n.toLowerCase().replace(/"/g, '').trim()));
   await expect(page.locator('[data-credited-count]')).toHaveText(String(unique.size));
   // 2027 was a June 2026 plan that has since changed; this page no longer
@@ -68,6 +77,41 @@ test('"Play the credits" plays the soundtrack and rolls the page until the reade
 
   await page.mouse.wheel(0, 120);
   await expect(page.locator('#creditsToggle')).toHaveText('Play the credits');
+});
+
+test('the roll is the length of the soundtrack and ends with it', async ({ page, browserName }) => {
+  // Chromium only: this asserts on the audio element's own clock, and a
+  // headless engine that never advances currentTime would instead exercise
+  // the wall-clock fallback — correct behaviour, but an 85-second test.
+  test.skip(browserName !== 'chromium', 'needs a browser that advances media time headlessly');
+  await suppressInterruptions(page);
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  // Play fast, so the whole roll fits in a test.
+  await page.addInitScript(() => {
+    const Native = window.Audio;
+    window.Audio = function (src?: string) {
+      const audio = new Native(src);
+      audio.playbackRate = 12;
+      (window as unknown as { __creditsAudio: HTMLAudioElement }).__creditsAudio = audio;
+      return audio;
+    } as unknown as typeof window.Audio;
+  });
+  await page.goto(PAGE);
+
+  await page.locator('.space-hero a[href="#credits"]').click();
+
+  // Both finish together: the page is at the bottom, the track is done, and
+  // the control has reset itself.
+  await expect(page.locator('#creditsToggle')).toHaveText('Play the credits', { timeout: 30_000 });
+  const end = await page.evaluate(() => {
+    const audio = (window as unknown as { __creditsAudio?: HTMLAudioElement }).__creditsAudio;
+    return {
+      atBottom: window.scrollY >= document.documentElement.scrollHeight - window.innerHeight - 4,
+      played: audio ? audio.currentTime / audio.duration : 0,
+    };
+  });
+  expect(end.atBottom, 'the roll stopped short of the end of the page').toBe(true);
+  expect(end.played, 'the roll finished well before the track did').toBeGreaterThan(0.9);
 });
 
 test('under reduced motion the link jumps to the credits and nothing scrolls by itself', async ({
