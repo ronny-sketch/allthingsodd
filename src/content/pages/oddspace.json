@@ -3,11 +3,11 @@
   "_slug": "oddspace",
   "seo": {
     "title": "ODDspace — workspace, studios and event space in Vallila",
-    "description": "A shared space in Vallila, Helsinki for working, meeting, recording, exhibitions, talks and events across creative fields.",
+    "description": "ODDspace is a workspace, event space and recording/production studio in Vallila, Helsinki — for working, meeting, exhibitions, talks, events and creative projects.",
     "ogImage": "/og/oddspace.jpg"
   },
   "eyebrow": "ODDspace · Vallila",
-  "title": "A place to work, meet and make things.",
+  "title": "A year-round home for creative work.",
   "meta": "Vallila · Helsinki",
   "primaryCta": {
     "label": "Become a member",
@@ -17,7 +17,7 @@
     "label": "Organise an event",
     "href": "/oddspace/venue"
   },
-  "intro": "Come here to work. Meet people. Host something. Make something. Or simply have somewhere to keep going between projects.",
+  "intro": "Come here to work. Meet people. Host events. Create something. Or simply have somewhere to keep going between projects.",
   "visit": {
     "address": "Teollisuuskatu 9D, Vallila, Helsinki",
     "directionsUrl": "https://www.google.com/maps/search/?api=1&query=Teollisuuskatu%209D%2C%20Helsinki"
@@ -59,8 +59,8 @@
   ],
   "whatItIs": {
     "eyebrow": "What is ODDspace",
-    "headline": "A co-creative space for people who make things.",
-    "body": "ODDspace is a workspace and event space in Vallila for people working across art, culture, design, media, technology, business and other creative fields. Under one roof there are places to work, meet, record, exhibit, talk and host events. The point is not only to share square metres, but to make it easier for different kinds of work and people to cross paths. It is still a pilot, and the people using it help shape what it becomes."
+    "headline": "Workspace, studios, events and community under one roof.",
+    "body": "ODDspace is a year-round workspace and event space in Vallila for people working across art, culture, design, media, technology, business and other creative fields. It includes coworking areas, meeting rooms, an event and gallery floor, an auditorium and ODDstudio.\n\nPeople can work independently, host things and cross paths with others working on very different things. The space is a pilot for something larger, and the people using it help shape what it becomes. That combination of shared space, different disciplines and active participation is what we mean by a co-creative space."
   },
   "spaces": [
     {
@@ -177,8 +177,8 @@
   },
   "vision": {
     "eyebrow": "Why ODDspace",
-    "headline": "Creative work needs somewhere to continue.",
-    "body": "Too much creative work starts and stops with individual projects, productions and funding cycles. A place cannot solve that on its own, but it can change the rhythm: somewhere people can return to, keep working, see the same faces again and let ideas develop for longer than one project. ODDspace is our current experiment in that. The bigger question is what kind of permanent, useful infrastructure Finland could build around its creative and cultural fields over time."
+    "headline": "Creative work needs more than moments.",
+    "body": "Great things happen in projects, events, commissions and productions. But when they end, people disperse, momentum fades and the next thing often starts from scratch.\n\nODDspace exists to give creative work somewhere to continue between those moments. A place to return to, keep making, meet people outside your own field and let ideas develop before they have a brief, budget or stage.\n\nThe ambition is bigger than providing desks or rooms. It is to build the kind of everyday infrastructure where work, relationships and opportunities can accumulate over time. ODDspace is our first real-world experiment in what that could look like."
   },
   "events": {
     "eyebrow": "What's on",
@@ -299,7 +299,7 @@
     },
     {
       "question": "What is ODDspace?",
-      "answer": "A co-creative workspace and event space in Vallila, Helsinki with coworking areas, meeting rooms, an event/gallery floor, an auditorium and an audio/podcast studio. “Co-creative” means people can work independently while the space also makes it easier to share work, ask for input and collaborate when useful."
+      "answer": "A workspace and event space in Vallila, Helsinki with coworking areas, meeting rooms, an event/gallery floor, an auditorium and ODDstudio, a recording and production studio. People can work independently while the space also makes it easier to share work, ask for input and collaborate when useful."
     },
     {
       "question": "Do I need to be a physical member to be part of ODDspace?",
@@ -339,7 +339,7 @@
     },
     {
       "question": "What spaces are available?",
-      "answer": "Co-working space, an event/gallery floor, an auditorium and an audio/podcast studio."
+      "answer": "Co-working space, an event/gallery floor, an auditorium and ODDstudio, a recording and production studio."
     },
     {
       "question": "How much does event use cost?",

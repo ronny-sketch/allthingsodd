@@ -1,7 +1,7 @@
 {
   "_template": "work-with-odd",
   "seo": {
-    "title": "Work with ODD — partnerships, projects and ODDference",
+    "title": "Work with ODD — Creative Partnerships, Projects & Production",
     "description": "Bring ODD a question, brief, event or partnership idea. We work across creative practice, cultural context, strategy and production to find the right form for the work.",
     "ogImage": "/og/work-with-odd.jpg"
   },
@@ -15,7 +15,7 @@
   },
   "whenOddIsUseful": {
     "eyebrow": "When to call us",
-    "headline": "Usually when the answer is not just another campaign, event or workshop.",
+    "headline": "For work that needs sharp strategy, bold creativity and real-world execution.",
     "items": [
       {
         "number": "01",
@@ -29,15 +29,15 @@
       },
       {
         "number": "03",
-        "title": "The people who should be involved do not usually work together.",
+        "title": "You need people who don't usually end up in the same room.",
         "body": "Sometimes the value is in creating the right conditions, roles and reason for different expertise to sit around the same table."
       }
     ]
   },
   "whatWeDo": {
     "eyebrow": "Why ODD",
-    "headline": "We work in the overlap.",
-    "body": "ODD runs its own events and its own space, works with artists and cultural organisations, and sells work to companies and institutions. We know those worlds from the inside rather than describing them from a distance — and we build the team around the work instead of around a service catalogue."
+    "headline": "We work across creative practice, business and delivery.",
+    "body": "ODD runs its own events and its own space, works with artists and cultural organisations, and delivers work with companies and institutions. We know those worlds from the inside rather than describing them from a distance — and we build the team around the problem instead of around a service catalogue."
   },
   "pathways": [
     {
@@ -75,7 +75,7 @@
       "stage": "Bring us a project",
       "meta": "A concrete brief, question or idea",
       "title": "ODDagency",
-      "body": "For briefs and questions that need cultural understanding, creative conception and a project-specific team.",
+      "body": "For briefs and questions that need cultural understanding, concept development and a project-specific team.",
       "goLabel": "Explore ODDagency →",
       "href": "/oddagency",
       "image": "../../assets/programs/oddagency-card.jpg"
@@ -132,7 +132,7 @@
   },
   "contact": {
     "eyebrow": "Get in touch",
-    "title": "What are you trying to make happen?",
+    "title": "What should we make happen together?",
     "body": "Tell us the situation in your own words. You do not need to know which ODD route fits; we can work that out together."
   }
 }
