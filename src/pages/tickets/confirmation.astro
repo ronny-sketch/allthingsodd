@@ -37,7 +37,7 @@ import Layout from '../../layouts/Layout.astro';
            confirm by email" line would be untrue. Reinstate it once a real
            confirmation email exists — see the doc's TICKETS / CHECKOUT /
            CONFIRMATION section, "[NEEDS FACT CHECK]" note. -->
-      <div id="tixfSuccess" class="tixf-state" hidden>
+      <div id="tixfSuccess" class="tixf-state flow" hidden>
         <p>
           Your order is confirmed. Assign attendee details now, or come back to this page later —
           this link is saved to your browser.
@@ -75,8 +75,11 @@ import Layout from '../../layouts/Layout.astro';
 </Layout>
 
 <style>
+  /* PageIntro's rhythm: one section gap under the fixed nav, half a gap
+     below (layout.css, section rhythm). The eyebrow/h1/state stack is one
+     intro's internals, so it keeps its own small steps rather than .flow. */
   .tixf-page {
-    padding: calc(var(--nav-h) + var(--space-16)) 0 var(--space-24);
+    padding-block: calc(var(--nav-h) + var(--space-section)) calc(var(--space-section) / 2);
   }
   .tixf-state {
     max-width: 40rem;
@@ -85,18 +88,24 @@ import Layout from '../../layouts/Layout.astro';
     font: var(--text-display);
     letter-spacing: var(--tracking-display);
     color: var(--color-paper);
-    margin: 0.6rem 0 0;
+    margin: var(--space-3) 0 0;
   }
   .tixf-state p {
-    margin: 1rem 0 0;
+    margin: var(--space-5) 0 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
   #tixfSuccess {
     max-width: none;
   }
+  /* "Back to tickets" sat flush under its paragraph. inline-block so the
+     top margin applies to the bare link. */
+  .tixf-state .pill {
+    display: inline-block;
+    margin-top: var(--space-6);
+  }
   .tixf-spinner {
-    margin-top: 2rem;
+    margin-top: var(--space-6);
     width: 28px;
     height: 28px;
     border-radius: 999px;
@@ -114,11 +123,14 @@ import Layout from '../../layouts/Layout.astro';
     }
   }
 
+  /* The tickets start one group step under the page title, the same step as
+     the store on /tickets and the form on checkout (a replacement for
+     #tixfSuccess's flow step). */
   .tixf-ticket-list {
-    margin-top: 2.5rem;
+    margin-block-start: var(--space-group);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(17.5rem, 1fr));
-    gap: 1.5rem;
+    gap: var(--space-grid);
   }
   :global(.tixf-ticket) {
     background: var(--color-backstage);
@@ -143,7 +155,7 @@ import Layout from '../../layouts/Layout.astro';
     color: var(--color-paper-40);
   }
   :global(.tixf-ticket-qr) {
-    margin: 1.25rem auto;
+    margin: var(--space-5) auto 0;
     width: 220px;
     min-height: 220px;
     display: flex;
@@ -157,13 +169,13 @@ import Layout from '../../layouts/Layout.astro';
   :global(.tixf-assign-form) {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    margin-top: 1rem;
+    gap: var(--space-4);
+    margin-top: var(--space-5);
   }
   :global(.tixf-assign-form) :global(.field) {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: var(--space-2);
   }
   :global(.tixf-assign-form label) {
     font: var(--text-small);

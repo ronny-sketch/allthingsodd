@@ -27,14 +27,16 @@ const { items } = Astro.props;
 </div>
 
 <style>
+  /* No block margin: the caller's `.flow` places the timeline. */
   .timeline {
     max-width: 46rem;
-    margin: 0 auto;
+    margin-inline: auto;
   }
   .timeline-row {
     display: grid;
     grid-template-columns: 6rem 1fr;
-    gap: 1.5rem;
+    /* row-gap only shows once the year stacks over the body on phones. */
+    gap: var(--space-2) 1.5rem;
     padding: 1.6rem 0;
     border-top: 1px solid var(--color-paper-12);
   }
@@ -58,14 +60,13 @@ const { items } = Astro.props;
   }
   .timeline-body p {
     max-width: var(--measure-prose);
-    margin: 0.5rem 0 0;
+    margin: var(--space-2) 0 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
   @media (max-width: 600px) {
     .timeline-row {
       grid-template-columns: 1fr;
-      gap: 0.4rem;
     }
   }
 

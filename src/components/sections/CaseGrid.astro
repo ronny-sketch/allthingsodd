@@ -125,7 +125,7 @@ const { items, maxColumns } = Astro.props;
     position: relative;
     aspect-ratio: 4 / 3;
     overflow: hidden;
-    margin: -2.4rem -2.4rem 1.8rem;
+    margin: -2.4rem -2.4rem var(--space-6);
     background: var(--color-backstage);
   }
   .case-media :global(.case-media-img) {
@@ -154,19 +154,19 @@ const { items, maxColumns } = Astro.props;
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0.7rem 0 0;
+    margin: var(--space-3) 0 0;
   }
   .case-card p {
     font: var(--text-body);
     color: var(--color-paper-60);
-    margin: 0.9rem 0 0;
+    margin: var(--space-3) 0 0;
     flex: 1;
   }
   .case-metrics {
     display: flex;
     flex-wrap: wrap;
     gap: 1.4rem;
-    margin: 1.4rem 0 0;
+    margin: var(--space-5) 0 0;
   }
   .case-metric {
     display: flex;
@@ -188,7 +188,7 @@ const { items, maxColumns } = Astro.props;
   .case-go {
     display: inline-block;
     width: fit-content;
-    margin-top: 1.6rem;
+    margin-top: var(--space-5);
     font: var(--text-small);
     font-weight: 600;
     letter-spacing: var(--tracking-caps);

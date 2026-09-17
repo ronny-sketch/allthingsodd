@@ -27,7 +27,7 @@ const { title, cards } = Astro.props;
 ---
 
 <section class="pathway-list">
-  <div class="wrap">
+  <div class="wrap flow">
     <div class="section-head"><h2>{title}</h2></div>
     <div class="pathway-rows reveal">
       {
@@ -58,24 +58,9 @@ const { title, cards } = Astro.props;
 </section>
 
 <style>
-  .pathway-list {
-    padding: var(--space-24) 0;
-  }
-  /* Mobile rhythm. 6rem top+bottom is tuned for a desktop column; stacked on
-     a phone it puts ~192px of empty screen between two sections (measured
-     across /work-with-odd, /oddference, /oddspace, /about and /media). Halved
-     to match layout.css's own `section` reduction at the same breakpoint, so
-     page-level and component-level sections stay on one rhythm — see that
-     file's comment, which flags exactly this class of override. */
-  @media (max-width: 640px) {
-    .pathway-list {
-      padding: var(--space-12) 0;
-    }
-  }
   .pathway-rows {
     display: flex;
     flex-direction: column;
-    margin-top: 3rem;
     border-top: 1px solid var(--color-paper-12);
   }
   .pathway-row {
@@ -97,7 +82,7 @@ const { title, cards } = Astro.props;
   .pathway-row-number {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: var(--space-2);
   }
   .pathway-number {
     font: var(--text-heading);
@@ -142,18 +127,18 @@ const { title, cards } = Astro.props;
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0.5rem 0 0;
+    margin: var(--space-3) 0 0;
   }
   .pathway-row-body p {
     font: var(--text-body);
     color: var(--color-paper-60);
-    margin: 0.6rem 0 0;
+    margin: var(--space-3) 0 0;
     max-width: 46ch;
   }
   .pathway-go {
     display: inline-block;
     width: fit-content;
-    margin-top: 1rem;
+    margin-top: var(--space-5);
     font: var(--text-small);
     font-weight: 600;
     letter-spacing: var(--tracking-caps);
@@ -197,7 +182,7 @@ const { title, cards } = Astro.props;
       grid-template-areas:
         'number media'
         'body body';
-      row-gap: 1rem;
+      row-gap: var(--space-4);
     }
     .pathway-row-number {
       grid-area: number;

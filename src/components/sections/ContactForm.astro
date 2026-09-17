@@ -137,32 +137,31 @@ const connected = Boolean(formAccessKeys?.general?.trim());
 <script src="../../scripts/contact-form.ts"></script>
 
 <style>
-  .contact-section {
-    padding-top: 0;
-  }
+  /* .contact-section takes layout.css's section rhythm: its half on top plus
+     PageIntro's half below the intro make one section gap. row-gap only
+     shows once the form and the direct column stack (a group step). */
   .contact-grid {
     display: grid;
     grid-template-columns: 1.4fr 1fr;
-    gap: 4rem;
+    gap: var(--space-group) 4rem;
     align-items: start;
     max-width: 56rem;
   }
   @media (max-width: 760px) {
     .contact-grid {
       grid-template-columns: 1fr;
-      gap: 2.5rem;
     }
   }
 
   .contact-form {
     display: flex;
     flex-direction: column;
-    gap: 1.6rem;
+    gap: var(--space-6);
   }
   .field {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-2);
   }
   .field label {
     font: var(--text-small);
@@ -211,20 +210,21 @@ const connected = Boolean(formAccessKeys?.general?.trim());
     display: flex;
     align-items: center;
     gap: 1.2rem;
-    margin-top: 0.4rem;
   }
   .form-status {
     margin: 0;
     font: var(--text-small);
     color: var(--color-paper-60);
   }
+  /* The notes sit on the form's own gap — no negative margin clawing it
+     back. */
   .form-note {
-    margin: -0.6rem 0 0;
+    margin: 0;
     font: var(--text-small);
     color: var(--color-paper-40);
   }
   .contact-topic-note {
-    margin: -0.8rem 0 0;
+    margin: 0;
     font: var(--text-small);
     color: var(--color-paper-60);
   }
@@ -238,14 +238,14 @@ const connected = Boolean(formAccessKeys?.general?.trim());
       border-left: none;
       border-top: 1px solid var(--color-paper-12);
       padding-left: 0;
-      padding-top: 2rem;
+      padding-top: var(--space-8);
     }
   }
   .contact-direct h2 {
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0 0 1.4rem;
+    margin: 0 0 var(--space-3);
   }
   .contact-emails {
     list-style: none;
@@ -262,7 +262,7 @@ const connected = Boolean(formAccessKeys?.general?.trim());
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
-    margin-bottom: 0.2rem;
+    margin-bottom: var(--space-2);
   }
   .contact-emails a {
     color: var(--color-paper-60);
@@ -277,7 +277,7 @@ const connected = Boolean(formAccessKeys?.general?.trim());
     display: flex;
     flex-wrap: wrap;
     gap: 1.1rem;
-    margin-top: 2rem;
+    margin-top: var(--space-6);
   }
   .contact-social a {
     display: flex;

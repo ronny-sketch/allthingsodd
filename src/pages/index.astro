@@ -235,7 +235,16 @@ const preloadImage = await mosaicImage(firstArchiveImage);
     )
   }
 
-  {page.caseTeaser && <CaseGrid items={[page.caseTeaser]} />}
+  {
+    /* CaseGrid's root is a bare grid with no outer margin, so the page gives
+       it a plain <section> to take the section rhythm from layout.css —
+       without it the card would sit flush on the aftermovie's top rule. */
+    page.caseTeaser && (
+      <section>
+        <CaseGrid items={[page.caseTeaser]} />
+      </section>
+    )
+  }
 
   {
     /* The one moving-image break on the page, and it earns its place by
@@ -266,37 +275,30 @@ const preloadImage = await mosaicImage(firstArchiveImage);
      no photo, no grid cell, its own full-width strip. It sits directly under
      the three platform cards again (2026-09-11), which is where its question
      — "want something bigger than one of those three?" — actually lands.
-     --space-10 above it is the load-bearing number: flush (the original
-     margin-top: 1px) made it read as a fourth card in the grid, and
-     --space-16 (the 2026-09-03 value, from when it closed a different
-     chapter) broke the connection to the grid entirely. This is a clear
-     break, one step down in the same passage. */
-  .wwo-band {
-    margin-top: var(--space-10);
+     The gap above it is the load-bearing number: flush (the original
+     margin-top: 1px) made it read as a fourth card in the grid, and a full
+     section gap (the 2026-09-03 value, from when it closed a different
+     chapter) broke the connection to the grid entirely. So the joint is one
+     --space-group, owned here: the grid's section drops its bottom padding
+     and the band takes the step as margin — a clear break, one step down in
+     the same passage. Below, the band is an edge between sections and
+     contributes half a section gap (layout.css, section rhythm). */
+  :global(#four) {
+    padding-block-end: 0;
   }
-  @media (max-width: 640px) {
-    .wwo-band {
-      margin-top: var(--space-8);
-    }
+  .wwo-band {
+    margin-block: var(--space-group) calc(var(--space-section) / 2);
   }
 
   /* "Already in motion" proof module — a SectionIntro (eyebrow/headline/
-     body/cta) directly above a bare ProofGrid stat row. Both render as full
-     default-padded <section>s on their own (see layout.css), which stacks a
-     12rem gap between the closing line and the numbers backing it up —
-     trimmed here so the two read as one connected passage. Since the intro's
-     link became a button (2026-09-14) the trim is a step less tight: a
-     bordered pill at the old 1rem phone gap sat on the first figure. */
+     body/cta) directly above a bare ProofGrid stat row, one passage across
+     two <section>s. The joint has one owner: the intro drops its bottom
+     padding and the figures sit --space-content under its button. */
   .home-proof :global(.section-intro) {
-    padding-bottom: var(--space-10);
+    padding-block-end: 0;
   }
   .home-proof :global(.proof-section) {
-    padding-top: 0;
-  }
-  @media (max-width: 640px) {
-    .home-proof :global(.section-intro) {
-      padding-bottom: var(--space-8);
-    }
+    padding-block-start: var(--space-content);
   }
 
   /* Four cumulative figures since 2026-09-04, not the three 2025-only ones
@@ -323,9 +325,14 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   /* "Featured in" now reads straight on from "Already in motion" rather than
      from "Who ODD is for" (the 2026-09-11 reorg put the two proof modules
      together) — enough air that the logos are their own line of proof, not so
-     much that they start a new chapter. */
+     much that they start a new chapter: one --space-group, not a section
+     gap. Same one-owner joint as above; the :has() keeps the figures' bottom
+     padding whenever the logo strip isn't rendered. */
+  :global(.home-proof:has(+ .logo-strip-section.is-compact) .proof-section) {
+    padding-block-end: 0;
+  }
   .home-proof + :global(.logo-strip-section.is-compact) {
-    padding-top: var(--space-6);
+    padding-block-start: var(--space-group);
   }
 
   /* The band itself, restyled 2026-09-11. The previous version was a single
@@ -341,7 +348,7 @@ const preloadImage = await mosaicImage(firstArchiveImage);
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 1.4rem 2.5rem;
+    gap: var(--space-6) 2.5rem;
     padding: 2.1rem var(--gutter-wide);
     background: var(--color-backstage);
     border: 1px solid var(--color-paper-12);
@@ -369,7 +376,7 @@ const preloadImage = await mosaicImage(firstArchiveImage);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.3rem;
+    gap: var(--space-3);
     min-width: 0;
   }
   .wwo-band-title {

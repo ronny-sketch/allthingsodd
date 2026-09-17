@@ -24,18 +24,23 @@ import Pill from '../components/primitives/Pill.astro';
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: var(--space-24) 0;
+    /* PageIntro's rhythm: one section gap under the fixed nav, half a gap
+       below. The min-height still centres the message in what's left. */
+    padding-block: calc(var(--nav-h) + var(--space-section)) calc(var(--space-section) / 2);
   }
   .not-found h1 {
     font: var(--text-display);
     letter-spacing: var(--tracking-display);
     color: var(--color-paper);
-    margin: 0.9rem 0 0;
+    margin: var(--space-3) 0 0;
   }
   .not-found p {
     font: var(--text-body);
     color: var(--color-paper-60);
     max-width: 40ch;
-    margin: 1.4rem auto 2rem;
+    margin: var(--space-5) auto 0;
+  }
+  .not-found :global(.pill) {
+    margin-top: var(--space-6);
   }
 </style>

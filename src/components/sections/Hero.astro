@@ -115,6 +115,9 @@ const { mosaicAlt, headline } = Astro.props;
     overflow: hidden;
     background: var(--color-bg);
     perspective: 1400px;
+    /* An edge, not a padded section: the hero contributes its half of the
+       gap to the first section as margin (layout.css, section rhythm). */
+    margin-block-end: calc(var(--space-section) / 2);
   }
   .mosaic {
     position: absolute;

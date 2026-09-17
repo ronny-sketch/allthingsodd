@@ -63,7 +63,7 @@ const page = entry.data;
 
     <!-- 2. The rooms — same SpaceShowcase component /oddspace uses. -->
     <section id="spaces" class="odsv-sub">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <span class="eyebrow">{page.spacesIntro.eyebrow}</span>
           <h2>{page.spacesIntro.headline}</h2>
@@ -74,7 +74,7 @@ const page = entry.data;
 
     <!-- 3. Price: what is published, and plainly why the rest is quoted. -->
     <section class="odsv-sub odsv-pricing">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <span class="eyebrow">{page.pricing.eyebrow}</span>
           <h2>{page.pricing.headline}</h2>
@@ -110,7 +110,7 @@ const page = entry.data;
 
     <!-- 5. How booking works. -->
     <section class="odsv-sub">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <span class="eyebrow">Booking</span>
           <h2>How it works.</h2>
@@ -138,7 +138,7 @@ const page = entry.data;
 
     <!-- 7. FAQ. -->
     <section class="odsv-sub">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <span class="eyebrow">Practical</span>
           <h2>Questions people actually ask.</h2>
@@ -164,18 +164,16 @@ const page = entry.data;
 </Layout>
 
 <style>
-  .odsv-sub {
-    padding: var(--space-24) 0;
-  }
-  @media (max-width: 640px) {
-    .odsv-sub {
-      padding: var(--space-12) 0;
-    }
-  }
+  /* .odsv-sub takes layout.css's section rhythm; no padding of its own. */
 
+  /* Section 1 is one group spread over three siblings: SectionIntro, this
+     line, and the event-type chips. SectionIntro's bottom padding is the step
+     down to the line; .odsv-types' top padding is the step from the line to
+     the chips. The line itself carries no block margin. */
   .odsv-intro-line {
     max-width: var(--measure-prose);
-    margin: -2rem auto var(--space-16);
+    margin-inline: auto;
+    margin-block: 0;
     padding: 0 1.5rem;
     text-align: center;
     font: var(--text-body);
@@ -186,7 +184,7 @@ const page = entry.data;
      this is a scan, not a read — a visitor is looking for their own format
      in it and leaving as soon as they find it. */
   .odsv-types {
-    padding-top: 0;
+    padding-block-start: var(--space-content);
   }
   .odsv-type-list {
     display: flex;
@@ -205,20 +203,21 @@ const page = entry.data;
     color: var(--color-paper-80);
   }
 
+  /* The lede under the section head: the tighter step in place of flow. */
   .odsv-pricing-body {
     max-width: var(--measure-prose);
-    margin: 0 auto var(--space-12);
+    margin-inline: auto;
+    margin-block: var(--space-4) 0;
     text-align: center;
     font: var(--text-body);
     color: var(--color-paper-80);
   }
   .odsv-rates {
     max-width: 42rem;
-    margin: 0 auto;
+    margin-inline: auto;
   }
   .odsv-rates-label {
     display: block;
-    margin-bottom: var(--space-4);
     font: var(--text-small);
     font-weight: 600;
     letter-spacing: var(--tracking-eyebrow);
@@ -232,6 +231,9 @@ const page = entry.data;
     padding: var(--space-4) 0;
     border-top: 1px solid var(--color-paper-12);
     font: var(--text-body);
+  }
+  .odsv-rate-row:first-of-type {
+    margin-top: var(--space-4);
   }
   .odsv-rate-row:last-of-type {
     border-bottom: 1px solid var(--color-paper-12);
@@ -248,9 +250,11 @@ const page = entry.data;
     font: var(--text-small);
     color: var(--color-paper-60);
   }
+  /* Centred and block-end only: the top is the wrap's flow step. */
   .odsv-rates-note {
     max-width: var(--measure-prose);
-    margin: var(--space-8) auto 0;
+    margin-inline: auto;
+    margin-block-end: 0;
     text-align: center;
     font: var(--text-body);
     color: var(--color-paper-60);
@@ -258,24 +262,24 @@ const page = entry.data;
 
   .odsv-ask-inner {
     max-width: 46rem;
-    margin: 0 auto;
+    margin-inline: auto;
     padding: var(--space-10);
     border: 1px solid var(--color-paper-12);
     border-radius: var(--radius-panel);
   }
   .odsv-ask-inner h2 {
-    margin: var(--space-2) 0 var(--space-4);
+    margin: var(--space-3) 0 0;
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
   }
   .odsv-ask-body {
     max-width: var(--measure-prose);
-    margin: 0 0 var(--space-6);
+    margin: var(--space-3) 0 0;
     font: var(--text-body);
     color: var(--color-paper-80);
   }
   .odsv-ask-list {
-    margin: 0;
+    margin: var(--space-6) 0 0;
     padding: 0;
     list-style: none;
     display: grid;
@@ -305,18 +309,22 @@ const page = entry.data;
 
   .odsv-final-inner {
     max-width: 44rem;
-    margin: 0 auto;
+    margin-inline: auto;
     text-align: center;
   }
   .odsv-final-inner h2 {
-    margin: var(--space-2) 0 var(--space-4);
+    margin: var(--space-3) 0 0;
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
   }
+  /* Closing-ask step, same as ODDfest's .oddf-join and ODDagency's close. */
   .odsv-final-inner p {
-    margin: 0 auto var(--space-8);
+    margin: var(--space-4) auto 0;
     max-width: 46ch;
     font: var(--text-body);
     color: var(--color-paper-80);
+  }
+  .odsv-final-inner :global(.pill) {
+    margin-top: var(--space-6);
   }
 </style>

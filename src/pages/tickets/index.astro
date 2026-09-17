@@ -12,7 +12,7 @@ import Layout from '../../layouts/Layout.astro';
   title="Tickets — ODDference 2027"
   description="Get your ODDference 2027 ticket. Choose your ticket below. Payment happens securely on this site."
 >
-  <section class="tix-page">
+  <section class="tix-page flow">
     <div class="wrap tix-head reveal">
       <span class="eyebrow">ODDference · 2027</span>
       <h1>Get your ticket</h1>
@@ -55,31 +55,35 @@ import Layout from '../../layouts/Layout.astro';
 </Layout>
 
 <style>
+  /* PageIntro's rhythm: one section gap under the fixed nav, half a gap
+     below (layout.css, section rhythm). */
   .tix-page {
-    padding: calc(var(--nav-h) + var(--space-16)) 0 var(--space-24);
+    padding-block: calc(var(--nav-h) + var(--space-section)) calc(var(--space-section) / 2);
   }
   .tix-head {
     max-width: 40rem;
     text-align: center;
-    margin: 0 auto var(--space-16);
   }
   .tix-head h1 {
     font: var(--text-display);
     letter-spacing: var(--tracking-display);
     color: var(--color-paper);
-    margin: 0.9rem 0 0;
+    margin: var(--space-3) 0 0;
   }
   .tix-head p {
-    margin: 1.2rem 0 0;
+    margin: var(--space-5) 0 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
 
+  /* The page title is a group of its own, not a section-head: the store
+     below it starts one group step down (a replacement for the flow step). */
   .tix-layout {
     display: grid;
     grid-template-columns: 1.6fr 1fr;
     gap: 2.5rem;
     align-items: start;
+    margin-block-start: var(--space-group);
   }
   @media (max-width: 900px) {
     .tix-layout {
@@ -90,17 +94,18 @@ import Layout from '../../layouts/Layout.astro';
   .tix-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--space-grid);
     min-width: 0;
   }
   .tix-loading,
   .tix-error,
   .tix-empty {
+    margin: 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
   :global(.tix-cart-notice) {
-    margin: 0 0 0.5rem;
+    margin: 0;
     padding: 0.8rem 1rem;
     background: var(--color-backstage);
     border: 1px solid var(--color-paper-12);
@@ -111,7 +116,7 @@ import Layout from '../../layouts/Layout.astro';
   :global(.tix-row) {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--space-4);
     padding: 1.5rem;
     background: var(--color-backstage);
     border: 1px solid var(--color-paper-12);
@@ -130,7 +135,7 @@ import Layout from '../../layouts/Layout.astro';
   @media (max-width: 480px) {
     :global(.tix-row-main) {
       flex-direction: column;
-      gap: 0.5rem;
+      gap: var(--space-2);
     }
   }
   :global(.tix-row-info) {
@@ -144,17 +149,17 @@ import Layout from '../../layouts/Layout.astro';
     text-wrap: balance;
   }
   :global(.tix-row-desc) {
-    margin: 0.5rem 0 0;
+    margin: var(--space-3) 0 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
   :global(.tix-row-benefits) {
     list-style: none;
-    margin: 0.9rem 0 0;
+    margin: var(--space-4) 0 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: var(--space-2);
   }
   :global(.tix-row-benefits li) {
     font: var(--text-body);
@@ -255,16 +260,17 @@ import Layout from '../../layouts/Layout.astro';
   }
   .tix-summary :global(.eyebrow) {
     display: block;
-    margin-bottom: 1.2rem;
+    margin-bottom: var(--space-4);
   }
   .tix-summary :global(.tix-summary-empty) {
+    margin: 0;
     font: var(--text-small);
     color: var(--color-paper-40);
   }
   .tix-summary :global(.tix-summary-lines) {
     display: flex;
     flex-direction: column;
-    gap: 0.7rem;
+    gap: var(--space-3);
   }
   .tix-summary :global(.tix-summary-line) {
     display: flex;
@@ -277,8 +283,8 @@ import Layout from '../../layouts/Layout.astro';
   .tix-summary :global(.tix-summary-total-row) {
     display: flex;
     justify-content: space-between;
-    margin-top: 1.2rem;
-    padding-top: 1.2rem;
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
     border-top: 1px solid var(--color-paper-12);
     font-family: var(--font-display);
     font-size: var(--font-size-body);
@@ -288,12 +294,12 @@ import Layout from '../../layouts/Layout.astro';
      VAT is added on top of an ex-VAT price. */
   .tix-summary :global(.tix-summary-vat),
   .tix-sheet :global(.tix-summary-vat) {
-    margin-top: 1.2rem;
-    padding-top: 1.2rem;
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
     border-top: 1px solid var(--color-paper-12);
   }
   .tix-summary :global(.tix-summary-vat-note) {
-    margin: 0.4rem 0 0;
+    margin: var(--space-2) 0 0;
     font: var(--text-small);
     color: var(--color-paper-40);
   }
@@ -301,7 +307,7 @@ import Layout from '../../layouts/Layout.astro';
     display: block;
     width: 100%;
     text-align: center;
-    margin-top: 1.4rem;
+    margin-top: var(--space-6);
   }
   .tix-summary :global(.tix-checkout-btn:disabled) {
     opacity: 0.4;
@@ -376,7 +382,7 @@ import Layout from '../../layouts/Layout.astro';
     height: 4px;
     border-radius: 999px;
     background: var(--color-paper-20);
-    margin: 0 auto 1rem;
+    margin: 0 auto var(--space-4);
   }
   .tix-sheet-close {
     position: absolute;
@@ -393,12 +399,12 @@ import Layout from '../../layouts/Layout.astro';
   }
   .tix-sheet :global(.eyebrow) {
     display: block;
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-4);
   }
   .tix-sheet :global(.tix-summary-lines) {
     display: flex;
     flex-direction: column;
-    gap: 0.7rem;
+    gap: var(--space-3);
   }
   .tix-sheet :global(.tix-summary-line) {
     display: flex;
@@ -410,15 +416,15 @@ import Layout from '../../layouts/Layout.astro';
   .tix-sheet :global(.tix-summary-total-row) {
     display: flex;
     justify-content: space-between;
-    margin-top: 1.2rem;
-    padding-top: 1.2rem;
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
     border-top: 1px solid var(--color-paper-12);
     font-family: var(--font-display);
     font-size: var(--font-size-body);
     color: var(--color-paper);
   }
   .tix-sheet :global(.tix-summary-vat-note) {
-    margin: 0.4rem 0 0;
+    margin: var(--space-2) 0 0;
     font: var(--text-small);
     color: var(--color-paper-40);
   }
@@ -426,6 +432,6 @@ import Layout from '../../layouts/Layout.astro';
     display: block;
     width: 100%;
     text-align: center;
-    margin-top: 1.4rem;
+    margin-top: var(--space-6);
   }
 </style>

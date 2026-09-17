@@ -51,7 +51,7 @@ const buttons = ctas ?? (cta ? [cta] : []);
 ---
 
 <section class="proof-section">
-  <div class="wrap">
+  <div class="wrap flow">
     {
       (eyebrow || title) && (
         <div class="section-head">
@@ -124,7 +124,7 @@ const buttons = ctas ?? (cta ? [cta] : []);
        ParticipateBand's identical comment/fix; same failure mode, found here
        too via a real screenshot (3 stats, 2-then-1 at tablet width). */
     grid-template-columns: repeat(var(--cols), 1fr);
-    row-gap: 2.5rem;
+    row-gap: var(--space-grid);
   }
   .proof-item {
     min-width: 0;
@@ -162,7 +162,7 @@ const buttons = ctas ?? (cta ? [cta] : []);
     overflow-wrap: anywhere;
   }
   .proof-label {
-    margin-top: 0.7rem;
+    margin-top: var(--space-2);
     font: var(--text-small);
     font-weight: 600;
     letter-spacing: var(--tracking-eyebrow);
@@ -170,7 +170,7 @@ const buttons = ctas ?? (cta ? [cta] : []);
     color: var(--color-paper-60);
   }
   .proof-context {
-    margin-top: 0.5rem;
+    margin-top: var(--space-2);
     font: var(--text-small);
     color: var(--color-paper-40);
   }
@@ -178,13 +178,14 @@ const buttons = ctas ?? (cta ? [cta] : []);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.9rem;
-    margin-top: 2.4rem;
+    gap: var(--space-4);
     text-align: center;
   }
   /* A lead-in to the button, not a caption under the figures — one step
      brighter than the stat labels' quietest ink so it reads as the sentence
-     the button finishes. */
+     the button finishes. It sits --space-4 above the button (the step a lede
+     takes under its heading), against the wrap's full flow step above it, so
+     it groups with the button rather than floating between the two. */
   .proof-follow-lead {
     max-width: 34rem;
     margin: 0;
@@ -196,12 +197,11 @@ const buttons = ctas ?? (cta ? [cta] : []);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.75rem;
+    gap: var(--space-3);
   }
   @media (max-width: 700px) {
     .proof-grid {
       grid-template-columns: 1fr;
-      gap: 2rem 0;
     }
     .proof-item {
       border-left: none;

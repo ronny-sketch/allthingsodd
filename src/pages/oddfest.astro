@@ -121,7 +121,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
          adjacent sections until 2026-09-11; the "shared platform" block that
          used to sit between them is deleted, not moved. -->
     <section class="oddf-sub oddf-layer">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <h2>{page.ownership.headline}</h2>
         </div>
@@ -136,7 +136,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
           </div>
         </div>
         <p class="oddf-layer-closing reveal">{page.ownership.closing}</p>
-        <div class="oddf-steps">
+        <div class="oddf-steps flow">
           <span class="oddf-steps-label">{page.ownership.stepsLabel}</span>
           <FeatureGrid cards={page.howItWorks} />
         </div>
@@ -170,7 +170,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       // content.config.ts's comment on this field.
       page.programme.length > 0 && (
         <section class="oddf-sub">
-          <div class="wrap">
+          <div class="wrap flow">
             <div class="section-head">
               <span class="eyebrow">Programme</span>
               <h2>Discover what's on</h2>
@@ -205,7 +205,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       // sit under is gone.
       page.examples.length > 0 && (
         <section class="oddf-sub">
-          <div class="wrap">
+          <div class="wrap flow">
             <div class="section-head">
               <span class="eyebrow">{page.examplesIntro.eyebrow}</span>
               <h2>{page.examplesIntro.headline}</h2>
@@ -226,7 +226,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
          wall or tag cloud for what is, in the end, a list of names. */
       page.programmeHighlights.groups.length > 0 && (
         <section class="oddf-sub oddf-names">
-          <div class="wrap">
+          <div class="wrap flow">
             <div class="section-head">
               <span class="eyebrow">{page.programmeHighlights.eyebrow}</span>
               <h2>{page.programmeHighlights.headline}</h2>
@@ -279,7 +279,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
 
     <!-- 7. FAQ -->
     <section class="oddf-sub">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <h2>Practical / FAQ</h2>
         </div>
@@ -290,23 +290,10 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
 </Layout>
 
 <style>
-  /* Hero→first-content gap (2026-09-02 copywriting pass — final review
-     flagged the shared SubpageFrame top padding as oversized on this page,
-     same as ODDference). Overridden here rather than in SubpageFrame.astro
-     itself, since ODDagency/ODDspace weren't flagged. One step down the
-     spacing scale (--space-16 → --space-12 desktop, → --space-8 mobile). */
-  :global(.oddf-center) {
-    padding-top: var(--space-12);
-  }
-  @media (max-width: 640px) {
-    :global(.oddf-center) {
-      padding-top: var(--space-8);
-    }
-  }
-
-  .oddf-sub {
-    padding: var(--space-24) 0;
-  }
+  /* Section rhythm and the hero→content gap are not set here: every .oddf-sub
+     takes layout.css's section padding (the class stays as a hook; How to
+     join, with its own ground, is the one exception — see .oddf-join), and
+     SubpageFrame's .oddf-center owns the space under the hero. */
 
   /* Partner band. Bordered rather than filled: a solid panel here read as a
      second primary CTA competing with "How to join", which is the one thing
@@ -321,41 +308,40 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: var(--space-2) 0 var(--space-4);
+    margin: var(--space-3) 0 0;
   }
   .oddf-partner-inner p {
-    margin: 0 0 var(--space-6);
+    margin: var(--space-4) 0 0;
     max-width: var(--measure-prose);
+  }
+  .oddf-partner-inner :global(.pill) {
+    margin-top: var(--space-6);
   }
   @media (max-width: 640px) {
     .oddf-partner-inner {
       padding: var(--space-6);
     }
   }
-  /* Mobile rhythm. 6rem top+bottom is tuned for a desktop column; stacked on
-     a phone it puts ~192px of empty screen between two sections (measured
-     across /work-with-odd, /oddference, /oddspace, /about and /media). Halved
-     to match layout.css's own `section` reduction at the same breakpoint, so
-     page-level and component-level sections stay on one rhythm — see that
-     file's comment, which flags exactly this class of override. */
-  @media (max-width: 640px) {
-    .oddf-sub {
-      padding: var(--space-12) 0;
-    }
-  }
 
   /* "Look back at 2026" — the two archive buttons under the explainer.
      Deliberately quiet (both outline, small label above) so they read as a
      footnote to "What ODDfest is" rather than a second offer competing with
-     the hero's CTAs or the ask further down. */
+     the hero's CTAs or the ask further down.
+
+     A bare block between two sections, so it follows the section contract
+     from outside: no top margin — SectionIntro's half-gap bottom padding is
+     the joint that ties it to the explainer (this used to be a negative
+     margin clawing that padding back) — and the other half of the gap to
+     "How it works" as its bottom margin. */
   .oddf-lookback {
     max-width: 40rem;
-    margin: calc(var(--space-12) * -1) auto 0;
+    margin-inline: auto;
+    margin-block-end: calc(var(--space-section) / 2);
     padding: 0 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: var(--space-3);
   }
   .oddf-lookback-label {
     font: var(--text-small);
@@ -369,7 +355,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.8rem;
+    gap: var(--space-3);
   }
   /* The default Pill is `white-space: nowrap`, and these two labels are the
      longest buttons on the page — below ~420px they would each force the
@@ -387,13 +373,17 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
   }
 
   /* "How it works" — the responsibility split, its closing line, then the
-     numbered steps, all inside one section. */
+     numbered steps, all inside one section; the wrap's .flow spaces them.
+     The two columns are unboxed text, not cards, so stacked on a phone they
+     sit a flow step apart rather than --space-grid (a card-grid gap would
+     glue the second heading to the first column's paragraph). */
   .oddf-layer-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 3rem;
+    column-gap: 3rem;
+    row-gap: var(--space-content);
     max-width: 56rem;
-    margin: 0 auto;
+    margin-inline: auto;
   }
   .oddf-layer-col h3 {
     font: var(--text-heading);
@@ -402,13 +392,14 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     margin: 0;
   }
   .oddf-layer-col p {
-    margin: 0.9rem 0 0;
+    margin: var(--space-3) 0 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
   .oddf-layer-closing {
     max-width: var(--measure-prose);
-    margin: var(--space-10) auto 0;
+    margin-inline: auto;
+    margin-block-end: 0;
     text-align: center;
     font: var(--text-body);
     font-style: italic;
@@ -417,16 +408,17 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
   @media (max-width: 700px) {
     .oddf-layer-grid {
       grid-template-columns: 1fr;
-      gap: 2rem;
       text-align: center;
     }
   }
   /* The steps, now the second half of this same section rather than their
      own. The rule above them is what keeps one section from reading as two:
-     it joins the two movements instead of separating them. */
+     it joins the two movements instead of separating them. A second group in
+     the section, so --space-group above the rule (a replacement for the flow
+     step) and a flow step from the rule to the label. */
   .oddf-steps {
-    margin-top: var(--space-16);
-    padding-top: var(--space-10);
+    margin-block-start: var(--space-group);
+    padding-top: var(--space-content);
     border-top: 1px solid var(--color-paper-12);
   }
   .oddf-steps-label {
@@ -437,15 +429,21 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
-    margin-bottom: 1.8rem;
   }
 
   /* "How to join" — the page's one ask. Backstage ground and a ticket-variant
      primary so it is unmistakably the conversion block and not another
-     editorial section. */
+     editorial section.
+
+     Its own ground, so it follows layout.css's rule for one: a whole
+     --space-section inside the backstage panel, and half a gap outside it
+     as margin, so the neighbours' half-gap padding adds up to one full gap
+     to the panel's edge. */
   .oddf-join {
     text-align: center;
     background: var(--color-backstage);
+    padding-block: var(--space-section);
+    margin-block: calc(var(--space-section) / 2);
   }
   .oddf-join .wrap {
     max-width: 40rem;
@@ -453,27 +451,26 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
   .oddf-join .eyebrow {
     display: block;
     color: var(--color-paper-40);
-    margin-bottom: 0.9rem;
   }
   .oddf-join h2 {
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0;
+    margin: var(--space-3) 0 0;
   }
   .oddf-join p {
     font: var(--text-body);
     color: var(--color-paper-60);
     max-width: var(--measure-prose);
-    margin: 1.1rem auto 0;
+    margin: var(--space-4) auto 0;
   }
   .oddf-join-actions {
-    margin-top: 1.8rem;
+    margin-top: var(--space-6);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 0.8rem;
+    gap: var(--space-3);
   }
   /* Visibly larger than an ordinary tertiary Pill, using the `ticket`
      variant's existing shadow/lift treatment and roomier padding for extra
@@ -487,7 +484,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
   .oddf-join .oddf-join-reassurance {
     font: var(--text-small);
     color: var(--color-paper-40);
-    margin-top: 1.4rem;
+    margin-top: var(--space-5);
   }
   @media (max-width: 460px) {
     .oddf-join-actions {
@@ -501,27 +498,31 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
   }
 
   /* "Last year, this looked like…" examples chapter — lede above the grid,
-     closing line below it. */
+     closing line below it, spaced by the wrap's .flow. The lede belongs to
+     its heading, so it replaces the flow step with the tighter one. */
   .oddf-examples-lede {
     max-width: var(--measure-prose);
-    margin: -1.5rem auto var(--space-10);
+    margin-block: var(--space-4) 0;
+    margin-inline: auto;
     text-align: center;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
   .oddf-examples-closing {
     max-width: var(--measure-prose);
-    margin: var(--space-10) auto 0;
+    margin-inline: auto;
+    margin-block-end: 0;
     text-align: center;
     font: var(--text-body);
     color: var(--color-paper-40);
   }
 
-  /* Programme highlights — a lede above AudienceList's grouped names, same
-     negative top margin as the examples lede so it tucks under its heading. */
+  /* Programme highlights — a lede above AudienceList's grouped names, tucked
+     under its heading the same way as the examples lede. */
   .oddf-names-lede {
     max-width: var(--measure-prose);
-    margin: -1.5rem auto 0;
+    margin-block: var(--space-4) 0;
+    margin-inline: auto;
     text-align: center;
     font: var(--text-body);
     color: var(--color-paper-60);
@@ -531,27 +532,27 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
      roomier ticket Pill as "How to join" so the two asks read as one route. */
   .oddf-bring-inner {
     max-width: 40rem;
-    margin: 0 auto;
+    margin-inline: auto;
     text-align: center;
   }
   .oddf-bring-inner .eyebrow {
     display: block;
     color: var(--color-paper-40);
-    margin-bottom: 0.9rem;
   }
   .oddf-bring-inner h2 {
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0;
+    margin: var(--space-3) 0 0;
   }
   .oddf-bring-inner p {
     font: var(--text-body);
     color: var(--color-paper-60);
     max-width: var(--measure-prose);
-    margin: 1.1rem auto 1.8rem;
+    margin: var(--space-4) auto 0;
   }
   .oddf-bring-inner :global(.oddf-bring-cta.pill) {
+    margin-top: var(--space-6);
     padding: 1rem 2.4rem;
   }
   @media (max-width: 460px) {

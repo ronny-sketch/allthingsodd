@@ -23,11 +23,11 @@ interface Props {
   items: LogoItem[];
   size?: 'default' | 'large';
   scroll?: boolean;
-  // Home's "Featured in" sits directly under "The ODD platform" now — proof
-  // supporting that section, not a new chapter of its own. `compact` drops
-  // the bordered section-head/h2 in favour of one small inline label, and
-  // tightens the rhythm so it reads as a continuation, not a fresh section.
-  // Media's own "Featured in" keeps the default (non-compact) full treatment.
+  // Home's "Featured in" reads on from the proof figures above it — not a
+  // new chapter of its own. `compact` drops the top rule and the bordered
+  // section-head in favour of a quieter label; the caller owns the joint to
+  // the section above (index.astro). Media's own "Featured in" keeps the
+  // default (non-compact) full treatment.
   compact?: boolean;
 }
 const { eyebrow, title, items, size = 'default', scroll = false, compact = false } = Astro.props;
@@ -35,7 +35,7 @@ const track = scroll ? [...items, ...items] : items;
 const sizeClass = size === 'large' ? 'is-large' : '';
 ---
 
-<section class={`logo-strip-section ${compact ? 'is-compact' : ''}`}>
+<section class={`logo-strip-section flow ${compact ? 'is-compact' : ''}`}>
   <div class="wrap">
     {
       compact ? (
@@ -76,32 +76,27 @@ const sizeClass = size === 'large' ? 'is-large' : '';
 </section>
 
 <style>
+  /* Section rhythm from layout.css; the heading → logos step is the
+     section's flow (the heading's .wrap and the logos are its children). */
   .logo-strip-section {
     border-top: 1px solid var(--color-paper-12);
-    padding: var(--space-20) 0 var(--space-16);
-  }
-  .logo-strip-section .section-head {
-    margin-bottom: var(--space-10);
   }
   /* Compact — no border-top (this isn't a new chapter, it's proof under the
-     platform section above it), no bordered section-head, one quiet label
-     line instead of an h2, generous but tighter top/bottom rhythm. */
+     section above it), no bordered section-head, a quieter label instead. */
   .logo-strip-section.is-compact {
     border-top: none;
-    padding: var(--space-4) 0 var(--space-20);
   }
   /* Real heading typography (same --text-heading/--color-paper the
      non-compact .section-head h2 above uses — Media's own "Featured in" is
      the source of truth) without the bordered/padded "new chapter" scaffold
      .section-head carries — that's what keeps this reading as supportive
-     proof under "What we do" rather than a competing section of its own. */
+     proof under the figures above rather than a competing section of its own. */
   .logo-strip-label {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: var(--space-2);
-    margin: 0 0 var(--space-8);
   }
   .logo-strip-label .eyebrow {
     color: var(--color-paper-60);
@@ -128,7 +123,7 @@ const sizeClass = size === 'large' ? 'is-large' : '';
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 2.75rem 3.5rem;
+    gap: var(--space-grid) 3.5rem;
   }
   .logo-strip-scroll {
     overflow: hidden;

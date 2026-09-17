@@ -30,10 +30,10 @@ interface Props {
   // in the same composition). Optional so Converge stays usable exactly as
   // before for any future caller that doesn't want a title.
   audienceEyebrow?: string;
-  // Reduces the section's own bottom padding — used only when a caller
-  // stacks something (ProgramGrid, on Home) directly underneath as part of
-  // one continuous composition, so the two don't get double-padded apart.
-  // See docs/architecture.md.
+  // Drops the section's own bottom padding — for a caller that stacks
+  // something directly underneath as part of one continuous composition. The
+  // section below then owns the joint (it pads --space-content above its
+  // own content). No caller sets it today.
   tightBottom?: boolean;
   // Creatives on the left, business on the right (2026-09-11 homepage
   // reorg). Sitewide rule from that pass: wherever ODD splits what it does by
@@ -60,7 +60,7 @@ const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, crea
 ---
 
 <section class={`converge ${tightBottom ? 'is-tight-bottom' : ''}`}>
-  <div class="wrap">
+  <div class="wrap flow">
     {
       audienceEyebrow && (
         <div class="section-head converge-head reveal">
@@ -115,30 +115,34 @@ const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, crea
 </section>
 
 <style>
-  .converge {
-    padding: 6rem 0 6.5rem;
-  }
   .converge.is-tight-bottom {
-    padding-bottom: var(--space-10);
+    padding-block-end: 0;
   }
-  /* Reuses the sitewide .section-head shape (bordered, centered — same
-     pattern ProgramGrid's "What we do" uses directly below it in this same
-     composition) so "Who ODD is for" reads as a real section title, not a
-     tiny label the intro paragraph seemed to just be hanging off of. */
-  .converge-head {
-    margin-bottom: var(--space-8);
-  }
+  /* The head reuses the sitewide .section-head shape (bordered, centered —
+     same pattern ProgramGrid's "What we do" uses directly below it) so "Who
+     ODD is for" reads as a real section title. The intro is its lede, so it
+     tightens the wrap's flow step to --space-4 under the rule; the grid then
+     takes the flow step. */
   .converge-intro {
     text-align: center;
     max-width: var(--measure-prose);
-    margin: 0 auto 3.8rem;
+    margin-inline: auto;
+    margin-block: 0;
     font: var(--text-body);
     color: var(--color-paper-60);
+  }
+  /* Only a lede when the head is rendered; without it the intro is the
+     wrap's first child and takes no top margin at all. */
+  .converge-head + .converge-intro {
+    margin-block-start: var(--space-4);
   }
   .converge-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0;
+    /* Rows only exist once the columns stack (820px query): the two audience
+       groups, one rule between them — --space-group on each side of it. */
+    row-gap: var(--space-group);
+    column-gap: 0;
   }
   /* Column placement follows DOM order (2026-09-11) rather than pinning each
      audience to a fixed `grid-column`. The old version hard-coded business to
@@ -187,7 +191,7 @@ const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, crea
     font-weight: 600;
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
-    margin: 0 0 1rem;
+    margin: 0 0 var(--space-3);
   }
   .converge-col--business .converge-label {
     color: var(--color-signal-bright);
@@ -199,14 +203,14 @@ const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, crea
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0 0 1.2rem;
+    margin: 0 0 var(--space-3);
     max-width: 19ch;
   }
   .converge-body {
     font: var(--text-body);
     color: var(--color-paper-60);
     max-width: 38ch;
-    margin: 0 0 2.2rem;
+    margin: 0 0 var(--space-6);
   }
   /* Single routing CTA per side (2026-09-02 copywriting pass) — same visual
      treatment as SectionIntro's own text link, reused rather than inventing
@@ -214,8 +218,6 @@ const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, crea
      the same thing more concretely); kept for other callers. */
   .converge-cta {
     display: inline-block;
-    margin-top: -0.6rem;
-    margin-bottom: 1.6rem;
     font: var(--text-small);
     font-weight: 600;
     color: var(--color-paper-80);
@@ -232,16 +234,6 @@ const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, crea
   @media (max-width: 820px) {
     .converge-grid {
       grid-template-columns: 1fr;
-      gap: 3rem;
-    }
-    .converge {
-      padding: 3.25rem 0 3.75rem;
-    }
-    .converge.is-tight-bottom {
-      padding-bottom: var(--space-8);
-    }
-    .converge-intro {
-      margin-bottom: 2.4rem;
     }
     .converge-col {
       padding: 0;
@@ -249,7 +241,7 @@ const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, crea
     .converge-col.is-first {
       border-right: none;
       border-bottom: 1px solid var(--color-paper-12);
-      padding-bottom: 2.6rem;
+      padding-bottom: var(--space-group);
       align-items: flex-start;
       text-align: left;
     }
@@ -267,7 +259,7 @@ const sides = creativeFirst ? [creativeSide, businessSide] : [businessSide, crea
     gap: 0.7rem;
     /* Bottom-aligned across both columns (see .converge-col). `auto` only
        ever adds space, so the shorter column gains the difference and the
-       taller one keeps the 2.2rem its body already sets. */
+       taller one keeps the --space-6 its body already sets. */
     margin-top: auto;
   }
 

@@ -76,13 +76,13 @@ const { items } = Astro.props;
      of the card edge-to-edge, name/role sit in the same padded footer as
      the plain typographic card below. */
   .person-card.has-photo {
-    padding: 0 0 1.5rem;
+    padding: 0 0 var(--space-6);
   }
   .person-photo {
     aspect-ratio: 4 / 5;
     overflow: hidden;
     background: #000;
-    margin-bottom: 1.4rem;
+    margin-bottom: var(--space-5);
   }
   .person-photo :global(img) {
     width: 100%;
@@ -112,12 +112,12 @@ const { items } = Astro.props;
   }
   .person-role {
     display: block;
-    margin-top: 0.35rem;
+    margin-top: var(--space-2);
     font: var(--text-small);
     color: var(--color-paper-40);
   }
   .person-bio {
-    margin: 0.9rem 0 0;
+    margin: var(--space-3) 0 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
