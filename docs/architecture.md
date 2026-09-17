@@ -246,10 +246,14 @@ real decisions worth recording:
      `src/content/pages/oddfest-2026.json` (template `oddfest2026`). It uses
      ODDfest's rails (`SubpageFrame slug="oddfest"`), ODDspace's photo-grid
      hero (`SpaceHero`), `PhotoBreak`, `PhotoWall` and `ParticipateBand`, the
-     five-step type ladder and the spacing rhythm. The letter, the
-     reflection and the credits are unchanged; the archive banner became a
-     dated note above the 2027 text, which still describes the June 2026
-     plan. What did not survive, on purpose: a feedback form whose submit
+     five-step type ladder and the spacing rhythm. The letter and the
+     credits are unchanged. The June 2026 reflection (2026 plus a look ahead
+     at a 2027 plan that has since changed) was rewritten the same day at
+     Ronny's request: 2027 is gone, and the section tells what happened in
+     2026 around one figure — the number of different names in the credits,
+     counted by the page itself (274 at the time: 284 lines, ten names listed
+     twice). Its facts are only ones the site already published (Media's
+     archive entry, ODDfest's highlights, ODDference's FAQ). What did not survive, on purpose: a feedback form whose submit
      handler only changed its button text (the card now links to the
      contact form, `?topic=oddfest_2026_feedback`); two `href="#"` buttons
      (now the newsletter and `/oddspace/membership`); a runtime Flickr API

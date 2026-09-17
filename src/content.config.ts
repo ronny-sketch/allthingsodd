@@ -742,19 +742,16 @@ const pages = defineCollection({
           emphasis: z.string().optional(),
           attribution: z.string(),
         }),
+        // What happened in 2026 (rewritten 2026-09-17: the June 2026 look
+        // ahead to 2027 is gone). The figure above `countLabel` is not a
+        // field — the page counts the different names in `credits`, so it can
+        // never disagree with the list. `body` is paragraphs separated by a
+        // blank line; `closing` is the one line set in full ink under them.
         reflection: z.object({
           eyebrow: z.string(),
-          title: z.string(),
-          years: z.array(
-            z.object({
-              year: z.string(),
-              // Paragraphs separated by a blank line.
-              body: z.string(),
-              // A dated caveat shown above the year's text — 2027's, because
-              // the plan it describes has changed since June 2026.
-              note: z.object({ text: z.string(), link: linkCta }).optional(),
-            }),
-          ),
+          countLabel: z.string(),
+          body: z.string(),
+          closing: z.string(),
         }),
         photoBreak: z.object({ image: image(), alt: z.string() }),
         credits: z.object({

@@ -25,6 +25,14 @@ test('the thank-you page is a site page with its credits and no dead ends', asyn
   expect(await page.locator('#credits .ty-names li').count()).toBeGreaterThan(200);
   expect(await page.locator('#photos .photo-wall img').count()).toBeGreaterThan(0);
 
+  // The headline figure is every different name in the credits, once.
+  const names = await page.locator('#credits :is(.ty-roles dd, .ty-names li)').allTextContents();
+  const unique = new Set(names.map((n) => n.toLowerCase().replace(/"/g, '').trim()));
+  await expect(page.locator('[data-credited-count]')).toHaveText(String(unique.size));
+  // 2027 was a June 2026 plan that has since changed; this page no longer
+  // talks about it.
+  await expect(page.locator('main')).not.toContainText('2027');
+
   // The old page's buttons went to "#", and its feedback form sent nothing.
   await expect(page.locator('main a[href="#"]')).toHaveCount(0);
   await expect(page.locator('main textarea')).toHaveCount(0);
