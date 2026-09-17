@@ -299,6 +299,18 @@ real decisions worth recording:
      alike; not once two are dimmed. Full width fits all three in one row
      and the price progression reads left to right.
 
+   **Cut down on 2026-09-17** at Ronny's request ("fewer things, shown
+   better"): speakers 25 → 10 (two new to the page, Atte Jääskeläinen and
+   Anna Brchisky, with their official portraits from the 2026 site's
+   WordPress media library) in a 5 × 2 grid, 2 × 5 on phones; session
+   highlights 12 → 5 as a ruled list directly under them, one of them ("New
+   Media in the Attention Economy — What Has Changed?") newly taken from the
+   same run sheet; "Who it's for" deleted with its `whoItsFor` field, schema
+   entry and CMS input. The seventeen dropped speakers' portraits were
+   deleted from `src/assets/speakers/` and are in git history. The page went
+   from ~16,000px to ~9,150px tall at 1440px wide, and ~23,600px to ~10,300px
+   at 390px.
+
 9. **The 2026-09-11 editorial alignment pass** worked through the whole site
    against the September planning review, which asked for editorial
    simplification rather than a redesign. One rule ran through all of it:

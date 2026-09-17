@@ -1,9 +1,15 @@
 ---
-// Restructured 2026-09-11 at Ronny's direct request, to the eight sections
-// he specified — the same treatment /oddspace got the same day:
+// Restructured 2026-09-11 at Ronny's direct request, to the sections he
+// specified — the same treatment /oddspace got the same day — and cut down
+// on 2026-09-17 ("fewer things, shown better"):
 //
 //   1 hero · 2 the premise · 3 three reasons · 4 past speakers ·
-//   5 session highlights · 6 who it's for · 7 tickets & partnership · 8 FAQ
+//   5 session highlights · 6 tickets & partnership · 7 FAQ
+//
+// * 2026-09-17: speakers 25 → 10 in one compact 5 × 2 grid (2 × 5 on
+//   phones), session highlights 12 → 5 as a tight ruled list directly under
+//   them, and "Who it's for" deleted outright (section, `whoItsFor` content,
+//   schema and CMS field). Its audience list still lives in the FAQ answer.
 //
 // What changed, and why none of it is "hidden for later":
 //
@@ -15,11 +21,6 @@
 //   `concept`, where it reads as a sentence rather than as caption competing
 //   with a display-sized headline. The central question moved with it, to
 //   `concept`'s headline, which is where the page actually answers it.
-//
-// * "Who it's for" moved *below* the 2026 proof. It used to sit directly
-//   under the three reasons, so a reader met a list of job titles before
-//   seeing a single thing that had actually happened. Speakers and sessions
-//   now carry that weight first.
 //
 // * `sessionHighlights` is new — real 2026 session titles from the event's
 //   own run sheet. See content.config.ts for the provenance; the live 2026
@@ -40,7 +41,6 @@ import SubpageFrame from '../components/sections/SubpageFrame.astro';
 import FullbleedVideoHero from '../components/sections/FullbleedVideoHero.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
-import AudienceList from '../components/sections/AudienceList.astro';
 import PersonGrid from '../components/sections/PersonGrid.astro';
 import PricingGrid from '../components/sections/PricingGrid.astro';
 import FAQList from '../components/sections/FAQList.astro';
@@ -149,12 +149,12 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
       )
     }
 
-    <!-- 4. Past speakers — ODDference 2026's full, real roster. Renders
+    <!-- 4. Past speakers — ten real ODDference 2026 speakers, 5 × 2. Renders
          nothing if it is ever emptied out (kept for a future edition's own
          roster, same convention as programme/aftermovie/partners). -->
     {
       page.speakers && page.speakers.length > 0 && (
-        <section class="oddc-sub">
+        <section class="oddc-sub oddc-speakers">
           <div class="wrap">
             <div class="section-head">
               <span class="eyebrow">Past speakers · ODDference 2026</span>
@@ -174,7 +174,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
          real 2027 programme would use ProgrammeList properly. Same reasoning
          as the `.oddc-reason` blocks above. */
       page.sessionHighlights && page.sessionHighlights.length > 0 && (
-        <section class="oddc-sub">
+        <section class="oddc-sub oddc-sessions-sub">
           <div class="wrap">
             <div class="section-head">
               <span class="eyebrow">Session highlights · ODDference 2026</span>
@@ -183,9 +183,11 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
             <ol class="oddc-sessions reveal">
               {page.sessionHighlights.map((s) => (
                 <li class="oddc-session">
-                  <span class="oddc-session-format">{s.format}</span>
                   <h3>{s.title}</h3>
-                  <span class="oddc-session-people">{s.speakers}</span>
+                  <p class="oddc-session-meta">
+                    <span class="oddc-session-format">{s.format}</span>
+                    {s.speakers}
+                  </p>
                 </li>
               ))}
             </ol>
@@ -216,18 +218,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
       )
     }
 
-    <!-- 6. Who it's for — a lighter typographic list, not another FeatureGrid
-         card chapter (see AudienceList.astro). Deliberately after the 2026
-         proof: a reader should recognise themselves in the room *after*
-         seeing what happens in it, not before. -->
-    <section class="oddc-sub">
-      <div class="wrap">
-        <div class="section-head"><h2>Who it's for</h2></div>
-        <AudienceList items={page.whoItsFor} />
-      </div>
-    </section>
-
-    <!-- 7. Conversion: tickets + partnerships, side by side. -->
+    <!-- 6. Conversion: tickets + partnerships, side by side. -->
     <section class="oddc-sub" id="tickets">
       <div class="wrap">
         <div class="oddc-convert reveal">
@@ -272,7 +263,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
       )
     }
 
-    <!-- 8. FAQ — same component and same position as ODDfest's and
+    <!-- 7. FAQ — same component and same position as ODDfest's and
          ODDspace's, so the three product pages end the same way. -->
     <section class="oddc-sub">
       <div class="wrap">
@@ -399,76 +390,115 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
     }
   }
 
-  /* 5. Session highlights (2026-09-11). An <ol> because these are a curated
-     selection presented in a deliberate order, and because it gives a
-     screen reader the count — "12 sessions" is itself part of the proof.
+  /* 4. Speakers — ten across two rows of five (2026-09-17), not
+     PersonGrid's default auto-fit wall of 13.75rem cards, which ran to four
+     or five rows and made this the longest section on the page. Overridden
+     here rather than in PersonGrid because About's team grid shares it. The
+     name drops from Heading to Forta at Body size — at a fifth of the
+     column a Heading-size name breaks into three lines — and the card's
+     inline padding tightens to match. */
+  .oddc-speakers :global(.person-grid) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .oddc-speakers :global(.person-grid .person-card.has-photo) {
+    padding-bottom: 1rem;
+  }
+  .oddc-speakers :global(.person-grid .person-card .person-photo) {
+    margin-bottom: 0.75rem;
+  }
+  .oddc-speakers :global(.person-grid .person-card.has-photo .person-name),
+  .oddc-speakers :global(.person-grid .person-card.has-photo .person-role) {
+    padding-inline: 0.9rem;
+  }
+  .oddc-speakers :global(.person-grid .person-card .person-name) {
+    font-family: var(--font-display);
+    font-size: var(--font-size-body);
+  }
+  .oddc-speakers :global(.person-grid .person-card .person-role) {
+    margin-top: 0.25rem;
+  }
+  /* Below 960px a card is 104–145px wide (a fifth of a tablet column, half
+     of a phone's), too narrow for "Jääskeläinen" at Body size, so names drop
+     to Small. `break-word` is only the 320px fallback, where even that does
+     not fit — same as the partnership title below. */
+  @media (max-width: 959px) {
+    .oddc-speakers :global(.person-grid .person-card.has-photo .person-name),
+    .oddc-speakers :global(.person-grid .person-card.has-photo .person-role) {
+      padding-inline: 0.6rem;
+    }
+    .oddc-speakers :global(.person-grid .person-card .person-name) {
+      font-size: var(--font-size-small);
+      overflow-wrap: break-word;
+    }
+  }
+  @media (max-width: 640px) {
+    .oddc-speakers :global(.person-grid) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
 
-     A two-column grid rather than PersonGrid's auto-fit card wall: these
-     rows are title-led and of very uneven length (one title runs to eleven
-     words), so equal-width cards would either truncate or leave large
-     ragged gaps. Two fixed columns keep every title on a comfortable
-     measure and let the rows size to their own content. */
+  /* 5. Session highlights — five, as a ruled list directly under the
+     speakers (2026-09-17; was twelve in a two-column grid of tall cells).
+     The section follows the speaker grid with no top padding of its own, so
+     the two read as one block of 2026 proof. An <ol>: a deliberate
+     selection in a deliberate order. On desktop the title takes the wide
+     column at Heading size and format + speakers sit beside it. At 1024px
+     and below they stack and the title drops to Forta at Body size: at
+     Heading size a tablet or phone column broke every title into four or
+     five lines. */
+  .oddc-sessions-sub {
+    padding-top: 0;
+  }
   .oddc-sessions {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0;
-    border-top: 1px solid var(--color-paper-12);
   }
   .oddc-session {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 1.6rem 2rem 1.6rem 0;
-    border-bottom: 1px solid var(--color-paper-12);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 18rem);
+    column-gap: 3rem;
+    align-items: baseline;
+    padding: 1.1rem 0;
   }
-  /* The gutter between the two columns, drawn as a border on the left-hand
-     cell rather than a grid `gap`, so the horizontal rules above and below
-     run unbroken across the full width — a gap would leave a notch in every
-     rule and the section would read as two lists side by side. */
-  .oddc-session:nth-child(odd) {
-    border-right: 1px solid var(--color-paper-12);
-    padding-right: 2rem;
+  .oddc-session:first-child {
+    padding-top: 0;
   }
-  .oddc-session:nth-child(even) {
-    padding-left: 2rem;
+  .oddc-session + .oddc-session {
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .oddc-session h3 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--font-size-heading);
+    line-height: var(--line-height-heading);
+    letter-spacing: var(--tracking-heading);
+    font-weight: 400;
+    color: var(--color-paper);
+  }
+  .oddc-session-meta {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
   }
   .oddc-session-format {
-    font: var(--text-small);
+    display: block;
     font-weight: 600;
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-signal);
   }
-  .oddc-session h3 {
-    margin: 0;
-    font: var(--text-heading);
-    letter-spacing: var(--tracking-heading);
-    color: var(--color-paper);
-  }
-  .oddc-session-people {
-    font: var(--text-small);
-    color: var(--color-paper-60);
-  }
-  /* One column below 820px — at two columns a phone gets ~150px of measure
-     per title, which breaks these titles into four and five lines. The
-     vertical gutter and its asymmetric padding go with it. */
-  @media (max-width: 820px) {
-    .oddc-sessions {
-      grid-template-columns: 1fr;
+  @media (max-width: 1024px) {
+    .oddc-session {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 0.4rem;
     }
-    .oddc-session,
-    .oddc-session:nth-child(odd),
-    .oddc-session:nth-child(even) {
-      border-right: none;
-      padding-left: 0;
-      padding-right: 0;
+    .oddc-session h3 {
+      font-size: var(--font-size-body);
     }
   }
 
-  /* 7. Conversion — tickets, then partnerships.
+  /* 6. Conversion — tickets, then partnerships.
 
      Stacked as of 2026-09-11; this was `1.4fr 1fr` side by side. The reason
      is the ticket ladder itself, not taste: side by side, the tickets column

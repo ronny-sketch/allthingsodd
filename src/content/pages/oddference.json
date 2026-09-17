@@ -54,107 +54,10 @@
   ],
   "speakers": [
     {
-      "name": "Galit Ariel",
-      "role": "Techno-Futurist & Author",
-      "image": "../../assets/speakers/galit-ariel.png"
-    },
-    {
-      "name": "Perttu Pölönen",
-      "role": "Futurist, Inventor & Author",
-      "image": "../../assets/speakers/perttu-polonen.png"
-    },
-    {
-      "name": "Heikki Slåen",
-      "role": "Director, Cinematographer & Actor",
-      "image": "../../assets/speakers/heikki-slaen.png"
-    },
-    {
-      "name": "Ashley Jex Wagner",
-      "role": "Head of Live Experiences",
-      "organisation": "Supercell",
-      "image": "../../assets/speakers/ashley-jex-wagner.png"
-    },
-    {
-      "name": "Tunna Milonoff",
-      "role": "Cultural Architect",
-      "image": "../../assets/speakers/tunna-milonoff.png"
-    },
-    {
-      "name": "Esa Saarinen",
-      "role": "Philosopher",
-      "image": "../../assets/speakers/esa-saarinen.png"
-    },
-    {
-      "name": "Claus Raasted",
-      "role": "Director",
-      "organisation": "The College of Extraordinary Experiences",
-      "image": "../../assets/speakers/claus-raasted.png"
-    },
-    {
       "name": "Sanna-Kaisa Niikko",
       "role": "CMO",
       "organisation": "Marimekko",
       "image": "../../assets/speakers/sanna-kaisa-niikko.png"
-    },
-    {
-      "name": "Samppa Lappalainen",
-      "role": "Architect & Entrepreneur",
-      "image": "../../assets/speakers/samppa-lappalainen.png"
-    },
-    {
-      "name": "Karoliina Jarenko",
-      "role": "CEO & Founder",
-      "organisation": "Almanovia",
-      "image": "../../assets/speakers/karoliina-jarenko.png"
-    },
-    {
-      "name": "Karri \"Paleface\" Miettinen",
-      "role": "Artist, Activist & Cultural Commentator",
-      "image": "../../assets/speakers/karri-paleface-miettinen.png"
-    },
-    {
-      "name": "Karoliina Korppoo",
-      "role": "Game Director",
-      "organisation": "Sholf Development",
-      "image": "../../assets/speakers/karoliina-korppoo.png"
-    },
-    {
-      "name": "Rolf Ekroth",
-      "role": "Fashion Designer",
-      "image": "../../assets/speakers/rolf-ekroth.png"
-    },
-    {
-      "name": "Katriina Heljakka",
-      "role": "Researcher of Play",
-      "image": "../../assets/speakers/katriina-heljakka.png"
-    },
-    {
-      "name": "Marley Prudeaux",
-      "role": "Lead Visual Designer",
-      "organisation": "Meow Wolf",
-      "image": "../../assets/speakers/marley-prudeaux.png"
-    },
-    {
-      "name": "Alf Rehn",
-      "role": "Professor of Innovation & Management",
-      "image": "../../assets/speakers/alf-rehn.png"
-    },
-    {
-      "name": "Katja Lindroos",
-      "role": "Creative Economy Strategist",
-      "organisation": "Urban Practice",
-      "image": "../../assets/speakers/katja-lindroos.png"
-    },
-    {
-      "name": "Elisabet Lahti",
-      "role": "Experiential Researcher & Somatic IQ Trainer",
-      "image": "../../assets/speakers/elisabet-lahti.png"
-    },
-    {
-      "name": "Aino Ahlnäs",
-      "role": "Creative Director",
-      "organisation": "Kalevala Koru",
-      "image": "../../assets/speakers/aino-ahlnas.png"
     },
     {
       "name": "Siamäk Naghian",
@@ -163,68 +66,54 @@
       "image": "../../assets/speakers/siamak-naghian.png"
     },
     {
-      "name": "Emmi Kärnä",
-      "role": "Game Designer & Experience Artist",
-      "image": "../../assets/speakers/emmi-karna.png"
+      "name": "Ashley Jex Wagner",
+      "role": "Head of Live Experiences",
+      "organisation": "Supercell",
+      "image": "../../assets/speakers/ashley-jex-wagner.png"
     },
     {
-      "name": "Jukka-Pekka Heikkilä",
-      "role": "Scholar-activist",
-      "image": "../../assets/speakers/jukka-pekka-heikkila.png"
+      "name": "Atte Jääskeläinen",
+      "role": "President",
+      "organisation": "Sitra",
+      "image": "../../assets/speakers/atte-jaaskelainen.jpg"
     },
     {
-      "name": "Sonya Lindfors",
-      "role": "Art Director",
-      "organisation": "UrbanApa",
-      "image": "../../assets/speakers/sonya-lindfors.png"
+      "name": "Perttu Pölönen",
+      "role": "Futurist, Inventor & Author",
+      "image": "../../assets/speakers/perttu-polonen.png"
     },
     {
-      "name": "Lauri Järvilehto",
-      "role": "Musician, Producer & Philosopher",
-      "image": "../../assets/speakers/lauri-jarvilehto.png"
+      "name": "Galit Ariel",
+      "role": "Techno-Futurist & Author",
+      "image": "../../assets/speakers/galit-ariel.png"
     },
     {
-      "name": "Tero Vanhanen",
-      "role": "Phenomenon Creator",
-      "organisation": "Fira",
-      "image": "../../assets/speakers/tero-vanhanen.png"
+      "name": "Alf Rehn",
+      "role": "Professor of Innovation & Management",
+      "image": "../../assets/speakers/alf-rehn.png"
+    },
+    {
+      "name": "Rolf Ekroth",
+      "role": "Fashion Designer",
+      "image": "../../assets/speakers/rolf-ekroth.png"
+    },
+    {
+      "name": "Samppa Lappalainen",
+      "role": "Architect & Entrepreneur",
+      "image": "../../assets/speakers/samppa-lappalainen.png"
+    },
+    {
+      "name": "Anna Brchisky",
+      "role": "CEO",
+      "organisation": "Bamla",
+      "image": "../../assets/speakers/anna-brchisky.png"
     }
   ],
   "sessionHighlights": [
     {
-      "format": "Keynote",
-      "title": "Histories of Creativity – On Finland, Narratives, and the Dispositif",
-      "speakers": "Alf Rehn"
-    },
-    {
-      "format": "Keynote",
-      "title": "Science Frictions: How We're Getting the Future of Humans & Tech All Wrong",
-      "speakers": "Galit Ariel"
-    },
-    {
-      "format": "Fireside chat",
-      "title": "What World-Class Brands Do Differently: Inside Creative Work at the Highest Level",
-      "speakers": "Alexander Pihlainen, Risto Lähdesmäki & Kivi Sotamaa"
-    },
-    {
       "format": "Fireside chat",
       "title": "From Products to Worlds: Who Wins in the Experience Economy?",
       "speakers": "Ashley Jex Wagner, Marley Prudeaux & Miika Salmi Lipiäinen"
-    },
-    {
-      "format": "Fireside chat",
-      "title": "The Art of Renewal: Rewiring Organizational Change",
-      "speakers": "Karoliina Jarenko, Simo Routarinne & Mikko Heikinpoika"
-    },
-    {
-      "format": "Keynote",
-      "title": "The Science of Play — The Building Blocks of Future Leadership",
-      "speakers": "Katriina Heljakka"
-    },
-    {
-      "format": "Keynote",
-      "title": "Interpretation as a Human Skill — Finding Meaning Beyond the Obvious",
-      "speakers": "Perttu Pölönen"
     },
     {
       "format": "Fireside chat",
@@ -233,49 +122,18 @@
     },
     {
       "format": "Fireside chat",
-      "title": "City as a Canvas — How Artists Create Environments",
-      "speakers": "Samppa Lappalainen, Karoliina Korppoo, Dennis Schmees & Jani Jalonen"
+      "title": "What World-Class Brands Do Differently: Inside Creative Work at the Highest Level",
+      "speakers": "Alexander Pihlainen, Risto Lähdesmäki & Kivi Sotamaa"
     },
     {
       "format": "Fireside chat",
-      "title": "Creative Economy — Finland's Next Growth Lever?",
-      "speakers": "Atte Jääskeläinen, Katja Lindroos & Aki Pöntinen"
+      "title": "New Media in the Attention Economy — What Has Changed?",
+      "speakers": "Anna Brchisky, Klaus Hietala & Olli Seuri"
     },
     {
       "format": "Fireside chat",
-      "title": "What Corporate Events Can Learn From Club Culture",
-      "speakers": "Asaf Peled, Maria Sahlstedt & Ukko-Pekka Itäpelto"
-    },
-    {
-      "format": "Fireside chat",
-      "title": "No Safe Route — What Business Leaders Can Learn from Creative Resilience",
-      "speakers": "Elina Arponen, Jani Pösö, Kati Nuora & Kati Uusi-Rauva"
-    }
-  ],
-  "whoItsFor": [
-    {
-      "label": "Business leaders",
-      "description": "Responsible for direction, growth or change and looking for perspectives and relationships outside the usual business circuit."
-    },
-    {
-      "label": "Founders & entrepreneurs",
-      "description": "Building something that does not exist yet, looking for customers, collaborators and ideas beyond their immediate industry."
-    },
-    {
-      "label": "Business development & partnerships",
-      "description": "Looking for relevant clients, partners and people to build something with, in a room designed to cross professional silos."
-    },
-    {
-      "label": "Organisational leaders",
-      "description": "Working on culture, leadership and change, where behaviour and meaning matter as much as process."
-    },
-    {
-      "label": "Policymakers & institutions",
-      "description": "Shaping cities, institutions and public systems and wanting closer contact with creative practice and the people behind it."
-    },
-    {
-      "label": "Creative leaders",
-      "description": "Bringing creative and cultural expertise into conversations, relationships and projects beyond the cultural sector."
+      "title": "The Art of Renewal: Rewiring Organizational Change",
+      "speakers": "Karoliina Jarenko, Simo Routarinne & Mikko Heikinpoika"
     }
   ],
   "programme": [],
@@ -367,7 +225,7 @@
     },
     {
       "question": "Who is it for?",
-      "answer": "Business leaders, founders, business development and partnership people, organisational leaders, policymakers and institutions, and creative leaders working beyond the cultural sector. It is built for people who want perspectives and relationships outside their own industry — see \"Who it's for\" above."
+      "answer": "Business leaders, founders, business development and partnership people, organisational leaders, policymakers and institutions, and creative leaders working beyond the cultural sector. It is built for people who want perspectives and relationships outside their own industry."
     },
     {
       "question": "Can my organisation partner with ODDference?",

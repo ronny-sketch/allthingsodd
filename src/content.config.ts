@@ -769,7 +769,6 @@ const pages = defineCollection({
             image: image().optional(),
           }),
         ),
-        whoItsFor: z.array(audienceItem),
         // ODDference 2026's real, verified speaker roster — social proof,
         // not a line-up for a not-yet-programmed 2027 edition. Optional at
         // the object level only in the "ships empty until real names exist"
@@ -789,12 +788,11 @@ const pages = defineCollection({
         // Ajolista", the run sheet the venue was operated from), not the
         // live oddfest.co/oddference page — that page never published
         // session-level content, only the three programme tracks and the
-        // speaker wall. Titles are verbatim from the run sheet, with one
-        // typo fixed ("Creative Econony" → "Creative Economy").
+        // speaker wall. Titles are verbatim from the run sheet.
         //
-        // A curated selection, not the full 30-session programme: this is a
-        // "what this event is like" proof block on a 2027 sales page, not an
-        // archive. `format` is the session's real format from the run sheet
+        // A curated five (cut from twelve on 2026-09-17), not the full
+        // 30-session programme: this is a "what this event is like" proof
+        // block on a 2027 sales page, not an archive. `format` is the session's real format from the run sheet
         // (Keynote / Fireside chat); `speakers` is a display string because
         // half of these are multi-person panels and none of them need to be
         // individually linkable.

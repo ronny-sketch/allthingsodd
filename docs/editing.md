@@ -92,9 +92,13 @@ high-level notes:
   section was removed on 2026-09-14. One rule on this page in particular:
   the deleted "shared platform" block must not come back until there is a
   platform to describe.
-- **ODDference** (restructured 2026-09-11 — eight sections, in this order):
-  the hero, the premise, the heading + three reasons to come, past speakers,
-  session highlights, who it's for, tickets & partnership, FAQ.
+- **ODDference** (restructured 2026-09-11, cut down 2026-09-17 — seven
+  sections, in this order): the hero, the premise, the heading + three
+  reasons to come, past speakers, session highlights, tickets & partnership,
+  FAQ. "Who it's for" was deleted on 2026-09-17; the audience list lives on
+  in the FAQ answer.
+  - _Past speakers_ is ten people, laid out 5 × 2 on desktop and 2 × 5 on
+    phones — keep it at ten. _Session highlights_ is five.
   - _Past speakers_ and _session highlights_ are both records of ODDference
     **2026**, not promises about 2027. Don't add a name or a session title
     that wasn't really there, and don't rewrite a session title into
