@@ -23,6 +23,9 @@ const DEEP_LINKS: Record<string, { route: ContactTopicValue; label: string }> = 
   // whole point of routing them separately is that one is a submission and
   // the other is a question, and they do not want the same reply.
   oddfest_2027_question: { route: 'oddfest', label: 'ODDfest 2027 — a question' },
+  // The thank-you page's "What moved you? What should ODD become?" card
+  // (2026-09-17), which replaced a feedback form that never sent anything.
+  oddfest_2026_feedback: { route: 'oddfest', label: 'ODDfest 2026 — feedback' },
 };
 
 const TOPIC_SUBJECTS = new Map(CONTACT_TOPICS.map((t) => [t.value, t.subject]));

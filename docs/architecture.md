@@ -236,20 +236,31 @@ real decisions worth recording:
      nor confirmed — the same promise-ahead-of-the-build this codebase
      refuses everywhere else. `editorial-integrity.spec.ts` asserts it
      stays gone.
-   - **The archived 2026 thank-you page is hosted, not rebuilt.** It lives
-     at `public/oddfest-2026/` as a standalone static page: a 63KB
-     self-contained scroll-credits experience with its own type, audio and
-     Flickr-hosted photography, and rebuilding it as an Astro route would
-     have meant rewriting something that was finished and correct. Three
-     things were changed in it — the six `.ttf` faces became this site's
-     own two subset `.woff2` files (114KB → 67KB, and `font-display:block`
-     became `swap`), the audio file lost the spaces in its name, and a
-     dated archive banner was added at the top. The banner exists because
-     the page was written in June 2026 and says 2027 will be "one cohesive
-     concept, one central location", which the current distributed model
-     has since superseded. Nothing in the original copy was rewritten: it
-     is a thank-you letter that was already sent, and the banner dates it
-     rather than revising it.
+   - **The archived 2026 thank-you page was hosted, not rebuilt — until
+     2026-09-17.** It first lived at `public/oddfest-2026/` as a standalone
+     63KB static page with its own type, palette, audio and Flickr-hosted
+     photography, with only its fonts, audio filename and a dated archive
+     banner changed. **Superseded on 2026-09-17**, at Ronny's request that it
+     follow the same rules as the rest of the site: it is now a real route,
+     `src/pages/oddfest-2026.astro`, with every word in
+     `src/content/pages/oddfest-2026.json` (template `oddfest2026`). It uses
+     ODDfest's rails (`SubpageFrame slug="oddfest"`), ODDspace's photo-grid
+     hero (`SpaceHero`), `PhotoBreak`, `PhotoWall` and `ParticipateBand`, the
+     five-step type ladder and the spacing rhythm. The letter, the
+     reflection and the credits are unchanged; the archive banner became a
+     dated note above the 2027 text, which still describes the June 2026
+     plan. What did not survive, on purpose: a feedback form whose submit
+     handler only changed its button text (the card now links to the
+     contact form, `?topic=oddfest_2026_feedback`); two `href="#"` buttons
+     (now the newsletter and `/oddspace/membership`); a runtime Flickr API
+     call with its key in the page source, fetching up to 1,500 photos (the
+     25 it had curated were downloaded into `src/assets/oddfest-2026/`, 24
+     are used); and the oddfest.co button, because `/oddfest` carries the
+     site's one labelled link to that domain. The "play the credits" roll
+     survives as `src/scripts/oddfest-2026-credits.ts`: the hero's `#credits`
+     link starts the soundtrack (`public/audio/`, fetched only on click) and
+     a slow self-scroll that stops when the reader scrolls; under reduced
+     motion the link just jumps to the credits and plays the soundtrack.
 
    One thing that is deliberately _not_ in the rebuild: the "what has
    happened before" section cites only figures this site already publishes

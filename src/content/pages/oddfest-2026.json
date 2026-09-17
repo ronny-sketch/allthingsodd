@@ -1,0 +1,1189 @@
+{
+  "_template": "oddfest2026",
+  "seo": {
+    "title": "ODDfest 2026 — Thank you",
+    "description": "Thank you to everyone who made ODDfest 2026 — the team, artists, volunteers and partners behind it. The credits, the photographs and what comes next.",
+    "ogImage": "/og/oddfest-2026.jpg"
+  },
+  "title": "You are the heroes of ODD.",
+  "meta": "Helsinki · 2026",
+  "primaryCta": {
+    "label": "Play the credits",
+    "href": "#credits"
+  },
+  "secondaryCta": {
+    "label": "See the photos",
+    "href": "#photos"
+  },
+  "heroPhotos": [
+    {
+      "image": "../../assets/oddfest-2026/staircase-fabric-duo.jpg",
+      "alt": "Two dancers with flowing white fabric on the staircase at Vanha"
+    },
+    {
+      "image": "../../assets/oddfest-2026/aerial-duo.jpg",
+      "alt": "Two aerial performers on a pole at Vanha"
+    },
+    {
+      "image": "../../assets/oddfest-2026/blue-light-performer.jpg",
+      "alt": "A performer in white lace raising a feathered prop under blue light"
+    },
+    {
+      "image": "../../assets/oddfest-2026/messy-micc.jpg",
+      "alt": "A rapper in a cap performing into a microphone at Vanha"
+    },
+    {
+      "image": "../../assets/oddfest-2026/draped-figure.jpg",
+      "alt": "A performer draped in sheer peach fabric beside a window"
+    },
+    {
+      "image": "../../assets/oddfest-2026/dance-worlds-crowd.jpg",
+      "alt": "Dancers in white moving through the crowd at the door of Vanha"
+    },
+    {
+      "image": "../../assets/oddfest-2026/amber-silhouette.jpg",
+      "alt": "A dancer in silhouette against amber stage light, holding flowers"
+    },
+    {
+      "image": "../../assets/oddfest-2026/blomqvist-piano-hall.jpg",
+      "alt": "A pianist playing in a dark hall"
+    }
+  ],
+  "railLeft": [
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDfest"
+    },
+    {
+      "kind": "meta",
+      "text": "Helsinki"
+    },
+    {
+      "kind": "meta",
+      "text": "2026"
+    }
+  ],
+  "railRight": [
+    {
+      "kind": "word",
+      "text": "Thank you"
+    },
+    {
+      "kind": "meta",
+      "text": "2026"
+    },
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDfest"
+    }
+  ],
+  "letter": {
+    "premise": "To every soul who showed up, stayed up late, gave up comfortable choices, and poured themselves into something that had never been made before —",
+    "point": "thank you."
+  },
+  "quote": {
+    "text": "A hero is an ordinary individual who finds the strength to persevere and endure in spite of overwhelming obstacles.",
+    "emphasis": "persevere and endure",
+    "attribution": "Christopher Reeve"
+  },
+  "reflection": {
+    "eyebrow": "Looking back, looking ahead",
+    "title": "What we lived through & where we go.",
+    "years": [
+      {
+        "year": "2026",
+        "body": "Something new was born this year. ODDference arrived — and it arrived with a bang. The program was sharp, the conversations were real, the production was on point, and the people were exactly who they needed to be. The concept was validated. We know it works. We know what it can become. Expect a more immersive, co-created and deeply developed format ahead.\n\nODDfest continued to seek its form. It was ambitious — deliberately so. Hundreds of beautiful performances. Multiple iconic venues. Programming that stretched across disciplines, genres, and ideas in ways Helsinki had not seen before. Those who arrived, loved what they found. But the concept was layered, complex, and new — and that made it hard to explain before you'd experienced it. Not enough people crossed that threshold.\n\nWe gathered a lot of feedback. We heard what to crystallise, what to cut, and what deserves to grow. We got to know our audience. All of this has been enormous, necessary work. And it was worth every step."
+      },
+      {
+        "year": "2027",
+        "note": {
+          "text": "Written in June 2026. ODDfest has taken a different shape since.",
+          "link": {
+            "label": "See the 2027 plan",
+            "href": "/oddfest"
+          }
+        },
+        "body": "Next year is about focus. One cohesive concept. One central location. An immersive experience that is nailed down, crystal clear, and impossible to forget. Co-curated with our visitors and target audience at the very centre — not made for them, but with them.\n\nIn 2027, Finland turns 110. ODD will be a living showcase of Finnish culture and creativity — past, present, and future. The most Finnish and the most international we have ever been, at exactly the same time.\n\nThe work continues. See you on the other side."
+      }
+    ]
+  },
+  "photoBreak": {
+    "image": "../../assets/oddfest-2026/valerie-june.jpg",
+    "alt": "A singer playing acoustic guitar on a flower-decked stage at Vanha"
+  },
+  "credits": {
+    "eyebrow": "Our ODD heroes",
+    "title": "The doers. The supporters. The makers.",
+    "lede": "These are the people who made it real.",
+    "lists": [
+      {
+        "title": "Core team",
+        "items": [
+          {
+            "name": "Ronny Eriksson",
+            "role": "Founder & Director"
+          },
+          {
+            "name": "Ukko-Pekka \"Upi\" Itäpelto",
+            "role": "Chief ODDness Officer"
+          },
+          {
+            "name": "Aki Pöntinen",
+            "role": "Co-founder"
+          },
+          {
+            "name": "Max Wikholm",
+            "role": "Head of Partnerships"
+          },
+          {
+            "name": "Laura Fuentes",
+            "role": "Head of PR"
+          },
+          {
+            "name": "Kirsi Shemeikka",
+            "role": "Production Manager"
+          },
+          {
+            "name": "Hannamari Tamminen",
+            "role": "Artist Production Manager"
+          },
+          {
+            "name": "Jonas Verwijnen",
+            "role": "Artist Booker"
+          },
+          {
+            "name": "Karoliina Pärnänen",
+            "role": "Social Media & Visuals"
+          },
+          {
+            "name": "Remu Shemeikka",
+            "role": "Content Creator"
+          },
+          {
+            "name": "Fernando Catalán",
+            "role": "Operations"
+          },
+          {
+            "name": "Pete Lipponen",
+            "role": "ODDspace & Venues"
+          },
+          {
+            "name": "Kevin",
+            "role": "Volunteer Coordinator"
+          },
+          {
+            "name": "Alexandra",
+            "role": "Partnerships"
+          },
+          {
+            "name": "Joppe Quaedvlieg",
+            "role": "Logistics"
+          },
+          {
+            "name": "Lara Kanerva",
+            "role": "Social Content"
+          },
+          {
+            "name": "Laura Ylinen",
+            "role": "Communications"
+          },
+          {
+            "name": "Valle Turkka",
+            "role": "Volunteer Lead"
+          },
+          {
+            "name": "Saara Taha",
+            "role": "Volunteer Lead"
+          },
+          {
+            "name": "Roman Turikov",
+            "role": "Volunteer Lead"
+          },
+          {
+            "name": "Emma Helminiitty",
+            "role": "Volunteer Lead"
+          },
+          {
+            "name": "Georgii Iuzefovich",
+            "role": "Volunteer Lead"
+          }
+        ]
+      },
+      {
+        "title": "Artists, performers & collectives",
+        "items": [
+          {
+            "name": "25films"
+          },
+          {
+            "name": "A. Blomqvist"
+          },
+          {
+            "name": "Aavistus"
+          },
+          {
+            "name": "African Acid is the Future: Maryisonacid (FR)"
+          },
+          {
+            "name": "Anastasia Maydanova"
+          },
+          {
+            "name": "Ari Pulkkinen"
+          },
+          {
+            "name": "Assembly (US)"
+          },
+          {
+            "name": "Avanti! Presents: Paleface & Harput"
+          },
+          {
+            "name": "Bar25 — Days Out of Time (DE)"
+          },
+          {
+            "name": "Casvu.ai"
+          },
+          {
+            "name": "Clavert"
+          },
+          {
+            "name": "Connection Interrupted"
+          },
+          {
+            "name": "DanceWorks Helsinki"
+          },
+          {
+            "name": "Dení Vázquez"
+          },
+          {
+            "name": "Discobingo"
+          },
+          {
+            "name": "DJ Dominga (CL)"
+          },
+          {
+            "name": "DJ PoB"
+          },
+          {
+            "name": "DJ Upi"
+          },
+          {
+            "name": "DJ WUF"
+          },
+          {
+            "name": "DocPoint"
+          },
+          {
+            "name": "Electric Elisa"
+          },
+          {
+            "name": "Espoo Game LAB"
+          },
+          {
+            "name": "Espoo Theatre"
+          },
+          {
+            "name": "Eva Kottonen & Jaana Haapaluoma-Höglund"
+          },
+          {
+            "name": "Eve"
+          },
+          {
+            "name": "Felix Alexander Lybeck"
+          },
+          {
+            "name": "Filip Hiltmann (Way Out West, SE)"
+          },
+          {
+            "name": "Flowers of Life"
+          },
+          {
+            "name": "Folded Visuals"
+          },
+          {
+            "name": "Föllakzoid (CL)"
+          },
+          {
+            "name": "Gone Future"
+          },
+          {
+            "name": "Hanna Arvela"
+          },
+          {
+            "name": "Heidi Backman"
+          },
+          {
+            "name": "INDIE SHOWCASE"
+          },
+          {
+            "name": "Ivan Tkalenko feat. Maija Kauhanen"
+          },
+          {
+            "name": "Jarkko Vilska"
+          },
+          {
+            "name": "Joe Sauer"
+          },
+          {
+            "name": "Johanna Hurme"
+          },
+          {
+            "name": "Joona Kotilainen"
+          },
+          {
+            "name": "Juho Romakkaniemi"
+          },
+          {
+            "name": "Jukka-Pekka Heikkilä"
+          },
+          {
+            "name": "Juska \"DJ Orion\" Wendland"
+          },
+          {
+            "name": "Jyrki Nummisto"
+          },
+          {
+            "name": "Kaero"
+          },
+          {
+            "name": "Kaukolampi"
+          },
+          {
+            "name": "Kuvittajat"
+          },
+          {
+            "name": "Lakeside Games: Twilight Ferry"
+          },
+          {
+            "name": "Lauer & DENA (DE)"
+          },
+          {
+            "name": "Lore Drop"
+          },
+          {
+            "name": "Lotta Savolainen"
+          },
+          {
+            "name": "Lottaliina Pokkinen"
+          },
+          {
+            "name": "Lyran & Akademen"
+          },
+          {
+            "name": "Maria Ritola"
+          },
+          {
+            "name": "Mari Savio"
+          },
+          {
+            "name": "Marina Yurchenko"
+          },
+          {
+            "name": "Matias van Houtum (Ö fest)"
+          },
+          {
+            "name": "Matti Pietari Järvinen"
+          },
+          {
+            "name": "Meow Wolf: Luke Dorman & Marley Prudeaux (US)"
+          },
+          {
+            "name": "Messy Micc"
+          },
+          {
+            "name": "Mikko-Pekka Hanski"
+          },
+          {
+            "name": "Minna Mustapää"
+          },
+          {
+            "name": "Minna Tervamäki"
+          },
+          {
+            "name": "MISHA"
+          },
+          {
+            "name": "Mitäs Mitäs Mitäs"
+          },
+          {
+            "name": "MORA"
+          },
+          {
+            "name": "Mr. Dad"
+          },
+          {
+            "name": "MUSH"
+          },
+          {
+            "name": "Muovipussi"
+          },
+          {
+            "name": "Night Lore"
+          },
+          {
+            "name": "Night Owl Dynamics: Gentle Night Talk"
+          },
+          {
+            "name": "Night Shift"
+          },
+          {
+            "name": "Nuua Company"
+          },
+          {
+            "name": "ODDarcade"
+          },
+          {
+            "name": "ODD Club Presents Club Theatre"
+          },
+          {
+            "name": "ODD DEEP SPACE"
+          },
+          {
+            "name": "ODDgames"
+          },
+          {
+            "name": "Odd Latent Games"
+          },
+          {
+            "name": "Oddacity"
+          },
+          {
+            "name": "ODDclub"
+          },
+          {
+            "name": "Oki Tåg"
+          },
+          {
+            "name": "ONCHI"
+          },
+          {
+            "name": "Otto \"YOTTO\" Yliperttula"
+          },
+          {
+            "name": "Pascal Fischer (DE)"
+          },
+          {
+            "name": "Paula Karvonen"
+          },
+          {
+            "name": "Pauli Patinen"
+          },
+          {
+            "name": "Pelkkää Hyvää Experience"
+          },
+          {
+            "name": "Q-teatteri"
+          },
+          {
+            "name": "Reetta Koski"
+          },
+          {
+            "name": "Reidar Wasenius"
+          },
+          {
+            "name": "Reinar Wasenius"
+          },
+          {
+            "name": "Rolf Ekroth"
+          },
+          {
+            "name": "Roope Mokka"
+          },
+          {
+            "name": "Rudi Ruuskanen"
+          },
+          {
+            "name": "Rönkkö/Kuusijärvi"
+          },
+          {
+            "name": "Salomé Daoudi / Nus Nus (DK)"
+          },
+          {
+            "name": "Salla Vallius"
+          },
+          {
+            "name": "Samppa Lappalainen"
+          },
+          {
+            "name": "Sarah Julia (NL)"
+          },
+          {
+            "name": "Silja Minkkinen"
+          },
+          {
+            "name": "Simo Vassinen"
+          },
+          {
+            "name": "Skaalaajat"
+          },
+          {
+            "name": "Solovey"
+          },
+          {
+            "name": "Sonja Saarikoski"
+          },
+          {
+            "name": "Stacy Epps, Believe & Wildchild (USA)"
+          },
+          {
+            "name": "Studio Laaya: Foghorns Drown"
+          },
+          {
+            "name": "Suva"
+          },
+          {
+            "name": "Super Bario"
+          },
+          {
+            "name": "Suvi Honkanen"
+          },
+          {
+            "name": "Suvi Kemppainen"
+          },
+          {
+            "name": "Tatu Rönkkö"
+          },
+          {
+            "name": "The House of Xclusive Lanvin"
+          },
+          {
+            "name": "Total Refusal (AT)"
+          },
+          {
+            "name": "Tunement"
+          },
+          {
+            "name": "Tyre"
+          },
+          {
+            "name": "Us"
+          },
+          {
+            "name": "Valerie June (US)"
+          },
+          {
+            "name": "VALIOBEATS (VALIOART)"
+          },
+          {
+            "name": "VIRTA"
+          },
+          {
+            "name": "VJ Indigo"
+          },
+          {
+            "name": "Wanda O Rly"
+          },
+          {
+            "name": "Wera Malmivaara"
+          },
+          {
+            "name": "Winged"
+          }
+        ]
+      },
+      {
+        "title": "Volunteers",
+        "intro": "You were the heartbeat of the festival. Every smile, every direction given, every moment of calm in the middle of chaos — that was you.",
+        "items": [
+          {
+            "name": "Riitta Chorfi"
+          },
+          {
+            "name": "Fred Koskinen"
+          },
+          {
+            "name": "Anastasiia Barabash"
+          },
+          {
+            "name": "Kelsie Vu"
+          },
+          {
+            "name": "Zeynep Kaynar"
+          },
+          {
+            "name": "Anna Nyberg"
+          },
+          {
+            "name": "Jason Selvarajan"
+          },
+          {
+            "name": "Tori Leets"
+          },
+          {
+            "name": "Kristian Kuismin"
+          },
+          {
+            "name": "Muhammad Shahzaib"
+          },
+          {
+            "name": "Moises Teodoro Tihinen"
+          },
+          {
+            "name": "Maria Freidin"
+          },
+          {
+            "name": "Daniela Monteiro"
+          },
+          {
+            "name": "Hanna Laakso"
+          },
+          {
+            "name": "Eric Nguyen"
+          },
+          {
+            "name": "Noe Escudero Neri"
+          },
+          {
+            "name": "Gunju Oyunkhishig"
+          },
+          {
+            "name": "Kseniia Shaleva"
+          },
+          {
+            "name": "Abdul Rouf"
+          },
+          {
+            "name": "Mariia Gnedovskaia"
+          },
+          {
+            "name": "Vipin Kumar"
+          },
+          {
+            "name": "Ting Loetaphirom"
+          },
+          {
+            "name": "Riitta Mettomäki"
+          },
+          {
+            "name": "Pushpa Koirala"
+          },
+          {
+            "name": "Carole Kurowski"
+          },
+          {
+            "name": "Olga Kryuchkova"
+          },
+          {
+            "name": "Giovanni Foppiani"
+          },
+          {
+            "name": "Marika Luostarinen"
+          },
+          {
+            "name": "Graham Featherstone"
+          },
+          {
+            "name": "Oskar Kouvalainen"
+          },
+          {
+            "name": "Samuli Heino"
+          },
+          {
+            "name": "Laxmi Thapa"
+          },
+          {
+            "name": "An Pham"
+          },
+          {
+            "name": "Zoheb Rahman"
+          },
+          {
+            "name": "Pauliina Cross"
+          },
+          {
+            "name": "Sana Mehta"
+          },
+          {
+            "name": "Aada Luotola"
+          },
+          {
+            "name": "Wen-Jing Lin"
+          },
+          {
+            "name": "Milja Lassila"
+          },
+          {
+            "name": "Lily Dang"
+          },
+          {
+            "name": "Joya Roy"
+          },
+          {
+            "name": "Aayush Jain"
+          },
+          {
+            "name": "Sheryl Wong"
+          },
+          {
+            "name": "Katja Jokisalo"
+          },
+          {
+            "name": "Roger Johnson"
+          },
+          {
+            "name": "Simon Borali"
+          },
+          {
+            "name": "Susanna Kiviniemi"
+          },
+          {
+            "name": "Feyza Aslan Baskurt"
+          },
+          {
+            "name": "Chia-Hsuan"
+          },
+          {
+            "name": "Alena Mima"
+          },
+          {
+            "name": "Ekaterina Statsiura"
+          },
+          {
+            "name": "Camila"
+          },
+          {
+            "name": "Kerttuli Karels"
+          },
+          {
+            "name": "Mia Saukko"
+          },
+          {
+            "name": "Ksenia Avetisova"
+          },
+          {
+            "name": "Henna Mettälä"
+          },
+          {
+            "name": "Enna-Matilda Kukkola"
+          },
+          {
+            "name": "Ranjani Veeraraghavan"
+          },
+          {
+            "name": "Amritha Pal"
+          },
+          {
+            "name": "Alisa Haikkola"
+          },
+          {
+            "name": "Niraj Neupane"
+          },
+          {
+            "name": "Alex Strachan"
+          },
+          {
+            "name": "Ibraahim Farah"
+          },
+          {
+            "name": "Sini Järvinen"
+          },
+          {
+            "name": "Nalle Silberstein"
+          },
+          {
+            "name": "Roosa Virtanen"
+          },
+          {
+            "name": "Davide Forni"
+          },
+          {
+            "name": "Daniel Lammi"
+          },
+          {
+            "name": "Léa Subrenat"
+          },
+          {
+            "name": "Warisha Rizvi"
+          },
+          {
+            "name": "Arul Karthick Viswanathan"
+          },
+          {
+            "name": "Zubia Faisal"
+          },
+          {
+            "name": "Hafiza Tisbeeha Rehman"
+          },
+          {
+            "name": "Linda Illman"
+          },
+          {
+            "name": "Jussi Itkonen"
+          },
+          {
+            "name": "Milena Walder"
+          },
+          {
+            "name": "Jyry"
+          },
+          {
+            "name": "Ronny's brother"
+          },
+          {
+            "name": "Julian Kollataj"
+          }
+        ]
+      },
+      {
+        "title": "Partners & collaborators",
+        "subgroups": [
+          {
+            "label": "Production",
+            "items": [
+              {
+                "name": "Roudaamo"
+              },
+              {
+                "name": "16bit"
+              }
+            ]
+          },
+          {
+            "label": "Partners",
+            "items": [
+              {
+                "name": "Adventure Club",
+                "href": "https://adventureclub.io"
+              },
+              {
+                "name": "Netvisor / Visma"
+              },
+              {
+                "name": "EMU Group"
+              },
+              {
+                "name": "Dottir Law"
+              },
+              {
+                "name": "Tiketti",
+                "href": "https://tiketti.fi"
+              },
+              {
+                "name": "Gilda"
+              },
+              {
+                "name": "Republic PR"
+              },
+              {
+                "name": "Brella"
+              },
+              {
+                "name": "Randöm"
+              },
+              {
+                "name": "Nordic Bridge Music",
+                "href": "https://www.nordicbridgemusic.com/"
+              },
+              {
+                "name": "Marimekko",
+                "href": "https://www.marimekko.com/fi_en"
+              },
+              {
+                "name": "Nescafé",
+                "href": "https://www.nescafe.com/fi/"
+              },
+              {
+                "name": "Innovestor"
+              },
+              {
+                "name": "Burger Company"
+              }
+            ]
+          },
+          {
+            "label": "Media",
+            "items": [
+              {
+                "name": "Outshine"
+              },
+              {
+                "name": "Radio Helsinki"
+              },
+              {
+                "name": "Salute"
+              },
+              {
+                "name": "Bonnier News Finland",
+                "href": "https://bnf.fi/fi/"
+              },
+              {
+                "name": "Playground",
+                "href": "https://studioplayground.cc/"
+              }
+            ]
+          },
+          {
+            "label": "Supported by",
+            "items": [
+              {
+                "name": "Yksityisyrittäjän Säätiö"
+              },
+              {
+                "name": "Amos Andersons Fond"
+              },
+              {
+                "name": "Suomen Kulttuurirahasto"
+              },
+              {
+                "name": "Helsingin kaupunki",
+                "href": "https://www.hel.fi/en"
+              },
+              {
+                "name": "Alfred Kordelin Foundation",
+                "href": "https://kordelin.fi/en/"
+              }
+            ]
+          },
+          {
+            "label": "Collaborators",
+            "items": [
+              {
+                "name": "FiBAN"
+              },
+              {
+                "name": "Reveel"
+              },
+              {
+                "name": "Lasipalatsikortteli"
+              },
+              {
+                "name": "EIT Culture & Creativity"
+              },
+              {
+                "name": "Kampin kappeli"
+              },
+              {
+                "name": "Nuua Company"
+              },
+              {
+                "name": "Mitäs Mitäs Mitäs"
+              },
+              {
+                "name": "FunDesign"
+              },
+              {
+                "name": "Sång- och Musikfesten"
+              },
+              {
+                "name": "Creative Lunch Club"
+              },
+              {
+                "name": "Venga"
+              },
+              {
+                "name": "Pertin Valinta",
+                "href": "https://pertinvalinta.fi/en"
+              },
+              {
+                "name": "SPOT",
+                "href": "https://www.spot.fi/"
+              },
+              {
+                "name": "Ravespresso",
+                "href": "https://www.instagram.com/ravespresso/"
+              },
+              {
+                "name": "Raaka Arki Events",
+                "href": "https://www.instagram.com/raaka_arki_events/"
+              },
+              {
+                "name": "Skidit",
+                "href": "https://www.skidit.fi/"
+              },
+              {
+                "name": "Aavistus",
+                "href": "https://www.aavistusfestival.fi/"
+              },
+              {
+                "name": "Tapahtumateollisuus",
+                "href": "https://tapahtumateollisuus.fi/"
+              },
+              {
+                "name": "Music x Media",
+                "href": "https://musicmedia.fi/en/"
+              },
+              {
+                "name": "Tampereen kaupunki",
+                "href": "https://www.tampere.fi/en"
+              },
+              {
+                "name": "Winged",
+                "href": "https://www.wingedapp.com/"
+              },
+              {
+                "name": "MEB",
+                "href": "https://meb.fi/ENG/"
+              },
+              {
+                "name": "Solovey",
+                "href": "https://soloveymusic.com/"
+              },
+              {
+                "name": "DanceWorks Helsinki",
+                "href": "https://www.danceworkshelsinki.fi/"
+              },
+              {
+                "name": "Espoo Theatre",
+                "href": "https://espoonteatteri.fi/en/"
+              },
+              {
+                "name": "DocPoint",
+                "href": "https://docpoint.fi/en/home/"
+              },
+              {
+                "name": "Q-teatteri",
+                "href": "https://www.q-teatteri.fi/home-en"
+              },
+              {
+                "name": "Indie Showcase",
+                "href": "https://www.instagram.com/indieshowcase_/"
+              },
+              {
+                "name": "Kulta ry",
+                "href": "https://kulttuurijataide.fi/en/"
+              }
+            ]
+          },
+          {
+            "label": "Also featured in our media wall",
+            "items": [
+              {
+                "name": "Arts Dynamics Talks",
+                "href": "https://www.artsdynamics.com/"
+              },
+              {
+                "name": "Evento",
+                "href": "https://avecmedia.fi/evento/"
+              },
+              {
+                "name": "Kordelin Major Cultural Projects"
+              },
+              {
+                "name": "Kauppalehti",
+                "href": "https://www.kauppalehti.fi/"
+              },
+              {
+                "name": "Aamulehti",
+                "href": "https://www.aamulehti.fi/"
+              },
+              {
+                "name": "Creative Respect",
+                "href": "https://www.instagram.com/creativerespectpod"
+              },
+              {
+                "name": "V2.fi",
+                "href": "https://www.v2.fi/"
+              },
+              {
+                "name": "Design Forum Finland",
+                "href": "https://designforum.fi/en/"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "gallery": {
+    "eyebrow": "Photographs",
+    "title": "A festival lives in its photographs.",
+    "note": "Photos by @flyingwhalefv.",
+    "photos": [
+      {
+        "image": "../../assets/oddfest-2026/oddference-elisabet-lahti.jpg",
+        "alt": "A speaker in a white martial-arts jacket on stage at ODDference, under a slide reading “Zanshin — Remaining Mind”"
+      },
+      {
+        "image": "../../assets/oddfest-2026/salome-daoudi-talk.jpg",
+        "alt": "A speaker with a microphone in front of a screen at Vanha"
+      },
+      {
+        "image": "../../assets/oddfest-2026/chicken-foot-soup-dj.jpg",
+        "alt": "Two DJs playing behind a flower-covered booth"
+      },
+      {
+        "image": "../../assets/oddfest-2026/creator-tv-head.jpg",
+        "alt": "A performer wearing an old television reading “Creator” as a head"
+      },
+      {
+        "image": "../../assets/oddfest-2026/harlequin-steps.jpg",
+        "alt": "A performer in harlequin tights and platform boots on stone steps"
+      },
+      {
+        "image": "../../assets/oddfest-2026/valiobeats-live-painting.jpg",
+        "alt": "An artist painting live beside the DJ decks"
+      },
+      {
+        "image": "../../assets/oddfest-2026/flower-umbrella.jpg",
+        "alt": "A flower-covered parasol in a doorway at Vanha"
+      },
+      {
+        "image": "../../assets/oddfest-2026/blomqvist-piano-beams.jpg",
+        "alt": "A pianist under beams of blue stage light"
+      },
+      {
+        "image": "../../assets/oddfest-2026/lamp-post-climber.jpg",
+        "alt": "A performer climbing a lamp post outside Vanha"
+      },
+      {
+        "image": "../../assets/oddfest-2026/balustrade-dancer.jpg",
+        "alt": "A dancer seen between white stone balusters"
+      },
+      {
+        "image": "../../assets/oddfest-2026/staircase-dancer.jpg",
+        "alt": "A dancer descending the staircase at Vanha"
+      },
+      {
+        "image": "../../assets/oddfest-2026/red-light-dancer.jpg",
+        "alt": "A dancer in red light"
+      },
+      {
+        "image": "../../assets/oddfest-2026/suit-at-the-door.jpg",
+        "alt": "A performer in a suit at the entrance of Vanha"
+      },
+      {
+        "image": "../../assets/oddfest-2026/veiled-figure.jpg",
+        "alt": "A figure veiled in white standing in a café at Vanha"
+      },
+      {
+        "image": "../../assets/oddfest-2026/oddference-jussi-venalainen.jpg",
+        "alt": "A speaker in a patterned shirt gesturing on stage at ODDference"
+      }
+    ],
+    "link": {
+      "label": "All ODDfest photos on Flickr",
+      "href": "https://www.flickr.com/photos/204686183@N06/",
+      "external": true
+    }
+  },
+  "participateTitle": "What comes next",
+  "participate": [
+    {
+      "eyebrow": "Be first in line",
+      "title": "ODD 2027 is on its way.",
+      "linkLabel": "Join the newsletter →",
+      "href": "#newsletter"
+    },
+    {
+      "eyebrow": "Your voice shapes what comes next",
+      "title": "What moved you? What should ODD become?",
+      "linkLabel": "Tell us →",
+      "href": "/contact/?topic=oddfest_2026_feedback"
+    },
+    {
+      "eyebrow": "The work continues",
+      "title": "The festival may be over. But the space never closes.",
+      "linkLabel": "Become a member at ODDspace →",
+      "href": "/oddspace/membership"
+    }
+  ],
+  "signoff": {
+    "title": "Stay ODD.",
+    "body": "We love you and miss you already."
+  }
+}
