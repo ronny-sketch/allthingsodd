@@ -632,11 +632,14 @@ collections_config:
           subtype: object
       reflection:
         type: object
-        label: Looking back, looking ahead (ODDfest 2026 thank-you only)
+        label: What happened in 2026 (ODDfest 2026 thank-you only)
         comment: >-
-          One entry per year, paragraphs separated by a blank line. "note" is
-          a dated caveat shown above that year's text — 2027's says the plan
-          has changed since June 2026. Remove it only if the text is updated.
+          The big number is counted automatically from the credits — every
+          different name, once — so it can't be typed here and updates when a
+          name is added or removed. "countLabel" is the line under it, "body"
+          is the story (paragraphs separated by a blank line) and "closing" is
+          the last line, set in full white. Use only facts already published
+          on the site.
         options:
           subtype: object
       photoBreak:

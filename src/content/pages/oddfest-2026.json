@@ -93,25 +93,10 @@
     "attribution": "Christopher Reeve"
   },
   "reflection": {
-    "eyebrow": "Looking back, looking ahead",
-    "title": "What we lived through & where we go.",
-    "years": [
-      {
-        "year": "2026",
-        "body": "Something new was born this year. ODDference arrived — and it arrived with a bang. The program was sharp, the conversations were real, the production was on point, and the people were exactly who they needed to be. The concept was validated. We know it works. We know what it can become. Expect a more immersive, co-created and deeply developed format ahead.\n\nODDfest continued to seek its form. It was ambitious — deliberately so. Hundreds of beautiful performances. Multiple iconic venues. Programming that stretched across disciplines, genres, and ideas in ways Helsinki had not seen before. Those who arrived, loved what they found. But the concept was layered, complex, and new — and that made it hard to explain before you'd experienced it. Not enough people crossed that threshold.\n\nWe gathered a lot of feedback. We heard what to crystallise, what to cut, and what deserves to grow. We got to know our audience. All of this has been enormous, necessary work. And it was worth every step."
-      },
-      {
-        "year": "2027",
-        "note": {
-          "text": "Written in June 2026. ODDfest has taken a different shape since.",
-          "link": {
-            "label": "See the 2027 plan",
-            "href": "/oddfest"
-          }
-        },
-        "body": "Next year is about focus. One cohesive concept. One central location. An immersive experience that is nailed down, crystal clear, and impossible to forget. Co-curated with our visitors and target audience at the very centre — not made for them, but with them.\n\nIn 2027, Finland turns 110. ODD will be a living showcase of Finnish culture and creativity — past, present, and future. The most Finnish and the most international we have ever been, at exactly the same time.\n\nThe work continues. See you on the other side."
-      }
-    ]
+    "eyebrow": "What happened in 2026",
+    "countLabel": "people, artists, collectives and organisations made ODDfest 2026. Together.",
+    "body": "Creative Week ran June 8–14. Partner events across Helsinki brought in more than 1,000 people. ODDference filled two days with 25 speakers and more than 30 sessions. Then ODDfest took Friday and Saturday — more than 150 acts, from Vanha Ylioppilastalo to Tavastia.\n\nNone of it was ODD's alone. Ten curators built the programme. Artists brought their own work, their own crews and their own crowds. Volunteers kept things calm when they got chaotic, and they did get chaotic. Partners and foundations put in money, rooms and trust before anyone knew how it would turn out.\n\nThe theme was Bravery. Turned out it wasn't just a theme.",
+    "closing": "Every one of them is named below. That's the point."
   },
   "photoBreak": {
     "image": "../../assets/oddfest-2026/valerie-june.jpg",
@@ -1165,7 +1150,7 @@
   "participate": [
     {
       "eyebrow": "Be first in line",
-      "title": "ODD 2027 is on its way.",
+      "title": "Whatever comes next, hear it first.",
       "linkLabel": "Join the newsletter →",
       "href": "#newsletter"
     },

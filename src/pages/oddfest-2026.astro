@@ -6,7 +6,7 @@
 // ODDspace's photo-grid hero, the five-step type ladder, the spacing rhythm,
 // photographs through astro:assets, every word in oddfest-2026.json.
 //
-//   1 hero · 2 the letter · 3 looking back, looking ahead · 4 credits ·
+//   1 hero · 2 the letter · 3 what happened, and how many made it · 4 credits ·
 //   5 photographs · 6 what comes next · 7 sign-off
 //
 // What the old page had and this one deliberately does not:
@@ -40,6 +40,18 @@ const paragraphs = (body: string) =>
     .split(/\r?\n\s*\r?\n/)
     .map((part) => part.trim())
     .filter(Boolean);
+
+// The section-3 figure: everyone in the credits, each counted once. Ten
+// names sit in two lists (an artist who was also a collaborator), so this is
+// the number of different names, not the number of lines. Counted from the
+// content, so adding or removing a credit changes it.
+const creditedNames = page.credits.lists.flatMap((list) => [
+  ...(list.items ?? []),
+  ...(list.subgroups ?? []).flatMap((sub) => sub.items),
+]);
+const creditedCount = new Set(
+  creditedNames.map((item) => item.name.toLowerCase().replace(/"/g, '').trim()),
+).size;
 
 // The quote's emphasis is a substring of its text, not markup in content.
 const [quoteBefore, quoteAfter] = page.quote.emphasis
@@ -85,32 +97,18 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
       </div>
     </section>
 
-    <!-- 3. Looking back, looking ahead. 2027's text is the June 2026 plan,
-         so it carries a dated note pointing at the current one. -->
-    <section class="ty-sub">
+    <!-- 3. What happened in 2026, told through how many made it. The figure
+         is counted from the credits below, never typed in. -->
+    <section class="ty-sub ty-story">
       <div class="wrap flow">
-        <div class="section-head">
-          <span class="eyebrow">{page.reflection.eyebrow}</span>
-          <h2>{page.reflection.title}</h2>
-        </div>
-        <div class="ty-years">
-          {
-            page.reflection.years.map((y) => (
-              <div class="ty-year reveal">
-                <h3 class="ty-year-label">{y.year}</h3>
-                <div class="ty-year-body">
-                  {y.note && (
-                    <p class="ty-year-note">
-                      {y.note.text} <a href={y.note.link.href}>{y.note.link.label} →</a>
-                    </p>
-                  )}
-                  {paragraphs(y.body).map((p) => (
-                    <p>{p}</p>
-                  ))}
-                </div>
-              </div>
-            ))
-          }
+        <span class="eyebrow reveal">{page.reflection.eyebrow}</span>
+        <h2 class="ty-count reveal">
+          <span class="ty-count-value" data-credited-count>{creditedCount}</span>
+          <span class="ty-count-label">{page.reflection.countLabel}</span>
+        </h2>
+        <div class="ty-story-body reveal">
+          {paragraphs(page.reflection.body).map((p) => <p>{p}</p>)}
+          <p class="ty-story-closing">{page.reflection.closing}</p>
         </div>
       </div>
     </section>
@@ -273,61 +271,50 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
     color: var(--color-paper-60);
   }
 
-  /* Looking back, looking ahead: the year in Display beside its text. */
-  .ty-years {
-    max-width: 58rem;
-    margin-inline: auto;
+  /* What happened in 2026: the count at Hero size, what it counts at
+     Heading, then the story on a reading measure. */
+  .ty-story .wrap {
+    text-align: center;
   }
-  .ty-year {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
-    gap: var(--space-3) var(--space-8);
-    padding-block: var(--space-content);
-    border-top: 1px solid var(--color-paper-12);
+  .ty-story .eyebrow {
+    display: block;
   }
-  .ty-year:first-child {
-    border-top: 0;
-    padding-block-start: 0;
+  /* Eyebrow → headline is the tight step, not the flow step. */
+  .ty-count {
+    margin-block: var(--space-3) 0;
   }
-  .ty-year-label {
-    margin: 0;
-    font: var(--text-display);
-    letter-spacing: var(--tracking-display);
+  .ty-count-value {
+    display: block;
+    font: var(--text-hero);
+    letter-spacing: var(--tracking-hero);
     color: var(--color-paper);
     font-variant-numeric: tabular-nums;
   }
-  .ty-year-body p {
+  .ty-count-label {
+    display: block;
+    max-width: 26ch;
+    margin: var(--space-3) auto 0;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper-80);
+  }
+  .ty-story-body {
     max-width: var(--measure-prose);
+    margin-inline: auto;
+    text-align: left;
+  }
+  .ty-story-body p {
     margin: 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
-  .ty-year-body p + p {
+  .ty-story-body p + p {
     margin-top: var(--space-4);
   }
-  .ty-year-body .ty-year-note {
-    margin-bottom: var(--space-5);
-    padding: var(--space-3) var(--space-4);
-    border: 1px solid var(--color-paper-12);
-    font: var(--text-small);
-    color: var(--color-paper-80);
-  }
-  .ty-year-note a {
-    font-weight: 600;
+  .ty-story-body .ty-story-closing {
+    margin-top: var(--space-6);
     color: var(--color-paper);
-    text-decoration: underline;
-    text-decoration-color: var(--color-paper-40);
-    text-underline-offset: 3px;
-    white-space: nowrap;
-  }
-  .ty-year-note a:hover {
-    color: var(--color-amber-bright);
-    text-decoration-color: var(--color-amber-bright);
-  }
-  @media (max-width: 700px) {
-    .ty-year {
-      grid-template-columns: 1fr;
-    }
+    font-weight: 600;
   }
 
   /* Credits: each group is a new group in the section's flow. */
