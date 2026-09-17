@@ -95,9 +95,9 @@ const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.pro
     min-height: 0;
     background: transparent;
     margin-block-end: 0;
-    /* One section gap under the fixed nav, half a gap below — PageIntro's
-       rhythm exactly. --space-section is fluid, so no mobile override. */
-    padding-block: calc(var(--nav-h) + var(--space-section)) calc(var(--space-section) / 2);
+    /* One section gap under the nav, half a gap below — PageIntro's rhythm
+       exactly. --space-section is fluid, so no mobile override. */
+    padding-block: var(--space-section) calc(var(--space-section) / 2);
   }
   /* The head's own padding is the photo variant's height; without a photo it
      would stack on the section padding above. */

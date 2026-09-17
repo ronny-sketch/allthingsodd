@@ -193,7 +193,10 @@ const isGrouped = groups.length > 1;
        top and pinning the link to the bottom keeps every card's eyebrow and
        link aligned regardless of how many lines its title wraps to. */
     justify-content: flex-start;
-    min-height: 220px;
+    /* 220px with the old 3rem padding; lowered by the 2 × 1rem the padding
+       lost (2026-09-17), or the saved space only moved between title and
+       link. rem, so it tracks the padding under the desktop scale. */
+    min-height: 11.75rem;
     transition:
       background-color 0.25s ease,
       color 0.25s ease,

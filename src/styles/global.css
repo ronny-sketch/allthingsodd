@@ -114,7 +114,7 @@
 html {
   scroll-behavior: smooth;
   /* In-page anchors (#newsletter, #enquiry-form, #archive …) and scrollIntoView
-     land below the fixed nav. Half a --space-section of section padding no
+     land below the sticky nav. Half a --space-section of section padding no
      longer clears it the way the old 6rem did. */
   scroll-padding-top: var(--nav-h);
   /* Desktop scale (2026-09-14). On a 13" laptop (~1440 CSS px wide) the site

@@ -290,8 +290,11 @@ not part of this system.
    `<section>`s are one idea (Home's "Already in motion" intro + figures), the
    joint gets one owner: the upper drops its end padding, the lower pads
    `--space-content`.
-2. **Hero and page intros.** A page intro sits `--nav-h + --space-section`
-   under the fixed nav. Hero → first content is one `--space-section`
+2. **Hero, page intros and the footer.** A page intro pads one
+   `--space-section` under the nav — the nav is `position: sticky`, so it
+   already occupies its own height and `--nav-h` is never added on top. The
+   footer's top rule is an edge: the footer takes its half as margin above
+   the rule. Hero → first content is one `--space-section`
    (`SubpageFrame`'s `.oddf-center` pads the hero side's half).
 3. **Inside a section: the parent, via `.flow`.** A container whose children
    are separate blocks (heading, lede, grid, closing line) gets `class="flow"`;
@@ -319,7 +322,7 @@ not part of this system.
   margin that claws back someone else's space is always a bug.
 - `.flow > * + *` also spaces a block that follows an `.sr-only` or absolutely
   positioned sibling.
-- In-page anchors clear the fixed nav through one site-wide
+- In-page anchors clear the sticky nav through one site-wide
   `html { scroll-padding-top: var(--nav-h) }` in `global.css`; don't add
   per-target `scroll-margin` on top.
 

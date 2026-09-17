@@ -113,11 +113,13 @@ const { items } = Astro.props;
   /* A showing badge straddles its card's top border, 0.9rem outside the
      card's box, and oddference-tickets.ts can move it to any tier — so on a
      wrapped or stacked grid it can land on a card in the second row. The
-     grid makes room for it above the first row and in every row gap, so the
-     caller's flow step and --space-grid measure to the badge, not to the
-     card edge it overhangs. */
+     grid makes room for it above the first row, so the caller's flow step
+     measures to the badge, not to the card edge it overhangs. Only a badge
+     on a later card can land in a row gap, so only then does the gap grow. */
   .pricing-grid:has(.pricing-badge:not([hidden])) {
     padding-block-start: 0.9rem;
+  }
+  .pricing-grid:has(> .pricing-card:not(:first-child) > .pricing-badge:not([hidden])) {
     row-gap: calc(var(--space-grid) + 0.9rem);
   }
   /* minmax(16.25rem, …)'s 16.25rem (260px at the default root, which is what

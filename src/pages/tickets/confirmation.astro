@@ -75,11 +75,11 @@ import Layout from '../../layouts/Layout.astro';
 </Layout>
 
 <style>
-  /* PageIntro's rhythm: one section gap under the fixed nav, half a gap
+  /* PageIntro's rhythm: one section gap under the nav, half a gap
      below (layout.css, section rhythm). The eyebrow/h1/state stack is one
      intro's internals, so it keeps its own small steps rather than .flow. */
   .tixf-page {
-    padding-block: calc(var(--nav-h) + var(--space-section)) calc(var(--space-section) / 2);
+    padding-block: var(--space-section) calc(var(--space-section) / 2);
   }
   .tixf-state {
     max-width: 40rem;
