@@ -69,8 +69,8 @@ const { items } = Astro.props;
     color: inherit;
   }
   /* Photo-led card (ODDference's speaker roster): the photo takes the top
-     of the card edge-to-edge, name/role sit in the same padded footer as
-     the plain typographic card below. */
+     of the card edge-to-edge, and name/role sit under it with narrower
+     inline padding than the plain card's 1.8rem (see below). */
   .person-card.has-photo {
     padding: 0 0 var(--space-4);
   }
@@ -78,9 +78,6 @@ const { items } = Astro.props;
     aspect-ratio: 4 / 5;
     overflow: hidden;
     background: #000;
-    margin-bottom: var(--space-5);
-  }
-  .person-card.has-photo .person-photo {
     margin-bottom: var(--space-3);
   }
 
