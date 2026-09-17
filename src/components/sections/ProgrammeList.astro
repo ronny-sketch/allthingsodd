@@ -51,7 +51,7 @@ const { items } = Astro.props;
     display: grid;
     grid-template-columns: 7rem 1fr;
     gap: 1.5rem;
-    padding: 1.6rem 0;
+    padding-block: var(--space-6);
     border-top: 1px solid var(--color-paper-12);
     text-decoration: none;
     color: inherit;
@@ -62,7 +62,7 @@ const { items } = Astro.props;
   .programme-when {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: var(--space-1);
   }
   .programme-date {
     font: var(--text-small);
@@ -86,7 +86,7 @@ const { items } = Astro.props;
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0.4rem 0 0;
+    margin: var(--space-3) 0 0;
     transition: color var(--duration-fast) ease;
   }
   @media (hover: hover) {
@@ -110,21 +110,21 @@ const { items } = Astro.props;
   }
 
   .programme-body p {
-    margin: 0.5rem 0 0;
+    margin: var(--space-3) 0 0;
     font: var(--text-body);
     color: var(--color-paper-60);
     max-width: var(--measure-prose);
   }
   .programme-meta {
     display: block;
-    margin-top: 0.6rem;
+    margin-top: var(--space-2);
     font: var(--text-small);
     color: var(--color-paper-40);
   }
   @media (max-width: 640px) {
     .programme-row {
       grid-template-columns: 1fr;
-      gap: 0.5rem;
+      gap: var(--space-2);
     }
   }
 

@@ -157,9 +157,9 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
      and hides. `min-height` stays a fixed px floor (not 100vh-based) so a
      very short viewport still protects the logo/headline/meta/CTA stack
      instead of collapsing with it. No `margin-bottom` any more — the
-     hero→content gap is now owned once, by SubpageFrame's `.oddf-center`
-     top padding, instead of this margin plus that padding stacking into an
-     accidental double gap. */
+     hero's half of the hero→content gap is SubpageFrame's `.oddf-center`
+     top padding (the first section pads the other half), instead of this
+     margin plus that padding stacking into an accidental double gap. */
   .oddfest-hero {
     position: relative;
     height: calc(100vh - var(--nav-h));
@@ -226,7 +226,7 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
     align-items: center;
     justify-content: center;
     text-align: center;
-    gap: 1.1rem;
+    gap: var(--space-5);
     padding: 2rem;
   }
   /* Short viewports — landscape phones above all, but also a small laptop
@@ -338,12 +338,14 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
     text-transform: uppercase;
     color: var(--color-paper-60);
   }
+  /* On top of the overlay's --space-5 gap: together the hero's body →
+     actions step, --space-6 (the same pair as SpaceHero.astro). */
   .oddfest-hero-cta {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.9rem;
-    margin-top: 0.8rem;
+    gap: var(--space-4);
+    margin-top: var(--space-1);
   }
   /* The hero's entrance, replacing the `.reveal` class this header used to
      carry (see the markup comment above). A plain CSS animation with `both`

@@ -60,24 +60,16 @@ const { slug, railLeft, railRight } = Astro.props;
   .oddf-hero-zone {
     position: relative;
   }
-  /* Normal content — unchanged gutters, but the top padding here is now the
-     *only* hero→content transition space (the hero no longer also carries
-     its own bottom margin — see FullbleedVideoHero.astro/SpaceHero.astro),
-     so this single value is the one real "breathing room" decision instead
-     of two paddings/margins stacking into an accidental double gap. */
+  /* Normal content — unchanged gutters. The hero is an edge, not a padded
+     section, so its half of the hero→content gap lives here as top padding
+     (the hero carries no bottom margin — see FullbleedVideoHero.astro/
+     SpaceHero.astro) and the first section pads the other half: one
+     --space-section in total, at every width, with no page overriding it.
+     On a phone the identity ticker sits between the hero and this column;
+     the gap is measured from the ticker, which is flush under the hero. */
   .oddf-center {
-    padding: var(--space-16) 1.75rem 0;
-  }
-  /* The hero→content gap is owned here (see the comment above), and 4rem of
-     it was tuned when the hero ran straight into this column. On a phone the
-     identity ticker now sits between the two and provides that separation
-     itself, so the full gap on top of it — plus the first section's own top
-     padding underneath — left roughly a third of a screen empty before the
-     first word. Halved for mobile only; the desktop value is untouched. */
-  @media (max-width: 820px) {
-    .oddf-center {
-      padding-top: var(--space-8);
-    }
+    padding-block-start: calc(var(--space-section) / 2);
+    padding-inline: 1.75rem;
   }
   @media (min-width: 821px) {
     .oddf-center {

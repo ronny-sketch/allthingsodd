@@ -102,6 +102,22 @@
   --space-24: 6rem;
   --space-32: 8rem;
 
+  /* ---------- rhythm (2026-09-17 spacing pass) ----------
+     What the scale above is used FOR, from tight to generous — the full
+     hierarchy is in docs/design-system.md#spacing. Inside a component spacing
+     takes fixed steps (--space-2…--space-6); these four are fluid, because
+     the space between things should shrink on a phone faster than the things
+     do. rem, so they also grow with the desktop scale. Values: 390px /
+     1024px / 1440px. */
+  /* 16 / 22 / 30 — between rows of repeated cards */
+  --space-grid: clamp(1rem, 0.6rem + 1.25vw, 1.75rem);
+  /* 24 / 29 / 38 — a heading or intro → what it introduces (the .flow step) */
+  --space-content: clamp(1.5rem, 1rem + 1.25vw, 2rem);
+  /* 32 / 39 / 51 — one group → the next, inside a section */
+  --space-group: clamp(2rem, 1.4rem + 1.6vw, 3rem);
+  /* 48 / 64 / 80 — the gap between two sections (layout.css owns it) */
+  --space-section: clamp(3rem, 2.4rem + 2.5vw, 4rem);
+
   /* ---------- layout ---------- */
   /* rem, so the containers widen with the desktop scale in global.css the way
      the type inside them does (73.75rem / 80rem = 1180px / 1280px at the

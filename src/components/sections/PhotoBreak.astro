@@ -40,8 +40,10 @@ const { image, alt, tall = false } = Astro.props;
     position: relative;
     overflow: hidden;
     height: min(52vh, 480px);
-    margin-top: var(--space-24);
-    margin-bottom: var(--space-24);
+    /* An edge, not a padded section: it contributes half of each
+       neighbouring section gap as margin (layout.css, section rhythm). The
+       token is fluid, so the phone breakpoint below only changes height. */
+    margin-block: calc(var(--space-section) / 2);
   }
   .photo-break.is-tall {
     height: min(74vh, 640px);
@@ -63,8 +65,6 @@ const { image, alt, tall = false } = Astro.props;
   @media (max-width: 700px) {
     .photo-break {
       height: min(40vh, 360px);
-      margin-top: var(--space-16);
-      margin-bottom: var(--space-16);
     }
   }
 </style>

@@ -53,7 +53,7 @@ const page = entry.data;
     <!-- 2. What's in it — the same SpaceShowcase component /oddspace uses
          for its four rooms, here carrying the four equipment groups. -->
     <section class="odst-sub">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <span class="eyebrow">What's in the room</span>
           <h2>Properly equipped, not over-equipped.</h2>
@@ -65,14 +65,14 @@ const page = entry.data;
     <!-- 3. Access and pricing. The whole reason this page exists is the
          first paragraph of this section — see the route comment above. -->
     <section class="odst-sub odst-access">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <span class="eyebrow">{page.access.eyebrow}</span>
           <h2>{page.access.headline}</h2>
         </div>
         <p class="odst-access-body reveal" data-studio-not-included>{page.access.body}</p>
 
-        <div class="odst-access-zone">
+        <div class="odst-access-zone flow">
           <div class="odst-zone-head">
             {
               /* Not "Full studio membership" — that is the pricing card's own
@@ -84,7 +84,7 @@ const page = entry.data;
           <PricingGrid items={[page.membership]} />
         </div>
 
-        <div class="odst-access-zone">
+        <div class="odst-access-zone flow">
           <div class="odst-zone-head">
             <span class="eyebrow">By the hour</span>
             <h3>Or book it when you need it.</h3>
@@ -137,7 +137,7 @@ const page = entry.data;
 
     <!-- 4. How a booking actually works. -->
     <section class="odst-sub">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <span class="eyebrow">Booking</span>
           <h2>How it works.</h2>
@@ -150,7 +150,7 @@ const page = entry.data;
          all five matter, and nobody should have to open anything to read a
          rule they're being asked to follow. -->
     <section class="odst-sub odst-rules">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <span class="eyebrow">{page.houseRules.eyebrow}</span>
           <h2>{page.houseRules.headline}</h2>
@@ -196,7 +196,7 @@ const page = entry.data;
 
     <!-- 7. Individual booking terms. -->
     <section class="odst-sub">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <span class="eyebrow">The small print</span>
           <h2>Individual booking terms.</h2>
@@ -219,21 +219,13 @@ const page = entry.data;
 </Layout>
 
 <style>
-  .odst-sub {
-    padding: var(--space-24) 0;
-  }
-  /* Same mobile rhythm correction as oddspace.astro's .odds-sub — see the
-     comment there; 6rem top+bottom reads as dead screen once sections
-     stack on a phone. */
-  @media (max-width: 640px) {
-    .odst-sub {
-      padding: var(--space-12) 0;
-    }
-  }
-
+  /* A stray line between two sections that belongs to the SectionIntro
+     above: that section's bottom half-gap is the step down to it, and it
+     contributes the half-gap below itself (layout.css, section rhythm). */
   .odst-intro-line {
     max-width: var(--measure-prose);
-    margin: -2rem auto var(--space-24);
+    margin-inline: auto;
+    margin-block: 0 calc(var(--space-section) / 2);
     padding: 0 1.5rem;
     text-align: center;
     font: var(--text-body);
@@ -246,34 +238,44 @@ const page = entry.data;
      than a larger size. */
   .odst-access-body {
     max-width: var(--measure-prose);
-    margin: 0 auto var(--space-16);
+    margin-inline: auto;
+    margin-block-start: var(--space-4);
     text-align: center;
     font: var(--text-body);
     color: var(--color-paper);
   }
 
+  /* Each zone is its own group inside the section: a group step off the
+     lede, and off the zone above. The second zone's rule sits at that step,
+     with a content step between the rule and its head — the .section-head
+     pattern turned upside down. */
+  .odst-access-zone {
+    margin-block-start: var(--space-group);
+  }
   .odst-access-zone + .odst-access-zone {
-    margin-top: var(--space-20);
-    padding-top: var(--space-20);
+    padding-block-start: var(--space-content);
     border-top: 1px solid var(--color-paper-12);
   }
   .odst-zone-head {
     text-align: center;
-    margin-bottom: 2.2rem;
   }
   .odst-zone-head h3 {
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0.5rem 0 0;
+    margin: var(--space-3) 0 0;
   }
 
+  /* row-gap only matters once the tables stack: each is a labelled group,
+     so a group step — --space-grid would sit the next label closer to the
+     table above than to its own rows. */
   .odst-rates {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-10);
+    column-gap: var(--space-10);
+    row-gap: var(--space-group);
     max-width: 46rem;
-    margin: 0 auto;
+    margin-inline: auto;
   }
   /* min-width:0 on the track above is load-bearing — a grid item's default
      `min-width:auto` lets the longest rate name set the column width, which
@@ -282,7 +284,6 @@ const page = entry.data;
   @media (max-width: 700px) {
     .odst-rates {
       grid-template-columns: 1fr;
-      gap: var(--space-8);
     }
   }
   .odst-rates-label {
@@ -293,17 +294,17 @@ const page = entry.data;
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
-    margin-bottom: 1.4rem;
   }
   .odst-rates-list {
     display: flex;
     flex-direction: column;
+    margin-block-start: var(--space-3);
   }
   .odst-rate-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: baseline;
-    gap: 0.4rem 1.2rem;
+    gap: var(--space-2) 1.2rem;
     padding: 1.1rem 0;
     border-top: 1px solid var(--color-paper-12);
   }
@@ -328,7 +329,7 @@ const page = entry.data;
   }
   .odst-rates-note {
     max-width: 42rem;
-    margin: 1.6rem auto 0;
+    margin-inline: auto;
     text-align: center;
     font: var(--text-small);
     color: var(--color-paper-40);
@@ -336,12 +337,13 @@ const page = entry.data;
   .odst-access-cta {
     display: flex;
     justify-content: center;
-    margin-top: 2.2rem;
   }
 
+  /* Block-end 0 cancels the UA list margin; the top is the wrap's flow step. */
   .odst-rules-list {
     max-width: 42rem;
-    margin: 0 auto;
+    margin-inline: auto;
+    margin-block-end: 0;
     padding: 0;
     list-style: none;
     display: flex;
@@ -372,7 +374,8 @@ const page = entry.data;
   .odst-operator-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--space-12);
+    column-gap: var(--space-12);
+    row-gap: var(--space-content);
     align-items: center;
   }
   @media (max-width: 820px) {
@@ -380,7 +383,6 @@ const page = entry.data;
       /* minmax(0, 1fr): the operator's email-address pill has no break
          opportunity, and a plain 1fr track would size to its full width. */
       grid-template-columns: minmax(0, 1fr);
-      gap: var(--space-8);
     }
   }
   .odst-operator-photo :global(img) {
@@ -392,25 +394,33 @@ const page = entry.data;
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0.6rem 0 0;
+    margin: var(--space-3) 0 0;
   }
   .odst-operator-copy p {
     font: var(--text-body);
     color: var(--color-paper-60);
-    margin: 1.1rem 0 1.8rem;
+    margin: var(--space-3) 0 0;
     max-width: var(--measure-prose);
   }
+  .odst-operator-copy :global(.pill) {
+    margin-block-start: var(--space-6);
+  }
 
+  /* Block-end 0 cancels the UA paragraph margin, which would otherwise pad
+     the last section; the top is the wrap's flow step. */
   .odst-terms-note,
   .odst-credit {
     max-width: 42rem;
-    margin: 2rem auto 0;
+    margin-inline: auto;
+    margin-block-end: 0;
     text-align: center;
     font: var(--text-small);
     color: var(--color-paper-40);
   }
-  .odst-credit {
-    margin-top: 0.8rem;
+  /* The credit reads as the note's second line, not a new block — but only
+     when the note is there; on its own it takes the flow step. */
+  .odst-terms-note + .odst-credit {
+    margin-block-start: var(--space-4);
   }
   .odst-terms-note a {
     color: var(--color-paper-80);

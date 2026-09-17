@@ -99,14 +99,16 @@ const PRODUCTS = [
   .enquiry-form {
     display: flex;
     flex-direction: column;
-    gap: 1.6rem;
+    gap: var(--space-6);
     max-width: 40rem;
-    margin: 0 auto;
+    margin-inline: auto;
   }
   .field-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.6rem;
+    column-gap: 1.6rem;
+    /* Stacked on a phone, the two fields keep the form's own row step. */
+    row-gap: var(--space-6);
     /* Fields line up by their inputs, not their labels — a deep-linked label
        ("Organisation (leave blank if applying as an individual)") wraps to
        two lines and would otherwise drop its input below its neighbour's. */
@@ -120,7 +122,7 @@ const PRODUCTS = [
   .field {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-2);
   }
   .field label {
     font: var(--text-small);
@@ -177,7 +179,6 @@ const PRODUCTS = [
     display: flex;
     align-items: center;
     gap: 1.2rem;
-    margin-top: 0.4rem;
   }
   .form-status {
     margin: 0;

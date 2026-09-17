@@ -75,12 +75,14 @@ const { eyebrow, title, intro, primaryCta, secondaryCta, warpTitle = false } = A
 </section>
 
 <style>
+  /* One section gap under the fixed nav; half a gap below, like any other
+     section (layout.css, section rhythm). */
   .page-intro {
-    padding: calc(var(--nav-h) + var(--space-20)) 0 var(--space-12);
+    padding-block: calc(var(--nav-h) + var(--space-section)) calc(var(--space-section) / 2);
   }
   .page-intro-head {
     max-width: 40rem;
-    margin: 0 auto;
+    margin-inline: auto;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -98,11 +100,11 @@ const { eyebrow, title, intro, primaryCta, secondaryCta, warpTitle = false } = A
     font: var(--text-display);
     letter-spacing: var(--tracking-display);
     color: var(--color-paper);
-    margin: 0.9rem 0 0;
+    margin: var(--space-3) 0 0;
   }
   .page-intro-head p {
     max-width: 38ch;
-    margin: 1.6rem 0 0;
+    margin: var(--space-5) 0 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
@@ -110,7 +112,7 @@ const { eyebrow, title, intro, primaryCta, secondaryCta, warpTitle = false } = A
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.9rem;
-    margin-top: 1.8rem;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
   }
 </style>

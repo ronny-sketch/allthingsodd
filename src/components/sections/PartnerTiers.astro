@@ -52,14 +52,14 @@ const groups: { label: string; items: LogoItem[] }[] =
 const columnStyle = `--cols: ${groups.length}`;
 ---
 
-<section class="partner-tiers-section">
+<section class="partner-tiers-section flow">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">{eyebrow}</span>
       <h2>{title}</h2>
     </div>
   </div>
-  <div class="wrap-wide">
+  <div class="wrap-wide flow">
     {
       (hasTiers || explicitGroups) && (
         <div class="tier-labels" style={columnStyle}>
@@ -85,18 +85,16 @@ const columnStyle = `--cols: ${groups.length}`;
 </section>
 
 <style>
+  /* Section rhythm from layout.css. Both the section (head → logo wall) and
+     .wrap-wide (labels → divider → logos) are flow containers. */
   .partner-tiers-section {
     border-top: 1px solid var(--color-paper-12);
-    padding: var(--space-20) 0 var(--space-16);
-  }
-  .partner-tiers-section .section-head {
-    margin-bottom: var(--space-10);
   }
   .tier-labels {
     display: grid;
     grid-template-columns: repeat(var(--cols), 1fr);
-    gap: 1.5rem;
-    margin-bottom: 1rem;
+    column-gap: 1.5rem;
+    row-gap: var(--space-grid);
   }
   .tier-label {
     text-align: center;
@@ -106,21 +104,25 @@ const columnStyle = `--cols: ${groups.length}`;
     text-transform: uppercase;
     color: var(--color-paper-80);
   }
+  /* The divider belongs to the labels above it — the .section-head step
+     (--space-4) rather than the full flow step. Without labels it is the
+     first child, and this margin collapses into .wrap-wide's own flow step. */
   .tier-divider {
     border-top: 1px solid var(--color-paper-20);
-    margin-bottom: 2.75rem;
+    margin-block-start: var(--space-4);
   }
   .tier-columns {
     display: grid;
     grid-template-columns: repeat(var(--cols), 1fr);
-    gap: 2.5rem;
+    column-gap: 2.5rem;
+    row-gap: var(--space-grid);
   }
   .tier-column {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 2.5rem 3.5rem;
+    gap: var(--space-grid) 3.5rem;
   }
   /* Fixed height + object-fit:contain (not a fixed width) is what actually
      gives "optical" rather than "CSS" equality here — a wide wordmark and a
@@ -147,11 +149,8 @@ const columnStyle = `--cols: ${groups.length}`;
     .tier-columns {
       grid-template-columns: 1fr;
     }
-    .tier-labels {
-      gap: 2rem;
-    }
     .tier-column {
-      padding-bottom: 1.75rem;
+      padding-bottom: var(--space-grid);
       border-bottom: 1px solid var(--color-paper-12);
     }
     .tier-column:last-child {

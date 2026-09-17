@@ -81,7 +81,7 @@ const page = entry.data;
     <!-- 3. What's here — the four real rooms, each routing to the enquiry
          for that room (or, for ODDstudio, to its own page). -->
     <section class="odds-sub">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <span class="eyebrow">What's here</span>
           <h2>Four rooms, one roof.</h2>
@@ -94,7 +94,7 @@ const page = entry.data;
          place prices appear: the two ways in side by side, the one carve-out
          from the membership, what joining involves, and where to turn up. -->
     <section class="odds-sub odds-enter">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <span class="eyebrow">Two ways in</span>
           <h2>Enter the space</h2>
@@ -163,7 +163,7 @@ const page = entry.data;
           </Pill>
         </aside>
 
-        <div class="odds-how">
+        <div class="odds-how flow">
           <span class="odds-how-label">Joining</span>
           <FeatureGrid cards={page.howItWorks} />
         </div>
@@ -194,7 +194,7 @@ const page = entry.data;
     {
       page.events && page.events.items.length > 0 && (
         <section class="odds-sub">
-          <div class="wrap">
+          <div class="wrap flow">
             <div class="section-head">
               <span class="eyebrow">{page.events.eyebrow}</span>
               <h2>{page.events.title}</h2>
@@ -220,7 +220,7 @@ const page = entry.data;
     {
       page.gallery && page.gallery.photos.length > 0 && (
         <section class="odds-sub">
-          <div class="wrap">
+          <div class="wrap flow">
             <div class="section-head">
               {page.gallery.eyebrow && <span class="eyebrow">{page.gallery.eyebrow}</span>}
               <h2>{page.gallery.title}</h2>
@@ -252,7 +252,7 @@ const page = entry.data;
 
     <!-- 7. FAQ. -->
     <section class="odds-sub">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="section-head">
           <h2>Practical / FAQ</h2>
         </div>
@@ -263,23 +263,17 @@ const page = entry.data;
 </Layout>
 
 <style>
-  .odds-sub {
-    padding: var(--space-24) 0;
-  }
-  /* Mobile rhythm. 6rem top+bottom is tuned for a desktop column; stacked on
-     a phone it puts ~192px of empty screen between two sections (measured
-     across /work-with-odd, /oddference, /oddspace, /about and /media). Halved
-     to match layout.css's own `section` reduction at the same breakpoint, so
-     page-level and component-level sections stay on one rhythm — see that
-     file's comment, which flags exactly this class of override. */
-  @media (max-width: 640px) {
-    .odds-sub {
-      padding: var(--space-12) 0;
-    }
-  }
+  /* .odds-sub takes layout.css's section rhythm; the class stays for markup
+     readability only. */
+
+  /* Section 2's second line, a sibling of SectionIntro rather than part of
+     it. The intro's own bottom padding (half a section gap) is the step down
+     to this line, so no top margin; below, it is the edge of the group and
+     contributes the other half of the gap to section 3. */
   .odds-intro-line {
     max-width: var(--measure-prose);
-    margin: -2rem auto var(--space-24);
+    margin-inline: auto;
+    margin-block: 0 calc(var(--space-section) / 2);
     padding: 0 1.5rem;
     text-align: center;
     font: var(--text-body);
@@ -309,12 +303,12 @@ const page = entry.data;
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0.7rem 0 0;
+    margin: var(--space-3) 0 0;
   }
   .odds-enter-card p {
     font: var(--text-body);
     color: var(--color-paper-60);
-    margin: 1rem 0 0;
+    margin: var(--space-3) 0 0;
   }
   /* The CTA wrapper, not the Pill itself, carries the spacing: `auto` pushes
      each card's button to the bottom so the two line up with each other
@@ -322,7 +316,7 @@ const page = entry.data;
      gap above it when a card is full enough that `auto` resolves to zero. */
   .odds-enter-action {
     margin-top: auto;
-    padding-top: 1.8rem;
+    padding-top: var(--space-6);
   }
   .odds-enter-action :global(.pill) {
     white-space: normal;
@@ -333,20 +327,20 @@ const page = entry.data;
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin-top: 1.2rem;
+    margin-top: var(--space-5);
   }
   .odds-enter-status {
     font: var(--text-small);
     color: var(--color-paper-40);
-    margin-top: 0.3rem;
+    margin-top: var(--space-2);
   }
   .odds-enter-card ul {
     list-style: none;
-    margin: 1.2rem 0 0;
+    margin: var(--space-4) 0 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-2);
   }
   .odds-enter-card li {
     font: var(--text-body);
@@ -379,7 +373,7 @@ const page = entry.data;
   .odds-rates-label {
     display: block;
     align-self: stretch;
-    margin: 1.6rem 0 0.8rem;
+    margin: var(--space-6) 0 0;
     font: var(--text-small);
     font-weight: 600;
     letter-spacing: var(--tracking-eyebrow);
@@ -388,6 +382,7 @@ const page = entry.data;
   }
   .odds-rates-list {
     align-self: stretch;
+    margin-top: var(--space-3);
     display: flex;
     flex-direction: column;
   }
@@ -395,8 +390,8 @@ const page = entry.data;
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: baseline;
-    gap: 0.4rem 1.5rem;
-    padding: 0.8rem 0;
+    gap: var(--space-2) 1.5rem;
+    padding: var(--space-3) 0;
     border-top: 1px solid var(--color-paper-12);
   }
   .odds-rates-list .odds-rate-row:last-child {
@@ -423,7 +418,7 @@ const page = entry.data;
     font-size: var(--font-size-small) !important;
     line-height: var(--line-height-small) !important;
     color: var(--color-paper-40) !important;
-    margin-top: 0.9rem !important;
+    margin-top: var(--space-3) !important;
   }
 
   /* Bordered, not a filled card: this qualifies the membership price above
@@ -431,7 +426,7 @@ const page = entry.data;
      than a third competing offer. */
   .odds-studio-callout {
     max-width: 44rem;
-    margin: var(--space-12) auto 0;
+    margin-inline: auto;
     padding: 1.6rem 1.8rem 1.8rem;
     border: 1px solid var(--color-paper-20);
     text-align: center;
@@ -443,16 +438,16 @@ const page = entry.data;
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0.5rem 0 0;
+    margin: var(--space-3) 0 0;
   }
   .odds-studio-callout p {
     font: var(--text-body);
     color: var(--color-paper-60);
-    margin: 0.8rem 0 0;
+    margin: var(--space-3) 0 0;
     max-width: var(--measure-prose);
   }
   .odds-studio-callout :global(.pill) {
-    margin-top: 1.4rem;
+    margin-top: var(--space-6);
   }
   @media (max-width: 640px) {
     .odds-studio-callout {
@@ -460,8 +455,11 @@ const page = entry.data;
     }
   }
 
+  /* The offer (cards + carve-out) is one group; joining is the next, so it
+     replaces the wrap's flow step with the larger group step. Its own label
+     → FeatureGrid step is the `.flow` on .odds-how. */
   .odds-how {
-    margin-top: var(--space-12);
+    margin-block-start: var(--space-group);
   }
   .odds-how-label {
     display: block;
@@ -471,11 +469,12 @@ const page = entry.data;
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--color-paper-40);
-    margin-bottom: 1.4rem;
   }
 
+  /* Block-end only (the UA paragraph margin): the top is the wrap's flow
+     step, which a `margin` shorthand here would outrank and zero. */
   .odds-visit {
-    margin: var(--space-8) 0 0;
+    margin-block-end: 0;
     text-align: center;
     font: var(--text-small);
     color: var(--color-paper-60);
@@ -491,12 +490,15 @@ const page = entry.data;
     text-decoration-color: var(--color-amber-bright);
   }
 
-  /* "What's happening" — the note above the list, and the one CTA under it.
-     The photo wall's note under it is the same kind of line. */
+  /* "What's happening" — the note above the list, and the one CTA under it
+     (placed by the wrap's flow). The photo wall's note under it is the same
+     kind of line: a lede that belongs to its heading, so it takes the
+     tighter step in place of the flow one. */
   .odds-events-note,
   .odds-gallery-note {
     max-width: var(--measure-prose);
-    margin: -1.5rem auto 2.4rem;
+    margin-inline: auto;
+    margin-block: var(--space-4) 0;
     text-align: center;
     font: var(--text-body);
     color: var(--color-paper-60);
@@ -504,6 +506,5 @@ const page = entry.data;
   .odds-events-cta {
     display: flex;
     justify-content: center;
-    margin-top: 2.4rem;
   }
 </style>

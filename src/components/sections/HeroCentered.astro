@@ -80,6 +80,11 @@ const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.pro
     display: flex;
     align-items: center;
     background: #000;
+    /* A photograph is an edge, not padding: the hero owns its own height
+       (min-height + the head's padding) and contributes its half of the
+       section gap outside itself — layout.css, section rhythm. */
+    padding-block: 0;
+    margin-block-end: calc(var(--space-section) / 2);
   }
   /* No photo — About, until a verified one exists (see the Props comment
      above). Same head layout/typography as the photographic variant, but
@@ -89,12 +94,15 @@ const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.pro
   .hero-centered.is-plain {
     min-height: 0;
     background: transparent;
-    padding: calc(var(--nav-h) + var(--space-20)) 0 var(--space-12);
+    margin-block-end: 0;
+    /* One section gap under the fixed nav, half a gap below — PageIntro's
+       rhythm exactly. --space-section is fluid, so no mobile override. */
+    padding-block: calc(var(--nav-h) + var(--space-section)) calc(var(--space-section) / 2);
   }
-  @media (max-width: 640px) {
-    .hero-centered.is-plain {
-      padding: calc(var(--nav-h) + var(--space-12)) 0 var(--space-10);
-    }
+  /* The head's own padding is the photo variant's height; without a photo it
+     would stack on the section padding above. */
+  .hero-centered.is-plain .hero-centered-head {
+    padding-block: 0;
   }
   .hero-centered-media {
     position: absolute;
@@ -122,8 +130,8 @@ const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.pro
     position: relative;
     z-index: 1;
     max-width: 40rem;
-    margin: 0 auto;
-    padding: var(--space-16) 0;
+    margin-inline: auto;
+    padding-block: var(--space-16);
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -145,7 +153,7 @@ const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.pro
     font: var(--text-hero);
     letter-spacing: var(--tracking-hero);
     color: var(--color-paper);
-    margin: 0.9rem 0 0;
+    margin: var(--space-3) 0 0;
   }
   .hero-centered.is-plain .hero-centered-head h1,
   .hero-centered.is-plain .hero-centered-head :global(.hero-centered-warping-title) {
@@ -171,12 +179,12 @@ const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.pro
   }
   .hero-centered-head p {
     max-width: 38ch;
-    margin: 1.6rem 0 0;
+    margin: var(--space-5) 0 0;
     font: var(--text-body);
     color: var(--color-paper-80);
   }
   .hero-centered-cta {
-    margin-top: 1.8rem;
+    margin-top: var(--space-6);
   }
   @media (max-width: 640px) {
     .hero-centered {

@@ -60,7 +60,7 @@ const page = entry.data;
        just rendered in two places. */
   }
   <section class="about-sub">
-    <div class="wrap">
+    <div class="wrap flow">
       <div class="section-head">
         <span class="eyebrow">{page.howWeMakeItHappen.eyebrow}</span>
         <h2>{page.howWeMakeItHappen.title}</h2>
@@ -76,7 +76,7 @@ const page = entry.data;
   }
 
   <section class="about-sub">
-    <div class="wrap">
+    <div class="wrap flow">
       <div class="section-head">
         <span class="eyebrow">{page.story.eyebrow}</span>
         <h2>{page.story.title}</h2>
@@ -92,7 +92,7 @@ const page = entry.data;
        markup as before, just relocated. */
   }
   <section class="about-sub">
-    <div class="wrap">
+    <div class="wrap flow">
       <div class="section-head">
         <span class="eyebrow">{page.howWeMakeItHappen.principlesEyebrow}</span>
         <h2>{page.howWeMakeItHappen.principlesTitle}</h2>
@@ -132,7 +132,7 @@ const page = entry.data;
        ODDspace — what those numbers looked like. */
     page.gallery && page.gallery.photos.length > 0 && (
       <section class="about-sub">
-        <div class="wrap">
+        <div class="wrap flow">
           <div class="section-head">
             {page.gallery.eyebrow && <span class="eyebrow">{page.gallery.eyebrow}</span>}
             <h2>{page.gallery.title}</h2>
@@ -147,7 +147,7 @@ const page = entry.data;
   }
 
   <section class="about-sub about-continue">
-    <div class="wrap">
+    <div class="wrap flow">
       <div class="section-head">
         <h2>Keep exploring</h2>
       </div>
@@ -168,26 +168,10 @@ const page = entry.data;
 </Layout>
 
 <style>
-  .about-sub {
-    padding: var(--space-24) 0;
-  }
-  .about-gallery-wall {
-    margin-top: var(--space-10);
-  }
-  /* Mobile rhythm. 6rem top+bottom is tuned for a desktop column; stacked on
-     a phone it puts ~192px of empty screen between two sections (measured
-     across /work-with-odd, /oddference, /oddspace, /about and /media). Halved
-     to match layout.css's own `section` reduction at the same breakpoint, so
-     page-level and component-level sections stay on one rhythm — see that
-     file's comment, which flags exactly this class of override. */
-  @media (max-width: 640px) {
-    .about-sub {
-      padding: var(--space-12) 0;
-    }
-  }
-  .about-argument {
-    padding: 0 0 var(--space-16);
-  }
+  /* Section rhythm (.about-sub, .about-argument) is layout.css's — the
+     hero's half below plus the argument's half above make the one full gap
+     a hero → first content transition takes. Inside each .about-sub the
+     `.flow` wrap spaces head, lede, grid/list and closing note. */
   .about-argument p {
     max-width: var(--measure-prose);
     margin: 0 auto;
@@ -196,17 +180,21 @@ const page = entry.data;
     color: var(--color-paper-60);
   }
   .about-argument p + p {
-    margin-top: 1.4rem;
+    margin-top: var(--space-4);
   }
+  /* A lede belongs to the heading above it: the one sanctioned flow
+     override, a tighter replacement step. */
   .about-lede {
     max-width: var(--measure-prose);
-    margin: -1.5rem auto 0;
+    margin-inline: auto;
+    margin-block: var(--space-4) 0;
     text-align: center;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
   .about-legal-note {
-    margin: var(--space-10) auto 0;
+    margin-inline: auto;
+    margin-block-end: 0;
     max-width: 40rem;
     text-align: center;
     font: var(--text-small);
@@ -222,16 +210,18 @@ const page = entry.data;
      `.about-sub` section-head on this page. */
   .about-principles-list {
     list-style: none;
-    margin: var(--space-10) auto 0;
+    margin-inline: auto;
+    margin-block-end: 0;
     padding: 0;
     max-width: 46rem;
     display: flex;
     flex-direction: column;
   }
+  /* row-gap only shows once the columns stack on phones (number over title). */
   .about-principles-list li {
     display: grid;
     grid-template-columns: 2.5rem 1fr;
-    gap: 1rem;
+    gap: var(--space-2) 1rem;
     padding: 1.4rem 0;
     border-top: 1px solid var(--color-paper-12);
   }
@@ -259,19 +249,17 @@ const page = entry.data;
   }
   .about-principles-list p {
     max-width: var(--measure-prose);
-    margin: 0.4rem 0 0;
+    margin: var(--space-2) 0 0;
     font: var(--text-body);
     color: var(--color-paper-60);
   }
   @media (max-width: 640px) {
     .about-principles-list li {
       grid-template-columns: 1fr;
-      gap: 0.3rem;
     }
     .about-continue-list a {
       flex-direction: column;
       align-items: flex-start;
-      gap: 0.3rem;
     }
   }
 
@@ -281,7 +269,8 @@ const page = entry.data;
      same weight as SectionIntro's own link treatment. */
   .about-continue-list {
     list-style: none;
-    margin: var(--space-10) auto 0;
+    margin-inline: auto;
+    margin-block-end: 0;
     padding: 0;
     max-width: 42rem;
     display: flex;
@@ -301,7 +290,7 @@ const page = entry.data;
     flex-wrap: wrap;
     align-items: baseline;
     justify-content: space-between;
-    gap: 0.4rem 1rem;
+    gap: var(--space-2) 1rem;
     padding: 1.3rem 0;
     text-decoration: none;
     color: inherit;

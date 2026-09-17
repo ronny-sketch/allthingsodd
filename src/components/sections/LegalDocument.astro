@@ -35,7 +35,7 @@ const KIND_LABEL: Record<string, string> = {
 ---
 
 <section class="legal">
-  <div class="wrap">
+  <div class="wrap flow">
     <p class="legal-updated reveal">Last updated: {lastUpdated}</p>
 
     {
@@ -142,9 +142,6 @@ const KIND_LABEL: Record<string, string> = {
 </script>
 
 <style>
-  .legal {
-    padding: 0 0 var(--space-24);
-  }
   .legal .wrap {
     /* Narrower than the site's default wrap — this is the one page on the
        site that is genuinely read top to bottom, and a comfortable measure
@@ -157,16 +154,20 @@ const KIND_LABEL: Record<string, string> = {
     text-transform: uppercase;
     letter-spacing: var(--tracking-caps);
     color: var(--color-paper-40);
-    margin: 0 0 var(--space-10);
+    margin: 0;
   }
-  .legal-section {
-    margin-bottom: var(--space-12);
+  /* .legal takes layout.css's section rhythm; the `.flow` wrap puts the
+     first section a content step under the date, and each later section is
+     a new group. Paragraph margins inside a section collapse into that
+     step rather than adding to it. */
+  .legal-section + .legal-section {
+    margin-block-start: var(--space-group);
   }
   .legal-section h2 {
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--space-3);
   }
   /* A subsection label inside running legal text: Forta for continuity with
      the h2 above, at the Body size so it stays in the reading flow instead of
@@ -271,12 +272,12 @@ const KIND_LABEL: Record<string, string> = {
   }
   .legal-scope {
     display: block;
-    margin-top: 0.3rem;
+    margin-top: var(--space-2);
     font: var(--text-small);
     color: var(--color-paper-40);
   }
   .legal-settings-btn {
-    margin-top: var(--space-8);
+    margin-top: var(--space-6);
     font: var(--text-small);
     font-weight: 600;
     text-transform: uppercase;

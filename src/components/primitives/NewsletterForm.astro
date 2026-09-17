@@ -121,4 +121,9 @@ const {
     font: var(--text-small);
     color: var(--color-paper-40);
   }
+  /* Empty until the form answers: no margin, so an unused status line leaves
+     no blank under the field. Not display:none — it is an aria-live region. */
+  .nl-status:empty {
+    margin: 0;
+  }
 </style>

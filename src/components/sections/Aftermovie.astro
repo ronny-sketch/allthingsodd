@@ -74,7 +74,6 @@ const track = Array.from({ length: reps }, () => logos).flat();
 <style>
   .logo-train {
     border-top: 1px solid var(--color-paper-12);
-    padding: 2.75rem 0;
     overflow: hidden;
   }
   .brand-marquee {
@@ -118,9 +117,6 @@ const track = Array.from({ length: reps }, () => logos).flat();
     height: 47px;
   }
   @media (max-width: 700px) {
-    .logo-train {
-      padding: 2rem 0;
-    }
     .brand-marquee-track {
       gap: 3.25rem;
     }
@@ -132,16 +128,11 @@ const track = Array.from({ length: reps }, () => logos).flat();
     }
   }
 
-  .aftermovie-section {
-    /* Base rhythm assumes the marquee sits directly above it (which already
-       carries its own top border/padding) — `.is-standalone` (no marquee,
-       Home as of 2026-08-30) gets its own top border + a smaller top padding
-       instead, so the video doesn't inherit a large gap or a doubled border
-       meant for a banner that isn't there. */
-    padding: var(--space-16) 0;
-  }
+  /* Both sections take layout.css's section rhythm. The marquee carries the
+     top rule when it is shown; `.is-standalone` (no marquee, Home as of
+     2026-08-30) carries it itself instead, so the rule sits mid-gap between
+     the video and whatever precedes it, never doubled. */
   .aftermovie-section.is-standalone {
-    padding-top: var(--space-10);
     border-top: 1px solid var(--color-paper-12);
   }
   .aftermovie-full {

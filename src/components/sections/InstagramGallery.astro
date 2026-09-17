@@ -30,7 +30,7 @@ const tiles = Array.from({ length: ODDSPACE_INSTAGRAM_POST_COUNT });
 ---
 
 <section class="odds-sub ig-section">
-  <div class="wrap">
+  <div class="wrap flow">
     <div class="section-head">
       <span class="eyebrow">{eyebrow}</span>
       <h2>{headline}</h2>
@@ -175,8 +175,8 @@ const tiles = Array.from({ length: ODDSPACE_INSTAGRAM_POST_COUNT });
     flex-wrap: wrap;
     align-items: baseline;
     justify-content: space-between;
-    gap: 0.6rem 1.5rem;
-    margin-top: 1.4rem;
+    gap: var(--space-2) 1.5rem;
+    margin-top: var(--space-5);
   }
   .ig-follow {
     font: var(--text-small);
