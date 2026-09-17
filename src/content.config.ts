@@ -758,10 +758,12 @@ const pages = defineCollection({
           eyebrow: z.string(),
           title: z.string(),
           lede: z.string(),
-          // A list renders its `items` as film credits when they carry a
-          // role, as columns of names when they don't, and `subgroups` as
-          // labelled rows (the partners). Not called `groups`: CloudCannon
-          // keys inputs by field name, and ODDfest's `groups` is another shape.
+          // Every list renders as the same thing: alphabetical columns of
+          // names (the page sorts them, so stored order doesn't matter), with
+          // `subgroups` as labelled rows (the partners). The core team had
+          // roles and a film-credits layout until 2026-09-17, when Ronny asked
+          // for names only. Not called `groups`: CloudCannon keys inputs by
+          // field name, and ODDfest's `groups` is another shape.
           lists: z.array(
             z.object({
               title: z.string(),
@@ -770,7 +772,6 @@ const pages = defineCollection({
                 .array(
                   z.object({
                     name: z.string(),
-                    role: z.string().optional(),
                     href: z.string().optional(),
                   }),
                 )

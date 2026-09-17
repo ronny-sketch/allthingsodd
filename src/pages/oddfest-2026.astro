@@ -14,6 +14,8 @@
 //   button text). "What moved you?" now routes to the contact form.
 // - Two `href="#"` buttons (pre-register, ODDspace membership), now the
 //   newsletter and /oddspace/membership.
+// - Roles beside the core team's names, and the film-credits layout they were
+//   set in: every list is one alphabetical column set (2026-09-17).
 // - A runtime Flickr API call with a key in the page source, fetching up to
 //   1,500 photos to shuffle. The 25 photos the page had curated are now local.
 // - The link to oddfest.co: /oddfest carries the site's one labelled link to
@@ -40,6 +42,14 @@ const paragraphs = (body: string) =>
     .split(/\r?\n\s*\r?\n/)
     .map((part) => part.trim())
     .filter(Boolean);
+
+// Every credit list reads alphabetically, whatever order it is stored in, so a
+// name added in CloudCannon lands in the right place without anyone re-sorting.
+// Finnish collation, so Ä and Ö sort after Z rather than beside A and O.
+const alphabetical = <T extends { name: string }>(items: T[]): T[] =>
+  [...items].sort((a, b) =>
+    a.name.localeCompare(b.name, 'fi', { sensitivity: 'base', numeric: true }),
+  );
 
 // The section-3 figure: everyone in the credits, each counted once. Ten
 // names sit in two lists (an artist who was also a collaborator), so this is
@@ -129,28 +139,18 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
             <div class="ty-group">
               <h3 class="ty-group-title">{group.title}</h3>
               {group.intro && <p class="ty-group-intro">{group.intro}</p>}
-              {group.items &&
-                (group.items.some((item) => item.role) ? (
-                  <dl class="ty-roles reveal">
-                    {group.items.map((item) => (
-                      <div class="ty-role">
-                        <dt>{item.role}</dt>
-                        <dd>{item.name}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                ) : (
-                  <ul class="ty-names reveal">
-                    {group.items.map((item) => (
-                      <li>{item.name}</li>
-                    ))}
-                  </ul>
-                ))}
+              {group.items && (
+                <ul class="ty-names reveal">
+                  {alphabetical(group.items).map((item) => (
+                    <li>{item.name}</li>
+                  ))}
+                </ul>
+              )}
               {group.subgroups?.map((sub) => (
                 <div class="ty-subgroup reveal">
                   <h4 class="eyebrow">{sub.label}</h4>
                   <ul class="ty-names is-row">
-                    {sub.items.map((item) => (
+                    {alphabetical(sub.items).map((item) => (
                       <li>
                         {item.href ? (
                           <a href={item.href} target="_blank" rel="noreferrer">
@@ -338,58 +338,14 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
     font: var(--text-body);
     color: var(--color-paper-60);
   }
-  .ty-group-title ~ :is(.ty-roles, .ty-names, .ty-subgroup) {
+  .ty-group-title ~ :is(.ty-names, .ty-subgroup) {
     margin-top: var(--space-content);
   }
   .ty-group-title ~ .ty-subgroup + .ty-subgroup {
     margin-top: var(--space-group);
   }
 
-  /* The core team as film credits: role right-aligned, name left-aligned,
-     meeting at the centre line. Stacks on phones. */
-  .ty-roles {
-    display: grid;
-    gap: var(--space-4);
-    max-width: 64rem;
-    margin-inline: auto;
-    margin-block-end: 0;
-  }
-  .ty-role {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: baseline;
-    column-gap: var(--space-6);
-  }
-  .ty-role dt {
-    text-align: right;
-    font: var(--text-small);
-    font-weight: 600;
-    letter-spacing: var(--tracking-caps);
-    text-transform: uppercase;
-    color: var(--color-paper-40);
-  }
-  .ty-role dd {
-    margin: 0;
-    text-align: left;
-    font: var(--text-heading);
-    letter-spacing: var(--tracking-heading);
-    color: var(--color-paper);
-  }
-  @media (max-width: 640px) {
-    .ty-role {
-      grid-template-columns: 1fr;
-      row-gap: var(--space-1);
-    }
-    .ty-role dt,
-    .ty-role dd {
-      text-align: center;
-    }
-    .ty-role dd {
-      grid-row: 1;
-    }
-  }
-
-  /* Everyone else as balanced columns of names. */
+  /* Every credit list: balanced columns of names. */
   .ty-names {
     columns: 12rem auto;
     column-gap: var(--space-6);
