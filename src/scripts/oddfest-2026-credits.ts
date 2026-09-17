@@ -97,8 +97,15 @@ if (player && toggle) {
       audio = new Audio(player.dataset.src);
       audio.volume = 0.8;
       // Not looped since 2026-09-17: the roll is the length of the song, so
-      // the song ending is the roll ending.
-      audio.addEventListener('ended', () => pause());
+      // the song ending is the roll ending — and it ends AT the end, even if
+      // the track runs out between two frames (which CI caught it doing: the
+      // roll stopped ~50px short because 'ended' beat the last frame).
+      audio.addEventListener('ended', () => {
+        if (playing && !REDUCED.matches) {
+          window.scrollTo({ top: maxScroll(), behavior: 'instant' });
+        }
+        pause();
+      });
       // Duration usually arrives after the first frames; re-spread the roll
       // across the real length as soon as it does.
       audio.addEventListener('loadedmetadata', () => {
