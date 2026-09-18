@@ -330,23 +330,15 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     /* Clay itself measures 4.3:1 here — just under WCAG AA for text this small, so this
        spot uses a lightened reading of it (5.2:1) rather than the literal archive value. */
     font: var(--text-small);
-    color: #967e79;
-  }
-  /* The lightened clay above is tuned for a dark ground; under .theme-light
-     (ODDspace) the footer sits on the light ground instead, so it needs the
-     darkened reading of the same clay hue for equivalent contrast. */
-  :global(.theme-light) .foot-bottom {
-    color: #6b5551;
+    /* --color-clay-read flips to the darkened reading under .theme-light. */
+    color: var(--color-clay-read);
   }
   .foot-bottom p {
     margin: 0;
   }
   .foot-bottom a {
-    color: #967e79;
+    color: var(--color-clay-read);
     text-decoration: none;
-  }
-  :global(.theme-light) .foot-bottom a {
-    color: #6b5551;
   }
   .foot-bottom a:hover {
     color: var(--color-paper);

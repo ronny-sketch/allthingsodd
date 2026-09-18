@@ -20,6 +20,11 @@ const ROUTES = [
   '/about',
   '/media',
   '/contact',
+  // The brand book (2026-09-18). Not in the visual suite: it is a ~64,000px
+  // document, so five baseline screenshots of it would cost more than they
+  // could catch. Its links, images, console errors and mobile overflow are
+  // covered here and in tests/mobile.
+  '/brand-book',
 ];
 
 // Forces every loading="lazy" image to actually load before checking it —

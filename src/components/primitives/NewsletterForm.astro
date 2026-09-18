@@ -61,7 +61,7 @@ const {
   .nl-form {
     display: flex;
     border: 1px solid var(--color-paper-20);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     /* Capped by its container too: the email field's intrinsic width, and so
        this pill's natural width, depends on the platform's font metrics — on
        Linux it reaches the 20rem cap, which in a 320px footer row with its
@@ -97,7 +97,7 @@ const {
     color: var(--color-ink);
     padding: 0 1.2rem;
     margin: 3px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     font: var(--text-small);
     font-weight: 600;
     text-transform: uppercase;

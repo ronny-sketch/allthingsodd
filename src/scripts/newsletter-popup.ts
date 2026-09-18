@@ -14,7 +14,7 @@ const DELAY_MS = 15000;
 // own "Enter the space" flow is a similarly high-intent moment not to
 // interrupt. Path-based, not a per-page opt-out prop, since the popup mounts
 // once, globally, from Layout.astro.
-const SUPPRESSED_PATHS = ['/contact', '/media', '/work-with-odd', '/oddspace'];
+const SUPPRESSED_PATHS = ['/contact', '/media', '/work-with-odd', '/oddspace', '/brand-book'];
 const isSuppressed = SUPPRESSED_PATHS.some((path) => {
   const normalized = window.location.pathname.replace(/\/+$/, '') || '/';
   return normalized === path;

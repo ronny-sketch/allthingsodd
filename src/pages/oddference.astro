@@ -45,7 +45,7 @@ import PersonGrid from '../components/sections/PersonGrid.astro';
 import PricingGrid from '../components/sections/PricingGrid.astro';
 import FAQList from '../components/sections/FAQList.astro';
 import Pill from '../components/primitives/Pill.astro';
-import oddferenceMark from '../assets/logos/oddference-mark.png';
+import oddferenceWordmark from '../assets/logos/oddference-wordmark.svg';
 
 const entry = await getEntry('pages', 'oddference');
 if (!entry || entry.data._template !== 'oddference')
@@ -74,7 +74,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
       poster={page.heroMedia.poster}
       sub={page.title}
       meta={page.meta}
-      logo={oddferenceMark}
+      logo={oddferenceWordmark}
       logoAlt="ODDference"
       primaryCta={page.primaryCta}
       secondaryCta={page.secondaryCta}
@@ -313,7 +313,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
   .oddc-reason-photo {
     aspect-ratio: 4 / 3;
     overflow: hidden;
-    background: #000;
+    background: var(--swatch-ink);
   }
   .oddc-reason-photo :global(img) {
     width: 100%;
@@ -562,7 +562,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
      width), so the section itself is the flow parent that spaces it. */
   .oddc-aftermovie {
     position: relative;
-    background: #000;
+    background: var(--swatch-ink);
   }
   .oddc-aftermovie :global(img),
   .oddc-aftermovie video {

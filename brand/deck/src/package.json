@@ -1,0 +1,13 @@
+{
+  "name": "allthingsodd-deck",
+  "private": true,
+  "type": "module",
+  "description": "Builds brand/deck/*.pptx. Isolated from the website: its own dependencies, never imported by the site.",
+  "scripts": {
+    "build": "node build.mjs",
+    "preview": "node preview.mjs"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
+  }
+}

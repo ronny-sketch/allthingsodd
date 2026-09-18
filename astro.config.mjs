@@ -27,8 +27,12 @@ export default defineConfig({
       // and it would follow the site onto the new domain as day-one errors.
       // Everything else — the ten real content pages plus /tickets itself —
       // stays in. Keep in sync with the pages that pass `noindex` to Layout.
+      // /brand-book/ is `noindex` for the same reason: a working document
+      // for designers, partners and agents, not a page for search (2026-09-18).
       filter: (page) =>
-        !['/tickets/checkout/', '/tickets/confirmation/'].some((path) => page.endsWith(path)),
+        !['/tickets/checkout/', '/tickets/confirmation/', '/brand-book/'].some((path) =>
+          page.endsWith(path),
+        ),
     }),
   ],
 });

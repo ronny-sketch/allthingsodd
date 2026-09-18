@@ -248,7 +248,7 @@ select:focus-visible {
   font: var(--text-small);
   font-weight: 600;
   text-decoration: none;
-  border-radius: 0 0 6px 6px;
+  border-radius: 0 0 var(--radius-panel) var(--radius-panel);
   transition: top var(--duration-fast) ease;
 }
 .skip-link:focus-visible {

@@ -1,0 +1,525 @@
+---
+// Brand book chapters 06-09: colour, typography, grid, spacing.
+// Every table here is rendered from brand/tokens/brand-tokens.json, which
+// `npm run check:brand` holds equal to src/styles/. The book cannot drift.
+import Chapter from './Chapter.astro';
+import tokens from '../../../brand/tokens/brand-tokens.json';
+
+// brand-tokens.json is imported as a literal type, so the lookups below are
+// given the shapes they actually have rather than being cast around.
+type Swatch = { value: string; css: string; role: string };
+const p = tokens.color.primitive as Record<string, Swatch>;
+const grounds = ['ink', 'paper', 'backstage', 'backstageLight'];
+const accents = [
+  'amber',
+  'amberBright',
+  'signal',
+  'signalBright',
+  'signalDeep',
+  'ultraviolet',
+  'indigo',
+  'clay',
+  'clayRead',
+];
+const label = (k: string) => k.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase());
+const roles = Object.entries(tokens.color.semantic.roles).map(([name, r]) => ({
+  name,
+  token: 'css' in r ? r.css : r.value,
+  dark: 'dark' in r ? r.dark : null,
+  light: 'light' in r ? r.light : null,
+  use: r.use,
+}));
+const ladder = Object.entries(tokens.typography.roles);
+const specimen: Record<string, string> = {
+  hero: 'One week. Many hosts.',
+  display: 'Creativity belongs closer to the centre.',
+  heading: 'Different problems need different structures.',
+  body: 'ODDfest is a week of independently made events across Helsinki. Artists, collectives, venues, organisations and companies make and produce their own.',
+  small: 'ODDfest 2026 · Vanha Ylioppilastalo · Photo: ODDfest',
+};
+const treatments = Object.entries(tokens.typography.treatments)
+  .filter(([k]) => k !== 'note')
+  .map(([name, t]) => ({
+    name,
+    role: typeof t === 'string' ? t : t.role,
+    detail: typeof t === 'string' ? '' : 'detail' in t ? t.detail : '',
+  }));
+const proportions = [
+  { share: 80, chip: p.ink.value, name: 'Ground' },
+  { share: 13, chip: p.paper.value, name: 'Figure' },
+  { share: 5, chip: p.backstage.value, name: 'Raised' },
+  { share: 2, chip: p.amberBright.value, name: 'Accent' },
+];
+---
+
+<Chapter
+  id="colour"
+  num="06"
+  title="Colour"
+  premise="Two lights on one ground."
+  statement="Measured from 1,478 photographs, not chosen from a swatch book."
+>
+  <div class="bb-prose">
+    <p>
+      The palette is a census of the ODDfest Flickr archive: every public photograph, clustered and
+      weighted by how much of the frame each colour actually occupied. Ink came back as the single
+      most common colour at 32.7% — a rose-tinted near-black, the real colour of the rooms. Amber is
+      the stage light, Signal the lighting desk’s blue. That is why the site looks like the events:
+      it is literally made of them.
+    </p>
+    <p>
+      Keep the restraint. Two grounds, two accents, a handful of neutrals. A new colour needs the
+      same kind of provenance — or an explicit, documented decision to depart.
+    </p>
+  </div>
+
+  <div class="bb-swatches bb-swatches--primary">
+    {
+      grounds.map((k) => (
+        <div class="bb-swatch">
+          <div class="bb-swatch-chip" style={`--chip: ${p[k].value}`} />
+          <div class="bb-swatch-body">
+            <strong>{label(k)}</strong>
+            <span>
+              {p[k].value} · <code>{p[k].css}</code>
+            </span>
+            <span>{p[k].role}</span>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  <h3 class="bb-h3">The two lights, and the quiet ones</h3>
+  <div class="bb-swatches">
+    {
+      accents.map((k) => (
+        <div class="bb-swatch">
+          <div class="bb-swatch-chip" style={`--chip: ${p[k].value}`} />
+          <div class="bb-swatch-body">
+            <strong>{label(k)}</strong>
+            <span>
+              {p[k].value} · <code>{p[k].css}</code>
+            </span>
+            <span>{p[k].role}</span>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  <h3 class="bb-h3">How much of a surface each one gets</h3>
+  <figure class="bb-figure">
+    <div class="bb-proportion">
+      {proportions.map((s) => <span style={`--share: ${s.share}; --chip: ${s.chip}`} />)}
+    </div>
+    <figcaption>
+      Roughly 80% ground, 13% figure, 5% raised surface, 2% accent. If an accent is more than a
+      fraction of the page, something has gone wrong: accents are light, not paint.
+    </figcaption>
+  </figure>
+
+  <h3 class="bb-h3">Roles</h3>
+  <div class="bb-prose">
+    <p>
+      Components never name a colour; they name a role. Each role is one CSS variable that already
+      flips on ODDspace’s light ground, which is why the entire site inverts with a single class and
+      no component knows about it.
+    </p>
+  </div>
+  <div class="bb-table-wrap">
+    <table class="bb-table">
+      <thead><tr><th>Role</th><th>Token</th><th>On Ink</th><th>On Paper</th><th>Use</th></tr></thead
+      >
+      <tbody>
+        {
+          roles.map((r) => (
+            <tr>
+              <td>{label(r.name)}</td>
+              <td>
+                <code>{r.token}</code>
+              </td>
+              <td>{r.dark ?? '—'}</td>
+              <td>{r.light ?? (r.dark ? '—' : 'flips with the theme')}</td>
+              <td>{r.use}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="bb-h3">Pairings that are safe, and pairings that are not</h3>
+  <div class="bb-table-wrap">
+    <table class="bb-table">
+      <thead><tr><th>Text</th><th>On</th><th>Ratio</th><th>Good for</th></tr></thead>
+      <tbody>
+        {
+          tokens.color.contrast.pairs.map((c) => (
+            <tr>
+              <td>{c.fg}</td>
+              <td>{c.bg}</td>
+              <td>{c.ratio}:1</td>
+              <td>{c.ok}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="bb-prose">
+    Ratios are measured on the composited colour against its real background, not on the token’s
+    face value — a translucent step reads differently on Ink than on a raised card. Compute it
+    before shipping a new one.
+  </p>
+
+  <h3 class="bb-h3">Where colour does not go</h3>
+  <ul class="bb-prose" style="padding-left: 1.2rem;">
+    <li>No coloured page or section backgrounds. Ground is Ink or Paper.</li>
+    <li>No gradient except the Ink scrim that makes a photograph readable.</li>
+    <li>No colour-coded categories, tags or charts by hue alone.</li>
+    <li>No Ember on Paper as text, no Signal under Paper text — use the reading value of each.</li>
+    <li>Ultraviolet is a wash on ODDfest, at most a 16% mix. It never becomes a fill.</li>
+    <li>
+      No heat as text on a raised card — 3.75:1 on Backstage. There the text goes to full figure and
+      the underline or border carries the heat.
+    </li>
+  </ul>
+</Chapter>
+
+<Chapter id="typography" num="07" title="Typography" premise="Twelve jobs." statement="Five sizes.">
+  <div class="bb-prose">
+    <p>
+      Two faces. <strong>Forta</strong> states: a soft, rounded, unicase display face whose lobes are
+      the same shape as the mark — it renders as capitals whatever you type, so it can only ever sound
+      like a statement. <strong>Gabarito</strong> explains: a clear geometric sans that carries every
+      sentence, label, button and form field on the site. Both are SIL Open Font Licence, so they travel
+      anywhere ODD does.
+    </p>
+    <p>
+      There are five sizes on the whole site and nothing below 14px. Everything a designer usually
+      reaches for a sixth size to solve — a lead, a caption, a run-in title, a nav link — is solved
+      here by face, weight, colour, case, tracking or position instead.
+    </p>
+  </div>
+
+  <div class="bb-row bb-row--2">
+    <figure class="bb-figure">
+      <div class="bb-stage">
+        <p class="bb-glyphs">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 ÄÖÅ &amp; — → €</p>
+        <p class="t-small t-muted">Forta Regular · display · SIL OFL 1.1 · unicase</p>
+      </div>
+      <figcaption>
+        Forta. One weight is the whole face. If it needs emphasis, it needs fewer words.
+      </figcaption>
+    </figure>
+    <figure class="bb-figure">
+      <div class="bb-stage">
+        <p class="bb-glyphs bb-glyphs--body">
+          Abcdefghijklmnopqrstuvwxyz 0123456789 ÄÖÅ &amp; — → €
+        </p>
+        <p class="t-small t-muted">Gabarito 400 / 600 / 700 · body · SIL OFL 1.1</p>
+      </div>
+      <figcaption>
+        Gabarito. 400 reads, 600 labels, 700 is rare and only in print or a deck.
+      </figcaption>
+    </figure>
+  </div>
+
+  <h3 class="bb-h3">The ladder</h3>
+  <div class="bb-ladder">
+    {
+      ladder.map(([name, r]) => (
+        <div class="bb-ladder-row">
+          <div>
+            <strong>{name}</strong>
+            <span>
+              <code>{r.css}</code>
+            </span>
+            <span>{r.size}</span>
+            <span>
+              line-height {r.lineHeight} · tracking {r.tracking}
+            </span>
+            <span>deck: {r.deckPt}pt</span>
+          </div>
+          <p class={`t-${name}`}>{specimen[name]}</p>
+        </div>
+      ))
+    }
+  </div>
+
+  <h3 class="bb-h3">Twelve jobs, on five sizes</h3>
+  <div class="bb-table-wrap">
+    <table class="bb-table">
+      <thead><tr><th>Job</th><th>Size</th><th>Treatment</th></tr></thead>
+      <tbody>
+        {
+          treatments.map((t) => (
+            <tr>
+              <td>{label(t.name)}</td>
+              <td>{t.role === 'none' ? '—' : label(t.role)}</td>
+              <td>{t.detail}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="bb-h3">Premise, then point</h3>
+  <figure class="bb-figure">
+    <div class="bb-stage">
+      <p class="t-display" style="margin: 0; max-width: 24ch;">
+        <span class="t-quiet">Finland has creative talent.</span> What’s missing are the structures that
+        help it grow, connect and last.
+      </p>
+    </div>
+    <figcaption>
+      A two-sentence headline sets the premise in the quiet step and the point in full figure. One
+      size, two weights of ink — the argument is visible before it is read. Home, “Why ODD”.
+    </figcaption>
+  </figure>
+
+  <h3 class="bb-h3">Good and bad</h3>
+  <div class="bb-row bb-row--2">
+    <figure class="bb-figure">
+      <div class="bb-stage">
+        <p class="t-eyebrow">What ODDfest is</p>
+        <p class="t-heading" style="margin: 0;">
+          One shared week, made by Helsinki’s creative communities.
+        </p>
+        <p class="t-body t-muted" style="margin: 0; max-width: 46ch;">
+          Artists, collectives, venues, organisations and companies make and produce their own.
+        </p>
+      </div>
+      <figcaption>
+        <span class="bb-verdict">Do</span> — small tracked label, one Forta sentence with a full stop,
+        Gabarito underneath.
+      </figcaption>
+    </figure>
+    <figure class="bb-figure">
+      <div class="bb-stage">
+        <p class="t-forta-body" style="margin: 0; max-width: 46ch; text-transform: uppercase;">
+          ODDFEST IS A WEEK OF INDEPENDENTLY MADE EVENTS ACROSS HELSINKI, AND THIS PARAGRAPH KEEPS
+          GOING IN THE DISPLAY FACE UNTIL NOBODY READS IT ANY MORE.
+        </p>
+      </div>
+      <figcaption>
+        <span class="bb-verdict bb-verdict--dont">Don’t</span> — Forta setting a paragraph, typed in capitals.
+        Past three lines, it is Body.
+      </figcaption>
+    </figure>
+  </div>
+
+  <h3 class="bb-h3">Big words, and small screens</h3>
+  <ul class="bb-prose" style="padding-left: 1.2rem;">
+    <li>
+      Headlines are sentences and end with a full stop. Questions are welcome; fragments stacked
+      into a slogan are not.
+    </li>
+    <li>
+      Three lines is the ceiling for Hero, four for Display. Cut words rather than shrink the size.
+    </li>
+    <li>
+      Break lines at a clause, never after a preposition or article. <code>text-wrap: balance</code> does
+      the rest and never changes the line count.
+    </li>
+    <li>Never hyphenate Forta, never track it looser to fill a line, never condense it.</li>
+    <li>
+      On a phone, Hero’s floor (3.25rem) is wider than a column for a long single word — a component
+      with one long word steps down a role rather than inventing a size.
+    </li>
+    <li>
+      Running prose holds to 52ch. A centred intro may sit narrower; nothing meant to be read sits
+      wider.
+    </li>
+  </ul>
+</Chapter>
+
+<Chapter
+  id="grid"
+  num="08"
+  title="Grid"
+  premise="Two widths, twelve columns."
+  statement="One hairline is the only line on the page."
+>
+  <dl class="bb-spec">
+    <dt>Contained</dt>
+    <dd>
+      <code>--width-contained</code> · 73.75rem (1180px) · gutter 1.75rem. Reading pages, forms, most
+      sections.
+    </dd>
+    <dt>Wide</dt>
+    <dd>
+      <code>--width-wide</code> · 80rem (1280px) · gutter <code>clamp(2.5rem, 8vw, 7.5rem)</code>.
+      Navigation, footer, grids of cards, galleries.
+    </dd>
+    <dt>Full bleed</dt>
+    <dd>
+      <code>.bleed</code> — a contained element escapes to the viewport: heroes, photo breaks, the filmstrip,
+      the four-card band.
+    </dd>
+    <dt>Columns</dt>
+    <dd>12 on desktop, 6 on tablet, 1 for reading and 2–4 for image mosaics on a phone.</dd>
+    <dt>Breakpoints</dt>
+    <dd>
+      480 · 640 · 820 · 1024 · 1440. A component may add its own where its content breaks — with a
+      comment saying why — but never to change a type size.
+    </dd>
+    <dt>Rails</dt>
+    <dd>68px fixed vertical tickers at both edges of a product page, from 821px up.</dd>
+  </dl>
+
+  <figure class="bb-figure">
+    <div class="bb-stage">
+      <div class="bb-cols" aria-hidden="true">
+        {Array.from({ length: 12 }).map(() => <span />)}
+      </div>
+    </div>
+    <figcaption>
+      Twelve columns, a <code>--space-4</code> gutter. Cards take 3, 4 or 6; an editorial column takes
+      6–8; a sticky label takes 2–3. Six columns from 820px down.
+    </figcaption>
+  </figure>
+
+  <h3 class="bb-h3">One system, two registers</h3>
+  <div class="bb-row bb-row--2">
+    <figure class="bb-figure">
+      <div
+        class="bb-wire"
+        style="grid-template-columns: repeat(3, 1fr); grid-template-rows: auto auto 1fr;"
+      >
+        <div style="grid-column: span 3;" class="is-accent">Eyebrow · title · hairline</div>
+        <div style="grid-column: span 3;">Lede, 52ch, centred</div>
+        <div>01 Cell</div>
+        <div>02 Cell</div>
+        <div>03 Cell</div>
+      </div>
+      <figcaption>
+        Information-heavy: centred head, hairline, equal cells, numbers. Prices, FAQs, programmes,
+        this book.
+      </figcaption>
+    </figure>
+    <figure class="bb-figure">
+      <div
+        class="bb-wire"
+        style="grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr);"
+      >
+        <div class="is-photo" style="grid-column: span 2; grid-row: span 2;">Photograph</div>
+        <div class="is-accent" style="grid-column: span 2;">Statement</div>
+        <div>Label</div>
+        <div>Label</div>
+        <div class="is-photo" style="grid-column: span 2;">Photograph</div>
+        <div style="grid-column: span 2;">Body</div>
+      </div>
+      <figcaption>
+        Expressive: the same grid, filled unevenly. Photographs take whole cells, the statement
+        takes the width, labels sit in the gaps. Heroes, campaigns, covers.
+      </figcaption>
+    </figure>
+  </div>
+
+  <h3 class="bb-h3">Alignment, and when to break it</h3>
+  <ul class="bb-prose" style="padding-left: 1.2rem;">
+    <li>
+      Everything aligns to the column grid. The hairline between cells is the grid made visible —
+      1px, the ground showing through.
+    </li>
+    <li>
+      Photographs may leave the grid entirely (full bleed) but never sit at an arbitrary inset.
+    </li>
+    <li>
+      Rails, tickers and the mosaic are allowed to run past the edge of the viewport: they are
+      motion, not layout.
+    </li>
+    <li>
+      Where two audiences are shown together, the columns mirror — creative flush right, business
+      flush left, meeting in the middle.
+    </li>
+    <li>
+      Do not rotate, tilt or overlap content blocks. The only rotation in the system is the vertical
+      rail.
+    </li>
+  </ul>
+</Chapter>
+
+<Chapter
+  id="spacing"
+  num="09"
+  title="Spacing"
+  premise="Dense enough to have energy."
+  statement="Every gap has exactly one owner."
+>
+  <div class="bb-prose">
+    <p>
+      The scale is a 4px base. Inside a component, space takes fixed steps; between blocks and
+      sections it is fluid, so the space between things shrinks on a phone faster than the things
+      do. There is no generous white emptiness here: a section gap at 1440px is 80px, not 240px.
+    </p>
+  </div>
+
+  <div class="bb-scale">
+    {
+      Object.entries(tokens.spacing.scale).map(([step, value]) => (
+        <div class="bb-scale-row">
+          <code>--space-{step}</code>
+          <span>{value}</span>
+          <span class="bb-scale-bar" style={`--w: ${value}`} />
+        </div>
+      ))
+    }
+  </div>
+
+  <h3 class="bb-h3">Rhythm</h3>
+  <div class="bb-scale">
+    {
+      Object.entries(tokens.spacing.rhythm).map(([name, r]) => (
+        <div class="bb-scale-row">
+          <code>--space-{name}</code>
+          <span>
+            {r.px['390']} / {r.px['1024']} / {r.px['1440']}px
+          </span>
+          <span class="bb-scale-bar bb-scale-bar--rhythm" style={`--w: ${r.px['1440']}px`} />
+        </div>
+      ))
+    }
+  </div>
+  <p class="bb-prose">Values at 390px, 1024px and 1440px. No component needs a mobile override.</p>
+
+  <h3 class="bb-h3">What sits how far from what</h3>
+  <div class="bb-table-wrap">
+    <table class="bb-table">
+      <thead><tr><th>Relationship</th><th>Space</th></tr></thead>
+      <tbody>
+        {
+          Object.entries(tokens.spacing.relationships).map(([rel, value]) => (
+            <tr>
+              <td>{label(rel)}</td>
+              <td>
+                <code>{value}</code>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="bb-h3">Ownership</h3>
+  <ul class="bb-prose" style="padding-left: 1.2rem;">
+    <li>
+      Section to section is owned by the layout: each section pads half the gap, so two neighbours
+      add up to exactly one and neither needs to know what is next to it.
+    </li>
+    <li>
+      Inside a section, the parent owns the space between its children (<code>.flow</code>).
+      Children carry no outer margin.
+    </li>
+    <li>
+      A block that belongs to the one above it replaces the step with a tighter one — a replacement,
+      never an addition.
+    </li>
+    <li>A negative margin that claws back someone else’s space is always a bug.</li>
+    <li>A reusable component never carries outer block margin. Its caller places it.</li>
+  </ul>
+</Chapter>

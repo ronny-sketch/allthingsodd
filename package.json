@@ -19,7 +19,8 @@
     "test:update-snapshots": "playwright test --update-snapshots",
     "cc:validate": "cloudcannon validate",
     "check:identity": "node scripts/check-identity.mjs",
-    "quality": "npm run check && npm run lint && npm run format:check && npm run cc:validate && npm run check:identity && npm run build"
+    "quality": "npm run check && npm run lint && npm run format:check && npm run cc:validate && npm run check:identity && npm run check:brand && npm run build",
+    "check:brand": "node scripts/check-brand-tokens.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

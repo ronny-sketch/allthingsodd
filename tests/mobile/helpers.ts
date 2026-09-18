@@ -13,6 +13,7 @@ export const ROUTES = [
   '/media',
   '/membership',
   '/contact',
+  '/brand-book',
   '/tickets',
   '/tickets/checkout',
 ];

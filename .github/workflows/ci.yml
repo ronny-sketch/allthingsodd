@@ -48,6 +48,9 @@ jobs:
       # command is invisible to every browser test in this repo. See
       # scripts/check-identity.mjs.
       - run: npm run check:identity
+      # brand/tokens/brand-tokens.json mirrors src/styles/ for decks, print
+      # and agents; this fails when the mirror drifts (2026-09-18).
+      - run: npm run check:brand
       - run: npm run build
 
   functional:

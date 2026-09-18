@@ -210,7 +210,7 @@ const { items } = Astro.props;
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     padding: 0.3rem 0.7rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
   }
   .pricing-name {
     font: var(--text-heading);
@@ -290,7 +290,7 @@ const { items } = Astro.props;
     top: 0.55em;
     width: 5px;
     height: 5px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--color-paper-40);
   }
   /* Benefits → button is one step owned here (it used to be the list's
@@ -316,9 +316,13 @@ const { items } = Astro.props;
     text-decoration-color: var(--color-paper-20);
     transition: color var(--duration-fast) ease;
   }
+  /* This link sits on a raised card, where heat as TEXT measures 3.75:1 —
+     under AA for the Small size. On a raised surface the text goes to full
+     figure and the underline carries the heat instead (a 2px rule is a
+     graphical object, 3:1). Same rule as Home's Work-with-ODD band. */
   .pricing-note-link:hover {
-    color: var(--color-amber-bright);
-    text-decoration-color: var(--color-amber-bright);
+    color: var(--color-paper);
+    text-decoration-color: var(--color-heat);
   }
 
   @media (prefers-reduced-motion: no-preference) {

@@ -277,7 +277,8 @@ const infoItem = nav.find((item) => item.children);
   .nav-dropdown-menu a {
     display: block;
     padding: 0.65rem 0.8rem;
-    border-radius: 6px;
+    /* Nested inside the panel: its radius less the panel's inset. */
+    border-radius: calc(var(--radius-panel) - 4px);
     font: var(--text-body);
     text-decoration: none;
     white-space: nowrap;
@@ -310,7 +311,7 @@ const infoItem = nav.find((item) => item.children);
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     padding: 0.55rem 1.1rem 0.55rem 1.25rem;
     /* Same as Pill.astro: the shorthand sets line-height on the element
        itself. A <button>'s UA stylesheet declares its own line-height, which
@@ -323,7 +324,7 @@ const infoItem = nav.find((item) => item.children);
     text-transform: uppercase;
     color: var(--color-paper);
     background: transparent;
-    border: 1px solid rgb(226 223 222 / 35%);
+    border: 1px solid var(--color-paper-35);
     cursor: pointer;
     appearance: none;
     transition:
@@ -349,14 +350,6 @@ const infoItem = nav.find((item) => item.children);
   .nav-dropdown:focus-within .nav-info-chevron,
   .nav-dropdown.is-open .nav-info-chevron {
     transform: rotate(180deg);
-  }
-  /* Same dark-ground assumption as Pill.astro's .pill-outline (this trigger
-     intentionally matches that variant's look) — under .theme-light
-     (ODDspace) the ground is light, so this needs the ink-tinted mirror at
-     the same opacity, not the inherited (now-dark) --color-paper value
-     reused as a border tint. See Pill.astro's identical comment. */
-  :global(.theme-light) .nav-info-trigger {
-    border-color: rgb(14 9 11 / 35%);
   }
   .nav-info-trigger::before {
     display: none;

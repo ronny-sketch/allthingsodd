@@ -203,7 +203,7 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
        nothing else on the site needs this (every other fixed/sticky
        surface leaves the very top of the viewport alone). */
     padding-top: max(clamp(0.6rem, 2svh, 0.85rem), env(safe-area-inset-top));
-    border-bottom: 1px solid rgb(36 34 32 / 15%);
+    border-bottom: 1px solid var(--color-ink-12);
     flex-shrink: 0;
   }
   .menu-topbar .mark-ink {
@@ -223,10 +223,10 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
     display: block;
   }
   .menu-close {
-    border: 1px solid rgb(36 34 32 / 35%);
+    border: 1px solid var(--color-ink-35);
     background: transparent;
     color: var(--color-ink);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     padding: 0.5rem 1.1rem;
     font: var(--text-small);
     font-weight: 600;
@@ -279,7 +279,7 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
     padding-left: 1.4rem;
   }
   .menu-bottom {
-    border-top: 1px solid rgb(36 34 32 / 15%);
+    border-top: 1px solid var(--color-ink-12);
     padding: clamp(1rem, 3svh, 1.8rem) 2.5rem;
     flex-shrink: 0;
     display: flex;
@@ -328,7 +328,7 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
   }
   .menu-tag {
     font: var(--text-small);
-    color: rgb(36 34 32 / 55%);
+    color: var(--color-ink-40);
     white-space: nowrap;
   }
   @media (max-width: 640px) {

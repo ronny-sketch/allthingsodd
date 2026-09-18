@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import oddfestWordmark from '../../assets/logos/oddfest-wordmark.svg';
-import oddferenceMark from '../../assets/logos/oddference-mark.png';
+import oddferenceWordmark from '../../assets/logos/oddference-wordmark.svg';
 import oddspaceWordmark from '../../assets/logos/oddspace-wordmark.svg';
 
 interface Props {
@@ -19,9 +19,9 @@ interface Props {
 }
 const { poster, video, showBrandMarquee = true } = Astro.props;
 const logos = [
-  { src: oddfestWordmark.src, alt: 'ODDFEST', class: '' },
-  { src: oddferenceMark.src, alt: 'ODDference', class: 'is-oddference' },
-  { src: oddspaceWordmark.src, alt: 'ODDspace', class: '' },
+  { src: oddfestWordmark.src, alt: 'ODDfest' },
+  { src: oddferenceWordmark.src, alt: 'ODDference' },
+  { src: oddspaceWordmark.src, alt: 'ODDspace' },
 ];
 // The old static centered row clipped the outer marks against its own edges
 // the moment it scrolled — fixed here not by going back to static, but by
@@ -39,7 +39,7 @@ const track = Array.from({ length: reps }, () => logos).flat();
       <div class="brand-marquee">
         <div class="brand-marquee-track" aria-hidden="true">
           {track.map((l) => (
-            <img src={l.src} alt="" class={l.class} loading="lazy" />
+            <img src={l.src} alt="" loading="lazy" />
           ))}
         </div>
         <p class="sr-only">ODDfest, ODDference, ODDspace</p>
@@ -107,24 +107,12 @@ const track = Array.from({ length: reps }, () => logos).flat();
        colored logo carousel. */
     filter: brightness(0) invert(1);
   }
-  /* oddference-mark.png's "OOO" glyph sits noticeably taller within its own
-     canvas than the other two marks' equivalent glyph does within theirs, so
-     equal img height doesn't read as equal mark size (confirmed via
-     screenshot, side by side). A source-asset proportion difference, not
-     fixable via height alone — scaled down slightly as the practical fix
-     without new export files. */
-  .brand-marquee img.is-oddference {
-    height: 47px;
-  }
   @media (max-width: 700px) {
     .brand-marquee-track {
       gap: 3.25rem;
     }
     .brand-marquee img {
       height: 38px;
-    }
-    .brand-marquee img.is-oddference {
-      height: 32px;
     }
   }
 
@@ -137,7 +125,7 @@ const track = Array.from({ length: reps }, () => logos).flat();
   }
   .aftermovie-full {
     position: relative;
-    background: #000;
+    background: var(--swatch-ink);
   }
   .aftermovie-full :global(img[data-video-poster]) {
     width: 100%;
@@ -173,7 +161,7 @@ const track = Array.from({ length: reps }, () => logos).flat();
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(to top, rgb(0 0 0 / 35%) 0%, transparent 18%);
+    background: linear-gradient(to top, rgb(14 9 11 / 35%) 0%, transparent 18%);
   }
   /* The poster/video frame has "BE THE ODD ONE" baked into the footage
      itself. Desktop's fixed min(78vh, 680px) band comfortably fits a 2:1

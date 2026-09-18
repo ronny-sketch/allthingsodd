@@ -1,0 +1,578 @@
+{
+  "meta": {
+    "name": "All Things ODD — brand tokens",
+    "version": "1.0.0",
+    "updated": "2026-09-18",
+    "sourceOfTruth": "The website's CSS is canonical for the web: src/styles/tokens.css and src/styles/typography.css. This file mirrors every value a non-web tool needs (decks, print, social, Figma, an AI agent). `npm run check:brand` fails the build if a mirrored web value drifts from the CSS.",
+    "readme": "brand/BRAND-GUIDE.md",
+    "units": "Web values are CSS strings exactly as written in the stylesheets. px values are at the default 16px root unless a width is named. Deck values are points on a 13.333 x 7.5 in (16:9) slide."
+  },
+  "color": {
+    "primitive": {
+      "ink": {
+        "value": "#0E090B",
+        "css": "--swatch-ink",
+        "role": "The ground. The most common colour in 1,478 archive photographs (32.7% coverage): a rose-tinted near-black, never print black."
+      },
+      "paper": {
+        "value": "#E2DFDE",
+        "css": "--swatch-paper",
+        "role": "The one light neutral. Figure on Ink; the ground of ODDspace and of inverse moments (menu, Ways to take part)."
+      },
+      "backstage": {
+        "value": "#232028",
+        "css": "--swatch-backstage-dark",
+        "role": "Raised surface on Ink: cards, bands, panels."
+      },
+      "backstageLight": {
+        "value": "#D3CDC9",
+        "css": "--swatch-backstage-light",
+        "role": "Raised surface on Paper (ODDspace)."
+      },
+      "amber": {
+        "value": "#9A432B",
+        "css": "--color-amber",
+        "role": "Ember, the warm stage light. Creative / ODDfest. A wash or keyline on Ink; text only on Paper."
+      },
+      "amberBright": {
+        "value": "#AE6855",
+        "css": "--color-amber-bright",
+        "role": "Ember as text on Ink (4.62:1). The creative voice label; the heat colour on Ink."
+      },
+      "signal": {
+        "value": "#507AAF",
+        "css": "--color-signal",
+        "role": "Signal, the lighting desk's cool blue. Business / ODDference. Washes, rules, form accents."
+      },
+      "signalBright": {
+        "value": "#5081B3",
+        "css": "--color-signal-bright",
+        "role": "Signal as text on Ink (4.83:1). The business voice label."
+      },
+      "signalDeep": {
+        "value": "#40618C",
+        "css": "--color-signal-deep",
+        "role": "Signal as a fill under Paper text (4.79:1): consent and system buttons."
+      },
+      "clay": {
+        "value": "#89706B",
+        "css": "--color-clay",
+        "role": "Quiet warm neutral. Large text or decoration only (4.32:1 on Ink)."
+      },
+      "clayRead": {
+        "value": "#967E79",
+        "css": "--color-clay-read",
+        "role": "Clay as small text on Ink (5.23:1): the legal line."
+      },
+      "clayReadLight": {
+        "value": "#6B5551",
+        "css": "--color-clay-read (under .theme-light)",
+        "role": "Clay as small text on Paper (5.21:1)."
+      },
+      "indigo": {
+        "value": "#1C2B66",
+        "css": "--color-indigo",
+        "role": "Scrim tint under archive imagery. Never text, never a fill."
+      },
+      "ultraviolet": {
+        "value": "#8224D4",
+        "css": "--color-ultraviolet",
+        "role": "The archive's rarest colour. A wash on ODDfest moments only, at most a 16% mix. Never a fill, never text."
+      }
+    },
+    "opacityRamp": {
+      "note": "Figure over ground. Dark: Paper over Ink. Light: Ink over Paper. Tuned by measured contrast, not mirrored: Ink on Paper needs more opacity for the same ratio. Step names are historical; the values are what ship.",
+      "dark": {
+        "80": "rgb(226 223 222 / 80%)",
+        "60": "rgb(226 223 222 / 60%)",
+        "40": "rgb(226 223 222 / 55%)",
+        "35": "rgb(226 223 222 / 35%)",
+        "20": "rgb(226 223 222 / 20%)",
+        "12": "rgb(226 223 222 / 12%)",
+        "06": "rgb(226 223 222 / 6%)",
+        "03": "rgb(226 223 222 / 3%)"
+      },
+      "light": {
+        "80": "rgb(14 9 11 / 80%)",
+        "60": "rgb(14 9 11 / 70%)",
+        "40": "rgb(14 9 11 / 62%)",
+        "35": "rgb(14 9 11 / 35%)",
+        "20": "rgb(14 9 11 / 20%)",
+        "12": "rgb(14 9 11 / 12%)",
+        "06": "rgb(14 9 11 / 6%)",
+        "03": "rgb(14 9 11 / 3%)"
+      }
+    },
+    "semantic": {
+      "note": "Roles, not colours. Each role is a CSS variable that already flips under .theme-light (ODDspace), so components never branch on theme. The CSS names predate the roles (--color-paper means 'figure', because Paper is the figure on the default ground) and are kept rather than aliased, so code has one vocabulary.",
+      "roles": {
+        "ground": {
+          "css": "--color-bg",
+          "dark": "#0E090B",
+          "light": "#E2DFDE",
+          "use": "Page background."
+        },
+        "groundRaised": {
+          "css": "--color-backstage",
+          "dark": "#232028",
+          "light": "#D3CDC9",
+          "use": "Cards, bands and panels one step off the page."
+        },
+        "figure": {
+          "css": "--color-paper",
+          "dark": "#E2DFDE",
+          "light": "#0E090B",
+          "use": "Headlines, primary text, solid buttons, the mark."
+        },
+        "figureStrong": {
+          "css": "--color-paper-80",
+          "use": "Lead paragraphs: emphasis without size."
+        },
+        "figureMuted": {
+          "css": "--color-paper-60",
+          "use": "Body copy under a headline; secondary text; captions."
+        },
+        "figureQuiet": {
+          "css": "--color-paper-40",
+          "use": "Eyebrows, labels, meta, the quiet premise of a two-tone headline. The lowest step allowed for text."
+        },
+        "lineControl": {
+          "css": "--color-paper-35",
+          "use": "Border of an outline button. Not for text."
+        },
+        "ruleStrong": {
+          "css": "--color-paper-20",
+          "use": "Rules that must read at a glance; the underline of a text link."
+        },
+        "rule": {
+          "css": "--color-paper-12",
+          "use": "Hairlines: section-head rules, grid lines, card borders, the nav edge."
+        },
+        "heat": {
+          "css": "--color-heat",
+          "dark": "#AE6855",
+          "light": "#9A432B",
+          "use": "What anything pressable warms to on hover or press: links, rows, keylines of linked bands."
+        },
+        "voiceCreative": {
+          "css": "--color-amber-bright",
+          "use": "The 'For creatives' label and creative-side accents."
+        },
+        "voiceBusiness": {
+          "css": "--color-signal-bright",
+          "use": "The 'For business' label and business-side accents."
+        },
+        "systemAction": {
+          "css": "--color-signal-deep",
+          "use": "Fill of consent and system buttons that are not brand CTAs."
+        },
+        "legal": {
+          "css": "--color-clay-read",
+          "dark": "#967E79",
+          "light": "#6B5551",
+          "use": "Footer legal line and fine print."
+        },
+        "scrim": {
+          "value": "rgb(14 9 11 / N%)",
+          "use": "Over photographs under text. Always Ink, never #000: 45-82% at the text, 8-20% away from it."
+        }
+      }
+    },
+    "contrast": {
+      "note": "WCAG 2.x ratios on the composited colour against its real ground. AA: 4.5 small text; 3.0 large text (24px+, or 18.66px+ bold) and UI edges.",
+      "pairs": [
+        { "fg": "paper", "bg": "ink", "ratio": 14.91, "ok": "all text" },
+        { "fg": "paper", "bg": "backstage", "ratio": 12.11, "ok": "all text" },
+        { "fg": "ink", "bg": "paper", "ratio": 14.91, "ok": "all text" },
+        { "fg": "ink", "bg": "backstageLight", "ratio": 12.56, "ok": "all text" },
+        { "fg": "figureStrong (dark)", "bg": "ink", "ratio": 9.62, "ok": "all text" },
+        { "fg": "figureMuted (dark)", "bg": "ink", "ratio": 5.72, "ok": "all text" },
+        { "fg": "figureQuiet (dark)", "bg": "ink", "ratio": 4.99, "ok": "all text" },
+        { "fg": "figureQuiet (dark)", "bg": "backstage", "ratio": 4.64, "ok": "all text" },
+        { "fg": "figureMuted (light)", "bg": "paper", "ratio": 6.67, "ok": "all text" },
+        { "fg": "figureQuiet (light)", "bg": "paper", "ratio": 5.11, "ok": "all text" },
+        { "fg": "figureQuiet (light)", "bg": "backstageLight", "ratio": 4.79, "ok": "all text" },
+        { "fg": "amberBright", "bg": "ink", "ratio": 4.62, "ok": "all text" },
+        { "fg": "amber", "bg": "paper", "ratio": 4.93, "ok": "all text" },
+        { "fg": "signalBright", "bg": "ink", "ratio": 4.83, "ok": "all text" },
+        { "fg": "paper", "bg": "signalDeep", "ratio": 4.79, "ok": "all text" },
+        { "fg": "clayRead", "bg": "ink", "ratio": 5.23, "ok": "all text" },
+        { "fg": "amber", "bg": "ink", "ratio": 3.02, "ok": "large text and keylines only" },
+        { "fg": "signal", "bg": "ink", "ratio": 4.46, "ok": "large text only" },
+        {
+          "fg": "paper",
+          "bg": "signal",
+          "ratio": 3.34,
+          "ok": "large text only; use signalDeep behind small text"
+        },
+        { "fg": "amberBright", "bg": "paper", "ratio": 3.23, "ok": "never as text; use amber" },
+        { "fg": "ultraviolet", "bg": "ink", "ratio": 2.97, "ok": "never as text" }
+      ]
+    },
+    "rules": [
+      "Ink or Paper is the ground. Nothing else is ever a page or slide background.",
+      "Accents are light, not paint: text, keylines, washes and heat. Never a large flat fill.",
+      "One accent per moment. Ember and Signal share a surface only where it is about both sides.",
+      "Creative before business: where both appear, Ember sits first (left or above).",
+      "No new colour without provenance in the archive study, recorded in tokens.css."
+    ]
+  },
+  "typography": {
+    "families": {
+      "display": {
+        "name": "Forta",
+        "css": "--font-display",
+        "weights": [400],
+        "case": "Unicase: lowercase is drawn as capitals, so every Forta setting reads as caps.",
+        "license": "SIL OFL 1.1",
+        "file": "brand/fonts/Forta-Regular.ttf",
+        "use": "Statements: headlines, names, figures, navigation, rails."
+      },
+      "body": {
+        "name": "Gabarito",
+        "css": "--font-body",
+        "weights": [400, 600, 700],
+        "license": "SIL OFL 1.1",
+        "files": [
+          "brand/fonts/Gabarito-Regular.ttf",
+          "brand/fonts/Gabarito-SemiBold.ttf",
+          "brand/fonts/Gabarito-Bold.ttf"
+        ],
+        "use": "Everything read or operated: paragraphs, labels, buttons, forms."
+      },
+      "fallback": "Where the fonts cannot be installed: Arial for Gabarito. Forta has no substitute; set the line as an image or wait for the font."
+    },
+    "roles": {
+      "hero": {
+        "family": "display",
+        "weight": 400,
+        "css": "--text-hero",
+        "size": "clamp(3.25rem, 6vw, 5.25rem)",
+        "lineHeight": 0.98,
+        "tracking": "-0.02em",
+        "deckPt": 72,
+        "use": "The one dominant statement on a page or slide."
+      },
+      "display": {
+        "family": "display",
+        "weight": 400,
+        "css": "--text-display",
+        "size": "clamp(2.125rem, 4vw, 3.25rem)",
+        "lineHeight": 1.04,
+        "tracking": "-0.015em",
+        "deckPt": 48,
+        "use": "Page titles, major statements, headline figures."
+      },
+      "heading": {
+        "family": "display",
+        "weight": 400,
+        "css": "--text-heading",
+        "size": "clamp(1.5rem, 2.4vw, 2rem)",
+        "lineHeight": 1.12,
+        "tracking": "-0.01em",
+        "deckPt": 30,
+        "use": "Section, card, column, list and FAQ titles."
+      },
+      "body": {
+        "family": "body",
+        "weight": 400,
+        "css": "--text-body",
+        "size": "clamp(1rem, calc(0.96rem + 0.2vw), 1.0625rem)",
+        "lineHeight": 1.55,
+        "tracking": "normal",
+        "deckPt": 18,
+        "use": "Every sentence meant to be read, and every form field."
+      },
+      "small": {
+        "family": "body",
+        "weight": 400,
+        "css": "--text-small",
+        "size": "0.875rem",
+        "lineHeight": 1.4,
+        "tracking": "normal",
+        "deckPt": 14,
+        "use": "Labels, meta, dates, buttons, captions, helper text."
+      }
+    },
+    "treatments": {
+      "note": "Twelve jobs, five sizes. Hierarchy inside a size comes from face, weight, colour, case, tracking and position, never from a sixth size.",
+      "display": { "role": "hero", "detail": "Monumental. One per page or slide." },
+      "h1": { "role": "display", "detail": "Page or slide title." },
+      "h2": {
+        "role": "heading",
+        "detail": "Section title, centred over a hairline rule (.section-head)."
+      },
+      "h3": { "role": "heading", "detail": "Card and column titles." },
+      "h4": {
+        "role": "body",
+        "detail": "Forta at the Body size (session titles, names on photo cards), or Gabarito 600 at the Body size for a run-in title on its own paragraph."
+      },
+      "lead": {
+        "role": "body",
+        "detail": "Body in figureStrong on a wider measure. Not a bigger size."
+      },
+      "bodyLarge": {
+        "role": "none",
+        "detail": "Deliberately absent. Use lead, or promote to heading."
+      },
+      "body": { "role": "body", "detail": "Gabarito 400." },
+      "small": { "role": "small", "detail": "Gabarito 400." },
+      "label": {
+        "role": "small",
+        "detail": "Eyebrow: Gabarito 600, uppercase, 0.16em tracking, figureQuiet."
+      },
+      "button": { "role": "small", "detail": "Gabarito 600, uppercase, 0.05em tracking." },
+      "navigation": {
+        "role": "body",
+        "detail": "Forta at the Body size, 0.01em tracking, figure at 80%."
+      },
+      "caption": { "role": "small", "detail": "Gabarito 400, sentence case, figureMuted." }
+    },
+    "tracking": {
+      "hero": "-0.02em",
+      "display": "-0.015em",
+      "heading": "-0.01em",
+      "eyebrow": "0.16em",
+      "caps": "0.05em",
+      "rail": "0.01em"
+    },
+    "measure": { "prose": "52ch", "shortIntro": "32-40ch", "headline": "18-24ch" },
+    "rules": [
+      "Five sizes. Nothing on screen below 14px.",
+      "Forta never sets a paragraph. Past three lines it is Body.",
+      "Headlines are sentences and end with a full stop.",
+      "Premise, then point: a two-sentence headline sets the first sentence in figureQuiet and the second in figure.",
+      "Uppercase is typographic only (eyebrows, buttons). Never type in capitals; Forta capitalises for you."
+    ]
+  },
+  "spacing": {
+    "base": "0.25rem",
+    "scale": {
+      "1": "0.25rem",
+      "2": "0.5rem",
+      "3": "0.75rem",
+      "4": "1rem",
+      "5": "1.25rem",
+      "6": "1.5rem",
+      "8": "2rem",
+      "10": "2.5rem",
+      "12": "3rem",
+      "16": "4rem",
+      "20": "5rem",
+      "24": "6rem",
+      "32": "8rem"
+    },
+    "rhythm": {
+      "grid": {
+        "css": "--space-grid",
+        "value": "clamp(1rem, 0.6rem + 1.25vw, 1.75rem)",
+        "px": { "390": 16, "1024": 22, "1440": 30 },
+        "use": "Rows of repeated cards."
+      },
+      "content": {
+        "css": "--space-content",
+        "value": "clamp(1.5rem, 1rem + 1.25vw, 2rem)",
+        "px": { "390": 24, "1024": 29, "1440": 38 },
+        "use": "A heading or intro to what it introduces (.flow)."
+      },
+      "group": {
+        "css": "--space-group",
+        "value": "clamp(2rem, 1.4rem + 1.6vw, 3rem)",
+        "px": { "390": 32, "1024": 39, "1440": 51 },
+        "use": "One group to the next inside a section."
+      },
+      "section": {
+        "css": "--space-section",
+        "value": "clamp(3rem, 2.4rem + 2.5vw, 4rem)",
+        "px": { "390": 48, "1024": 64, "1440": 80 },
+        "use": "Between two sections; owned by layout.css."
+      }
+    },
+    "relationships": {
+      "eyebrowToHeading": "--space-3",
+      "labelToValue": "--space-2",
+      "titleToBody": "--space-3",
+      "displayToBody": "--space-5",
+      "paragraphToParagraph": "--space-4",
+      "bodyToLink": "--space-5",
+      "bodyToButtons": "--space-6",
+      "ledeUnderSectionHead": "--space-4",
+      "headingToContent": "--space-content",
+      "gridRows": "--space-grid",
+      "groupToGroup": "--space-group",
+      "sectionToSection": "--space-section",
+      "imageToCaption": "--space-2",
+      "sectionHeadRule": "--space-4 above the hairline"
+    },
+    "deck": {
+      "unit": "0.125in",
+      "margin": "0.625in",
+      "gutter": "0.25in",
+      "eyebrowToTitle": "0.125in",
+      "titleToBody": "0.25in",
+      "blockToBlock": "0.375in"
+    }
+  },
+  "layout": {
+    "widths": {
+      "contained": { "css": "--width-contained", "value": "73.75rem" },
+      "wide": { "css": "--width-wide", "value": "80rem" },
+      "prose": "52ch"
+    },
+    "gutters": {
+      "contained": { "css": "--gutter", "value": "1.75rem" },
+      "wide": { "css": "--gutter-wide", "value": "clamp(2.5rem, 8vw, 7.5rem)" }
+    },
+    "breakpoints": {
+      "note": "Canonical layout breakpoints (px, not rem: they describe the viewport). A component may add a content breakpoint where its own content breaks, named in a comment, never to change a type size.",
+      "phoneSmall": 480,
+      "phone": 640,
+      "tablet": 820,
+      "desktop": 1024,
+      "desktopScaleEnd": 1440
+    },
+    "desktopScale": {
+      "css": "html { font-size: clamp(100%, calc(38.4615% + 0.9615vw), 125%) }",
+      "note": "The root ramps 16px to 20px between 1024 and 1440px. Desktop widths are written in rem so they grow with it."
+    },
+    "grid": {
+      "desktop": "12 columns inside --width-contained or --width-wide",
+      "tablet": "6 columns",
+      "mobile": "1 column for reading, 2-4 columns for hairline image mosaics",
+      "hairlineGap": "1-2px: the ground showing through is the rule"
+    },
+    "rails": {
+      "width": "68px",
+      "from": 821,
+      "use": "Fixed vertical tickers on product pages: lockup, product name, city, year."
+    },
+    "deck": {
+      "size": "13.333 x 7.5 in",
+      "columns": 12,
+      "margin": "0.625in",
+      "gutter": "0.25in",
+      "top": "0.5in",
+      "bottom": "0.5in"
+    }
+  },
+  "shape": {
+    "radius": {
+      "none": {
+        "value": "0",
+        "use": "Everything that holds content: photographs, cards, grids, bands, tables, ask boxes."
+      },
+      "panel": {
+        "css": "--radius-panel",
+        "value": "10px",
+        "use": "Surfaces floating over the page: dropdown, consent, newsletter, bottom sheet. Nested corners: calc(var(--radius-panel) - inset)."
+      },
+      "pill": {
+        "css": "--radius-pill",
+        "value": "999px",
+        "use": "Things you act on or that label something small: buttons, tags, badges, status. The shape of the mark's lobes."
+      }
+    },
+    "border": {
+      "hairline": "1px solid, rule colour",
+      "keyline": "2px solid heat: the one accent edge, on a band that is a link",
+      "strike": "2.5px figure, through the middle of a nav word on hover and for the current page"
+    },
+    "shadow": {
+      "panel": { "css": "--shadow-panel", "value": "0 16px 40px -14px rgb(0 0 0 / 45%)" },
+      "ticket": "0 6px 18px rgb(14 9 11 / 35%), the ticket Pill only"
+    }
+  },
+  "motion": {
+    "duration": {
+      "fast": {
+        "css": "--duration-fast",
+        "value": "0.2s",
+        "use": "Hover, colour, small state changes."
+      },
+      "base": { "css": "--duration-base", "value": "0.35s", "use": "Panels and menus opening." },
+      "slow": { "css": "--duration-slow", "value": "0.6s", "use": "Image fades and crossfades." },
+      "reveal": {
+        "css": "--duration-reveal",
+        "value": "0.7s",
+        "use": "Scroll reveal: fade plus a 14px rise."
+      }
+    },
+    "easing": {
+      "outExpo": {
+        "css": "--ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "use": "Entrances."
+      },
+      "spring": {
+        "css": "--ease-spring",
+        "value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "use": "A small overshoot for a physical object. Rare."
+      },
+      "magnetic": { "value": "cubic-bezier(0.2, 0.9, 0.3, 1)", "use": "Magnetic CTA follow." }
+    },
+    "ambient": {
+      "grain": "4.5% fractal noise, 0.5s step (1.2s below 820px)",
+      "rails": "constant px/s drift in CSS",
+      "mosaic": "Ken Burns pan and self-swap from the archive pool",
+      "steam": "turbulence displacement on the hero and nav mark",
+      "warp": "WarpingText on selected Forta headings"
+    },
+    "rules": [
+      "Every animation has a reduced-motion branch: it never attaches, or it becomes a still.",
+      "Animation never hides content: the hidden state exists only while the script that reveals it runs (html.reveal-js).",
+      "No scroll-jacking, no parallax on text, no counters that make a number wait."
+    ]
+  },
+  "image": {
+    "ratios": {
+      "film": "16:9",
+      "band": "2:1",
+      "landscape": "4:3",
+      "square": "1:1",
+      "portrait": "4:5",
+      "portraitTall": "3:4"
+    },
+    "grade": {
+      "default": "contrast(1.05) saturate(1.15)",
+      "underText": "add brightness(0.8-0.92) and an Ink scrim",
+      "portraits": "greyscale in speaker grids, full colour everywhere else"
+    },
+    "logosOfOthers": "Monochrome in the figure colour (filter: brightness(0) invert(1) on Ink).",
+    "credit": "Caption treatment: 'Photo: Name', or 'ODDfest 2026 · Venue'.",
+    "rules": [
+      "Real ODD moments only: the archive, the venues, the people.",
+      "No stock photography, no generated people, no mock-ups presented as events.",
+      "Crop to the action: faces, hands, instruments, the crowd, not the empty stage."
+    ]
+  },
+  "logo": {
+    "mark": {
+      "file": "brand/logos/svg/odd-mark-paper.svg",
+      "ratio": "434.41 x 137.892 (3.15:1)",
+      "minHeight": { "screen": "12px", "print": "4mm" },
+      "clearSpace": "Half the mark's height on every side."
+    },
+    "lockup": {
+      "construction": {
+        "suffixCapHeight": "0.484 H",
+        "baseline": "0.7398 H from the top",
+        "markToSuffix": "0.2709 H",
+        "tracking": "0.09em plus Forta kerning"
+      },
+      "minHeight": { "screen": "16px", "print": "6mm" },
+      "generator": "brand/logos/build.py",
+      "names": ["oddfest", "oddference", "oddspace", "oddstudio", "oddagency", "oddcity"]
+    },
+    "artwork": {
+      "paper": "#E2DFDE, for Ink grounds and photographs",
+      "ink": "#0E090B, for Paper grounds"
+    },
+    "icon": "brand/logos/svg/odd-icon.svg: the Paper mark on an Ink tile, corner radius 24/128."
+  },
+  "deck": {
+    "size": { "widthIn": 13.333, "heightIn": 7.5 },
+    "type": { "hero": 72, "display": 48, "heading": 30, "body": 18, "small": 14 },
+    "fonts": { "display": "Forta", "body": "Gabarito", "label": "Gabarito SemiBold" },
+    "source": "brand/deck/src/build.mjs"
+  }
+}

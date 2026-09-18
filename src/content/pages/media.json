@@ -52,9 +52,9 @@
           "logo": "../../assets/logos/oddspace-wordmark.svg"
         },
         {
-          "name": "ODDference mark",
-          "format": "PNG",
-          "logo": "../../assets/logos/oddference-mark.png"
+          "name": "ODDference wordmark",
+          "format": "SVG",
+          "logo": "../../assets/logos/oddference-wordmark.svg"
         }
       ],
       "driveLink": {

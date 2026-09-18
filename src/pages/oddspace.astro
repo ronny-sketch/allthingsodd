@@ -355,7 +355,7 @@ const page = entry.data;
     top: 0.55em;
     width: 5px;
     height: 5px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--color-paper-40);
   }
   @media (max-width: 760px) {
@@ -486,8 +486,8 @@ const page = entry.data;
     text-underline-offset: 3px;
   }
   .odds-visit a:hover {
-    color: var(--color-amber-bright);
-    text-decoration-color: var(--color-amber-bright);
+    color: var(--color-heat);
+    text-decoration-color: var(--color-heat);
   }
 
   /* "What's happening" — the note above the list, and the one CTA under it
