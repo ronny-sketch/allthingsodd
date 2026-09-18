@@ -1,0 +1,261 @@
+---
+// Brand book chapters 01-03: the house, the idea, the principles.
+import { Image } from 'astro:assets';
+import Chapter from './Chapter.astro';
+import crowd from '../../assets/oddspace/opening-audience-laughing.jpg';
+
+const principles = [
+  {
+    title: 'Build around, do not decorate.',
+    means:
+      'Every structure holds something real. A grid holds photographs, a cell holds a number or a name, a rule separates two things that are different.',
+    shows:
+      'Hairline grids with numbered cells. One photograph in a grid of labelled cells. A centred section title over a hairline.',
+    avoid: 'Ornament, borders around nothing, pattern backgrounds, a grid drawn for its own sake.',
+  },
+  {
+    title: 'Evidence, not illustration.',
+    means:
+      'Show that it happened. Real photographs, real names, real counts — the archive is the brand’s best asset.',
+    shows:
+      'The archive mosaic. A credits roll of 274 names. Figures with labels. Captions that name the venue.',
+    avoid:
+      'Stock photography, generated people, icons standing in for photographs, numbers without a source, “world-class”.',
+  },
+  {
+    title: 'Two lights on one ground.',
+    means:
+      'Ink is the room with the lights down; Paper is the house lights. Ember and Signal are light, not paint.',
+    shows:
+      'An accent only as label text, a keyline, a wash over a photograph, or the heat something warms to when touched.',
+    avoid:
+      'Accent-coloured sections, gradients, a third accent, Ember and Signal side by side for decoration.',
+  },
+  {
+    title: 'Say it loud, explain it quietly.',
+    means: 'Forta states, Gabarito explains. One statement per surface, written as a sentence.',
+    shows:
+      'A short Forta sentence ending in a full stop. The premise in quiet grey, the point in full. A small tracked label above, Body below.',
+    avoid: 'Forta paragraphs, typed capitals, a sixth type size, two statements competing.',
+  },
+  {
+    title: 'Round is for what you touch.',
+    means:
+      'The pill comes from the mark’s three lobes. Things you press or that label something small are round; everything that holds content is square.',
+    shows:
+      'Buttons, tags and badges are pills. Photographs, cards, cells, tables and bands are square. Floating panels take 10px.',
+    avoid: 'Rounded photographs or cards, circles as decoration, square buttons.',
+  },
+  {
+    title: 'Alive, in small doses.',
+    means:
+      'A living layer moves over the structure: steam on the mark, film grain, drifting rails, warping type, the hand-drawn cursor, heat.',
+    shows: 'One living thing per view, always with a still version for reduced motion.',
+    avoid: 'Animation that hides content, scroll-jacking, parallax text, effects on everything.',
+  },
+  {
+    title: 'Creative first, business invited.',
+    means: 'ODD is a creative organisation that business is invited into — never the reverse.',
+    shows:
+      'The creative column first (left, or above), business second. Ember before Signal. ODDfest before ODDference.',
+    avoid: 'Corporate-first ordering; business language setting the tone of a creative page.',
+  },
+];
+
+const tensions = [
+  ['Structure × chaos', 'A hairline grid', 'the archive mosaic panning and swapping inside it'],
+  [
+    'Institution × underground',
+    'Catalogue numbering, centred section heads',
+    'club-night photography, film grain',
+  ],
+  ['Business × art', 'Signal, the lighting desk’s blue', 'Ember, the warm stage light'],
+  [
+    'Intelligence × play',
+    'Premise-then-point headlines',
+    'Forta’s rounded capitals, the hand-drawn cursor',
+  ],
+  [
+    'Precision × improvisation',
+    'Measured tokens, one owner per gap',
+    'steam on the mark, warping type',
+  ],
+  ['Digital × physical', 'A sticky nav, fluid type', 'grain, photographs of rooms, signage'],
+  [
+    'Established × emerging',
+    '5,000+ participants, 274 named makers',
+    '“still taking shape”, “a pilot”',
+  ],
+];
+---
+
+<Chapter
+  id="all-things-odd"
+  num="01"
+  title="All Things ODD"
+  premise="ODD is the masterbrand."
+  statement="All Things ODD is the house it lives in."
+>
+  <div class="bb-prose">
+    <p>
+      ODD is a Helsinki-born initiative working to strengthen creative and cultural work and bring
+      its expertise closer to business and wider society: ODDfest, Helsinki’s creative week;
+      ODDference, a business conference powered by creative and cultural expertise; ODDspace, a
+      year-round workspace, studios and event space in Vallila; and project work with organisations.
+      It is operated by New Nordic Way rf, a Finnish non-profit association.
+    </p>
+    <p>
+      This book is the visual operating system for everything ODD makes — the website, decks,
+      reports, proposals, social posts, posters, invitations and rooms. It is not a rebrand. It
+      formalises what the website already does, removes what was accidental, and writes down the
+      rules so that the next person — or the next AI agent — can make something new that still looks
+      like ODD.
+    </p>
+  </div>
+  <dl class="bb-spec">
+    <dt>Source of truth</dt>
+    <dd>
+      The website’s design tokens (<code>src/styles/</code>). If this book and the site ever
+      disagree, the site is right and the book is out of date.
+    </dd>
+    <dt>For designers</dt>
+    <dd>Chapters 02–16, and the files in <a class="bb-link" href="#downloads">Downloads</a>.</dd>
+    <dt>For code and AI</dt>
+    <dd>
+      <code>brand/BRAND-GUIDE.md</code> and <code>brand/tokens/brand-tokens.json</code> in the repository
+      — the same rules, written to be followed.
+    </dd>
+    <dt>For decks</dt>
+    <dd>
+      <a class="bb-link" href="#decks">Chapter 17</a>: an editable PowerPoint template and an
+      example.
+    </dd>
+    <dt>Version</dt>
+    <dd>1.0 · September 2026</dd>
+  </dl>
+</Chapter>
+
+<Chapter
+  id="idea"
+  num="02"
+  title="Brand idea"
+  premise="ODD does not make the culture."
+  statement="It builds what is around it."
+>
+  <div class="bb-prose">
+    <p>
+      Every part of ODD is a structure around creative life: a week around independent events, a
+      room around an argument, a building around daily work. The website says it in one line —
+      “Finland has creative talent. What’s missing are the structures that help it grow, connect and
+      last.”
+    </p>
+    <p>
+      The visual system does the same thing. It is a precise, quiet frame — Ink, hairline rules,
+      numbered cells, a functional sans, small tracked labels — built around something alive:
+      photographs of real nights, statements in a rounded display face, a mark that steams, warmth
+      where you touch. The frame is institutional on purpose. What it holds is not. That is why ODD
+      can sit next to a museum, a club night and a board meeting without changing its clothes.
+    </p>
+  </div>
+
+  <figure class="bb-figure">
+    <div class="bb-cells bb-cells--four" aria-hidden="true">
+      <div class="bb-cell">
+        <span class="bb-cell-num">Frame</span><p class="t-heading">Ink ground</p>
+      </div>
+      <div class="bb-cell">
+        <span class="bb-cell-num">Frame</span><p class="t-heading">Hairlines</p>
+      </div>
+      <div class="bb-cell">
+        <span class="bb-cell-num">Frame</span><p class="t-heading">Numbered cells</p>
+      </div>
+      <div class="bb-cell">
+        <span class="bb-cell-num">Frame</span><p class="t-heading">Five sizes</p>
+      </div>
+      <div class="bb-cell">
+        <span class="bb-cell-num">Frame</span><p class="t-heading">Small labels</p>
+      </div>
+      <div class="bb-cell bb-cell--photo">
+        <Image
+          src={crowd}
+          alt=""
+          widths={[480, 800, 1200]}
+          sizes="(max-width: 820px) 100vw, 40vw"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:contrast(1.05) saturate(1.15);"
+        />
+      </div>
+      <div class="bb-cell">
+        <span class="bb-cell-num">Frame</span><p class="t-heading">Square corners</p>
+      </div>
+      <div class="bb-cell">
+        <span class="bb-cell-num">Frame</span><p class="t-heading">Gabarito</p>
+      </div>
+      <div class="bb-cell">
+        <span class="bb-cell-num">Frame</span><p class="t-heading">Paper</p>
+      </div>
+    </div>
+    <figcaption>
+      The idea as a picture — the same composition as the homepage’s “Why ODD”. The frame is
+      everything labelled; the photograph is what it is built around. ODDspace, Vallila.
+    </figcaption>
+  </figure>
+
+  <h3 class="bb-h3">Tension, held in one system</h3>
+  <div class="bb-table-wrap">
+    <table class="bb-table">
+      <thead><tr><th>Tension</th><th>The frame</th><th>What it holds</th></tr></thead>
+      <tbody>
+        {
+          tensions.map(([t, frame, alive]) => (
+            <tr>
+              <>
+                <td>{t}</td>
+                <td>{frame}</td>
+                <td>{alive}</td>
+              </>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="bb-prose">
+    <strong>The working test.</strong> When a layout feels flat, add life inside the frame: a real photograph,
+    a statement, heat. When it feels chaotic, strengthen the frame: align it to the grid, rule it, number
+    it. Never fix either one with decoration.
+  </p>
+</Chapter>
+
+<Chapter
+  id="principles"
+  num="03"
+  title="Design principles"
+  statement="Seven rules a designer can actually use."
+>
+  <ol class="bb-principles">
+    {
+      principles.map((p, i) => (
+        <li class="bb-principle">
+          <span class="bb-principle-num">{String(i + 1).padStart(2, '0')}</span>
+          <div>
+            <h3>{p.title}</h3>
+            <div class="bb-principle-cols">
+              <div>
+                <span class="t-eyebrow">What it means</span>
+                <p>{p.means}</p>
+              </div>
+              <div>
+                <span class="t-eyebrow">How it shows</span>
+                <p>{p.shows}</p>
+              </div>
+              <div>
+                <span class="t-eyebrow">Avoid</span>
+                <p>{p.avoid}</p>
+              </div>
+            </div>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</Chapter>

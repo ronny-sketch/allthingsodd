@@ -91,7 +91,7 @@ const looped = [...items, ...items];
   .news-arrows button {
     height: 2.5rem;
     padding: 0 1.1rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     border: 1px solid var(--color-paper-40);
     background: rgb(14 9 11 / 50%);
     color: var(--color-paper);
@@ -135,7 +135,12 @@ const looped = [...items, ...items];
   .news-panel-scrim {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgb(0 0 0 / 70%) 0%, rgb(0 0 0 / 5%) 38%, transparent 60%);
+    background: linear-gradient(
+      to top,
+      rgb(14 9 11 / 70%) 0%,
+      rgb(14 9 11 / 5%) 38%,
+      transparent 60%
+    );
   }
   .news-panel-caption {
     position: absolute;
@@ -157,8 +162,8 @@ const looped = [...items, ...items];
   }
   @media (hover: hover) {
     .news-panel:hover .news-panel-caption {
-      color: var(--color-amber-bright);
-      text-decoration-color: var(--color-amber-bright);
+      color: var(--color-heat);
+      text-decoration-color: var(--color-heat);
     }
   }
   /* Touch press state. `(hover: hover)` above keeps the pointer-only
@@ -172,8 +177,8 @@ const looped = [...items, ...items];
       -webkit-tap-highlight-color: transparent;
     }
     .news-panel:active .news-panel-caption {
-      color: var(--color-amber-bright);
-      text-decoration-color: var(--color-amber-bright);
+      color: var(--color-heat);
+      text-decoration-color: var(--color-heat);
     }
   }
 

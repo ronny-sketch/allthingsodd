@@ -14,12 +14,12 @@
 //     Anything that has to agree between them belongs here rather than being
 //     duplicated into both frontmatters, where it can silently drift.
 //
-// 360px is comfortably above 3x the longest mark either component renders
-// (ODDference at 116px in the rail), so the PNG still downscales with retina
-// headroom; for the three SVGs a width is a no-op on the emitted bytes.
+// For SVG wordmarks a width is a no-op on the emitted bytes; it stays so a
+// raster mark added later still gets retina headroom (360px is over 3x the
+// longest mark either component renders — ODDference, ~116px in the rail).
 import type { ImageMetadata } from 'astro';
 import oddfestWordmark from '../../assets/logos/oddfest-wordmark.svg';
-import oddferenceMark from '../../assets/logos/oddference-mark.png';
+import oddferenceWordmark from '../../assets/logos/oddference-wordmark.svg';
 import oddspaceWordmark from '../../assets/logos/oddspace-wordmark.svg';
 import oddMark from '../../assets/logos/odd-mark.svg';
 
@@ -29,7 +29,7 @@ export const LOGO_ASSET_WIDTH = 360;
 
 export function logoFor(slug: SubpageSlug): ImageMetadata {
   if (slug === 'oddfest') return oddfestWordmark;
-  if (slug === 'oddference') return oddferenceMark;
+  if (slug === 'oddference') return oddferenceWordmark;
   if (slug === 'oddspace') return oddspaceWordmark;
   // oddagency dropped SubpageFrame entirely and oddstudio's rail data carries
   // no logo beat, so this fallback renders nowhere today — it exists so a new

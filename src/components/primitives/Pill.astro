@@ -56,7 +56,7 @@ const Tag = href ? 'a' : 'button';
 <style>
   .pill {
     display: inline-block;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     padding: 0.55rem 1.25rem;
     white-space: nowrap;
     /* Small at 600 — the ladder's UI step. The shorthand also sets
@@ -90,14 +90,8 @@ const Tag = href ? 'a' : 'button';
   .pill-outline {
     background: transparent;
     color: var(--color-paper);
-    border-color: rgb(226 223 222 / 35%);
-  }
-  /* Literal above assumes a dark ground (paper-tinted border at 35%) — under
-     .theme-light (ODDspace) the ground is light, so the border needs the
-     ink-tinted mirror at the same opacity, not the inherited (now-dark)
-     --color-paper value reused as a border tint. */
-  :global(.theme-light) .pill-outline {
-    border-color: rgb(14 9 11 / 35%);
+    /* The control-line ramp step; it flips to Ink under .theme-light. */
+    border-color: var(--color-paper-35);
   }
   @media (hover: hover) {
     .pill-outline:hover {
@@ -118,12 +112,12 @@ const Tag = href ? 'a' : 'button';
     background: var(--color-paper);
     color: var(--color-ink);
     border-color: var(--color-paper);
-    box-shadow: 0 6px 18px rgb(0 0 0 / 35%);
+    box-shadow: 0 6px 18px rgb(14 9 11 / 35%);
   }
   @media (hover: hover) {
     .pill-ticket:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 22px rgb(0 0 0 / 45%);
+      box-shadow: 0 10px 22px rgb(14 9 11 / 45%);
     }
   }
   .pill:focus-visible {

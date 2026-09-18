@@ -79,7 +79,7 @@ const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.pro
     min-height: min(78vh, 640px);
     display: flex;
     align-items: center;
-    background: #000;
+    background: var(--swatch-ink);
     /* A photograph is an edge, not padding: the hero owns its own height
        (min-height + the head's padding) and contributes its half of the
        section gap outside itself — layout.css, section rhythm. */
@@ -121,9 +121,9 @@ const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.pro
     inset: 0;
     background: linear-gradient(
       to top,
-      rgb(0 0 0 / 78%) 0%,
-      rgb(0 0 0 / 42%) 55%,
-      rgb(0 0 0 / 20%) 100%
+      rgb(14 9 11 / 78%) 0%,
+      rgb(14 9 11 / 42%) 55%,
+      rgb(14 9 11 / 20%) 100%
     );
   }
   .hero-centered-head {

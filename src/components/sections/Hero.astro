@@ -162,14 +162,14 @@ const { mosaicAlt, headline } = Astro.props;
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    background: rgb(0 0 0 / 0%);
+    background: rgb(14 9 11 / 0%);
     transition: background 0.35s ease;
   }
   .mosaic:hover .mosaic-cell:not(:hover)::before {
-    background: rgb(0 0 0 / 42%);
+    background: rgb(14 9 11 / 42%);
   }
   .mosaic-cell:hover::before {
-    background: rgb(0 0 0 / 0%) !important;
+    background: rgb(14 9 11 / 0%) !important;
   }
   .mosaic-cell:hover {
     filter: brightness(1.22) saturate(1.3);

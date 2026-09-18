@@ -76,8 +76,9 @@ const {
 
 // The `space` frame sizes the wordmark to one rendered *height*, not one
 // width. Its width values (see .oddfest-hero--frame-space .oddfest-hero-logo)
-// were tuned on the ODDference mark, 1080×167; any other wordmark scales them
-// by its own aspect ratio relative to that one. ODDfest's wordmark is 709×141
+// were tuned on the ODDference mark, 1080×167 (the PNG it shipped as until
+// 2026-09-18 — the canonical SVG is 6.51:1, so its own scale is now ~1.01);
+// any other wordmark scales them by its own aspect ratio relative to that one. ODDfest's wordmark is 709×141
 // — squarer, 5.03:1 against 6.47:1 — so at ODDference's widths it rendered
 // ~72px tall beside ODDference's ~56px and ODDspace's ~55px. ODDference's own
 // scale is exactly 1, so its hero is unchanged.
@@ -166,7 +167,7 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
     height: calc(100svh - var(--nav-h));
     min-height: 540px;
     overflow: hidden;
-    background: #000;
+    background: var(--swatch-ink);
   }
   /* Poster and video occupy the identical box so the crossfade between them
      can't move a pixel. */
@@ -294,7 +295,7 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
        box at the same visual weight — width is the only constraint,
        height stays auto so either asset's own aspect ratio is respected. */
     width: min(32.5rem, 78vw);
-    filter: drop-shadow(0 4px 30px rgb(0 0 0 / 50%));
+    filter: drop-shadow(0 4px 30px rgb(14 9 11 / 50%));
     color: var(--color-paper);
   }
   .oddfest-hero-logo :global(img),
@@ -422,7 +423,7 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
 
      Those numbers are the ODDference mark's. `--logo-scale` (set on the
      header from the wordmark's own aspect ratio — see the frontmatter)
-     carries the same rendered height to any other wordmark: it is 1 for
+     carries the same rendered height to any other wordmark: it is ~1 for
      ODDference and ~0.78 for ODDfest's squarer 5.03:1 wordmark. */
   .oddfest-hero--frame-space .oddfest-hero-logo {
     width: calc(min(22.5rem, 64vw) * var(--logo-scale, 1));

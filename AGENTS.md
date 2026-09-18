@@ -95,6 +95,14 @@ GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
   tokens and the two font families, all with provenance comments — read them
   before adding a value), `typography.css` (the five-step type ladder — see
   `docs/design-system.md#typography`), `layout.css`, `motion.css`.
+- **Brand system** lives in `brand/` (2026-09-18). `brand/BRAND-GUIDE.md` is the
+  instruction manual for making a new page, campaign, sub-brand, deck or
+  poster; `brand/tokens/brand-tokens.json` mirrors `src/styles/` for everything
+  that is not the web; `brand/logos/build.py` generates every logo file,
+  including the website's own copies in `src/assets/logos/` (never hand-edit
+  those); `brand/deck/` is an isolated PowerPoint generator. The designed
+  version of all of it is the brand book at `/brand-book/`. See
+  `brand/README.md`, and `brand/AUDIT.md` for what the audit changed and why.
 - **Components** follow `src/components/{primitives,navigation,media,sections}/`.
   Primitives are dumb and reusable (Logo, Pill, SocialIcon). Sections are
   page-specific composition (Hero, Converge, SubpageRail, AboutPanels, …).
@@ -113,6 +121,10 @@ GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
 
 ## Design-system rules
 
+0. **Read `brand/BRAND-GUIDE.md` before designing anything new.** It carries the
+   brand idea, the seven principles and the recipes (new page, new section,
+   campaign, new sub-brand, deck, print). The rules below are the
+   engineering-side half of the same system.
 1. **Tokens first.** A color, spacing value, or easing curve that isn't already
    a token in `src/styles/tokens.css` needs a reason to exist as a new one-off —
    check there before writing a raw value. Font sizes have no one-offs at all:
@@ -139,7 +151,13 @@ GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
    Any new entrance animation follows the same convention: gate the _hidden_
    half on `:global(html.reveal-js)`, and gate the `.in` half too so the
    relative specificity still resolves. See `src/styles/motion.css`.
-6. **Every vertical gap has one owner** (2026-09-17). Section → section is
+6. **Shape means something** (2026-09-18). `--radius-pill` for things you act on
+   or that label something small (buttons, tags, badges — the mark's own lobe
+   shape), `--radius-panel` for surfaces floating over the page, and square for
+   everything that holds content. Nested corners derive from `--radius-panel`
+   with `calc()`; a new literal radius is a bug. Scrims and shadows are Ink
+   (`rgb(14 9 11 / N%)`), never `#000`.
+7. **Every vertical gap has one owner** (2026-09-17). Section → section is
    `layout.css`'s `section` rhythm (`--space-section`) — never redeclare section
    padding in a page. Blocks inside a section are spaced by their parent's
    `.flow`, not by their own margins; reusable components carry no outer block
@@ -149,7 +167,13 @@ GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
 ## CMS rules
 
 - Content lives in `src/content/`, presentation lives in `src/components/` —
-  never hardcode real editorial copy into a `.astro` file's markup.
+  never hardcode real editorial copy into a `.astro` file's markup. The one
+  documented exception is `/brand-book/` (`src/pages/brand-book.astro` +
+  `src/components/brand-book/`): it documents the design system rather than
+  publishing editorial content, so its copy lives in the page — and every value
+  in it that can drift is read from `brand/tokens/brand-tokens.json` at build
+  time instead of retyped. It is `noindex`, out of the nav and out of the
+  sitemap.
 - `cloudcannon.config.yml` is the editing contract. If you add a new content
   field that a real ODD editor would plausibly want to change, add it there too
   (see `docs/editing.md`). If it's implementation detail (CSS classes, layout
@@ -285,8 +309,8 @@ Growth OS side of it belongs in `../odd-growth-os`.
 
 ## Definition of done
 
-A change is done when: `npm run quality` (which now includes the identity
-scan) and `npm test` both pass; new/changed editorial content is in
+A change is done when: `npm run quality` (which now includes the identity scan
+and `npm run check:brand`, the brand-token drift check) and `npm test` both pass; new/changed editorial content is in
 `src/content/`, not hardcoded; new CMS-relevant fields are reflected in
 `cloudcannon.config.yml`;
 and the visual result has been checked against the current live site — not
@@ -527,6 +551,9 @@ while implementing a website feature.
 
 - `README.md` — install/run instructions
 - `docs/architecture.md` — how the system fits together, in more depth
+- `brand/BRAND-GUIDE.md` — how to make something that looks like ODD: the brand
+  idea, the seven principles and the recipes. Start here for anything visual.
+  With `brand/AUDIT.md`, `brand/CHANGELOG.md` and the brand book at `/brand-book/`.
 - `docs/design-system.md` — the token/component rules, with the reasoning
 - `docs/editing.md` — what a non-developer can do in CloudCannon
 - `docs/deployment.md` — how a change reaches production

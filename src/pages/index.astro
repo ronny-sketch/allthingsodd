@@ -352,10 +352,11 @@ const preloadImage = await mosaicImage(firstArchiveImage);
     padding: 2.1rem var(--gutter-wide);
     background: var(--color-backstage);
     border: 1px solid var(--color-paper-12);
-    /* The one accent: a keyline in the amber the site already uses for the
-       creative/organisational side, so the band is visibly a different kind
-       of thing from the three cards above without shouting. */
-    border-left: 2px solid var(--color-amber-bright);
+    /* The one accent: a keyline in heat — the colour everything pressable on
+       the site warms to — because the whole band is one link. It marks the
+       band as a different kind of thing from the three cards above without
+       shouting. */
+    border-left: 2px solid var(--color-heat);
     text-decoration: none;
     color: inherit;
     transition:
@@ -365,7 +366,7 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   @media (hover: hover) {
     .wwo-band-link:hover {
       border-color: var(--color-paper-40);
-      border-left-color: var(--color-amber-bright);
+      border-left-color: var(--color-heat);
       background: var(--color-bg);
     }
   }
@@ -400,9 +401,9 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   .wwo-band-go {
     flex-shrink: 0;
     display: inline-block;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     padding: 0.7rem 1.4rem;
-    border: 1px solid rgb(226 223 222 / 35%);
+    border: 1px solid var(--color-paper-35);
     font: var(--text-small);
     font-weight: 600;
     letter-spacing: var(--tracking-caps);
@@ -413,9 +414,11 @@ const preloadImage = await mosaicImage(firstArchiveImage);
       color var(--duration-fast) ease;
   }
   @media (hover: hover) {
+    /* The band is a raised surface: heat as text would be 3.75:1 here, so the
+       border carries the heat and the label goes to full figure. */
     .wwo-band-link:hover .wwo-band-go {
-      border-color: var(--color-amber-bright);
-      color: var(--color-amber-bright);
+      border-color: var(--color-heat);
+      color: var(--color-paper);
     }
   }
   @media (max-width: 640px) {

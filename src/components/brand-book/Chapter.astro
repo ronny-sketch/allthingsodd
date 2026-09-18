@@ -1,0 +1,34 @@
+---
+// One chapter of /brand-book/: a sticky label (number + name) beside the
+// reading column. `statement` is the chapter's rule in one sentence, set in
+// Display; a `premise` before it renders quieter (premise, then point).
+interface Props {
+  id: string;
+  num: string;
+  title: string;
+  premise?: string;
+  statement?: string;
+}
+const { id, num, title, premise, statement } = Astro.props;
+---
+
+<section class="bb-chapter" id={id} aria-labelledby={`${id}-title`}>
+  <div class="wrap-wide bb-chapter-grid">
+    <header class="bb-chapter-head">
+      <span class="bb-chapter-num" aria-hidden="true">{num}</span>
+      <h2 id={`${id}-title`}>{title}</h2>
+      <a href="#index">Index</a>
+    </header>
+    <div class="bb-chapter-body flow">
+      {
+        statement && (
+          <p class="bb-statement">
+            {premise && <span class="quiet">{premise} </span>}
+            {statement}
+          </p>
+        )
+      }
+      <slot />
+    </div>
+  </div>
+</section>

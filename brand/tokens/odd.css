@@ -1,0 +1,740 @@
+/*
+  ODD — the whole system as one stylesheet.
+
+  GENERATED. Do not edit: run `node brand/tokens/build-css.mjs`.
+  Everything below is copied verbatim from the website, which is the source of
+  truth: src/styles/tokens.css, typography.css, layout.css, motion.css, the
+  base rules from global.css, and Pill.astro's own styles.
+
+  Use it when you are building something ODD outside this repository — a
+  standalone page, a prototype, an email, an agent with no repo access. Drop it
+  in, then:
+
+    <body>                     Ink ground, Gabarito, the desktop scale
+      <div class="grain">      optional: the film-grain layer (aria-hidden)
+      <section>                owns its own half of the section gap
+        <div class="wrap flow"> container + "the parent owns the space"
+          <div class="section-head">
+            <p class="eyebrow">What ODDfest is</p>
+            <h2>One shared week, made by Helsinki's creative communities.</h2>
+          </div>
+          <p>…</p>
+          <a class="pill pill-solid" href="…">Submit an event idea</a>
+
+  Type takes one of five roles and nothing else:
+
+    font: var(--text-heading); letter-spacing: var(--tracking-heading);
+
+  Fonts are in brand/fonts/ (SIL OFL 1.1); this file assumes the families
+  "Forta" and "Gabarito" are available — @font-face them yourself, or use the
+  fallbacks already in --font-display / --font-body.
+
+  The light theme (ODDspace, print, any Paper surface) is one class on the
+  element that owns the ground: <body class="theme-light">.
+*/
+
+/*
+  Design tokens — "Signal & Ember", the archive-derived palette this site is built on.
+
+  Not invented: measured from a full census of all 1,478 public photos in the ODDfest
+  Flickr archive (K-means clustered, weighted by pixel coverage). --bg/--ink use "Ink"
+  (#0E090B), the single most common color in the archive (32.7% coverage) — a
+  rose-tinted near-black, not print black. --paper is the one true light neutral,
+  reserved for the daytime/conference moments (opening band, What's-on band, menu,
+  Ways to participate). Two accents split the site's two-sided story: --signal is the
+  archive's "Signal Blue" — the lighting desk's own house color, cool and controlled,
+  used on ODDference/business-facing moments; --amber is "Amber", the warm stage-light
+  color, used on ODDfest/festival moments. --backstage lifts cards a step off the page;
+  --clay is the quiet secondary-text neutral; --indigo tints the hero scrims. Ultraviolet
+  appears once, as a literal value, on the ODDfest page only — the study's own rarest
+  color, "always a wash, never fill." Do not add new brand colors without this kind of
+  provenance — see docs/design-system.md.
+*/
+:root {
+  /* ---------- fixed swatches (never reassigned — the two role tokens
+     below and the .theme-light inversion scope both build from these) ---------- */
+  --swatch-ink: #0e090b;
+  --swatch-paper: #e2dfde;
+  --swatch-backstage-dark: #232028;
+  /* Elevated card surface for the light/inverse theme — ODDspace only (see
+     .theme-light below). Not measured from the archive census like the rest
+     of this file (there's no "light elevated surface" in 1,478 dark-venue
+     photos to measure) — a warm off-white a step down from --swatch-paper,
+     same relationship --swatch-backstage-dark has to --swatch-ink, so a
+     card still reads as "lifted" against the light page. */
+  --swatch-backstage-light: #d3cdc9;
+
+  /* ---------- color: ink (dark ground) ---------- */
+  --color-ink: var(--swatch-ink);
+  --color-bg: var(--color-ink);
+
+  /* paper (light neutral) and opacity ramp against ink */
+  --color-paper: var(--swatch-paper);
+  --color-paper-80: rgb(226 223 222 / 80%);
+  --color-paper-60: rgb(226 223 222 / 60%);
+  /* The literal archive value here (40%) measures 3.1:1 on --color-ink —
+     under WCAG AA for the small uppercase labels (.eyebrow etc.) this token
+     is used for sitewide. Lightened to 55% (4.97:1) — same treatment
+     already applied to --clay in the footer, see Footer.astro's own
+     comment. Name kept as "-40" since callers reference it by that name;
+     only the value moved. */
+  --color-paper-40: rgb(226 223 222 / 55%);
+  --color-paper-20: rgb(226 223 222 / 20%);
+  /* Outline controls only (the outline Pill, the nav's Info trigger): the
+     border that makes an unfilled button read as pressable. Added
+     2026-09-18 — the same 35% was written as a literal in four places, each
+     with a hand-written .theme-light mirror; as a ramp step it flips with the
+     theme like every other step. */
+  --color-paper-35: rgb(226 223 222 / 35%);
+  --color-paper-12: rgb(226 223 222 / 12%);
+  --color-paper-06: rgb(226 223 222 / 6%);
+  --color-paper-03: rgb(226 223 222 / 3%);
+
+  /* ink opacity ramp — the --color-paper-NN ramp's mirror image, for muted
+     dark-on-light text. Unused in the default dark theme (nothing needs a
+     dark tint against a dark ground); exists so .theme-light below can swap
+     --color-paper-NN into these instead of hand-rolling new rgb() literals
+     per component, per CLAUDE.md's "tokens first" rule. */
+  --color-ink-80: rgb(14 9 11 / 80%);
+  /* -60 and -40 are set by measured contrast, not by mirroring the paper
+     ramp (2026-09-18). Ink on Paper needs more opacity than Paper on Ink for
+     the same ratio: the mirrored 55% measured 4.1:1 on Paper and 3.9:1 on
+     the light backstage — under AA for the uppercase Small labels this step
+     carries on ODDspace, the menu and the newsletter panel. 62% gives 5.1:1
+     and 4.8:1; -60 moves to 70% (6.7:1) so the two steps keep their order. */
+  --color-ink-60: rgb(14 9 11 / 70%);
+  --color-ink-40: rgb(14 9 11 / 62%);
+  --color-ink-35: rgb(14 9 11 / 35%);
+  --color-ink-20: rgb(14 9 11 / 20%);
+  --color-ink-12: rgb(14 9 11 / 12%);
+  --color-ink-06: rgb(14 9 11 / 6%);
+  --color-ink-03: rgb(14 9 11 / 3%);
+
+  /* accents */
+  --color-signal: #507aaf; /* business / ODDference */
+  --color-amber: #9a432b; /* creative / ODDfest */
+  --color-backstage: var(--swatch-backstage-dark); /* raised card surface on ink */
+  --color-clay: #89706b; /* quiet secondary text */
+  --color-indigo: #1c2b66; /* hero scrim tint */
+  --color-ultraviolet: #8224d4; /* rarest archive color — wash only, never fill, ODDfest page only */
+
+  /* Each accent has an archive value (above: washes, fills, rules) and a
+     reading lifted or deepened just enough to carry text (2026-09-18 audit,
+     composited contrast):
+       --color-amber-bright  Ember as text on Ink       4.6:1 (amber: 3.0)
+       --color-signal-bright Signal as text on Ink      4.8:1 (signal: 4.5)
+       --color-signal-deep   Signal as a fill under Paper text  4.7:1
+                             (signal itself: 3.3 — fails for the Small size
+                             every button uses; was --color-ticket-blue)
+     Same hues; only lightness moves. */
+  --color-signal-bright: #5081b3;
+  --color-amber-bright: #ae6855;
+  --color-signal-deep: #40618c;
+  /* Clay as small text: the literal archive value measures 4.3:1 on Ink, so
+     the footer's legal line reads a lightened clay (5.2:1). Flips to the
+     darkened reading under .theme-light. Was four literals in Footer.astro. */
+  --color-clay-read: #967e79;
+
+  /* Heat: what a link, row or control warms to when it is hovered or
+     pressed — Ember on the dark ground. One token instead of amber-bright
+     written into every hover rule, so the light theme can swap it for plain
+     Amber: Amber Bright on Paper measures 3.2:1, Amber 4.9:1.
+
+     Heat is a TEXT colour on the page ground (4.6:1 on Ink). On a RAISED
+     surface it measures 3.75:1 on --color-backstage, so there the text goes
+     to full figure and only the underline or border warms — a 2px rule is a
+     graphical object and clears 3:1. See PricingGrid and Home's
+     Work-with-ODD band. */
+  --color-heat: var(--color-amber-bright);
+
+  /* ---------- typography ---------- */
+  /* The `* Fallback` entries are not extra typefaces — they are the local
+     Arial/Helvetica rescaled to each real font's metrics, so the pre-swap
+     render occupies the same space as the post-swap one. Defined in
+     global.css, which also carries the measurements that justify them.
+     They must sit immediately after the real family and before the generic
+     stack: a browser without `size-adjust` support, or a device with neither
+     Arial nor Helvetica, skips straight past them to ui-sans-serif. */
+  --font-display: 'Forta', 'Forta Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Gabarito', 'Gabarito Fallback', ui-sans-serif, system-ui, sans-serif;
+
+  /* ---------- spacing scale (rem, 4px base) ---------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ---------- rhythm (2026-09-17 spacing pass) ----------
+     What the scale above is used FOR, from tight to generous — the full
+     hierarchy is in docs/design-system.md#spacing. Inside a component spacing
+     takes fixed steps (--space-2…--space-6); these four are fluid, because
+     the space between things should shrink on a phone faster than the things
+     do. rem, so they also grow with the desktop scale. Values: 390px /
+     1024px / 1440px. */
+  /* 16 / 22 / 30 — between rows of repeated cards */
+  --space-grid: clamp(1rem, 0.6rem + 1.25vw, 1.75rem);
+  /* 24 / 29 / 38 — a heading or intro → what it introduces (the .flow step) */
+  --space-content: clamp(1.5rem, 1rem + 1.25vw, 2rem);
+  /* 32 / 39 / 51 — one group → the next, inside a section */
+  --space-group: clamp(2rem, 1.4rem + 1.6vw, 3rem);
+  /* 48 / 64 / 80 — the gap between two sections (layout.css owns it) */
+  --space-section: clamp(3rem, 2.4rem + 2.5vw, 4rem);
+
+  /* ---------- layout ---------- */
+  /* rem, so the containers widen with the desktop scale in global.css the way
+     the type inside them does (73.75rem / 80rem = 1180px / 1280px at the
+     default root size). */
+  --width-contained: 73.75rem;
+  --width-wide: 80rem;
+  --gutter: 1.75rem;
+  --gutter-wide: clamp(2.5rem, 8vw, 7.5rem);
+  --nav-h: 4.3125rem; /* 69px at the default root; JS overwrites this at runtime with the nav's real measured height */
+
+  /* ---------- shape ----------
+     Two corner values, and they mean something. The pill comes from the mark
+     itself — three rounded lobes — so things you act on or that label
+     something small (buttons, tags, badges, status chips) take --radius-pill.
+     Everything that holds content — photographs, cards, grids, bands — is
+     square. The one in-between is --radius-panel below, for surfaces that
+     float over the page. Nested corners derive from it, never a new value. */
+  --radius-pill: 999px;
+
+  /* ---------- surfaces (raised panels: nav dropdown, newsletter modal, consent) ----------
+     One shared shape/elevation for every "floating card over the page" surface
+     — kept deliberately restrained (small radius, no heavy shadow) so these
+     read as ODD's own editorial panels, not generic rounded SaaS cards. See
+     Nav.astro's Info dropdown and NewsletterPopup.astro. */
+  --radius-panel: 10px;
+  --shadow-panel: 0 16px 40px -14px rgb(0 0 0 / 45%);
+
+  /* ---------- motion ---------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 0.2s;
+  --duration-base: 0.35s;
+  --duration-slow: 0.6s;
+  --duration-reveal: 0.7s;
+}
+
+/*
+  ODDspace's inverse identity — the rest of the site is dark-ground; ODDspace,
+  the physical/daylight/year-round home of the ecosystem, deliberately flips
+  to light. Applied once, as a class on <body> (see Layout.astro's `theme`
+  prop), so every shared component below it (Nav, Footer, every section) just
+  re-resolves the same --color-* tokens it already uses — no component needs
+  its own light-mode branch. Only the role tokens flip; --color-signal/
+  --color-amber/--color-clay/--color-indigo/--color-ultraviolet stay put,
+  they're accents, not ground/figure. --color-heat and --color-clay-read are
+  the two accent READINGS that do flip, because they exist to carry text.
+*/
+.theme-light {
+  --color-bg: var(--swatch-paper);
+  --color-ink: var(--swatch-paper);
+  --color-paper: var(--swatch-ink);
+  --color-paper-80: var(--color-ink-80);
+  --color-paper-60: var(--color-ink-60);
+  --color-paper-40: var(--color-ink-40);
+  --color-paper-35: var(--color-ink-35);
+  --color-paper-20: var(--color-ink-20);
+  --color-paper-12: var(--color-ink-12);
+  --color-paper-06: var(--color-ink-06);
+  --color-paper-03: var(--color-ink-03);
+  --color-backstage: var(--swatch-backstage-light);
+  --color-heat: var(--color-amber);
+  --color-clay-read: #6b5551;
+}
+
+/*
+  Typography — one ladder for the whole site (2026-09-13 typography pass).
+
+  Two faces, three kinds of text, five sizes:
+
+    DISPLAY  Hero      Forta     rare, genuinely dominant page statements
+             Display   Forta     page titles and major editorial statements
+             Heading   Forta     section, card, column and list titles
+    BODY     Body      Gabarito  every sentence a visitor is meant to read
+    UI       Small     Gabarito  eyebrows, meta, dates, labels, buttons, helper text
+
+  These are the only font sizes on the site. There is deliberately no
+  body-large, no caption, no heading-small: variation inside a role comes from
+  weight, colour, measure, position, spacing and capitalisation, never from
+  another near-identical size. A component that seems to need a sixth size
+  almost always needs a spacing or layout fix instead. The mapping and the
+  handful of documented exceptions live in docs/design-system.md#typography.
+
+  Only the three display steps are fluid. At a given root size Body barely
+  moves (16px on a phone, 17px from roughly 820px up) and Small does not move
+  at all. The one deliberate, global exception: between 1024px and 1440px the
+  desktop scale in global.css raises the root size itself, so every role grows
+  together the way browser zoom would. Body's 1rem floor is also what keeps every
+  form field at 16px or more — the size below which iOS zooms the page when a
+  field receives focus.
+
+  Line-height tightens as type grows, and so does tracking. Components use the
+  `--text-*` shorthand together with its matching `--tracking-*`:
+
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+
+  The `font` shorthand resets weight to 400, so UI emphasis goes after it
+  (`font-weight: 600`). A component that keeps Forta for brand character at a
+  reading size (nav links, the subpage rails) reuses a size token rather than
+  a shorthand: `font-family: var(--font-display); font-size: var(--font-size-body);`.
+*/
+:root {
+  --font-size-hero: clamp(3.25rem, 6vw, 5.25rem);
+  --font-size-display: clamp(2.125rem, 4vw, 3.25rem);
+  --font-size-heading: clamp(1.5rem, 2.4vw, 2rem);
+  --font-size-body: clamp(1rem, calc(0.96rem + 0.2vw), 1.0625rem);
+  --font-size-small: 0.875rem;
+
+  --line-height-hero: 0.98;
+  --line-height-display: 1.04;
+  --line-height-heading: 1.12;
+  --line-height-body: 1.55;
+  --line-height-small: 1.4;
+
+  --tracking-hero: -0.02em;
+  --tracking-display: -0.015em;
+  --tracking-heading: -0.01em;
+  /* Uppercase Small only: eyebrows and section labels take the wide setting,
+     buttons and other compact capitals the narrow one. */
+  --tracking-eyebrow: 0.16em;
+  --tracking-caps: 0.05em;
+
+  /* Reading measure for running prose: roughly 65 characters of Body a line.
+     Short centred intros may sit narrower; nothing meant to be read in full
+     should sit wider. `ch` resolves against the element's own face, so this
+     tracks Body wherever it is used. */
+  --measure-prose: 52ch;
+
+  --text-hero: 400 var(--font-size-hero) / var(--line-height-hero) var(--font-display);
+  --text-display: 400 var(--font-size-display) / var(--line-height-display) var(--font-display);
+  --text-heading: 400 var(--font-size-heading) / var(--line-height-heading) var(--font-display);
+  --text-body: 400 var(--font-size-body) / var(--line-height-body) var(--font-body);
+  --text-small: 400 var(--font-size-small) / var(--line-height-small) var(--font-body);
+}
+
+/* Wrapping defaults. `balance` evens out a multi-line heading without ever
+   changing how many lines it takes (WarpingText's measured replacement
+   depends on that), and `pretty` only stops a paragraph ending on one word. */
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+p,
+li,
+dd {
+  text-wrap: pretty;
+}
+
+/* Eyebrow: the small uppercase label above a headline. Small size — the label
+   gets its hierarchy from weight, capitals and tracking, not a smaller size. */
+.eyebrow {
+  font: var(--text-small);
+  font-weight: 600;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-paper-40);
+}
+
+/* Layout primitives: contained/wide/full-bleed widths, section rhythm, flow. */
+
+/* Logical inline properties only, so a .wrap never sets a block margin or
+   padding that a parent's flow or a section's rhythm would have to fight. */
+.wrap {
+  max-width: var(--width-contained);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.wrap-wide {
+  max-width: var(--width-wide);
+  margin-inline: auto;
+  padding-inline: var(--gutter-wide);
+}
+
+/* full-bleed: escapes any centered parent to span the viewport, used by the news
+   filmstrip and the four-card program grid */
+.bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+/* Section rhythm (2026-09-17 spacing pass). --space-section is the gap
+   between two sections, and it has one owner: this rule. Every section pads
+   HALF of it on each side, so two neighbours add up to exactly one gap and
+   neither has to know what sits next to it. The token is fluid (48px on a
+   phone, 80px at 1440), so no page needs its own mobile override — the
+   6rem/3rem pair that used to be redeclared in a dozen page files is gone.
+
+   Anything else at section level follows the same half-and-half contract:
+   - a block with an edge instead of padding (a full-bleed photo, a hero)
+     contributes its half as margin-block, outside the edge;
+   - a section with its own ground (ODDfest's "How to join") pads a WHOLE
+     --space-section inside it — nothing across its edge shares its air —
+     and keeps the outer half as margin.
+   Do not give a section a padding of its own to make one gap bigger; a
+   deliberate chapter break is a documented exception, not a new value. */
+section {
+  padding-block: calc(var(--space-section) / 2);
+}
+
+/* Flow: the parent owns the space between its children. Put `.flow` on a
+   container whose children are separate blocks (a section's heading, its
+   lede, the grid, a closing line) and each block sits --space-content below
+   the one before it. The children carry no outer margin of their own.
+
+   The one sanctioned exception: a block that belongs to the one above it (a
+   lede directly under its heading) replaces the flow step with a tighter one
+   by setting margin-block-start itself. A replacement, never an addition —
+   margin-block-end is never used for spacing between blocks, and a negative
+   margin to claw back someone else's space is always a bug.
+
+   Beware `margin: 0 auto` on a flow child: the shorthand also resets the top
+   margin and, scoped, outranks this rule. Centre with margin-inline. */
+.flow > * + * {
+  margin-block-start: var(--space-content);
+}
+
+/* A section's heading. Its bottom rule belongs to it (--space-4 above the
+   line); the space from the line to whatever follows is the parent's flow. */
+.section-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-2);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-paper-12);
+}
+.section-head h2 {
+  font: var(--text-heading);
+  letter-spacing: var(--tracking-heading);
+  margin: 0;
+  color: var(--color-paper);
+}
+
+/*
+  Motion tokens + the site's two shared animation hooks: `.reveal` (scroll-triggered
+  fade-up, driven by an IntersectionObserver in src/scripts/reveal.ts) and the marquee
+  keyframes used by the logo train and about-page ticker. Everything here is gated by
+  prefers-reduced-motion — see docs/design-system.md#motion.
+*/
+
+/*
+  `.reveal` is opt-in-hidden, not hidden-by-default: the `html.reveal-js`
+  scope is added by src/scripts/reveal.ts itself, so the hidden state only
+  ever exists while the script that can undo it is running. A script error, a
+  blocked bundle, a browser without IntersectionObserver, or a plain no-JS
+  visit all render every `.reveal` element at its normal, visible, final state
+  — the animation enhances content that is already there rather than being a
+  prerequisite for seeing it. See reveal.ts's own comment for the two
+  reproduced failure modes this replaced.
+
+  Every component with its own `.reveal`-driven entrance (ProgramGrid's
+  staggered cards, BuiltAround's grid labels, ProofGrid's counters, …) follows
+  the same convention: gate the hidden half on `:global(html.reveal-js)`.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  html.reveal-js .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity var(--duration-reveal) ease,
+      transform var(--duration-reveal) ease;
+  }
+  html.reveal-js .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.3333%);
+  }
+}
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.magnetic {
+  transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+/* ---------------------------------------------------------------- base --
+   From src/styles/global.css: the desktop root scale, the page ground, the
+   keyboard focus ring and the grain layer. */
+
+html {
+  scroll-behavior: smooth;
+  /* In-page anchors (#newsletter, #enquiry-form, #archive …) and scrollIntoView
+     land below the sticky nav. Half a --space-section of section padding no
+     longer clears it the way the old 6rem did. */
+  scroll-padding-top: var(--nav-h);
+  /* Desktop scale (2026-09-14). On a 13" laptop (~1440 CSS px wide) the site
+     read small at 100% browser zoom and right at 125%, so the root size ramps
+     from the browser default at 1024px to 125% of it at 1440px, and holds
+     there. Everything sized in rem grows with it the way browser zoom would —
+     the whole type ladder, spacing, container widths, the nav mark, logos —
+     while px breakpoints, the viewport-based parts of the fluid clamps and the
+     custom cursor do not. At 1024px and below this resolves to exactly 100%,
+     so phones and portrait tablets are untouched; landscape tablets (iPads
+     report 1080-1376px) get part of the ramp. Percentages rather than px, so a
+     visitor's own browser font-size setting still sets the base — but the vw
+     term is a fixed length, so a larger default moves the ramp to wider
+     screens (a 20px default ramps from 1280px to 1800px) rather than
+     multiplying with it. Browser zoom shrinks the CSS viewport, so inside the
+     ramp part of each zoom step is absorbed (200% zoom at 1440px enlarges
+     text ~1.6x, 2x by ~250%); text is never smaller than before at any zoom.
+     The roles in typography.css are unchanged; this changes what 1rem is. */
+  font-size: clamp(100%, calc(38.4615% + 0.9615vw), 125%);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-paper);
+  /* Body is the inherited default, so anything without a role of its own (a
+     bare paragraph, a list item) still lands on the ladder — typography.css. */
+  font: var(--text-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  position: relative;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.grain {
+  position: fixed;
+  inset: -60%;
+  width: 220%;
+  height: 220%;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .grain {
+    animation: grain 0.5s steps(1) infinite;
+  }
+}
+@keyframes grain {
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-6%, -4%);
+  }
+  40% {
+    transform: translate(5%, 6%);
+  }
+  60% {
+    transform: translate(-4%, 5%);
+  }
+  80% {
+    transform: translate(6%, -3%);
+  }
+  100% {
+    transform: translate(-3%, 4%);
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------------------------------------------------------------- pill --
+   From src/components/primitives/Pill.astro. The site's one button:
+   <a class="pill pill-solid">, pill-outline, or pill-ticket. */
+
+.pill {
+  display: inline-block;
+  border-radius: var(--radius-pill);
+  padding: 0.55rem 1.25rem;
+  white-space: nowrap;
+  /* Small at 600 — the ladder's UI step. The shorthand also sets
+       line-height on the element itself, so a Pill rendered as a <button>
+       (whose UA stylesheet declares its own line-height, which would beat an
+       inherited one) measures exactly the same as a Pill rendered as a link. */
+  font: var(--text-small);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    opacity var(--duration-fast) ease,
+    border-color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease,
+    transform var(--duration-fast) ease;
+}
+/* The not-actionable-yet state (see the `ariaDisabled` prop comment).
+     `pointer-events: none` is doing double duty here: it blocks the click,
+     and it also stops the element receiving the `mousemove` that
+     magnetic.ts binds *to the element itself* — so a locked pill doesn't
+     lean toward the cursor as if it were live, with no change to that
+     script. Its listeners stay attached, so a tier the catalog later
+     unlocks becomes magnetic again on its own. */
+.pill[aria-disabled='true'] {
+  pointer-events: none;
+  cursor: default;
+}
+.pill-outline {
+  background: transparent;
+  color: var(--color-paper);
+  /* The control-line ramp step; it flips to Ink under .theme-light. */
+  border-color: var(--color-paper-35);
+}
+@media (hover: hover) {
+  .pill-outline:hover {
+    border-color: var(--color-paper);
+  }
+}
+.pill-solid {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  border-color: var(--color-paper);
+}
+@media (hover: hover) {
+  .pill-solid:hover {
+    opacity: 0.85;
+  }
+}
+.pill-ticket {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  border-color: var(--color-paper);
+  box-shadow: 0 6px 18px rgb(14 9 11 / 35%);
+}
+@media (hover: hover) {
+  .pill-ticket:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgb(14 9 11 / 45%);
+  }
+}
+.pill:focus-visible {
+  outline-offset: 2px;
+}
+/* Narrow screens: a Pill may never be wider than the column it sits in.
+     `white-space: nowrap` above is right on desktop — CTAs belong on one
+     line — but it makes a long label's min-content width a hard floor on
+     whatever grid or flex track holds the button, and that floor propagates
+     all the way up to the document, producing page-level horizontal
+     overflow rather than a clipped button.
+
+     This has now bitten three pages independently: ODDference's "Talk to us
+     about partnering →" (patched in that page's own CSS), ODDfest's
+     "Register your event idea" (which regressed the moment the copywriting
+     pass introduced it — measured 294px wide inside a 264px column at
+     320px, i.e. 30px of document overflow), and Membership's tier grid.
+     Patching each page as it appears is whack-a-mole: the next long CTA
+     label an editor writes reintroduces it, and CloudCannon means labels are
+     editable content.
+
+     Letting the label wrap below 480px removes the whole class of defect at
+     the primitive, for every existing and future caller. `max-width: 100%`
+     is what actually caps the box; `white-space: normal` is what lets the
+     text reflow inside that cap instead of being clipped. Desktop and tablet
+     keep the single-line treatment exactly as approved. */
+@media (max-width: 480px) {
+  .pill {
+    white-space: normal;
+    max-width: 100%;
+    text-align: center;
+    /* A label with no spaces at all — an email address, like ODDstudio's
+         operator contact — may break inside the word once it would overflow.
+         break-word, not anywhere: `anywhere` also lowers the button's
+         min-content width, which let a flex row (a form's submit button beside
+         its status message) squeeze "Send message" into "MESSAG / E". A grid
+         column that holds such a pill allows shrinking instead, with
+         minmax(0, 1fr). */
+    overflow-wrap: break-word;
+  }
+}
+/* Touch (2026-09-02 mobile experience pass). Two separate problems, one
+     media query:
+
+     1. The shipped padding puts this button at roughly 35px tall — under the
+        44px minimum every touch-target guideline agrees on, and this is the
+        site's only button shape, so it applied to every CTA on every page.
+        Growing the vertical padding here (rather than sitewide) fixes the
+        tap target without touching the approved desktop button proportions
+        at all.
+     2. None of the hover states above can ever fire meaningfully on a
+        touchscreen — they either never trigger or stick after the tap — so
+        the button had no press feedback whatsoever. `:active` supplies it. */
+@media (hover: none) {
+  .pill {
+    /* Vertical padding only — the horizontal value deliberately stays at
+         the desktop 1.25rem. Pill sets `white-space: nowrap`, so a long
+         label's min-content width is a hard floor on whatever grid column
+         holds it, and widening this button widens that floor everywhere.
+         ODDference's "Talk to us about partnering →" CTA is already the
+         binding constraint on `.oddc-convert`'s single-column track (see
+         that page's own comment); an earlier version of this rule used
+         1.4rem and pushed `/oddference` 3px past a 320px viewport on Linux
+         CI, where the string measures slightly wider than on macOS. The
+         44px target is a height requirement, so height is all this needs. */
+    padding: 0.85rem 1.25rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pill:active {
+    transform: scale(0.96);
+  }
+  .pill-outline:active {
+    border-color: var(--color-paper);
+  }
+  .pill-solid:active,
+  .pill-ticket:active {
+    opacity: 0.82;
+  }
+}

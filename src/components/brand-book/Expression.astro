@@ -1,0 +1,774 @@
+---
+// Brand book chapters 10-14: imagery, graphic language, components, motion, voice.
+import { Image } from 'astro:assets';
+import Chapter from './Chapter.astro';
+import Pill from '../primitives/Pill.astro';
+import tokens from '../../../brand/tokens/brand-tokens.json';
+import oddfestMark from '../../../brand/logos/svg/oddfest-paper.svg';
+
+import documentary from '../../assets/about/oddfest-2025-shared-table.jpg';
+import performance from '../../assets/oddfest-2026/aerial-duo.jpg';
+import portrait from '../../assets/speakers/rolf-ekroth.png';
+import architecture from '../../assets/oddspace/auditorium-tiered.jpg';
+import crowd from '../../assets/oddfest-2026/dance-worlds-crowd.jpg';
+import art from '../../assets/oddfest-2026/valiobeats-live-painting.jpg';
+import theatre from '../../assets/examples/oddtheatre-vanha-ylioppilastalo.jpg';
+
+const motion = tokens.motion;
+---
+
+<Chapter
+  id="imagery"
+  num="10"
+  title="Imagery"
+  premise="Photographs are the evidence."
+  statement="Everything ODD shows actually happened."
+>
+  <div class="bb-prose">
+    <p>
+      The archive — thousands of photographs from ODDfest, ODDference and ODDspace — is the brand’s
+      strongest asset, and the palette came out of it. Pictures do the work that stock photography
+      and illustration would do in another identity: they prove that a room was full, that the
+      people were real, that somebody made this.
+    </p>
+  </div>
+
+  <div class="bb-photos">
+    <figure class="bb-photo span-5">
+      <Image
+        src={documentary}
+        alt=""
+        widths={[500, 900]}
+        sizes="(max-width: 820px) 50vw, 40vw"
+        style="--ratio: 4 / 3;"
+      />
+      <figcaption>
+        <strong>Documentary</strong>Tables, queues, conversations, work in progress. Nobody looking
+        at the camera.
+      </figcaption>
+    </figure>
+    <figure class="bb-photo span-4">
+      <Image
+        src={performance}
+        alt=""
+        widths={[400, 800]}
+        sizes="(max-width: 820px) 50vw, 33vw"
+        style="--ratio: 4 / 5;"
+      />
+      <figcaption>
+        <strong>Performance</strong>Stage light doing what stage light does. Motion blur is welcome;
+        a clean press shot is not the point.
+      </figcaption>
+    </figure>
+    <figure class="bb-photo span-3 bb-photo--grey">
+      <Image
+        src={portrait}
+        alt=""
+        widths={[300, 600]}
+        sizes="(max-width: 820px) 50vw, 25vw"
+        style="--ratio: 4 / 5;"
+      />
+      <figcaption>
+        <strong>Portraits</strong>Greyscale in a speaker grid, so ten people read as one line-up.
+        Full colour anywhere else.
+      </figcaption>
+    </figure>
+    <figure class="bb-photo span-4">
+      <Image
+        src={architecture}
+        alt=""
+        widths={[400, 800]}
+        sizes="(max-width: 820px) 50vw, 33vw"
+        style="--ratio: 4 / 3;"
+      />
+      <figcaption>
+        <strong>Space</strong>Rooms photographed as rooms: empty is fine, staged is not.
+      </figcaption>
+    </figure>
+    <figure class="bb-photo span-5">
+      <Image
+        src={crowd}
+        alt=""
+        widths={[500, 900]}
+        sizes="(max-width: 820px) 50vw, 40vw"
+        style="--ratio: 4 / 3;"
+      />
+      <figcaption>
+        <strong>Crowd</strong>The audience is the subject as often as the stage is.
+      </figcaption>
+    </figure>
+    <figure class="bb-photo span-3">
+      <Image
+        src={art}
+        alt=""
+        widths={[300, 600]}
+        sizes="(max-width: 820px) 50vw, 25vw"
+        style="--ratio: 1 / 1;"
+      />
+      <figcaption>
+        <strong>The work itself</strong>Paint, instruments, objects, screens. Detail crops carry a
+        grid better than wide shots.
+      </figcaption>
+    </figure>
+  </div>
+
+  <h3 class="bb-h3">Treatment</h3>
+  <dl class="bb-spec">
+    <dt>Ratios</dt>
+    <dd>
+      16:9 film · 2:1 photo break · 4:3 cards · 1:1 mosaic cells · 4:5 and 3:4 portraits. Nothing
+      else.
+    </dd>
+    <dt>Grade</dt>
+    <dd>
+      <code>contrast(1.05) saturate(1.15)</code> — a nudge, not a look. Add <code
+        >brightness(0.8–0.92)</code
+      > only where text sits on the image.
+    </dd>
+    <dt>Crop</dt>
+    <dd>
+      To the action: faces, hands, instruments, the crowd. Never letterbox; fill the cell and let
+      the grid crop.
+    </dd>
+    <dt>Corners</dt>
+    <dd>Square. Always.</dd>
+    <dt>Captions</dt>
+    <dd>
+      Small, muted, under the image: what it was, where. <code
+        >ODDfest 2026 · Vanha Ylioppilastalo</code
+      >.
+    </dd>
+    <dt>Credits</dt>
+    <dd>
+      Name the photographer where the archive names them: <code>Photo: Name</code>. Editorial use is
+      credited “ODDfest / photographer’s name”.
+    </dd>
+    <dt>Other people’s logos</dt>
+    <dd>Monochrome in the figure colour, one height, never their brand colours.</dd>
+  </dl>
+
+  <h3 class="bb-h3">Text on a photograph</h3>
+  <figure class="bb-figure">
+    <div class="bb-scrim">
+      <Image src={theatre} alt="" widths={[600, 1200]} sizes="(max-width: 820px) 100vw, 60vw" />
+      <div>
+        <p class="t-eyebrow" style="color: rgb(226 223 222 / 55%);">
+          ODDfest 2026 · Vanha Ylioppilastalo
+        </p>
+        <p class="t-heading">ODDtheatre</p>
+        <p class="t-small">
+          Club, theatre and immersive space in one night, with more than ten collectives.
+        </p>
+      </div>
+    </div>
+    <figcaption>
+      An Ink scrim, strongest where the text sits and almost absent where it does not. Text goes at
+      the bottom left on the grid, never centred over a face.
+    </figcaption>
+  </figure>
+
+  <h3 class="bb-h3">Not ODD</h3>
+  <ul class="bb-prose" style="padding-left: 1.2rem;">
+    <li>
+      Stock photography of any kind. Smiling teams at laptops, handshakes, “creative process”
+      flat-lays.
+    </li>
+    <li>Generated or composited people, and generated “event” imagery.</li>
+    <li>Renders or mock-ups presented as something that happened.</li>
+    <li>Heavy filters, duotones, fake film burn, vignettes, drop shadows on photographs.</li>
+    <li>Rounded corners, tilted frames, polaroid borders, collage overlays.</li>
+    <li>Stage shots with an empty room, unless the emptiness is the subject.</li>
+  </ul>
+</Chapter>
+
+<Chapter
+  id="graphic-language"
+  num="11"
+  title="Graphic language"
+  premise="Almost nothing is drawn."
+  statement="The devices are all made of type, rule and photograph."
+>
+  <div class="bb-row bb-row--2">
+    <figure class="bb-figure">
+      <div class="bb-stage">
+        <div class="section-head" style="width: 100%;">
+          <p class="eyebrow">Highlights</p>
+          <h2>One week. Many hosts.</h2>
+        </div>
+      </div>
+      <figcaption>
+        <strong>The section head.</strong> Small tracked label, Forta title, hairline under. It opens
+        nearly every section on the site; the rule belongs to the head, the space below it to the parent.
+      </figcaption>
+    </figure>
+    <figure class="bb-figure">
+      <div class="bb-stage" style="gap: var(--space-4);">
+        <div class="bb-cells bb-cells--two" style="width: 100%;">
+          <div class="bb-cell">
+            <span class="bb-cell-num">01</span><p class="t-heading" style="margin:0;">
+              Places to work
+            </p>
+          </div>
+          <div class="bb-cell">
+            <span class="bb-cell-num">02</span><p class="t-heading" style="margin:0;">
+              Reasons to gather
+            </p>
+          </div>
+        </div>
+      </div>
+      <figcaption>
+        <strong>The numbered cell.</strong> Steps, pillars, reasons and highlights are numbered and joined
+        by hairlines. Numbers are Small, tracked, quiet — the structure counts itself.
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="bb-row bb-row--2">
+    <figure class="bb-figure">
+      <div class="bb-stage" style="gap: var(--space-5);">
+        <nav class="bb-strike" aria-label="Strike-through demonstration">
+          <a href="#graphic-language">ODDfest</a>
+          <a href="#graphic-language" class="is-current">ODDference</a>
+          <a href="#graphic-language">ODDspace</a>
+        </nav>
+        <p class="t-small t-muted">Hover a word.</p>
+      </div>
+      <figcaption>
+        <strong>The strike.</strong> Navigation crosses a word out rather than underlining it — on hover,
+        and permanently for the page you are on. It is the system’s one gesture, and it is a joke about
+        being odd that still works as a state.
+      </figcaption>
+    </figure>
+    <figure class="bb-figure">
+      <div class="bb-stage" style="gap: var(--space-5); align-content: start;">
+        <a class="bb-arrow" href="#graphic-language">See how ODD got here →</a>
+        <a class="bb-link" href="#graphic-language">An inline link inside a sentence</a>
+      </div>
+      <figcaption>
+        <strong>The arrow link.</strong> A link that goes somewhere takes a trailing arrow and a quiet
+        underline; it warms to Ember when touched. Inline links keep the underline, drop the arrow.
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="bb-row bb-row--2">
+    <figure class="bb-figure">
+      <div class="bb-stage">
+        <div class="bb-figures">
+          <div>
+            <strong class="t-display">5,000+</strong><span class="t-eyebrow">Participants</span>
+          </div>
+          <div>
+            <strong class="t-display">500+</strong><span class="t-eyebrow">Collaborators</span>
+          </div>
+          <div><strong class="t-display">100+</strong><span class="t-eyebrow">Partners</span></div>
+        </div>
+      </div>
+      <figcaption>
+        <strong>Figures.</strong> Numbers are Forta, labels are Small capitals, and a hairline divides
+        them. Never a chart where three numbers will do.
+      </figcaption>
+    </figure>
+    <figure class="bb-figure">
+      <div class="bb-stage" style="padding: 0; overflow: hidden;">
+        <div class="bb-rail" aria-hidden="true">
+          <Image src={oddfestMark} alt="" width={180} />
+          <span>ODDFEST</span>
+          <span class="t-quiet">HELSINKI</span>
+          <span class="t-quiet">2027</span>
+        </div>
+      </div>
+      <figcaption>
+        <strong>The rail.</strong> On a product page, both edges carry a slow vertical ticker: the lockup,
+        the product, the city, the year. It frames the page like signage on a building.
+      </figcaption>
+    </figure>
+  </div>
+
+  <h3 class="bb-h3">The whole vocabulary</h3>
+  <div class="bb-table-wrap">
+    <table class="bb-table">
+      <thead><tr><th>Device</th><th>Job</th><th>Rule</th></tr></thead>
+      <tbody>
+        <tr
+          ><td>Hairline</td><td>Separates two different things</td><td
+            >1px, rule colour. Never a box around content.</td
+          ></tr
+        >
+        <tr
+          ><td>Numbered cell</td><td>Makes a structure countable</td><td
+            >Numbers in Small caps, quiet. Start at 01.</td
+          ></tr
+        >
+        <tr
+          ><td>Eyebrow</td><td>Says what kind of thing follows</td><td
+            >Two or three words. Never a sentence.</td
+          ></tr
+        >
+        <tr
+          ><td>Section head</td><td>Opens a section</td><td
+            >Centred, with its rule. One per section.</td
+          ></tr
+        >
+        <tr><td>Strike</td><td>Navigation state</td><td>2.5px through the middle. Nav only.</td></tr
+        >
+        <tr
+          ><td>Arrow link</td><td>Goes somewhere</td><td>Trailing →. Never a button in disguise.</td
+          ></tr
+        >
+        <tr
+          ><td>Pill</td><td>Something you press</td><td
+            >Three variants. No fourth without a documented reason.</td
+          ></tr
+        >
+        <tr
+          ><td>Tag</td><td>Labels a thing</td><td
+            >Pill shape, raised fill, sentence case, not a link.</td
+          ></tr
+        >
+        <tr
+          ><td>Voice label</td><td>Names the audience</td><td
+            >Ember for creative, Signal for business. Creative first.</td
+          ></tr
+        >
+        <tr
+          ><td>Two-tone headline</td><td>Shows the argument</td><td
+            >Premise quiet, point full. One size.</td
+          ></tr
+        >
+        <tr
+          ><td>Rail</td><td>Frames a product page</td><td>Desktop only. Text, never decoration.</td
+          ></tr
+        >
+        <tr
+          ><td>Grain</td><td>Makes the surface physical</td><td
+            >4.5%, full page, one layer. Never over print.</td
+          ></tr
+        >
+        <tr
+          ><td>Mark as image</td><td>Signs the page</td><td
+            >Hero scale, Paper on a photograph, with a scrim.</td
+          ></tr
+        >
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="bb-h3">Devices ODD does not have</h3>
+  <p class="bb-prose">
+    No icon set (only the social glyphs and a chevron), no illustration, no patterns, no badges with
+    coloured fills, no cards with rounded corners or shadows, no dividers with ornaments, no “brand
+    shapes”. If a new device seems necessary, it needs a job that none of the thirteen above can do
+    — and it goes in this table when it ships.
+  </p>
+</Chapter>
+
+<Chapter
+  id="components"
+  num="12"
+  title="Components"
+  premise="One button."
+  statement="Three variants, and that is the entire vocabulary."
+>
+  <div class="bb-row bb-row--2">
+    <figure class="bb-figure">
+      <div class="bb-stage bb-stage--row">
+        <Pill href="#components" variant="solid">Submit an event idea</Pill>
+        <Pill href="#components" variant="outline">Look back at 2026</Pill>
+        <Pill href="#components" variant="ticket">Get your ticket</Pill>
+      </div>
+      <figcaption>
+        <strong>Pill.</strong> Solid is the one thing you most want done on the page; outline is everything
+        else; ticket is for buying, and only there. Small, 600, uppercase, 0.05em. Labels are verb-first.
+      </figcaption>
+    </figure>
+    <figure class="bb-figure">
+      <div class="bb-stage bb-stage--row">
+        <span class="bb-tag">Brand collaborations</span>
+        <span class="bb-tag">Event &amp; experience production</span>
+        <span class="bb-badge">Available until 1 Nov 2026</span>
+      </div>
+      <figcaption>
+        <strong>Tag and badge.</strong> Same shape, different job: a tag labels (raised fill, sentence
+        case, not clickable), a badge announces a state (figure fill, Small caps) and sits on the thing
+        it describes.
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="bb-row bb-row--2">
+    <figure class="bb-figure">
+      <div class="bb-stage" style="padding: 0;">
+        <div class="bb-cells" style="grid-template-columns: 1fr;">
+          <div class="bb-cell bb-cell--raised">
+            <span class="bb-cell-num">01</span>
+            <h3 class="t-heading" style="margin: 0;">Events create reasons to gather</h3>
+            <p class="t-body t-muted" style="margin: 0;">
+              ODDfest makes creative activity across Helsinki visible as one shared week.
+            </p>
+          </div>
+        </div>
+      </div>
+      <figcaption>
+        <strong>Card.</strong> Raised surface, square, no shadow, no radius. Number, title, body, in that
+        order, with <code>--space-3</code> between title and body.
+      </figcaption>
+    </figure>
+    <figure class="bb-figure">
+      <div class="bb-stage" style="gap: var(--space-4);">
+        <label class="t-eyebrow" for="bb-demo-field">Email</label>
+        <input class="bb-input" id="bb-demo-field" type="email" placeholder="you@example.com" />
+        <p class="t-small t-muted" style="margin: 0;">
+          Helper text sits under the field, muted, at the Small size.
+        </p>
+      </div>
+      <figcaption>
+        <strong>Field.</strong> Every input is Body — 16px minimum, which is what stops iOS zooming when
+        it is focused. Label above in Small caps, hairline under, heat on focus.
+      </figcaption>
+    </figure>
+  </div>
+
+  <p class="bb-prose">
+    The site has one more component family worth knowing: the <strong>band</strong> — a raised, square,
+    full-width block with one keyline in heat, used once per page for the single biggest ask. Everything
+    else (grids, lists, tables, FAQs, pricing) is the numbered cell or the hairline row again, at a different
+    size.
+  </p>
+</Chapter>
+
+<Chapter
+  id="motion"
+  num="13"
+  title="Motion"
+  premise="Responsive, not animated."
+  statement="Everything that moves has a still version."
+>
+  <div class="bb-prose">
+    <p>
+      Motion in this system is either a <em>response</em> — something warms, lifts or leans because you
+      touched it — or <em>ambience</em>: grain, a drifting rail, a photograph slowly panning. It is
+      never a performance the visitor has to sit through, and it is never the thing that makes
+      content appear.
+    </p>
+  </div>
+
+  <div class="bb-table-wrap">
+    <table class="bb-table">
+      <thead><tr><th>Token</th><th>Value</th><th>For</th></tr></thead>
+      <tbody>
+        {
+          Object.entries(motion.duration).map(([, d]) => (
+            <tr>
+              <>
+                <td>
+                  <code>{d.css}</code>
+                </td>
+                <td>{d.value}</td>
+                <td>{d.use}</td>
+              </>
+            </tr>
+          ))
+        }
+        {
+          Object.entries(motion.easing).map(([easing, e]) => (
+            <tr>
+              <>
+                <td>
+                  <code>{'css' in e ? e.css : easing}</code>
+                </td>
+                <td>{e.value}</td>
+                <td>{e.use}</td>
+              </>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="bb-h3">Behaviours</h3>
+  <dl class="bb-spec">
+    <dt>Hover</dt>
+    <dd>
+      Text and rows warm to heat in 0.2s. Outline controls brighten their border. Nothing grows,
+      nothing bounces.
+    </dd>
+    <dt>Press</dt>
+    <dd>
+      On touch, a Pill scales to 0.96 — the only place the system uses a transform on a control.
+    </dd>
+    <dt>Magnetic</dt>
+    <dd>A primary CTA leans a few pixels towards the cursor. One per view, desktop only.</dd>
+    <dt>Reveal</dt>
+    <dd>
+      A block fades up 14px over 0.7s as it enters. Once, never on exit, never staggered beyond a
+      grid’s own cards.
+    </dd>
+    <dt>Navigation</dt>
+    <dd>
+      The strike draws from the centre out. Panels fade and rise 12px with <code
+        >--ease-out-expo</code
+      >.
+    </dd>
+    <dt>Image</dt>
+    <dd>
+      Archive cells pan slowly and swap on a randomised loop; video fades in over its poster only
+      once playback is confirmed.
+    </dd>
+    <dt>Reduced motion</dt>
+    <dd>
+      Everything above stops. The reveal never attaches, the grain holds still, video is not even
+      downloaded, and the page is identical in content.
+    </dd>
+  </dl>
+
+  <h3 class="bb-h3">Never</h3>
+  <ul class="bb-prose" style="padding-left: 1.2rem;">
+    <li>Scroll-jacking, pinned sections, horizontal scroll hijacks, parallax on text.</li>
+    <li>Counters that animate a number the reader is trying to read.</li>
+    <li>Entrances that depend on JavaScript to make content visible.</li>
+    <li>Loops longer than a second on anything a visitor is reading.</li>
+    <li>Motion in print, in a PDF, or baked into a deck.</li>
+  </ul>
+</Chapter>
+
+<Chapter
+  id="voice"
+  num="14"
+  title="Voice"
+  premise="Direct, warm, a little odd."
+  statement="If another festival could have written it, rewrite it."
+>
+  <div class="bb-prose">
+    <p>
+      Language and type are one decision here. Forta can only shout, so the words it sets have to be
+      short and worth shouting; Gabarito explains, so everything else can be plain. The test for any
+      sentence is whether a real person at ODD would say it out loud to somebody standing in front
+      of them.
+    </p>
+  </div>
+
+  <div class="bb-row bb-row--2">
+    <div class="bb-cell">
+      <span class="bb-cell-num">Sounds like ODD</span>
+      <ul class="bb-prose" style="margin: 0; padding-left: 1.1rem;">
+        <li>“One shared week, made by Helsinki’s creative communities.”</li>
+        <li>“You bring the idea. ODD brings the week together.”</li>
+        <li>“An idea still at the notes-on-your-phone stage is a fine thing to send.”</li>
+        <li>“Creative work needs more than moments.”</li>
+        <li>“You are the heroes of ODD.”</li>
+        <li>“Stay ODD.”</li>
+      </ul>
+    </div>
+    <div class="bb-cell">
+      <span
+        class="bb-cell-num"
+        style="text-decoration: line-through; text-decoration-thickness: 2.5px;">Does not</span
+      >
+      <ul class="bb-prose" style="margin: 0; padding-left: 1.1rem;">
+        <li>Consultancy: “leveraging cross-sector synergies”.</li>
+        <li>Startup: “we’re on a mission to disrupt the creative industry”.</li>
+        <li>Grant bureaucracy: “the project aims to facilitate multi-stakeholder engagement”.</li>
+        <li>Forced youth: “this one goes hard”, “no cap”.</li>
+        <li>Inspirational filler: “we believe in the power of creativity”.</li>
+        <li>Adjective stacks: “sharp strategy, bold creativity, real-world execution”.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="bb-h3">Rules</h3>
+  <dl class="bb-spec">
+    <dt>Headlines</dt>
+    <dd>
+      Sentences, ending in a full stop. Questions are welcome. Never a slogan made of fragments,
+      never a pun on “odd” that has to be explained.
+    </dd>
+    <dt>Section titles</dt>
+    <dd>
+      Say what the section is, in the reader’s words: “What ODDfest is”, “How to join”, “Ways to
+      take part.”
+    </dd>
+    <dt>Descriptions</dt>
+    <dd>
+      One idea a sentence. Concrete nouns. Say what a person actually does: work from ODDspace,
+      bring an event, buy a ticket, send a brief.
+    </dd>
+    <dt>CTAs</dt>
+    <dd>
+      Verb first, no more than four words: <em>Submit an event idea</em>, <em>Become a member</em>, <em
+        >Start a conversation</em
+      >. Links that go somewhere take a trailing arrow.
+    </dd>
+    <dt>Events</dt>
+    <dd>
+      Name the venue, the date and who made it. Credit everyone by name, and alphabetically — nobody
+      is a “special guest”.
+    </dd>
+    <dt>Business</dt>
+    <dd>
+      Same voice, different subject. Explain what a company gets in the same plain words: “Connect
+      with people outside your usual circuit.” No case-study jargon, no ROI theatre.
+    </dd>
+    <dt>Honesty</dt>
+    <dd>
+      Say what is not decided: “before the dates are fixed”, “a pilot”, “not on sale yet”. Never
+      publish a figure the site cannot stand behind.
+    </dd>
+    <dt>Spelling</dt>
+    <dd>
+      British English — organisation, centre, colour, programme. Finnish and Swedish names keep
+      their own spelling and diacritics.
+    </dd>
+  </dl>
+</Chapter>
+
+<style>
+  /* Demonstrations. Each one reproduces a device documented above, so the
+     page shows the system rather than describing it. */
+  .bb-strike {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.9rem;
+    font-family: var(--font-display);
+    font-size: var(--font-size-body);
+    letter-spacing: 0.01em;
+  }
+  .bb-strike a {
+    position: relative;
+    text-decoration: none;
+    color: var(--color-paper-80);
+    transition: color var(--duration-fast) ease;
+  }
+  .bb-strike a::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -7px;
+    right: -7px;
+    border-top: 2.5px solid var(--color-paper);
+    transform: translateY(-50%) scaleX(0);
+    transition: transform var(--duration-fast) ease;
+  }
+  .bb-strike a:hover {
+    color: var(--color-paper);
+  }
+  .bb-strike a:hover::before,
+  .bb-strike a.is-current::before {
+    transform: translateY(-50%) scaleX(1);
+  }
+  .bb-strike a.is-current {
+    color: var(--color-paper-60);
+  }
+
+  .bb-arrow {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--color-paper);
+    text-decoration: underline;
+    text-decoration-color: var(--color-paper-20);
+    text-underline-offset: 6px;
+    transition:
+      color var(--duration-fast) ease,
+      text-decoration-color var(--duration-fast) ease;
+  }
+  .bb-arrow:hover {
+    color: var(--color-heat);
+    text-decoration-color: var(--color-heat);
+  }
+
+  .bb-figures {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+  @media (max-width: 480px) {
+    .bb-figures {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .bb-figures > div {
+      border-left: 0;
+      border-top: 1px solid var(--color-paper-12);
+      padding-block: var(--space-4);
+    }
+    .bb-figures > div:first-child {
+      border-top: 0;
+    }
+  }
+  .bb-figures > div {
+    display: grid;
+    gap: var(--space-2);
+    justify-items: center;
+    text-align: center;
+    padding-inline: var(--space-3);
+    border-left: 1px solid var(--color-paper-12);
+  }
+  .bb-figures > div:first-child {
+    border-left: 0;
+  }
+  .bb-figures strong {
+    font-weight: 400;
+  }
+
+  .bb-rail {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-6);
+    padding: var(--space-6) 0;
+    width: 100%;
+  }
+  .bb-rail :global(img) {
+    width: 9rem;
+    height: auto;
+    opacity: 0.88;
+  }
+  .bb-rail span {
+    font-family: var(--font-display);
+    font-size: var(--font-size-body);
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+
+  .bb-tag {
+    display: inline-block;
+    padding: 0.45rem 1rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    font: var(--text-small);
+    color: var(--color-paper-80);
+  }
+  .bb-badge {
+    display: inline-block;
+    padding: 0.4rem 0.9rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+  }
+  .bb-input {
+    width: min(100%, 22rem);
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-paper-20);
+    padding: var(--space-3) 0;
+    font: var(--text-body);
+    color: var(--color-paper);
+  }
+  .bb-input::placeholder {
+    color: var(--color-paper-40);
+  }
+  .bb-input:focus {
+    outline: none;
+    border-bottom-color: var(--color-heat);
+  }
+  .bb-input:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+</style>

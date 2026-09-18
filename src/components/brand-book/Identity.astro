@@ -1,0 +1,447 @@
+---
+// Brand book chapters 04-05: the mark and the family it heads.
+import { Image } from 'astro:assets';
+import Chapter from './Chapter.astro';
+import Logo from '../primitives/Logo.astro';
+import markPaper from '../../../brand/logos/svg/odd-mark-paper.svg';
+import markInk from '../../../brand/logos/svg/odd-mark-ink.svg';
+import icon from '../../../brand/logos/svg/odd-icon.svg';
+import oddfest from '../../../brand/logos/svg/oddfest-paper.svg';
+import oddference from '../../../brand/logos/svg/oddference-paper.svg';
+import oddspace from '../../../brand/logos/svg/oddspace-paper.svg';
+import oddstudio from '../../../brand/logos/svg/oddstudio-paper.svg';
+import oddagency from '../../../brand/logos/svg/oddagency-paper.svg';
+import oddcity from '../../../brand/logos/svg/oddcity-paper.svg';
+import stage from '../../assets/oddfest-2026/blue-light-performer.jpg';
+
+// The construction numbers, as fractions of the mark's height. Kept here in
+// the same terms brand/logos/build.py uses, and drawn as guides over the real
+// lockup below, so the diagram cannot drift from the artwork.
+const MARK_END = 434.41 / 697.17; // the mark's right edge, as a fraction of the lockup's width
+const SUFFIX_X = (434.41 + 0.2709 * 137.892) / 697.17;
+const BASELINE = 0.7398;
+const CAP_TOP = BASELINE - 0.484;
+
+const family = [
+  {
+    logo: oddfest,
+    name: 'ODDfest',
+    role: 'Helsinki’s creative week of independently made events.',
+    ground: 'Ink',
+    accent: 'Ember, plus the Ultraviolet wash — the one page that uses it',
+  },
+  {
+    logo: oddference,
+    name: 'ODDference',
+    role: 'A business conference powered by creative expertise.',
+    ground: 'Ink',
+    accent: 'Signal',
+  },
+  {
+    logo: oddspace,
+    name: 'ODDspace',
+    role: 'A year-round workspace, studios and event space in Vallila.',
+    ground: 'Paper — the whole page inverts',
+    accent: 'None. The inversion is its accent.',
+  },
+];
+const later = [
+  { logo: oddstudio, name: 'ODDstudio', role: 'The recording studio inside ODDspace.' },
+  {
+    logo: oddagency,
+    name: 'ODDagency',
+    role: 'Project work with organisations, under Work with ODD.',
+  },
+  {
+    logo: oddcity,
+    name: 'ODDcity',
+    role: 'Generated, not yet used — proof the system takes the next name without a redesign.',
+  },
+];
+---
+
+<Chapter
+  id="logo"
+  num="04"
+  title="Logo"
+  premise="Three lobes that read ODD."
+  statement="The only drawn thing in the whole system."
+>
+  <div class="bb-prose">
+    <p>
+      Everything else here is type, rule and photograph. The mark is the exception: one continuous
+      path, three fused lobes, no version with a strapline and no second logo. Its proportions are
+      fixed at 434.41 × 137.892 (3.15:1). Scale it, place it, choose Paper or Ink artwork — that is
+      the whole set of decisions.
+    </p>
+  </div>
+
+  <div class="bb-row bb-row--2">
+    <figure class="bb-figure">
+      <div class="bb-stage bb-stage--ink bb-logo-stage">
+        <Image src={markPaper} alt="The ODD mark in Paper on an Ink ground" width={420} />
+      </div>
+      <figcaption>Paper artwork on Ink. The default everywhere.</figcaption>
+    </figure>
+    <figure class="bb-figure">
+      <div class="bb-stage bb-stage--paper bb-logo-stage">
+        <Image src={markInk} alt="The ODD mark in Ink on a Paper ground" width={420} />
+      </div>
+      <figcaption>Ink artwork on Paper. ODDspace, print, light applications.</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="bb-h3">Clear space and minimum size</h3>
+  <div class="bb-row bb-row--2">
+    <figure class="bb-figure">
+      <div class="bb-stage">
+        <div
+          style="outline: 1px dashed var(--color-paper-20); padding: 2rem; display: grid; place-items: center;"
+        >
+          <Logo class="bb-clear-mark" ariaHidden />
+        </div>
+      </div>
+      <figcaption>
+        Clear space is half the mark’s height on every side — the dashed field. Nothing enters it:
+        no type, no photograph edge, no other logo.
+      </figcaption>
+    </figure>
+    <figure class="bb-figure">
+      <div
+        class="bb-stage"
+        style="align-content: center; justify-items: start; gap: var(--space-6);"
+      >
+        <div style="display: flex; align-items: baseline; gap: var(--space-4);">
+          <Logo class="bb-min-mark" ariaHidden />
+          <span class="t-small t-muted">Mark, minimum 12px tall (4mm in print)</span>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: var(--space-4);">
+          <Image src={oddfest} alt="" height={16} style="height: 16px; width: auto;" />
+          <span class="t-small t-muted">Lockup, minimum 16px tall (6mm in print)</span>
+        </div>
+      </div>
+      <figcaption>
+        Below these sizes the lobes close up and the suffix fills in. Use the mark alone, or set the
+        name in Forta.
+      </figcaption>
+    </figure>
+  </div>
+
+  <h3 class="bb-h3">The lockup, constructed</h3>
+  <div class="bb-prose">
+    <p>
+      A product lockup is the mark plus its suffix in Forta — nothing else. Four numbers, all in
+      units of the mark’s height, produce every one of them, which is why a new name never needs a
+      new drawing. The guides below sit on the real ODDfest artwork.
+    </p>
+  </div>
+  <figure class="bb-figure">
+    <div class="bb-stage" style="padding-block: var(--space-10);">
+      <div style="position: relative; width: min(100%, 34rem); margin-inline: auto;">
+        <Image
+          src={oddfest}
+          alt="The ODDfest lockup with its construction guides"
+          width={680}
+          style="width: 100%; height: auto; display: block;"
+        />
+        <span
+          style={`position:absolute;left:0;right:0;top:${CAP_TOP * 100}%;border-top:1px solid var(--color-signal);`}
+        ></span>
+        <span
+          style={`position:absolute;left:0;right:0;top:${BASELINE * 100}%;border-top:1px solid var(--color-signal);`}
+        ></span>
+        <span
+          style={`position:absolute;top:-8%;bottom:-8%;left:${MARK_END * 100}%;border-left:1px solid var(--color-heat);`}
+        ></span>
+        <span
+          style={`position:absolute;top:-8%;bottom:-8%;left:${SUFFIX_X * 100}%;border-left:1px solid var(--color-heat);`}
+        ></span>
+      </div>
+    </div>
+    <figcaption>
+      Blue: the suffix’s cap height and baseline. Ember: the mark’s edge and the suffix’s origin.
+    </figcaption>
+  </figure>
+  <dl class="bb-spec">
+    <dt>Suffix cap height</dt>
+    <dd>0.484 × the mark’s height</dd>
+    <dt>Baseline</dt>
+    <dd>0.7398 × the mark’s height, from the top</dd>
+    <dt>Mark to suffix</dt>
+    <dd>
+      0.2709 × the mark’s height, measured origin to origin — the sidebearings do the optical work
+    </dd>
+    <dt>Tracking</dt>
+    <dd>0.09em, with Forta’s own kerning left on</dd>
+    <dt>Generated by</dt>
+    <dd>
+      <code>python3 brand/logos/build.py</code> — add a name to <code>LOCKUPS</code> and it exists
+    </dd>
+  </dl>
+
+  <h3 class="bb-h3">Backgrounds</h3>
+  <div class="bb-row">
+    <figure class="bb-figure">
+      <div class="bb-stage bb-stage--ink bb-logo-stage bb-logo-stage--sm">
+        <Image src={markPaper} alt="" width={300} />
+      </div>
+      <figcaption><span class="bb-verdict">Do</span> — Paper on Ink.</figcaption>
+    </figure>
+    <figure class="bb-figure">
+      <div class="bb-stage bb-stage--paper bb-logo-stage bb-logo-stage--sm">
+        <Image src={markInk} alt="" width={300} />
+      </div>
+      <figcaption><span class="bb-verdict">Do</span> — Ink on Paper.</figcaption>
+    </figure>
+    <figure class="bb-figure">
+      <div class="bb-scrim" style="aspect-ratio: 16 / 10;">
+        <Image src={stage} alt="" widths={[400, 800]} sizes="30vw" />
+        <div style="inset: 0; display: grid; place-items: center;">
+          <Image src={markPaper} alt="" width={260} style="width: 55%; height: auto;" />
+        </div>
+      </div>
+      <figcaption>
+        <span class="bb-verdict">Do</span> — on a photograph, with the Ink scrim under it.
+      </figcaption>
+    </figure>
+  </div>
+
+  <h3 class="bb-h3">Misuse</h3>
+  <div class="bb-misuse">
+    <figure>
+      <div class="bb-misuse-stage">
+        <Image src={markPaper} alt="" width={300} style="transform: scaleX(1.35);" />
+      </div>
+      <figcaption>
+        <span class="bb-verdict bb-verdict--dont">Don’t</span> stretch or squash it. One aspect ratio.
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="bb-misuse-stage">
+        <Image src={markPaper} alt="" width={300} style="transform: rotate(-9deg);" />
+      </div>
+      <figcaption>
+        <span class="bb-verdict bb-verdict--dont">Don’t</span> rotate or tilt it. The mark is always level.
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="bb-misuse-stage">
+        <Logo class="bb-misuse-mark" ariaHidden />
+      </div>
+      <figcaption>
+        <span class="bb-verdict bb-verdict--dont">Don’t</span> recolour it. Paper or Ink, never an accent.
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="bb-misuse-stage">
+        <Image
+          src={markPaper}
+          alt=""
+          width={300}
+          style="filter: drop-shadow(0 6px 10px rgb(14 9 11 / 90%));"
+        />
+      </div>
+      <figcaption>
+        <span class="bb-verdict bb-verdict--dont">Don’t</span> add shadows, outlines or effects. Use a
+        scrim instead.
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="bb-misuse-stage">
+        <span style="display: flex; align-items: center; gap: 0.5rem;">
+          <Logo class="bb-misuse-inline" ariaHidden />
+          <span style="font-family: var(--font-body); font-weight: 700; font-size: 1.5rem;"
+            >FEST</span
+          >
+        </span>
+      </div>
+      <figcaption>
+        <span class="bb-verdict bb-verdict--dont">Don’t</span> set the suffix in anything but Forta.
+      </figcaption>
+    </figure>
+    <figure>
+      <div class="bb-misuse-stage">
+        <span class="t-heading">ODD Fest · Oddfest · ODDFEST</span>
+      </div>
+      <figcaption>
+        <span class="bb-verdict bb-verdict--dont">Don’t</span> break the name. It is ODDfest: one word,
+        ODD in capitals.
+      </figcaption>
+    </figure>
+  </div>
+
+  <h3 class="bb-h3">The living mark, and the small mark</h3>
+  <div class="bb-row bb-row--2">
+    <figure class="bb-figure">
+      <div class="bb-stage bb-stage--ink bb-logo-stage">
+        <Logo class="bb-steam-mark" ariaHidden />
+      </div>
+      <figcaption>
+        On a hero, the mark is displaced by a turbulence filter — sauna steam, moving slowly. It is
+        the one place the artwork itself is allowed to move; it holds still under reduced motion and
+        never appears in print or in a deck.
+      </figcaption>
+    </figure>
+    <figure class="bb-figure">
+      <div class="bb-stage bb-logo-stage" style="gap: var(--space-5);">
+        <Image
+          src={icon}
+          alt="The ODD app icon: the Paper mark on an Ink tile"
+          width={160}
+          style="width: 8rem;"
+        />
+      </div>
+      <figcaption>
+        The app icon and favicon: the Paper mark on an Ink tile, corners at 24/128. The only place
+        the mark sits inside a shape.
+      </figcaption>
+    </figure>
+  </div>
+</Chapter>
+
+<Chapter
+  id="architecture"
+  num="05"
+  title="Brand architecture"
+  premise="One mark, one suffix."
+  statement="No sub-brand ever gets a logo of its own."
+>
+  <div class="bb-prose">
+    <p>
+      ODD is the masterbrand and the only mark. A product is that mark with its name completed in
+      Forta — so the family reads as one thing at a glance, and a new name costs a script run rather
+      than an identity project. “All Things ODD” is the name of the house: the website, this book,
+      the publisher line on a deck. It never replaces ODD in running copy.
+    </p>
+  </div>
+
+  <div class="bb-arch">
+    <div class="bb-arch-top">
+      <Image src={markPaper} alt="ODD" width={260} />
+      <p class="t-small t-muted">
+        All Things ODD — the umbrella. Operated by New Nordic Way rf, Helsinki.
+      </p>
+    </div>
+    <div class="bb-arch-products">
+      {
+        family.map((p) => (
+          <div>
+            <Image src={p.logo} alt={p.name} height={28} />
+            <p>{p.role}</p>
+            <p class="t-eyebrow">{p.ground}</p>
+          </div>
+        ))
+      }
+    </div>
+    <div class="bb-arch-products">
+      {
+        later.map((p) => (
+          <div class="is-future">
+            <Image src={p.logo} alt={p.name} height={28} />
+            <p>{p.role}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <h3 class="bb-h3">What never changes, what a product may choose</h3>
+  <div class="bb-row bb-row--2">
+    <div class="bb-cell bb-cell--raised">
+      <span class="bb-cell-num">Fixed</span>
+      <ul class="bb-prose" style="margin: 0; padding-left: 1.1rem;">
+        <li>The mark, and the four numbers that build a lockup.</li>
+        <li>Forta and Gabarito, and the five-size ladder.</li>
+        <li>The spacing system and the two container widths.</li>
+        <li>Ink or Paper as the ground. Nothing else.</li>
+        <li>Square for content, pill for what you touch.</li>
+        <li>Photography as evidence: the archive, not stock.</li>
+      </ul>
+    </div>
+    <div class="bb-cell">
+      <span class="bb-cell-num">Free</span>
+      <ul class="bb-prose" style="margin: 0; padding-left: 1.1rem;">
+        <li>Which ground: Ink by default, Paper where the thing is daylight and physical.</li>
+        <li>One accent, or none — Ember, Signal, or the Ultraviolet wash on ODDfest.</li>
+        <li>Its hero: photo mosaic, film, or a single photograph.</li>
+        <li>Its rail words: product · city · year.</li>
+        <li>Its subject matter in photography.</li>
+        <li>Its own copy, in the ODD voice.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="bb-h3">Writing the names</h3>
+  <dl class="bb-spec">
+    <dt>Correct</dt>
+    <dd>
+      ODD · ODDfest · ODDference · ODDspace · ODDstudio · ODDagency · Work with ODD · All Things ODD
+    </dd>
+    <dt>Never</dt>
+    <dd>
+      Oddfest · ODD Fest · ODDFest · odd fest · “the ODD Festival”. One word, ODD in capitals, the
+      suffix lowercase.
+    </dd>
+    <dt>In Forta</dt>
+    <dd>
+      The face is unicase, so it capitalises for you. Write sentence case; never type in capitals.
+    </dd>
+    <dt>All Things ODD</dt>
+    <dd>
+      The site and publisher name — <code>og:site_name</code>, this book, the back page of a deck.
+      Not a replacement for ODD in a sentence.
+    </dd>
+    <dt>New name</dt>
+    <dd>ODD + one lowercase word, ideally under eight letters, that says what the thing is.</dd>
+  </dl>
+
+  <h3 class="bb-h3">Adding the next one</h3>
+  <ol class="bb-prose" style="padding-left: 1.2rem;">
+    <li>Name it: <code>ODD</code> + one lowercase word.</li>
+    <li>
+      Add it to <code>LOCKUPS</code> in <code>brand/logos/build.py</code> and run it. The lockup exists,
+      in both colours, correct by construction.
+    </li>
+    <li>Choose the ground: Ink unless the thing is daylight and physical, like ODDspace.</li>
+    <li>Choose at most one accent — or none.</li>
+    <li>Give it rail words: the product, the city, the year.</li>
+    <li>Find its photographs. If it has none yet, borrow the archive; never buy stock.</li>
+    <li>Design nothing else. Everything it needs already exists.</li>
+  </ol>
+</Chapter>
+
+<style>
+  .bb-clear-mark {
+    height: 4rem;
+    width: auto;
+    display: block;
+    color: var(--color-paper);
+  }
+  .bb-min-mark {
+    height: 12px;
+    width: auto;
+    display: block;
+    color: var(--color-paper);
+  }
+  .bb-misuse-mark {
+    width: 62%;
+    height: auto;
+    color: var(--color-amber-bright);
+  }
+  .bb-misuse-inline {
+    height: 1.5rem;
+    width: auto;
+    color: var(--color-paper);
+  }
+  .bb-steam-mark {
+    width: min(100%, 22rem);
+    height: auto;
+    color: var(--color-paper);
+    filter: url(#steam-hero);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bb-steam-mark {
+      filter: none;
+    }
+  }
+</style>

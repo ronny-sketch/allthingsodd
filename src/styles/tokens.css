@@ -45,6 +45,12 @@
      only the value moved. */
   --color-paper-40: rgb(226 223 222 / 55%);
   --color-paper-20: rgb(226 223 222 / 20%);
+  /* Outline controls only (the outline Pill, the nav's Info trigger): the
+     border that makes an unfilled button read as pressable. Added
+     2026-09-18 — the same 35% was written as a literal in four places, each
+     with a hand-written .theme-light mirror; as a ramp step it flips with the
+     theme like every other step. */
+  --color-paper-35: rgb(226 223 222 / 35%);
   --color-paper-12: rgb(226 223 222 / 12%);
   --color-paper-06: rgb(226 223 222 / 6%);
   --color-paper-03: rgb(226 223 222 / 3%);
@@ -55,8 +61,15 @@
      --color-paper-NN into these instead of hand-rolling new rgb() literals
      per component, per CLAUDE.md's "tokens first" rule. */
   --color-ink-80: rgb(14 9 11 / 80%);
-  --color-ink-60: rgb(14 9 11 / 60%);
-  --color-ink-40: rgb(14 9 11 / 55%);
+  /* -60 and -40 are set by measured contrast, not by mirroring the paper
+     ramp (2026-09-18). Ink on Paper needs more opacity than Paper on Ink for
+     the same ratio: the mirrored 55% measured 4.1:1 on Paper and 3.9:1 on
+     the light backstage — under AA for the uppercase Small labels this step
+     carries on ODDspace, the menu and the newsletter panel. 62% gives 5.1:1
+     and 4.8:1; -60 moves to 70% (6.7:1) so the two steps keep their order. */
+  --color-ink-60: rgb(14 9 11 / 70%);
+  --color-ink-40: rgb(14 9 11 / 62%);
+  --color-ink-35: rgb(14 9 11 / 35%);
   --color-ink-20: rgb(14 9 11 / 20%);
   --color-ink-12: rgb(14 9 11 / 12%);
   --color-ink-06: rgb(14 9 11 / 6%);
@@ -70,11 +83,34 @@
   --color-indigo: #1c2b66; /* hero scrim tint */
   --color-ultraviolet: #8224d4; /* rarest archive color — wash only, never fill, ODDfest page only */
 
-  /* accent tints used inline at full saturation in a few high-contrast spots
-     (converge lede text, hover states) — same hues as --signal/--amber, brighter read */
+  /* Each accent has an archive value (above: washes, fills, rules) and a
+     reading lifted or deepened just enough to carry text (2026-09-18 audit,
+     composited contrast):
+       --color-amber-bright  Ember as text on Ink       4.6:1 (amber: 3.0)
+       --color-signal-bright Signal as text on Ink      4.8:1 (signal: 4.5)
+       --color-signal-deep   Signal as a fill under Paper text  4.7:1
+                             (signal itself: 3.3 — fails for the Small size
+                             every button uses; was --color-ticket-blue)
+     Same hues; only lightness moves. */
   --color-signal-bright: #5081b3;
   --color-amber-bright: #ae6855;
-  --color-ticket-blue: #40618c;
+  --color-signal-deep: #40618c;
+  /* Clay as small text: the literal archive value measures 4.3:1 on Ink, so
+     the footer's legal line reads a lightened clay (5.2:1). Flips to the
+     darkened reading under .theme-light. Was four literals in Footer.astro. */
+  --color-clay-read: #967e79;
+
+  /* Heat: what a link, row or control warms to when it is hovered or
+     pressed — Ember on the dark ground. One token instead of amber-bright
+     written into every hover rule, so the light theme can swap it for plain
+     Amber: Amber Bright on Paper measures 3.2:1, Amber 4.9:1.
+
+     Heat is a TEXT colour on the page ground (4.6:1 on Ink). On a RAISED
+     surface it measures 3.75:1 on --color-backstage, so there the text goes
+     to full figure and only the underline or border warms — a 2px rule is a
+     graphical object and clears 3:1. See PricingGrid and Home's
+     Work-with-ODD band. */
+  --color-heat: var(--color-amber-bright);
 
   /* ---------- typography ---------- */
   /* The `* Fallback` entries are not extra typefaces — they are the local
@@ -128,7 +164,16 @@
   --gutter-wide: clamp(2.5rem, 8vw, 7.5rem);
   --nav-h: 4.3125rem; /* 69px at the default root; JS overwrites this at runtime with the nav's real measured height */
 
-  /* ---------- surfaces (raised panels: nav dropdown, newsletter modal) ----------
+  /* ---------- shape ----------
+     Two corner values, and they mean something. The pill comes from the mark
+     itself — three rounded lobes — so things you act on or that label
+     something small (buttons, tags, badges, status chips) take --radius-pill.
+     Everything that holds content — photographs, cards, grids, bands — is
+     square. The one in-between is --radius-panel below, for surfaces that
+     float over the page. Nested corners derive from it, never a new value. */
+  --radius-pill: 999px;
+
+  /* ---------- surfaces (raised panels: nav dropdown, newsletter modal, consent) ----------
      One shared shape/elevation for every "floating card over the page" surface
      — kept deliberately restrained (small radius, no heavy shadow) so these
      read as ODD's own editorial panels, not generic rounded SaaS cards. See
@@ -153,7 +198,8 @@
   re-resolves the same --color-* tokens it already uses — no component needs
   its own light-mode branch. Only the role tokens flip; --color-signal/
   --color-amber/--color-clay/--color-indigo/--color-ultraviolet stay put,
-  they're accents, not ground/figure.
+  they're accents, not ground/figure. --color-heat and --color-clay-read are
+  the two accent READINGS that do flip, because they exist to carry text.
 */
 .theme-light {
   --color-bg: var(--swatch-paper);
@@ -162,9 +208,12 @@
   --color-paper-80: var(--color-ink-80);
   --color-paper-60: var(--color-ink-60);
   --color-paper-40: var(--color-ink-40);
+  --color-paper-35: var(--color-ink-35);
   --color-paper-20: var(--color-ink-20);
   --color-paper-12: var(--color-ink-12);
   --color-paper-06: var(--color-ink-06);
   --color-paper-03: var(--color-ink-03);
   --color-backstage: var(--swatch-backstage-light);
+  --color-heat: var(--color-amber);
+  --color-clay-read: #6b5551;
 }

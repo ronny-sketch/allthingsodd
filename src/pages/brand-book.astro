@@ -1,0 +1,123 @@
+---
+// /brand-book/ — the All Things ODD visual guidelines, built out of the
+// system they document (2026-09-18).
+//
+// Two deliberate departures from this repo's usual rules, both documented in
+// AGENTS.md:
+//
+//  1. The copy lives in this page and its four chapter components rather than
+//     in src/content/. It is documentation of the design system, not editorial
+//     content an ODD editor would ever change in CloudCannon — the same reason
+//     docs/design-system.md is a file and not a CMS entry. Every fact in it
+//     that CAN drift (tokens, type roles, spacing, logo construction, the file
+//     list) is read from brand/tokens/brand-tokens.json or from brand/ itself
+//     at build time instead of being retyped.
+//  2. It is `noindex` and absent from the nav and the sitemap: a working
+//     document for designers, partners and agents, not a page for search.
+import Layout from '../layouts/Layout.astro';
+import Logo from '../components/primitives/Logo.astro';
+import Foundations from '../components/brand-book/Foundations.astro';
+import Identity from '../components/brand-book/Identity.astro';
+import System from '../components/brand-book/System.astro';
+import Expression from '../components/brand-book/Expression.astro';
+import Applications from '../components/brand-book/Applications.astro';
+import { Image } from 'astro:assets';
+import cover from '../assets/about/oddfest-2026-tavastia-band.jpg';
+import '../styles/brand-book.css';
+
+const chapters = [
+  ['01', 'All Things ODD', 'all-things-odd'],
+  ['02', 'Brand idea', 'idea'],
+  ['03', 'Design principles', 'principles'],
+  ['04', 'Logo', 'logo'],
+  ['05', 'Brand architecture', 'architecture'],
+  ['06', 'Colour', 'colour'],
+  ['07', 'Typography', 'typography'],
+  ['08', 'Grid', 'grid'],
+  ['09', 'Spacing', 'spacing'],
+  ['10', 'Imagery', 'imagery'],
+  ['11', 'Graphic language', 'graphic-language'],
+  ['12', 'Components', 'components'],
+  ['13', 'Motion', 'motion'],
+  ['14', 'Voice', 'voice'],
+  ['15', 'Sub-brands', 'sub-brands'],
+  ['16', 'Applications', 'applications'],
+  ['17', 'Pitch decks', 'decks'],
+  ['18', 'Downloads', 'downloads'],
+  ['19', 'Do / Don’t', 'do-dont'],
+  ['20', 'Design tokens', 'tokens'],
+];
+---
+
+<Layout
+  title="Brand book — All Things ODD"
+  description="The All Things ODD visual guidelines: the brand idea, principles, logo, architecture, colour, typography, grid, spacing, imagery, motion, voice, applications and design tokens."
+  noindex
+>
+  <div class="bb">
+    <header class="bb-cover wrap-wide" id="index">
+      <div class="bb-cover-head">
+        <p class="eyebrow">All Things ODD · Visual guidelines · 1.0</p>
+        <h1>
+          <span class="quiet">Visual guidelines.</span> Everything ODD looks like, written down.
+        </h1>
+        <p class="t-lead">
+          This is the visual system underneath everything ODD makes — measured from what ODD has
+          already built rather than invented for a brand book. The website is the source of truth;
+          these twenty chapters formalise it, so the same identity can carry a deck, a poster, a
+          room or the next product without being redesigned.
+        </p>
+        <p class="bb-cover-meta">
+          <span><b>Version</b> 1.0 · September 2026</span>
+          <span><b>Owner</b> New Nordic Way rf, Helsinki</span>
+          <span><b>Source</b> allthingsodd.co</span>
+        </p>
+      </div>
+
+      <ul class="bb-index">
+        <li class="bb-index-mark" aria-hidden="true">
+          <Logo ariaHidden />
+        </li>
+        {
+          chapters.slice(0, 4).map(([num, title, id]) => (
+            <li>
+              <a href={`#${id}`}>
+                <span>{num}</span>
+                <strong>{title}</strong>
+              </a>
+            </li>
+          ))
+        }
+        {
+          chapters.slice(4, 8).map(([num, title, id]) => (
+            <li>
+              <a href={`#${id}`}>
+                <span>{num}</span>
+                <strong>{title}</strong>
+              </a>
+            </li>
+          ))
+        }
+        <li class="bb-index-photo" aria-hidden="true">
+          <Image src={cover} alt="" widths={[400, 800]} sizes="(max-width: 640px) 100vw, 33vw" />
+        </li>
+        {
+          chapters.slice(8).map(([num, title, id]) => (
+            <li>
+              <a href={`#${id}`}>
+                <span>{num}</span>
+                <strong>{title}</strong>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </header>
+
+    <Foundations />
+    <Identity />
+    <System />
+    <Expression />
+    <Applications />
+  </div>
+</Layout>

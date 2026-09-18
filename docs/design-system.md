@@ -1,5 +1,13 @@
 # Design system
 
+> **The brand system built on top of this lives in `brand/`** (2026-09-18):
+> `brand/BRAND-GUIDE.md` (how to make a new page, campaign, sub-brand, deck or
+> poster), `brand/tokens/brand-tokens.json` (these values, machine-readable, held
+> equal to `src/styles/` by `npm run check:brand`), `brand/logos/` (the generator
+> for every logo file, including `src/assets/logos/`), `brand/deck/` (the
+> PowerPoint system), and the designed brand book at `/brand-book/`. This file
+> stays the engineering-side reference: what the tokens are and why.
+
 Every value in this system traces back to something real: the "Signal & Ember"
 palette was measured from a K-means census of 1,478 real ODDfest Flickr
 photos, not picked from a swatch book. Read the comment block at the top of
@@ -30,8 +38,18 @@ variant="...">`, not a new button component. A new headline size is a
   the one light neutral, used only for the specific "daytime" moments the
   original design reserved it for (menu overlay, What's-on band, opening
   line band, Ways-to-participate cards).
-- `--color-signal` / `--color-signal-bright` — business/ODDference accent.
-- `--color-amber` / `--color-amber-bright` — creative/ODDfest accent.
+- `--color-signal` / `--color-signal-bright` / `--color-signal-deep` —
+  business/ODDference accent: the archive value, its reading as text on Ink
+  (4.8:1), and the deepened fill that can carry Paper text (4.8:1 — plain Signal
+  under Paper is 3.3:1 and fails AA, which is why the consent and legal buttons
+  use `-deep`).
+- `--color-amber` / `--color-amber-bright` — creative/ODDfest accent, and its
+  reading as text on Ink.
+- `--color-heat` — what anything pressable warms to on hover or press. Ember
+  Bright on Ink; plain Amber under `.theme-light`, where Ember Bright measures
+  3.2:1 on Paper. Never write `--color-amber-bright` into a hover rule.
+- `--color-clay-read` — clay at a contrast-corrected reading for small text,
+  flipping with the theme (the footer's legal line).
 - `--color-backstage`, `--color-clay`, `--color-indigo`,
   `--color-ultraviolet` — secondary surface, muted text, hero scrim tint, and
   a single rare accent used once (ODDfest page only) — see the token comment
@@ -357,6 +375,23 @@ no-preference)` around the animation declaration itself (not just a
    leaves a photograph rather than an empty frame.
 
 Anything new that moves needs the same treatment.
+
+## Shape
+
+Two corner values, and they mean something (2026-09-18):
+
+- `--radius-pill` (999px) — things you act on or that label something small:
+  buttons, tags, badges, status chips. It is the mark's own lobe shape.
+- `--radius-panel` (10px) — surfaces that float over the page: the nav dropdown,
+  the newsletter modal, the consent banner, the ticket sheet. A corner nested
+  inside one derives from it (`calc(var(--radius-panel) - 4px)`), never a new
+  literal.
+- **Square (0)** — everything that holds content: photographs, cards, grids,
+  bands, tables, ask boxes.
+
+Scrims and shadows are Ink (`rgb(14 9 11 / N%)`), never `#000`: the palette's
+premise is that the dark is rose-tinted, and a pure-black scrim over a
+photograph is a different colour from the page it sits on.
 
 ## Buttons (why CloudCannon doesn't get raw CSS)
 
