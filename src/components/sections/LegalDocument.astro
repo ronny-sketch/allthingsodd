@@ -20,7 +20,10 @@ interface Section {
 interface Props {
   lastUpdated: string;
   sections: Section[];
-  cookieSection: { title: string; body: string[]; settingsLabel: string };
+  /** Omitted by legal-template documents that are not the privacy policy
+   *  (the ODDspace event info pack and code of conduct): there is no cookie
+   *  declaration to make on a page that sets nothing the others don't. */
+  cookieSection?: { title: string; body: string[]; settingsLabel: string };
   contact: { title: string; body: string[]; name: string; email: string; address: string };
 }
 const { lastUpdated, sections, cookieSection, contact } = Astro.props;
@@ -56,70 +59,74 @@ const KIND_LABEL: Record<string, string> = {
       ))
     }
 
-    <article class="legal-section reveal" id="cookies">
-      <h2>{cookieSection.title}</h2>
-      {cookieSection.body.map((paragraph) => <p>{paragraph}</p>)}
+    {
+      cookieSection && (
+        <article class="legal-section reveal" id="cookies">
+          <h2>{cookieSection.title}</h2>
+          {cookieSection.body.map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
 
-      {
-        declaration.map((category) => (
-          <div class="legal-category">
-            <h3>
-              {category.label}
-              {category.alwaysOn && <span class="legal-tag">Always on</span>}
-            </h3>
-            <p class="legal-category-summary">{category.summary}</p>
-            {category.entries.length === 0 ? (
-              /* An empty category is stated outright rather than omitted.
-                 "We don't do this" is information a reader can act on;
-                 silence is indistinguishable from an oversight. */
-              <p class="legal-empty">Nothing in this category. We set none of these.</p>
-            ) : (
-              /* Wrapped, not styled to fit: a five-column table cannot
-                 shrink to a 320px viewport without becoming unreadable, so
-                 it scrolls inside its own box while the page itself never
-                 scrolls sideways. tabindex makes that box keyboard-
-                 reachable, which a scrollable region otherwise isn't. */
-              <div
-                class="legal-table-scroll"
-                tabindex="0"
-                role="region"
-                aria-label={`${category.label} cookies`}
-              >
-                <table>
-                  <thead>
-                    <tr>
-                      <th scope="col">Name</th>
-                      <th scope="col">Type</th>
-                      <th scope="col">Set by</th>
-                      <th scope="col">Purpose</th>
-                      <th scope="col">Kept for</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {category.entries.map((entry) => (
+          {declaration.map((category) => (
+            <div class="legal-category">
+              <h3>
+                {category.label}
+                {category.alwaysOn && <span class="legal-tag">Always on</span>}
+              </h3>
+              <p class="legal-category-summary">{category.summary}</p>
+              {category.entries.length === 0 ? (
+                /* An empty category is stated outright rather than omitted.
+                   "We don't do this" is information a reader can act on;
+                   silence is indistinguishable from an oversight. */
+                <p class="legal-empty">Nothing in this category. We set none of these.</p>
+              ) : (
+                /* Wrapped, not styled to fit: a five-column table cannot
+                   shrink to a 320px viewport without becoming unreadable, so
+                   it scrolls inside its own box while the page itself never
+                   scrolls sideways. tabindex makes that box keyboard-
+                   reachable, which a scrollable region otherwise isn't. */
+                <div
+                  class="legal-table-scroll"
+                  tabindex="0"
+                  role="region"
+                  aria-label={`${category.label} cookies`}
+                >
+                  <table>
+                    <thead>
                       <tr>
-                        <th scope="row">
-                          <code>{entry.name}</code>
-                          {entry.scope && <span class="legal-scope">{entry.scope}</span>}
-                        </th>
-                        <td>{KIND_LABEL[entry.kind] ?? entry.kind}</td>
-                        <td>{entry.provider}</td>
-                        <td>{entry.purpose}</td>
-                        <td>{entry.retention}</td>
+                        <th scope="col">Name</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Set by</th>
+                        <th scope="col">Purpose</th>
+                        <th scope="col">Kept for</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        ))
-      }
+                    </thead>
+                    <tbody>
+                      {category.entries.map((entry) => (
+                        <tr>
+                          <th scope="row">
+                            <code>{entry.name}</code>
+                            {entry.scope && <span class="legal-scope">{entry.scope}</span>}
+                          </th>
+                          <td>{KIND_LABEL[entry.kind] ?? entry.kind}</td>
+                          <td>{entry.provider}</td>
+                          <td>{entry.purpose}</td>
+                          <td>{entry.retention}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          ))}
 
-      <button type="button" class="legal-settings-btn" id="privacyConsentSettings">
-        {cookieSection.settingsLabel}
-      </button>
-    </article>
+          <button type="button" class="legal-settings-btn" id="privacyConsentSettings">
+            {cookieSection.settingsLabel}
+          </button>
+        </article>
+      )
+    }
 
     <article class="legal-section reveal">
       <h2>{contact.title}</h2>
