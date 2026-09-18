@@ -38,6 +38,11 @@ const deckFiles = import.meta.glob('../../../brand/deck/*.pptx', {
   import: 'default',
   eager: true,
 }) as Record<string, string>;
+const cssBundle = import.meta.glob('../../../brand/tokens/odd.css', {
+  query: '?url&no-inline',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
 const tokenFile = import.meta.glob('../../../brand/tokens/brand-tokens.json', {
   query: '?url&no-inline',
   import: 'default',
@@ -69,8 +74,8 @@ const fileGroups = [
   },
   {
     title: 'Tokens',
-    note: 'Every colour, type role, space, radius and duration as machine-readable JSON.',
-    files: tokenFile,
+    note: 'Every colour, type role, space, radius and duration as machine-readable JSON, and the same system as one stylesheet for anything built outside this repository — tokens, the type ladder, .wrap/.flow/.section-head/.eyebrow, the base rules and the Pill.',
+    files: { ...tokenFile, ...cssBundle },
   },
 ];
 
@@ -318,6 +323,23 @@ const doDont = [
       </figcaption>
     </figure>
   </div>
+
+  <h3 class="bb-h3">When the thing is not announced yet</h3>
+  <dl class="bb-spec">
+    <dt>The ask</dt>
+    <dd>
+      No form and no route yet? The ask is <code>hello@oddfest.co</code>, with a label that says
+      what happens: “Ask us about ODDcity.” Never a button that goes nowhere, never “Coming soon”.
+    </dd>
+    <dt>The photograph</dt>
+    <dd>
+      If it has not happened, there is no photograph of it. Borrow a real archive photograph of
+      something adjacent and credit it honestly, or leave the cells empty with their hairlines
+      showing and say in the caption that they are empty on purpose.
+    </dd>
+    <dt>The copy</dt>
+    <dd>Say what is undecided, plainly, in the same voice as everything else.</dd>
+  </dl>
 
   <h3 class="bb-h3">Rules that travel</h3>
   <dl class="bb-spec">

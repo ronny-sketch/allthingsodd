@@ -133,6 +133,18 @@ formalised as-is:
   The archive covers festivals well and business rooms poorly; shoot the next
   conference accordingly.
 
+## 5.5 What the guide could not answer
+
+`BRAND-GUIDE.md` + `brand-tokens.json` were handed to an agent with no
+repository access, which built an ODDcity page from them alone. The output was
+recognisably ODD; the gaps were all in what the guide _pointed at_ rather than
+stated. Fixed in the same pass (see the changelog): the CSS now ships as
+`brand/tokens/odd.css`, the JSON carries composed shorthands and real ramp
+opacities, and the guide gained the hero anatomy, the grid convention, the
+unannounced-work rules and ten real voice examples. The one contradiction it
+found — "no boxes" against "card borders" — is resolved: hairlines are the
+grid; a border around one lone card is not.
+
 ## 6. How the decisions were made
 
 Where the site disagreed with itself, the tie went to whichever version was

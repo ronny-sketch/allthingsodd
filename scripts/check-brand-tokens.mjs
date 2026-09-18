@@ -9,6 +9,7 @@
 // Run by `npm run quality` as `npm run check:brand`.
 
 import { readFileSync } from 'node:fs';
+import { buildCss, OUT as CSS_BUNDLE } from '../brand/tokens/build-css.mjs';
 
 const css = ['src/styles/tokens.css', 'src/styles/typography.css']
   .map((f) => readFileSync(f, 'utf8'))
@@ -67,6 +68,12 @@ for (const [step, value] of Object.entries(tokens.color.opacityRamp.dark))
   expect(`--color-paper-${step}`, value, `opacityRamp.dark.${step}`);
 for (const [step, value] of Object.entries(tokens.color.opacityRamp.light))
   expect(`--color-ink-${step}`, value, `opacityRamp.light.${step}`);
+
+// brand/tokens/odd.css is the same CSS assembled for use outside this repo.
+// It is generated, so the only way it can be wrong is by being stale.
+if (readFileSync(CSS_BUNDLE, 'utf8') !== (await buildCss())) {
+  failures.push(`${CSS_BUNDLE} is out of date — run \`node brand/tokens/build-css.mjs\``);
+}
 
 if (failures.length) {
   console.error(

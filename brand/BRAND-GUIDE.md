@@ -6,6 +6,7 @@ before working on an ODD surface, read this one.
 
 - **Designed for humans:** the same rules, illustrated, live at `/brand-book/`.
 - **Machine-readable values:** `brand/tokens/brand-tokens.json`.
+- **The CSS, for anything outside this repo:** `brand/tokens/odd.css` (§3.5).
 - **Canonical for the web:** `src/styles/tokens.css` + `src/styles/typography.css`.
   If those and this file disagree, the CSS wins and this file is stale.
   `npm run check:brand` fails the build when the JSON drifts from the CSS.
@@ -58,6 +59,71 @@ Never fix either one by adding decoration.
 
 ---
 
+## 3.5 Working outside this repository
+
+Building something ODD that is not this website — a standalone page, a
+prototype, an email, a partner's microsite? Take two files and nothing else:
+
+- **`brand/tokens/odd.css`** — the website's own CSS in one file: every token,
+  the five type roles, `.wrap`, `.wrap-wide`, `.flow`, `.section-head`,
+  `.eyebrow`, the section rhythm, the base rules, the grain layer, the Pill and
+  `.theme-light`. It is generated from `src/styles/` and checked, so it is never
+  a second version of the truth.
+- **`brand/fonts/*.ttf`** — `@font-face` them as `Forta` and `Gabarito`.
+
+The page skeleton that works:
+
+```html
+<body>
+  <!-- Ink ground, Gabarito, the desktop scale -->
+  <div class="grain" aria-hidden="true"></div>
+  <section>
+    <!-- owns half the section gap on each side -->
+    <div class="wrap flow">
+      <!-- the parent owns the space between blocks -->
+      <div class="section-head">
+        <p class="eyebrow">What ODDfest is</p>
+        <h2>One shared week, made by Helsinki's creative communities.</h2>
+      </div>
+      <p>…</p>
+      <a class="pill pill-solid" href="…">Submit an event idea</a>
+    </div>
+  </section>
+</body>
+```
+
+**The hero**, which is the one composition the classes do not give you:
+
+- The product lockup at `width: min(100%, 30rem)`, or the mark at
+  `height: 1.35rem` if this is ODD itself. Top left, or centred over a
+  photograph.
+- **One statement**, the page's `<h1>`, at `--text-hero` (`--text-display` if
+  the page is a document rather than a front door). Two sentences at most:
+  premise in `--color-paper-40`, point in `--color-paper`.
+- A meta line under it: Small, `--color-paper-40`, `Product · City · Year`.
+- Then the ask, or nothing. No eyebrow above a lockup — the lockup is the label.
+- A photograph behind it needs the Ink scrim: `linear-gradient` from
+  `rgb(14 9 11 / 78%)` at the text to `rgb(14 9 11 / 10%)` away from it.
+
+**Grid convention** (the breakpoints are in the tokens; this is what to do at
+them): three cells across from 820px, two from 640px, one below. An editorial
+column is 6–8 of 12; a sticky label 2–3. A cell grid is `gap: 1px` on a
+`--color-paper-12` background, so the ground shows through as the rule.
+
+**Cards.** "No boxes" means no border drawn around free-floating content. A
+cell in a grid takes hairlines, because those hairlines _are_ the grid. Never a
+radius, never a shadow, never a border that outlines one lone card.
+
+**Pills** need a 44px minimum height on touch: the Pill in `odd.css` already
+does this under `@media (hover: none)`.
+
+**The living layer.** `.grain` is in `odd.css` and is enough on its own — one
+living thing per view is the rule, not one of each. Steam, rails, warping type
+and the archive mosaic are website features; do not reimplement them badly
+somewhere else, and never add motion that content depends on.
+
+---
+
 ## 4. When creating a new All Things ODD page
 
 1. **Content first.** Real copy goes in `src/content/pages/<page>.json` with a
@@ -104,6 +170,24 @@ A campaign is the same system pushed harder, not a new look.
 - Deadlines, prices and dates come from the content files or the ticket
   catalog. If something is undecided, say so in the copy.
 - Do not introduce a campaign logo, a campaign colour or a campaign typeface.
+
+## 6.5 When the thing is not announced yet
+
+Most new ODD surfaces are for something with no date, no venue, no price and
+no channel. The rules do not bend for that; these two answer it:
+
+- **The ask.** If there is no form and no route yet, the ask is
+  `hello@oddfest.co` with a label that says what happens: _Ask us about
+  ODDcity_, _Tell us what you would bring_. Never a button that goes nowhere,
+  never "Coming soon", never a fake sign-up.
+- **The photograph.** If the thing has not happened, there is no photograph of
+  it. Use a real ODD archive photograph of something adjacent, credited
+  honestly — or leave the cells empty with their hairlines showing and say in
+  the caption that they are empty because it has not happened yet. Never stock,
+  never a render, never a grey placeholder box.
+- Say what is undecided, in the copy, in the ODD voice: "Nothing here is
+  announced. There is no date, no venue and no programme, because none of them
+  have been decided."
 
 ## 7. When building a new sub-brand
 
@@ -160,6 +244,33 @@ documented departure. A new type size needs a reason the other five cannot
 cover — there has not been one yet.
 
 ---
+
+## 10.5 Voice, in ten real lines
+
+From the site, so they are the calibration, not an impression of it:
+
+- "One shared week, made by Helsinki's creative communities."
+- "You bring the idea. ODD brings the week together."
+- "Finland has creative talent. What's missing are the structures that help it
+  grow, connect and last."
+- "An idea still at the notes-on-your-phone stage is a fine thing to send."
+- "Creative work needs more than moments."
+- "Don't just hear the argument. Experience it."
+- "We do not claim to represent the creative field."
+- "You are the heroes of ODD."
+- "Ways to take part."
+- "Stay ODD."
+
+Banned constructions, in ODD's own words: adjective stacks ("sharp strategy,
+bold creativity, real-world execution"), "world-class", "revolutionary",
+"we believe in the power of…", "leveraging", "synergies", "ecosystem" as a
+compliment, "unlock", "curated" about anything ODD did not curate, "coming
+soon", exclamation marks, a pun on "odd" that has to be explained, and any
+sentence another festival could have written unchanged.
+
+Headlines are sentences and end with a full stop. CTAs are verb-first and
+under five words. Numbers come from the content files or the backend, never
+from a draft.
 
 ## 11. Cheat sheet
 
@@ -240,6 +351,7 @@ transition: color var(--duration-fast) ease;
 ```
 src/styles/tokens.css        colour, space, radius, motion, fonts  (canonical)
 src/styles/typography.css    the five-size ladder                  (canonical)
+brand/tokens/odd.css         all of it in one file, for use elsewhere (generated)
 src/styles/layout.css        containers, section rhythm, .flow
 src/components/primitives/   Logo, Pill, SocialIcon, NewsletterForm
 src/components/sections/     every section shape the site has

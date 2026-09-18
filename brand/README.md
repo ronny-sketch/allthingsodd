@@ -14,7 +14,9 @@ brand/
 ├── AUDIT.md             what the 2026-09-18 audit found in the live site
 ├── CHANGELOG.md         what was standardised, and why
 ├── tokens/
-│   └── brand-tokens.json  every value, machine-readable
+│   ├── brand-tokens.json  every value, machine-readable
+│   ├── odd.css            the whole system as one stylesheet (generated)
+│   └── build-css.mjs      generates it from src/styles/
 ├── logos/
 │   ├── build.py         generates every lockup from the mark + Forta
 │   ├── rasterize.mjs    PNG exports of everything in svg/
@@ -50,6 +52,7 @@ mark, 16px for a lockup.
 
 ```bash
 python3 brand/logos/build.py      # every SVG, plus the website's own copies
+node brand/tokens/build-css.mjs   # odd.css, from src/styles/
 node brand/logos/rasterize.mjs    # the PNGs (uses the site's Playwright)
 cd brand/deck/src && npm install && npm run build && npm run preview
 ```
