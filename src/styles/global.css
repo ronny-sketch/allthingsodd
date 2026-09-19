@@ -206,21 +206,34 @@ a {
   }
 }
 
-/* custom cursor host — Cursor.astro toggles `cursor-ready` once its script attaches */
+/* Custom cursor host — src/scripts/cursor.ts adds `cursor-ready` on the
+   first mouse/pen event and removes it on a touch, so a hybrid device has
+   exactly one cursor at a time. `cursor` inherits, so the elements whose
+   native cursor carries meaning the drawn arrow can't — text entry (I-beam),
+   choice (select), embedded documents (they draw their own), disabled
+   controls (not-allowed) — get explicit, higher-specificity overrides. The
+   script hides the arrow over the same elements (its NATIVE selector);
+   keep the two lists in sync. */
 body.cursor-ready,
 body.cursor-ready * {
   cursor: none !important;
 }
-/* Native text/pointer cursor over text-entry and choice controls — the
-   playful custom cursor is a distinctive site detail, but it shouldn't
-   replace the one visual cue a visitor has for "this is editable text" or
-   "this opens a list of choices" (2026-08-31 final implementation pass).
-   Higher specificity than the blanket rule above (two classes vs. one),
-   still under an explicit !important so it actually wins over it. */
-body.cursor-ready input,
-body.cursor-ready textarea,
-body.cursor-ready select {
+body.cursor-ready
+  :is(
+    input,
+    textarea,
+    select,
+    [contenteditable],
+    [contenteditable] *,
+    [role='textbox'],
+    iframe,
+    embed,
+    object
+  ) {
   cursor: auto !important;
+}
+body.cursor-ready :is(:disabled, [aria-disabled='true']) {
+  cursor: not-allowed !important;
 }
 
 /* keyboard focus */

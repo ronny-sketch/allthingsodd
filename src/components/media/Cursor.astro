@@ -1,7 +1,12 @@
 ---
-// Playful custom cursor: a hand-drawn pointer that flips through 8 material frames.
-// Frames are optimized via astro:assets at the one display size this ever renders at,
-// then handed to the client script as a JSON array of URLs (see src/scripts/cursor.ts).
+// The hand-drawn cursor: a wooden pointer that flips through 8 material
+// frames. Rebuilt 2026-09-19 — see src/scripts/cursor.ts for the behaviour.
+//
+// All eight frames are in the DOM from first paint, stacked, one visible.
+// The old version swapped a single <img>'s src on a timer, which was a new
+// image request + decode every 160ms for the life of every page; a flip is
+// now an opacity toggle on two already-decoded layers. Frames are optimized
+// via astro:assets at 2x the 34px display width.
 import { getImage } from 'astro:assets';
 import f1 from '../../assets/cursor/frame-1.png';
 import f2 from '../../assets/cursor/frame-2.png';
@@ -12,29 +17,100 @@ import f6 from '../../assets/cursor/frame-6.png';
 import f7 from '../../assets/cursor/frame-7.png';
 import f8 from '../../assets/cursor/frame-8.png';
 
-const sources = await Promise.all(
+const frames = await Promise.all(
   [f1, f2, f3, f4, f5, f6, f7, f8].map((src) => getImage({ src, width: 68, format: 'webp' })),
 );
-const frames = sources.map((s) => s.src);
 ---
 
-<img class="cursor-img" alt="" aria-hidden="true" data-frames={JSON.stringify(frames)} />
+<div class="cursor" aria-hidden="true">
+  <div class="cursor-ember"></div>
+  <div class="cursor-arrow">
+    {
+      frames.map((f, i) => (
+        <img
+          src={f.src}
+          width={f.attributes.width}
+          height={f.attributes.height}
+          alt=""
+          decoding="async"
+          fetchpriority="low"
+          class:list={[i === 0 && 'on']}
+        />
+      ))
+    }
+  </div>
+</div>
 
 <script src="../../scripts/cursor.ts"></script>
 
 <style>
-  .cursor-img {
+  /* Root sits exactly on the pointer; children are offset from that point.
+     Sizes are px on purpose — the cursor does not follow the desktop root
+     scale (docs/design-system.md#desktop-scale). */
+  .cursor {
     position: fixed;
     top: 0;
     left: 0;
     z-index: 9999;
     pointer-events: none;
+    opacity: 0;
+    will-change: transform;
+    transition: opacity 0.12s ease;
+  }
+  .cursor.is-on {
+    opacity: 1;
+  }
+  /* The drawn tip is 4px in, 0.2px down from the art's corner: shift the
+     art so the tip lands on the root, and pivot every lean/press on it. */
+  .cursor-arrow {
+    position: absolute;
+    left: -4px;
+    top: -0.2px;
+    width: 34px;
+    height: 38.8px;
+    transform-origin: 4px 0.2px;
+    will-change: transform;
+  }
+  .cursor-arrow img {
+    position: absolute;
+    inset: 0;
     width: 34px;
     height: auto;
-    display: none;
+    opacity: 0;
+    /* On the static frames, not the moving wrapper, so the shadow is
+       rasterised once per texture rather than every frame. Ink, per brand. */
     filter: drop-shadow(0 2px 6px rgb(14 9 11 / 55%));
   }
-  :global(body.cursor-ready) .cursor-img {
-    display: block;
+  .cursor-arrow img.on {
+    opacity: 1;
+  }
+  /* Heat, light not paint: a soft ember under the tip, only over things you
+     can act on, tighter and brighter while pressing. */
+  .cursor-ember {
+    position: absolute;
+    left: -20px;
+    top: -20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--color-heat) 0%, transparent 70%);
+    opacity: 0;
+    will-change: transform;
+    transition:
+      opacity var(--duration-fast) var(--ease-out-expo),
+      scale var(--duration-fast) var(--ease-out-expo);
+  }
+  .cursor.is-hot .cursor-ember {
+    opacity: 0.55;
+  }
+  .cursor.is-down .cursor-ember {
+    opacity: 0.85;
+    scale: 1.4;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cursor,
+    .cursor-ember {
+      transition: none;
+    }
   }
 </style>
