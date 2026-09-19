@@ -98,6 +98,11 @@ const INVISIBLE_BY_DESIGN = [
   // The video layer before playback is confirmed — the poster is what is on
   // screen (see src/scripts/autoplay-video.ts).
   '[data-video-stage] video',
+  // The hand-drawn cursor (src/components/media/Cursor.astro): seven of its
+  // eight stacked material frames and its ember are transparent by
+  // definition, and the whole thing is a decoration that only exists once a
+  // mouse or pen moves — never on the touch devices this suite emulates.
+  '.cursor *',
 ];
 
 /**
