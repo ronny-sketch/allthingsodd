@@ -365,7 +365,7 @@ no-preference)` around the animation declaration itself (not just a
    reduced-motion override after it — the animation simply never attaches
    under reduced motion).
 2. **JS `requestAnimationFrame` loops** (mosaic Ken Burns, hero tilt, filmstrip
-   drift) — each checks
+   drift, the custom cursor) — each checks
    `window.matchMedia('(prefers-reduced-motion: reduce)')` before starting and
    either no-ops or falls back to a static equivalent. Autoplaying video gets
    the same treatment via `src/scripts/autoplay-video.ts`, which keeps the
