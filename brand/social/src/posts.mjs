@@ -119,8 +119,7 @@ export const posts = [
       <div class="pad lineup">
         <p class="eyebrow">ODDfest 2026 · Music</p>
         <ul class="lineup-list">${MUSIC_2026.map((n) => `<li>${n}</li>`).join('')}</ul>
-      </div>
-      <div class="foot"><span>allthingsodd.co/oddfest</span><span class="mark"><img src="images/odd-mark-paper.png" alt=""></span></div>`,
+      </div>`,
   },
   {
     n: 4,
@@ -167,8 +166,7 @@ export const posts = [
         <p class="t-hero">What would you put in the week?</p>
         <p class="t-body muted">An exhibition, a performance, a workshop, a screening, a dinner, an open studio, a club night — or a format nobody has tried yet.</p>
         <span class="pill-mock">Submit an event idea</span>
-      </div>
-      <div class="foot dark"><span>allthingsodd.co/oddfest</span><span class="mark"><img src="images/odd-mark-ink.png" alt=""></span></div>`,
+      </div>`,
   },
   {
     n: 7,
@@ -262,8 +260,7 @@ export const posts = [
       <div class="pad flow-center">
         <p class="eyebrow">ODDference · The premise</p>
         <p class="t-hero">What can business learn from creative expertise?</p>
-      </div>
-      <div class="foot"><span>allthingsodd.co/oddference</span><span class="mark"><img src="images/odd-mark-paper.png" alt=""></span></div>`,
+      </div>`,
   },
   {
     n: 13,
@@ -281,8 +278,7 @@ export const posts = [
           <img src="images/logo-suomenkulttuurirahasto.svg" alt=""><img src="images/logo-kauppakamari.svg" alt="">
           <img src="images/logo-lasipalatsikortteli.svg" alt=""><img src="images/logo-dottir.svg" alt="">
         </div>
-      </div>
-      <div class="foot dark"><span>ODDfest 2026</span><span class="mark"><img src="images/odd-mark-ink.png" alt=""></span></div>`,
+      </div>`,
   },
   {
     n: 14,
@@ -311,8 +307,7 @@ export const posts = [
       <div class="pad flow-center">
         <p class="eyebrow">Why ODD</p>
         <p class="t-hero"><span class="quiet">Finland has creative talent.</span> What’s missing are the structures that help it grow, connect and last.</p>
-      </div>
-      <div class="foot"><span>allthingsodd.co</span><span class="mark"><img src="images/odd-mark-paper.png" alt=""></span></div>`,
+      </div>`,
   },
   {
     n: 16,
@@ -327,8 +322,7 @@ export const posts = [
         <p class="eyebrow">What happened in 2026</p>
         <p class="figure">274</p>
         <p class="t-heading">people, artists, collectives and organisations made ODDfest 2026. Together.</p>
-      </div>
-      <div class="foot"><span>allthingsodd.co/oddfest-2026</span><span class="mark"><img src="images/odd-mark-paper.png" alt=""></span></div>`,
+      </div>`,
   },
   {
     n: 17,
@@ -350,8 +344,7 @@ export const posts = [
           <p class="eyebrow business">For business</p>
           <p class="t-heading">Get closer to creative expertise and the people behind it.</p>
         </div>
-      </div>
-      <div class="foot dark"><span>ODDfest · ODDference · ODDspace</span><span class="mark"><img src="images/odd-mark-ink.png" alt=""></span></div>`,
+      </div>`,
   },
   {
     n: 18,
@@ -398,8 +391,7 @@ export const posts = [
         <p class="eyebrow">ODDfest 2026 · Thank you</p>
         <p class="t-display quote"><span class="quiet">“A hero is an ordinary individual who finds the strength to</span> persevere and endure <span class="quiet">in spite of overwhelming obstacles.”</span></p>
         <p class="eyebrow">— Christopher Reeve</p>
-      </div>
-      <div class="foot"><span>allthingsodd.co/oddfest-2026</span><span class="mark"><img src="images/odd-mark-paper.png" alt=""></span></div>`,
+      </div>`,
   },
 ];
 
@@ -447,8 +439,7 @@ export const carousel = [
       <div class="pad flow-center">
         <p class="eyebrow">One night · ODDtheatre</p>
         <p class="t-hero">Ten collectives, one hall, no rehearsal.</p>
-      </div>
-      <div class="foot"><span>Swipe →</span><span class="mark"><img src="images/odd-mark-paper.png" alt=""></span></div>`,
+      </div>`,
   },
   {
     n: 2,
@@ -468,8 +459,7 @@ export const carousel = [
         <p class="eyebrow">ODDfest 2027</p>
         <p class="t-display">Bring the thing only you would make.</p>
         <span class="pill-mock">Submit an event idea</span>
-      </div>
-      <div class="foot dark"><span>allthingsodd.co/oddfest</span><span class="mark"><img src="images/odd-mark-ink.png" alt=""></span></div>`,
+      </div>`,
   },
 ];
 
