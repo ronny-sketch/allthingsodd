@@ -267,6 +267,32 @@ real decisions worth recording:
      a slow self-scroll that stops when the reader scrolls; under reduced
      motion the link just jumps to the credits and plays the soundtrack.
 
+     **Filmed for social media, 2026-09-19.** Ronny wanted the page as a
+     9:16 video (thank you, we are back, come to the afterparty, see the
+     new site), so the page got a real opening and two beats, and a
+     renderer. The hero is one statement in two inks (`SpaceHero`'s new
+     optional `premise` + `opening` props — "You are the heroes of ODD."
+     quiet at Heading, "An ODD thousand thank yous." loud at Display; the
+     photographs fly in around cell-1, which is the LCP image and is never
+     animated on opacity; ODDspace's heroes pass neither prop and are
+     unchanged). Every credited name carries `.reveal` on its own `<li>`,
+     so the roll shows names rising as they arrive. Two sections were added
+     from the JSON: the afterparty invitation (`afterparty` — its `facts`
+     rows are the only place on the site that states the date and doors
+     time, and `show: false` removes it) and a sign-off button to the new
+     site (`signoff.link`). `scripts/render-oddfest-2026-film.mjs` renders
+     the page frame by frame at 360×640 CSS px × 3 (1080×1920): it hides the
+     site chrome with an injected stylesheet, drives `scrollY` and every
+     CSS animation from its own clock (`document.getAnimations()` stepped
+     per frame), and muxes the soundtrack from frame 0 with ffmpeg — so the
+     roll and the music line up by construction. Playwright's `recordVideo`
+     was tried and rejected: it captures at CSS-pixel size (a phone layout
+     came out as a 360×640 picture in a 1080×1920 canvas) and its 25 fps
+     wall-clock capture drops frames. Film mode is entirely the renderer's:
+     no page script or stylesheet branches on it, and the page ships nothing
+     that exists only for the camera. Output lands in `dist-film/`
+     (gitignored).
+
    One thing that is deliberately _not_ in the rebuild: the "what has
    happened before" section cites only figures this site already publishes
    elsewhere (About's 2025 snapshot and /media's archive record). ODDfest

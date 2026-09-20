@@ -29,13 +29,32 @@ interface LinkCta {
 interface Props {
   photos: Photo[];
   title: string;
+  // The quiet first sentence of a two-ink h1 (2026-09-19, the ODDfest 2026
+  // thank-you): set at Heading and dimmed above `title`, which stays the
+  // loud line at Display. Without it the h1 is `title` alone, as before.
+  premise?: string;
+  // Opt-in opening (same page): the photographs collide into the frame
+  // around cell-1 and the text arrives in beats, ODDfest's register (see
+  // Hero.astro's cell-fly) rather than ODDspace's still one. Off by default
+  // so every ODDspace hero keeps its approved static composition.
+  opening?: boolean;
   meta?: string;
   logo?: ImageMetadata;
   logoAlt?: string;
   primaryCta?: LinkCta;
   secondaryCta?: LinkCta;
 }
-const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = Astro.props;
+const {
+  photos,
+  title,
+  premise,
+  opening = false,
+  meta,
+  logo,
+  logoAlt = '',
+  primaryCta,
+  secondaryCta,
+} = Astro.props;
 ---
 
 {
@@ -44,7 +63,7 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
      candidate, so it must not start at opacity 0 waiting on an
      IntersectionObserver. Its entrance is a CSS animation instead. */
 }
-<header class="space-hero">
+<header class:list={['space-hero', opening && 'has-opening']}>
   <div class="space-hero-grid" aria-hidden="true">
     {
       photos.map((p, i) => (
@@ -72,7 +91,18 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
         </div>
       )
     }
-    <h1 class="space-hero-title">{title}</h1>
+    <h1 class="space-hero-title">
+      {
+        premise ? (
+          <>
+            <span class="space-hero-premise">{premise}</span>{' '}
+            <span class="space-hero-point">{title}</span>
+          </>
+        ) : (
+          title
+        )
+      }
+    </h1>
     {meta && <p class="space-hero-meta">{meta}</p>}
     {
       (primaryCta || secondaryCta) && (
@@ -334,6 +364,18 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
       0 1px 3px rgb(14 9 11 / 75%),
       0 8px 32px rgb(14 9 11 / 50%);
   }
+  /* The two-ink h1: premise at Heading in the meta line's 70% swatch, point
+     at the title's own Display size, one flow step apart. */
+  .space-hero-premise {
+    display: block;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: rgb(226 223 222 / 70%);
+  }
+  .space-hero-point {
+    display: block;
+    margin-top: var(--space-3);
+  }
   .space-hero-meta {
     margin: 0;
     font: var(--text-small);
@@ -422,6 +464,120 @@ const { photos, title, meta, logo, logoAlt = '', primaryCta, secondaryCta } = As
     }
     to {
       opacity: 1;
+      transform: none;
+    }
+  }
+  /* The opening (`opening` prop, 2026-09-19). Cell-1 is the LCP photograph
+     and is never animated on opacity: it settles from a 1.06 scale while
+     the other cells fly in around it, each from its own fixed offset (the
+     same range Hero.astro's mosaic draws at random), 0.06 s apart. Then the
+     point line, the meta and the pills arrive after the last photograph has
+     landed. The offsets live in the keyframes' `from`, not in a base state,
+     so a cell whose animation is something else (the phone's crossfade
+     layer, cells 5-8) never inherits them; cells 5-8 only fly on desktop,
+     where they are the visible grid rather than a second layer. Everything
+     uses `both` fill, so the settled frame is also the reduced-motion and
+     the no-JS frame. */
+  .has-opening .cell-1 {
+    --i: 0;
+  }
+  .has-opening .cell-2 {
+    --i: 1;
+    --ex: 40px;
+    --ey: -24px;
+    --er: 2.5deg;
+  }
+  .has-opening .cell-3 {
+    --i: 2;
+    --ex: -28px;
+    --ey: -36px;
+    --er: 2deg;
+  }
+  .has-opening .cell-4 {
+    --i: 3;
+    --ex: 32px;
+    --ey: 30px;
+    --er: -2deg;
+  }
+  .has-opening .cell-5 {
+    --i: 4;
+    --ex: -40px;
+    --ey: 20px;
+    --er: 3deg;
+  }
+  .has-opening .cell-6 {
+    --i: 5;
+    --ex: 24px;
+    --ey: -32px;
+    --er: -2.5deg;
+  }
+  .has-opening .cell-7 {
+    --i: 6;
+    --ex: -30px;
+    --ey: -20px;
+    --er: -2deg;
+  }
+  .has-opening .cell-8 {
+    --i: 7;
+    --ex: 36px;
+    --ey: 26px;
+    --er: 2.5deg;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .has-opening .space-hero-cell:where(.cell-2, .cell-3, .cell-4) {
+      animation: space-hero-fly 0.95s var(--ease-out-expo) both;
+      animation-delay: calc(var(--i) * 0.06s);
+    }
+    .has-opening .cell-1 {
+      animation: space-hero-settle 1.6s var(--ease-out-expo) both;
+    }
+    .has-opening .space-hero-point {
+      animation: space-hero-in 0.9s 0.9s var(--ease-out-expo) both;
+    }
+    .has-opening .space-hero-meta {
+      animation-delay: 1.3s;
+    }
+    .has-opening .space-hero-ctas {
+      animation-delay: 1.45s;
+    }
+  }
+  @media (min-width: 821px) and (prefers-reduced-motion: no-preference) {
+    .has-opening .space-hero-cell:where(.cell-5, .cell-6, .cell-7, .cell-8) {
+      animation: space-hero-fly 0.95s var(--ease-out-expo) both;
+      animation-delay: calc(var(--i) * 0.06s);
+    }
+  }
+  /* On the phone cells 5-8 are the crossfade layer over slots 1-4, and the
+     default phase offsets (-8/-16/-24 s) put two of them mid-cycle, fully
+     visible, at load — which would cover the bottom row's fly-in. With an
+     opening they all start in the hidden 38% of the cycle and turn over one
+     after another from ~3 s, once the frame has assembled. */
+  @media (max-width: 820px) and (prefers-reduced-motion: no-preference) {
+    .has-opening .cell-6 {
+      animation-delay: -3s;
+    }
+    .has-opening .cell-7 {
+      animation-delay: -6s;
+    }
+    .has-opening .cell-8 {
+      animation-delay: -9s;
+    }
+  }
+  @keyframes space-hero-fly {
+    from {
+      opacity: 0;
+      transform: translate(var(--ex, 0), var(--ey, 0)) rotate(var(--er, 0deg)) scale(0.82);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes space-hero-settle {
+    from {
+      transform: scale(1.06);
+    }
+    to {
       transform: none;
     }
   }
