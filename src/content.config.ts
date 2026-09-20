@@ -1645,12 +1645,17 @@ const pages = defineCollection({
               .optional(),
           }),
         ),
-        cookieSection: z.object({
-          title: z.string(),
-          body: z.array(z.string()),
-          /** Label on the button that reopens the consent banner. */
-          settingsLabel: z.string(),
-        }),
+        /** Only the privacy policy declares cookies. The other documents on
+         *  this template (the ODDspace event info pack and code of conduct)
+         *  set nothing of their own, so they leave this out entirely. */
+        cookieSection: z
+          .object({
+            title: z.string(),
+            body: z.array(z.string()),
+            /** Label on the button that reopens the consent banner. */
+            settingsLabel: z.string(),
+          })
+          .optional(),
         contact: z.object({
           title: z.string(),
           body: z.array(z.string()),

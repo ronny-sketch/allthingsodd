@@ -1,0 +1,25 @@
+---
+// The pack an organiser gets once their booking is agreed: spaces and
+// capacities, house rules, the alarm window, clean-up and emergencies.
+// A document, not a marketing page — so it uses the `legal` template and
+// the sitewide dark ground rather than SubpageFrame's product chrome.
+import { getEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import PageIntro from '../../components/sections/PageIntro.astro';
+import LegalDocument from '../../components/sections/LegalDocument.astro';
+
+const entry = await getEntry('pages', 'oddspace-event-info-pack');
+if (!entry || entry.data._template !== 'legal')
+  throw new Error('oddspace-event-info-pack.json content entry missing or malformed');
+const page = entry.data;
+
+const sections = page.sections.map((section) => ({
+  ...section,
+  items: section.items?.map((item) => (typeof item === 'string' ? item : item.text)),
+}));
+---
+
+<Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
+  <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
+  <LegalDocument lastUpdated={page.lastUpdated} sections={sections} contact={page.contact} />
+</Layout>
