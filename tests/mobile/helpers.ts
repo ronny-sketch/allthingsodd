@@ -7,6 +7,8 @@ export const ROUTES = [
   '/oddfest-2026',
   '/oddference',
   '/oddspace',
+  '/oddspace/event-info-pack',
+  '/oddspace/code-of-conduct',
   '/work-with-odd',
   '/oddagency',
   '/about',
