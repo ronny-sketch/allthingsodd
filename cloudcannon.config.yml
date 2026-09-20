@@ -1227,8 +1227,6 @@ collections_config:
         label: Social media links
         comment: Shown in the footer and the fullscreen menu.
         cascade: true
-        options:
-          subtype: object
       contact:
         type: array
         label: Contact emails
