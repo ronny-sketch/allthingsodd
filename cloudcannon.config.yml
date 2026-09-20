@@ -774,6 +774,15 @@ collections_config:
           to be there, so empty it at your peril.
         options:
           subtype: object
+      contents:
+        type: text
+        label: Contents heading (long documents only)
+        comment: >-
+          Fill this in and the page grows a contents list linking to every
+          section — used by the ODDspace event info pack, which is long
+          enough to need one. Leave it empty and no list is shown, which is
+          what Privacy & cookies does. The wording is the heading above the
+          list, e.g. "What's in here".
       lastUpdated:
         type: text
         label: Last updated (legal pages only)
@@ -786,8 +795,10 @@ collections_config:
         label: Policy sections (legal pages only)
         comment: >-
           The body of the policy, in order. Each section is a heading, one or
-          more paragraphs, and an optional bulleted list. The cookie table is
-          NOT edited here — it is generated from the site's own consent
+          more paragraphs, an optional bulleted list, and an optional
+          photograph with its own alt text and caption — the ODDspace event
+          info pack uses that to show each room. The cookie table is NOT
+          edited here — it is generated from the site's own consent
           configuration so it cannot disagree with what the site actually
           sets.
         options:
