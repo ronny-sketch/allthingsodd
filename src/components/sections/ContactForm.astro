@@ -1,15 +1,7 @@
 ---
-// Real submission via Web3Forms (web3forms.com) — a free access key, no
-// backend of ours needed. Until a key is set in src/content/pages/contact.json
-// the form still renders (so layout/copy stay reviewable) but tells the
-// visitor it isn't connected yet instead of silently discarding input. See
-// docs/editing.md#contact-form.
-//
-// Topic routing (2026-09-11): a Web3Forms key is bound to one recipient
-// address, so the visitor's chosen topic picks the key, and each key points
-// at a Google Group rather than at a list of people — see content.config.ts's
-// `formAccessKeys` note for why the fan-out deliberately lives in Workspace
-// admin and not in this repo.
+// Submits to the Growth OS Worker's /api/contact (see contact-form.ts),
+// which routes each topic to its Google Group on oddfest.co. Who sits behind
+// partners@/space@/fest@ is Workspace admin's business, not this repo's.
 import { getEntry } from 'astro:content';
 import Pill from '../primitives/Pill.astro';
 import SocialIcon from '../primitives/SocialIcon.astro';
@@ -18,36 +10,17 @@ import { CONTACT_TOPICS } from '../../scripts/contact-topics';
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { contact, social, formAccessKeys } = site.data;
-
-// "Connected" means at least the General key exists: every topic falls back
-// to it, so one key is enough for the form to genuinely send. Checking each
-// topic separately would show the not-connected note to a visitor whose
-// message would in fact arrive.
-const connected = Boolean(formAccessKeys?.general?.trim());
+const { contact, social } = site.data;
 ---
 
 <section class="contact-section">
   <div class="wrap contact-grid reveal">
-    <form
-      class="contact-form"
-      id="contactForm"
-      data-access-keys={JSON.stringify(formAccessKeys ?? {})}
-    >
+    <form class="contact-form" id="contactForm">
       {
-        /* The subject line the message arrives with in ODD's inbox — the
-          site it came from, not the address it goes to. Updated 2026-09-03
-          with the domain cutover: hello@oddfest.co stays the canonical
-          address (a separate, unapproved migration), but the old oddfest.co
-          site still exists and still has its own forms, so a subject naming
-          it made messages from this site indistinguishable from that one's. */
+        /* Set by contact-form.ts from a ?topic= deep link: the wording the inbox
+          subject uses, so two different ODDfest asks never read as one. */
       }
-      <input
-        type="hidden"
-        name="subject"
-        id="cf-subject"
-        value="New message from the allthingsodd.co contact form"
-      />
+      <input type="hidden" name="regarding" id="cf-regarding" value="" />
       <p class="contact-topic-note" id="cf-topic-note" hidden></p>
       {
         /* The routing control. It is a real, visible field rather than a
@@ -95,13 +68,6 @@ const connected = Boolean(formAccessKeys?.general?.trim());
         <Pill type="submit" variant="solid">Send message</Pill>
         <p class="form-status" role="status" aria-live="polite"></p>
       </div>
-      {
-        !connected && (
-          <p class="form-note">
-            This form isn't connected yet — email us directly using the addresses alongside it.
-          </p>
-        )
-      }
     </form>
 
     <div class="contact-direct">
@@ -215,13 +181,6 @@ const connected = Boolean(formAccessKeys?.general?.trim());
     margin: 0;
     font: var(--text-small);
     color: var(--color-paper-60);
-  }
-  /* The notes sit on the form's own gap — no negative margin clawing it
-     back. */
-  .form-note {
-    margin: 0;
-    font: var(--text-small);
-    color: var(--color-paper-40);
   }
   .contact-topic-note {
     margin: 0;

@@ -250,59 +250,23 @@ sign-up link above.
 
 ## Contact form setup
 
-The Contact page's form submits via [Web3Forms](https://web3forms.com) — a
-free service that emails you a submission, no backend of ours required.
+The Contact page's form and the Work with ODD enquiry form both post to the
+Growth OS Worker (`../odd-growth-os`, `/api/contact` and
+`/api/business-enquiry`), which emails the right team via Resend:
 
-The form asks the visitor what their message is about, and each topic goes to
-a different address. A Web3Forms access key is tied to exactly one recipient,
-so there is one key per topic:
+| Topic on the form         | Sends to              |
+| ------------------------- | --------------------- |
+| Something else / not sure | `hello@oddfest.co`    |
+| Partnerships & ODDference | `partners@oddfest.co` |
+| ODDspace                  | `space@oddfest.co`    |
+| ODDfest                   | `fest@oddfest.co`     |
 
-| Topic on the form         | Key field    | Sends to              |
-| ------------------------- | ------------ | --------------------- |
-| Something else / not sure | `general`    | `hello@oddfest.co`    |
-| Partnerships & ODDference | `partnering` | `partners@oddfest.co` |
-| ODDspace                  | `oddspace`   | `space@oddfest.co`    |
-| ODDfest                   | `oddfest`    | `fest@oddfest.co`     |
-
-The three `partners@`/`space@`/`fest@` addresses are **Google Groups**, not
-mailboxes. Who receives each topic is the group's membership, changed in
-Google Workspace admin — not here, and not in the code. That is the whole
-point of the setup: teams change more often than this site deploys, and
-deploying needs a manual step (see `docs/deployment.md`), so a list of
-people's addresses living in the repo would quietly go stale and keep mailing
-someone who left. Each group also contains `hello@oddfest.co`, so the shared
-inbox sees every message without being addressed separately.
-
-`hello@allthingsodd.co` is a Workspace **domain alias** of `hello@oddfest.co`
-— the same mailbox, so adding it as a second recipient would only deliver two
-copies of everything to one inbox.
-
-The **Work with ODD** enquiry form uses the same `partnering` key: it writes
-the enquiry to Attio as it always has, and now also emails
-`partners@oddfest.co` so somebody is actually told it arrived. That is why the
-keys live under **Global → Form routing**, not on the Contact page — two
-different forms send to the same place, and pasting the key twice would let
-them drift into mailing different people about the same partnership.
-
-To connect it:
-
-1. In Google Workspace admin, create the three groups above and add the right
-   people plus `hello@oddfest.co` to each.
-2. At web3forms.com, get a free access key for each of the four addresses
-   (just an email address, no signup — the key is mailed to that address, and
-   for a group any member receives it).
-3. Paste each into its field under **Global → Form routing — Web3Forms access
-   keys**.
-4. Publish.
-
-A topic left blank falls back to the General key, so the message still reaches
-a human rather than the visitor being told the form is broken — you can
-connect General first and add the rest later. (The Work with ODD notification
-is the one exception: with no `partnering` key it simply doesn't send, and
-that form behaves exactly as it did before — the Attio record is still
-written.) Until General is set too, the
-form renders normally but tells visitors it isn't connected yet, rather than
-silently discarding what they type.
+Work with ODD enquiries are written to Attio **and** emailed to
+`partners@oddfest.co`. The three `partners@`/`space@`/`fest@` addresses are
+Google Groups: who receives each topic is changed in Google Workspace admin,
+not here and not in code. Nothing on this site needs configuring; the
+Resend API key and sender live on the Worker (see that repo's
+`ops/RUNBOOK.md`).
 
 ## Links with a query string need a trailing slash
 

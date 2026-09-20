@@ -1227,21 +1227,6 @@ collections_config:
         label: Social media links
         comment: Shown in the footer and the fullscreen menu.
         cascade: true
-      formAccessKeys:
-        type: object
-        label: Form routing — Web3Forms access keys
-        comment: >-
-          Where each kind of message is emailed. One free key per topic from
-          web3forms.com, each created with the address that topic should
-          reach: General → hello@oddfest.co, Partnerships & ODDference →
-          partners@oddfest.co, ODDspace → space@oddfest.co, ODDfest →
-          fest@oddfest.co. The Partnering key is used twice — the Contact
-          page's "Partnerships & ODDference" topic and the Work with ODD
-          enquiry form both notify it. Who sits behind those group addresses
-          is changed in Google Workspace admin, not here. Leave a topic blank
-          and it falls back to the General key; leave General blank too and
-          the contact form still shows but tells visitors it isn't connected
-          yet instead of silently discarding what they type.
         options:
           subtype: object
       contact:
