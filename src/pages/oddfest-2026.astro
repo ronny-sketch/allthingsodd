@@ -7,7 +7,15 @@
 // photographs through astro:assets, every word in oddfest-2026.json.
 //
 //   1 hero · 2 the letter · 3 what happened, and how many made it · 4 credits ·
-//   5 photographs · 6 what comes next · 7 sign-off
+//   5 photographs · 6 the afterparty · 7 what comes next · 8 sign-off
+//
+// 2026-09-19, so the page could be filmed for social media: the hero is one
+// statement in two inks with an opening (SpaceHero's `premise` + `opening`),
+// every credited name rises on its own line as it arrives, the afterparty
+// invitation and a sign-off button to the new site were added (all copy in
+// the JSON), and scripts/render-oddfest-2026-film.mjs renders the page as a
+// 9:16 video. Nothing on the page exists only for the camera: the film is
+// the page, frame by frame, with the site chrome hidden by the renderer.
 //
 // What the old page had and this one deliberately does not:
 // - A feedback form that sent nothing (its submit handler only changed the
@@ -75,6 +83,8 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
       slot="hero"
       photos={page.heroPhotos}
       title={page.title}
+      premise={page.titlePremise}
+      opening
       meta={page.meta}
       logo={oddfestWordmark}
       logoAlt="ODDfest"
@@ -140,9 +150,9 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
               <h3 class="ty-group-title">{group.title}</h3>
               {group.intro && <p class="ty-group-intro">{group.intro}</p>}
               {group.items && (
-                <ul class="ty-names reveal">
+                <ul class="ty-names">
                   {alphabetical(group.items).map((item) => (
-                    <li>{item.name}</li>
+                    <li class="reveal">{item.name}</li>
                   ))}
                 </ul>
               )}
@@ -192,12 +202,52 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
       </div>
     </section>
 
+    <!-- 6. The afterparty. The date and doors time live only in the JSON's
+         `facts` rows; the section is gone when `show` is false. -->
+    {
+      page.afterparty.show && (
+        <section class="ty-sub ty-after" id="afterparty">
+          <div class="wrap flow">
+            <span class="eyebrow ty-after-eyebrow reveal">{page.afterparty.eyebrow}</span>
+            <p class="ty-letter-text reveal">
+              <span class="ty-dim">{page.afterparty.premise}</span> {page.afterparty.point}
+            </p>
+            {page.afterparty.facts.length > 0 && (
+              <dl class="ty-facts reveal">
+                {page.afterparty.facts.map((fact) => (
+                  <div class="ty-fact">
+                    <dt>{fact.label}</dt>
+                    <dd>{fact.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+            <p class="ty-after-body reveal">{page.afterparty.body}</p>
+            <div class="ty-actions reveal">
+              <Pill href={page.afterparty.link.href} variant="outline" magnetic>
+                {page.afterparty.link.label}
+              </Pill>
+            </div>
+          </div>
+        </section>
+      )
+    }
+
     <ParticipateBand title={page.participateTitle} items={page.participate} />
 
     <section class="ty-signoff">
       <div class="wrap">
         <h2 class="reveal">{page.signoff.title}</h2>
         <p class="reveal">{page.signoff.body}</p>
+        {
+          page.signoff.link && (
+            <div class="ty-actions ty-signoff-actions reveal">
+              <Pill href={page.signoff.link.href} variant="outline" magnetic>
+                {page.signoff.link.label}
+              </Pill>
+            </div>
+          )
+        }
       </div>
     </section>
   </SubpageFrame>
@@ -397,6 +447,53 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
     justify-content: center;
   }
 
+  /* The afterparty: the letter's own device (premise dim, point bright)
+     under an eyebrow in ODDfest's accent — Ember as a label, never a fill —
+     then the facts as hairline rows so the date, the place and "Free" are
+     the loudest lines in the section (and in the video's frame). */
+  .ty-after .wrap {
+    text-align: center;
+  }
+  .ty-after-eyebrow {
+    display: block;
+    color: var(--color-amber-bright);
+  }
+  .ty-facts {
+    max-width: 28rem;
+    margin-inline: auto;
+    margin-block-end: 0;
+    text-align: left;
+  }
+  .ty-fact {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: var(--space-4);
+    align-items: baseline;
+    padding-block: var(--space-3);
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .ty-fact:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .ty-fact dt {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .ty-fact dd {
+    margin: 0;
+    font: var(--text-body);
+    color: var(--color-paper);
+  }
+  .ty-after-body {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+  }
+
   /* Sign-off: the page's last word, at Hero size. */
   .ty-signoff {
     text-align: center;
@@ -411,6 +508,9 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
     margin: var(--space-5) 0 0;
     font: var(--text-body);
     color: var(--color-paper-60);
+  }
+  .ty-signoff-actions {
+    margin-top: var(--space-6);
   }
 
   /* The credits roll's control: bottom centre, clear of the home indicator. */

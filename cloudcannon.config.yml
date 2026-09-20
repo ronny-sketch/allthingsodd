@@ -663,7 +663,32 @@ collections_config:
       signoff:
         type: object
         label: Sign-off (ODDfest 2026 thank-you only)
-        comment: The closing line ("Stay ODD.") and the sentence under it.
+        comment: >-
+          The closing line ("Stay ODD."), the sentence under it and, in
+          "link", the page's last button ("See the new site", to the
+          homepage). Remove "link" for no button.
+        options:
+          subtype: object
+      titlePremise:
+        type: text
+        label: Hero, quiet first sentence (ODDfest 2026 thank-you only)
+        comment: >-
+          Set small and dim above the big "title" line, so the hero reads as
+          one statement in two inks: "You are the heroes of ODD." then "An
+          ODD thousand thank yous." Leave it empty and the hero shows "title"
+          alone.
+      afterparty:
+        type: object
+        label: Afterparty invitation (ODDfest 2026 thank-you only)
+        comment: >-
+          The "ODD is back" section between the photographs and "What comes
+          next". "facts" are the When / Where / Price rows — the date and
+          doors time there are the ONLY place on the site that states them,
+          so check them before publishing and change them only here if
+          anything moves. Empty the "facts" list to run the invitation
+          without a date. "show: false" hides the whole section; the hero's
+          second button links to it, so point that somewhere else at the
+          same time.
         options:
           subtype: object
       examplesIntro:
