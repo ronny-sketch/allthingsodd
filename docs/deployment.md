@@ -149,8 +149,17 @@ genuinely unknown, not assumed, and the certificate expires ~90 days after
 2026-09-03. The `deploy` job therefore asserts on every deploy that www still
 answers `301` to the apex over HTTPS; `curl` without `-k` fails on an invalid
 certificate, so a lapse fails the build loudly instead of reaching a visitor
-as a security warning. If that check ever fires, re-run the two commands
-above.
+as a security warning. If that check ever fires, run the "www certificate"
+workflow from the Actions tab (or the two commands above by hand).
+
+**It does lapse, and is now re-issued automatically (2026-09-20).** The
+certificate issued on 2026-09-03 was gone by 2026-09-20 — 17 days, not the
+~90 a certificate lives — and www was back on the default `*.surge.sh`
+certificate, failing every deploy's www check. So Surge evidently drops a
+certificate for a domain with no project. `.github/workflows/www-certificate.yml`
+runs the publish-then-teardown pair every Monday 04:17 UTC and on demand,
+then verifies the 301 over a valid certificate. The window between the two
+calls is under a minute and serves the real site build.
 
 **Do not publish anything to www** to "fix" a problem there — that is what
 breaks the redirect. Publish, then tear down.
