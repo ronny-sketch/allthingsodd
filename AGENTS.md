@@ -563,6 +563,15 @@ while implementing a website feature.
 - `docs/design-system.md` — the token/component rules, with the reasoning
 - `docs/editing.md` — what a non-developer can do in CloudCannon
 - `docs/deployment.md` — how a change reaches production
+- `docs/LAUNCH_RUNBOOK.md` — **the one authoritative launch sequence**: what to
+  check before, the exact deploy order (Worker first, then a push to `main`),
+  who watches what, how to roll back, the Stripe live-mode cutover, and the
+  domain/email migration with the seven mail records on `oddfest.co` that must
+  not be touched
+- `docs/LAUNCH_READINESS_2026-09-21.md` — what the 2026-09-21 readiness pass
+  found, fixed and measured, and every remaining blocker with its owner. Read
+  this before deciding whether to launch; read the runbook when you have
+  decided to
 - `docs/IDENTITY_LAUNCH_MATRIX_2026-09-04.md` — the All Things ODD identity /
   domain / repository migration: what changed, what is verified, and the
   external blockers that remain
