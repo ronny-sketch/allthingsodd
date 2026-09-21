@@ -23,6 +23,11 @@ brand/
 │   ├── svg/             the canonical artwork
 │   └── png/             480px-tall exports, transparent
 ├── fonts/               Forta + Gabarito (SIL OFL 1.1), with licences
+├── social/
+│   ├── README.md        ODD on Instagram: the signature, the grid, the rules
+│   ├── IDEAS.md         104 things worth posting, each with what it needs
+│   ├── examples/        every format rendered, plus grid.jpg / phone.jpg
+│   └── src/             the generator (posts.mjs, formats/, grid.mjs, build.mjs)
 └── deck/
     ├── all-things-odd-template.pptx   21 slide archetypes
     ├── all-things-odd-example.pptx    a 12-slide example deck
