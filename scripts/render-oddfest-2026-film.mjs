@@ -60,18 +60,23 @@ const FADE = 3;
 // [seconds, target]: a scrollY in px, 'max', or 'selector@top|centre|bottom'.
 // Smoothstep between keyframes; a repeated target is a hold.
 //
-// Both cuts END ON THE INVITATION (2026-09-21, Ronny's call). The page's own
-// order puts the afterparty before the sign-off, so each film runs past it to
-// the bottom for "Stay ODD." and the address, then rises back to the invite
-// and holds there — the last thing on screen is the ask, not the farewell.
-// The move back up is deliberate and reads as one: thank you, and now come.
+// Both cuts END ON THE INVITATION, as an after-credits scene (2026-09-21,
+// Ronny's note: "it should unfold as after credits in a movie"). The names
+// roll, "Stay ODD." lands as the closing title, the frame goes to Ink, and
+// the invitation comes up out of the black — the stinger after the credits,
+// not a scroll back up the page.
+//
+// The cuts are hard cuts: the scroll jumps while BLACKOUTS holds the frame at
+// full Ink, so the move is never seen. That is also what lets the films skip
+// "What comes next" (the three participation cards, which sit between the
+// invitation and the sign-off) without scrolling past them.
 const TIMELINES = {
   full: [
     [0, 0],
     [6, 0],
-    [74, 'max'],
-    [78, 'max'],
-    [80.5, '#afterparty@centre'],
+    [78, '#photos@bottom'],
+    [79.4, '#photos@bottom'],
+    [79.5, '#afterparty@centre'],
     [TRACK_SECONDS, '#afterparty@centre'],
   ],
   short: [
@@ -80,23 +85,65 @@ const TIMELINES = {
     [7, '.ty-count@centre'],
     [10, '.ty-count@centre'],
     [13, '#credits@top'],
-    [27, '#photos@bottom'],
-    [29, 'max'],
-    [31.5, 'max'],
-    [34, '#afterparty@centre'],
+    [30, '#photos@bottom'],
+    [31.5, '#photos@bottom'],
+    [31.6, '#afterparty@centre'],
     [40, '#afterparty@centre'],
+  ],
+};
+
+// [seconds, opacity] of a full-frame Ink wash, linear between keyframes. The
+// pair of 1s brackets the hard cut in TIMELINES above: the credits end, the
+// frame goes to Ink, the scroll jumps unseen, and the invitation comes up out
+// of the black. Ink (the brand's own scrim colour), never #000.
+//
+// The sign-off is deliberately not in either film. It sits after the
+// invitation on the page, so showing it would mean cutting forward past the
+// invitation and back again — and with "What comes next" hidden the two
+// sections are adjacent, so neither can be framed without the other in shot.
+// A stinger only works if what follows the black is the only thing there.
+const BLACKOUTS = {
+  full: [
+    [0, 0],
+    [78.6, 0],
+    [79.4, 1],
+    [80.2, 1],
+    [81.2, 0],
+  ],
+  short: [
+    [0, 0],
+    [30.6, 0],
+    [31.4, 1],
+    [32.2, 1],
+    [33.2, 0],
   ],
 };
 const timeline = TIMELINES[CUT];
 if (!timeline) throw new Error(`--cut must be one of ${Object.keys(TIMELINES).join(', ')}`);
+const blackout = BLACKOUTS[CUT] ?? [[0, 0]];
+
+/** Linear interpolation over [seconds, value] pairs, clamped at both ends. */
+const track = (keys, t) => {
+  if (t <= keys[0][0]) return keys[0][1];
+  for (let i = 1; i < keys.length; i++) {
+    const [t0, v0] = keys[i - 1];
+    const [t1, v1] = keys[i];
+    if (t <= t1) return v0 + ((v1 - v0) * (t - t0)) / (t1 - t0 || 1);
+  }
+  return keys[keys.length - 1][1];
+};
 
 // .oddf-rail is the pair of fixed vertical ticker rails a subpage paints down
 // both edges above 821px. They are invisible at phone widths, so the 9:16 and
 // 4:5 cuts never saw them; a 16:9 render is a desktop layout, where they sit
 // over the frame and read as browser chrome in a film.
+// .participate-band is "What comes next", the three participation cards. They
+// are the page's business, not the film's (2026-09-21, Ronny), and they sit
+// between the invitation and the sign-off — so hiding them is also what puts
+// "Stay ODD." alone in the closing frame instead of sharing it with a card.
 const HIDE_CSS = `
   nav, footer, .cursor, .nl-popup, .nl-popup-backdrop, .consent-banner,
-  .ty-player, .space-hero-ctas, .oddf-rail { display: none !important }
+  .ty-player, .space-hero-ctas, .oddf-rail, .participate-band { display: none !important }
   html { scroll-behavior: auto !important; cursor: none }
   .space-hero { min-height: 0 !important }
 `;
@@ -144,7 +191,15 @@ await page.evaluate(async () => {
   // block of a page whose footer is hidden (the sign-off's button, at 92%)
   // would never rise — anything inside the frame is revealed here.
   const seen = new Map();
-  window.__step = (t) => {
+  // The wash a hard cut happens behind. Ink, above everything, never
+  // interactive; the renderer sets its opacity per frame.
+  const wash = document.createElement('div');
+  wash.id = '__wash';
+  wash.style.cssText =
+    'position:fixed;inset:0;z-index:2147483647;pointer-events:none;background:#0E090B;opacity:0';
+  document.body.appendChild(wash);
+  window.__step = (t, washOpacity) => {
+    wash.style.opacity = String(washOpacity);
     for (const el of document.querySelectorAll('.reveal:not(.in)')) {
       const r = el.getBoundingClientRect();
       if (r.top < innerHeight && r.bottom > 0) el.classList.add('in');
@@ -206,13 +261,13 @@ const started = Date.now();
 for (let k = 0; k < frames; k++) {
   const t = k / FPS;
   await page.evaluate(
-    ([y, tt]) => {
+    ([y, tt, wash]) => {
       window.scrollTo({ top: y, behavior: 'instant' });
       return new Promise((r) =>
-        requestAnimationFrame(() => requestAnimationFrame(() => (window.__step(tt), r()))),
+        requestAnimationFrame(() => requestAnimationFrame(() => (window.__step(tt, wash), r()))),
       );
     },
-    [yAt(t), t],
+    [yAt(t), t, track(blackout, t)],
   );
   await page.screenshot({
     path: path.join(frameDir, `f${String(k).padStart(5, '0')}.jpg`),
