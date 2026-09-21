@@ -5,15 +5,16 @@
     "description": "Thank you to everyone who made ODDfest 2026 — the team, artists, volunteers and partners behind it. The credits, the photographs and what comes next.",
     "ogImage": "/og/oddfest-2026.jpg"
   },
-  "title": "You are the heroes of ODD.",
+  "title": "An ODD thousand thank yous.",
+  "titlePremise": "You are the heroes of ODD.",
   "meta": "Helsinki · 2026",
   "primaryCta": {
     "label": "Play the credits",
     "href": "#credits"
   },
   "secondaryCta": {
-    "label": "See the photos",
-    "href": "#photos"
+    "label": "Come to the afterparty",
+    "href": "#afterparty"
   },
   "heroPhotos": [
     {
@@ -1118,6 +1119,31 @@
       "external": true
     }
   },
+  "afterparty": {
+    "show": true,
+    "eyebrow": "ODD is back",
+    "premise": "We never threw the afterparty. ODDfest ended in June, everyone went home, and that was that.",
+    "point": "So we're throwing it now.",
+    "facts": [
+      {
+        "label": "When",
+        "value": "Saturday 26.9 · doors 18:00"
+      },
+      {
+        "label": "Where",
+        "value": "ODDspace, Sturenportti 3, Helsinki"
+      },
+      {
+        "label": "Price",
+        "value": "Free"
+      }
+    ],
+    "body": "Artists playing things they've never played anywhere. Burgers. The drinks we didn't manage to sell in June. Come.",
+    "link": {
+      "label": "Find ODDspace",
+      "href": "/oddspace"
+    }
+  },
   "participateTitle": "What comes next",
   "participate": [
     {
@@ -1141,6 +1167,10 @@
   ],
   "signoff": {
     "title": "Stay ODD.",
-    "body": "We love you and miss you already."
+    "body": "We missed you. So we came back. ODD's new home is allthingsodd.co.",
+    "link": {
+      "label": "See the new site",
+      "href": "/"
+    }
   }
 }

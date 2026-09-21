@@ -66,7 +66,11 @@ test('hides over an embedded document and when the pointer leaves the window', a
 
 test('animates its frames without requesting an image twice', async ({ page }) => {
   await page.goto('/');
-  for (let i = 0; i < 40; i++) await page.mouse.move(100 + i * 20, 300 + (i % 2) * 40);
+  // Ten moves, not forty: on the CI Linux WebKit runner each synthetic
+  // mouse.move is a slow round trip, and forty of them blew the 30s test
+  // budget on both attempts of main's first run (2026-09-19). Each move
+  // here travels well past the 28px a frame flip needs.
+  for (let i = 0; i < 10; i++) await page.mouse.move(100 + i * 60, 300 + (i % 2) * 40);
   await page.waitForTimeout(300);
   const stats = await page.evaluate(() => {
     const imgs = Array.from(document.querySelectorAll<HTMLImageElement>('.cursor-arrow img'));
@@ -90,7 +94,7 @@ test('under reduced motion it tracks exactly but never leans, presses or flips',
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
-  for (let i = 0; i < 30; i++) await page.mouse.move(100 + i * 25, 300 + (i % 3) * 30);
+  for (let i = 0; i < 10; i++) await page.mouse.move(100 + i * 60, 300 + (i % 3) * 30);
   await page.mouse.down();
   await page.waitForTimeout(200);
   const state = await page.evaluate(() => {
@@ -105,7 +109,7 @@ test('under reduced motion it tracks exactly but never leans, presses or flips',
   });
   await page.mouse.up();
   expect(state.on).toBe(true);
-  expect(Math.abs(state.rect - 825)).toBeLessThan(1);
+  expect(Math.abs(state.rect - 640)).toBeLessThan(1);
   expect(state.arrowTransform).toBe('');
   expect(state.frame).toBe(0);
 });

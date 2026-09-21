@@ -88,6 +88,45 @@ test('accepting loads gtag.js with the configured measurement ID', async ({ page
   expect(queue.filter((e) => e.isArray)).toEqual([]);
 });
 
+test('a newsletter signup cannot rewrite the session traffic source', async ({ page }) => {
+  // GA4 reads source/medium/campaign on any event as traffic-source
+  // attribution, so a form that labels itself with `source` retags the whole
+  // session and every later event in it inherits the label. The newsletter
+  // form did exactly that, and on 2026-09-20 22 of the 24 ticket-funnel
+  // events in the property were attributed to a source called
+  // "footer_newsletter" rather than to wherever those visitors came from.
+  await page.route('**/api/newsletter', (route) =>
+    route.fulfill({ json: { ok: true, message: 'Thanks!' } }),
+  );
+  await page.goto('/');
+  await page.locator('#consentAccept').click();
+  await expect.poll(() => page.evaluate(() => typeof window.gtag)).toBe('function');
+
+  const form = page.locator('#newsletterForm');
+  await form.locator('input[name="email"]').fill('nobody@example.com');
+  await form.locator('button[type="submit"]').click();
+
+  const params = await expect
+    .poll(async () =>
+      page.evaluate(() =>
+        (window.dataLayer ?? [])
+          .filter((e) => String((e as IArguments)[1] ?? '') === 'newsletter_signup')
+          .map((e) => ({ ...((e as IArguments)[2] as object) })),
+      ),
+    )
+    .toHaveLength(1)
+    .then(() =>
+      page.evaluate(() =>
+        (window.dataLayer ?? [])
+          .filter((e) => String((e as IArguments)[1] ?? '') === 'newsletter_signup')
+          .map((e) => ({ ...((e as IArguments)[2] as object) })),
+      ),
+    );
+
+  expect(params[0]).not.toHaveProperty('source');
+  expect(params[0]).toHaveProperty('signup_source', 'footer_newsletter');
+});
+
 // Replaces the two Google Calendar tests this file carried until 2026-09-11,
 // when /oddspace's consent-gated embed was replaced by a hand-kept list of
 // events. The embed was the `preferences` category's only entry, so what is

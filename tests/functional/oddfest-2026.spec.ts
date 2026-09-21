@@ -19,7 +19,11 @@ test('the thank-you page is a site page with its credits and no dead ends', asyn
   await expect(page).toHaveTitle(/^ODDfest 2026/);
   await expect(page.locator('nav').first()).toBeVisible();
   await expect(page.locator('footer')).toHaveCount(1);
-  await expect(page.locator('h1')).toHaveText('You are the heroes of ODD.');
+  // One statement in two inks since 2026-09-19: the premise quiet, the point
+  // loud, both inside the one h1.
+  await expect(page.locator('h1')).toHaveText(
+    'You are the heroes of ODD. An ODD thousand thank yous.',
+  );
 
   await expect(page.locator('#credits .ty-names li', { hasText: 'Ronny Eriksson' })).toHaveCount(1);
   expect(await page.locator('#credits .ty-names li').count()).toBeGreaterThan(200);
@@ -50,6 +54,15 @@ test('the thank-you page is a site page with its credits and no dead ends', asyn
   // Photographs are local now; the runtime Flickr API call is gone. (The
   // outbound link to the photobank is a link, not a request.)
   expect(flickr).toEqual([]);
+
+  // 2026-09-19: every credited name rises on its own line (the reveal hook
+  // sits on the <li>, so the mobile reveal sweep covers each name); the
+  // afterparty invitation links to the building, and the sign-off to the
+  // new site. The date is content, not a fixture, so it is not pinned here.
+  expect(await page.locator('#credits .ty-names > li.reveal').count()).toBeGreaterThan(200);
+  await expect(page.locator('#afterparty a.pill')).toHaveAttribute('href', '/oddspace');
+  await expect(page.locator('#afterparty .ty-fact')).toHaveCount(3);
+  await expect(page.locator('.ty-signoff a.pill')).toHaveAttribute('href', '/');
 });
 
 test('"Play the credits" plays the soundtrack and rolls the page until the reader scrolls', async ({

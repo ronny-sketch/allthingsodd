@@ -36,3 +36,6 @@ pnpm-debug.log*
 # Claude Code agent worktrees/session state — never part of site history
 /.claude/
 scripts-adhoc/
+
+# film renders of /oddfest-2026/ (scripts/render-oddfest-2026-film.mjs) — frames + mp4, never committed
+dist-film/

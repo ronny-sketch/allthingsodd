@@ -692,8 +692,12 @@ const pages = defineCollection({
         _template: z.literal('oddfest2026'),
         seo,
         // The hero: SpaceHero's photo grid (8 photos) under the ODDfest
-        // wordmark. `title` is the page's h1.
+        // wordmark. `title` is the page's h1 — since 2026-09-19 its loud
+        // second sentence ("An ODD thousand thank yous."), with the optional
+        // `titlePremise` set quiet above it ("You are the heroes of ODD."):
+        // one statement in two inks, the same device as the letter below.
         title: z.string(),
+        titlePremise: z.string().optional(),
         meta: z.string(),
         // Links, not buttons, so they work without JS. A primary CTA pointing
         // at `#credits` is also the "play the credits" control: with JS it
@@ -766,9 +770,27 @@ const pages = defineCollection({
           photos: z.array(z.object({ image: image(), alt: z.string() })),
           link: linkCta,
         }),
+        // The afterparty invitation (2026-09-19), between the photographs and
+        // "What comes next". `facts` are the When / Where / Price rows and are
+        // the ONLY place on the site that states the date and doors time:
+        // publish them only once they are confirmed, and empty the list to
+        // run the invitation without them. `show: false` removes the section
+        // — then the hero's `secondaryCta` (which links to `#afterparty`)
+        // needs a new target, which site-integrity.spec.ts enforces.
+        afterparty: z.object({
+          show: z.boolean(),
+          eyebrow: z.string(),
+          premise: z.string(),
+          point: z.string(),
+          facts: z.array(z.object({ label: z.string(), value: z.string() })),
+          body: z.string(),
+          link: linkCta,
+        }),
         participateTitle: z.string(),
         participate: z.array(cta),
-        signoff: z.object({ title: z.string(), body: z.string() }),
+        // `link` (optional) is the page's last button — "See the new site",
+        // to the homepage — the video's end card as well as the reader's.
+        signoff: z.object({ title: z.string(), body: z.string(), link: linkCta.optional() }),
       }),
 
       // The 2027 ODDference rebuild: the centrally-produced professional
@@ -1585,6 +1607,11 @@ const pages = defineCollection({
          *  Free text, not a date type, so it reads "3 September 2026". */
         lastUpdated: z.string(),
         intro: z.string(),
+        /** Heading for a contents list, e.g. "What's in here". Present =
+         *  the document renders one, linking to every section. Long
+         *  operational documents (the ODDspace event info pack) need it;
+         *  /privacy, read top to bottom, does not. */
+        contents: z.string().optional(),
         sections: z.array(
           z.object({
             title: z.string(),
@@ -1612,6 +1639,14 @@ const pages = defineCollection({
                   z.object({ text: z.string(), onlyWhen: z.enum(['oddspace-instagram']) }),
                 ]),
               )
+              .optional(),
+            /** A photograph of what the section describes — the ODDspace
+             *  event info pack gives each room its own. `alt` sits beside
+             *  the file rather than being optional: a room photo with no
+             *  description is a room an organiser using a screen reader
+             *  cannot picture. */
+            image: z
+              .object({ src: image(), alt: z.string(), caption: z.string().optional() })
               .optional(),
           }),
         ),

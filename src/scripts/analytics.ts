@@ -62,12 +62,35 @@ export function initAnalytics(): void {
   });
 }
 
+// GA4 reads these three event parameters as traffic-source attribution, so
+// sending one on an ordinary event silently rewrites the session's source
+// and every later event in that session inherits it. The newsletter form
+// passed `source: 'footer_newsletter'` and that is exactly what happened:
+// on 2026-09-20, 22 of 24 ticket-funnel events in the property were
+// attributed to a source called "footer_newsletter" rather than to where
+// those visitors actually came from. Dropping them here rather than in the
+// one caller keeps the next caller from rediscovering it the same way.
+const GA4_ATTRIBUTION_PARAMS = ['source', 'medium', 'campaign'];
+
 // Called by the Growth OS forms and the ticketing funnel on a real
 // successful submission/step. A no-op whenever statistics consent hasn't
 // been granted or GA4 isn't configured yet — callers don't need to check
 // either condition themselves.
 export function trackEvent(name: string, params?: Record<string, unknown>): void {
-  if (typeof window.gtag === 'function') window.gtag('event', name, params);
+  if (typeof window.gtag !== 'function') return;
+  let safe = params;
+  if (params) {
+    const clashes = GA4_ATTRIBUTION_PARAMS.filter((k) => k in params);
+    if (clashes.length) {
+      safe = { ...params };
+      for (const k of clashes) delete safe[k];
+      console.warn(
+        `trackEvent("${name}"): dropped ${clashes.join(', ')} — GA4 treats ` +
+          'these as traffic-source attribution. Use a distinct name, e.g. signup_source.',
+      );
+    }
+  }
+  window.gtag('event', name, safe);
 }
 
 export { GA_MEASUREMENT_ID };

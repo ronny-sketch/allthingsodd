@@ -1,0 +1,76 @@
+name: www certificate
+
+# Keeps https://www.allthingsodd.co answering with a valid certificate.
+#
+# Surge issues a certificate only for a domain that has a project, but any
+# project published AT www replaces Surge's automatic 301-to-apex with that
+# project's content. The two pull in opposite directions, so the fix is a
+# pair: publish to www (certificate issued), tear the project down (301
+# resumes; the certificate survives). See
+# docs/deployment.md#www-and-its-certificate.
+#
+# Why on a schedule: the certificate issued this way on 2026-09-03 was gone
+# by 2026-09-20 — 17 days, not the 90 a certificate lives — so Surge
+# evidently drops it for a domain with no project. Weekly re-issue keeps it
+# ahead of that. The window between publish and teardown is under a minute
+# and serves the real site, not a blank page.
+#
+# Also runs on demand (Actions → "www certificate" → Run workflow): that is
+# the fix whenever ci.yml's deploy job fails its www check.
+
+on:
+  schedule:
+    - cron: '17 4 * * 1' # Mondays 04:17 UTC — the site's quietest hour
+  workflow_dispatch:
+
+concurrency:
+  group: www-certificate
+  cancel-in-progress: false
+
+jobs:
+  renew:
+    name: Re-issue the www certificate
+    runs-on: ubuntu-latest
+    env:
+      WWW: www.allthingsodd.co
+      APEX: allthingsodd.co
+      SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install -g npm@11
+      - run: npm ci
+      # The real site, so anyone landing on www during the short window
+      # between the two surge calls sees the site rather than a blank page.
+      - run: npm run build
+      - name: Publish to www (triggers certificate issuance)
+        run: |
+          if [ -z "$SURGE_TOKEN" ]; then
+            echo "::error::SURGE_TOKEN is empty — refusing to run surge (it would no-op at a login prompt instead of failing)"
+            exit 1
+          fi
+          npx surge dist "https://$WWW" < /dev/null | tee surge-www.log
+          grep -q 'Success' surge-www.log
+      # `always()` so a failed or cancelled publish never leaves a project
+      # sitting at www with the redirect gone.
+      - name: Tear www down (restores the automatic 301)
+        if: always()
+        run: npx surge "$WWW" teardown < /dev/null
+      - name: Verify www redirects over a valid certificate
+        run: |
+          for i in 1 2 3 4 5 6 7 8; do
+            # No -k: curl fails on an invalid certificate, which is the point.
+            location="$(curl -sSI --max-time 20 "https://$WWW/oddfest" | tr -d '\r' | awk 'tolower($1) == "location:" { print $2 }' || true)"
+            if [ "$location" = "https://$APEX/oddfest" ]; then
+              echo "$WWW verified: 301 -> $location, certificate valid"
+              echo | openssl s_client -connect "$WWW:443" -servername "$WWW" 2>/dev/null | openssl x509 -noout -subject -enddate
+              exit 0
+            fi
+            echo "Attempt $i/8: got '${location:-no redirect, or an invalid certificate}' — retrying in 15s"
+            sleep 15
+          done
+          echo "::error::$WWW is not redirecting to https://$APEX over a valid certificate"
+          exit 1
