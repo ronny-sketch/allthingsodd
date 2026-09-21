@@ -2,7 +2,7 @@
   "_template": "oddfest2026",
   "seo": {
     "title": "ODDfest 2026 — Thank you",
-    "description": "Thank you to everyone who made ODDfest 2026 — the team, artists, volunteers and partners behind it. The credits, the photographs and what comes next.",
+    "description": "Thank you to everyone who made ODDfest 2026 — the team, artists, volunteers and partners behind it. The credits, the photographs, and the afterparty we never threw: Saturday 26 September at ODDspace, free.",
     "ogImage": "/og/oddfest-2026.jpg"
   },
   "title": "An ODD thousand thank yous.",
@@ -1054,7 +1054,7 @@
     "photos": [
       {
         "image": "../../assets/oddfest-2026/oddference-elisabet-lahti.jpg",
-        "alt": "A speaker in a white martial-arts jacket on stage at ODDference, under a slide reading “Zanshin — Remaining Mind”"
+        "alt": "A speaker in a white martial-arts jacket on stage at ODDference, under a slide reading \"Zanshin — Remaining Mind\""
       },
       {
         "image": "../../assets/oddfest-2026/salome-daoudi-talk.jpg",
@@ -1066,7 +1066,7 @@
       },
       {
         "image": "../../assets/oddfest-2026/creator-tv-head.jpg",
-        "alt": "A performer wearing an old television reading “Creator” as a head"
+        "alt": "A performer wearing an old television reading \"Creator\" as a head"
       },
       {
         "image": "../../assets/oddfest-2026/harlequin-steps.jpg",
@@ -1127,11 +1127,11 @@
     "facts": [
       {
         "label": "When",
-        "value": "Saturday 26.9 · doors 18:00"
+        "value": "Saturday 26 September · doors 18:00"
       },
       {
         "label": "Where",
-        "value": "ODDspace, Sturenportti 3, Helsinki"
+        "value": "ODDspace, Teollisuuskatu 9D, Vallila"
       },
       {
         "label": "Price",
@@ -1167,9 +1167,9 @@
   ],
   "signoff": {
     "title": "Stay ODD.",
-    "body": "We missed you. So we came back. ODD's new home is allthingsodd.co.",
+    "body": "We missed you. So we came back. Everything ODD lives here now — allthingsodd.co.",
     "link": {
-      "label": "See the new site",
+      "label": "See ODD now",
       "href": "/"
     }
   }
