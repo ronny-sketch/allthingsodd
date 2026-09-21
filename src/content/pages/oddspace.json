@@ -137,17 +137,16 @@
   },
   "rentalRates": [
     {
-      "name": "Full-day, 1st floor gallery (members)",
-      "price": "€200"
+      "name": "Creative organisations",
+      "price": "from €300"
     },
     {
-      "name": "Half-day, auditorium (members)",
-      "price": "€100"
+      "name": "Promoter nights",
+      "price": "from €450"
     },
     {
-      "name": "ODDstudio, per hour (members)",
-      "price": "€20",
-      "note": "Or €100 / month for full studio access. See the ODDstudio page for non-member rates."
+      "name": "Company events",
+      "price": "from €750"
     }
   ],
   "howItWorks": [
@@ -169,7 +168,7 @@
   ],
   "eventEnquiry": {
     "headline": "Want to organise an event?",
-    "body": "Have an exhibition, workshop, talk, screening, launch, performance, gathering, shoot or another idea you want to make happen here? You do not need to be a member to ask.",
+    "body": "Have an exhibition, workshop, talk, screening, launch, performance, gathering, shoot or another idea you want to make happen here? You do not need to be a member to book, and the prices are published.",
     "cta": {
       "label": "See the space as a venue",
       "href": "/oddspace/venue"
@@ -351,7 +350,7 @@
     },
     {
       "question": "How much does event use cost?",
-      "answer": "Member rates: €200 for a full day in the 1st floor gallery, €100 for a half day in the auditorium. Non-member pricing is quoted per event — the venue page explains what shapes the number."
+      "answer": "It depends which of you is asking. Creative organisations start at €300, or €0 upfront on a ticketed night where we take the first €400 at the door. Promoter nights are €450 midweek and €650 at the weekend, tickets all yours. Company events are €750 for a half day and €1,200 for a full day or evening. All plus VAT, all on the venue page in full — and members book at member rates."
     },
     {
       "question": "How do I enquire about an event?",

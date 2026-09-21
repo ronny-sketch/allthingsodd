@@ -1210,8 +1210,22 @@ const pages = defineCollection({
           }),
         ),
         pricing: sectionIntro,
-        memberRates: z.array(
-          z.object({ name: z.string(), price: z.string(), note: z.string().optional() }),
+        // The published rate card (2026-09-21), replacing the member-rates-only
+        // list this page carried while the internal guide still held three
+        // contradicting price lists. Grouped, not flat, because v3 prices the
+        // *booker* rather than the room: the same gallery evening is €0 upfront
+        // to a collective selling tickets, €450 to a promoter and €1,200 to a
+        // company, and a flat table would read as three prices for one thing.
+        // Member rates are deliberately not a fourth group — they live in
+        // `ratesNote`, one line, so the page sells the room before the perk.
+        rateGroups: z.array(
+          z.object({
+            label: z.string(),
+            intro: z.string().optional(),
+            rates: z.array(
+              z.object({ name: z.string(), price: z.string(), note: z.string().optional() }),
+            ),
+          }),
         ),
         ratesNote: z.string(),
         whatWeCanDo: sectionIntro,

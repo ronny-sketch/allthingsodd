@@ -455,11 +455,24 @@ collections_config:
         comment: Credit line for the photography on this page.
       rentalRates:
         type: array
-        label: Event space rental rates (ODDspace only)
+        label: Event pricing, starting prices (ODDspace only)
         comment: >-
-          Member pricing for renting the gallery/auditorium, shown inside
-          the "organise an event" card in "Enter the space". No invented
-          prices — these are real, current rates.
+          One "from" price per kind of booker — creative, promoter, company —
+          shown inside the "organise an event" card in "Enter the space".
+          Keep it to three plain rows: conditions, splits and add-ons belong
+          on the venue page. No invented prices — these are real, current
+          rates, and they must match the rate card on /oddspace/venue.
+        options:
+          required: false
+        cascade: true
+      rateGroups:
+        type: array
+        label: Event rate card, grouped by booker (venue page only)
+        comment: >-
+          The published rate card. One group per kind of booker (creative
+          organisations, promoters, companies), each with its own rates.
+          Member rates do not belong here as a fourth group — they are one
+          line in "VAT + payment terms" below. No invented prices.
         options:
           required: false
         cascade: true

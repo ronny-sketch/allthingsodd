@@ -125,9 +125,14 @@ const page = entry.data;
             {
               /* The rates sit in the card whose button acts on them — a
                  reader deciding whether to enquire about an event is the
-                 only reader these numbers are for. */
+                 only reader these numbers are for. Three starting prices
+                 only: this page's job is to say "events here cost roughly
+                 this much, and not only for members", and /oddspace/venue
+                 carries the real rate card. Keep it to one number per kind
+                 of booker — the moment a condition lands here, the landing
+                 page has started doing the venue page's job. */
             }
-            <span class="odds-rates-label">Selected member rates</span>
+            <span class="odds-rates-label">Event pricing starts at</span>
             <div class="odds-rates-list">
               {
                 page.rentalRates.map((r) => (
@@ -139,7 +144,10 @@ const page = entry.data;
                 ))
               }
             </div>
-            <p class="odds-rates-nonmember">Non-member pricing: ask us about your event.</p>
+            <p class="odds-rates-nonmember">
+              All prices + VAT. Ticketed night? The Door Deal starts at €0 upfront. Members book at
+              member rates.
+            </p>
             <div class="odds-enter-action">
               <Pill href={page.eventEnquiry.cta.href} variant="outline" magnetic>
                 {page.eventEnquiry.cta.label}

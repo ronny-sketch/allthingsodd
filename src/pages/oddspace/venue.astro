@@ -5,12 +5,16 @@
 // planning review put it.
 //
 // The one rule this page is built around: it publishes what the site can
-// stand behind (member rates, the rooms, what has happened here) and names
+// stand behind (the rate card, the rooms, what has happened here) and names
 // what it cannot (capacities, AV inventory, accessibility, load-in) as
-// things we answer in an enquiry. The internal rental guide has capacities
-// marked "TBD — confirm before publishing externally" and three conflicting
-// price lists as of 2026-09-11; none of that is on this page. A useful sales
-// page with honest gaps beats a polished one with invented specifications.
+// things we answer in an enquiry. A useful sales page with honest gaps beats
+// a polished one with invented specifications.
+//
+// Prices (2026-09-21) are the v3 rate card, benchmarked against 17 Helsinki
+// venues, which settled the three contradicting internal price lists this
+// page used to work around. What it still does NOT publish: capacities, room
+// dimensions and the AV inventory — unverified then, unverified now, and
+// guarded by tests/functional/oddspace-conversion.spec.ts.
 import { getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import SubpageFrame from '../../components/sections/SubpageFrame.astro';
@@ -82,13 +86,18 @@ const page = entry.data;
         </div>
         <p class="odsv-pricing-body reveal">{page.pricing.body}</p>
         <div class="odsv-rates reveal">
-          <span class="odsv-rates-label">ODDspace members</span>
           {
-            page.memberRates.map((r) => (
-              <div class="odsv-rate-row">
-                <span class="odsv-rate-name">{r.name}</span>
-                <span class="odsv-rate-price">{r.price}</span>
-                {r.note && <span class="odsv-rate-note">{r.note}</span>}
+            page.rateGroups.map((g) => (
+              <div class="odsv-rate-group">
+                <span class="odsv-rates-label">{g.label}</span>
+                {g.intro && <p class="odsv-rate-intro">{g.intro}</p>}
+                {g.rates.map((r) => (
+                  <div class="odsv-rate-row">
+                    <span class="odsv-rate-name">{r.name}</span>
+                    <span class="odsv-rate-price">{r.price}</span>
+                    {r.note && <span class="odsv-rate-note">{r.note}</span>}
+                  </div>
+                ))}
               </div>
             ))
           }
@@ -233,6 +242,17 @@ const page = entry.data;
   .odsv-rates {
     max-width: 42rem;
     margin-inline: auto;
+  }
+  /* Groups are the structure of the offer, not decoration: one per kind of
+     booker. The gap between them has to be bigger than the gap between rows
+     inside one, or three offers read as one nine-row table. */
+  .odsv-rate-group + .odsv-rate-group {
+    margin-top: var(--space-10);
+  }
+  .odsv-rate-intro {
+    margin: var(--space-2) 0 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
   }
   .odsv-rates-label {
     display: block;

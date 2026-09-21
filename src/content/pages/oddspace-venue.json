@@ -3,7 +3,7 @@
   "_slug": "oddspace",
   "seo": {
     "title": "Host an event at ODDspace — gallery and auditorium in Vallila",
-    "description": "ODDspace as a venue: a gallery and event floor, an auditorium and a studio in Vallila, Helsinki. Exhibitions, launches, workshops, talks, screenings, shoots and performances. Member and enquiry-based rates.",
+    "description": "ODDspace as a venue: a gallery and event floor, an auditorium and a studio in Vallila, Helsinki. Exhibitions, launches, workshops, talks, screenings, shoots and performances. Published rates from €300 for creative organisations, €450 for promoters and €750 for companies.",
     "ogImage": "/og/oddspace.jpg"
   },
   "eyebrow": "ODDspace · As a venue",
@@ -71,7 +71,7 @@
         "The main event room",
         "Exhibitions, launches and receptions",
         "Workshops, shoots and performances",
-        "Member rate: €200 for a full day"
+        "Ticketed nights, company days and community events"
       ],
       "image": "../../assets/oddspace/gallery-floor.jpg"
     },
@@ -82,7 +82,7 @@
         "Tiered, fixed seating",
         "Talks, panels and screenings",
         "Presentations and workshops",
-        "Member rate: €100 for a half day"
+        "Screen, sound and mics in the room"
       ],
       "image": "../../assets/oddspace/auditorium.jpg"
     },
@@ -100,25 +100,70 @@
   ],
   "pricing": {
     "eyebrow": "What it costs",
-    "headline": "Member rates are published. Everything else is quoted.",
-    "body": "Members book the rooms at fixed member rates. For everyone else we quote per event, because the number depends on which room, how long, how much setup and teardown time you need, and whether you want us to help run it. Tell us those four things and you'll have a price."
+    "headline": "The price works the way your event does.",
+    "body": "Three ways to book, because a collective selling €15 tickets and a company throwing a launch are not the same customer. Find the one that describes you and the number is already on this page — no enquiry needed to know what it costs."
   },
-  "memberRates": [
+  "rateGroups": [
     {
-      "name": "Full day, 1st floor gallery (members)",
-      "price": "€200"
+      "label": "Creative organisations",
+      "intro": "Associations, collectives, artists and curators. Selling tickets? Take the Door Deal. Free entry? Take the Community Rate.",
+      "rates": [
+        {
+          "name": "Door Deal — a ticketed night",
+          "price": "€0 upfront",
+          "note": "A gallery evening with house PA, lights, a technician and a host. The first €400 of ticket sales covers the room; above that you keep 70%, and 80% past €1,000. €100 deposit, credited back. We answer in three days."
+        },
+        {
+          "name": "Community Rate — free or non-commercial",
+          "price": "€300",
+          "note": "Gallery or auditorium, up to 8 hours, with house PA, mics and an ODD host. Openings, screenings, talks and workshops. Technician +€200."
+        }
+      ]
     },
     {
-      "name": "Half day, auditorium (members)",
-      "price": "€100"
+      "label": "Promoters",
+      "intro": "Gigs, club nights and recurring series. A flat fee, and every ticket is yours.",
+      "rates": [
+        {
+          "name": "Weeknight, Sunday–Thursday",
+          "price": "€450",
+          "note": "The gallery floor from 15:00 load-in, house PA and lights, an ODD host on site for keys, doors and alarms. Technician +€200."
+        },
+        {
+          "name": "Weekend, Friday–Saturday",
+          "price": "€650",
+          "note": "Everything in the weeknight, on the two nights people actually go out. Technician +€200."
+        },
+        {
+          "name": "Season — four nights or more",
+          "price": "−15%",
+          "note": "Book a run and every night in it is 15% off."
+        }
+      ]
     },
     {
-      "name": "ODDstudio, per hour (members)",
-      "price": "€20",
-      "note": "Or €100 / month for full studio access. Non-member studio rates are on the ODDstudio page."
+      "label": "Companies",
+      "intro": "Launches, workshops, team and client events. One price, everything handled.",
+      "rates": [
+        {
+          "name": "Half day, up to 5 hours",
+          "price": "€750",
+          "note": "Gallery or auditorium with screen, sound and mics, an ODD host, setup and cleaning. Extra hour €150."
+        },
+        {
+          "name": "Full day or evening, up to 10 hours",
+          "price": "€1,200",
+          "note": "Everything in the half day, plus event PA, lighting and a technician on site. Friday–Saturday evening €1,800. Extra hour €150."
+        },
+        {
+          "name": "Produced by ODD",
+          "price": "from €4,000",
+          "note": "Concept, programme, artists and performers — the team behind ODDfest runs the night. Quoted per event."
+        }
+      ]
     }
   ],
-  "ratesNote": "Non-member rates are set per event rather than from a rate card — ask, and you'll get a number for your date. Membership is €150 / month, so for a series of events it is often worth comparing the two.",
+  "ratesNote": "All prices are plus VAT. Company bookings are invoiced 50% on booking and the rest after the event; a bar runs through a licensed caterer or your own permit. ODDspace members book the rooms at member rates — €200 for a full day in the gallery, €100 for a half day in the auditorium. ODDstudio is €20 an hour for members, or €100 a month for full access; non-member studio rates are on the ODDstudio page.",
   "whatWeCanDo": {
     "eyebrow": "Beyond the room",
     "headline": "Need more than a venue?",
@@ -178,11 +223,11 @@
   "faq": [
     {
       "question": "Do I need to be a member to book?",
-      "answer": "No. Renting the gallery or the auditorium doesn't require a membership — members simply pay published member rates, and everyone else is quoted per event."
+      "answer": "No. Renting the gallery or the auditorium doesn't require a membership — everyone books from the rates on this page. Members simply pay member rates instead: €200 for a full day in the gallery, €100 for a half day in the auditorium."
     },
     {
       "question": "What does it cost?",
-      "answer": "Member rates are €200 for a full day in the 1st floor gallery and €100 for a half day in the auditorium. Non-member pricing is quoted per event, based on the room, the hours, the setup you need and whether you want help running it."
+      "answer": "It depends on who you are, not on how hard you negotiate. Creative organisations: €300 for a free or non-commercial event, or €0 upfront on a ticketed night where we take the first €400 at the door. Promoters: €450 on a weeknight, €650 at the weekend, and you keep every ticket. Companies: €750 for a half day, €1,200 for a full day or evening, €1,800 on a Friday or Saturday night, from €4,000 if you want us to produce the whole thing. All plus VAT. Members book at member rates."
     },
     {
       "question": "How many people fit?",
