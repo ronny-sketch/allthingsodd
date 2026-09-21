@@ -16,6 +16,7 @@ import Layout from '../../layouts/Layout.astro';
 import SubpageFrame from '../../components/sections/SubpageFrame.astro';
 import SpaceHero from '../../components/sections/SpaceHero.astro';
 import SectionIntro from '../../components/sections/SectionIntro.astro';
+import ResourceList from '../../components/sections/ResourceList.astro';
 import SpaceShowcase from '../../components/sections/SpaceShowcase.astro';
 import FeatureGrid from '../../components/sections/FeatureGrid.astro';
 import FAQList from '../../components/sections/FAQList.astro';
@@ -133,6 +134,23 @@ const page = entry.data;
             {page.askUs.items.map((item) => <li>{item}</li>)}
           </ul>
         </div>
+      </div>
+    </section>
+
+    <!-- 6b. The two documents an organiser has to read (2026-09-21).
+         /oddspace/event-info-pack and /oddspace/code-of-conduct were
+         reachable only by typing the URL: zero inbound links from anywhere on
+         the site, while both sat in the sitemap for Google to index. This is
+         the page whose readers need them, right after the list of things we
+         answer in an enquiry. -->
+    <section class="odsv-sub">
+      <div class="wrap flow">
+        <SectionIntro
+          eyebrow={page.beforeYourEvent.eyebrow}
+          headline={page.beforeYourEvent.headline}
+          body={page.beforeYourEvent.body}
+        />
+        <ResourceList items={page.resources} />
       </div>
     </section>
 

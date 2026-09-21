@@ -6,26 +6,122 @@
 // reuse PricingGrid.astro (shared with other pages' generic pricing
 // display) or extend any existing content schema.
 import Layout from '../../layouts/Layout.astro';
+import Pill from '../../components/primitives/Pill.astro';
 ---
 
 <Layout
   title="Tickets — ODDference 2027"
-  description="Get your ODDference 2027 ticket. Choose your ticket below. Payment happens securely on this site."
+  description="ODDference 2027 tickets: the three tiers, their real prices, and how to get one."
 >
   <section class="tix-page flow">
+    {
+      /* State-neutral heading and intro. They read true whether or not card
+         payment is open, so neither has to be kept in sync with the sale
+         state — see salesEnabled() in scripts/tickets/config.ts. */
+    }
     <div class="wrap tix-head reveal">
       <span class="eyebrow">ODDference · 2027</span>
-      <h1>Get your ticket</h1>
-      <p>Choose your ticket below. Payment happens securely on this site.</p>
+      <h1>Tickets</h1>
+      <p>The three tiers, their real prices, and how to get one.</p>
+    </div>
+
+    {
+      /* Shown when card payment is not open — see salesEnabled(). Hidden in
+         the markup and revealed by storefront.ts rather than the other way
+         round, because the store below it is client-rendered anyway: there
+         is no server-rendered purchase UI for this to race against, and
+         starting hidden means an open sale never flashes a closed notice.
+         The <noscript> below covers the no-JS reader, who sees neither. */
+    }
+    <div class="wrap tix-closed" id="tixClosed" hidden>
+      <span class="eyebrow">Not yet on sale</span>
+      <h2>Card payment isn't open yet.</h2>
+      <p>
+        The prices below are the real ones, and they are what we will charge. The card checkout is
+        not finished, so we are not going to pretend it is. If you want a ticket now, ask us for an
+        invoice — that route works today.
+      </p>
+      <div class="tix-closed-actions">
+        <Pill
+          href="mailto:hello@oddfest.co?subject=ODDference%202027%20%E2%80%94%20invoice%20request"
+          variant="solid">Request an invoice</Pill
+        >
+        <Pill href="/contact/?topic=partnering" variant="outline">Ask about tickets</Pill>
+      </div>
     </div>
 
     <div class="wrap tix-layout">
       <div class="tix-list" id="tixList" aria-busy="true">
-        <p class="tix-loading">Loading tickets…</p>
+        {
+          /* Skeleton rows, and they exist for one measured reason: this list
+             is rendered from the ticket catalogue after the page has painted,
+             and it grew from 32px to 902px on desktop and 25px to 982px on a
+             phone. Everything below it — the whole footer — dropped by that
+             much about 600ms in. Measured CLS on /tickets was 0.26 against a
+             0.1 budget, the only route on the site that failed it.
+
+             Three rows, with three benefit lines on the first and one on the
+             others, because that is the shape of the current ODDference
+             catalogue. Deliberately NOT a `min-height`: rows are taller on a
+             phone than on a desktop and the first tier is taller than the
+             other two, so one reserved number would be wrong at most widths.
+             Real markup laid out by the real CSS is right at every width by
+             construction.
+
+             The placeholder text is never read: `aria-hidden`, and
+             `color: transparent` so it reserves a line box without showing a
+             fake price. It says nothing about what a ticket costs — the
+             numbers come from the catalogue, and inventing one here is
+             exactly what this page must not do. storefront.ts replaces the
+             whole list on render, so these never survive a successful load. */
+        }
+        <p class="sr-only" role="status">Loading tickets…</p>
+        {
+          [3, 1, 1].map((benefitLines) => (
+            <div class="tix-row tix-row-skeleton" aria-hidden="true">
+              <div class="tix-row-main">
+                <div class="tix-row-info">
+                  <span class="tix-row-name">Ticket tier</span>
+                  <p class="tix-row-desc">
+                    A description of about the length the ticket descriptions on this page run to.
+                  </p>
+                  <ul class="tix-row-benefits">
+                    {Array.from({ length: benefitLines }).map(() => (
+                      <li>Included with this tier</li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="tix-row-price">
+                  &euro;000<span class="tix-row-price-vat">+ VAT</span>
+                </div>
+              </div>
+              <div class="tix-row-action">
+                <span class="tix-status-badge">Loading</span>
+              </div>
+            </div>
+          ))
+        }
       </div>
       <aside class="tix-summary" id="tixSummary" aria-label="Your order"></aside>
     </div>
     <p id="tixCartStatus" class="sr-only" role="status" aria-live="polite"></p>
+
+    {
+      /* The whole store is client-rendered from the ticket catalogue, so
+         without JavaScript this page would otherwise sit on "Loading
+         tickets…" for ever. Say so, and point at the two places that work
+         without it: the prices on /oddference, and a human. */
+    }
+    <noscript>
+      <div class="wrap tix-noscript">
+        <p>
+          The ticket store needs JavaScript to show live prices and availability. The tiers and
+          their prices are also listed on the <a href="/oddference/#tickets">ODDference page</a>,
+          and you can always <a href="/contact/?topic=partnering">ask us about a ticket</a> or email
+          <a href="mailto:hello@oddfest.co">hello@oddfest.co</a>.
+        </p>
+      </div>
+    </noscript>
   </section>
 
   <button type="button" class="tix-mobile-bar" id="tixMobileBar" hidden>
@@ -76,6 +172,55 @@ import Layout from '../../layouts/Layout.astro';
     color: var(--color-paper-60);
   }
 
+  /* The not-yet-on-sale panel and the no-JS notice. Both hold content, so
+     both are square (design-system rule 6), and both take the same surface
+     as .tix-row so the page reads as one system. No outer block margin —
+     the section's .flow owns the gap above them (rule 7). */
+  .tix-closed,
+  .tix-noscript {
+    max-width: 44rem;
+    margin-inline: auto;
+  }
+  .tix-closed > *,
+  .tix-noscript > * {
+    margin: 0;
+  }
+  .tix-closed {
+    padding: var(--space-8);
+    background: var(--color-backstage);
+    border: 1px solid var(--color-paper-12);
+    text-align: center;
+  }
+  /* [hidden]'s UA display:none loses to the author rules above at equal
+     specificity in some engines once a display is set, so state it — the
+     same tie already documented on .tix-mobile-bar[hidden] below. */
+  .tix-closed[hidden] {
+    display: none;
+  }
+  .tix-closed h2 {
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+    margin-block-start: var(--space-3);
+    text-wrap: balance;
+  }
+  .tix-closed p {
+    margin-block-start: var(--space-5);
+    font: var(--text-body);
+    color: var(--color-paper-80);
+  }
+  .tix-closed-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-4);
+    margin-block-start: var(--space-6);
+  }
+  .tix-noscript p {
+    font: var(--text-body);
+    color: var(--color-paper-80);
+  }
+
   /* The page title is a group of its own, not a section-head: the store
      below it starts one group step down (a replacement for the flow step). */
   .tix-layout {
@@ -96,6 +241,16 @@ import Layout from '../../layouts/Layout.astro';
     flex-direction: column;
     gap: var(--space-grid);
     min-width: 0;
+  }
+  /* The skeleton holds space and nothing else: no text visible, no border
+     that would read as a real card that failed to fill in. */
+  .tix-row-skeleton {
+    color: transparent;
+    border-color: var(--color-paper-06);
+    background: var(--color-paper-06);
+  }
+  .tix-row-skeleton :global(.tix-row-benefits li::before) {
+    background: var(--color-paper-12);
   }
   .tix-loading,
   .tix-error,

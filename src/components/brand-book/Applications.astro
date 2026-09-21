@@ -265,7 +265,13 @@ const doDont = [
     <figure class="bb-figure span-4">
       <div class="bb-poster">
         <div class="bb-poster-photo">
-          <Image src={poster} alt="" widths={[400, 800]} sizes="(max-width: 820px) 100vw, 30vw" />
+          <Image
+            src={poster}
+            alt=""
+            width={800}
+            widths={[400, 800]}
+            sizes="(max-width: 820px) 100vw, 30vw"
+          />
         </div>
         <Image src={oddfestMark} alt="" width={400} class="bb-poster-lockup" />
         <p class="bb-poster-title">One week. Many hosts.</p>
@@ -281,7 +287,13 @@ const doDont = [
     <figure class="bb-figure span-4">
       <div class="bb-social">
         <div class="bb-social-photo">
-          <Image src={social} alt="" widths={[400, 800]} sizes="(max-width: 820px) 100vw, 25vw" />
+          <Image
+            src={social}
+            alt=""
+            width={800}
+            widths={[400, 800]}
+            sizes="(max-width: 820px) 100vw, 25vw"
+          />
         </div>
         <div class="bb-social-body">
           <p>Creative work needs more than moments.</p>
@@ -395,6 +407,7 @@ const doDont = [
         <Image
           src={mod.default}
           alt={`Contact sheet of ${base(path).replace('.jpg', '')}`}
+          width={1600}
           widths={[800, 1600]}
           sizes="(max-width: 820px) 100vw, 70vw"
         />

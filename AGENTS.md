@@ -460,10 +460,24 @@ short version a future agent needs before touching `/tickets/*`):
   the statistics category out of the banner entirely. `trackEvent()` is
   called from the two forms and the ticketing funnel and is a safe no-op
   until consent exists. Rotating the property is still a one-file change.
-- `src/scripts/calendar-embed.ts` — the ODDspace Google Calendar, gated on
-  `preferences`. Its URL lives in `data-src`, never `src`; that is what makes
-  the gate structural rather than a race with script timing. **Do not
-  "simplify" it back to a plain `src`.**
+- **There is no `preferences` entry any more, and that is current.** This
+  bullet used to describe `src/scripts/calendar-embed.ts`, the ODDspace
+  Google Calendar embed gated on `preferences`. That file was deleted on
+  2026-09-11 when `/oddspace` moved to a hand-kept event list, and this
+  paragraph kept describing it as live until 2026-09-21. The category is
+  still declared with an empty `entries` array, which collapses it out of the
+  banner — so re-adding an embed means re-adding its entry, which restores
+  the toggle. If you add one, the `data-src`-never-`src` pattern is the one
+  to copy: it makes the gate structural rather than a race with script
+  timing.
+- `src/scripts/analytics.ts` also strips `order_token` and `session_id` from
+  the URL it reports to GA4 (2026-09-21). Stripe returns a buyer to
+  `/tickets/confirmation/?session_id=…&order_token=…`, GA4's automatic
+  page_view sends the whole URL as `page_location`, and that token is a
+  bearer capability rather than an identifier. The ticket events were always
+  careful never to carry it, which is why the page view carrying it went
+  unnoticed. Add a query parameter that is a secret and add it to
+  `SECRET_QUERY_PARAMS` in the same commit.
 - Withdrawal (GDPR Art. 7(3)) is the footer's "Cookie settings" button and
   the one on `/privacy/`; both clear the stored value before reopening, so
   abandoning the reopened banner fails closed.
@@ -563,6 +577,15 @@ while implementing a website feature.
 - `docs/design-system.md` — the token/component rules, with the reasoning
 - `docs/editing.md` — what a non-developer can do in CloudCannon
 - `docs/deployment.md` — how a change reaches production
+- `docs/LAUNCH_RUNBOOK.md` — **the one authoritative launch sequence**: what to
+  check before, the exact deploy order (Worker first, then a push to `main`),
+  who watches what, how to roll back, the Stripe live-mode cutover, and the
+  domain/email migration with the seven mail records on `oddfest.co` that must
+  not be touched
+- `docs/LAUNCH_READINESS_2026-09-21.md` — what the 2026-09-21 readiness pass
+  found, fixed and measured, and every remaining blocker with its owner. Read
+  this before deciding whether to launch; read the runbook when you have
+  decided to
 - `docs/IDENTITY_LAUNCH_MATRIX_2026-09-04.md` — the All Things ODD identity /
   domain / repository migration: what changed, what is verified, and the
   external blockers that remain

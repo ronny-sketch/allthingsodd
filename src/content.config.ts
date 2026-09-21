@@ -1228,6 +1228,15 @@ const pages = defineCollection({
           body: z.string(),
           items: z.array(z.string()),
         }),
+        // The two ODDspace documents an organiser actually has to read
+        // (2026-09-21). They are real, substantial, indexable pages that
+        // nothing on the site linked to — /oddspace/event-info-pack and
+        // /oddspace/code-of-conduct had zero inbound links anywhere, while
+        // being submitted to Google in the sitemap. They belong here, on the
+        // page whose readers are the people who need them. Reuses
+        // `resourceLink` and ResourceList rather than forking a component.
+        beforeYourEvent: sectionIntro,
+        resources: z.array(resourceLink),
         faq: z.array(faqItem),
         finalCta: z.object({
           eyebrow: z.string(),

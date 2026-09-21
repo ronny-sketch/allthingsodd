@@ -255,7 +255,11 @@ test.describe('/tickets/checkout', () => {
     await expect(submit).toHaveAttribute('aria-disabled', 'false');
 
     const href = await submit.getAttribute('href');
-    expect(href).toMatch(/^mailto:ronny@oddfest\.co\?/);
+    // hello@, not a personal address: the commerce path must not publish one
+    // person's inbox, and hello@oddfest.co is the verified shared inbox
+    // (2026-09-21). Changed alongside the same swap in checkout.ts,
+    // storefront.ts, confirmation.ts and checkout.astro.
+    expect(href).toMatch(/^mailto:hello@oddfest\.co\?/);
     const decoded = decodeURIComponent(href ?? '');
     expect(decoded).toContain('Blind Bird');
     expect(decoded).toContain('Name: Test Buyer');
@@ -439,8 +443,14 @@ test.describe('GA4 ecommerce events', () => {
       value: 600, // 60000 minor. Reporting 60000 here would be a 100x overstatement.
     });
     expect((purchase.params.items as Array<Record<string, unknown>>)[0]).toMatchObject({
-      item_id: 'tt_blind_bird',
+      // The catalogue SLUG, and a price. This assertion used to pin the raw
+      // ticket-type uuid, which is what the event sent until 2026-09-21 —
+      // and GA4 joins item-level funnels on item_id, so `purchase` was the
+      // one step in the funnel no ticket could be followed into. Both sides
+      // now come from itemFor(), the same helper the other four steps use.
+      item_id: 'blind-bird',
       item_name: 'Blind Bird',
+      price: 300,
       quantity: 2,
     });
 

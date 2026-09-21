@@ -1,4 +1,8 @@
-import { test, expect } from '@playwright/test';
+// `test` comes from ../base, not from '@playwright/test': the consent test
+// at the bottom of this file taps "Accept all", which loads the real gtag.js
+// and wrote real page views into the live GA4 property on every run, on both
+// mobile projects. See tests/base.ts.
+import { test, expect } from '../base';
 import { suppressInterruptions } from './helpers';
 
 /*
@@ -51,7 +55,11 @@ test.describe('mobile navigation', () => {
 
   test('tapping a menu link navigates and closes the menu', async ({ page }) => {
     await page.locator('#menuToggle').tap();
-    await page.locator('#menuOverlay .menu-links a[href="/oddfest"]').tap();
+    // The nav's own hrefs carry a trailing slash (2026-09-21) so Surge's
+    // redirect can never eat a query string off one. Matched with ^= rather
+    // than pinning either form: this test is about the tap navigating, not
+    // about how the href is spelled.
+    await page.locator('#menuOverlay .menu-links a[href^="/oddfest"]').first().tap();
     // Trailing-slash-tolerant: whether a host serves /oddfest or /oddfest/ is
     // the server's choice (astro preview omits it, a plain static server
     // 301s to it), and this test is about the tap navigating — not about

@@ -17,6 +17,16 @@
 // guidance is written in, the one oddfest.co already uses via Cookiebot, and
 // the one a visitor who has seen any other EU cookie banner will recognise.
 
+// Four entries were missing until 2026-09-21 — odd_tickets_cart_v1,
+// odd_tickets_order_token_v1, odd_first_touch_v1 and
+// odd_tickets_purchase_reported_v1, all added to the site after the
+// 2026-09-03 rebuild of this declaration and none of them registered here.
+// That is exactly the failure the paragraph above says is a bug, and
+// /privacy's claim to list everything was false for as long as it lasted.
+// The purchase-report key sits under `statistics` rather than `necessary`
+// because it exists only to serve GA4 — and since the same date it is only
+// written once statistics consent exists (tickets/confirmation.ts).
+
 export type ConsentCategory = 'necessary' | 'preferences' | 'statistics' | 'marketing';
 
 /** Where a value is kept. Only `cookie` is a cookie in the legal sense, but
@@ -86,6 +96,33 @@ export function buildDeclaration(measurementId: string | null): CategoryDeclarat
           kind: 'sessionStorage',
         },
         {
+          name: 'odd_tickets_cart_v1',
+          provider: 'ODD (this site)',
+          purpose:
+            'Remembers which tickets you have chosen, so your selection survives moving between the ticket page and the checkout page. Cleared once an order is complete.',
+          retention: 'Until you clear it, or your order completes',
+          kind: 'localStorage',
+          scope: 'Only if you choose a ticket',
+        },
+        {
+          name: 'odd_tickets_order_token_v1',
+          provider: 'ODD (this site)',
+          purpose:
+            'Identifies your own ticket order, so the confirmation page can show it to you after you pay — including if you reload the page.',
+          retention: 'Until the browser tab is closed',
+          kind: 'sessionStorage',
+          scope: 'Only from the ticket checkout onwards',
+        },
+        {
+          name: 'odd_first_touch_v1',
+          provider: 'ODD (this site)',
+          purpose:
+            'Records which page you arrived on and which campaign link brought you, and sends it with a form you choose to submit, so we can tell where an enquiry came from. Written only at the moment you submit a form, never on arrival.',
+          retention: 'Until the browser tab is closed',
+          kind: 'sessionStorage',
+          scope: 'Only when you submit a form',
+        },
+        {
           name: '__stripe_mid, __stripe_sid',
           provider: 'Stripe Payments Europe, Ltd.',
           purpose:
@@ -130,6 +167,15 @@ export function buildDeclaration(measurementId: string | null): CategoryDeclarat
                 'Counts visits and page views and distinguishes one visitor from another, so we can see which pages people use. IP addresses are anonymised. Nothing is requested from Google at all until you accept this category.',
               retention: '2 years',
               kind: 'cookie',
+            },
+            {
+              name: 'odd_tickets_purchase_reported_v1',
+              provider: 'ODD (this site)',
+              purpose:
+                'Records that a completed order has already been counted, so reloading the confirmation page does not count the same purchase twice.',
+              retention: 'Until the browser tab is closed',
+              kind: 'sessionStorage',
+              scope: 'Only on the ticket confirmation page',
             },
           ],
     },

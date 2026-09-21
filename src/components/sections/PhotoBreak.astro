@@ -28,7 +28,21 @@ const { image, alt, tall = false } = Astro.props;
       // genuinely wide monitor this was being upscaled from a source
       // narrower than its own render width (visible softness, not a
       // hypothetical).
-      <Image src={image} alt={alt ?? ''} width={2200} />
+      //
+      // `widths` + `sizes` added 2026-09-21, and 2200 deliberately KEPT as
+      // the top step so nothing gets softer on a wide monitor. Until then
+      // this was a single 2200px file with no srcset, on all ten pages that
+      // use this component — so a phone downloaded a 2200px image to fill a
+      // 390px band. /about's was the largest served asset on the site at
+      // 441KB. `sizes="100vw"` is exact rather than approximate here,
+      // because .bleed really is the full viewport width.
+      <Image
+        src={image}
+        alt={alt ?? ''}
+        width={2200}
+        widths={[640, 1024, 1440, 1920, 2200]}
+        sizes="100vw"
+      />
     ) : (
       <div class="photo-break-empty" />
     )

@@ -243,7 +243,11 @@ test('the catalog opening a tier makes its button real again', async ({ page }) 
   await expect(cta).toBeVisible();
   await expect(cta).toHaveText('Buy Early Bird');
   await expect(cta).not.toHaveAttribute('aria-disabled', 'true');
-  await expect(cta).toHaveAttribute('href', '/tickets');
+  // Slashed, like every other internal link on this site: Surge answers the
+  // un-slashed form with a 301 that drops the query string (see
+  // tests/functional/query-string-links.spec.ts), so /tickets/ is the form
+  // the content holds.
+  await expect(cta).toHaveAttribute('href', '/tickets/');
 
   // A closed tier is *not* the same as an upcoming one — it must stay at
   // full contrast, because "you missed it" is the thing the reader needs.

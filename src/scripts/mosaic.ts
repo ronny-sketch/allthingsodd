@@ -4,7 +4,19 @@
 const mosaic = document.getElementById('heroMosaic');
 if (mosaic) {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const pool: string[] = JSON.parse(mosaic.dataset.pool ?? '[]');
+  // Each pool entry carries the same responsive set the rendered cells use
+  // (src + srcset + intrinsic width/height), not a bare URL — see
+  // Hero.astro's `pool` for why, and what it cost when it was one 500px file.
+  interface PoolImage {
+    src: string;
+    srcset: string;
+    width?: number | string;
+    height?: number | string;
+  }
+  const pool: PoolImage[] = JSON.parse(mosaic.dataset.pool ?? '[]');
+  // The `sizes` the cells are laid out with, kept on the element so the
+  // browser picks from `srcset` the same way it does for the initial images.
+  const MOSAIC_SIZES = mosaic.dataset.sizes ?? '';
   const cells = Array.from(mosaic.querySelectorAll<HTMLElement>('.mosaic-cell'));
 
   function randomKenBurns(img: HTMLImageElement) {
@@ -50,10 +62,10 @@ if (mosaic) {
     function swap(cellIndex: number) {
       const cell = cells[cellIndex];
       const oldImg = cell.querySelector('img');
-      let candidates = pool.filter((u) => !assigned.includes(u));
+      let candidates = pool.filter((p) => !assigned.includes(p.src));
       if (!candidates.length) candidates = pool;
       const next = candidates[Math.floor(Math.random() * candidates.length)];
-      assigned[cellIndex] = next;
+      assigned[cellIndex] = next.src;
 
       const newImg = document.createElement('img');
       newImg.alt = '';
@@ -80,7 +92,14 @@ if (mosaic) {
       // alive" brief.
       newImg.style.transition = 'opacity 1.4s ease';
       randomKenBurns(newImg);
-      newImg.src = next;
+      // srcset + sizes, not just src. Without them this element loaded the
+      // widest pool file into a cell a fraction of its size, and its larger
+      // intrinsic size made every swap a fresh, later LCP candidate.
+      if (next.srcset) newImg.srcset = next.srcset;
+      if (MOSAIC_SIZES) newImg.sizes = MOSAIC_SIZES;
+      if (next.width) newImg.width = Number(next.width);
+      if (next.height) newImg.height = Number(next.height);
+      newImg.src = next.src;
 
       // Decode fully off the critical path before it ever touches the DOM — assigning
       // .src and painting in the same frame is what read as a "blink": the browser had

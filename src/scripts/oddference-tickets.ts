@@ -21,7 +21,7 @@
 // section rather than a spinner. This only ever *corrects* it.
 import { fetchCatalog, type CatalogTicketType } from './tickets/api';
 import { formatMinor, vatSuffix } from './tickets/money';
-import { EVENT_SLUG } from './tickets/config';
+import { EVENT_SLUG, salesEnabled } from './tickets/config';
 
 const STATUS_LABEL: Record<CatalogTicketType['status'], string> = {
   active: 'On sale now',
@@ -30,6 +30,12 @@ const STATUS_LABEL: Record<CatalogTicketType['status'], string> = {
   sale_ended: 'Sale closed',
   hidden: '',
 };
+
+// Whether a ticket may be presented as buyable — see salesEnabled() in
+// ./tickets/config.ts. This page is marketing, so the consequence of getting
+// it wrong is a card-shaped promise ("Buy Blind Bird", "On sale now") that
+// the checkout cannot keep.
+const salesOpen = salesEnabled(window.location);
 
 function setText(el: Element | null, value: string): void {
   if (el && el.textContent !== value) el.textContent = value;
@@ -40,7 +46,7 @@ function applyTier(
   tt: CatalogTicketType,
   pricesIncludeTax: boolean | undefined,
 ): void {
-  const isActive = tt.status === 'active' && tt.availableToPurchase > 0;
+  const isActive = tt.status === 'active' && tt.availableToPurchase > 0 && salesOpen;
 
   setText(card.querySelector('.pricing-price'), formatMinor(tt.displayPriceMinor, tt.currency));
 
@@ -56,8 +62,13 @@ function applyTier(
 
   const status = card.querySelector<HTMLElement>('.pricing-status');
   if (status) {
-    const label =
-      tt.status === 'active' && !isActive ? STATUS_LABEL.sold_out : STATUS_LABEL[tt.status];
+    // Three different reasons an `active` tier is not buyable, and they are
+    // not interchangeable: the sale has not opened (nothing is buyable yet),
+    // the tier has run out (sold out), or it is genuinely on sale.
+    let label: string;
+    if (tt.status === 'active' && !salesOpen) label = 'Not yet on sale';
+    else if (tt.status === 'active' && !isActive) label = STATUS_LABEL.sold_out;
+    else label = STATUS_LABEL[tt.status];
     setText(status, label);
     status.hidden = label === '';
   }
@@ -87,7 +98,10 @@ function applyTier(
   const upcoming = tt.status === 'upcoming';
   const cta = card.querySelector<HTMLAnchorElement>('a.pill');
   if (cta) {
-    setText(cta, isActive ? `Buy ${tt.name}` : 'See tickets');
+    // Never the word "buy" while the checkout cannot take a card. The link
+    // still goes to /tickets, which publishes the prices and the invoice
+    // route either way.
+    setText(cta, isActive ? `Buy ${tt.name}` : salesOpen ? 'See tickets' : 'See ticket details');
     cta.classList.toggle('pill-solid', isActive);
     cta.classList.toggle('pill-outline', !isActive);
     // Both attributes together, in both directions — the catalog is the
@@ -110,6 +124,10 @@ function applyTier(
   // in oddference.json and is rendered at build time, so it is deliberately
   // left alone here: the catalog has no field for it, and writing one from
   // this script would mean inventing copy.
+  //
+  // With the sale closed the badge is hidden for a second reason: ODDference's
+  // reads "Available until 1 Nov 2026", and a deadline on a sale that has not
+  // opened tells the reader they can buy until then.
   const badge = card.querySelector<HTMLElement>('.pricing-badge');
   if (badge) badge.hidden = !isActive;
 }

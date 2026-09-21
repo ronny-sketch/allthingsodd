@@ -10,7 +10,7 @@
 // What is allowed to run lives in consent.ts; what it is called and why is
 // declared in consent-config.ts's `statistics` category.
 import { GA_MEASUREMENT_ID } from './analytics-config';
-import { onConsentChange } from './consent';
+import { hasConsent, onConsentChange } from './consent';
 
 declare global {
   interface Window {
@@ -21,6 +21,44 @@ declare global {
 }
 
 let loaded = false;
+
+// Query parameters that must never reach Google.
+//
+// GA4's automatic page_view sends the full URL as `page_location`, query
+// string included, and the next navigation sends it again as `page_referrer`.
+// Stripe returns a buyer to
+// /tickets/confirmation/?session_id=…&order_token=… (built by the Worker —
+// see ../odd-growth-os/worker/src/tickets/checkout.ts), and `order_token` is
+// not an identifier, it is a bearer capability: it authorises reading an
+// order's status and buyer details and reassigning its attendees. Anyone with
+// read access to the GA4 property could lift live order tokens straight out
+// of the Pages report.
+//
+// tickets/ecommerce.ts already takes care never to put the token in an event
+// (it hashes it for transaction_id), which is exactly the care that made the
+// page_view leak easy to miss: the events were clean and the page view was
+// not. Stripped here, in the one place every page's URL passes through,
+// rather than per page — the next secret query parameter is then covered
+// before anyone adds it.
+const SECRET_QUERY_PARAMS = ['order_token', 'session_id'];
+
+function withoutSecrets(raw: string): string {
+  if (!raw) return raw;
+  try {
+    const url = new URL(raw, window.location.origin);
+    let stripped = false;
+    for (const param of SECRET_QUERY_PARAMS) {
+      if (url.searchParams.has(param)) {
+        url.searchParams.delete(param);
+        stripped = true;
+      }
+    }
+    return stripped ? url.toString() : raw;
+  } catch {
+    // An unparseable URL is not worth risking: send the path only.
+    return window.location.pathname;
+  }
+}
 
 function loadGtag(): void {
   if (loaded || !GA_MEASUREMENT_ID) return;
@@ -40,7 +78,16 @@ function loadGtag(): void {
     window.dataLayer!.push(arguments);
   };
   window.gtag('js', new Date());
-  window.gtag('config', GA_MEASUREMENT_ID, { anonymize_ip: true });
+  // page_location/page_referrer passed explicitly so the automatic page_view
+  // reports the sanitised URL rather than whatever is in the address bar.
+  // page_referrer is omitted entirely when there is none — an empty string
+  // is not the same thing as "arrived directly" to GA4.
+  const referrer = withoutSecrets(document.referrer);
+  window.gtag('config', GA_MEASUREMENT_ID, {
+    anonymize_ip: true,
+    page_location: withoutSecrets(window.location.href),
+    ...(referrer ? { page_referrer: referrer } : {}),
+  });
   const script = document.createElement('script');
   script.async = true;
   script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
@@ -60,6 +107,57 @@ export function initAnalytics(): void {
   onConsentChange((state) => {
     if (state.statistics) loadGtag();
   });
+  initCtaTracking();
+}
+
+// One delegated listener, not five hand-wired events.
+//
+// The launch brief asked for partner_cta_click, oddspace_membership_click,
+// oddspace_venue_enquiry_click and email_click as separate names. They are the
+// same question — "which call to action did someone act on" — and four names
+// means four places to forget. `cta_click` with a `cta_id` answers it in one
+// event, and keeps answering it for the next CTA without a code change.
+//
+// external_social_click is deliberately NOT here: GA4's enhanced measurement
+// already reports outbound http(s) clicks with link_domain/link_url. Adding
+// our own would double-count them. mailto: is not covered by that, which is
+// why it is.
+//
+// `cta_location` is the pathname only. Never the full URL — see
+// SECRET_QUERY_PARAMS above for what can be in a query string on this site.
+function initCtaTracking(): void {
+  document.addEventListener(
+    'click',
+    (e) => {
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+      const link = target.closest('a[href]');
+      if (!(link instanceof HTMLAnchorElement)) return;
+      const href = link.getAttribute('href') ?? '';
+
+      if (href.startsWith('mailto:')) {
+        trackEvent('cta_click', { cta_id: 'email', cta_location: window.location.pathname });
+        return;
+      }
+
+      // The commercial deep links: /work-with-odd/?interest=<product>, which
+      // is how every partner, ODDnetwork, ODDagency and ODDspace call to
+      // action on this site reaches the enquiry form. The product value is an
+      // enum from ../odd-growth-os/schemas/products.yml, and `intent`
+      // distinguishes ODDspace's two CTAs from each other.
+      const interest = /[?&]interest=([a-z_]+)/.exec(href)?.[1];
+      if (interest) {
+        const intent = /[?&]intent=([a-z_]+)/.exec(href)?.[1];
+        trackEvent('cta_click', {
+          cta_id: interest,
+          ...(intent ? { cta_intent: intent } : {}),
+          cta_location: window.location.pathname,
+        });
+      }
+    },
+    // Capture, so a CTA that stops propagation is still counted.
+    { capture: true },
+  );
 }
 
 // GA4 reads these three event parameters as traffic-source attribution, so
@@ -78,6 +176,12 @@ const GA4_ATTRIBUTION_PARAMS = ['source', 'medium', 'campaign'];
 // either condition themselves.
 export function trackEvent(name: string, params?: Record<string, unknown>): void {
   if (typeof window.gtag !== 'function') return;
+  // Re-checked on every event, not just at load. gtag.js cannot be unloaded
+  // once fetched, so without this a visitor who accepts, then withdraws via
+  // the footer, keeps sending events for the rest of the page view — the
+  // stored value is already gone, so honouring it here costs one lookup and
+  // makes withdrawal effective immediately rather than on the next load.
+  if (!hasConsent('statistics')) return;
   let safe = params;
   if (params) {
     const clashes = GA4_ATTRIBUTION_PARAMS.filter((k) => k in params);

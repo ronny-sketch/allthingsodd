@@ -19,9 +19,11 @@
     "test:update-snapshots": "playwright test --update-snapshots",
     "cc:validate": "cloudcannon validate",
     "check:identity": "node scripts/check-identity.mjs",
-    "quality": "npm run check && npm run lint && npm run format:check && npm run cc:validate && npm run check:identity && npm run check:brand && npm run check:served && npm run build",
+    "quality": "npm run check && npm run lint && npm run format:check && npm run cc:validate && npm run check:identity && npm run check:brand && npm run check:served && npm run check:og && npm run build",
     "check:brand": "node scripts/check-brand-tokens.mjs",
-    "check:served": "node scripts/check-served-extensions.mjs"
+    "check:served": "node scripts/check-served-extensions.mjs",
+    "measure:cwv": "node scripts/measure-cwv.mjs",
+    "check:og": "node scripts/check-og-images.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

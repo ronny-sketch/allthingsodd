@@ -401,6 +401,26 @@ collections_config:
           Shown under both rate tables. VAT treatment and payment terms are a
           legal requirement on a published price, not a nicety — do not empty
           this.
+      beforeYourEvent:
+        type: object
+        label: '"Before your event" heading (ODDspace venue only)'
+        comment: >-
+          Introduces the two ODDspace documents an organiser has to read.
+          The links themselves are below, in "Documents to read first".
+      resources:
+        type: array
+        label: Documents to read first (ODDspace venue only)
+        comment: >-
+          The event info pack and the code of conduct. Both are real pages on
+          this site — keep the paths with their trailing slash
+          (/oddspace/event-info-pack/), because a link without one loses
+          anything after a "?" when the site redirects it. Adding a row here
+          is how a new ODDspace document becomes findable at all; before this
+          block existed, both of these pages were reachable only by typing
+          the URL.
+        options:
+          required: false
+        cascade: true
       houseRules:
         type: object
         label: Studio house rules (ODDstudio only)
