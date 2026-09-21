@@ -1,5 +1,32 @@
 # Brand system changelog
 
+## 1.1 — 2026-09-20 · ODD on Instagram
+
+`brand/social/` grew from twenty formats to a signature. What changed and why:
+
+- **The square is the photograph.** Instagram's profile grid shows only the
+  centre square of a 4:5 post, so photographs now fill exactly 135–1215px and
+  every word lives in the two Ink bands above and below. Scrims are gone from
+  the social system: type never sits on a photograph.
+- **Type as image** is a documented exception to the five sizes: one word or one
+  figure may exceed Hero when it is the image (cropped by the tile), never a
+  sentence. `post-21`, `reel-1`.
+- **The mark as a window** (`post-22`, `story-5`) and **the mark, breathing**
+  (`post-34`) reuse the site's own path and steam filter; neither is redrawn.
+- **The strike-through** left the nav and became a way of saying what ODD is
+  not (`post-23`, `post-24`, `story-4`). It is the only non-hairline rule.
+- **The footer bar** (mark + URL on every tile) was retired. It made every post
+  a template; the mark now appears where it means something.
+- **Three-tile panorama** and **nine-frame sheet** formats, a planned edition
+  of twelve (`src/grid.mjs`) rendered as the profile (`grid.jpg`, `phone.jpg`),
+  two reel covers, and ideas 55–104 in the bank.
+- Renderer: `formats/*.mjs` modules, `--only=` partial builds, `wide: 3`
+  panoramas clipped into a/b/c.
+
+Still placeholders: every photo credit reads "Photo: ODDfest" until the
+photographer's name is added from the photobank. The panorama source is 1800px
+wide (1.8× on a 3240px band); a larger export from the photographer is better.
+
 ## 1.0 — 2026-09-18 · the visual system, formalised
 
 The website's design language became a brand system: a designed brand book at

@@ -41,7 +41,7 @@ document.querySelectorAll<HTMLFormElement>('[data-newsletter-form]').forEach((fo
       const data = (await res.json()) as { ok: boolean; message: string };
       status.textContent = data.message;
       if (data.ok) {
-        trackEvent('newsletter_signup', { source: 'footer_newsletter' });
+        trackEvent('newsletter_signup', { signup_source: source });
         form.reset();
       }
     } catch {

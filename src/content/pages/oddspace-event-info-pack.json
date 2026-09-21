@@ -9,6 +9,7 @@
   "title": "Everything you need to run your event here.",
   "lastUpdated": "18 September 2026",
   "intro": "This is the pack we send once your booking is agreed. It covers the Gallery, the Aula, the Auditorium and the 2nd-floor co-creation space — the same rules apply in all of them. ODDspace sits inside a shared office building with other tenants, a parking hall and a round-the-clock alarm system, and most of what follows exists to keep those alarms quiet and our neighbours undisturbed. Read it once, send it to your crew, and ask us about anything it doesn't answer.",
+  "contents": "What's in here",
   "sections": [
     {
       "title": "In short",
@@ -24,17 +25,57 @@
       ]
     },
     {
-      "title": "The spaces",
+      "title": "The Gallery",
       "body": [
-        "Four spaces, bookable on their own or combined. Capacity is the most people inside at one time, and it counts everyone: guests, crew and performers.",
-        "These figures follow the building's guidance as of September 2026. The limits for combined use are still being confirmed with the property, so we'll give you the current number when you book. Going over the stated capacity is grounds for stopping an event."
+        "150 people, 320 m², at street level. The big room: openings, receptions, launches, concerts, club nights, comedy. Its floor takes a crowd and its walls are usually hung with work, so tell us early if you need them clear.",
+        "The back door is an emergency exit only. It opens straight into the Ukraine Centre next door and its alarm is always on."
       ],
-      "items": [
-        "Gallery, street level — 150 people. Openings, receptions, launches, concerts, club nights, comedy. Its back door is an emergency exit only.",
-        "Aula — 30 people. The room your guests arrive into: registration, coats, drinks. Rarely booked on its own.",
-        "Auditorium — 50 seated. Talks, panels, screenings, workshops, AGMs. Capacity is set by the number of seats, so it doesn't flex upward for a standing crowd.",
-        "2nd-floor co-creation space — 150 people. Seminars, workshops, away-days, dinners, smaller parties. This floor connects to the building's elevators and parking hall, so guest flow needs a plan.",
-        "Gallery + Aula + Auditorium combined — 230 people. Capacities add up when you book several spaces."
+      "image": {
+        "src": "../../assets/oddspace/gallery-floor.jpg",
+        "alt": "The ODDspace gallery floor, an open concrete-floored hall with white columns and daylight from tall windows.",
+        "caption": "The Gallery — 150 people, 320 m²."
+      }
+    },
+    {
+      "title": "The Aula",
+      "body": [
+        "30 people. The room your guests arrive into: registration, coats, drinks, the conversation that spills out of a talk. Rarely booked on its own, and the reason a Gallery event feels organised rather than crowded at the door."
+      ],
+      "image": {
+        "src": "../../assets/oddspace/lounge.jpg",
+        "alt": "The ODDspace lounge: sofas and a round table on a concrete floor, artworks leaning against the wall, a screen and speakers at the far end.",
+        "caption": "The Aula — where people arrive, leave their coats and keep talking."
+      }
+    },
+    {
+      "title": "The Auditorium",
+      "body": [
+        "50 seated, 150.2 m², with fixed tiered seating, a large screen, a microphone and a sound system. Talks, panels, screenings, workshops, AGMs.",
+        "Capacity here is set by the number of seats, so unlike the other rooms it does not flex upward for a standing crowd. It sits on the first floor of the building's meeting and event centre, and guests reach it from the Sturenkatu side through the main doors rather than through the ODDspace entrance — worth putting in your invitation."
+      ],
+      "image": {
+        "src": "../../assets/oddspace/auditorium.jpg",
+        "alt": "The ODDspace auditorium seen from the back: curved tiered desks and seats facing a presentation screen.",
+        "caption": "The Auditorium — 50 seated, 150.2 m², entered from Sturenkatu."
+      }
+    },
+    {
+      "title": "The 2nd-floor co-creation space",
+      "body": [
+        "150 people, one floor up. Seminars, workshops, away-days, dinners, smaller parties — the room that suits a day-long programme better than an evening crowd.",
+        "This floor connects to the building's elevators and parking hall, which is why guest flow here needs a plan. See the house rules."
+      ],
+      "image": {
+        "src": "../../assets/oddspace/coworking-desks.jpg",
+        "alt": "The ODDspace co-creation floor: desks and lounge chairs by tall windows looking out over the Konepaja chimney.",
+        "caption": "The 2nd-floor co-creation space — 150 people."
+      }
+    },
+    {
+      "title": "Using more than one room",
+      "body": [
+        "Capacities add up when you book several spaces: Gallery, Aula and Auditorium together come to 230 people. Capacity is the most people inside at one time, and it counts everyone — guests, crew and performers.",
+        "These figures follow the building's guidance as of September 2026. The limits for combined use are still being confirmed with the property, so we'll give you the current number when you book. Going over the stated capacity is grounds for stopping an event."
       ]
     },
     {
@@ -142,7 +183,7 @@
       "title": "Arrival, access and getting here",
       "body": [
         "ODDspace is at Teollisuuskatu 9 D in Vallila. The building is Kiinteistö Oy Sturenportti, whose official address is Sturenkatu 16 — the one to give emergency services. Trams and buses stop on Teollisuuskatu and Sturenkatu.",
-        "Tell your guests the exact entrance. People who wander in through the main lobby end up in someone else's office building."
+        "Tell your guests the exact entrance, and which one: the Gallery, Aula and co-creation space are entered from Teollisuuskatu 9 D, while the Auditorium is reached from the Sturenkatu side through the building's main doors. People who guess end up in someone else's office building."
       ],
       "items": [
         "Keys are handed to you from the lobby at the start of your window and returned as agreed. Don't let anyone you don't know in through the building's access-controlled doors, and tell us immediately if a key or badge goes missing.",

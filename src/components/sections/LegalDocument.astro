@@ -9,6 +9,8 @@
 // the same array ConsentBanner.astro gates on. That shared import is the
 // whole point: a tracker can't be added to the site without appearing here,
 // and a category can't be documented here without being enforceable there.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { GA_MEASUREMENT_ID } from '../../scripts/analytics-config';
 import { buildDeclaration } from '../../scripts/consent-config';
 
@@ -16,17 +18,32 @@ interface Section {
   title: string;
   body: string[];
   items?: string[];
+  /** A photograph of what the section describes — used by the ODDspace event
+   *  info pack to show each room. Privacy has nothing to photograph. */
+  image?: { src: ImageMetadata; alt: string; caption?: string };
 }
 interface Props {
   lastUpdated: string;
   sections: Section[];
+  /** Heading for the contents list. Present = render one, linking to each
+   *  section. A document long enough to need one says so in its content;
+   *  /privacy is nine sections and does not. */
+  contents?: string;
   /** Omitted by legal-template documents that are not the privacy policy
    *  (the ODDspace event info pack and code of conduct): there is no cookie
    *  declaration to make on a page that sets nothing the others don't. */
   cookieSection?: { title: string; body: string[]; settingsLabel: string };
   contact: { title: string; body: string[]; name: string; email: string; address: string };
 }
-const { lastUpdated, sections, cookieSection, contact } = Astro.props;
+const { lastUpdated, sections, contents, cookieSection, contact } = Astro.props;
+
+/** Section ids are derived from the title, so the contents list and any
+ *  link someone shares ("see #house-rules") stay in sync with the copy. */
+const slug = (title: string) =>
+  title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 
 const declaration = buildDeclaration(GA_MEASUREMENT_ID);
 
@@ -42,9 +59,36 @@ const KIND_LABEL: Record<string, string> = {
     <p class="legal-updated reveal">Last updated: {lastUpdated}</p>
 
     {
+      contents && (
+        <nav class="legal-contents reveal" aria-labelledby="legal-contents-heading">
+          <h2 id="legal-contents-heading">{contents}</h2>
+          <ol>
+            {sections.map((section) => (
+              <li>
+                <a href={`#${slug(section.title)}`}>{section.title}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+
+    {
       sections.map((section) => (
-        <article class="legal-section reveal">
+        <article class="legal-section reveal" id={slug(section.title)}>
           <h2>{section.title}</h2>
+          {section.image && (
+            <figure class="legal-figure">
+              <Image
+                src={section.image.src}
+                alt={section.image.alt}
+                widths={[480, 760, 1100]}
+                sizes="(max-width: 46rem) 100vw, 46rem"
+                loading="lazy"
+              />
+              {section.image.caption && <figcaption>{section.image.caption}</figcaption>}
+            </figure>
+          )}
           {section.body.map((paragraph) => (
             <p>{paragraph}</p>
           ))}
@@ -163,6 +207,70 @@ const KIND_LABEL: Record<string, string> = {
     color: var(--color-paper-40);
     margin: 0;
   }
+  /* Contents list — only rendered for documents that ask for one. Two
+     columns where there is room, so a long pack's contents stay one glance
+     rather than one scroll. */
+  .legal-contents h2 {
+    font: var(--text-body);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--color-paper-40);
+    margin: 0 0 var(--space-3);
+  }
+  .legal-contents ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    columns: 2;
+    column-gap: var(--space-5);
+    counter-reset: legal-contents;
+  }
+  .legal-contents li {
+    break-inside: avoid;
+    counter-increment: legal-contents;
+    margin: 0 0 var(--space-2);
+  }
+  .legal-contents a {
+    font: var(--text-body);
+    color: var(--color-paper-80);
+    text-decoration: none;
+    display: grid;
+    grid-template-columns: 2ch 1fr;
+    gap: var(--space-2);
+  }
+  .legal-contents a::before {
+    content: counter(legal-contents, decimal-leading-zero);
+    color: var(--color-paper-40);
+    font-variant-numeric: tabular-nums;
+  }
+  .legal-contents a:hover,
+  .legal-contents a:focus-visible {
+    color: var(--color-paper);
+    text-decoration: underline;
+  }
+  @media (max-width: 40rem) {
+    .legal-contents ol {
+      columns: 1;
+    }
+  }
+
+  /* A room, photographed. Sits above the copy that describes it. */
+  .legal-figure {
+    margin: 0 0 var(--space-4);
+  }
+  .legal-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+  .legal-figure figcaption {
+    font: var(--text-small);
+    color: var(--color-paper-40);
+    margin-block-start: var(--space-2);
+  }
+
   /* .legal takes layout.css's section rhythm; the `.flow` wrap puts the
      first section a content step under the date, and each later section is
      a new group. Paragraph margins inside a section collapse into that
