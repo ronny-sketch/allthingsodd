@@ -1637,6 +1637,11 @@ const pages = defineCollection({
          *  Free text, not a date type, so it reads "3 September 2026". */
         lastUpdated: z.string(),
         intro: z.string(),
+        /** Heading for a contents list, e.g. "What's in here". Present =
+         *  the document renders one, linking to every section. Long
+         *  operational documents (the ODDspace event info pack) need it;
+         *  /privacy, read top to bottom, does not. */
+        contents: z.string().optional(),
         sections: z.array(
           z.object({
             title: z.string(),
@@ -1664,6 +1669,14 @@ const pages = defineCollection({
                   z.object({ text: z.string(), onlyWhen: z.enum(['oddspace-instagram']) }),
                 ]),
               )
+              .optional(),
+            /** A photograph of what the section describes — the ODDspace
+             *  event info pack gives each room its own. `alt` sits beside
+             *  the file rather than being optional: a room photo with no
+             *  description is a room an organiser using a screen reader
+             *  cannot picture. */
+            image: z
+              .object({ src: image(), alt: z.string(), caption: z.string().optional() })
               .optional(),
           }),
         ),
