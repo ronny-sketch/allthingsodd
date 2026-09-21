@@ -251,8 +251,8 @@ real decisions worth recording:
      at a 2027 plan that has since changed) was rewritten the same day at
      Ronny's request: 2027 is gone, and the section tells what happened in
      2026 around one figure — the number of different names in the credits,
-     counted by the page itself (274 at the time: 284 lines, ten names listed
-     twice). Every credit list is sorted alphabetically by the page, and the
+     counted by the page itself (285 since 2026-09-21, when the twelve
+     photographers were added: 296 lines, eleven names listed twice). Every credit list is sorted alphabetically by the page, and the
      core team's roles were dropped on 2026-09-17 so all four lists read alike. Its facts are only ones the site already published (Media's
      archive entry, ODDfest's highlights, ODDference's FAQ). What did not survive, on purpose: a feedback form whose submit
      handler only changed its button text (the card now links to the

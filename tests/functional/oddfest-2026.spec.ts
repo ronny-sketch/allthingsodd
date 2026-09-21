@@ -61,8 +61,13 @@ test('the thank-you page is a site page with its credits and no dead ends', asyn
   // new site. The date is content, not a fixture, so it is not pinned here.
   expect(await page.locator('#credits .ty-names > li.reveal').count()).toBeGreaterThan(200);
   await expect(page.locator('#afterparty a.pill')).toHaveAttribute('href', '/oddspace');
-  await expect(page.locator('#afterparty .ty-fact')).toHaveCount(3);
-  await expect(page.locator('.ty-signoff a.pill')).toHaveAttribute('href', '/');
+  await expect(page.locator('#invite-card .ty-invite-facts li')).toHaveCount(3);
+  // The card is the films' closing frame, so the eyebrow, the ask and the
+  // page's last word have to be inside it together — see
+  // scripts/render-oddfest-2026-film.mjs.
+  await expect(page.locator('#invite-card .eyebrow')).toHaveText('ODD is back');
+  await expect(page.locator('#invite-card .ty-invite-title')).toHaveText("You're invited.");
+  await expect(page.locator('#invite-card .ty-invite-closer')).toHaveText('Stay ODD.');
 });
 
 test('"Play the credits" plays the soundtrack and rolls the page until the reader scrolls', async ({

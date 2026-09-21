@@ -140,25 +140,39 @@ PLAYWRIGHT_BASE_URL=http://localhost:4399 npx playwright test tests/functional/c
 For live checks, GA4's DebugView is the only reliable view of parameters.
 Realtime shows event names but silently hides malformed `items` arrays.
 
-## Outstanding, and not fixable in code
+## Configured, for the record
 
-1. **Search Console has no `allthingsodd.co` property.** The only verified
-   one is the retired surge.sh host, whose whole 28-day record is 1,308
-   impressions and 0 clicks on the query `site:surge.sh`. Search Console
-   does not backfill, so every day without it is data that cannot be
-   recovered. Add it as a URL-prefix property, verify with the
-   `google181860bcd4b9963d.html` file already in `public/` (confirmed
-   serving 200 on the live domain), and submit
-   `https://allthingsodd.co/sitemap-index.xml`.
-2. **Two key events are missing.** `purchase` is already configured, along
-   with GA4's defaults `close_convert_lead` and `qualify_lead`. Add
-   `business_enquiry_submit` and `newsletter_signup` in Admin, New key
-   event. GA4 accepts an event name it has not seen yet, which matters
-   because `business_enquiry_submit` has never fired. Do not mark
-   `begin_checkout`: it inflates the conversion count without telling you
-   anything the funnel report does not already show.
+All done 2026-09-21, none of it visible from the code:
 
-Both need write access to the Google account.
-`data/fetch/elevate_google_scopes.py` in the Growth OS repo is a one-time
-consent script that grants it without touching the read-only token the
-nightly refresh depends on.
+|                         |                                                            |
+| ----------------------- | ---------------------------------------------------------- |
+| Search Console property | `https://allthingsodd.co/`, auto-verified as site owner    |
+| Sitemap                 | `sitemap-index.xml` submitted                              |
+| Key events              | `purchase`, `business_enquiry_submit`, `newsletter_signup` |
+| Event-data retention    | 14 months, raised from GA4's 2-month default               |
+
+The Search Console property auto-verified with no new file, because
+`google181860bcd4b9963d.html` in `public/` was already serving on the
+domain. It reads zero for about two days: Search Console lags, and it does
+not backfill, which is why the three-week gap after the domain cutover cost
+data that cannot be recovered.
+
+Retention matters more than it looks. Two months is the default and it
+silently caps every Exploration and every event-level analysis, while
+standard reports carry on looking fine because they are pre-aggregated.
+Nobody notices until they try to compare against last season.
+
+## Still outstanding
+
+**The UTM convention above is the only one that changes what you can
+learn**, and it is a habit rather than a setting. Until posted links carry
+tags, social stays invisible no matter what is connected.
+
+Two smaller ones:
+
+1. **An OAuth token is in this project's sibling repo's git history and has
+   not been rotated.** See `../odd-growth-os/ops/RUNBOOK.md`, "Leaked OAuth
+   token". It does not affect this site, but it covers the credentials that
+   read GA4 and Search Console.
+2. **`NOTION_API_KEY` is unset** in Growth OS, so the revenue tracker runs
+   on an old snapshot.
