@@ -1678,6 +1678,14 @@ const pages = defineCollection({
             image: z
               .object({ src: image(), alt: z.string(), caption: z.string().optional() })
               .optional(),
+            /** Files this section hands the reader — the ODDspace event info
+             *  pack links the building's own safety documents, which live in
+             *  public/oddspace/ because they are documents to download, not
+             *  images to optimise. `note` is the line under the link: what it
+             *  is, how long, what language. */
+            links: z
+              .array(z.object({ label: z.string(), href: z.string(), note: z.string().optional() }))
+              .optional(),
           }),
         ),
         /** Only the privacy policy declares cookies. The other documents on

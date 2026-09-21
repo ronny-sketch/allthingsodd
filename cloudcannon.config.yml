@@ -797,7 +797,9 @@ collections_config:
           The body of the policy, in order. Each section is a heading, one or
           more paragraphs, an optional bulleted list, and an optional
           photograph with its own alt text and caption — the ODDspace event
-          info pack uses that to show each room. The cookie table is NOT
+          info pack uses that to show each room — and an optional list of
+          document links, which is how that pack hands over the building's
+          safety PDFs. The cookie table is NOT
           edited here — it is generated from the site's own consent
           configuration so it cannot disagree with what the site actually
           sets.

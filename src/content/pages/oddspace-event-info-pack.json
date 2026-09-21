@@ -239,6 +239,53 @@
         "Threatening behaviour: stay calm, don't turn your back, keep a way out, move others away and call 112. If the person is armed, don't resist — call once you're safe.",
         "General warning siren, a one-minute rising and falling tone: go inside, close doors and windows, and follow the news."
       ]
+    },
+    {
+      "title": "Floor plan: street level",
+      "body": [
+        "The Gallery, the Aula and the Auditorium sit on this floor. Teollisuuskatu runs along the bottom edge of the drawing and the curved rows in the middle are the Auditorium.",
+        "These are the property's current-state drawings and they are not fully up to date — updated ones will replace them here. Your ODDspace contact walks the exits with you on site, which is the version that matters on the night."
+      ],
+      "image": {
+        "src": "../../assets/oddspace/floorplan-street-level.jpg",
+        "alt": "Architect's floor plan of the building's street-level floor, with Teollisuuskatu along the bottom edge and the curved tiered seating of the Auditorium in the middle.",
+        "caption": "Street level — Gallery, Aula, Auditorium."
+      }
+    },
+    {
+      "title": "Floor plan: 2nd floor",
+      "body": [
+        "The co-creation space is on this floor. The numbered bays are the building's parking hall, which guests must not enter — the reason this floor needs a guest-flow plan."
+      ],
+      "image": {
+        "src": "../../assets/oddspace/floorplan-second-floor.jpg",
+        "alt": "Architect's floor plan of the building's second floor, including the numbered bays of the parking hall.",
+        "caption": "2nd floor — the co-creation space, and the parking hall guests stay out of."
+      }
+    },
+    {
+      "title": "Building safety documents",
+      "body": [
+        "The property's own documents, in Finnish, last updated 9 June 2026. \"In an emergency\" above is the short English version of them; these are the full text, and they are what a public-event notification or your own rescue plan should attach.",
+        "They are also published by the property at pelsu.fi/sturenkatu16."
+      ],
+      "links": [
+        {
+          "label": "Pelastussuunnitelma — building rescue plan",
+          "href": "/oddspace/sturenportti-pelastussuunnitelma-fi.pdf",
+          "note": "PDF, 41 pages, Finnish. Building facts, safety equipment, safety contacts and every emergency procedure."
+        },
+        {
+          "label": "Toimintaohjeet — emergency instructions",
+          "href": "/oddspace/sturenportti-toimintaohjeet-fi.pdf",
+          "note": "PDF, 13 pages, Finnish. What to do in a fire, an alarm, an injury, a leak, a power cut or a threat."
+        },
+        {
+          "label": "Yleinen turvallisuusohje — general safety instructions",
+          "href": "/oddspace/sturenportti-yleinen-turvallisuusohje-fi.pdf",
+          "note": "PDF, 1 page, Finnish. Emergency numbers, the assembly point and the key locations in the building."
+        }
+      ]
     }
   ],
   "contact": {

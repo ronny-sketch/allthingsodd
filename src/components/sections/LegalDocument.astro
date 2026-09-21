@@ -21,6 +21,7 @@ interface Section {
   /** A photograph of what the section describes — used by the ODDspace event
    *  info pack to show each room. Privacy has nothing to photograph. */
   image?: { src: ImageMetadata; alt: string; caption?: string };
+  links?: { label: string; href: string; note?: string }[];
 }
 interface Props {
   lastUpdated: string;
@@ -96,6 +97,16 @@ const KIND_LABEL: Record<string, string> = {
             <ul>
               {section.items.map((item) => (
                 <li>{item}</li>
+              ))}
+            </ul>
+          )}
+          {section.links && (
+            <ul class="legal-links">
+              {section.links.map((link) => (
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                  {link.note && <span>{link.note}</span>}
+                </li>
               ))}
             </ul>
           )}
@@ -252,6 +263,28 @@ const KIND_LABEL: Record<string, string> = {
     .legal-contents ol {
       columns: 1;
     }
+  }
+
+  /* Documents the reader can open or download. */
+  .legal-links {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .legal-links li {
+    display: grid;
+    gap: var(--space-1);
+    padding-block-start: var(--space-3);
+    border-block-start: 1px solid var(--color-paper-12);
+  }
+  .legal-links a {
+    font: var(--text-body);
+    color: var(--color-paper);
+  }
+  .legal-links span {
+    font: var(--text-small);
+    color: var(--color-paper-40);
   }
 
   /* A room, photographed. Sits above the copy that describes it. */
