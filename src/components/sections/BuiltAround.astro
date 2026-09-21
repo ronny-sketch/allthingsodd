@@ -127,23 +127,19 @@ const PIECE_SLOTS = ['tl', 'tr', 'bl', 'br'] as const;
   .ba-head .eyebrow {
     color: var(--color-paper-80);
   }
-  /* Hero, not Display: the one place on Home where a sentence is the whole
-     point of the section. Phones step to Display — see the media query at the
-     end and docs/design-system.md's exceptions. */
+  /* This is a long editorial statement rather than the page hero. Display
+     keeps it large while allowing the full sentence to read as a compact
+     two-line thought on desktop. Both spans use the same figure colour so the
+     message reads as one statement rather than a muted premise plus claim. */
   .ba-title {
-    font: var(--text-hero);
-    letter-spacing: var(--tracking-hero);
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
     color: var(--color-paper);
     margin: var(--space-3) 0 0;
   }
   .ba-premise,
   .ba-point {
-    display: block;
-  }
-  /* The premise reads as given, the point as the claim. Large type, so
-     --color-paper-40 (4.97:1 on ink) clears AA with room to spare. */
-  .ba-premise {
-    color: var(--color-paper-40);
+    color: var(--color-paper);
   }
 
   /* The grid. Hairlines are the grid's own background showing through a 2px
@@ -283,9 +279,7 @@ const PIECE_SLOTS = ['tl', 'tr', 'bl', 'br'] as const;
   }
   /* Phones: square cells give a three-line label the height it needs, and the
      label drops to Forta at the Body size — the documented reuse for compact,
-     brand-voiced text. The headline steps from Hero to Display, as
-     HeroCentered's does, because Hero's 3.25rem floor sets these two
-     sentences as a column of one- and two-word lines. */
+     brand-voiced text. */
   @media (max-width: 560px) {
     /* .ba-piece, not .ba-cell: the photo's cell must keep `aspect-ratio:
        auto`, or it sizes itself square and leaves its second row empty. */
@@ -297,10 +291,6 @@ const PIECE_SLOTS = ['tl', 'tr', 'bl', 'br'] as const;
       font-family: var(--font-display);
       font-size: var(--font-size-body);
       line-height: var(--line-height-heading);
-    }
-    .ba-title {
-      font: var(--text-display);
-      letter-spacing: var(--tracking-display);
     }
   }
 
