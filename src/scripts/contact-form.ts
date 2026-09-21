@@ -6,6 +6,7 @@
 // Group, and the only key ever created went to one person's inbox.
 import { CONTACT_TOPICS, type ContactTopicValue } from './contact-topics';
 import { API_BASE } from './api-base';
+import { captureFirstTouch } from './utm';
 
 // Known ?topic= values from deep links elsewhere on the site. `route` is the
 // topic the Worker delivers by; `label` is the wording the inbox sees, so two
@@ -53,7 +54,12 @@ if (form instanceof HTMLFormElement) {
       const res = await fetch(`${API_BASE}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        // Same first-touch data the newsletter and enquiry forms send, so a
+        // campaign that produced a message is visible in the inbox.
+        body: JSON.stringify({
+          ...Object.fromEntries(new FormData(form)),
+          ...captureFirstTouch(),
+        }),
       });
       const data = (await res.json()) as { ok: boolean; message: string };
       status.textContent = data.message;
