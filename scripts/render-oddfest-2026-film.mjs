@@ -241,12 +241,20 @@ execFileSync('ffmpeg', [
   TRACK,
   '-af',
   audioFilter,
+  // CRF 20 / slow, not 18 / medium (2026-09-21): 18 produced a 9.8 Mbit/s,
+  // 49 MB file for the 40 s cut, which is far above anything Instagram,
+  // TikTok or LinkedIn keeps — they re-encode to a few Mbit/s regardless, so
+  // the extra bitrate is thrown away on upload. Measured on this cut's own
+  // frames: CRF 20 is 39 MB at SSIM 0.9961 against the source frames, and
+  // even CRF 22 (30 MB, 0.9941) was indistinguishable from source on the
+  // hardest content this film has — the credits, thin Paper type on Ink.
+  // 20 keeps a margin of headroom for the platform's own re-encode.
   '-c:v',
   'libx264',
   '-crf',
-  '18',
+  '20',
   '-preset',
-  'medium',
+  'slow',
   '-pix_fmt',
   'yuv420p',
   '-r',
