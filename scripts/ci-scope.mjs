@@ -14,17 +14,24 @@ import { readFileSync } from 'node:fs';
 // (Chromium; the cross-engine sweep still runs nightly and on any site-wide
 // change). Docs never reach the browser at all.
 //
-// Deliberately coarse: `src/components/` counts as site-wide even though most
-// components are used on one page, because knowing which is which means
-// resolving the import graph, and a wrong "fast" is a regression shipped live.
-// Over-testing a component edit is cheap; under-testing one is not.
+// `src/components/` was site-wide in the first version of this file, on the
+// reasoning that you cannot tell which page a component reaches without
+// resolving the import graph. That reasoning does not survive contact with
+// what the tiers actually do: **neither tier narrows by route**. The fast tier
+// runs every test on every page and drops only the non-Chromium engines. So
+// the real question a component edit asks is "can this break webkit but not
+// chromium?", not "which page did I just touch?".
 //
-// ponytail: path heuristic, not an import graph. If component edits become the
-// common slow case, walk the graph from the changed file instead.
+// That risk is real — components carry scoped <style> — but it is the same
+// risk `src/pages/` already takes, and those pages carry <style> blocks too.
+// Global CSS (`src/styles/`) and layouts stay site-wide, which is where
+// cross-cutting rendering actually lives. A component-only engine regression
+// now surfaces at the nightly sweep instead of pre-merge: up to a day live,
+// against ~4 minutes saved on every component edit. Reversible in one line if
+// that trade turns out wrong.
 
 const SITE_WIDE = [
   /^src\/layouts\//,
-  /^src\/components\//,
   /^src\/styles\//,
   /^src\/scripts\//,
   /^src\/content\.config\.ts$/,
@@ -46,13 +53,18 @@ const CHROMIUM_ONLY =
   '--project=mobile-reduced-chromium --project=mobile --project=tablet ' +
   '--project=laptop --project=desktop --project=wide';
 
+// Installing an engine this run will never launch costs ~30s on every shard.
+const ALL_ENGINES = 'chromium webkit firefox';
+
 export function scope(files) {
   // No file list means we can't tell what changed (first push on a branch, a
   // force push, the nightly run) — assume the worst and run everything.
-  if (!files.length) return { mode: 'full', projects: '' };
-  if (files.every((f) => DOCS_ONLY.some((r) => r.test(f)))) return { mode: 'docs', projects: '' };
-  if (files.some((f) => SITE_WIDE.some((r) => r.test(f)))) return { mode: 'full', projects: '' };
-  return { mode: 'fast', projects: CHROMIUM_ONLY };
+  if (!files.length) return { mode: 'full', projects: '', browsers: ALL_ENGINES };
+  if (files.every((f) => DOCS_ONLY.some((r) => r.test(f))))
+    return { mode: 'docs', projects: '', browsers: 'chromium' };
+  if (files.some((f) => SITE_WIDE.some((r) => r.test(f))))
+    return { mode: 'full', projects: '', browsers: ALL_ENGINES };
+  return { mode: 'fast', projects: CHROMIUM_ONLY, browsers: 'chromium' };
 }
 
 function selfTest() {
@@ -70,15 +82,25 @@ function selfTest() {
   eq(['src/assets/hero.jpg', 'public/favicon.svg'], 'fast');
   eq(['brand/BRAND-GUIDE.md'], 'fast'); // renders at /brand-book/
   eq(['src/layouts/Layout.astro'], 'full');
-  eq(['src/components/Header.astro'], 'full');
+  eq(['src/components/Header.astro'], 'fast'); // engines, not routes — see the header
   eq(['src/styles/global.css'], 'full');
   eq(['package-lock.json'], 'full');
   eq(['.github/workflows/ci.yml'], 'full');
   eq(['playwright.config.ts'], 'full');
   // A docs file rides along with a page edit: the page still decides.
   eq(['docs/editing.md', 'src/pages/about.astro'], 'fast');
+  // A component edit alongside global CSS is still site-wide.
+  eq(['src/components/Header.astro', 'src/styles/global.css'], 'full');
   // One site-wide file in a big change outranks everything else.
   eq(['src/pages/about.astro', 'src/styles/global.css'], 'full');
+  // The browser install list must never be narrower than the engines the
+  // chosen projects will launch, or the run fails at browser start.
+  const engines = (files) => scope(files).browsers;
+  if (engines(['src/styles/global.css']) !== ALL_ENGINES)
+    throw new Error('full tier must install all engines');
+  if (engines(['src/pages/index.astro']) !== 'chromium')
+    throw new Error('fast tier should install chromium only');
+  if (engines([]) !== ALL_ENGINES) throw new Error('unknown diff must install all engines');
   console.log('ci-scope self-test: all cases pass');
 }
 
@@ -89,7 +111,8 @@ if (process.argv[2] === '--self-test') {
     .split('\n')
     .map((l) => l.trim())
     .filter(Boolean);
-  const { mode, projects } = scope(files);
+  const { mode, projects, browsers } = scope(files);
   console.log(`mode=${mode}`);
   console.log(`projects=${projects}`);
+  console.log(`browsers=${browsers}`);
 }
