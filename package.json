@@ -21,7 +21,8 @@
     "check:identity": "node scripts/check-identity.mjs",
     "quality": "npm run check && npm run lint && npm run format:check && npm run cc:validate && npm run check:identity && npm run check:brand && npm run check:served && npm run build",
     "check:brand": "node scripts/check-brand-tokens.mjs",
-    "check:served": "node scripts/check-served-extensions.mjs"
+    "check:served": "node scripts/check-served-extensions.mjs",
+    "measure:cwv": "node scripts/measure-cwv.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

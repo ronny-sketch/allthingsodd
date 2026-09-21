@@ -19,7 +19,6 @@
 // report for the exact count and what would close the gap; this
 // deliberately does NOT duplicate a file under a second name or pull in
 // stock photography to force the number to 50.
-import { getImage } from 'astro:assets';
 import { mosaicImage, MOSAIC_SIZES } from './mosaic-images';
 import Logo from '../primitives/Logo.astro';
 
@@ -40,10 +39,22 @@ const archive = [
 ];
 
 const cellImages = await Promise.all(archive.slice(0, 20).map((src) => mosaicImage(src)));
-const poolImages = await Promise.all(
-  archive.map((src) => getImage({ src, width: 500, format: 'webp' })),
-);
-const pool = poolImages.map((i) => i.src);
+// The pool carries the SAME responsive set as the rendered cells, not a
+// single 500px file (2026-09-21). It used to be
+// `getImage({ src, width: 500 })`, and mosaic.ts set only `src` on the image
+// it swaps in — so every ambient swap downloaded a 500px file into a cell
+// that is ~273px wide on this viewport, forty-six of them, one every ~1.8s
+// for as long as the page stays open.
+//
+// It also broke LCP, which is how it was found. LCP moves to any larger
+// contentful paint until the first interaction, and a 500px file has a
+// larger intrinsic size than the srcset candidate the initial cells actually
+// render — so roughly four seconds in, the first swap became a new, larger
+// LCP candidate. Measured: homepage LCP 4184ms, naming a different swapped
+// photo on every run, which is the signature of the swap rather than of the
+// first paint. Giving the swap the same srcset means it can never be larger
+// than what was already painted, so LCP stays where the first paint put it.
+const pool = await Promise.all(archive.map((src) => mosaicImage(src)));
 
 interface Props {
   mosaicAlt: string;
@@ -58,7 +69,13 @@ const { mosaicAlt, headline } = Astro.props;
 ---
 
 <header class="hero">
-  <div class="mosaic" id="heroMosaic" aria-hidden="true" data-pool={JSON.stringify(pool)}>
+  <div
+    class="mosaic"
+    id="heroMosaic"
+    aria-hidden="true"
+    data-pool={JSON.stringify(pool)}
+    data-sizes={MOSAIC_SIZES}
+  >
     {
       // All 20 cells are inside the viewport at load — this is the hero,
       // not below-the-fold content. `loading="lazy"` here was inherited
@@ -129,11 +146,48 @@ const { mosaicAlt, headline } = Astro.props;
     gap: 3px;
     transition: transform 0.4s ease;
   }
+  /* The cells fly in. They do NOT fade in, and that is load-bearing.
+
+     Chrome excludes an element painted at `opacity: 0` from being a Largest
+     Contentful Paint candidate. With `opacity: 0` here, all twenty mosaic
+     images were disqualified at first paint, so LCP fell through to the first
+     photo mosaic.ts swaps in on its ambient timer — four seconds later. That
+     swapped image paints at full opacity, so it is a candidate, and it is the
+     one the metric ends up naming.
+
+     This is HALF the cause, and fixing only this half changes nothing. All
+     four combinations were measured on this machine, at 1366x900, against the
+     built site:
+
+       fade + 500px swap (as shipped) ..... 4184ms, a swapped photo
+       no fade + 500px swap .............. 4280ms, a swapped photo
+       fade + srcset swap ................ 4220ms, a swapped photo
+       no fade + srcset swap ............. 152ms, cell 0's own image
+
+     The other half is in Hero.astro's `pool` and mosaic.ts: the swapped-in
+     image used to carry a single 500px `src` with no srcset, giving it a
+     larger intrinsic size than the srcset candidate the initial cells render
+     — and LCP moves to any LARGER contentful paint until the first
+     interaction. So with the fade removed but the swap still oversized, LCP
+     was still the swap. Both had to go.
+
+     Everything this component already does to make the first paint fast —
+     `loading="eager"` on all twenty, `fetchpriority="high"` on cell 0, and a
+     real <link rel="preload" as="image"> with a full imagesrcset — was being
+     spent and thrown away. The comment on the `loading` attribute below
+     records an earlier round of this same diagnosis, where the reasoning was
+     right and only one layer got fixed; this is the same trap.
+
+     Dropping the fade keeps the motion (translate, rotate, scale) and costs
+     the cross-fade only. It is also the exact end state reduced motion has
+     always rendered, so the appearance is already part of the design system.
+     Do not reintroduce an opacity ramp here; if the fade must come back, it
+     has to come back on a wrapper that is not the image's own painted box —
+     and `node scripts/measure-cwv.mjs` is how you find out whether it did. */
   .mosaic-cell {
     position: relative;
     overflow: hidden;
     background: var(--color-paper-06);
-    opacity: 0;
     transform: translate(var(--ex, 0), var(--ey, 0)) rotate(var(--er, 0deg)) scale(0.82);
     transition: filter 0.25s ease;
     filter: saturate(1.15) contrast(1.04);
@@ -145,13 +199,11 @@ const { mosaicAlt, headline } = Astro.props;
   }
   @media (prefers-reduced-motion: reduce) {
     .mosaic-cell {
-      opacity: 1;
       transform: none;
     }
   }
   @keyframes cell-fly {
     to {
-      opacity: 1;
       transform: none;
     }
   }
