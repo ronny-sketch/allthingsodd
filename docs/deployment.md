@@ -434,6 +434,29 @@ console-error check, not full visual regression — see
 [docs/architecture.md#visual-regression](architecture.md#visual-regression)
 for why that stays a local pre-commit step instead.
 
+### PR or straight to `main`
+
+The suite runs on the PR and then again on `main` after the merge, so every
+change opened as a PR pays for its tests twice. `main` has no branch
+protection — no required checks, no required reviews — so a direct commit is
+one run instead of two, and roughly halves the time from edit to live.
+
+Decided 2026-09-21:
+
+| change                                                            | how                       |
+| ----------------------------------------------------------------- | ------------------------- |
+| copy, content, an asset swap, a one-line fix                      | commit straight to `main` |
+| anything structural, or anything whose reasoning is worth keeping | PR                        |
+
+The second row is not ceremony. This repo's pull requests are carrying real
+documentation — why the rescue plan is published at all (#71), the four-way
+test that proved Surge refuses lowercase `.pdf` (#76) — and none of that
+survives as a one-line commit message. A PR is also the last point where a
+change can be looked at before it is live, because nothing else gates `main`.
+
+Run `npm run quality` locally before either. It is the same gate CI's
+`checks` job runs, and it is faster to fail on your own machine.
+
 The deploy job needs a `SURGE_TOKEN` repository secret to authenticate
 non-interactively. One-time setup (from a terminal where `gh` is
 authenticated — this never needs to touch this repo's history or any AI

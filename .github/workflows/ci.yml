@@ -30,7 +30,13 @@ on:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Superseding a branch's own earlier run is free — nobody is reading it. On
+  # `main` it is not: that run owns the deploy, and cancelling it can land
+  # mid-`surge publish` and leave production half-written. Observed on
+  # 2026-09-21, when a CloudCannon push and a merge arrived a minute apart and
+  # the first run was killed. It was benign that time only because the second
+  # commit contained the first.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   # Which tier of the test matrix this change needs — see scripts/ci-scope.mjs
@@ -93,19 +99,23 @@ jobs:
       - run: npm run build
 
   functional:
-    name: Functional (${{ needs.scope.outputs.mode }} ${{ matrix.shard }}/3)
+    name: Functional (${{ needs.scope.outputs.mode }} ${{ matrix.shard }}/6)
     runs-on: ubuntu-latest
     needs: scope
     # Docs-only changes never reach a browser.
     if: needs.scope.outputs.mode != 'docs'
-    # Three runners in parallel rather than 838 tests in series on one. Playwright
-    # splits by test count, so the shards aren't perfectly even — still roughly a
-    # third of 21 minutes each. `fail-fast: false` so one shard failing doesn't
-    # hide what the other two would have caught.
+    # Six runners in parallel rather than 838 tests in series on one. This repo
+    # is public, so Actions minutes are unmetered and extra runners are free —
+    # the only real limit is that each shard pays ~1 minute of fixed setup, so
+    # past roughly this point you buy overhead instead of speed. Measured
+    # 1.42s/test on run 35593653376 (279 tests in 6m36s), which puts a full
+    # tier at ~3m20s of testing per shard and a fast tier at ~1m25s.
+    # `fail-fast: false` so one shard failing doesn't hide what the others
+    # would have caught.
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2, 3, 4, 5, 6]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -118,7 +128,23 @@ jobs:
       # took 46s of every shard job, and a Chromium-only run never opened two
       # of them. ci-scope.mjs decides, and its self-test asserts the list is
       # never narrower than the chosen projects need.
-      - run: npx playwright install --with-deps ${{ needs.scope.outputs.browsers }}
+      #
+      # Cached on top of that, because with six shards this cost is paid six
+      # times per run. The key carries the Playwright version and the engine
+      # list: a version bump or a wider tier must miss, or the run launches a
+      # browser that isn't there. The OS packages `--with-deps` installs live
+      # outside the cached directory, so a hit still runs `install-deps`.
+      - id: pw
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - id: pwcache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}-${{ needs.scope.outputs.browsers }}
+      - if: steps.pwcache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps ${{ needs.scope.outputs.browsers }}
+      - if: steps.pwcache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps ${{ needs.scope.outputs.browsers }}
       - run: npm run build
       - name: Start preview server
         run: npx astro preview --host &
@@ -142,7 +168,7 @@ jobs:
       # else real cross-browser coverage buys — functional interaction tests
       # plus the console-error check, neither of which compares pixels. See
       # docs/deployment.md#ci-history.
-      - run: npx playwright test --grep-invert "full page|404 page" ${{ needs.scope.outputs.projects }} --shard=${{ matrix.shard }}/3
+      - run: npx playwright test --grep-invert "full page|404 page" ${{ needs.scope.outputs.projects }} --shard=${{ matrix.shard }}/6
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
