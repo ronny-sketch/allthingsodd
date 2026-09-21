@@ -51,7 +51,11 @@ test.describe('mobile navigation', () => {
 
   test('tapping a menu link navigates and closes the menu', async ({ page }) => {
     await page.locator('#menuToggle').tap();
-    await page.locator('#menuOverlay .menu-links a[href="/oddfest"]').tap();
+    // The nav's own hrefs carry a trailing slash (2026-09-21) so Surge's
+    // redirect can never eat a query string off one. Matched with ^= rather
+    // than pinning either form: this test is about the tap navigating, not
+    // about how the href is spelled.
+    await page.locator('#menuOverlay .menu-links a[href^="/oddfest"]').first().tap();
     // Trailing-slash-tolerant: whether a host serves /oddfest or /oddfest/ is
     // the server's choice (astro preview omits it, a plain static server
     // 301s to it), and this test is about the tap navigating — not about
