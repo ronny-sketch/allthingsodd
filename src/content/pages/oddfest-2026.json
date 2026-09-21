@@ -2,7 +2,7 @@
   "_template": "oddfest2026",
   "seo": {
     "title": "ODDfest 2026 — Thank you",
-    "description": "Thank you to everyone who made ODDfest 2026 — the team, artists, volunteers and partners behind it. The credits, the photographs, and the afterparty we never threw: Saturday 26 September at ODDspace, free.",
+    "description": "Thank you to everyone who made ODDfest 2026 — the team, artists, volunteers and partners behind it. The credits, the photographs, and the afterparty we never threw.",
     "ogImage": "/og/oddfest-2026.jpg"
   },
   "title": "An ODD thousand thank yous.",
@@ -849,7 +849,7 @@
               },
               {
                 "name": "Tiketti",
-                "href": "https://tiketti.fi"
+                "href": "https://www.tiketti.fi/"
               }
             ]
           },

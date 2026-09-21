@@ -23,7 +23,15 @@ import Layout from '../../layouts/Layout.astro';
            and there's only ever one real heading role on this page regardless
            of state, so one element is the more accurate markup anyway. -->
       <span class="eyebrow">ODDference · 2027</span>
-      <h1 id="tixfHeading"></h1>
+      {
+        /* Not empty. This h1 shipped with no content at all, so a reader
+           whose JavaScript failed — or a screen reader arriving before
+           confirmation.ts ran — got a page whose only heading was blank.
+           "Checking your order…" is the state the page really is in on
+           arrival (#tixfProcessing is what confirmation.ts shows first), and
+           its HEADINGS map overwrites this the moment a state resolves. */
+      }
+      <h1 id="tixfHeading">Checking your order…</h1>
 
       <div id="tixfProcessing" class="tixf-state" hidden>
         <p>This usually takes a few seconds. Do not close this page.</p>

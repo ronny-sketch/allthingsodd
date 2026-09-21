@@ -133,7 +133,12 @@ test('ODDspace is a real subpage, not an external link', async ({ page }) => {
   // treatment as any other internal nav link.
   await page.goto('/');
   const oddspace = page.locator('.nav-links a', { hasText: 'ODDspace' });
-  await expect(oddspace).toHaveAttribute('href', '/oddspace');
+  // Slashed since 2026-09-21, like every nav href: Surge answers the
+  // un-slashed form with a 301 that drops the query string, so a nav link is
+  // one character away from silently losing a ?utm_ tag the day anyone adds
+  // one. What this test is actually about — an internal link, same tab, no
+  // rel="noreferrer" — is unchanged.
+  await expect(oddspace).toHaveAttribute('href', '/oddspace/');
   await expect(oddspace).not.toHaveAttribute('target', '_blank');
   await expect(oddspace).not.toHaveAttribute('rel', 'noreferrer');
 });
