@@ -79,20 +79,22 @@ const FADE = 3;
 // ease-in-out would creep, accelerate and slow again, which is the motion of
 // a page being scrolled rather than of credits rolling.
 //
-// Rolling to '@centre' rather than '@top' is what keeps this one forward move
-// at every aspect ratio: on 9:16 the invitation is taller than the frame, so
-// centring it scrolls further down; on 16:9 it is shorter and centring lands
-// a little higher. Either way it is one move ending in one resting place.
+// The roll ends on '#invite-card', not on the whole afterparty section: the
+// card is the block built to hold the eyebrow, the ask, the facts and "Stay
+// ODD." inside one frame, and the letter above it is meant to roll past.
+// Centring rather than topping is what keeps this one forward move at every
+// aspect ratio — on 9:16 the card is near the frame's height, on 16:9 it is
+// shorter — either way it is one move ending in one resting place.
 const TIMELINES = {
   full: [
     [0, 0],
     [6, 0],
-    [TRACK_SECONDS, '#afterparty@centre', 'roll'],
+    [TRACK_SECONDS, '#invite-card@centre', 'roll'],
   ],
   short: [
     [0, 0],
     [4, 0],
-    [40, '#afterparty@centre', 'roll'],
+    [40, '#invite-card@centre', 'roll'],
   ],
 };
 
