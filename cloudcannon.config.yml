@@ -797,7 +797,9 @@ collections_config:
           The body of the policy, in order. Each section is a heading, one or
           more paragraphs, an optional bulleted list, and an optional
           photograph with its own alt text and caption — the ODDspace event
-          info pack uses that to show each room. The cookie table is NOT
+          info pack uses that to show each room — and an optional list of
+          document links, which is how that pack hands over the building's
+          safety PDFs, and an optional question-and-answer list for a FAQ. The cookie table is NOT
           edited here — it is generated from the site's own consent
           configuration so it cannot disagree with what the site actually
           sets.
@@ -1263,23 +1265,6 @@ collections_config:
         label: Social media links
         comment: Shown in the footer and the fullscreen menu.
         cascade: true
-      formAccessKeys:
-        type: object
-        label: Form routing — Web3Forms access keys
-        comment: >-
-          Where each kind of message is emailed. One free key per topic from
-          web3forms.com, each created with the address that topic should
-          reach: General → hello@oddfest.co, Partnerships & ODDference →
-          partners@oddfest.co, ODDspace → space@oddfest.co, ODDfest →
-          fest@oddfest.co. The Partnering key is used twice — the Contact
-          page's "Partnerships & ODDference" topic and the Work with ODD
-          enquiry form both notify it. Who sits behind those group addresses
-          is changed in Google Workspace admin, not here. Leave a topic blank
-          and it falls back to the General key; leave General blank too and
-          the contact form still shows but tells visitors it isn't connected
-          yet instead of silently discarding what they type.
-        options:
-          subtype: object
       contact:
         type: array
         label: Contact emails

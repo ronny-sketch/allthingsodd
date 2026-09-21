@@ -39,6 +39,70 @@ async function mockCatalog(page: Page, body: unknown = CATALOG_OK, status = 200)
   );
 }
 
+/** Pre-seed granted consent and record every gtag event somewhere that
+ *  survives a navigation.
+ *
+ *  Two reasons this is not just "accept the banner and read window.dataLayer":
+ *  the confirmation page starts polling on load, so clicking the banner races
+ *  `purchase` into a no-op; and `begin_checkout` is immediately followed by a
+ *  real navigation to /tickets/checkout, which throws the dataLayer away
+ *  before a test can read it. analytics.ts does `window.dataLayer ||= []`, so
+ *  seeding the array here means the page reuses this one, push and all. */
+const EVENT_LOG_KEY = '__odd_test_events';
+
+async function grantConsentUpFront(page: Page) {
+  await page.addInitScript((logKey) => {
+    try {
+      localStorage.setItem(
+        'odd_consent_v2',
+        JSON.stringify({
+          necessary: true,
+          preferences: true,
+          statistics: true,
+          marketing: true,
+          decidedAt: new Date().toISOString(),
+          v: 2,
+        }),
+      );
+    } catch {
+      /* ignore */
+    }
+    const queue: unknown[] = [];
+    queue.push = function (...args: unknown[]) {
+      const call = args[0] as IArguments | undefined;
+      if (call && call[0] === 'event') {
+        try {
+          const prev = JSON.parse(sessionStorage.getItem(logKey) ?? '[]');
+          prev.push({ name: String(call[1] ?? ''), params: { ...((call[2] ?? {}) as object) } });
+          sessionStorage.setItem(logKey, JSON.stringify(prev));
+        } catch {
+          /* ignore */
+        }
+      }
+      return Array.prototype.push.apply(this, args);
+    };
+    window.dataLayer = queue;
+  }, EVENT_LOG_KEY);
+
+  // Block the real tag. The queued commands are what these tests read, and
+  // letting gtag.js load would send test hits to the live GA4 property.
+  await page.route('**googletagmanager.com/**', (route) => route.abort());
+}
+
+/** Every `gtag('event', ...)` recorded so far, across navigations. */
+async function trackedEvents(
+  page: Page,
+): Promise<Array<{ name: string; params: Record<string, unknown> }>> {
+  return page.evaluate(
+    (logKey) => JSON.parse(sessionStorage.getItem(logKey) ?? '[]'),
+    EVENT_LOG_KEY,
+  );
+}
+
+async function clearTrackedEvents(page: Page) {
+  await page.evaluate((logKey) => sessionStorage.removeItem(logKey), EVENT_LOG_KEY);
+}
+
 async function mockOrderStatus(page: Page, body: unknown, status = 200) {
   await page.route(`${API_BASE}/api/tickets/order-status*`, (route) =>
     route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) }),
@@ -223,6 +287,11 @@ test.describe('/tickets/confirmation', () => {
 
   test('a paid order renders real tickets, QR codes, and exactly one heading', async ({ page }) => {
     const errors = collectConsoleErrors(page);
+    // The confirmation page reads the catalog once, purely to turn ticket
+    // type ids into readable names on GA4's purchase event. Cosmetic, and
+    // wrapped in its own try/catch, but it is a real request and an
+    // unmocked one reaches the live Worker and fails CORS from localhost.
+    await mockCatalog(page);
     await mockOrderStatus(page, {
       ok: true,
       status: 'paid',
@@ -278,5 +347,110 @@ test.describe('/tickets/confirmation', () => {
   test('is noindex', async ({ page }) => {
     await page.goto('/tickets/confirmation');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+  });
+});
+
+// GA4 ecommerce money path — added 2026-09-21 with the recommended-event
+// remap (src/scripts/tickets/ecommerce.ts). These assert the three things
+// that silently corrupt revenue reporting and are invisible in the UI:
+// values must be major units, cart events must carry the change rather than
+// the new total, and `purchase` must not fire twice for one order.
+test.describe('GA4 ecommerce events', () => {
+  test('cart events report the change, in major units', async ({ page }) => {
+    await grantConsentUpFront(page);
+    await mockCatalog(page); // Blind Bird, 30000 minor = EUR 300, tax included
+    await page.goto('/tickets');
+    await page.waitForLoadState('load');
+
+    const increase = page.locator('[data-action="increase"]').first();
+    await increase.click();
+    await increase.click();
+    await page.locator('[data-action="decrease"]').first().click();
+
+    const events = await trackedEvents(page);
+    const adds = events.filter((e) => e.name === 'add_to_cart');
+    const removes = events.filter((e) => e.name === 'remove_from_cart');
+
+    expect(adds).toHaveLength(2);
+    expect(removes).toHaveLength(1);
+
+    // Second click took the cart 1 -> 2. The event is still one unit, not two:
+    // sending the absolute quantity is how a cart gets counted twice over.
+    expect(adds[1].params).toMatchObject({ currency: 'EUR', value: 300 });
+    expect((adds[1].params.items as Array<Record<string, unknown>>)[0]).toMatchObject({
+      item_id: 'blind-bird',
+      item_name: 'Blind Bird',
+      price: 300,
+      quantity: 1,
+    });
+    expect(removes[0].params).toMatchObject({ currency: 'EUR', value: 300 });
+  });
+
+  test('begin_checkout carries the whole cart at the price checkout charges', async ({ page }) => {
+    await grantConsentUpFront(page);
+    await mockCatalog(page);
+    // #tixSummary is display:none below 900px, where the mobile sheet takes
+    // over, so the desktop checkout button is not clickable at the default
+    // viewport — same constraint the VAT test documents above.
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/tickets');
+    await page.waitForLoadState('load');
+
+    const increase = page.locator('[data-action="increase"]').first();
+    await increase.click();
+    await increase.click();
+    await page.locator('#tixSummary #tixCheckoutBtn').click();
+
+    const begin = (await trackedEvents(page)).filter((e) => e.name === 'begin_checkout');
+    expect(begin).toHaveLength(1);
+    expect(begin[0].params).toMatchObject({ currency: 'EUR', value: 600 });
+    expect((begin[0].params.items as Array<Record<string, unknown>>)[0]).toMatchObject({
+      item_id: 'blind-bird',
+      quantity: 2,
+    });
+  });
+
+  test('purchase reports real revenue once, and not again on reload', async ({ page }) => {
+    await grantConsentUpFront(page);
+    await mockCatalog(page);
+    await mockOrderStatus(page, {
+      ok: true,
+      status: 'paid',
+      eventId: EVENT_SLUG,
+      orderId: 'ord_test_123',
+      totalMinor: 60000,
+      currency: 'EUR',
+      tickets: [
+        { ticketCode: 'T-1', ticketTypeId: 'tt_blind_bird', attendeeAssigned: false },
+        { ticketCode: 'T-2', ticketTypeId: 'tt_blind_bird', attendeeAssigned: false },
+      ],
+    });
+
+    await page.goto('/tickets/confirmation/?order_token=test-token-123');
+    await expect(page.locator('h1')).toHaveText(/tickets are yours/i);
+
+    await expect
+      .poll(async () => (await trackedEvents(page)).filter((e) => e.name === 'purchase').length)
+      .toBe(1);
+    const purchase = (await trackedEvents(page)).find((e) => e.name === 'purchase')!;
+    expect(purchase.params).toMatchObject({
+      transaction_id: 'ord_test_123',
+      currency: 'EUR',
+      value: 600, // 60000 minor. Reporting 60000 here would be a 100x overstatement.
+    });
+    expect((purchase.params.items as Array<Record<string, unknown>>)[0]).toMatchObject({
+      item_id: 'tt_blind_bird',
+      item_name: 'Blind Bird',
+      quantity: 2,
+    });
+
+    // GA4 does not reliably de-duplicate on transaction_id, so a reload would
+    // otherwise double the reported revenue for this order. Clear the log,
+    // not the guard: the guard living through the reload is the point.
+    await clearTrackedEvents(page);
+    await page.reload();
+    await expect(page.locator('h1')).toHaveText(/tickets are yours/i);
+    await page.waitForTimeout(500);
+    expect((await trackedEvents(page)).filter((e) => e.name === 'purchase')).toHaveLength(0);
   });
 });

@@ -449,7 +449,13 @@ short version a future agent needs before touching `/tickets/*`):
   Nothing else reads the stored value directly. It migrates the
   pre-2026-09-03 `odd_analytics_consent_v1` flag once, then deletes it.
 - `src/scripts/analytics.ts` — GA4, gated on `statistics`.
-  `GA_MEASUREMENT_ID` is a real property (`G-9Q90CQMBK8`, stream "ODDpage").
+  `GA_MEASUREMENT_ID` is a real property (`G-FCGTBXT9KS`, property
+  `555204778`, stream "All things ODD") as of the 2026-09-21 launch. It
+  replaced `G-9Q90CQMBK8` / property `551982005` "ODD Field Guide", which
+  is kept, not deleted: GA4 properties cannot be merged, so that is the
+  only place the pre-launch traffic exists, and Growth OS reads both IDs so
+  the numbers stay continuous. Not to be confused with `G-40BNRGTY1T`
+  (oddfest.co), a separate live site with its own GTM container.
   It still ships the "inert until configured" contract: a `null` ID collapses
   the statistics category out of the banner entirely. `trackEvent()` is
   called from the two forms and the ticketing funnel and is a safe no-op
