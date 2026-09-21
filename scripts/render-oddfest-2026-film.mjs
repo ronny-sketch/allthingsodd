@@ -59,11 +59,20 @@ const FADE = 3;
 
 // [seconds, target]: a scrollY in px, 'max', or 'selector@top|centre|bottom'.
 // Smoothstep between keyframes; a repeated target is a hold.
+//
+// Both cuts END ON THE INVITATION (2026-09-21, Ronny's call). The page's own
+// order puts the afterparty before the sign-off, so each film runs past it to
+// the bottom for "Stay ODD." and the address, then rises back to the invite
+// and holds there — the last thing on screen is the ask, not the farewell.
+// The move back up is deliberate and reads as one: thank you, and now come.
 const TIMELINES = {
   full: [
     [0, 0],
     [6, 0],
-    [TRACK_SECONDS, 'max'],
+    [74, 'max'],
+    [78, 'max'],
+    [80.5, '#afterparty@centre'],
+    [TRACK_SECONDS, '#afterparty@centre'],
   ],
   short: [
     [0, 0],
@@ -71,19 +80,23 @@ const TIMELINES = {
     [7, '.ty-count@centre'],
     [10, '.ty-count@centre'],
     [13, '#credits@top'],
-    [28, '#photos@bottom'],
-    [29.5, '#afterparty@centre'],
-    [34.5, '#afterparty@centre'],
-    [37, 'max'],
-    [40, 'max'],
+    [27, '#photos@bottom'],
+    [29, 'max'],
+    [31.5, 'max'],
+    [34, '#afterparty@centre'],
+    [40, '#afterparty@centre'],
   ],
 };
 const timeline = TIMELINES[CUT];
 if (!timeline) throw new Error(`--cut must be one of ${Object.keys(TIMELINES).join(', ')}`);
 
+// .oddf-rail is the pair of fixed vertical ticker rails a subpage paints down
+// both edges above 821px. They are invisible at phone widths, so the 9:16 and
+// 4:5 cuts never saw them; a 16:9 render is a desktop layout, where they sit
+// over the frame and read as browser chrome in a film.
 const HIDE_CSS = `
   nav, footer, .cursor, .nl-popup, .nl-popup-backdrop, .consent-banner,
-  .ty-player, .space-hero-ctas { display: none !important }
+  .ty-player, .space-hero-ctas, .oddf-rail { display: none !important }
   html { scroll-behavior: auto !important; cursor: none }
   .space-hero { min-height: 0 !important }
 `;
