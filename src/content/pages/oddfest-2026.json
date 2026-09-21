@@ -1042,6 +1042,47 @@
                 "href": "https://www.v2.fi/"
               }
             ]
+          },
+          {
+            "label": "Photography",
+            "items": [
+              {
+                "name": "Julius Töyrylä"
+              },
+              {
+                "name": "Remu Shemeikka"
+              },
+              {
+                "name": "Yoanna Rönnqvist"
+              },
+              {
+                "name": "Ricardo Azevedo e Silva"
+              },
+              {
+                "name": "Ida Henriksson"
+              },
+              {
+                "name": "Elina Satova"
+              },
+              {
+                "name": "@linasome1979"
+              },
+              {
+                "name": "Nima Assar"
+              },
+              {
+                "name": "Veikka"
+              },
+              {
+                "name": "Neea Eloranta"
+              },
+              {
+                "name": "@ilmarimedia"
+              },
+              {
+                "name": "@flyingwhalefv"
+              }
+            ]
           }
         ]
       }
@@ -1050,7 +1091,7 @@
   "gallery": {
     "eyebrow": "Photographs",
     "title": "A festival lives in its photographs.",
-    "note": "Photographs by Julius Töyrylä, Elina Satova and Nima Assar.",
+    "note": "Every photograph here is by one of the photographers named in the credits above.",
     "photos": [
       {
         "image": "../../assets/oddfest-2026/2026/crowd-silhouettes-red.jpg",
