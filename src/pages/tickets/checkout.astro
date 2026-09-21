@@ -22,6 +22,20 @@ import Layout from '../../layouts/Layout.astro';
         Your cart is empty. <a href="/tickets">Choose your tickets</a>.
       </p>
 
+      {
+        /* Card payment not open — see salesEnabled() in
+           scripts/tickets/config.ts. Reachable by a direct link or a stale
+           cart, so this page has to answer for itself rather than assume
+           nobody arrives here. */
+      }
+      <p id="tixcClosed" class="tixc-empty" hidden>
+        Card payment isn't open yet, so there is nothing to check out. The tiers and their real
+        prices are on the <a href="/tickets">ticket page</a>, and you can
+        <a href="mailto:hello@oddfest.co?subject=ODDference%202027%20%E2%80%94%20invoice%20request"
+          >request an invoice</a
+        > or <a href="/contact/?topic=partnering">ask us about a ticket</a> today.
+      </p>
+
       <div class="tixc-layout" id="tixcLayout">
         <div class="tixc-main">
           <form id="tixcBuyerForm" novalidate>
@@ -56,7 +70,7 @@ import Layout from '../../layouts/Layout.astro';
             <p class="tixc-status" id="tixcStatus" role="status" aria-live="polite"></p>
             <p class="tixc-not-connected" id="tixcNotConnected" hidden>
               Payment isn't connected yet — email
-              <a href="mailto:ronny@oddfest.co">ronny@oddfest.co</a> to reserve your ticket in the meantime.
+              <a href="mailto:hello@oddfest.co">hello@oddfest.co</a> to reserve your ticket in the meantime.
             </p>
             <button type="submit" class="pill pill-solid tixc-continue-btn" id="tixcContinueBtn">
               Continue to payment

@@ -8,7 +8,7 @@
 import { fetchCatalog, type CatalogTicketType } from './api';
 import { loadCart, saveCart, revalidateCart, cartTotalQuantity, type Cart } from './cart';
 import { formatMinor, formatRate, previewOrder, vatSuffix, type OrderPreview } from './money';
-import { EVENT_SLUG } from './config';
+import { EVENT_SLUG, salesEnabled } from './config';
 import { trackEvent } from '../analytics';
 import { itemFor, toMajor } from './ecommerce';
 
@@ -19,6 +19,19 @@ const STATUS_LABEL: Record<CatalogTicketType['status'], string> = {
   sale_ended: 'Sale ended',
   hidden: '',
 };
+
+// Whether this page may offer a purchase at all — see salesEnabled()'s own
+// comment in ./config.ts for why production could take an order it could
+// never charge. Read once: it cannot change while the page is open.
+const salesOpen = salesEnabled(window.location);
+
+// An `active` tier that cannot be bought because card payment is not open is
+// not sold out and its sale has not ended — it has not started. Every other
+// status still means what it says.
+function statusLabelFor(tt: CatalogTicketType): string {
+  if (!salesOpen && tt.status === 'active') return 'Not yet on sale';
+  return STATUS_LABEL[tt.status];
+}
 
 function escapeHtml(value: string): string {
   const div = document.createElement('div');
@@ -86,7 +99,11 @@ if (
     list.innerHTML = ticketTypes
       .map((tt) => {
         const qty = cart[tt.id] ?? 0;
-        const isActive = tt.status === 'active';
+        const isActive = salesOpen && tt.status === 'active';
+        // Dimming is for a tier THIS reader cannot have while others can.
+        // With the sale closed nobody can buy anything, so dimming all three
+        // would just make the page look broken — the panel above says why.
+        const dimmed = salesOpen && !isActive;
         const vat = vatSuffix(tt, pricesIncludeTax);
         const priceHtml = `<div class="tix-row-price">${formatMinor(tt.displayPriceMinor, tt.currency)}${
           vat ? `<span class="tix-row-price-vat">${vat}</span>` : ''
@@ -100,9 +117,9 @@ if (
               <span class="tix-stepper-qty" data-role="qty" data-id="${tt.id}">${qty}</span>
               <button type="button" class="tix-stepper-btn" data-action="increase" data-id="${tt.id}" aria-label="Increase quantity of ${escapeHtml(tt.name)}" ${qty >= tt.availableToPurchase ? 'disabled' : ''}>+</button>
             </div>`
-          : `<span class="tix-status-badge">${STATUS_LABEL[tt.status]}</span>`;
+          : `<span class="tix-status-badge">${statusLabelFor(tt)}</span>`;
 
-        return `<div class="tix-row ${isActive ? '' : 'is-inactive'}" data-ticket-id="${tt.id}">
+        return `<div class="tix-row ${dimmed ? 'is-inactive' : ''}" data-ticket-id="${tt.id}">
           <div class="tix-row-main">
             <div class="tix-row-info">
               <span class="tix-row-name">${escapeHtml(tt.name)}</span>
@@ -174,6 +191,14 @@ if (
   }
 
   function renderSummary(): void {
+    if (!salesOpen) {
+      // Neither the desktop summary nor the mobile bar has anything to say:
+      // there is no cart to check out. Leaving an empty panel behind would
+      // read as a loading failure.
+      summary.hidden = true;
+      mobileBar.hidden = true;
+      return;
+    }
     summary.innerHTML = summaryBodyHtml();
     summary.querySelector('#tixCheckoutBtn')?.addEventListener('click', goToCheckout);
 
@@ -270,7 +295,7 @@ if (
     const catalog = await fetchCatalog(EVENT_SLUG);
     if (!catalog) {
       list.innerHTML =
-        '<p class="tix-error">We couldn\'t load tickets right now. Please refresh, or email ronny@oddfest.co.</p>';
+        '<p class="tix-error">We couldn\'t load tickets right now. Please refresh, or email hello@oddfest.co.</p>';
       list.setAttribute('aria-busy', 'false');
       return;
     }
@@ -289,7 +314,11 @@ if (
         .map((tt) => itemFor(tt, 1, EVENT_SLUG)),
     });
 
-    const persisted = loadCart();
+    if (!salesOpen) {
+      document.getElementById('tixClosed')?.removeAttribute('hidden');
+    }
+
+    const persisted = salesOpen ? loadCart() : {};
     const { cart: revalidated, changed, messages } = revalidateCart(persisted, ticketTypes);
     cart = revalidated;
     if (changed) saveCart(cart);

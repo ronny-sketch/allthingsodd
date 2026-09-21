@@ -10,8 +10,8 @@
   "title": "Where creative expertise meets business and society.",
   "meta": "Helsinki · 2027",
   "primaryCta": {
-    "label": "Get your ticket",
-    "href": "/tickets"
+    "label": "Tickets & prices",
+    "href": "/tickets/"
   },
   "secondaryCta": {
     "label": "Partner with ODDference",
@@ -145,18 +145,18 @@
       "description": "The lowest-price ticket for people ready to commit before the programme is complete.",
       "price": "€299",
       "priceNote": "+ VAT 13.5%",
-      "status": "On sale now",
+      "status": "Not yet on sale",
       "benefits": [
         "Full ODDference 2027 access",
         "The lowest price ODDference 2027 will be sold at",
         "First to know the 2027 programme as it's confirmed"
       ],
-      "ctaLabel": "Buy Blind Bird",
+      "ctaLabel": "See ticket details",
       "href": "/tickets",
       "recommended": true,
       "badgeLabel": "Available until 1 Nov 2026",
       "noteLink": {
-        "label": "Want to know more before buying? Email hello@oddfest.co",
+        "label": "Questions before you commit? Email hello@oddfest.co",
         "href": "mailto:hello@oddfest.co"
       }
     },
@@ -170,7 +170,7 @@
       "status": "Not on sale yet",
       "benefits": ["Full ODDference 2027 access"],
       "ctaLabel": "See tickets",
-      "href": "/tickets",
+      "href": "/tickets/",
       "locked": true
     },
     {
@@ -183,7 +183,7 @@
       "status": "Not on sale yet",
       "benefits": ["Full ODDference 2027 access"],
       "ctaLabel": "See tickets",
-      "href": "/tickets",
+      "href": "/tickets/",
       "locked": true
     }
   ],
@@ -213,7 +213,7 @@
     },
     {
       "question": "Can I buy an Early Bird or regular ticket now?",
-      "answer": "No. One tier is on sale at a time — right now that is Blind Bird. The other two are shown with their real prices so you can see what waiting costs, and they open in turn."
+      "answer": "No. The tiers open one at a time, and Blind Bird is the current one. The other two are shown with their real prices so you can see what waiting costs. Card payment is not open yet — if you want a ticket now, email hello@oddfest.co and we will invoice you."
     },
     {
       "question": "Does an ODDference ticket include ODDfest?",
@@ -246,7 +246,7 @@
     },
     {
       "kind": "meta",
-      "text": "Get your ticket"
+      "text": "Tickets & prices"
     },
     {
       "kind": "meta",

@@ -215,7 +215,7 @@ async function reportPurchase(order: OrderStatusResponse, orderToken: string): P
         failedMessage.textContent =
           order.status === 'expired'
             ? 'This order expired before payment completed. Please start again.'
-            : "This order isn't valid anymore. Please email ronny@oddfest.co if you think this is a mistake.";
+            : "This order isn't valid anymore. Please email hello@oddfest.co if you think this is a mistake.";
       }
       return;
     }

@@ -255,7 +255,11 @@ test.describe('/tickets/checkout', () => {
     await expect(submit).toHaveAttribute('aria-disabled', 'false');
 
     const href = await submit.getAttribute('href');
-    expect(href).toMatch(/^mailto:ronny@oddfest\.co\?/);
+    // hello@, not a personal address: the commerce path must not publish one
+    // person's inbox, and hello@oddfest.co is the verified shared inbox
+    // (2026-09-21). Changed alongside the same swap in checkout.ts,
+    // storefront.ts, confirmation.ts and checkout.astro.
+    expect(href).toMatch(/^mailto:hello@oddfest\.co\?/);
     const decoded = decodeURIComponent(href ?? '');
     expect(decoded).toContain('Blind Bird');
     expect(decoded).toContain('Name: Test Buyer');

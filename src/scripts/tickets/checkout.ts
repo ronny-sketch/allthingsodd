@@ -4,7 +4,7 @@
 import { fetchCatalog, createCheckout, type CatalogTicketType } from './api';
 import { loadCart, saveCart, revalidateCart, cartTotalQuantity, type Cart } from './cart';
 import { formatMinor, formatRate, previewOrder, vatSuffix, type OrderPreview } from './money';
-import { EVENT_SLUG, STRIPE_PUBLISHABLE_KEY } from './config';
+import { EVENT_SLUG, STRIPE_PUBLISHABLE_KEY, salesEnabled } from './config';
 import { loadStripe, type EmbeddedCheckout } from './stripe-loader';
 import { captureFirstTouch } from '../utm';
 import { trackEvent } from '../analytics';
@@ -22,6 +22,7 @@ const checkoutMount = document.getElementById('tixcCheckoutMount')!;
 const paymentError = document.getElementById('tixcPaymentError')!;
 const summary = document.getElementById('tixcSummary')!;
 const notConnectedNotice = document.getElementById('tixcNotConnected');
+const closedNotice = document.getElementById('tixcClosed');
 const invoiceToggle = document.getElementById('tixcInvoiceToggle');
 const invoiceForm = document.getElementById('tixcInvoiceForm');
 const invoiceTicketSelect = document.getElementById('tixc-inv-ticket');
@@ -149,7 +150,7 @@ if (
       'Thanks!',
     ].join('\n');
     const subject = 'ODDference 2027 — invoice request';
-    return `mailto:ronny@oddfest.co?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return `mailto:hello@oddfest.co?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
   function escapeHtml(value: string): string {
@@ -212,7 +213,7 @@ if (
 
     if (!STRIPE_PUBLISHABLE_KEY) {
       status.textContent =
-        "Payment isn't connected yet — please email ronny@oddfest.co to reserve your ticket.";
+        "Payment isn't connected yet — please email hello@oddfest.co to reserve your ticket.";
       return;
     }
 
@@ -277,6 +278,14 @@ if (
   });
 
   (async function init() {
+    // Before anything else: if card payment is not open, this page has no
+    // job. A stale cart in localStorage or a shared link both land here.
+    if (!salesEnabled(window.location)) {
+      layout.hidden = true;
+      if (closedNotice) closedNotice.hidden = false;
+      return;
+    }
+
     cart = loadCart();
     if (cartTotalQuantity(cart) === 0) {
       layout.hidden = true;
