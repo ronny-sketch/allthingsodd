@@ -43,6 +43,7 @@ jobs:
     outputs:
       mode: ${{ steps.pick.outputs.mode }}
       projects: ${{ steps.pick.outputs.projects }}
+      browsers: ${{ steps.pick.outputs.browsers }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -113,9 +114,11 @@ jobs:
           cache: npm
       - run: npm install -g npm@11
       - run: npm ci
-      # chromium + webkit for the functional cross-browser smoke test,
-      # firefox likewise — see playwright.config.ts's functional-* projects.
-      - run: npx playwright install --with-deps chromium webkit firefox
+      # Only the engines this tier will actually launch. Installing all three
+      # took 46s of every shard job, and a Chromium-only run never opened two
+      # of them. ci-scope.mjs decides, and its self-test asserts the list is
+      # never narrower than the chosen projects need.
+      - run: npx playwright install --with-deps ${{ needs.scope.outputs.browsers }}
       - run: npm run build
       - name: Start preview server
         run: npx astro preview --host &
