@@ -312,6 +312,35 @@ Turning it on earlier would bounce every visitor on the old host to a domain
 that doesn't answer — taking production down for exactly the audience the
 redirect exists to serve.
 
+### Surge refuses to serve lowercase `.pdf`
+
+Any path ending in lowercase `.pdf` answers **404 on Surge**, whatever the
+file contains. It is the extension, not the bytes. Verified 2026-09-21 on a
+throwaway project with the same 30 KB file published four ways:
+
+| published as | live    | note                                                      |
+| ------------ | ------- | --------------------------------------------------------- |
+| `root.pdf`   | 404     | a real PDF                                                |
+| `fake.pdf`   | 404     | the text `not a pdf`                                      |
+| `upper.PDF`  | **200** | the same real PDF, served `content-type: application/pdf` |
+| `asbin.dat`  | 200     | the same real PDF, renamed                                |
+
+This is why `public/oddspace/sturenportti-*.PDF` carry an uppercase
+extension. It looks like a typo; it is the only thing making those three
+documents reachable.
+
+It first shipped as a silent regression. The files were committed, built into
+`dist/`, and counted in Surge's own `575 files, 45.9 MB` upload summary — and
+still 404'd. Nothing upstream of production could see it: the functional suite
+runs against `astro preview`, which serves lowercase `.pdf` perfectly well,
+and the deploy's own fingerprint check only proves _which build_ is live, not
+that every file in it resolves. `scripts/check-served-extensions.mjs` (in
+`npm run quality`) is the guard, and it is a filename check for exactly that
+reason.
+
+If this site ever leaves Surge, delete that script rather than working
+around it.
+
 ### The old host was never indexable
 
 Verified live, not assumed: `https://odd-field-guide.surge.sh/robots.txt`
