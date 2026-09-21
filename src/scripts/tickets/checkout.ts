@@ -8,6 +8,7 @@ import { EVENT_SLUG, STRIPE_PUBLISHABLE_KEY } from './config';
 import { loadStripe, type EmbeddedCheckout } from './stripe-loader';
 import { captureFirstTouch } from '../utm';
 import { trackEvent } from '../analytics';
+import { itemFor, toMajor } from './ecommerce';
 
 const emptyNotice = document.getElementById('tixcEmptyNotice')!;
 const layout = document.getElementById('tixcLayout')!;
@@ -258,7 +259,15 @@ if (
         fetchClientSecret: async () => result.clientSecret,
       });
       embeddedCheckout.mount('#tixcCheckoutMount');
-      trackEvent('payment_form_loaded', { event: EVENT_SLUG, order_id: result.orderId });
+      trackEvent('add_payment_info', {
+        currency,
+        value: toMajor(result.totalMinor),
+        payment_type: 'stripe',
+        items: Object.entries(cart).flatMap(([id, quantity]) => {
+          const tt = ticketTypes.find((t) => t.id === id);
+          return tt && quantity > 0 ? [itemFor(tt, quantity, EVENT_SLUG)] : [];
+        }),
+      });
     } catch (err) {
       console.error('Stripe embedded checkout failed to mount', err);
       paymentError.hidden = false;

@@ -223,6 +223,11 @@ test.describe('/tickets/confirmation', () => {
 
   test('a paid order renders real tickets, QR codes, and exactly one heading', async ({ page }) => {
     const errors = collectConsoleErrors(page);
+    // The confirmation page reads the catalog once, purely to turn ticket
+    // type ids into readable names on GA4's purchase event. Cosmetic, and
+    // wrapped in its own try/catch, but it is a real request and an
+    // unmocked one reaches the live Worker and fails CORS from localhost.
+    await mockCatalog(page);
     await mockOrderStatus(page, {
       ok: true,
       status: 'paid',

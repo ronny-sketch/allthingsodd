@@ -3,9 +3,10 @@
 // only ever reflects what the webhook handler wrote. See
 // ../../../odd-growth-os/ops/TICKETING_IMPLEMENTATION_PLAN.md's "Stripe
 // flow" and the brief's "payment success must come from webhooks" rule.
-import { fetchOrderStatus, assignAttendee, type OrderStatusResponse } from './api';
+import { fetchCatalog, fetchOrderStatus, assignAttendee, type OrderStatusResponse } from './api';
 import { EVENT_SLUG } from './config';
 import { trackEvent } from '../analytics';
+import { firstReportOf, toMajor, transactionIdFor } from './ecommerce';
 
 const ORDER_TOKEN_KEY = 'odd_tickets_order_token_v1';
 const POLL_INTERVAL_MS = 2000;
@@ -123,6 +124,52 @@ async function renderTickets(orderToken: string, order: OrderStatusResponse): Pr
   });
 }
 
+/** The one place real revenue enters GA4.
+ *
+ *  Deliberately driven by the polled order status, which only ever reflects
+ *  what the Stripe webhook wrote, and never by the redirect back from
+ *  Stripe — the same rule the rest of this page follows. A visitor who
+ *  closes the tab before it resolves is a purchase GA4 never hears about,
+ *  and that is the correct trade: under-reporting beats reporting revenue
+ *  that was never captured. */
+async function reportPurchase(
+  order: OrderStatusResponse,
+  orderToken: string,
+): Promise<void> {
+  const transactionId = await transactionIdFor(order.orderId, orderToken);
+  if (!firstReportOf(transactionId)) return;
+
+  // Ticket-type names are not on the order — fetch them so the monetisation
+  // reports read "ODDference Early Bird" rather than a bare uuid. Purely
+  // cosmetic, so a failure here must not cost us the purchase event.
+  let names: Record<string, string> = {};
+  try {
+    const catalog = await fetchCatalog(EVENT_SLUG);
+    if (catalog) {
+      names = Object.fromEntries(catalog.ticketTypes.map((tt) => [tt.id, tt.name]));
+    }
+  } catch {
+    /* non-fatal, fall through to ids */
+  }
+
+  const byType = new Map<string, number>();
+  for (const t of order.tickets) {
+    byType.set(t.ticketTypeId, (byType.get(t.ticketTypeId) ?? 0) + 1);
+  }
+
+  trackEvent('purchase', {
+    transaction_id: transactionId,
+    currency: order.currency,
+    value: toMajor(order.totalMinor),
+    items: [...byType].map(([ticketTypeId, quantity]) => ({
+      item_id: ticketTypeId,
+      item_name: names[ticketTypeId] ?? ticketTypeId,
+      item_category: EVENT_SLUG,
+      quantity,
+    })),
+  });
+}
+
 (async function init() {
   const params = new URLSearchParams(window.location.search);
   const orderToken = params.get('order_token') ?? sessionStorage.getItem(ORDER_TOKEN_KEY);
@@ -159,7 +206,7 @@ async function renderTickets(orderToken: string, order: OrderStatusResponse): Pr
       } catch {
         /* non-fatal */
       }
-      trackEvent('payment_succeeded', { event: EVENT_SLUG, ticket_count: order.tickets.length });
+      await reportPurchase(order, orderToken!);
       await renderTickets(orderToken!, order);
       return;
     }

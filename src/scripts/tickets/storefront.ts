@@ -10,6 +10,7 @@ import { loadCart, saveCart, revalidateCart, cartTotalQuantity, type Cart } from
 import { formatMinor, formatRate, previewOrder, vatSuffix, type OrderPreview } from './money';
 import { EVENT_SLUG } from './config';
 import { trackEvent } from '../analytics';
+import { itemFor, toMajor } from './ecommerce';
 
 const STATUS_LABEL: Record<CatalogTicketType['status'], string> = {
   active: '',
@@ -199,22 +200,37 @@ if (
   function setQuantity(id: string, qty: number): void {
     const tt = ticketById(id);
     if (!tt) return;
+    const previous = cart[id] ?? 0;
     const clamped = Math.max(0, Math.min(qty, tt.availableToPurchase));
     if (clamped <= 0) delete cart[id];
     else cart[id] = clamped;
     saveCart(cart);
     render();
     cartStatus.textContent = `${tt.name} quantity: ${clamped}. Cart total: ${formatMinor(cartTotal(), currency)}.`;
-    trackEvent('ticket_quantity_changed', {
-      ticket_type: tt.slug,
-      quantity: clamped,
-      event: EVENT_SLUG,
-    });
+    // GA4's add_to_cart/remove_from_cart carry the change, not the new
+    // total. A stepper that goes 2 -> 1 is one removal, not one addition of
+    // one; reporting the absolute quantity is how a cart's contents end up
+    // counted several times over.
+    const delta = clamped - previous;
+    if (delta !== 0) {
+      trackEvent(delta > 0 ? 'add_to_cart' : 'remove_from_cart', {
+        currency: tt.currency,
+        value: toMajor(tt.displayPriceMinor * Math.abs(delta)),
+        items: [itemFor(tt, Math.abs(delta), EVENT_SLUG)],
+      });
+    }
   }
 
   function goToCheckout(): void {
     if (cartTotalQuantity(cart) === 0) return;
-    trackEvent('checkout_started', { event: EVENT_SLUG, ticket_count: cartTotalQuantity(cart) });
+    trackEvent('begin_checkout', {
+      currency,
+      value: toMajor(cartTotal()),
+      items: Object.entries(cart).flatMap(([id, quantity]) => {
+        const tt = ticketById(id);
+        return tt && quantity > 0 ? [itemFor(tt, quantity, EVENT_SLUG)] : [];
+      }),
+    });
     window.location.href = '/tickets/checkout';
   }
 
@@ -251,7 +267,6 @@ if (
   });
 
   (async function init() {
-    trackEvent('ticket_page_viewed', { event: EVENT_SLUG });
     const catalog = await fetchCatalog(EVENT_SLUG);
     if (!catalog) {
       list.innerHTML =
@@ -262,6 +277,17 @@ if (
     ticketTypes = catalog.ticketTypes;
     currency = catalog.event.currency;
     pricesIncludeTax = catalog.event.pricesIncludeTax !== false;
+
+    // Fired here rather than on page load: before the catalog resolves
+    // there is no list to have viewed, and an empty items array is what
+    // makes GA4 drop the event from the funnel without saying so.
+    trackEvent('view_item_list', {
+      item_list_id: EVENT_SLUG,
+      item_list_name: catalog.event.name,
+      items: ticketTypes
+        .filter((tt) => tt.status === 'active')
+        .map((tt) => itemFor(tt, 1, EVENT_SLUG)),
+    });
 
     const persisted = loadCart();
     const { cart: revalidated, changed, messages } = revalidateCart(persisted, ticketTypes);

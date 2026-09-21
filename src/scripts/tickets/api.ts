@@ -81,6 +81,9 @@ export interface OrderStatusResponse {
   ok: true;
   status: 'pending' | 'paid' | 'expired' | 'cancelled' | 'refunded';
   eventId: string;
+  /** Optional only because a Worker deployed before 2026-09-21 does not
+   *  send it — see ecommerce.ts's transactionIdFor() for the fallback. */
+  orderId?: string;
   totalMinor: number;
   currency: string;
   tickets: Array<{ ticketCode: string; ticketTypeId: string; attendeeAssigned: boolean }>;
