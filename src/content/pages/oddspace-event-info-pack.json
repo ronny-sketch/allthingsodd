@@ -317,24 +317,24 @@
     {
       "title": "Floor plan: street level",
       "body": [
-        "The Gallery, the Aula and the Auditorium sit on this floor. Teollisuuskatu runs along the bottom edge of the drawing and the curved rows in the middle are the Auditorium.",
-        "These are the property's current-state drawings and they are not fully up to date — updated ones will replace them here. Your ODDspace contact walks the exits with you on site, which is the version that matters on the night."
+        "Everything at street level, colour-coded: the Gallery in red, the Aula in yellow, the Auditorium and its lobby in green, and the music studio in blue. The studio is ODDstudio and is booked separately from events — it is on the plan so you can see what sits behind which wall, not because it comes with your booking.",
+        "Teollisuuskatu runs along the bottom edge. Your ODDspace contact still walks the exits with you on site: that is the version that matters on the night."
       ],
       "image": {
-        "src": "../../assets/oddspace/floorplan-street-level.jpg",
-        "alt": "Architect's floor plan of the building's street-level floor, with Teollisuuskatu along the bottom edge and the curved tiered seating of the Auditorium in the middle.",
-        "caption": "Street level — Gallery, Aula, Auditorium."
+        "src": "../../assets/oddspace/floorplan-street-level.png",
+        "alt": "Colour-coded floor plan of the street level: the Gallery outlined in red on the left, the Aula in yellow in the middle, the music studio in blue to its right, and the Auditorium with its lobby in green at the top right.",
+        "caption": "Street level — Gallery (red), Aula (yellow), music studio (blue), Auditorium and lobby (green)."
       }
     },
     {
       "title": "Floor plan: 2nd floor",
       "body": [
-        "The co-creation space is on this floor. The numbered bays are the building's parking hall, which guests must not enter — the reason this floor needs a guest-flow plan."
+        "The co-creation space, outlined in purple: the whole floor ODDspace holds upstairs, with its own toilets and small rooms inside the outline. The building's lifts and lift lobbies sit immediately outside it, along with the numbered parking bays — which is exactly why guest flow on this floor needs a plan."
       ],
       "image": {
-        "src": "../../assets/oddspace/floorplan-second-floor.jpg",
-        "alt": "Architect's floor plan of the building's second floor, including the numbered bays of the parking hall.",
-        "caption": "2nd floor — the co-creation space, and the parking hall guests stay out of."
+        "src": "../../assets/oddspace/floorplan-second-floor.png",
+        "alt": "Floor plan of the second floor with the ODDspace co-creation space outlined and shaded in purple, surrounded by the rest of the building's floor plate and numbered parking bays.",
+        "caption": "2nd floor — the ODDspace co-creation space in purple."
       }
     },
     {
