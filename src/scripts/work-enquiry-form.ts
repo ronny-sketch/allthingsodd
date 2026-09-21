@@ -83,6 +83,13 @@ if (form instanceof HTMLFormElement) {
     } else {
       status.textContent =
         crm?.message ?? "We couldn't submit this right now. Please try again or email us directly.";
+      // A lost business enquiry is the most expensive failure on the site and
+      // it had no event: a broken Worker and a quiet week looked the same.
+      // `crm === null` is a thrown fetch; a body with ok:false is a refusal.
+      trackEvent('business_enquiry_error', {
+        product_interest: (payload as { interest?: string }).interest,
+        error_kind: crm === null ? 'network' : 'rejected',
+      });
     }
     submitBtn?.removeAttribute('disabled');
   });

@@ -7,6 +7,7 @@
 import { CONTACT_TOPICS, type ContactTopicValue } from './contact-topics';
 import { API_BASE } from './api-base';
 import { captureFirstTouch } from './utm';
+import { trackEvent } from './analytics';
 
 // Known ?topic= values from deep links elsewhere on the site. `route` is the
 // topic the Worker delivers by; `label` is the wording the inbox sees, so two
@@ -64,11 +65,24 @@ if (form instanceof HTMLFormElement) {
       const data = (await res.json()) as { ok: boolean; message: string };
       status.textContent = data.message;
       if (data.ok) {
+        // The topic is an enum from contact-topics.ts, so this says which
+        // inbox the message routed to and nothing about who wrote it. The
+        // message body is never sent anywhere near GA4.
+        trackEvent('contact_submit', { contact_topic: topicField?.value ?? 'general' });
         form.reset();
         if (topicNote) topicNote.hidden = true;
+      } else {
+        trackEvent('contact_error', {
+          contact_topic: topicField?.value ?? 'general',
+          error_kind: 'rejected',
+        });
       }
     } catch {
       status.textContent = 'Something went wrong — try again, or email us directly.';
+      trackEvent('contact_error', {
+        contact_topic: topicField?.value ?? 'general',
+        error_kind: 'network',
+      });
     }
     submitBtn?.removeAttribute('disabled');
   });
