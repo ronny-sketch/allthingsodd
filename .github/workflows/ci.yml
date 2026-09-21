@@ -22,12 +22,47 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # The fast lane below runs Chromium only, so firefox/webkit regressions from a
+  # page-level edit would otherwise sit unnoticed until the next site-wide
+  # change. This runs the whole matrix nightly regardless of what changed.
+  schedule:
+    - cron: '17 3 * * *'
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  # Which tier of the test matrix this change needs — see scripts/ci-scope.mjs
+  # for the rule and its self-test (which `checks` runs, so the rule itself is
+  # covered). Site-wide edits still pay full price; a page or content edit runs
+  # Chromium only; docs skip the browser entirely.
+  scope:
+    name: Decide test scope
+    runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.pick.outputs.mode }}
+      projects: ${{ steps.pick.outputs.projects }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: pick
+        env:
+          # A PR compares against its base; a push against what main was before
+          # it. Both can be absent (first push on a branch, a force push, the
+          # nightly schedule) — ci-scope.mjs reads an empty list as "run
+          # everything", which is the safe direction to fail.
+          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            changed=""
+          else
+            changed=$(git diff --name-only "$BASE" "$GITHUB_SHA" || true)
+          fi
+          echo "Changed files:"; echo "$changed" | sed 's/^/  /'
+          printf '%s\n' "$changed" | node scripts/ci-scope.mjs | tee -a "$GITHUB_OUTPUT"
+
   checks:
     name: Check, lint, build
     runs-on: ubuntu-latest
@@ -51,12 +86,25 @@ jobs:
       # brand/tokens/brand-tokens.json mirrors src/styles/ for decks, print
       # and agents; this fails when the mirror drifts (2026-09-18).
       - run: npm run check:brand
+      # The CI tiering rule decides what does and doesn't get tested, so it
+      # gets tested itself.
+      - run: node scripts/ci-scope.mjs --self-test
       - run: npm run build
 
   functional:
-    name: Functional + console errors (cross-browser)
+    name: Functional (${{ needs.scope.outputs.mode }} ${{ matrix.shard }}/3)
     runs-on: ubuntu-latest
-    needs: checks
+    needs: scope
+    # Docs-only changes never reach a browser.
+    if: needs.scope.outputs.mode != 'docs'
+    # Three runners in parallel rather than 838 tests in series on one. Playwright
+    # splits by test count, so the shards aren't perfectly even — still roughly a
+    # third of 21 minutes each. `fail-fast: false` so one shard failing doesn't
+    # hide what the other two would have caught.
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -91,23 +139,29 @@ jobs:
       # else real cross-browser coverage buys — functional interaction tests
       # plus the console-error check, neither of which compares pixels. See
       # docs/deployment.md#ci-history.
-      - run: npx playwright test --grep-invert "full page|404 page"
+      - run: npx playwright test --grep-invert "full page|404 page" ${{ needs.scope.outputs.projects }} --shard=${{ matrix.shard }}/3
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.shard }}
           path: playwright-report/
           retention-days: 14
 
   deploy:
     name: Deploy to production
     runs-on: ubuntu-latest
-    needs: [checks, functional]
+    needs: [scope, checks, functional]
     # Only main, and only on an actual push (a green PR doesn't deploy) — a
     # content edit from CloudCannon lands here as a normal push to main, same
     # as a code change, so this is what actually closes the loop from "edit
     # in CloudCannon" to "live on allthingsodd.co". See docs/deployment.md.
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    # `!failure() && !cancelled()` rather than a bare condition: `functional` is
+    # skipped outright on a docs-only change, and a skipped dependency would
+    # otherwise skip the deploy with it. A *failed* one still blocks — that is
+    # the guarantee this job exists to keep.
+    if: >-
+      github.ref == 'refs/heads/main' && github.event_name == 'push'
+      && !failure() && !cancelled()
     env:
       # The canonical production host, cut over from odd-field-guide.surge.sh
       # on 2026-09-03. Published with an explicit https:// scheme, which is
