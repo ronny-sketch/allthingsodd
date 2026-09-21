@@ -20,12 +20,17 @@
 // and out of Growth OS.
 //
 // The measurement ID is host-independent, so a future domain change needs
-// no edit here. What does still need doing by hand, in the Google consoles
-// and not in code: **Search Console has no property for allthingsodd.co**,
-// three weeks after the 2026-09-03 cutover. Only the retired
-// odd-field-guide.surge.sh is verified, so there is no search data for the
-// real domain and none accruing. Add the property, verify with the
-// google181860bcd4b9963d.html file already shipping in public/ (confirmed
-// serving 200 on the live domain), and submit
-// https://allthingsodd.co/sitemap-index.xml. See docs/analytics.md.
+// no edit here.
+//
+// Corrected 2026-09-21: this comment used to say Search Console had no
+// property for allthingsodd.co and listed adding one as outstanding. It has
+// one — https://allthingsodd.co/ was added and auto-verified as site owner,
+// and the sitemap was submitted, on 2026-09-21 (docs/analytics.md's
+// "Configured, for the record", and ../odd-growth-os/ops/CURRENT_STATE.md's
+// D27). Search Console lags about two days and does not backfill, so zero
+// rows for the first days is expected and is not a misconfiguration.
+//
+// Search Console is not analytics tracking and shares nothing with this
+// file but a vendor; keep the two responsibilities apart when reading
+// docs/analytics.md.
 export const GA_MEASUREMENT_ID: string | null = 'G-FCGTBXT9KS';

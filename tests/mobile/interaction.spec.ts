@@ -1,4 +1,8 @@
-import { test, expect } from '@playwright/test';
+// `test` comes from ../base, not from '@playwright/test': the consent test
+// at the bottom of this file taps "Accept all", which loads the real gtag.js
+// and wrote real page views into the live GA4 property on every run, on both
+// mobile projects. See tests/base.ts.
+import { test, expect } from '../base';
 import { suppressInterruptions } from './helpers';
 
 /*

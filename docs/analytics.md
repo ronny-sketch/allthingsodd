@@ -54,24 +54,54 @@ purchase journey, monetisation — key off these exact names and off the
 sent `ticket_page_viewed`, `checkout_started`, `payment_succeeded` and
 similar. GA4 accepted all of them and built nothing from any of them.
 
-| Event              | Fired when                         | Carries                            |
-| ------------------ | ---------------------------------- | ---------------------------------- |
-| `view_item_list`   | The catalog resolves on `/tickets` | Active ticket types                |
-| `add_to_cart`      | A stepper goes up                  | The change, `value`, `items`       |
-| `remove_from_cart` | A stepper goes down                | The change, `value`, `items`       |
-| `begin_checkout`   | Leaving for `/tickets/checkout`    | Cart total, `items`                |
-| `add_payment_info` | Stripe's form mounts               | Order total, `items`               |
-| `purchase`         | The webhook confirms payment       | `transaction_id`, `value`, `items` |
-| `ticket_assigned`  | An attendee name is saved          | Custom, no GA4 equivalent          |
+| Event              | Fired when                         | Carries                                 |
+| ------------------ | ---------------------------------- | --------------------------------------- |
+| `view_item_list`   | The catalog resolves on `/tickets` | Active ticket types                     |
+| `add_to_cart`      | A stepper goes up                  | The change, `value`, `items`            |
+| `remove_from_cart` | A stepper goes down                | The change, `value`, `items`            |
+| `begin_checkout`   | Leaving for `/tickets/checkout`    | Cart total, `items`                     |
+| `add_payment_info` | Stripe's form mounts               | Order total, `items`                    |
+| `purchase`         | The webhook confirms payment       | `transaction_id`, `value`, `items`      |
+| `ticket_assigned`  | An attendee name is saved          | `event_slug`. Custom, no GA4 equivalent |
+
+`purchase`'s `items` carry the catalogue **slug** as `item_id`, plus `price`,
+exactly as the four steps above them do. Until 2026-09-21 it sent the raw
+ticket-type uuid and no price, so GA4 — which joins item-level funnels on
+`item_id` — could not follow a single ticket from a list view through to a
+sale, and every item-level revenue column was empty while the event-level
+`value` looked correct. Both sides now come from `itemFor()`, so there is one
+shape rather than two.
 
 The mapping lives in `src/scripts/tickets/ecommerce.ts`.
 
 ### Forms
 
-| Event                     | Fired when                            |
-| ------------------------- | ------------------------------------- |
-| `newsletter_signup`       | beehiiv accepts a signup              |
-| `business_enquiry_submit` | A Work with ODD enquiry reaches Attio |
+| Event                     | Fired when                                    | Carries                                |
+| ------------------------- | --------------------------------------------- | -------------------------------------- |
+| `newsletter_signup`       | beehiiv accepts a signup                      | `signup_source`                        |
+| `newsletter_error`        | beehiiv refuses, or the request throws        | `signup_source`, `error_kind`          |
+| `contact_submit`          | `/api/contact` accepts a message              | `contact_topic`                        |
+| `contact_error`           | `/api/contact` refuses, or the request throws | `contact_topic`, `error_kind`          |
+| `business_enquiry_submit` | A Work with ODD enquiry reaches Attio         | `product_interest`                     |
+| `business_enquiry_error`  | The enquiry is refused, or the request throws | `product_interest`, `error_kind`       |
+| `cta_click`               | A `mailto:` or an `?interest=` deep link      | `cta_id`, `cta_intent`, `cta_location` |
+
+`error_kind` is `network` when the fetch threw and `rejected` when the
+backend answered with `ok: false`. The distinction is the whole point: one is
+the visitor's connection, the other is ours, and before 2026-09-21 neither
+was reported at all — a broken Worker and a quiet week produced identical
+numbers.
+
+`cta_click` is one event rather than the four the launch brief asked for
+(`partner_cta_click`, `oddspace_membership_click`,
+`oddspace_venue_enquiry_click`, `email_click`). They are the same question,
+and `cta_id` answers it: the product enum from the `?interest=` deep link, or
+`email` for a `mailto:`. One delegated listener in `analytics.ts` covers every
+CTA on the site and keeps covering the next one without a code change.
+`external_social_click` is deliberately absent — GA4's enhanced measurement
+already reports outbound http(s) clicks with `link_domain`/`link_url`, and a
+second event would double-count them. `cta_location` is the pathname only,
+never the full URL.
 
 Both are custom names, kept as-is because Growth OS already reads them.
 
@@ -94,6 +124,39 @@ several times over.
 **4. `purchase` must be de-duplicated.** GA4 does not reliably do it on
 `transaction_id`. A visitor reloading the confirmation page would double
 the revenue, so `firstReportOf()` guards it.
+
+## What must never be sent
+
+| Never                                       | Why                                                                                                                  |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| A name, an email address, a phone number    | Against GA4's own terms, and against `/privacy`                                                                      |
+| The body of a contact message or an enquiry | Free text is unbounded; treat every field a visitor types as PII                                                     |
+| `order_token`                               | A bearer capability, not an identifier: it authorises reading an order's buyer details and reassigning its attendees |
+| A full ticket code                          | The QR credential                                                                                                    |
+| A Stripe session id, or any payment detail  |                                                                                                                      |
+| An Attio record id                          |                                                                                                                      |
+
+The order token is the one that actually happened. Stripe returns a buyer to
+`/tickets/confirmation/?session_id=…&order_token=…`; GA4's automatic
+`page_view` sends the full URL as `page_location` and the next navigation
+sends it again as `page_referrer`. Every ticket **event** was written
+carefully to keep the token out — `ecommerce.ts` hashes it rather than
+passing it through — and that care is exactly what made the page view easy to
+miss: the events were clean and the page view was not, on every purchase.
+
+Two independent fixes, both shipped 2026-09-21 and both tested in
+`tests/functional/analytics-privacy.spec.ts`:
+
+1. `analytics.ts` passes `page_location` and `page_referrer` explicitly, with
+   `SECRET_QUERY_PARAMS` stripped. One place, every page, and the next secret
+   query parameter is covered before anyone adds it. UTM parameters survive —
+   stripping the whole query string would destroy every campaign report.
+2. `tickets/confirmation.ts` removes the token from the address bar with
+   `history.replaceState` once it has been persisted, which also keeps it out
+   of browser history and out of the Referer header of anything linked from
+   that page. It only scrubs if the write succeeded: a buyer opening the link
+   in a fresh tab has the token nowhere else, and losing their order to
+   protect their token would be the worse bug.
 
 ## Attribution, and why almost everything says "direct"
 
@@ -125,6 +188,25 @@ inconsistency costs more than absence.
 Both GA4 and the ticket database pick these up automatically. The order
 attribution view (`v_intel_ticket_attribution` in Growth OS) is what turns
 them into "this channel sold this many tickets".
+
+## Test safety
+
+No test may write into the live property, and two have. `tests/base.ts`
+exports a `test` with an auto-use fixture that aborts every Google origin;
+import `test` from there rather than from `@playwright/test` in any spec that
+can reach a consent decision. Aborting the **loader** is the right level:
+`/g/collect` only ever comes from `gtag.js`, so nothing can be sent, while an
+aborted request still fires `page.on('request')` — which is what lets
+`consent.spec.ts` keep asserting that no Google request was even attempted
+before consent.
+
+The two incidents, both on 2026-09-21: `consent.spec.ts` submitted the
+newsletter form with consent granted and put 18 real `newsletter_signup`
+events into the key-event count; and `mobile/interaction.spec.ts` tapped
+"Accept all" with no block at all, on two projects, inflating users and
+sessions on every full run. Both were fixed per file by remembering.
+Playwright has no global `route` setting, so the fixture is the only way to
+make it structural.
 
 ## Verifying a change
 

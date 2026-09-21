@@ -43,9 +43,14 @@ document.querySelectorAll<HTMLFormElement>('[data-newsletter-form]').forEach((fo
       if (data.ok) {
         trackEvent('newsletter_signup', { signup_source: source });
         form.reset();
+      } else {
+        // The failure path had no event at all, so a beehiiv outage or a
+        // rejected address looked identical to nobody trying to sign up.
+        trackEvent('newsletter_error', { signup_source: source, error_kind: 'rejected' });
       }
     } catch {
       status.textContent = "We couldn't sign you up right now — try again shortly.";
+      trackEvent('newsletter_error', { signup_source: source, error_kind: 'network' });
     } finally {
       submitBtn?.removeAttribute('disabled');
     }
