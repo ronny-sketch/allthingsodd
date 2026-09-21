@@ -1,126 +1,78 @@
-// Progressive-enhancement submit for the contact form via Web3Forms
-// (api.web3forms.com) — no backend of ours involved. See ContactForm.astro's
-// own comment: with no access key set yet, this tells the visitor the form
-// isn't connected instead of pretending to send anything.
-import { CONTACT_TOPICS, type ContactAccessKeys, type ContactTopicValue } from './contact-topics';
-import { submitToWeb3Forms } from './web3forms';
+// Progressive-enhancement submit for the contact form. Posts to /api/contact
+// on the Growth OS Worker (../odd-growth-os's worker/src/index.ts; see
+// api-base.ts for why it's a cross-origin absolute URL), which picks the
+// recipient group by topic server-side and emails it. Replaced Web3Forms
+// (2026-09-20): one public key per recipient meant one sign-up per Google
+// Group, and the only key ever created went to one person's inbox.
+import { CONTACT_TOPICS, type ContactTopicValue } from './contact-topics';
+import { API_BASE } from './api-base';
 
-// Known ?topic= values from deep links elsewhere on the site (both of them
-// ODDfest's — the "How to join" section's two CTAs, see oddfest.json) — a
-// friendlier subject line and an on-page confirmation that the message landed
-// in the right place, without needing a dedicated registration form/endpoint
-// that doesn't exist yet. Any unrecognised or absent value leaves the form's
-// default subject/behaviour untouched.
-//
-// `routes` is what the deep link means for delivery, kept separate from the
-// subject label: both of these are ODDfest's, so both must reach the ODDfest
-// group, but they are two different asks and should not read as one in the
-// inbox.
+// Known ?topic= values from deep links elsewhere on the site. `route` is the
+// topic the Worker delivers by; `label` is the wording the inbox sees, so two
+// different ODDfest asks never read as one.
 const DEEP_LINKS: Record<string, { route: ContactTopicValue; label: string }> = {
   oddfest_2027_event: { route: 'oddfest', label: 'ODDfest 2027 — event idea' },
-  // The second way in from "How to join" (2026-09-11), for a reader who is
-  // interested but has nothing to submit yet. Keep the two distinct: the
-  // whole point of routing them separately is that one is a submission and
-  // the other is a question, and they do not want the same reply.
   oddfest_2027_question: { route: 'oddfest', label: 'ODDfest 2027 — a question' },
-  // The thank-you page's "What moved you? What should ODD become?" card
-  // (2026-09-17), which replaced a feedback form that never sent anything.
   oddfest_2026_feedback: { route: 'oddfest', label: 'ODDfest 2026 — feedback' },
 };
-
-const TOPIC_SUBJECTS = new Map(CONTACT_TOPICS.map((t) => [t.value, t.subject]));
 
 const form = document.getElementById('contactForm');
 if (form instanceof HTMLFormElement) {
   const status = form.querySelector<HTMLElement>('.form-status');
-  const subjectField = form.querySelector<HTMLInputElement>('#cf-subject');
   const topicField = form.querySelector<HTMLSelectElement>('#cf-topic');
+  const topicNote = document.getElementById('cf-topic-note');
+  const regardingField = form.querySelector<HTMLInputElement>('#cf-regarding');
 
-  let accessKeys: ContactAccessKeys = {};
-  try {
-    accessKeys = JSON.parse(form.dataset.accessKeys || '{}') as ContactAccessKeys;
-  } catch {
-    // A malformed data attribute is a content/build problem, not the
-    // visitor's — fall through to the "isn't connected" message below rather
-    // than throwing and leaving the submit button silently dead.
-    accessKeys = {};
-  }
-
-  // A deep link's own wording wins over the generic topic label, but only
-  // while the visitor hasn't overridden the topic themselves.
   const topicParam = new URLSearchParams(window.location.search).get('topic');
   const deepLink = topicParam ? DEEP_LINKS[topicParam] : undefined;
-  let deepLinkLabel = deepLink?.label;
-
-  if (deepLink && topicField) topicField.value = deepLink.route;
-  if (deepLinkLabel) {
-    const topicNote = document.getElementById('cf-topic-note');
+  if (deepLink) {
+    if (topicField) topicField.value = deepLink.route;
+    if (regardingField) regardingField.value = deepLink.label;
     if (topicNote) {
-      topicNote.textContent = `Regarding: ${deepLinkLabel}.`;
+      topicNote.textContent = `Regarding: ${deepLink.label}.`;
       topicNote.hidden = false;
     }
   }
 
-  const selectedTopic = (): ContactTopicValue =>
-    (topicField?.value as ContactTopicValue) || 'general';
-
-  const syncSubject = () => {
-    if (!subjectField) return;
-    const label = deepLinkLabel ?? TOPIC_SUBJECTS.get(selectedTopic()) ?? 'General';
-    // The subject names the site it came from, not the address it goes to.
-    // The old oddfest.co site still exists and still has its own forms, so a
-    // subject naming it made messages from this site indistinguishable from
-    // that one's.
-    subjectField.value = `${label} — allthingsodd.co contact form`;
-  };
-
+  // Once the visitor picks a topic by hand, the deep link no longer
+  // describes what they are writing about — drop its label and its note.
   topicField?.addEventListener('change', () => {
-    // Once the visitor picks a topic by hand, the deep link no longer
-    // describes what they are writing about — drop its label and its note.
-    if (deepLinkLabel) {
-      deepLinkLabel = undefined;
-      const topicNote = document.getElementById('cf-topic-note');
-      if (topicNote) topicNote.hidden = true;
-    }
-    syncSubject();
+    if (regardingField) regardingField.value = '';
+    if (topicNote) topicNote.hidden = true;
   });
-  syncSubject();
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!status) return;
 
-    // Falling back to the general key rather than refusing: a message landing
-    // in the shared inbox under the right subject is recoverable by a human,
-    // a message never sent is not.
-    const topic = selectedTopic();
-    const accessKey = accessKeys[topic]?.trim() || accessKeys.general?.trim();
-
-    if (!accessKey) {
-      status.textContent = "This form isn't connected yet — email us directly instead.";
-      return;
-    }
-
     const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
     submitBtn?.setAttribute('disabled', 'true');
     status.textContent = 'Sending…';
 
-    const sent = await submitToWeb3Forms(accessKey, Object.fromEntries(new FormData(form)));
-    if (sent) {
-      form.reset();
-      syncSubject();
-      status.textContent = "Thanks — we'll get back to you soon.";
-    } else {
+    try {
+      const res = await fetch(`${API_BASE}/api/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+      });
+      const data = (await res.json()) as { ok: boolean; message: string };
+      status.textContent = data.message;
+      if (data.ok) {
+        form.reset();
+        if (topicNote) topicNote.hidden = true;
+      }
+    } catch {
       status.textContent = 'Something went wrong — try again, or email us directly.';
     }
     submitBtn?.removeAttribute('disabled');
   });
 
-  // Same readiness convention as reveal.ts: the handler above is attached by
-  // a module script, so until it runs a click on "Send message" does nothing
-  // at all. Publishing that fact lets a test wait for the real signal instead
-  // of racing it. Nothing in the page's own behaviour depends on this flag.
+  // Readiness flag so a test can wait for the submit handler rather than
+  // race the module script that attaches it (same convention as reveal.ts).
   form.dataset.ready = 'true';
 }
+
+// Referenced so the option list and the Worker's topic enum stay one table.
+void CONTACT_TOPICS;
 
 export {};

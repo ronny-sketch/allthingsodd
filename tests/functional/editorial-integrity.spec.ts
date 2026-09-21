@@ -153,12 +153,14 @@ test('ODDspace does not answer an accessibility question with reassurance', asyn
   expect(body).toContain('We do not have verified accessibility information');
 });
 
-test('the contact form names the site it actually belongs to', async ({ page }) => {
-  await page.goto('/contact');
-  const subject = page.locator('#cf-subject');
-  await expect(subject).toHaveValue(/allthingsodd\.co/);
-  await expect(subject).not.toHaveValue(/oddfest\.co contact form/);
-});
+// "The contact form names the site it actually belongs to" used to live here,
+// asserting a hidden #cf-subject field. The subject is now built server-side by
+// the Growth OS Worker (../odd-growth-os's worker/src/index.ts), because the
+// recipient is chosen there too — so the assertion moved with the behaviour, to
+// that repo's worker/src/index.test.ts ("… — allthingsodd.co contact form").
+// What this site still owns is sending the right topic, covered by
+// contact-routing.spec.ts. The rule it protects is unchanged: the old oddfest.co
+// site still has its own forms, and the two must be tellable apart in the inbox.
 
 test('nothing user-facing still advertises the retired production domain', async ({ request }) => {
   // hello@oddfest.co / ronny@oddfest.co are canonical email infrastructure
