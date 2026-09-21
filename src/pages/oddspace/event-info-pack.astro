@@ -21,5 +21,10 @@ const sections = page.sections.map((section) => ({
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <PageIntro eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
-  <LegalDocument lastUpdated={page.lastUpdated} sections={sections} contact={page.contact} />
+  <LegalDocument
+    lastUpdated={page.lastUpdated}
+    contents={page.contents}
+    sections={sections}
+    contact={page.contact}
+  />
 </Layout>
