@@ -70,13 +70,19 @@ const FADE = 3;
 // full Ink, so the move is never seen. That is also what lets the films skip
 // "What comes next" (the three participation cards, which sit between the
 // invitation and the sign-off) without scrolling past them.
+// A third element picks the easing of the segment ENDING at that keyframe:
+// 'linear' for anything that is a credits roll, the default ease-in-out for a
+// move between two places. This matters more than it sounds. Eased, a roll
+// creeps, accelerates through the middle and slows again — the motion of a
+// page being scrolled. A film's credits move at one unchanging speed from the
+// first name to the last, and they are still moving when the picture fades.
 const TIMELINES = {
   full: [
     [0, 0],
     [6, 0],
-    [78, '#photos@bottom'],
-    [79.4, '#photos@bottom'],
-    [79.5, '#afterparty@centre'],
+    [76, '#photos@bottom', 'linear'],
+    [77.5, '#photos@bottom', 'linear'],
+    [77.6, '#afterparty@centre'],
     [TRACK_SECONDS, '#afterparty@centre'],
   ],
   short: [
@@ -85,9 +91,9 @@ const TIMELINES = {
     [7, '.ty-count@centre'],
     [10, '.ty-count@centre'],
     [13, '#credits@top'],
-    [30, '#photos@bottom'],
-    [31.5, '#photos@bottom'],
-    [31.6, '#afterparty@centre'],
+    [30.5, '#photos@bottom', 'linear'],
+    [32, '#photos@bottom', 'linear'],
+    [32.1, '#afterparty@centre'],
     [40, '#afterparty@centre'],
   ],
 };
@@ -102,20 +108,23 @@ const TIMELINES = {
 // invitation and back again — and with "What comes next" hidden the two
 // sections are adjacent, so neither can be framed without the other in shot.
 // A stinger only works if what follows the black is the only thing there.
+// Slow on purpose: the picture takes a second and a half to go, sits in Ink
+// for over a second, and the invitation takes another second and a half to
+// arrive. A snap would read as an edit; this reads as the end of something.
 const BLACKOUTS = {
   full: [
     [0, 0],
-    [78.6, 0],
-    [79.4, 1],
-    [80.2, 1],
-    [81.2, 0],
+    [76, 0],
+    [77.5, 1],
+    [78.6, 1],
+    [80.2, 0],
   ],
   short: [
     [0, 0],
-    [30.6, 0],
-    [31.4, 1],
-    [32.2, 1],
-    [33.2, 0],
+    [30.5, 0],
+    [32, 1],
+    [33.2, 1],
+    [34.8, 0],
   ],
 };
 const timeline = TIMELINES[CUT];
@@ -237,18 +246,18 @@ const resolve = async (target) => {
   return Math.max(0, Math.min(maxScroll, y));
 };
 const keys = [];
-for (const [t, target] of timeline) {
+for (const [t, target, ease] of timeline) {
   const y = await resolve(target);
   if (y === null) console.warn(`skipping ${target}: not on the page`);
-  else keys.push([t, y]);
+  else keys.push([t, y, ease ?? 'ease']);
 }
-const smooth = (x) => x * x * (3 - 2 * x);
+const EASES = { ease: (x) => x * x * (3 - 2 * x), linear: (x) => x };
 const yAt = (t) => {
   if (t <= keys[0][0]) return keys[0][1];
   for (let i = 1; i < keys.length; i++) {
     const [t0, y0] = keys[i - 1];
-    const [t1, y1] = keys[i];
-    if (t <= t1) return Math.round(y0 + (y1 - y0) * smooth((t - t0) / (t1 - t0)));
+    const [t1, y1, ease] = keys[i];
+    if (t <= t1) return Math.round(y0 + (y1 - y0) * EASES[ease]((t - t0) / (t1 - t0)));
   }
   return keys[keys.length - 1][1];
 };
