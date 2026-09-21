@@ -52,7 +52,55 @@ import Pill from '../../components/primitives/Pill.astro';
 
     <div class="wrap tix-layout">
       <div class="tix-list" id="tixList" aria-busy="true">
-        <p class="tix-loading">Loading tickets…</p>
+        {
+          /* Skeleton rows, and they exist for one measured reason: this list
+             is rendered from the ticket catalogue after the page has painted,
+             and it grew from 32px to 902px on desktop and 25px to 982px on a
+             phone. Everything below it — the whole footer — dropped by that
+             much about 600ms in. Measured CLS on /tickets was 0.26 against a
+             0.1 budget, the only route on the site that failed it.
+
+             Three rows, with three benefit lines on the first and one on the
+             others, because that is the shape of the current ODDference
+             catalogue. Deliberately NOT a `min-height`: rows are taller on a
+             phone than on a desktop and the first tier is taller than the
+             other two, so one reserved number would be wrong at most widths.
+             Real markup laid out by the real CSS is right at every width by
+             construction.
+
+             The placeholder text is never read: `aria-hidden`, and
+             `color: transparent` so it reserves a line box without showing a
+             fake price. It says nothing about what a ticket costs — the
+             numbers come from the catalogue, and inventing one here is
+             exactly what this page must not do. storefront.ts replaces the
+             whole list on render, so these never survive a successful load. */
+        }
+        <p class="sr-only" role="status">Loading tickets…</p>
+        {
+          [3, 1, 1].map((benefitLines) => (
+            <div class="tix-row tix-row-skeleton" aria-hidden="true">
+              <div class="tix-row-main">
+                <div class="tix-row-info">
+                  <span class="tix-row-name">Ticket tier</span>
+                  <p class="tix-row-desc">
+                    A description of about the length the ticket descriptions on this page run to.
+                  </p>
+                  <ul class="tix-row-benefits">
+                    {Array.from({ length: benefitLines }).map(() => (
+                      <li>Included with this tier</li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="tix-row-price">
+                  &euro;000<span class="tix-row-price-vat">+ VAT</span>
+                </div>
+              </div>
+              <div class="tix-row-action">
+                <span class="tix-status-badge">Loading</span>
+              </div>
+            </div>
+          ))
+        }
       </div>
       <aside class="tix-summary" id="tixSummary" aria-label="Your order"></aside>
     </div>
@@ -193,6 +241,16 @@ import Pill from '../../components/primitives/Pill.astro';
     flex-direction: column;
     gap: var(--space-grid);
     min-width: 0;
+  }
+  /* The skeleton holds space and nothing else: no text visible, no border
+     that would read as a real card that failed to fill in. */
+  .tix-row-skeleton {
+    color: transparent;
+    border-color: var(--color-paper-06);
+    background: var(--color-paper-06);
+  }
+  .tix-row-skeleton :global(.tix-row-benefits li::before) {
+    background: var(--color-paper-12);
   }
   .tix-loading,
   .tix-error,
