@@ -202,54 +202,46 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
       </div>
     </section>
 
-    <!-- 6. The afterparty. The date and doors time live only in the JSON's
-         `facts` rows; the section is gone when `show` is false. -->
+    <ParticipateBand title={page.participateTitle} items={page.participate} />
+
+    <!-- 7. The invitation, and the page's last word. Everything from the
+         eyebrow to "Stay ODD." is one block, `#invite-card`, because the
+         films come to rest on it and it has to read as a single closing
+         frame — see scripts/render-oddfest-2026-film.mjs. The letter above
+         it rolls past; the card is what the film stops on, so it stays short
+         enough to fit one 9:16 viewport. The date and the door live only in
+         the JSON's `facts` lines. The section is gone when `show` is false,
+         and with it the page's sign-off, which is why the hero's second
+         button is checked by site-integrity.spec.ts. -->
     {
       page.afterparty.show && (
         <section class="ty-sub ty-after" id="afterparty">
           <div class="wrap flow">
-            <span class="eyebrow ty-after-eyebrow reveal">{page.afterparty.eyebrow}</span>
             <p class="ty-letter-text reveal">
               <span class="ty-dim">{page.afterparty.premise}</span> {page.afterparty.point}
             </p>
-            {page.afterparty.facts.length > 0 && (
-              <dl class="ty-facts reveal">
-                {page.afterparty.facts.map((fact) => (
-                  <div class="ty-fact">
-                    <dt>{fact.label}</dt>
-                    <dd>{fact.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            )}
             <p class="ty-after-body reveal">{page.afterparty.body}</p>
-            <div class="ty-actions reveal">
-              <Pill href={page.afterparty.link.href} variant="outline" magnetic>
-                {page.afterparty.link.label}
-              </Pill>
+            <div class="ty-invite reveal" id="invite-card">
+              <span class="eyebrow ty-after-eyebrow">{page.afterparty.eyebrow}</span>
+              <h2 class="ty-invite-title">{page.afterparty.inviteTitle}</h2>
+              {page.afterparty.facts.length > 0 && (
+                <ul class="ty-invite-facts" role="list">
+                  {page.afterparty.facts.map((fact) => (
+                    <li>{fact}</li>
+                  ))}
+                </ul>
+              )}
+              <div class="ty-actions">
+                <Pill href={page.afterparty.link.href} variant="outline" magnetic>
+                  {page.afterparty.link.label}
+                </Pill>
+              </div>
+              <p class="ty-invite-closer">{page.signoff.title}</p>
             </div>
           </div>
         </section>
       )
     }
-
-    <ParticipateBand title={page.participateTitle} items={page.participate} />
-
-    <section class="ty-signoff">
-      <div class="wrap">
-        <h2 class="reveal">{page.signoff.title}</h2>
-        <p class="reveal">{page.signoff.body}</p>
-        {
-          page.signoff.link && (
-            <div class="ty-actions ty-signoff-actions reveal">
-              <Pill href={page.signoff.link.href} variant="outline" magnetic>
-                {page.signoff.link.label}
-              </Pill>
-            </div>
-          )
-        }
-      </div>
-    </section>
   </SubpageFrame>
 
   <!-- The credits roll's own control, shown once it has started. -->
@@ -458,35 +450,6 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
     display: block;
     color: var(--color-amber-bright);
   }
-  .ty-facts {
-    max-width: 28rem;
-    margin-inline: auto;
-    margin-block-end: 0;
-    text-align: left;
-  }
-  .ty-fact {
-    display: grid;
-    grid-template-columns: 5rem 1fr;
-    gap: var(--space-4);
-    align-items: baseline;
-    padding-block: var(--space-3);
-    border-top: 1px solid var(--color-paper-12);
-  }
-  .ty-fact:last-child {
-    border-bottom: 1px solid var(--color-paper-12);
-  }
-  .ty-fact dt {
-    font: var(--text-small);
-    font-weight: 600;
-    letter-spacing: var(--tracking-eyebrow);
-    text-transform: uppercase;
-    color: var(--color-paper-40);
-  }
-  .ty-fact dd {
-    margin: 0;
-    font: var(--text-body);
-    color: var(--color-paper);
-  }
   .ty-after-body {
     max-width: var(--measure-prose);
     margin-inline: auto;
@@ -494,23 +457,56 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
     color: var(--color-paper-60);
   }
 
-  /* Sign-off: the page's last word, at Hero size. */
-  .ty-signoff {
+  /* The invitation card: the page's last block, and the films' last frame.
+     The three labelled rows it replaced (WHEN / WHERE / PRICE, 2026-09-19)
+     were the right idea on a page and the wrong one in a film — a label
+     column and a hairline grid read as a table, and together with the
+     sign-off below they could not share one 9:16 viewport. Now the ask and
+     the closer carry the size, the facts sit at Body so they cannot push
+     "Stay ODD." out of shot, and the whole thing holds in a single frame.
+     Hairlines top and bottom rather than a box: square content, 1px rules
+     (design-system rule 6). */
+  .ty-invite {
+    max-width: 32rem;
+    margin-inline: auto;
+    padding-block: var(--space-8);
+    border-top: 1px solid var(--color-paper-12);
+    border-bottom: 1px solid var(--color-paper-12);
     text-align: center;
   }
-  .ty-signoff h2 {
-    margin: 0;
+  .ty-invite .eyebrow {
+    display: block;
+    color: var(--color-amber-bright);
+  }
+  .ty-invite-title {
+    margin: var(--space-3) 0 0;
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
+    color: var(--color-paper);
+  }
+  .ty-invite-facts {
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ty-invite-facts li {
+    font: var(--text-body);
+    font-weight: 600;
+    color: var(--color-paper);
+  }
+  .ty-invite-facts li + li {
+    margin-top: var(--space-2);
+  }
+  .ty-invite .ty-actions {
+    margin-top: var(--space-6);
+  }
+  /* The page's last word, at Hero size — the size it had as its own section
+     until 2026-09-21, now the closing line of the card instead. */
+  .ty-invite-closer {
+    margin: var(--space-8) 0 0;
     font: var(--text-hero);
     letter-spacing: var(--tracking-hero);
     color: var(--color-paper);
-  }
-  .ty-signoff p {
-    margin: var(--space-5) 0 0;
-    font: var(--text-body);
-    color: var(--color-paper-60);
-  }
-  .ty-signoff-actions {
-    margin-top: var(--space-6);
   }
 
   /* The credits roll's control: bottom centre, clear of the home indicator. */

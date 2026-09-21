@@ -782,15 +782,20 @@ const pages = defineCollection({
           eyebrow: z.string(),
           premise: z.string(),
           point: z.string(),
-          facts: z.array(z.object({ label: z.string(), value: z.string() })),
+          // `inviteTitle` down to `link` is the card the films end on, and it
+          // has to hold in one 9:16 frame — keep `facts` to three short lines.
+          inviteTitle: z.string(),
+          facts: z.array(z.string()),
           body: z.string(),
           link: linkCta,
         }),
         participateTitle: z.string(),
         participate: z.array(cta),
-        // `link` (optional) is the page's last button — "See the new site",
-        // to the homepage — the video's end card as well as the reader's.
-        signoff: z.object({ title: z.string(), body: z.string(), link: linkCta.optional() }),
+        // Since 2026-09-21 the sign-off is one line, and it is rendered as the
+        // last line of the invitation card rather than as a section of its
+        // own, so that a film's closing frame holds the whole invitation and
+        // "Stay ODD." together.
+        signoff: z.object({ title: z.string() }),
       }),
 
       // The 2027 ODDference rebuild: the centrally-produced professional

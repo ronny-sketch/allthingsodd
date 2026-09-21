@@ -684,9 +684,9 @@ collections_config:
         type: object
         label: Sign-off (ODDfest 2026 thank-you only)
         comment: >-
-          The closing line ("Stay ODD."), the sentence under it and, in
-          "link", the page's last button ("See the new site", to the
-          homepage). Remove "link" for no button.
+          The closing line, "Stay ODD." It is set as the last line of the
+          invitation card above rather than as a section of its own, so that
+          the social films end on the invitation and this line together.
         options:
           subtype: object
       titlePremise:
@@ -701,14 +701,16 @@ collections_config:
         type: object
         label: Afterparty invitation (ODDfest 2026 thank-you only)
         comment: >-
-          The "ODD is back" section between the photographs and "What comes
-          next". "facts" are the When / Where / Price rows — the date and
-          doors time there are the ONLY place on the site that states them,
-          so check them before publishing and change them only here if
-          anything moves. Empty the "facts" list to run the invitation
-          without a date. "show: false" hides the whole section; the hero's
-          second button links to it, so point that somewhere else at the
-          same time.
+          The "ODD is back" invitation that closes the page. "premise" and
+          "point" are the sentence above it; everything from "inviteTitle"
+          down is the card itself, which the social films come to rest on, so
+          keep "facts" to three short lines or the closing line drops out of
+          frame. The date and doors time in "facts" are the ONLY place on the
+          site that states them, so check them before publishing and change
+          them only here if anything moves. Empty "facts" to run the
+          invitation without a date. "show: false" hides the whole section
+          (and with it the page's sign-off); the hero's second button links
+          to it, so point that somewhere else at the same time.
         options:
           subtype: object
       examplesIntro:
