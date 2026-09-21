@@ -21,6 +21,19 @@ function trackRequests(page: Page): string[] {
   return urls;
 }
 
+// Never let a test hit Google for real. Every assertion in this file is
+// about whether the *request was attempted*, and page.on('request') fires
+// for an aborted request just the same — so blocking costs these tests
+// nothing and stops them writing into the live GA4 property.
+//
+// This is not hypothetical. Before it was added, the suite's own newsletter
+// submission fired real newsletter_signup events on every run across every
+// browser project: property 555204778 recorded 18 of them on 2026-09-21,
+// its first day, against 7 in the previous 30 days of genuine traffic.
+test.beforeEach(async ({ page }) => {
+  await page.route(/googletagmanager\.com|google-analytics\.com/, (route) => route.abort());
+});
+
 /** Waits long enough for a gated request to have happened if it were going
  *  to. Deliberately not `waitForLoadState('networkidle')`: webkit never
  *  reaches idle on /about or /oddspace (confirmed — it times out at 30s on
