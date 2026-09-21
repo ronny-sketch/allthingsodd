@@ -58,75 +58,57 @@ const END_HOLD = 2;
 const FADE = 3;
 
 // [seconds, target]: a scrollY in px, 'max', or 'selector@top|centre|bottom'.
-// Smoothstep between keyframes; a repeated target is a hold.
 //
-// Both cuts END ON THE INVITATION, as an after-credits scene (2026-09-21,
-// Ronny's note: "it should unfold as after credits in a movie"). The names
-// roll, "Stay ODD." lands as the closing title, the frame goes to Ink, and
-// the invitation comes up out of the black — the stinger after the credits,
-// not a scroll back up the page.
+// Each film is a film, not a tour of a web page (2026-09-21, Ronny: "the
+// whole video should be a smooth continuous roll that ends in the credits.
+// Think of a movie -> opening screen, and then credits roll ... and then it
+// ends in the afterparty window").
 //
-// The cuts are hard cuts: the scroll jumps while BLACKOUTS holds the frame at
-// full Ink, so the move is never seen. That is also what lets the films skip
-// "What comes next" (the three participation cards, which sit between the
-// invitation and the sign-off) without scrolling past them.
-// A third element picks the easing of the segment ENDING at that keyframe:
-// 'linear' for anything that is a credits roll, the default ease-in-out for a
-// move between two places. This matters more than it sounds. Eased, a roll
-// creeps, accelerates through the middle and slows again — the motion of a
-// page being scrolled. A film's credits move at one unchanging speed from the
-// first name to the last, and they are still moving when the picture fades.
+// So there are exactly two moves. The hero holds as the opening title card —
+// it is one full screen tall by construction, so it fills the frame — and
+// then ONE unbroken roll carries the whole page past the camera and comes to
+// rest on the invitation. Nothing stops in between, nothing is skipped and
+// nothing cuts. The page's own order does the dramaturgy: the letter, the
+// quote, the 274, the story, the photograph, every credited name, the photo
+// wall, and last the invitation.
+//
+// The third element on a keyframe names the easing of the segment ending on
+// it. 'roll' is the one that matters: constant speed for the length of the
+// roll, then a deceleration into rest over the last stretch, the way credits
+// settle onto a final card. Plain 'linear' would stop dead; the default
+// ease-in-out would creep, accelerate and slow again, which is the motion of
+// a page being scrolled rather than of credits rolling.
+//
+// Rolling to '@centre' rather than '@top' is what keeps this one forward move
+// at every aspect ratio: on 9:16 the invitation is taller than the frame, so
+// centring it scrolls further down; on 16:9 it is shorter and centring lands
+// a little higher. Either way it is one move ending in one resting place.
 const TIMELINES = {
   full: [
     [0, 0],
     [6, 0],
-    [76, '#photos@bottom', 'linear'],
-    [77.5, '#photos@bottom', 'linear'],
-    [77.6, '#afterparty@centre'],
-    [TRACK_SECONDS, '#afterparty@centre'],
+    [TRACK_SECONDS, '#afterparty@centre', 'roll'],
   ],
   short: [
     [0, 0],
     [4, 0],
-    [7, '.ty-count@centre'],
-    [10, '.ty-count@centre'],
-    [13, '#credits@top'],
-    [30.5, '#photos@bottom', 'linear'],
-    [32, '#photos@bottom', 'linear'],
-    [32.1, '#afterparty@centre'],
-    [40, '#afterparty@centre'],
+    [40, '#afterparty@centre', 'roll'],
   ],
 };
 
-// [seconds, opacity] of a full-frame Ink wash, linear between keyframes. The
-// pair of 1s brackets the hard cut in TIMELINES above: the credits end, the
-// frame goes to Ink, the scroll jumps unseen, and the invitation comes up out
-// of the black. Ink (the brand's own scrim colour), never #000.
-//
-// The sign-off is deliberately not in either film. It sits after the
-// invitation on the page, so showing it would mean cutting forward past the
-// invitation and back again — and with "What comes next" hidden the two
-// sections are adjacent, so neither can be framed without the other in shot.
-// A stinger only works if what follows the black is the only thing there.
-// Slow on purpose: the picture takes a second and a half to go, sits in Ink
-// for over a second, and the invitation takes another second and a half to
-// arrive. A snap would read as an edit; this reads as the end of something.
+// The only wash left: a film opens out of black. Nothing else in these cuts
+// fades, because nothing else in them is an edit.
 const BLACKOUTS = {
   full: [
-    [0, 0],
-    [76, 0],
-    [77.5, 1],
-    [78.6, 1],
-    [80.2, 0],
+    [0, 1],
+    [1.2, 0],
   ],
   short: [
-    [0, 0],
-    [30.5, 0],
-    [32, 1],
-    [33.2, 1],
-    [34.8, 0],
+    [0, 1],
+    [1, 0],
   ],
 };
+
 const timeline = TIMELINES[CUT];
 if (!timeline) throw new Error(`--cut must be one of ${Object.keys(TIMELINES).join(', ')}`);
 const blackout = BLACKOUTS[CUT] ?? [[0, 0]];
@@ -146,10 +128,11 @@ const track = (keys, t) => {
 // both edges above 821px. They are invisible at phone widths, so the 9:16 and
 // 4:5 cuts never saw them; a 16:9 render is a desktop layout, where they sit
 // over the frame and read as browser chrome in a film.
-// .participate-band is "What comes next", the three participation cards. They
-// are the page's business, not the film's (2026-09-21, Ronny), and they sit
-// between the invitation and the sign-off — so hiding them is also what puts
-// "Stay ODD." alone in the closing frame instead of sharing it with a card.
+// .participate-band is "What comes next", the three participation cards, and
+// they are the page's business rather than the film's (2026-09-21, Ronny).
+// Hiding them is also what lets one unbroken roll end on the invitation: they
+// sit directly after it, so with them in place the roll would have to carry on
+// past the thing it is meant to finish on.
 const HIDE_CSS = `
   nav, footer, .cursor, .nl-popup, .nl-popup-backdrop, .consent-banner,
   .ty-player, .space-hero-ctas, .oddf-rail, .participate-band { display: none !important }
@@ -251,7 +234,20 @@ for (const [t, target, ease] of timeline) {
   if (y === null) console.warn(`skipping ${target}: not on the page`);
   else keys.push([t, y, ease ?? 'ease']);
 }
-const EASES = { ease: (x) => x * x * (3 - 2 * x), linear: (x) => x };
+const EASES = {
+  ease: (x) => x * x * (3 - 2 * x),
+  linear: (x) => x,
+  // Credits: one speed for the first 88% of the move, then an ease-out into
+  // rest over the last 12%. v = 2/(1+p) is what makes the speed and the
+  // position agree at the hand-over, so there is no kick where the two meet.
+  roll: (x) => {
+    const p = 0.88;
+    const v = 2 / (1 + p);
+    if (x <= p) return v * x;
+    const u = (x - p) / (1 - p);
+    return v * p + (1 - v * p) * (1 - (1 - u) * (1 - u));
+  },
+};
 const yAt = (t) => {
   if (t <= keys[0][0]) return keys[0][1];
   for (let i = 1; i < keys.length; i++) {
