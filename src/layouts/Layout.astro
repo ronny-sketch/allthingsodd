@@ -65,6 +65,13 @@ const {
   theme,
   noindex,
 } = Astro.props;
+
+// The site-wide social card, used by any page that does not name its own.
+// public/og/home.jpg is the only designed card in that folder — the rest are
+// photo crops — so it is the right thing to fall back to. Kept here rather
+// than in content: a page with no image is a code-level default, not an
+// editorial decision.
+const DEFAULT_OG_IMAGE = '/og/home.jpg';
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 // Path-preserving redirect from the retired production host
@@ -167,15 +174,30 @@ const revealOptIn = `(function(){var d=document.documentElement;try{if(!window.m
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
     {
-      ogImage && (
-        <>
-          <meta property="og:image" content={new URL(ogImage, Astro.site)} />
-          <meta property="og:image:width" content="1200" />
-          <meta property="og:image:height" content="630" />
-          <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
-        </>
-      )
+      /* Always an image, because the card below always claims one.
+         
+         Until 2026-09-21 this block was gated on `ogImage` while
+         `twitter:card` was unconditionally "summary_large_image", so eight
+         routes — /media (the press page), /contact, /privacy, /tickets,
+         both ticket screens, /brand-book and /404 — advertised a
+         large-image card and then supplied no image, which renders as a
+         bare link. Falling back is the one-line fix for all eight; adding
+         `ogImage` to three content files would have left the other five.
+         
+         The default is the homepage card, which is the only one of the eight
+         social images that is actually designed rather than a photo crop —
+         it carries the ODD mark and reads at thumbnail size. A page that
+         wants its own still sets `ogImage` and wins.
+         
+         The width and height are hardcoded, which is only true for as long
+         as every file in public/og really is 1200x630. scripts/check-og-images.mjs
+         asserts exactly that, so the first image of another size fails the
+         build instead of shipping metadata that lies about its own picture. */
     }
+    <meta property="og:image" content={new URL(ogImage ?? DEFAULT_OG_IMAGE, Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:image" content={new URL(ogImage ?? DEFAULT_OG_IMAGE, Astro.site)} />
     <meta name="twitter:card" content="summary_large_image" />
     <StructuredData />
     <!--

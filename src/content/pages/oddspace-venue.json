@@ -104,8 +104,14 @@
     "body": "Members book the rooms at fixed member rates. For everyone else we quote per event, because the number depends on which room, how long, how much setup and teardown time you need, and whether you want us to help run it. Tell us those four things and you'll have a price."
   },
   "memberRates": [
-    { "name": "Full day, 1st floor gallery (members)", "price": "€200" },
-    { "name": "Half day, auditorium (members)", "price": "€100" },
+    {
+      "name": "Full day, 1st floor gallery (members)",
+      "price": "€200"
+    },
+    {
+      "name": "Half day, auditorium (members)",
+      "price": "€100"
+    },
     {
       "name": "ODDstudio, per hour (members)",
       "price": "€20",
@@ -150,6 +156,25 @@
       "Staffing, technical support and what we can produce for you"
     ]
   },
+  "beforeYourEvent": {
+    "eyebrow": "Before your event",
+    "headline": "Two things worth reading first.",
+    "body": "Neither one is long, and both save a phone call on the day."
+  },
+  "resources": [
+    {
+      "title": "Event info pack",
+      "type": "For organisers",
+      "description": "Load-in, the rooms, house sound and lights, the safety documents, and what we need from you before the doors open.",
+      "href": "/oddspace/event-info-pack/"
+    },
+    {
+      "title": "Code of conduct",
+      "type": "House rules",
+      "description": "How we treat each other in the space, and who to tell if something goes wrong. It applies to your guests as well as to us.",
+      "href": "/oddspace/code-of-conduct/"
+    }
+  ],
   "faq": [
     {
       "question": "Do I need to be a member to book?",
@@ -202,15 +227,37 @@
     }
   },
   "railLeft": [
-    { "kind": "logo" },
-    { "kind": "word", "text": "ODDspace" },
-    { "kind": "meta", "text": "Venue" },
-    { "kind": "meta", "text": "Vallila" }
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDspace"
+    },
+    {
+      "kind": "meta",
+      "text": "Venue"
+    },
+    {
+      "kind": "meta",
+      "text": "Vallila"
+    }
   ],
   "railRight": [
-    { "kind": "word", "text": "Helsinki" },
-    { "kind": "meta", "text": "Events" },
-    { "kind": "logo" },
-    { "kind": "word", "text": "ODDspace" }
+    {
+      "kind": "word",
+      "text": "Helsinki"
+    },
+    {
+      "kind": "meta",
+      "text": "Events"
+    },
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDspace"
+    }
   ]
 }

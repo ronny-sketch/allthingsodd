@@ -35,8 +35,21 @@ if (form instanceof HTMLFormElement) {
   // — Attio has no dedicated structured field for it today, so it lands in
   // the same human-readable submission note goal/timing/referrer already
   // do, not silently folded into the visitor's own free-text message.
+  // `studio` added 2026-09-21. /oddstudio has linked here with
+  // ?interest=oddspace&intent=studio from two places since that page was
+  // built, and neither this gate nor the Worker's INTENTS set recognised the
+  // value — so every ODDstudio enquiry arrived as a bare `interest=oddspace`,
+  // indistinguishable from someone renting the gallery for an evening, and
+  // was additionally asked for a work email and a required organisation.
+  // A solo musician booking studio time is exactly who that friction was
+  // supposed to spare. The Worker half shipped in ../odd-growth-os
+  // (validate.ts's INTENTS) and both halves are needed: the frontend gate
+  // below is the only reason an unrecognised value was not already being
+  // rejected with a 400.
+  const INTENTS = ['membership', 'event', 'studio'] as const;
   const requestedIntent = params.get('intent');
-  if (requestedIntent === 'membership' || requestedIntent === 'event') {
+  const intent = INTENTS.find((i) => i === requestedIntent);
+  if (intent) {
     const emailLabel = form.querySelector<HTMLLabelElement>('#we-email-label');
     const orgLabel = form.querySelector<HTMLLabelElement>('#we-org-label');
     const orgInput = form.querySelector<HTMLInputElement>('#we-org');
@@ -55,9 +68,7 @@ if (form instanceof HTMLFormElement) {
 
     const payload = {
       ...Object.fromEntries(new FormData(form)),
-      ...(requestedIntent === 'membership' || requestedIntent === 'event'
-        ? { intent: requestedIntent }
-        : {}),
+      ...(intent ? { intent } : {}),
       ...captureFirstTouch(),
     };
 
