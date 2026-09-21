@@ -252,21 +252,27 @@ sign-up link above.
 
 The Contact page's form and the Work with ODD enquiry form both post to the
 Growth OS Worker (`../odd-growth-os`, `/api/contact` and
-`/api/business-enquiry`), which emails the right team via Resend:
+`/api/business-enquiry`), which emails the right team via Resend. Work with ODD
+enquiries are written to Attio **and** emailed.
 
-| Topic on the form         | Sends to              |
-| ------------------------- | --------------------- |
-| Something else / not sure | `hello@oddfest.co`    |
-| Partnerships & ODDference | `partners@oddfest.co` |
-| ODDspace                  | `space@oddfest.co`    |
-| ODDfest                   | `fest@oddfest.co`     |
+**Every message currently goes to `hello@oddfest.co`.** The design routes each
+topic to its own Google Group — `partners@`, `space@`, `fest@` — but those three
+groups do not exist yet: a real test message to each came back "the email
+account that you tried to reach does not exist" (2026-09-21). A bounce loses the
+message, so everything goes to the shared inbox until someone creates them in
+Google Workspace admin. The subject line names the topic either way, so a
+message can still be triaged and forwarded.
 
-Work with ODD enquiries are written to Attio **and** emailed to
-`partners@oddfest.co`. The three `partners@`/`space@`/`fest@` addresses are
-Google Groups: who receives each topic is changed in Google Workspace admin,
-not here and not in code. Nothing on this site needs configuring; the
-Resend API key and sender live on the Worker (see that repo's
-`ops/RUNBOOK.md`).
+| Topic on the form         | Goes to today      | Once the groups exist |
+| ------------------------- | ------------------ | --------------------- |
+| Something else / not sure | `hello@oddfest.co` | `hello@oddfest.co`    |
+| Partnerships & ODDference | `hello@oddfest.co` | `partners@oddfest.co` |
+| ODDspace                  | `hello@oddfest.co` | `space@oddfest.co`    |
+| ODDfest                   | `hello@oddfest.co` | `fest@oddfest.co`     |
+
+Nothing on this site needs configuring. The recipient list, the Resend API key
+and the sender address all live on the Worker — see that repo's
+`ops/RUNBOOK.md`.
 
 ## Links with a query string need a trailing slash
 
