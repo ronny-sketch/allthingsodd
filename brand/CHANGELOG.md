@@ -1,5 +1,37 @@
 # Brand system changelog
 
+## 1.2 — 2026-09-21 · ODD on Instagram, second pass
+
+`brand/social/` is now one set in one language: fifty-nine posts, five stories,
+two carousels, two reel covers, six highlight covers, three planned editions of
+the profile. The first-pass twenty were rebuilt in the signature or retired.
+
+- **Everything is numbered 01–59 by family** (People, Evidence, Programme,
+  Voice, Invitation, Place). The first pass mapped to the new numbers:
+  01→12 · 02→11 · 03→34 · 04→26 · 05→17 · 06→47 · 07→57 · 08→16 · 09→09 · 10→19
+  · 11→58 · 12→36 · 13→35 · 14→51 · 15→43 · 16→13 · 17→59 · 18→retired (the
+  lockup lives in the highlight covers) · 19→07 · 20→45 · 21→13 · 22→02 · 23→37
+  · 24→38 · 25→01 · 26→16 · 27→17 · 28→03 · 29→04 · 30→50 · 31→18 · 32→06 ·
+  33→25 · 34→42 · 35→46 · 36→05 · 37→51.
+- **New devices:** through one lobe (the mark bigger than the tile), three
+  nights stacked, the diptych, the quiet tile, the greyscale archive series,
+  the portrait series, the loud-figure series (274 · 150+ · 1,000+), the
+  highlights series (eight events, one layout), the rooms series on Paper, the
+  weekly as four cells, the credits carousel (every name, three frames).
+- **Every post has alt text**, and the build warns when a caption's first
+  sentence would be truncated by Instagram (125 characters).
+- **Three editions** in `src/grid.mjs`, rendered as `grid-1..3.jpg`; `thumbs.jpg`
+  shows every post at 120px — the legibility check: one thing per tile must
+  read at that size.
+- Renderer simplified: `posts.mjs` (posts, layout, helpers) + `extras.mjs`
+  (stories, carousels, reels, covers); the `formats/` modules are gone. JPEG
+  quality 90.
+- The name wall reads the credits from `oddfest-2026.json` (lists and
+  subgroups); a hand-typed slice is gone.
+
+Still placeholders: photo credits read "Photo: ODDfest" until the
+photographer's name is added; "Doors at 19." and "@handle" are template text.
+
 ## 1.1 — 2026-09-20 · ODD on Instagram
 
 `brand/social/` grew from twenty formats to a signature. What changed and why:
