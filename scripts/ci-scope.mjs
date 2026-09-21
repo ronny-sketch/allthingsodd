@@ -48,9 +48,13 @@ const SITE_WIDE = [
 // `brand/` is NOT here: it feeds /brand-book/ and the token drift check.
 const DOCS_ONLY = [/^docs\//, /^\.claude\//, /^[^/]+\.md$/];
 
+// `mobile` is NOT in this list although it is a visual project: it is
+// `devices['iPhone 13']`, which is WebKit. With only Chromium's OS packages
+// installed it fails at browser start (libevent missing — PR #78, 2026-09-21).
+// The nightly full run still covers it.
 const CHROMIUM_ONLY =
   '--project=functional-chromium --project=mobile-motion-chromium ' +
-  '--project=mobile-reduced-chromium --project=mobile --project=tablet ' +
+  '--project=mobile-reduced-chromium --project=tablet ' +
   '--project=laptop --project=desktop --project=wide';
 
 // Installing an engine this run will never launch costs ~30s on every shard.
@@ -100,6 +104,8 @@ function selfTest() {
     throw new Error('full tier must install all engines');
   if (engines(['src/pages/index.astro']) !== 'chromium')
     throw new Error('fast tier should install chromium only');
+  if (/--project=mobile(\s|$)/.test(scope(['src/pages/index.astro']).projects))
+    throw new Error('fast tier must not run the WebKit `mobile` project');
   if (engines([]) !== ALL_ENGINES) throw new Error('unknown diff must install all engines');
   console.log('ci-scope self-test: all cases pass');
 }
