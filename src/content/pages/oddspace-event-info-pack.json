@@ -7,7 +7,7 @@
   },
   "eyebrow": "ODDspace · For organisers",
   "title": "Everything you need to run your event here.",
-  "lastUpdated": "18 September 2026",
+  "lastUpdated": "21 September 2026",
   "intro": "This is the pack we send once your booking is agreed. It covers the Gallery, the Aula, the Auditorium and the 2nd-floor co-creation space — the same rules apply in all of them. ODDspace sits inside a shared office building with other tenants, a parking hall and a round-the-clock alarm system, and most of what follows exists to keep those alarms quiet and our neighbours undisturbed. Read it once, send it to your crew, and ask us about anything it doesn't answer.",
   "contents": "What's in here",
   "sections": [
@@ -90,7 +90,7 @@
       "body": ["The room, the basics that live in it, and a walkthrough before the day."],
       "items": [
         "The space during your booked hours, setup and clean-up included.",
-        "Tables and chairs — ours to borrow, yours to set up and put back.",
+        "Tables and chairs, set out in the layout you ask for when you confirm your details.",
         "House lighting and heating.",
         "Toilets and the coffee point.",
         "PA sound system and one microphone.",
@@ -105,7 +105,7 @@
       ],
       "items": [
         "Cleaning: you clean, or you book a cleaner through us.",
-        "Setting up and packing down the room.",
+        "Your own get-in and get-out, and putting the room back as you found it.",
         "Camera or livestream gear, and extra microphones.",
         "Catering, drinks and a bar licence.",
         "Event staff, a technician or a host, unless booked as an add-on.",
@@ -238,6 +238,80 @@
         "Power cut: emergency lighting stays on and elevators stop. Stuck in an elevator, press its alarm button or call Onelift on 020 766 9766.",
         "Threatening behaviour: stay calm, don't turn your back, keep a way out, move others away and call 112. If the person is armed, don't resist — call once you're safe.",
         "General warning siren, a one-minute rising and falling tone: go inside, close doors and windows, and follow the news."
+      ]
+    },
+    {
+      "title": "Questions organisers actually ask",
+      "body": [
+        "Every one of these has been sent to us by someone running an event here. If yours isn't answered, ask — and it will end up on this page."
+      ],
+      "faq": [
+        {
+          "q": "Who lets us in, and when do we get the key?",
+          "a": [
+            "We agree it with you when you confirm the details a week before: either you collect the key from the lobby at the start of your window, or someone from ODD hands it to you. If you'd rather have it before the day, say so and we'll arrange that."
+          ]
+        },
+        {
+          "q": "Can we get in earlier than the time we agreed?",
+          "a": [
+            "Usually yes, but not on the morning. The hours you give us are the hours the building's alarms are switched off, and moving them means telling the security company, maintenance and the property owner again. Ask a few days ahead and it's straightforward."
+          ]
+        },
+        {
+          "q": "Who do we call during the event if something needs someone from ODDspace?",
+          "a": [
+            "The person who took your booking. Their direct number comes with your confirmation, and someone from ODDspace is reachable by phone for the whole of your window.",
+            "Anything urgent — fire, injury, a threat — is 112 first, then us."
+          ]
+        },
+        {
+          "q": "Can we come and see the space before the event?",
+          "a": [
+            "Yes, and we'd rather you did. Walk it with us, see where the exits, the chairs and the light switches are, and brief your volunteers from that rather than from this page."
+          ]
+        },
+        {
+          "q": "Who is responsible if a guest is injured?",
+          "a": [
+            "Responsibility in Finland generally follows negligence: someone failed a duty of care. An accident happening doesn't by itself make anyone liable.",
+            "Roughly how it divides: a guest tripping on sound stairs with nothing wrong with them, quite possibly nobody. Stairs that are slippery, badly lit, missing a railing or unmarked, ODDspace and possibly the building owner. A light, decoration or speaker your crew rigged, the organiser. A permanent fixture of ours coming down, ODDspace and possibly the building owner. Your cables across a walkway, the organiser. Something involving our staff, our tech or our service, ODDspace.",
+            "That's the principle, not legal advice, and it's why a public event needs the organiser's own liability insurance."
+          ]
+        },
+        {
+          "q": "Where do we gather if the building has to be evacuated?",
+          "a": [
+            "The pavements outside the building's doors, on Elimäenkatu, Sturenkatu and Teollisuuskatu. Don't hold people in the doorways, and nobody goes back in until the fire brigade says so.",
+            "You evacuate your own event, so walk the exits with your crew before doors open and know who is checking the toilets."
+          ]
+        },
+        {
+          "q": "Can a guest wander into the rest of the building?",
+          "a": [
+            "The doors into the rest of the building are access-controlled and your guests can't open them. What they can do is follow someone through one, which is why the door to your event is never left unattended and why elevators, elevator lobbies, upper floors and the parking hall are out of bounds.",
+            "If someone does end up somewhere they shouldn't, walk them back rather than leaving it — the alarms are the building's, not ours."
+          ]
+        },
+        {
+          "q": "Can we close the door once the event has started?",
+          "a": [
+            "Yes, and it's usually the calmest way to run a door: staff it for the arrival window, tell your guests the cut-off in advance, then close it. Don't prop it open while you wait, and don't hold it open longer than 30 seconds."
+          ]
+        },
+        {
+          "q": "Is there a table for registration, and are there chairs?",
+          "a": [
+            "Yes to both. Tell us the layout you want when you confirm your details and we'll set it out before you arrive — a registration table by the door, chairs in rows or clusters, whatever the event needs.",
+            "Put it back the way you found it at the end."
+          ]
+        },
+        {
+          "q": "Will the toilets be stocked?",
+          "a": [
+            "We keep them stocked. For a big event tell us the headcount a week ahead and we'll check them before you arrive; for anything over a hundred people it's worth bringing a spare pack yourself, and taking your rubbish out with the rest."
+          ]
+        }
       ]
     },
     {

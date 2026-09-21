@@ -799,7 +799,7 @@ collections_config:
           photograph with its own alt text and caption — the ODDspace event
           info pack uses that to show each room — and an optional list of
           document links, which is how that pack hands over the building's
-          safety PDFs. The cookie table is NOT
+          safety PDFs, and an optional question-and-answer list for a FAQ. The cookie table is NOT
           edited here — it is generated from the site's own consent
           configuration so it cannot disagree with what the site actually
           sets.

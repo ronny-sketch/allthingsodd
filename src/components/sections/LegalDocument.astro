@@ -22,6 +22,7 @@ interface Section {
    *  info pack to show each room. Privacy has nothing to photograph. */
   image?: { src: ImageMetadata; alt: string; caption?: string };
   links?: { label: string; href: string; note?: string }[];
+  faq?: { q: string; a: string[] }[];
 }
 interface Props {
   lastUpdated: string;
@@ -99,6 +100,18 @@ const KIND_LABEL: Record<string, string> = {
                 <li>{item}</li>
               ))}
             </ul>
+          )}
+          {section.faq && (
+            <dl class="legal-faq">
+              {section.faq.map((entry) => (
+                <div>
+                  <dt>{entry.q}</dt>
+                  {entry.a.map((paragraph) => (
+                    <dd>{paragraph}</dd>
+                  ))}
+                </div>
+              ))}
+            </dl>
           )}
           {section.links && (
             <ul class="legal-links">
@@ -263,6 +276,29 @@ const KIND_LABEL: Record<string, string> = {
     .legal-contents ol {
       columns: 1;
     }
+  }
+
+  /* Questions organisers have actually asked, and the answers. */
+  .legal-faq {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+  }
+  .legal-faq > div {
+    display: grid;
+    gap: var(--space-2);
+    padding-block-start: var(--space-4);
+    border-block-start: 1px solid var(--color-paper-12);
+  }
+  .legal-faq dt {
+    font: var(--text-body);
+    color: var(--color-paper);
+  }
+  .legal-faq dd {
+    margin: 0;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+    max-width: var(--measure-prose);
   }
 
   /* Documents the reader can open or download. */

@@ -1686,6 +1686,11 @@ const pages = defineCollection({
             links: z
               .array(z.object({ label: z.string(), href: z.string(), note: z.string().optional() }))
               .optional(),
+            /** Question-and-answer pairs, rendered as a definition list.
+             *  The ODDspace event info pack's FAQ is built from questions
+             *  organisers have actually sent us, which is the only kind
+             *  worth answering in advance. */
+            faq: z.array(z.object({ q: z.string(), a: z.array(z.string()) })).optional(),
           }),
         ),
         /** Only the privacy policy declares cookies. The other documents on
