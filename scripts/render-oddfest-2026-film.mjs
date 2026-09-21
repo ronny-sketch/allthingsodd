@@ -3,12 +3,11 @@
   Renders /oddfest-2026/ as a phone-sized video for social media.
 
     npm run build && npx astro preview --port 4331     # a preview of THIS build
-    node scripts/render-oddfest-2026-film.mjs --cut short --url http://127.0.0.1:4331/oddfest-2026/
-    node scripts/render-oddfest-2026-film.mjs --cut full  --url http://127.0.0.1:4331/oddfest-2026/
+    node scripts/render-oddfest-2026-film.mjs --url http://127.0.0.1:4331/oddfest-2026/
 
-  Options: --cut short|full (40 s social cut / the whole 84.67 s credits roll)
+  Options: --cut full (the only cut: the length of the soundtrack)
            --url  the page (default http://localhost:4321/oddfest-2026/)
-           --size 360x640 (CSS px; 360x450 for a 4:5 feed post)  --scale 3
+           --size 360x640 (CSS px; 480x600 for 4:5, 1280x720 for 16:9)  --scale 3
            --fps 30  --out dist-film  --audio-offset 0 (seconds, may be negative)
            --seconds N  render only the first N seconds (a smoke test)
 
@@ -24,8 +23,8 @@
   exactly 1080x1920. ffmpeg then lays the soundtrack under the frames from
   frame 0, so the roll and the music line up by construction. The page never
   creates its Audio element (the "Play the credits" link is not pressed) and
-  never scrolls itself; the full cut simply reproduces the page's own linear
-  roll from src/scripts/oddfest-2026-credits.ts after a 6 s hero hold.
+  never scrolls itself; the roll is the page's own, from
+  src/scripts/oddfest-2026-credits.ts, after a 6 s hero hold.
 
   The site chrome (nav, footer, cursor, popups, consent, the roll's control,
   the hero's buttons) is hidden by a stylesheet this script injects, and the
@@ -43,7 +42,7 @@ const arg = (name, fallback) => {
   const i = process.argv.indexOf(`--${name}`);
   return i === -1 ? fallback : process.argv[i + 1];
 };
-const CUT = arg('cut', 'short');
+const CUT = arg('cut', 'full');
 const URL = arg('url', 'http://localhost:4321/oddfest-2026/');
 const FPS = Number(arg('fps', 30));
 const [W, H] = arg('size', '360x640').split('x').map(Number);
@@ -55,60 +54,85 @@ const SECONDS_CAP = arg('seconds') ? Number(arg('seconds')) : null;
 const TRACK = path.resolve('public/audio/oddfest-2026-aftermovie.mp3');
 const TRACK_SECONDS = 84.67;
 const END_HOLD = 2;
-const FADE = 3;
+
+/*
+  THE SOUNDTRACK WRITES THE EDIT. Measured off the track itself, at 0.125 s
+  resolution (ffmpeg astats RMS), not chosen by ear:
+
+      0–15 s   intro, steady
+     16–26 s   first lift
+     28–38 s   breakdown
+     40–51 s   the big sustained section
+     52–57 s   falls away
+     58–72 s   a long quiet drift
+     73.0–76.6 s   QUIET. -25 to -32 dB. The track stops for a moment.
+     76.73 s   +10.8 dB. The hit.
+     77–83 s   the last full section
+     83.3–84.65 s  decay to silence
+
+  So the end of this film is scored rather than invented. The picture fades
+  out into the quiet passage while the credits are still rolling, sits in Ink
+  through it, and the invitation lands on the 76.73 s hit — the loudest single
+  onset in the back half of the song. Then it holds for the last six seconds
+  while the track plays itself out.
+*/
+const HIT = 76.73;
 
 // [seconds, target]: a scrollY in px, 'max', or 'selector@top|centre|bottom'.
+// A third element names the segment's easing; 'linear' is a credits roll and
+// the default ease-in-out is a move between two places.
 //
-// Each film is a film, not a tour of a web page (2026-09-21, Ronny: "the
-// whole video should be a smooth continuous roll that ends in the credits.
-// Think of a movie -> opening screen, and then credits roll ... and then it
-// ends in the afterparty window").
+// The film is one take (2026-09-21, Ronny: "the whole video should be a smooth
+// continuous roll ... think of a movie -> opening screen, and then credits
+// roll"). The hero holds as the opening title card — it is one full screen
+// tall by construction, so it fills the frame — and then a single unbroken
+// roll carries the whole page past the camera. The page's own order does the
+// dramaturgy: the letter, the quote, the 274, the story, the photograph,
+// every credited name, the photo wall, and last the invitation.
 //
-// So there are exactly two moves. The hero holds as the opening title card —
-// it is one full screen tall by construction, so it fills the frame — and
-// then ONE unbroken roll carries the whole page past the camera and comes to
-// rest on the invitation. Nothing stops in between, nothing is skipped and
-// nothing cuts. The page's own order does the dramaturgy: the letter, the
-// quote, the 274, the story, the photograph, every credited name, the photo
-// wall, and last the invitation.
-//
-// The third element on a keyframe names the easing of the segment ending on
-// it. 'roll' is the one that matters: constant speed for the length of the
-// roll, then a deceleration into rest over the last stretch, the way credits
-// settle onto a final card. Plain 'linear' would stop dead; the default
-// ease-in-out would creep, accelerate and slow again, which is the motion of
-// a page being scrolled rather than of credits rolling.
-//
-// The roll ends on '#invite-card', not on the whole afterparty section: the
-// card is the block built to hold the eyebrow, the ask, the facts and "Stay
-// ODD." inside one frame, and the letter above it is meant to roll past.
-// Centring rather than topping is what keeps this one forward move at every
-// aspect ratio — on 9:16 the card is near the frame's height, on 16:9 it is
-// shorter — either way it is one move ending in one resting place.
+// The roll ends on '#invite-card' rather than the whole afterparty section:
+// the card is the block built to hold the eyebrow, the ask, the facts and
+// "Stay ODD." inside one frame, and the letter above it is meant to roll past.
+// Centring rather than topping keeps it one forward move at every aspect
+// ratio — on 9:16 the card is near the frame's height, on 16:9 it is shorter.
 const TIMELINES = {
   full: [
     [0, 0],
     [6, 0],
-    [TRACK_SECONDS, '#invite-card@centre', 'roll'],
-  ],
-  short: [
-    [0, 0],
-    [4, 0],
-    [40, '#invite-card@centre', 'roll'],
+    // One roll, the length of the song, at one speed. It finishes underneath
+    // the wash, so there is no deceleration to see and none is needed: about
+    // 168 px a second, a screen of names every four seconds.
+    [75.5, '#invite-card@centre', 'linear'],
+    [TRACK_SECONDS, '#invite-card@centre'],
   ],
 };
 
-// The only wash left: a film opens out of black. Nothing else in these cuts
-// fades, because nothing else in them is an edit.
+// The picture fades out while the credits are still rolling, the way a film's
+// does, and it goes into Ink exactly where the track goes quiet. Then nothing
+// for nearly two seconds — and the invitation arrives on the hit, with the
+// wash cut off inside a single frame rather than faded.
 const BLACKOUTS = {
   full: [
     [0, 1],
     [1.2, 0],
+    [73.2, 0],
+    [74.9, 1],
+    [HIT - 0.03, 1],
+    [HIT, 0],
   ],
-  short: [
-    [0, 1],
-    [1, 0],
-  ],
+};
+
+/*
+  The punch. On the hit the card does not fade in — it lands. Scale runs from
+  1.16 down to 1 as a damped spring, e^(-6u)·cos(7u), so it overshoots
+  slightly under 1 at about a third of a second and settles: a thud, not a
+  transition. u is seconds since the hit over PUNCH seconds.
+*/
+const PUNCH = 0.9;
+const punchScale = (t) => {
+  if (t < HIT) return 1;
+  const u = Math.min(1, (t - HIT) / PUNCH);
+  return 1 + 0.16 * Math.exp(-6 * u) * Math.cos(7 * u);
 };
 
 const timeline = TIMELINES[CUT];
@@ -192,8 +216,15 @@ await page.evaluate(async () => {
   wash.style.cssText =
     'position:fixed;inset:0;z-index:2147483647;pointer-events:none;background:#0E090B;opacity:0';
   document.body.appendChild(wash);
-  window.__step = (t, washOpacity) => {
+  const card = document.querySelector('#invite-card');
+  window.__step = (t, washOpacity, cardScale) => {
     wash.style.opacity = String(washOpacity);
+    // The landing. transform only — it composites, and it never reflows the
+    // card's own text, so the type stays pin-sharp through the punch.
+    if (card) {
+      card.style.transform = cardScale === 1 ? '' : `scale(${cardScale})`;
+      card.style.willChange = cardScale === 1 ? '' : 'transform';
+    }
     for (const el of document.querySelectorAll('.reveal:not(.in)')) {
       const r = el.getBoundingClientRect();
       if (r.top < innerHeight && r.bottom > 0) el.classList.add('in');
@@ -239,16 +270,6 @@ for (const [t, target, ease] of timeline) {
 const EASES = {
   ease: (x) => x * x * (3 - 2 * x),
   linear: (x) => x,
-  // Credits: one speed for the first 88% of the move, then an ease-out into
-  // rest over the last 12%. v = 2/(1+p) is what makes the speed and the
-  // position agree at the hand-over, so there is no kick where the two meet.
-  roll: (x) => {
-    const p = 0.88;
-    const v = 2 / (1 + p);
-    if (x <= p) return v * x;
-    const u = (x - p) / (1 - p);
-    return v * p + (1 - v * p) * (1 - (1 - u) * (1 - u));
-  },
 };
 const yAt = (t) => {
   if (t <= keys[0][0]) return keys[0][1];
@@ -268,13 +289,15 @@ const started = Date.now();
 for (let k = 0; k < frames; k++) {
   const t = k / FPS;
   await page.evaluate(
-    ([y, tt, wash]) => {
+    ([y, tt, wash, scale]) => {
       window.scrollTo({ top: y, behavior: 'instant' });
       return new Promise((r) =>
-        requestAnimationFrame(() => requestAnimationFrame(() => (window.__step(tt, wash), r()))),
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => (window.__step(tt, wash, scale), r())),
+        ),
       );
     },
-    [yAt(t), t, track(blackout, t)],
+    [yAt(t), t, track(blackout, t), punchScale(t)],
   );
   await page.screenshot({
     path: path.join(frameDir, `f${String(k).padStart(5, '0')}.jpg`),
@@ -301,7 +324,9 @@ if (first !== `${W * SCALE},${H * SCALE}`)
   throw new Error(`frame size ${first}, expected ${W * SCALE}x${H * SCALE}`);
 
 const mp4 = path.join(OUT, `oddfest-2026-${CUT}-${W * SCALE}x${H * SCALE}.mp4`);
-const audioFilter = CUT === 'full' ? 'apad' : `afade=t=out:st=${cutSeconds - FADE}:d=${FADE},apad`;
+// No fade: the song ends the film, and the two seconds of end hold are padded
+// with silence so the card is still on screen when the last note has gone.
+const audioFilter = 'apad';
 execFileSync('ffmpeg', [
   '-y',
   '-v',
