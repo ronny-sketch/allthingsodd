@@ -6,15 +6,30 @@ setup collecting steadily and reporting almost nothing usable.
 
 ## The property
 
-| | |
-| --- | --- |
-| Measurement ID | `G-9Q90CQMBK8` |
-| Property | `551982005` |
-| Stream | "ODDpage" (`15519249031`) |
+|                |                                                                 |
+| -------------- | --------------------------------------------------------------- |
+| Measurement ID | `G-FCGTBXT9KS`                                                  |
+| Property       | `555204778` ("All things ODD")                                  |
+| Stream         | "All things ODD" (`15816308905`), URL `https://allthingsodd.co` |
 
 The ID lives in exactly one place, `src/scripts/analytics-config.ts`. It is
 host-independent, which is why the 2026-09-03 move from
 `odd-field-guide.surge.sh` to `allthingsodd.co` needed no code change.
+
+### The other two properties, and why
+
+This site reported to the pre-launch property `551982005` (stream
+`G-9Q90CQMBK8`) from 2026-08-28 until the 2026-09-21 launch. That property
+is **not deleted**. GA4 properties cannot be merged and a measurement-ID
+change starts history at zero, so it is the only place those ~2,000
+sessions exist. Growth OS reads both property IDs, so allthingsodd.co's
+numbers stay continuous across the cutover instead of dropping to zero on
+launch day. `GA4_PROPERTY_ID` in that repo is a comma-separated list.
+
+Property `527983299` (`G-40BNRGTY1T`) is **oddfest.co**, a genuinely
+separate live site with its own Google Tag Manager container and Cookiebot.
+It is out of scope here and deliberately out of Growth OS: folding it in
+would merge two different sites into one session count.
 
 **Nothing loads before consent.** `gtag.js` is not requested at all until a
 visitor accepts the `statistics` category. This is stricter than Consent
@@ -39,23 +54,23 @@ purchase journey, monetisation — key off these exact names and off the
 sent `ticket_page_viewed`, `checkout_started`, `payment_succeeded` and
 similar. GA4 accepted all of them and built nothing from any of them.
 
-| Event | Fired when | Carries |
-| --- | --- | --- |
-| `view_item_list` | The catalog resolves on `/tickets` | Active ticket types |
-| `add_to_cart` | A stepper goes up | The change, `value`, `items` |
-| `remove_from_cart` | A stepper goes down | The change, `value`, `items` |
-| `begin_checkout` | Leaving for `/tickets/checkout` | Cart total, `items` |
-| `add_payment_info` | Stripe's form mounts | Order total, `items` |
-| `purchase` | The webhook confirms payment | `transaction_id`, `value`, `items` |
-| `ticket_assigned` | An attendee name is saved | Custom, no GA4 equivalent |
+| Event              | Fired when                         | Carries                            |
+| ------------------ | ---------------------------------- | ---------------------------------- |
+| `view_item_list`   | The catalog resolves on `/tickets` | Active ticket types                |
+| `add_to_cart`      | A stepper goes up                  | The change, `value`, `items`       |
+| `remove_from_cart` | A stepper goes down                | The change, `value`, `items`       |
+| `begin_checkout`   | Leaving for `/tickets/checkout`    | Cart total, `items`                |
+| `add_payment_info` | Stripe's form mounts               | Order total, `items`               |
+| `purchase`         | The webhook confirms payment       | `transaction_id`, `value`, `items` |
+| `ticket_assigned`  | An attendee name is saved          | Custom, no GA4 equivalent          |
 
 The mapping lives in `src/scripts/tickets/ecommerce.ts`.
 
 ### Forms
 
-| Event | Fired when |
-| --- | --- |
-| `newsletter_signup` | beehiiv accepts a signup |
+| Event                     | Fired when                            |
+| ------------------------- | ------------------------------------- |
+| `newsletter_signup`       | beehiiv accepts a signup              |
 | `business_enquiry_submit` | A Work with ODD enquiry reaches Attio |
 
 Both are custom names, kept as-is because Growth OS already reads them.
@@ -91,7 +106,7 @@ The cause is untagged links. In-app browsers on Instagram, LinkedIn and
 TikTok strip referrers, so an untagged link from a post is indistinguishable
 from someone typing the URL. No amount of analytics configuration fixes
 this, and connecting a social platform's own API would not either: it would
-report what happened *on* the platform, never which visit or ticket it led
+report what happened _on_ the platform, never which visit or ticket it led
 to.
 
 The fix is a convention, applied by whoever posts the link:
@@ -128,11 +143,22 @@ Realtime shows event names but silently hides malformed `items` arrays.
 ## Outstanding, and not fixable in code
 
 1. **Search Console has no `allthingsodd.co` property.** The only verified
-   one is the retired surge.sh host. Add the property, verify with the
-   `google181860bcd4b9963d.html` file already in `public/`, and submit
+   one is the retired surge.sh host, whose whole 28-day record is 1,308
+   impressions and 0 clicks on the query `site:surge.sh`. Search Console
+   does not backfill, so every day without it is data that cannot be
+   recovered. Add it as a URL-prefix property, verify with the
+   `google181860bcd4b9963d.html` file already in `public/` (confirmed
+   serving 200 on the live domain), and submit
    `https://allthingsodd.co/sitemap-index.xml`.
-2. **The GA4 data stream URL still reads `odd-field-guide.surge.sh`.**
-   Cosmetic for collection, but it is what DebugView and cross-domain
-   settings use.
-3. **Mark `purchase` and `begin_checkout` as key events** in GA4 Admin so
-   they appear as conversions.
+2. **Two key events are missing.** `purchase` is already configured, along
+   with GA4's defaults `close_convert_lead` and `qualify_lead`. Add
+   `business_enquiry_submit` and `newsletter_signup` in Admin, New key
+   event. GA4 accepts an event name it has not seen yet, which matters
+   because `business_enquiry_submit` has never fired. Do not mark
+   `begin_checkout`: it inflates the conversion count without telling you
+   anything the funnel report does not already show.
+
+Both need write access to the Google account.
+`data/fetch/elevate_google_scopes.py` in the Growth OS repo is a one-time
+consent script that grants it without touching the read-only token the
+nightly refresh depends on.

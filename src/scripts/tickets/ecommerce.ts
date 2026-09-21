@@ -38,11 +38,7 @@ export interface GaItem {
   quantity: number;
 }
 
-export function itemFor(
-  tt: CatalogTicketType,
-  quantity: number,
-  eventSlug: string,
-): GaItem {
+export function itemFor(tt: CatalogTicketType, quantity: number, eventSlug: string): GaItem {
   return {
     item_id: tt.slug,
     item_name: tt.name,
@@ -85,10 +81,7 @@ export async function transactionIdFor(
 ): Promise<string> {
   if (orderId) return orderId;
   try {
-    const digest = await crypto.subtle.digest(
-      'SHA-256',
-      new TextEncoder().encode(orderToken),
-    );
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(orderToken));
     return Array.from(new Uint8Array(digest).slice(0, 16))
       .map((b) => b.toString(16).padStart(2, '0'))
       .join('');

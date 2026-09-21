@@ -132,10 +132,7 @@ async function renderTickets(orderToken: string, order: OrderStatusResponse): Pr
  *  closes the tab before it resolves is a purchase GA4 never hears about,
  *  and that is the correct trade: under-reporting beats reporting revenue
  *  that was never captured. */
-async function reportPurchase(
-  order: OrderStatusResponse,
-  orderToken: string,
-): Promise<void> {
+async function reportPurchase(order: OrderStatusResponse, orderToken: string): Promise<void> {
   const transactionId = await transactionIdFor(order.orderId, orderToken);
   if (!firstReportOf(transactionId)) return;
 
