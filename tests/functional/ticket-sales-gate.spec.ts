@@ -148,6 +148,22 @@ test.describe('/tickets with the sale closed', () => {
   });
 });
 
+test.describe('/tickets with the sale open', () => {
+  // The notice is in the served HTML now, so the case that can break is the
+  // one where it must go away. If storefront.ts ever stops hiding it, an open
+  // sale tells every visitor it is not open — the failure the inversion
+  // trades for, and the reason it is asserted rather than assumed.
+  test('hides the not-yet-on-sale notice', async ({ page }) => {
+    await mockCatalog(page);
+    await page.goto('/tickets/');
+    await page.waitForLoadState('load');
+
+    // Localhost with a pk_test_ key is an open sale — see 'the rule' above.
+    await expect(page.locator('#tixClosed')).toBeHidden();
+    await expect(page.locator('.tix-stepper').first()).toBeVisible();
+  });
+});
+
 test.describe('/oddference with the sale closed', () => {
   test('never promises a purchase the checkout cannot complete', async ({ page }) => {
     await page.route('**/api/tickets/catalog**', (route) =>

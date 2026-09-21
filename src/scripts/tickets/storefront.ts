@@ -25,6 +25,13 @@ const STATUS_LABEL: Record<CatalogTicketType['status'], string> = {
 // never charge. Read once: it cannot change while the page is open.
 const salesOpen = salesEnabled(window.location);
 
+// Hide the not-yet-on-sale notice immediately where sales are open, rather
+// than revealing it where they are not. `salesOpen` is known synchronously
+// from the hostname, so this costs no round trip; the reveal it replaces
+// waited for the catalogue fetch and shifted the page 350px at 557ms. See
+// the markup comment in ../../pages/tickets/index.astro for the measurement.
+if (salesOpen) document.getElementById('tixClosed')?.setAttribute('hidden', '');
+
 // An `active` tier that cannot be bought because card payment is not open is
 // not sold out and its sale has not ended — it has not started. Every other
 // status still means what it says.
@@ -313,10 +320,6 @@ if (
         .filter((tt) => tt.status === 'active')
         .map((tt) => itemFor(tt, 1, EVENT_SLUG)),
     });
-
-    if (!salesOpen) {
-      document.getElementById('tixClosed')?.removeAttribute('hidden');
-    }
 
     const persisted = salesOpen ? loadCart() : {};
     const { cart: revalidated, changed, messages } = revalidateCart(persisted, ticketTypes);

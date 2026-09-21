@@ -7,6 +7,17 @@
 // display) or extend any existing content schema.
 import Layout from '../../layouts/Layout.astro';
 import Pill from '../../components/primitives/Pill.astro';
+import { STRIPE_PUBLISHABLE_KEY } from '../../scripts/tickets/config';
+
+// Whether this BUILD could ever open a sale. The full rule needs the hostname
+// and so can only run in the browser (salesEnabled(), in config.ts), but its
+// first clause is decidable here: without a live key the sale is closed on
+// every public host, which is the only place a real visitor ever sees.
+//
+// That is what lets the not-yet-on-sale panel below be rendered VISIBLE
+// rather than revealed by script — see its own comment for the 365px layout
+// shift that cost when it was the other way round.
+const saleCouldOpen = STRIPE_PUBLISHABLE_KEY?.startsWith('pk_live_') ?? false;
 ---
 
 <Layout
@@ -26,14 +37,29 @@ import Pill from '../../components/primitives/Pill.astro';
     </div>
 
     {
-      /* Shown when card payment is not open — see salesEnabled(). Hidden in
-         the markup and revealed by storefront.ts rather than the other way
-         round, because the store below it is client-rendered anyway: there
-         is no server-rendered purchase UI for this to race against, and
-         starting hidden means an open sale never flashes a closed notice.
-         The <noscript> below covers the no-JS reader, who sees neither. */
+      /* Shown when card payment is not open — see salesEnabled(). Rendered
+         VISIBLE and hidden by storefront.ts where sales are open, which is
+         the opposite of how this started (2026-09-21) and the opposite of
+         what it looks like it should be.
+
+         It started hidden and was revealed, so that an open sale would never
+         flash a closed notice. But `salesEnabled()` reads the hostname, so
+         the closed state is the only state a public host ever has: on
+         allthingsodd.co the notice was revealed every single time, ~350px
+         tall, and only once the catalogue fetch had resolved. Measured on
+         production 2026-09-22: one shift of 0.153 at 557ms, CLS over the
+         0.1 budget on the one route that takes money — while the same page
+         measured 0.000 locally, because localhost is where sales are open
+         and the notice never appears at all.
+
+         Inverted, the flash lands where it is harmless. A public host paints
+         the honest state and never moves. A dev host may show the notice for
+         one frame before storefront.ts hides it, which no visitor sees and
+         no budget measures. The no-JS reader now gets the closed notice too
+         — true on production, and better than the nothing they saw before;
+         the <noscript> below still explains the missing store. */
     }
-    <div class="wrap tix-closed" id="tixClosed" hidden>
+    <div class="wrap tix-closed" id="tixClosed">
       <span class="eyebrow">Not yet on sale</span>
       <h2>Card payment isn't open yet.</h2>
       <p>
