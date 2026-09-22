@@ -70,11 +70,11 @@ const END_HOLD = 2;
      77–83 s   the last full section
      83.3–84.65 s  decay to silence
 
-  So the end of this film is scored rather than invented. The picture fades
-  out into the quiet passage while the credits are still rolling, sits in Ink
-  through it, and the invitation lands on the 76.73 s hit — the loudest single
-  onset in the back half of the song. Then it holds for the last six seconds
-  while the track plays itself out.
+  So the end of this film is scored rather than invented. The credits slow
+  through the quiet passage and the roll comes to rest on the invitation
+  exactly on the 76.73 s hit — the loudest single onset in the back half of the
+  song. Then it holds for the last eight seconds while the track plays itself
+  out. Nothing fades and nothing cuts: the stop is the ending.
 */
 const HIT = 76.73;
 
@@ -91,48 +91,31 @@ const HIT = 76.73;
 // every credited name, the photo wall, and last the invitation.
 //
 // The roll ends on '#invite-card' rather than the whole afterparty section:
-// the card is the block built to hold the eyebrow, the ask, the facts and
-// "Stay ODD." inside one frame, and the letter above it is meant to roll past.
+// the card is the block built to hold the eyebrow, the ask, the date, the way
+// in and "Stay ODD." inside one frame, and the letter above it rolls past.
 // Centring rather than topping keeps it one forward move at every aspect
 // ratio — on 9:16 the card is near the frame's height, on 16:9 it is shorter.
 const TIMELINES = {
   full: [
     [0, 0],
     [6, 0],
-    // One roll, the length of the song, at one speed. It finishes underneath
-    // the wash, so there is no deceleration to see and none is needed: about
-    // 168 px a second, a screen of names every four seconds.
-    [75.5, '#invite-card@centre', 'linear'],
+    // The whole film is this one move: constant speed for the length of the
+    // roll, then a deceleration that brings the page to rest on the invitation
+    // exactly on the 76.73 s hit. Nothing fades and nothing cuts — the roll
+    // arriving and stopping IS the ending (2026-09-22, Ronny: "instead of the
+    // odd fadeout just make it stop the roll on the invite"). The track's
+    // quiet passage at 73-76.6 s is the deceleration, and the hit is the stop.
+    [HIT, '#invite-card@centre', 'roll'],
     [TRACK_SECONDS, '#invite-card@centre'],
   ],
 };
 
-// The picture fades out while the credits are still rolling, the way a film's
-// does, and it goes into Ink exactly where the track goes quiet. Then nothing
-// for nearly two seconds — and the invitation arrives on the hit, with the
-// wash cut off inside a single frame rather than faded.
+// A film opens out of black. That is now the only wash in the cut.
 const BLACKOUTS = {
   full: [
     [0, 1],
     [1.2, 0],
-    [73.2, 0],
-    [74.9, 1],
-    [HIT - 0.03, 1],
-    [HIT, 0],
   ],
-};
-
-/*
-  The punch. On the hit the card does not fade in — it lands. Scale runs from
-  1.16 down to 1 as a damped spring, e^(-6u)·cos(7u), so it overshoots
-  slightly under 1 at about a third of a second and settles: a thud, not a
-  transition. u is seconds since the hit over PUNCH seconds.
-*/
-const PUNCH = 0.9;
-const punchScale = (t) => {
-  if (t < HIT) return 1;
-  const u = Math.min(1, (t - HIT) / PUNCH);
-  return 1 + 0.16 * Math.exp(-6 * u) * Math.cos(7 * u);
 };
 
 const timeline = TIMELINES[CUT];
@@ -216,15 +199,8 @@ await page.evaluate(async () => {
   wash.style.cssText =
     'position:fixed;inset:0;z-index:2147483647;pointer-events:none;background:#0E090B;opacity:0';
   document.body.appendChild(wash);
-  const card = document.querySelector('#invite-card');
-  window.__step = (t, washOpacity, cardScale) => {
+  window.__step = (t, washOpacity) => {
     wash.style.opacity = String(washOpacity);
-    // The landing. transform only — it composites, and it never reflows the
-    // card's own text, so the type stays pin-sharp through the punch.
-    if (card) {
-      card.style.transform = cardScale === 1 ? '' : `scale(${cardScale})`;
-      card.style.willChange = cardScale === 1 ? '' : 'transform';
-    }
     for (const el of document.querySelectorAll('.reveal:not(.in)')) {
       const r = el.getBoundingClientRect();
       if (r.top < innerHeight && r.bottom > 0) el.classList.add('in');
@@ -270,6 +246,17 @@ for (const [t, target, ease] of timeline) {
 const EASES = {
   ease: (x) => x * x * (3 - 2 * x),
   linear: (x) => x,
+  // Credits: one unchanging speed for the first 88% of the move, then an
+  // ease-out into rest over the last 12%. v = 2/(1+p) makes speed and position
+  // agree at the hand-over, so there is no kick where the two meet and no
+  // lurch at the end — the roll runs out of road exactly on the beat.
+  roll: (x) => {
+    const p = 0.88;
+    const v = 2 / (1 + p);
+    if (x <= p) return v * x;
+    const u = (x - p) / (1 - p);
+    return v * p + (1 - v * p) * (1 - (1 - u) * (1 - u));
+  },
 };
 const yAt = (t) => {
   if (t <= keys[0][0]) return keys[0][1];
@@ -289,15 +276,13 @@ const started = Date.now();
 for (let k = 0; k < frames; k++) {
   const t = k / FPS;
   await page.evaluate(
-    ([y, tt, wash, scale]) => {
+    ([y, tt, wash]) => {
       window.scrollTo({ top: y, behavior: 'instant' });
       return new Promise((r) =>
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => (window.__step(tt, wash, scale), r())),
-        ),
+        requestAnimationFrame(() => requestAnimationFrame(() => (window.__step(tt, wash), r()))),
       );
     },
-    [yAt(t), t, track(blackout, t), punchScale(t)],
+    [yAt(t), t, track(blackout, t)],
   );
   await page.screenshot({
     path: path.join(frameDir, `f${String(k).padStart(5, '0')}.jpg`),

@@ -783,9 +783,15 @@ const pages = defineCollection({
           premise: z.string(),
           point: z.string(),
           // `inviteTitle` down to `link` is the card the films end on, and it
-          // has to hold in one 9:16 frame — keep `facts` to three short lines.
+          // has to hold in one 9:16 frame, so every line here stays short.
+          // The three are a hierarchy, not a list: `when` is set loud because
+          // it is what a reader has to catch, `doors` is the practical detail
+          // in the accent, `where` is quiet. Empty `when` to run the
+          // invitation before the date is confirmed.
           inviteTitle: z.string(),
-          facts: z.array(z.string()),
+          when: z.string(),
+          doors: z.string(),
+          where: z.string(),
           body: z.string(),
           link: linkCta,
         }),
