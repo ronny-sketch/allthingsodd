@@ -2,7 +2,7 @@
   "_template": "oddfest2026",
   "seo": {
     "title": "ODDfest 2026 — Thank you",
-    "description": "Thank you to everyone who made ODDfest 2026 — the team, artists, volunteers and partners behind it. The credits, the photographs, and the afterparty we never threw: Saturday 26 September at ODDspace, free.",
+    "description": "Thank you to everyone who made ODDfest 2026 — the team, artists, volunteers and partners behind it. The credits, the photographs, and the afterparty we never threw: Saturday 26 September at ODDspace, from 19:00.",
     "ogImage": "/og/oddfest-2026.jpg"
   },
   "title": "An ODD thousand thank yous.",
@@ -115,7 +115,7 @@
             "name": "Aki Pöntinen"
           },
           {
-            "name": "Alexandra"
+            "name": "Alexandra McCracken"
           },
           {
             "name": "Emma Helminiitty"
@@ -139,7 +139,7 @@
             "name": "Karoliina Pärnänen"
           },
           {
-            "name": "Kevin"
+            "name": "Kevin Laamonen"
           },
           {
             "name": "Kirsi Shemeikka"
@@ -648,9 +648,6 @@
             "name": "Jussi Itkonen"
           },
           {
-            "name": "Jyry"
-          },
-          {
             "name": "Katja Jokisalo"
           },
           {
@@ -1004,6 +1001,9 @@
               {
                 "name": "Winged",
                 "href": "https://www.wingedapp.com/"
+              },
+              {
+                "name": "Jyry"
               }
             ]
           },
@@ -1163,13 +1163,16 @@
   "afterparty": {
     "show": true,
     "eyebrow": "ODD is back",
-    "premise": "We never threw the afterparty. ODDfest ended in June, everyone went home, and that was that.",
-    "point": "So we're throwing it now.",
+    "premise": "We never threw the afterparty. ODDfest ended on 13 June, everyone went home, and then summer came — no last drink, no proper thank you, nothing. It has been bothering us since.",
+    "point": "So we're doing it in September instead.",
+    "body": "Artists, partners, friends, your parents, whoever turns up. Music and open decks, art installations, and a great bunch of odd people. If you were not at ODDfest, come anyway.",
+    "practical": "We are a small non-profit with no budget, but we do have a wine cabinet. Bring your own wine, or beer, or whatever you drink. The non-alcoholic beer is on the house, thanks to Mikkeller.",
+    "contribute": "Got a programme idea? Email upi@oddfest.co by Thursday 24 September.",
+    "access": "Four steps at the entrance, so the space is not wheelchair accessible. Tell us in advance and we will work something out.",
     "inviteTitle": "You're invited.",
     "when": "Saturday 26 September",
-    "doors": "Doors 18:00 · Free",
-    "where": "ODDspace, Teollisuuskatu 9D, Vallila",
-    "body": "Artists playing things they've never played anywhere. Burgers. The drinks we didn't manage to sell in June. Come.",
+    "doors": "19:00–00:00 · Free",
+    "where": "ODDspace, Teollisuuskatu 9D, 00510 Helsinki",
     "link": {
       "label": "Find ODDspace",
       "href": "/oddspace"

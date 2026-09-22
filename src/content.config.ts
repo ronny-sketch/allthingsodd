@@ -788,6 +788,12 @@ const pages = defineCollection({
           // it is what a reader has to catch, `doors` is the practical detail
           // in the accent, `where` is quiet. Empty `when` to run the
           // invitation before the date is confirmed.
+          // `practical` is the bring-your-own line, `contribute` the way to
+          // offer a programme idea, `access` the step at the door — all three
+          // sit above the card so the closing frame stays the invitation.
+          practical: z.string(),
+          contribute: z.string(),
+          access: z.string(),
           inviteTitle: z.string(),
           when: z.string(),
           doors: z.string(),
