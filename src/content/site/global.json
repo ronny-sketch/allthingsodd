@@ -13,13 +13,13 @@
       "href": "/oddspace/"
     },
     {
-      "label": "Work with ODD",
-      "href": "/work-with-odd/"
-    },
-    {
       "label": "Info",
       "href": "/about/",
       "children": [
+        {
+          "label": "Work with ODD",
+          "href": "/work-with-odd/"
+        },
         {
           "label": "Media",
           "href": "/media/"
