@@ -48,7 +48,7 @@ test('every flat internal nav link navigates to a real, matching page', async ({
   }
 });
 
-test('"Info" nav dropdown reveals About/Media/Contact and each navigates correctly', async ({
+test('"Info" nav dropdown reveals Work with ODD/About/Media/Contact and each navigates correctly', async ({
   page,
 }) => {
   await page.goto('/');
@@ -59,6 +59,12 @@ test('"Info" nav dropdown reveals About/Media/Contact and each navigates correct
   // Real DOM text is mixed-case ("About") — it only *renders* uppercase via
   // the Forta display font's glyph design, not CSS text-transform or content.
   const children: [string, string][] = [
+    // Work with ODD lives here, not in the primary nav (2026-09-22). It was
+    // briefly promoted to a top-level item and moved back. It is the
+    // commercial route, so of the four it is the one whose reachability
+    // actually costs money if it breaks — which is why it is asserted here
+    // rather than left to the two in-content CTA tests below.
+    ['Work with ODD', '/work-with-odd'],
     ['About', '/about'],
     ['Media', '/media'],
     ['Contact', '/contact'],
