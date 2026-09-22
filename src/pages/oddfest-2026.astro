@@ -221,6 +221,9 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
               <span class="ty-dim">{page.afterparty.premise}</span> {page.afterparty.point}
             </p>
             <p class="ty-after-body reveal">{page.afterparty.body}</p>
+            <p class="ty-after-body reveal">{page.afterparty.practical}</p>
+            <p class="ty-after-note reveal">{page.afterparty.contribute}</p>
+            <p class="ty-after-note reveal">{page.afterparty.access}</p>
             <div class="ty-invite reveal" id="invite-card">
               <span class="eyebrow ty-after-eyebrow">{page.afterparty.eyebrow}</span>
               <h2 class="ty-invite-title">{page.afterparty.inviteTitle}</h2>
@@ -451,6 +454,16 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
     margin-inline: auto;
     font: var(--text-body);
     color: var(--color-paper-60);
+  }
+  /* The two practical lines — how to offer a programme idea, and the four
+     steps at the door. Quieter than the invitation itself and above the card,
+     so the closing frame stays the invitation; but on the page they sit where
+     someone deciding whether to come will actually read them. */
+  .ty-after-note {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    font: var(--text-small);
+    color: var(--color-paper-40);
   }
 
   /* The invitation card: the page's last block, and the films' last frame.
