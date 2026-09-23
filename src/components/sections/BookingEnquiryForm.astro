@@ -1,0 +1,793 @@
+---
+// The ODDspace booking enquiry form (2026-09-23), on /oddspace/venue. It
+// replaces sending event organisers to the generic Work with ODD form. It
+// asks for what a quote actually depends on (spaces, get-in and get-out,
+// headcount, support level, alcohol, music after 22:00, smoke and flame), so
+// nobody has to write back with twenty questions.
+//
+// It posts JSON to POST /api/booking-enquiry on the Growth OS Worker
+// (../odd-growth-os). The Worker writes the Notion Events Pipeline record and
+// hands the submission to Make. This file holds no keys and imports no
+// Growth OS code (AGENTS.md, "Growth OS integration").
+//
+// Every option list comes from booking-enquiry-schema.ts, the same module
+// the submit script validates against. Labels are UI copy and stay here,
+// following WorkEnquiryForm.astro, and are not exposed in CloudCannon.
+//
+// Conditional fields carry `data-show-when="<name>=<value>[|<value>]"`.
+// booking-enquiry-form.ts hides them until they apply and disables their
+// inputs while hidden, so a hidden field is never sent or validated. Without
+// JavaScript every field shows, and the <noscript> note gives the email
+// route, because the form cannot send without JavaScript.
+import Pill from '../primitives/Pill.astro';
+import {
+  ORG_TYPES,
+  MEMBERSHIP_TIERS,
+  EVENT_TYPES,
+  EVENT_VISIBILITY,
+  EVENT_ACCESS,
+  HEADCOUNT_BANDS,
+  SPACES,
+  LAYOUTS,
+  SUPPORT_LEVELS,
+  TECH,
+  CATERING,
+  ALCOHOL,
+  MUSIC,
+  YES_NO_NOT_SURE,
+  MEDIA,
+  CLEANING,
+  BUDGET_BANDS,
+  LIMITS,
+} from '../../scripts/booking-enquiry-schema';
+---
+
+<div class="booking" id="booking-form">
+  <noscript>
+    <p class="booking-noscript">
+      This form needs JavaScript to send. You can email the same details to
+      <a href="mailto:hello@oddfest.co">hello@oddfest.co</a> instead.
+    </p>
+  </noscript>
+
+  <form class="booking-form" id="bookingEnquiryForm" novalidate>
+    <div class="booking-summary" id="bk-summary" role="alert" tabindex="-1" hidden>
+      <p class="booking-summary-title">A few things need fixing before this can go:</p>
+      <ul></ul>
+    </div>
+
+    <!-- Honeypot. A person never sees it. A non-empty value means a bot. -->
+    <div class="botcheck" aria-hidden="true">
+      <label for="bk-hp">Leave this empty</label>
+      <input id="bk-hp" name="hp_field" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <!-- 1. You -->
+    <fieldset class="booking-group">
+      <legend>About you</legend>
+      <div class="field-row">
+        <div class="field">
+          <label for="bk-first">First name</label>
+          <input
+            id="bk-first"
+            name="contact_first_name"
+            type="text"
+            required
+            maxlength={LIMITS.short}
+            autocomplete="given-name"
+          />
+          <p class="field-error" id="bk-first-err" hidden></p>
+        </div>
+        <div class="field">
+          <label for="bk-last">Last name</label>
+          <input
+            id="bk-last"
+            name="contact_last_name"
+            type="text"
+            required
+            maxlength={LIMITS.short}
+            autocomplete="family-name"
+          />
+          <p class="field-error" id="bk-last-err" hidden></p>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="bk-email">Email</label>
+          <input
+            id="bk-email"
+            name="contact_email"
+            type="email"
+            required
+            maxlength={LIMITS.short}
+            autocomplete="email"
+          />
+          <p class="field-error" id="bk-email-err" hidden></p>
+        </div>
+        <div class="field">
+          <label for="bk-phone">Phone <span class="optional">(optional)</span></label>
+          <input id="bk-phone" name="contact_phone" type="tel" maxlength="30" autocomplete="tel" />
+          <p class="field-error" id="bk-phone-err" hidden></p>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="bk-org">Organisation <span class="optional">(optional)</span></label>
+          <input
+            id="bk-org"
+            name="org_name"
+            type="text"
+            maxlength={LIMITS.short}
+            autocomplete="organization"
+          />
+        </div>
+        <div class="field">
+          <label for="bk-orgtype">You are booking as</label>
+          <select id="bk-orgtype" name="org_type" required>
+            <option value="" disabled selected>Choose one</option>
+            {ORG_TYPES.map((o) => <option value={o.value}>{o.label}</option>)}
+          </select>
+          <p class="field-error" id="bk-orgtype-err" hidden></p>
+        </div>
+      </div>
+      <fieldset class="field choice" id="bk-member">
+        <legend>Are you an ODDspace member?</legend>
+        <div class="choice-list choice-inline">
+          <label><input type="radio" name="is_member" value="true" required /> Yes</label>
+          <label><input type="radio" name="is_member" value="false" /> No</label>
+        </div>
+        <p class="field-error" id="bk-member-err" hidden></p>
+      </fieldset>
+      <div class="field" data-show-when="is_member=true">
+        <label for="bk-tier">Which membership?</label>
+        <select id="bk-tier" name="membership_tier" required>
+          <option value="" disabled selected>Choose one</option>
+          {MEMBERSHIP_TIERS.map((o) => <option value={o.value}>{o.label}</option>)}
+        </select>
+        <p class="field-error" id="bk-tier-err" hidden></p>
+      </div>
+    </fieldset>
+
+    <!-- 2. The event -->
+    <fieldset class="booking-group">
+      <legend>The event</legend>
+      <div class="field">
+        <label for="bk-title">Name of the event</label>
+        <input id="bk-title" name="event_title" type="text" required maxlength={LIMITS.short} />
+        <p class="field-hint">A working title is fine.</p>
+        <p class="field-error" id="bk-title-err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="bk-desc">Tell us about it</label>
+        <textarea id="bk-desc" name="event_description" rows="4" required maxlength={LIMITS.long}
+        ></textarea>
+        <p class="field-hint">What happens, for whom, and what the room needs to do.</p>
+        <p class="field-error" id="bk-desc-err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="bk-type">Type of event</label>
+        <select id="bk-type" name="event_type" required>
+          <option value="" disabled selected>Choose one</option>
+          {EVENT_TYPES.map((o) => <option value={o.value}>{o.label}</option>)}
+        </select>
+        <p class="field-error" id="bk-type-err" hidden></p>
+      </div>
+      <div class="field-row">
+        <fieldset class="field choice" id="bk-visibility">
+          <legend>Public or private?</legend>
+          <div class="choice-list">
+            {
+              EVENT_VISIBILITY.map((o, i) => (
+                <label>
+                  <input type="radio" name="event_visibility" value={o.value} required={i === 0} />{' '}
+                  {o.label}
+                </label>
+              ))
+            }
+          </div>
+          <p class="field-error" id="bk-visibility-err" hidden></p>
+        </fieldset>
+        <fieldset class="field choice" id="bk-access">
+          <legend>How do guests get in?</legend>
+          <div class="choice-list">
+            {
+              EVENT_ACCESS.map((o, i) => (
+                <label>
+                  <input type="radio" name="event_access" value={o.value} required={i === 0} />{' '}
+                  {o.label}
+                </label>
+              ))
+            }
+          </div>
+          <p class="field-error" id="bk-access-err" hidden></p>
+        </fieldset>
+      </div>
+      <p class="field-hint booking-lede" id="bk-times-hint">
+        Times are Helsinki time. Get-in is when your first person arrives to set up, and get-out is
+        when the last person leaves after clearing up. The hire covers everything in between.
+      </p>
+      <div class="field-row">
+        <div class="field">
+          <label for="bk-getin">Get-in</label>
+          <input
+            id="bk-getin"
+            name="get_in"
+            type="datetime-local"
+            required
+            aria-describedby="bk-times-hint"
+          />
+          <p class="field-error" id="bk-getin-err" hidden></p>
+        </div>
+        <div class="field">
+          <label for="bk-getout">Get-out</label>
+          <input
+            id="bk-getout"
+            name="get_out"
+            type="datetime-local"
+            required
+            aria-describedby="bk-times-hint"
+          />
+          <p class="field-error" id="bk-getout-err" hidden></p>
+        </div>
+      </div>
+      <p class="booking-warning" id="bk-notice" role="status" aria-live="polite" hidden></p>
+      <div class="field-row">
+        <div class="field">
+          <label for="bk-alt1">Alternative date <span class="optional">(optional)</span></label>
+          <input id="bk-alt1" name="alt_date_1" type="date" />
+          <p class="field-error" id="bk-alt1-err" hidden></p>
+        </div>
+        <div class="field">
+          <label for="bk-alt2">Another alternative <span class="optional">(optional)</span></label>
+          <input id="bk-alt2" name="alt_date_2" type="date" />
+          <p class="field-error" id="bk-alt2-err" hidden></p>
+        </div>
+      </div>
+      <fieldset class="field choice" id="bk-headcount">
+        <legend>How many people, at the busiest moment?</legend>
+        <div class="choice-list choice-inline">
+          {
+            HEADCOUNT_BANDS.map((o, i) => (
+              <label>
+                <input type="radio" name="headcount_band" value={o.value} required={i === 0} />{' '}
+                {o.label}
+              </label>
+            ))
+          }
+        </div>
+        <p class="field-hint">Everyone counts: guests, crew and performers.</p>
+        <p class="field-error" id="bk-headcount-err" hidden></p>
+      </fieldset>
+      <div class="field-row">
+        <div class="field">
+          <label for="bk-estimate"
+            >Best guess, as a number <span class="optional">(optional)</span></label
+          >
+          <input
+            id="bk-estimate"
+            name="headcount_estimate"
+            type="number"
+            inputmode="numeric"
+            min="1"
+            max={LIMITS.maxHeadcount}
+            step="1"
+          />
+          <p class="field-error" id="bk-estimate-err" hidden></p>
+        </div>
+        <div class="field field-check">
+          <label class="check"
+            ><input type="checkbox" name="is_series" value="true" /> This is one of a series of events</label
+          >
+        </div>
+      </div>
+      <div class="field" data-show-when="is_series=true">
+        <label for="bk-series">How many events in the series?</label>
+        <input
+          id="bk-series"
+          name="series_count"
+          type="number"
+          inputmode="numeric"
+          min="2"
+          max={LIMITS.maxSeries}
+          step="1"
+          required
+        />
+        <p class="field-error" id="bk-series-err" hidden></p>
+      </div>
+    </fieldset>
+
+    <!-- 3. Space and setup -->
+    <fieldset class="booking-group">
+      <legend>Space and setup</legend>
+      <div class="field-row">
+        <div class="field">
+          <label for="bk-space">Which space?</label>
+          <select id="bk-space" name="space" required>
+            <option value="" disabled selected>Choose one</option>
+            {SPACES.map((o) => <option value={o.value}>{o.label}</option>)}
+          </select>
+          <p class="field-hint">
+            See the <a href="/oddspace/event-info-pack/">event info pack</a> for what each room is like.
+          </p>
+          <p class="field-error" id="bk-space-err" hidden></p>
+        </div>
+        <div class="field">
+          <label for="bk-layout">Layout</label>
+          <select id="bk-layout" name="layout" required>
+            <option value="" disabled selected>Choose one</option>
+            {LAYOUTS.map((o) => <option value={o.value}>{o.label}</option>)}
+          </select>
+          <p class="field-error" id="bk-layout-err" hidden></p>
+        </div>
+      </div>
+      <div class="field" data-show-when="layout=custom">
+        <label for="bk-layout-custom">Describe the layout</label>
+        <input
+          id="bk-layout-custom"
+          name="layout_custom"
+          type="text"
+          maxlength={LIMITS.short}
+          required
+        />
+        <p class="field-error" id="bk-layout-custom-err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="bk-support">How much help do you want from us?</label>
+        <select id="bk-support" name="support_level" required>
+          <option value="" disabled selected>Choose one</option>
+          {SUPPORT_LEVELS.map((o) => <option value={o.value}>{o.label}</option>)}
+        </select>
+        <p class="field-hint">Your quote explains what the package you pick includes.</p>
+        <p class="field-error" id="bk-support-err" hidden></p>
+      </div>
+      <fieldset class="field choice" id="bk-tech">
+        <legend>Tech you need <span class="optional">(optional)</span></legend>
+        <div class="choice-list choice-inline">
+          {
+            TECH.map((o) => (
+              <label>
+                <input type="checkbox" name="tech" value={o.value} /> {o.label}
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+      <div class="field" data-show-when="tech=mics">
+        <label for="bk-mics">How many microphones?</label>
+        <input
+          id="bk-mics"
+          name="mic_count"
+          type="number"
+          inputmode="numeric"
+          min="1"
+          max={LIMITS.maxMics}
+          step="1"
+          required
+        />
+        <p class="field-error" id="bk-mics-err" hidden></p>
+      </div>
+      <div class="field field-check">
+        <label class="check">
+          <input type="checkbox" name="own_equipment" value="true" /> We are bringing our own equipment
+        </label>
+        <p class="field-hint">
+          Staging, rigging, lighting, or anything that needs more than a normal socket.
+        </p>
+      </div>
+      <div class="field" data-show-when="own_equipment=true">
+        <label for="bk-equip">What are you bringing?</label>
+        <textarea
+          id="bk-equip"
+          name="own_equipment_detail"
+          rows="3"
+          maxlength={LIMITS.long}
+          required></textarea>
+        <p class="field-error" id="bk-equip-err" hidden></p>
+      </div>
+    </fieldset>
+
+    <!-- 4. Food, drink, sound, safety -->
+    <fieldset class="booking-group">
+      <legend>Food, drink, sound and safety</legend>
+      <div class="field-row">
+        <div class="field">
+          <label for="bk-catering">Food and drink</label>
+          <select id="bk-catering" name="catering" required>
+            <option value="" disabled selected>Choose one</option>
+            {CATERING.map((o) => <option value={o.value}>{o.label}</option>)}
+          </select>
+          <p class="field-error" id="bk-catering-err" hidden></p>
+        </div>
+        <div class="field" data-show-when="catering=own_caterer">
+          <label for="bk-caterer">Who is the caterer?</label>
+          <input
+            id="bk-caterer"
+            name="caterer_name"
+            type="text"
+            maxlength={LIMITS.short}
+            required
+          />
+          <p class="field-error" id="bk-caterer-err" hidden></p>
+        </div>
+      </div>
+      <fieldset class="field choice" id="bk-alcohol">
+        <legend>Alcohol</legend>
+        <div class="choice-list choice-inline">
+          {
+            ALCOHOL.map((o, i) => (
+              <label>
+                <input type="radio" name="alcohol" value={o.value} required={i === 0} /> {o.label}
+              </label>
+            ))
+          }
+        </div>
+        <p class="field-hint" data-show-when="alcohol=sold">
+          Selling alcohol needs a licence from Lupa- ja valvontavirasto, applied for about a month
+          ahead. We will talk you through it.
+        </p>
+        <p class="field-error" id="bk-alcohol-err" hidden></p>
+      </fieldset>
+      <fieldset class="field choice" id="bk-music">
+        <legend>Music</legend>
+        <div class="choice-list choice-inline">
+          {
+            MUSIC.map((o, i) => (
+              <label>
+                <input type="radio" name="music" value={o.value} required={i === 0} /> {o.label}
+              </label>
+            ))
+          }
+        </div>
+        <p class="field-error" id="bk-music-err" hidden></p>
+      </fieldset>
+      <fieldset class="field choice" id="bk-late" data-show-when="music=background|live|dj">
+        <legend>Will the music carry on past 22:00?</legend>
+        <div class="choice-list choice-inline">
+          {
+            YES_NO_NOT_SURE.map((o, i) => (
+              <label>
+                <input type="radio" name="music_past_2200" value={o.value} required={i === 0} />{' '}
+                {o.label}
+              </label>
+            ))
+          }
+        </div>
+        <p class="field-hint">Loud music after 22:00 needs the building owner's approval.</p>
+        <p class="field-error" id="bk-late-err" hidden></p>
+      </fieldset>
+      <fieldset class="field choice" id="bk-pyro">
+        <legend>Smoke, haze, candles or open flame?</legend>
+        <div class="choice-list choice-inline">
+          {
+            YES_NO_NOT_SURE.map((o, i) => (
+              <label>
+                <input type="radio" name="pyro_flame" value={o.value} required={i === 0} />{' '}
+                {o.label}
+              </label>
+            ))
+          }
+        </div>
+        <p class="field-hint" data-show-when="pyro_flame=yes|not_sure">
+          Smoke, haze, steam and candles set off the building's fire alarm, so they are not allowed
+          indoors at the moment. Tell us what you have in mind and we will tell you what can be
+          arranged.
+        </p>
+        <p class="field-error" id="bk-pyro-err" hidden></p>
+      </fieldset>
+      <div class="field" data-show-when="pyro_flame=yes|not_sure">
+        <label for="bk-pyro-detail">What do you have in mind?</label>
+        <textarea
+          id="bk-pyro-detail"
+          name="pyro_flame_detail"
+          rows="2"
+          maxlength={LIMITS.long}
+          data-required-when="pyro_flame=yes"></textarea>
+        <p class="field-error" id="bk-pyro-detail-err" hidden></p>
+      </div>
+      <fieldset class="field choice" id="bk-media">
+        <legend>Photography, filming or streaming <span class="optional">(optional)</span></legend>
+        <div class="choice-list choice-inline">
+          {
+            MEDIA.map((o) => (
+              <label>
+                <input type="checkbox" name="media" value={o.value} /> {o.label}
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+    </fieldset>
+
+    <!-- 5. Practical -->
+    <fieldset class="booking-group">
+      <legend>Practical</legend>
+      <fieldset class="field choice" id="bk-cleaning">
+        <legend>Cleaning afterwards</legend>
+        <div class="choice-list choice-inline">
+          {
+            CLEANING.map((o, i) => (
+              <label>
+                <input type="radio" name="cleaning" value={o.value} required={i === 0} /> {o.label}
+              </label>
+            ))
+          }
+        </div>
+        <p class="field-error" id="bk-cleaning-err" hidden></p>
+      </fieldset>
+      <div class="field">
+        <label for="bk-budget">Budget for the space and our help</label>
+        <select id="bk-budget" name="budget_band" required>
+          <option value="" disabled selected>Choose one</option>
+          {BUDGET_BANDS.map((o) => <option value={o.value}>{o.label}</option>)}
+        </select>
+        <p class="field-error" id="bk-budget-err" hidden></p>
+      </div>
+      <div class="field">
+        <label for="bk-access-notes"
+          >Accessibility needs <span class="optional">(optional)</span></label
+        >
+        <textarea id="bk-access-notes" name="accessibility_notes" rows="2" maxlength={LIMITS.long}
+        ></textarea>
+        <p class="field-error" id="bk-access-notes-err" hidden></p>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="bk-referral"
+            >How did you hear about us? <span class="optional">(optional)</span></label
+          >
+          <input id="bk-referral" name="referral_source" type="text" maxlength={LIMITS.short} />
+        </div>
+      </div>
+      <div class="field">
+        <label for="bk-notes">Anything else? <span class="optional">(optional)</span></label>
+        <textarea id="bk-notes" name="notes" rows="3" maxlength={LIMITS.long}></textarea>
+        <p class="field-error" id="bk-notes-err" hidden></p>
+      </div>
+      <div class="field field-check" id="bk-consent">
+        <label class="check">
+          <input type="checkbox" name="consent_privacy" value="true" required />
+          <span>
+            I agree that ODD stores these details to answer this enquiry, as the{' '}
+            <a href="/privacy/">privacy notice</a> describes.
+          </span>
+        </label>
+        <p class="field-error" id="bk-consent-err" hidden></p>
+      </div>
+    </fieldset>
+
+    <div class="field-submit">
+      <Pill type="submit" variant="solid">Send booking enquiry</Pill>
+      <p class="form-status" role="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <div class="booking-done" id="bk-done" tabindex="-1" hidden>
+    <h3>Got it. Your enquiry is in.</h3>
+    <p>
+      We check the date against the building's schedule and come back to
+      <strong data-done-email></strong> with availability and a quote, normally within one working day.
+    </p>
+    <p class="booking-ref">Reference: <span data-done-ref></span></p>
+  </div>
+</div>
+
+<script src="../../scripts/booking-enquiry-form.ts"></script>
+
+<style>
+  /* Field styling follows WorkEnquiryForm.astro and ContactForm.astro: the
+     same underline inputs, uppercase small labels and paper ramp, so the
+     three forms read as one system. It flips correctly on /oddspace/venue's
+     light theme because it uses role tokens only. */
+  .booking {
+    max-width: 44rem;
+    margin-inline: auto;
+    text-align: left;
+  }
+  .booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+  .booking-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .booking-group > legend {
+    padding: 0 0 var(--space-4);
+    font: var(--text-body);
+    font-weight: 600;
+    color: var(--color-paper);
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1.6rem;
+    row-gap: var(--space-6);
+    align-items: start;
+  }
+  @media (max-width: 640px) {
+    .field-row {
+      grid-template-columns: 1fr;
+    }
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  /* Scoped `display` rules above beat the browser's own [hidden] style, so
+     every element this form hides says so explicitly. */
+  .booking-form[hidden],
+  .booking-summary[hidden],
+  .booking-warning[hidden],
+  .booking-done[hidden],
+  .field[hidden],
+  .field-hint[hidden],
+  .field-error[hidden] {
+    display: none;
+  }
+  .field > label:not(.check),
+  .field > legend {
+    padding: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .optional {
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+  .field input:not([type='radio'], [type='checkbox']),
+  .field select,
+  .field textarea {
+    width: 100%;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-paper-20);
+    border-radius: 0;
+    padding: 0.6rem 0;
+    font: var(--text-body);
+    color: var(--color-paper);
+    outline: none;
+    resize: vertical;
+    transition: border-color var(--duration-fast) ease;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--color-paper);
+  }
+  /* Invalid is shown by the message under the field and a heavier rule, not
+     by colour alone. */
+  .field [aria-invalid='true'] {
+    border-bottom: 2px solid var(--color-paper);
+  }
+  .choice-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-top: var(--space-2);
+  }
+  .choice-inline {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+  }
+  .choice-list label,
+  .check {
+    display: inline-flex;
+    gap: 0.6rem;
+    /* 44px touch target on the whole row, not just the tiny native control. */
+    min-height: 2.75rem;
+    align-items: center;
+    font: var(--text-body);
+    color: var(--color-paper-80);
+    cursor: pointer;
+  }
+  .choice-list input,
+  .check input {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin: 0;
+    accent-color: var(--color-paper);
+  }
+  .field-check {
+    justify-content: end;
+  }
+  .field-hint {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .booking-lede {
+    max-width: none;
+  }
+  .field-hint a,
+  .check a,
+  .booking-noscript a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+  .field-error {
+    margin: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    color: var(--color-paper);
+  }
+  .field-error::before {
+    content: '↳ ';
+  }
+  .booking-warning,
+  .booking-summary {
+    margin: 0;
+    padding: var(--space-4);
+    border: 1px solid var(--color-paper-20);
+    border-radius: var(--radius-panel);
+    font: var(--text-small);
+    color: var(--color-paper);
+  }
+  .booking-summary-title {
+    margin: 0 0 var(--space-2);
+    font-weight: 600;
+  }
+  .booking-summary ul {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+  .booking-summary a {
+    color: inherit;
+  }
+  .botcheck {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .field-submit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  .form-status {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .booking-done {
+    padding: var(--space-6);
+    border: 1px solid var(--color-paper-20);
+    border-radius: var(--radius-panel);
+  }
+  .booking-done h3 {
+    margin: 0 0 var(--space-4);
+  }
+  .booking-done p {
+    margin: 0 0 var(--space-2);
+    font: var(--text-body);
+    color: var(--color-paper-80);
+  }
+  .booking-ref {
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .booking-noscript {
+    font: var(--text-body);
+  }
+</style>
