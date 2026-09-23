@@ -176,6 +176,61 @@ jobs:
           path: playwright-report/
           retention-days: 14
 
+  # Pull-request preview (2026-09-23). Publishes the PR's build to ONE fixed
+  # preview host so a person can click through a change before it is merged.
+  # It never touches production:
+  # - It runs only on pull_request events, never on a push to main.
+  # - It publishes to PREVIEW_DOMAIN only. The step refuses to run if that
+  #   value is ever one of the production hosts.
+  # - The build sets PUBLIC_API_BASE, so every form on the preview talks to
+  #   the Growth OS STAGING Worker (odd-growth-os-staging, TEST Notion
+  #   database), never the production Worker. See src/scripts/api-base.ts.
+  # - Fork PRs get no secrets from GitHub, so they are skipped rather than
+  #   failing. Only branches in this repo publish.
+  # One host shared by all PRs: the most recent push wins. The preview is
+  # served with a noindex robots.txt, and every page still carries its
+  # allthingsodd.co canonical link, so search engines never treat it as a
+  # second site.
+  preview:
+    name: Publish PR preview
+    runs-on: ubuntu-latest
+    needs: [checks]
+    if: >-
+      github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name == github.repository
+    env:
+      PREVIEW_DOMAIN: allthingsodd-preview.surge.sh
+      # Repo variable override, so a renamed staging Worker needs no code change.
+      PUBLIC_API_BASE: ${{ vars.PREVIEW_API_BASE || 'https://odd-growth-os-staging.ronny-507.workers.dev' }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install -g npm@11
+      - run: npm ci
+      - run: npm run build
+      - name: Mark the preview as not for search engines
+        run: |
+          printf 'User-agent: *\nDisallow: /\n' > dist/robots.txt
+      - name: Publish to the preview host
+        env:
+          SURGE_LOGIN: ronny@oddfest.co
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+        run: |
+          case "$PREVIEW_DOMAIN" in
+            allthingsodd.co|www.allthingsodd.co|odd-field-guide.surge.sh)
+              echo "::error::PREVIEW_DOMAIN points at a production host. Refusing." >&2; exit 1 ;;
+          esac
+          if [ -z "$SURGE_TOKEN" ]; then
+            echo "::error::SURGE_TOKEN is not available to this run." >&2; exit 1
+          fi
+          npx surge dist "https://$PREVIEW_DOMAIN" < /dev/null | tee surge-preview.log
+          grep -Eq "Success!.*$PREVIEW_DOMAIN" surge-preview.log || {
+            echo "::error::surge did not report a completed publish to $PREVIEW_DOMAIN." >&2; exit 1; }
+          echo "### Preview: https://$PREVIEW_DOMAIN (forms use the staging Worker: $PUBLIC_API_BASE)" >> "$GITHUB_STEP_SUMMARY"
+
   deploy:
     name: Deploy to production
     runs-on: ubuntu-latest
