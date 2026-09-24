@@ -1210,6 +1210,53 @@ const pages = defineCollection({
           }),
         ),
         pricing: sectionIntro,
+        // The published rate card (2026-09-24, Ronny's own numbers). Until
+        // now this page published the member rates and said everything else
+        // was quoted per event — three internal price lists disagreed, so
+        // there was nothing honest to publish. There is now one list, and a
+        // visitor can price their own event before writing to us.
+        //
+        // Prices are numbers, not strings, because the page adds them up:
+        // a rate plus its add-ons plus VAT. A string would put the arithmetic
+        // and the copy out of step the first time someone edits one of them.
+        // `priceLabel` is for the rate that has no number (the revenue share
+        // is "€0 upfront", and the real money is the note beside it).
+        rateCard: z.object({
+          vatRate: z.number(),
+          lanesLabel: z.string(),
+          estimateLabel: z.string(),
+          lanes: z.array(
+            z.object({
+              id: z.string(),
+              name: z.string(),
+              blurb: z.string(),
+              rates: z.array(
+                z.object({
+                  id: z.string(),
+                  label: z.string(),
+                  price: z.number(),
+                  priceLabel: z.string().optional(),
+                  note: z.string().optional(),
+                }),
+              ),
+              // Priced extras for this lane only — the house technician for
+              // everyone who books a bare room, nothing for the company
+              // packages, which already carry staff and cleaning.
+              addOns: z.array(
+                z.object({
+                  id: z.string(),
+                  label: z.string(),
+                  price: z.number(),
+                  note: z.string().optional(),
+                }),
+              ),
+            }),
+          ),
+          note: z.string(),
+          cta: linkCta,
+        }),
+        // What is NOT in the calculator above: today, the studio's own hourly
+        // rate, which is a different product booked from a different page.
         memberRates: z.array(
           z.object({ name: z.string(), price: z.string(), note: z.string().optional() }),
         ),

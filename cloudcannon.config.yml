@@ -376,6 +376,21 @@ collections_config:
           but do not remove the fact.
         options:
           subtype: object
+      rateCard:
+        type: object
+        label: Event rate card + calculator (ODDspace venue only)
+        comment: >-
+          The published prices for renting the space, and the picker built on
+          them. Four lanes (member, creative organisation, promoter, company),
+          each with its own rates and its own add-ons. Prices are numbers, not
+          text — the page adds them together and applies VAT from vatRate, so
+          write 300, not "EUR300 + VAT". A rate with no number of its own (the
+          revenue share) uses priceLabel for what the row shows and note for
+          the deal itself. Every rate here is a starting point: the note under
+          the card says so, and it must keep saying so, because that is the
+          actual policy. Changing a price here changes what the site quotes.
+        options:
+          subtype: object
       memberRates:
         type: array
         label: Studio rates for ODDspace members (ODDstudio only)

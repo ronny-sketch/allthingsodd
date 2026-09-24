@@ -44,20 +44,100 @@ test('the membership page says what membership does NOT get you', async ({ page 
   expect(text).toMatch(/private office|fixed, reserved desk/i);
 });
 
-test('the venue page publishes member rates and quotes the rest', async ({ page }) => {
+// Rewritten 2026-09-24. This used to assert the opposite — that the page
+// published the member rates and said everything else was "quoted per event"
+// — which was right for as long as three internal price lists disagreed with
+// each other. Ronny set one list on 2026-09-24, so the page now publishes it.
+// What the tests below guard is that publishing it did not cost the page its
+// honesty: the numbers are all there, they are all marked + VAT, and the
+// "every price is negotiable" line is still on the page, because it is the
+// actual policy and not a disclaimer.
+test('the venue page publishes the whole rate card', async ({ page }) => {
   await page.goto(VENUE);
   const body = (await page.locator('body').textContent()) ?? '';
 
-  // The two published member rates, exactly as /oddspace states them.
-  expect(body).toContain('€200');
-  expect(body).toContain('€100');
-  // And no rate card for everyone else — non-member pricing is quoted.
-  expect(body).toMatch(/quoted per event|quote/i);
+  // Member (half/full), creative org, promoter, company (half/full).
+  for (const price of ['€100', '€200', '€300', '€400', '€750', '€1,200']) {
+    expect(body, `the rate card lost ${price}`).toContain(price);
+  }
+  // Both revenue-share thresholds, which are the part a creative org and a
+  // promoter actually decide on.
+  expect(body).toContain('€350');
+  expect(body).toContain('€450');
+  // A published price without its VAT treatment is not a published price.
+  expect(body).toMatch(/\+ VAT 25\.5%/);
   // You do not have to be a member to book, which is the single most common
   // wrong assumption about this space.
   expect(body).toMatch(
     /do not need to be a member|don't need to be a member|No membership needed/i,
   );
+});
+
+test('the rate card prices a selection and carries it into the enquiry', async ({ page }) => {
+  await page.goto(VENUE);
+  const card = page.locator('.vrc');
+  await expect(card).toHaveCount(1);
+
+  // Company, full day: €1,200 + the house technician is not offered on a
+  // package that already includes staff, so the figure is the rate itself.
+  await card.getByRole('radio', { name: 'Company or organisation' }).check();
+  await card.getByRole('radio', { name: /Full day or evening/ }).check();
+  await expect(card.locator('.vrc-estimate-figure')).toHaveText('€1,200');
+  await expect(card.locator('.vrc-estimate-vat')).toContainText('€1,506');
+
+  // Promoter, flat fee, with the technician: €400 + €200.
+  await card.getByRole('radio', { name: 'Promoter', exact: true }).check();
+  await card.getByRole('radio', { name: /Flat fee/ }).check();
+  await card.getByRole('checkbox', { name: /House technician/ }).check();
+  await expect(card.locator('.vrc-estimate-figure')).toHaveText('€600');
+
+  // The revenue share has no price of its own; whatever is added to it is
+  // only what is payable upfront, and the figure has to say so.
+  await card.getByRole('radio', { name: /Revenue share/ }).check();
+  await expect(card.locator('.vrc-estimate-figure')).toHaveText('€200 upfront');
+
+  // And the choice travels to the form, so the first reply is about the date.
+  const href = await card.locator('.vrc-cta a').getAttribute('href');
+  expect(href).toContain('lane=promoter');
+  expect(href).toContain('offer=share');
+  expect(href).toContain('#enquiry-form');
+});
+
+test('the enquiry form opens with the choice already written in', async ({ page }) => {
+  await page.goto('/work-with-odd/?interest=oddspace&intent=event&lane=creative&offer=share');
+  await expect(page.locator('#we-goal')).toHaveValue(
+    /as a creative organisation, the revenue share, nothing upfront/i,
+  );
+});
+
+test('a made-up lane in the link writes nothing into the form', async ({ page }) => {
+  // The message lands in front of a human at ODD as though we had asked for
+  // it, so it is composed from a fixed list here, never echoed from the URL.
+  await page.goto(
+    '/work-with-odd/?interest=oddspace&intent=event&lane=%3Cimg+src%3Dx%3E&offer=free+for+me',
+  );
+  await expect(page.locator('#we-goal')).toHaveValue('');
+});
+
+test.describe('without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('every lane and every price is still on the page', async ({ page }) => {
+    await page.goto(VENUE);
+    const body = (await page.locator('body').textContent()) ?? '';
+    // The script is what turns the card into a picker. If it never runs, the
+    // visitor gets the whole card instead of an empty box — which is the
+    // point of rendering all four lanes server-side.
+    for (const lane of ['ODDspace member', 'Creative organisation', 'Promoter', 'Company']) {
+      expect(body, `${lane} disappeared without JS`).toContain(lane);
+    }
+    for (const price of ['€100', '€200', '€300', '€400', '€750', '€1,200']) {
+      expect(body, `${price} disappeared without JS`).toContain(price);
+    }
+    // The estimate line is the one thing that needs the script, and it stays
+    // hidden rather than showing an empty "Roughly".
+    await expect(page.locator('.vrc-estimate')).toBeHidden();
+  });
 });
 
 test('the venue page does not invent capacities, dimensions or AV specifications', async ({
