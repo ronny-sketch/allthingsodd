@@ -84,6 +84,7 @@ The mapping lives in `src/scripts/tickets/ecommerce.ts`.
 | `contact_error`           | `/api/contact` refuses, or the request throws | `contact_topic`, `error_kind`          |
 | `business_enquiry_submit` | A Work with ODD enquiry reaches Attio         | `product_interest`                     |
 | `business_enquiry_error`  | The enquiry is refused, or the request throws | `product_interest`, `error_kind`       |
+| `booking_enquiry_open`    | The booking form is opened on the venue page  | —                                      |
 | `booking_enquiry_submit`  | `/api/booking-enquiry` accepts an enquiry     | `space`, `event_type`, `queued`        |
 | `booking_enquiry_error`   | The enquiry is refused, or the request throws | `space`, `event_type`, `error_kind`    |
 | `cta_click`               | A `mailto:` or an `?interest=` deep link      | `cta_id`, `cta_intent`, `cta_location` |

@@ -462,11 +462,16 @@ if (form instanceof HTMLFormElement) {
       whenSummary.textContent = '';
       return;
     }
-    const h = Number.isInteger(hours) ? String(hours) : hours.toFixed(2).replace(/0$/, '');
-    const unit = hours === 1 ? 'hour' : 'hours';
+    // Hours and minutes, never a decimal: 12.75 hours reads like 12:75.
+    const totalMin = Math.round(hours * 60);
+    const hh = Math.floor(totalMin / 60);
+    const mm = totalMin % 60;
+    const hPart = hh ? `${hh} ${hh === 1 ? 'hour' : 'hours'}` : '';
+    const mPart = mm ? `${mm} minutes` : '';
+    const length = [hPart, mPart].filter(Boolean).join(' ');
     const until = end.slice(11);
-    let text = `${h} ${unit} in total, until ${until}.`;
-    if (nextDay) text = `${h} ${unit} in total, ending the next day at ${until}.`;
+    let text = `${length} in total, until ${until}.`;
+    if (nextDay) text = `${length} in total, ending the next day at ${until}.`;
     if (valuesOf('multi_day').includes('true')) {
       const fmt = new Intl.DateTimeFormat('en-GB', {
         weekday: 'short',
@@ -675,6 +680,41 @@ if (form instanceof HTMLFormElement) {
       error_kind: res === null ? 'network' : 'rejected',
     });
   });
+
+  // --- Opening the form ---------------------------------------------------
+
+  // The form starts closed behind one button. Opening it is one-way (there
+  // is no close), so a half-filled form can never be folded away by mistake.
+  // The hero's "#booking-form" link and arriving with that hash open it too.
+  const opener = document.getElementById('bk-open');
+  const openerWrap = opener?.closest<HTMLElement>('.bk-opener') ?? null;
+  opener?.setAttribute('aria-expanded', 'false');
+  opener?.setAttribute('aria-controls', form.id);
+  const openForm = ({ focus = true } = {}) => {
+    if (!form.hidden || done?.hidden === false) return;
+    form.hidden = false;
+    opener?.setAttribute('aria-expanded', 'true');
+    if (openerWrap) openerWrap.hidden = true;
+    trackEvent('booking_enquiry_open');
+    if (focus) {
+      const first = form.querySelector<HTMLElement>('#bk-step-1');
+      form.scrollIntoView({ block: 'start', behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+      first?.focus({ preventScroll: true });
+    }
+  };
+  opener?.addEventListener('click', () => openForm());
+  document.querySelectorAll<HTMLAnchorElement>('a[href="#booking-form"]').forEach((a) => {
+    a.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      history.replaceState(null, '', '#booking-form');
+      openForm();
+    });
+  });
+  const openFromHash = () => {
+    if (window.location.hash === '#booking-form') openForm();
+  };
+  window.addEventListener('hashchange', openFromHash);
+  openFromHash();
 
   // Readiness flag so a test can wait for the handler (same convention as
   // contact-form.ts and work-enquiry-form.ts).

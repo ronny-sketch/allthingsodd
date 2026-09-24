@@ -138,7 +138,20 @@ if (!isSuppressed && backdrop && popup && closeBtn) {
     closeBtn.addEventListener('click', close);
     backdrop.addEventListener('click', close);
 
-    setTimeout(open, DELAY_MS);
+    // A page can hold the popup off while something more important is on
+    // screen (2026-09-24): any visible element with
+    // `data-suppress-newsletter-popup`. The ODDspace booking form carries it
+    // once opened, and so does its thank-you, so an event organiser is never
+    // interrupted mid-enquiry. The check runs when the timer fires, so a
+    // form opened after page load still counts. Nothing is marked as seen,
+    // so the popup can still appear on a later page.
+    const suppressedNow = () =>
+      Array.from(document.querySelectorAll<HTMLElement>('[data-suppress-newsletter-popup]')).some(
+        (el) => !el.hidden && el.offsetParent !== null,
+      );
+    setTimeout(() => {
+      if (!suppressedNow()) open();
+    }, DELAY_MS);
   }
 }
 

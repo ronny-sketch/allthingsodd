@@ -72,9 +72,32 @@ const YES_NO = [
       This form needs JavaScript to send. You can email the same details to{' '}
       <a href="mailto:hello@oddfest.co">hello@oddfest.co</a> instead.
     </p>
+    <style is:inline>
+      .bk-opener {
+        display: none;
+      }
+    </style>
   </noscript>
 
-  <form class="booking-form" id="bookingEnquiryForm" novalidate>
+  <!-- The form starts closed (2026-09-24): the section's heading and this one
+       button are the ask, and the questions open on intent. The hero's
+       "#booking-form" link opens it too, and so does arriving with that hash.
+       Without JavaScript the button is hidden and the note above gives the
+       email route, since the form cannot send anyway. -->
+  <div class="bk-opener">
+    <Pill type="button" variant="solid" id="bk-open">Start your enquiry</Pill>
+  </div>
+
+  <!-- `data-suppress-newsletter-popup`: while this form (or the thank-you
+       that replaces it) is on screen, the timed newsletter popup stays away.
+       newsletter-popup.ts looks for any visible element carrying it. -->
+  <form
+    class="booking-form"
+    id="bookingEnquiryForm"
+    novalidate
+    hidden
+    data-suppress-newsletter-popup
+  >
     <p class="booking-key">
       Questions marked <span class="req" aria-hidden="true">*</span><span class="sr-only"
         >with an asterisk</span
@@ -89,7 +112,7 @@ const YES_NO = [
 
     <!-- 01 When ------------------------------------------------------------ -->
     <div class="bk-step" role="group" aria-labelledby="bk-step-1">
-      <h3 class="bk-step-head" id="bk-step-1">
+      <h3 class="bk-step-head" id="bk-step-1" tabindex="-1">
         <span class="bk-step-num" aria-hidden="true">01</span>
         <span>When</span>
       </h3>
@@ -593,7 +616,7 @@ const YES_NO = [
   </div>
   <p class="sr-only" id="bk-announce" role="alert"></p>
 
-  <div class="booking-done" id="bk-done" tabindex="-1" hidden>
+  <div class="booking-done" id="bk-done" tabindex="-1" hidden data-suppress-newsletter-popup>
     <h3>Got it. Your enquiry is in.</h3>
     <p>
       We check the date against the building's schedule and come back to{' '}
@@ -622,6 +645,12 @@ const YES_NO = [
      form ends above it, so the last question and the button stay reachable. */
   .booking.has-panel {
     padding-bottom: 8rem;
+  }
+  .bk-opener {
+    text-align: center;
+  }
+  .bk-opener[hidden] {
+    display: none;
   }
   .booking-form {
     display: flex;
@@ -659,6 +688,9 @@ const YES_NO = [
     font-weight: 400;
     line-height: var(--line-height-body);
     color: var(--color-paper);
+  }
+  .bk-step-head:focus {
+    outline: none;
   }
   .bk-step-num {
     font: var(--text-small);

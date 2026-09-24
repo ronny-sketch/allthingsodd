@@ -37,6 +37,9 @@ async function openForm(page: Page, { keepConsentBanner = false } = {}) {
     await expect(page.locator('[data-consent-banner]')).not.toHaveClass(/is-visible/);
   }
   await expect(page.locator('#bookingEnquiryForm')).toHaveAttribute('data-ready', 'true');
+  // The form starts closed behind one button.
+  await page.click('#bk-open');
+  await expect(page.locator('#bookingEnquiryForm')).toBeVisible();
   // A web font swapping in mid-test moves the pills by a few pixels, which
   // is enough for a click aimed at one to land on its neighbour.
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
@@ -85,12 +88,61 @@ async function sendAndCapture(page: Page) {
   return (await req).postDataJSON();
 }
 
-test('the venue page carries the form and its CTAs point at it', async ({ page }) => {
-  await openForm(page);
-  await expect(page.locator('#booking-form')).toHaveCount(1);
-  // The hero CTA lands on the form, not on the generic Work with ODD form.
+test('the form starts closed and one button opens it', async ({ page }) => {
+  await page.goto(VENUE);
+  await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' });
+  await page.getByRole('button', { name: 'Reject all' }).click();
+  const form = page.locator('#bookingEnquiryForm');
+  await expect(form).toHaveAttribute('data-ready', 'true');
+  await expect(form).toBeHidden();
+  const open = page.locator('#bk-open');
+  await expect(open).toBeVisible();
+  await expect(open).toHaveAttribute('aria-expanded', 'false');
+  await expect(open).toHaveAttribute('aria-controls', 'bookingEnquiryForm');
+  await open.click();
+  await expect(form).toBeVisible();
+  await expect(page.locator('#bk-step-1')).toBeFocused();
+  await expect(open).toBeHidden();
+});
+
+test("the hero's enquiry link opens the form", async ({ page }) => {
+  await page.goto(VENUE);
+  await page.getByRole('button', { name: 'Reject all' }).click();
+  await expect(page.locator('#bookingEnquiryForm')).toHaveAttribute('data-ready', 'true');
   const heroCta = page.locator('a[href="#booking-form"]').first();
   await expect(heroCta).toBeVisible();
+  await heroCta.click();
+  await expect(page.locator('#bookingEnquiryForm')).toBeVisible();
+});
+
+test('arriving with #booking-form opens the form', async ({ page }) => {
+  await page.goto(`${VENUE}#booking-form`);
+  await expect(page.locator('#bookingEnquiryForm')).toHaveAttribute('data-ready', 'true');
+  await expect(page.locator('#bookingEnquiryForm')).toBeVisible();
+});
+
+test.describe('the newsletter popup', () => {
+  test.beforeEach(async ({ context }) => {
+    // Undo the file-wide "already seen", so the popup's own timer runs.
+    await context.addInitScript(() => sessionStorage.removeItem('oddNewsletterPopupSeen'));
+  });
+
+  test('stays away once the form is open', async ({ page }) => {
+    await page.clock.install();
+    await page.goto(VENUE);
+    await expect(page.locator('#bookingEnquiryForm')).toHaveAttribute('data-ready', 'true');
+    await page.click('#bk-open');
+    await page.clock.fastForward(20_000);
+    await expect(page.locator('#newsletterPopup')).toBeHidden();
+  });
+
+  test('still appears on the venue page when the form was never opened', async ({ page }) => {
+    await page.clock.install();
+    await page.goto(VENUE);
+    await expect(page.locator('#bookingEnquiryForm')).toHaveAttribute('data-ready', 'true');
+    await page.clock.fastForward(20_000);
+    await expect(page.locator('#newsletterPopup')).toBeVisible();
+  });
 });
 
 test('required questions are marked, and the key says what the mark means', async ({ page }) => {
@@ -356,6 +408,14 @@ test('an end time before the start means the next day', async ({ page }) => {
   await page.selectOption('#bk-from', '20:00');
   await page.selectOption('#bk-until', '02:00');
   await expect(page.locator('#bk-when-summary')).toHaveText(/6 hours .* next day at 02:00/);
+  // Quarter hours read as hours and minutes, never as a decimal.
+  await page.selectOption('#bk-from', '09:15');
+  await page.selectOption('#bk-until', '22:00');
+  await expect(page.locator('#bk-when-summary')).toHaveText(
+    '12 hours 45 minutes in total, until 22:00.',
+  );
+  await page.selectOption('#bk-from', '20:00');
+  await page.selectOption('#bk-until', '02:00');
   const sent = await sendAndCapture(page);
   const start = new Date(sent.get_in).getTime();
   const end = new Date(sent.get_out).getTime();
