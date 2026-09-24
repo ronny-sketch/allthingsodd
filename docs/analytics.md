@@ -76,18 +76,18 @@ The mapping lives in `src/scripts/tickets/ecommerce.ts`.
 
 ### Forms
 
-| Event                     | Fired when                                    | Carries                                |
-| ------------------------- | --------------------------------------------- | -------------------------------------- |
-| `newsletter_signup`       | beehiiv accepts a signup                      | `signup_source`                        |
-| `newsletter_error`        | beehiiv refuses, or the request throws        | `signup_source`, `error_kind`          |
-| `contact_submit`          | `/api/contact` accepts a message              | `contact_topic`                        |
-| `contact_error`           | `/api/contact` refuses, or the request throws | `contact_topic`, `error_kind`          |
-| `business_enquiry_submit` | A Work with ODD enquiry reaches Attio         | `product_interest`                     |
-| `business_enquiry_error`  | The enquiry is refused, or the request throws | `product_interest`, `error_kind`       |
-| `booking_enquiry_open`    | The booking form is opened on the venue page  | —                                      |
-| `booking_enquiry_submit`  | `/api/booking-enquiry` accepts an enquiry     | `space`, `event_type`, `queued`        |
-| `booking_enquiry_error`   | The enquiry is refused, or the request throws | `space`, `event_type`, `error_kind`    |
-| `cta_click`               | A `mailto:` or an `?interest=` deep link      | `cta_id`, `cta_intent`, `cta_location` |
+| Event                     | Fired when                                    | Carries                                  |
+| ------------------------- | --------------------------------------------- | ---------------------------------------- |
+| `newsletter_signup`       | beehiiv accepts a signup                      | `signup_source`                          |
+| `newsletter_error`        | beehiiv refuses, or the request throws        | `signup_source`, `error_kind`            |
+| `contact_submit`          | `/api/contact` accepts a message              | `contact_topic`                          |
+| `contact_error`           | `/api/contact` refuses, or the request throws | `contact_topic`, `error_kind`            |
+| `business_enquiry_submit` | A Work with ODD enquiry reaches Attio         | `product_interest`                       |
+| `business_enquiry_error`  | The enquiry is refused, or the request throws | `product_interest`, `error_kind`         |
+| `booking_enquiry_open`    | The enquiry dialog is first opened on a page  | `entry` (hero/sticky/final/link/history) |
+| `booking_enquiry_submit`  | `/api/booking-enquiry` accepts an enquiry     | `space`, `event_type`, `queued`          |
+| `booking_enquiry_error`   | The enquiry is refused, or the request throws | `space`, `event_type`, `error_kind`      |
+| `cta_click`               | A `mailto:` or an `?interest=` deep link      | `cta_id`, `cta_intent`, `cta_location`   |
 
 `error_kind` is `network` when the fetch threw and `rejected` when the
 backend answered with `ok: false`. The booking form (2026-09-23) adds `invalid` (the

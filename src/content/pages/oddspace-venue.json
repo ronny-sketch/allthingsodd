@@ -10,7 +10,7 @@
   "title": "Host your event at ODDspace.",
   "meta": "Vallila · Helsinki · No membership needed",
   "primaryCta": {
-    "label": "Enquire about a date",
+    "label": "Get a quote",
     "href": "#booking-form"
   },
   "secondaryCta": {
@@ -218,9 +218,9 @@
     }
   ],
   "finalCta": {
-    "eyebrow": "Get in touch",
-    "headline": "Is your date free?",
-    "body": "Tell us the date, roughly how many people, and what you're planning. You'll get availability, a price and a straight answer about what the space can do."
+    "eyebrow": "Book the space",
+    "headline": "Get a quote for your event.",
+    "body": "Tell us when, roughly how many people and what you're planning. We check the date and reply with availability and a price within one working day."
   },
   "railLeft": [
     {

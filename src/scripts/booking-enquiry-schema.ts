@@ -128,44 +128,72 @@ export interface SpaceInfo {
   blurb: string;
   /** The room's seating cannot be rearranged (the Auditorium's tiers). */
   fixedSeating?: boolean;
+  /** "More about this room", from the event info pack. */
+  more?: string[];
 }
 export const SPACE_INFO: Record<(typeof SPACES)[number]['value'], SpaceInfo> = {
   gallery: {
     capacity: 150,
     meta: '150 people · 320 m²',
     blurb: 'The big room at street level. Openings, launches, concerts, club nights.',
+    more: [
+      'Its floor takes a crowd and its walls are usually hung with work, so tell us early if you need them clear.',
+      'The back door is an emergency exit only, and its alarm is always on.',
+    ],
   },
   aula: {
     capacity: 30,
     meta: '30 people',
     blurb: 'Where guests arrive: registration, coats, drinks. Rarely booked on its own.',
+    more: [
+      'The room your guests arrive into: registration, coats, drinks, and the conversation that spills out of a talk.',
+      'Rarely booked on its own. It is what makes a Gallery event feel organised rather than crowded at the door.',
+    ],
   },
   auditorium: {
     capacity: 50,
     meta: '50 seated · fixed tiers',
     blurb: 'Tiered seating, a large screen and sound. Talks, panels, screenings.',
     fixedSeating: true,
+    more: [
+      '150.2 m², 50 fixed tiered seats, a large screen, a microphone and a sound system.',
+      "Capacity is set by the seats, so it does not flex for a standing crowd. Guests enter from the Sturenkatu side, through the building's main doors.",
+    ],
   },
   second_floor: {
     capacity: 150,
     meta: '150 people',
     blurb: 'One floor up. Seminars, workshops, away-days and dinners.',
+    more: [
+      'Seminars, workshops, away-days and dinners: it suits a day-long programme better than an evening crowd.',
+      "The floor connects to the building's lifts and parking hall, so guest flow here needs a plan.",
+    ],
   },
   gallery_aula: {
     capacity: 180,
     meta: '150 + 30 people',
     blurb: 'The Gallery, with the Aula for arrivals and drinks.',
+    more: [
+      'Capacities add up when you book several rooms. The limits for combined use are still being confirmed with the building, so we give you the current number when you book.',
+    ],
   },
   auditorium_aula: {
     capacity: 80,
     meta: '50 seated + 30 people',
     blurb: 'A talk in the Auditorium, with the Aula for arrivals and drinks.',
     fixedSeating: true,
+    more: [
+      'Capacities add up when you book several rooms. The limits for combined use are still being confirmed with the building, so we give you the current number when you book.',
+    ],
   },
   full_triangle: {
     capacity: 230,
     meta: '230 people together',
     blurb: 'All three rooms, for a programme that moves between them.',
+    more: [
+      'Together the three rooms come to 230 people, counting guests, crew and performers.',
+      'The limits for combined use are still being confirmed with the building, so we give you the current number when you book.',
+    ],
   },
   advise_me: {
     meta: 'We suggest one',
@@ -188,16 +216,34 @@ export const LAYOUTS = opts([
   ['not_sure', 'Not sure yet'],
 ]);
 
-// Package names only. What each package includes has not been published, so
-// the form does not describe them. The quote explains the one that fits.
+// Help levels (2026-09-24, v2). Named for what you get, not as tiers, with
+// one line each saying what that means on the day. The values are the
+// spec's and the Worker's, unchanged. Premium stays a valid value (the
+// Worker and Notion still know it) but the form no longer offers it: five
+// levels between "just the room" and "we produce it" were more than a
+// visitor could tell apart. The descriptions are ODD's working lines, still
+// to be confirmed by the venue team; the quote spells out the detail.
 export const SUPPORT_LEVELS = opts([
-  ['raw', 'Raw — just the room'],
-  ['basic_infra', 'Basic infrastructure'],
-  ['standard', 'Standard'],
+  ['raw', 'Just the room'],
+  ['basic_infra', 'Room + technician'],
+  ['standard', 'Help running it'],
   ['premium', 'Premium'],
-  ['turnkey', 'Turnkey — we run it with you'],
-  ['advise_me', 'Not sure — advise me'],
+  ['turnkey', 'We produce it'],
+  ['advise_me', 'Not sure yet'],
 ]);
+
+export const SUPPORT_DESCRIPTIONS: Partial<
+  Record<(typeof SUPPORT_LEVELS)[number]['value'], string>
+> = {
+  raw: 'Tables, chairs, the PA and one microphone. You run the day.',
+  basic_infra: 'We set up the sound and screen and stay on hand for the tech.',
+  standard: 'A host and a technician on the day, and we line up the suppliers.',
+  turnkey: 'Concept, programme and production, built with you.',
+  advise_me: 'Tell us the idea and the quote will suggest a level.',
+};
+
+// What the form offers, in order: everything but Premium.
+export const SUPPORT_OFFERED = SUPPORT_LEVELS.filter((o) => o.value !== 'premium');
 
 export const TECH = opts([
   ['projector', 'Projector'],

@@ -1,10 +1,13 @@
-// Submit script for the ODDspace booking enquiry form (BookingEnquiryForm.astro).
-// It shows and hides conditional fields, turns the form's questions into the
-// spec's payload, validates with the shared rules in booking-enquiry-schema.ts,
-// shows what is missing, and POSTs JSON to /api/booking-enquiry on the Growth
-// OS Worker (see api-base.ts for why that is a cross-origin URL). No key or
-// vendor SDK is involved. The Worker holds the Notion token and the Make
-// webhook, and it validates everything again.
+// Script for the ODDspace booking enquiry (BookingEnquiryForm.astro). It runs
+// the guided enquiry dialog (v2, 2026-09-24): opening and closing it, one
+// step at a time with a progress bar, a "Check and send" summary, and the
+// sticky "Get a quote" bar on the venue page. Underneath it does what it
+// always has: shows and hides conditional fields, turns the questions into
+// the spec's payload, validates with the shared rules in
+// booking-enquiry-schema.ts, and POSTs JSON to /api/booking-enquiry on the
+// Growth OS Worker (see api-base.ts for why that is a cross-origin URL). No
+// key or vendor SDK is involved. The Worker holds the Notion token and the
+// Make webhook, and it validates everything again.
 //
 // Duplicate protection works in two layers. First, a single in-flight guard
 // with the button disabled, so a double click sends one request. Second,
@@ -12,12 +15,19 @@
 // retry. The Worker treats that id as an idempotency key, so a retry after a
 // timeout that actually reached Notion does not create a second record.
 //
-// Errors (2026-09-24). Nothing is marked while someone is still filling the
-// form in, apart from an email address that is plainly wrong once they leave
-// the field. On submit, every question that needs an answer is marked where
-// it is (label, line and message in Heat), focus goes to the first one, and
-// a panel at the foot of the screen lists them all as links. From then on
-// each one clears the moment it is answered, and the panel counts down.
+// Errors. Nothing is marked while someone is still filling a step in, apart
+// from an email address that is plainly wrong once they leave the field.
+// Next checks the current step only: each question there that needs an
+// answer is marked where it is (label, line and message in Heat) and focus
+// goes to the first. From then on each one clears the moment it is answered.
+// Back never checks anything. Send checks everything again, and anything
+// still missing (or refused by the Worker) takes the visitor to the step it
+// belongs to.
+//
+// Opening and closing. Every "Get a quote" and every link to #booking-form
+// opens the dialog, and the URL gains #booking-form, so the phone's back
+// button closes it again, as do Esc and ×. The answers live in the page and
+// stay until it is reloaded; nothing is stored in the browser.
 import { API_BASE } from './api-base';
 import { captureFirstTouch } from './utm';
 import { trackEvent } from './analytics';
@@ -36,6 +46,9 @@ import {
 const REQUEST_TIMEOUT_MS = 20_000;
 const FALLBACK_EMAIL = 'hello@oddfest.co';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const HASH = '#booking-form';
+const REPLY_PROMISE =
+  'We check the date and reply with availability and a price within one working day.';
 
 // What the Worker answers with. `errors` carries field-level messages on a 400.
 interface ResponseBody {
@@ -68,31 +81,52 @@ function addDays(date: string, n: number): string {
   return isoDate(new Date(y, m - 1, d + n));
 }
 
+// "2026-11-02" as "Mon 2 Nov 2026".
+const dateFmt = new Intl.DateTimeFormat('en-GB', {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+function formatDate(date: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return date;
+  const [y, m, d] = date.split('-').map(Number) as [number, number, number];
+  return dateFmt.format(new Date(y, m - 1, d));
+}
+
 function listPhrase(items: string[]): string {
   if (items.length <= 1) return items.join('');
   return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
 }
 
 const form = document.getElementById('bookingEnquiryForm');
-if (form instanceof HTMLFormElement) {
+const dialog = document.getElementById('bk-dialog');
+if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
   const root = document.getElementById('booking-form');
+  const body = document.getElementById('bk-body');
   const status = form.querySelector<HTMLElement>('.form-status');
-  const statusDefault = status?.textContent?.trim() ?? '';
-  const panel = document.getElementById('bk-summary');
-  const panelTitle = panel?.querySelector<HTMLElement>('#bk-summary-title');
-  const panelList = panel?.querySelector<HTMLElement>('.bk-panel-list');
   const announce = document.getElementById('bk-announce');
   const notice = form.querySelector<HTMLElement>('#bk-notice');
   const capacity = form.querySelector<HTMLElement>('#bk-capacity');
   const steward = form.querySelector<HTMLElement>('#bk-steward');
   const whenSummary = form.querySelector<HTMLElement>('#bk-when-summary');
+  const review = form.querySelector<HTMLElement>('#bk-review');
+  const reviewNotes = form.querySelector<HTMLElement>('#bk-review-notes');
   const done = document.getElementById('bk-done');
-  const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+  const count = document.getElementById('bk-count');
+  const progress = Array.from(dialog.querySelectorAll<HTMLElement>('.bk-progress li'));
+  const backBtn = form.querySelector<HTMLButtonElement>('.bk-back');
+  const nextBtn = form.querySelector<HTMLButtonElement>('.bk-next');
+  const steps = Array.from(form.querySelectorAll<HTMLElement>('.bk-step[data-step]'));
+  const numbered = steps.filter((s) => s.dataset.step !== 'review');
   const submissionId = newSubmissionId();
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const narrow = window.matchMedia('(max-width: 520px)');
   let sending = false;
+  let sent = false;
   let attempted = false;
+  let current = 0;
+  // Set by "Edit" on the summary: that step's Next goes straight back there.
+  let editing = false;
 
   // --- Reading controls ---------------------------------------------------
 
@@ -104,6 +138,17 @@ if (form instanceof HTMLFormElement) {
       .filter((c) => (c.type === 'radio' || c.type === 'checkbox' ? c.checked : c.value !== ''))
       .map((c) => c.value);
   const value = (name: string) => valuesOf(name)[0]?.trim() ?? '';
+  const ticked = (name: string) => valuesOf(name).includes('true');
+
+  // The visible label of each checked option of one name.
+  const choiceLabels = (name: string): string[] =>
+    Array.from(form.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked`))
+      .filter((c) => !c.disabled)
+      .map(
+        (c) =>
+          c.closest('label')?.querySelector('.chip-face, .bk-card-name')?.textContent?.trim() ??
+          c.value,
+      );
 
   // --- Conditional fields -------------------------------------------------
 
@@ -113,9 +158,9 @@ if (form instanceof HTMLFormElement) {
     const negate = rule.includes('!=');
     const [name, wanted] = rule.split(negate ? '!=' : '=');
     if (!name || wanted === undefined) return true;
-    const current = valuesOf(name);
-    if (wanted === '*') return current.length > 0;
-    const hit = wanted.split('|').some((v) => current.includes(v));
+    const answers = valuesOf(name);
+    if (wanted === '*') return answers.length > 0;
+    const hit = wanted.split('|').some((v) => answers.includes(v));
     return negate ? !hit : hit;
   };
 
@@ -144,7 +189,7 @@ if (form instanceof HTMLFormElement) {
     const date = value('event_date');
     const from = value('time_from');
     const until = value('time_until');
-    const multi = valuesOf('multi_day').includes('true');
+    const multi = ticked('multi_day');
     const endDate = multi ? value('end_date') : '';
     if (!date || !from || !until || (multi && !endDate)) {
       return { start: '', end: '', nextDay: false };
@@ -152,6 +197,22 @@ if (form instanceof HTMLFormElement) {
     const nextDay = !multi && until <= from;
     const lastDay = multi ? endDate : nextDay ? addDays(date, 1) : date;
     return { start: `${date}T${from}`, end: `${lastDay}T${until}`, nextDay };
+  };
+
+  // "12 hours 45 minutes", or '' until the times make sense. Hours and
+  // minutes, never a decimal: 12.75 hours reads like 12:75.
+  const lengthText = (): string => {
+    const { start, end } = localTimes();
+    const inIso = start && helsinkiLocalToISO(start);
+    const outIso = end && helsinkiLocalToISO(end);
+    const hours = inIso && outIso ? (Date.parse(outIso) - Date.parse(inIso)) / 3_600_000 : NaN;
+    if (!(hours > 0)) return '';
+    const totalMin = Math.round(hours * 60);
+    const hh = Math.floor(totalMin / 60);
+    const mm = totalMin % 60;
+    const hPart = hh ? `${hh} ${hh === 1 ? 'hour' : 'hours'}` : '';
+    const mPart = mm ? `${mm} minutes` : '';
+    return [hPart, mPart].filter(Boolean).join(' ');
   };
 
   const people = (): number | undefined => {
@@ -258,7 +319,7 @@ if (form instanceof HTMLFormElement) {
       !value('time_from') && 'a start time',
       !value('time_until') && 'an end time',
     ].filter(Boolean) as string[];
-    const multi = valuesOf('multi_day').includes('true');
+    const multi = ticked('multi_day');
     if (missing.length) e.get_in = `Add ${listPhrase(missing)}.`;
     else if (multi && !value('end_date')) e.get_in = 'Add the last day.';
     else if (multi && value('end_date') < value('event_date'))
@@ -333,6 +394,11 @@ if (form instanceof HTMLFormElement) {
     );
   };
 
+  const stepIndexOf = (el: Element) => {
+    const step = el.closest<HTMLElement>('.bk-step');
+    return step ? steps.indexOf(step) : -1;
+  };
+
   const focusQuestion = (wrap: HTMLElement) => {
     const controls = controlsIn(wrap);
     const target =
@@ -345,92 +411,42 @@ if (form instanceof HTMLFormElement) {
     target?.focus({ preventScroll: true });
   };
 
-  // The cookie banner shares the foot of the screen and outranks this panel
-  // (consent comes first), so while it is up the panel sits just above it.
-  const liftPanel = () => {
-    if (!panel || panel.hidden) return;
-    const banner = document.querySelector<HTMLElement>('[data-consent-banner].is-visible');
-    // Measured from layout, not from the banner's current box, so a banner
-    // still sliding in (a transform) does not give a short reading.
-    const lift = banner
-      ? banner.offsetHeight + (Number.parseFloat(getComputedStyle(banner).bottom) || 0)
-      : 0;
-    panel.style.setProperty('--bk-lift', lift ? `${lift + 12}px` : '0px');
-  };
-  const bannerEl = document.querySelector('[data-consent-banner]');
-  if (bannerEl) {
-    new MutationObserver(liftPanel).observe(bannerEl, {
-      attributes: true,
-      attributeFilter: ['class', 'hidden'],
-    });
-  }
-  window.addEventListener('resize', liftPanel);
-
-  const hidePanel = () => {
-    if (panel) panel.hidden = true;
-    root?.classList.remove('has-panel');
+  const setStatus = (text: string, isError = false) => {
+    if (!status) return;
+    status.textContent = text;
+    status.classList.toggle('is-error', isError);
   };
 
-  const renderPanel = () => {
-    if (!panel || !panelTitle || !panelList) return;
-    const open = invalidWrappers();
-    if (open.length === 0) {
-      hidePanel();
-      return;
+  const say = (text: string) => {
+    if (!announce) return;
+    // Cleared first, so the same text announced twice is still announced.
+    announce.textContent = '';
+    window.setTimeout(() => {
+      announce.textContent = text;
+    }, 50);
+  };
+
+  // The footer's count. On the summary the button says "Send enquiry", so
+  // the count says "before sending" there; the only question on that step
+  // is the privacy tick box, so it names it.
+  const neededText = (n: number) => {
+    if (steps[current]?.dataset.step === 'review') {
+      return n === 1 ? 'Tick the privacy box to send.' : `${n} answers needed before sending.`;
     }
-    panelTitle.textContent =
-      open.length === 1 ? '1 answer needed' : `${open.length} answers needed`;
-    // The first few by name, then a count, so the panel stays two lines
-    // high however much is missing. "Show me" walks through all of them.
-    const shown = narrow.matches ? 3 : 6;
-    const items = open.slice(0, shown).map((wrap) => {
-      const li = document.createElement('li');
-      const a = document.createElement('a');
-      const target = controlsIn(wrap)[0];
-      a.href = `#${target?.id || wrap.id}`;
-      a.textContent = wrap.dataset.label ?? 'This question';
-      a.addEventListener('click', (ev) => {
-        ev.preventDefault();
-        focusQuestion(wrap);
-      });
-      li.append(a);
-      return li;
-    });
-    if (open.length > shown) {
-      const more = document.createElement('li');
-      more.className = 'bk-panel-more';
-      more.textContent = `and ${open.length - shown} more`;
-      items.push(more);
-    }
-    panelList.replaceChildren(...items);
+    return n === 1 ? '1 answer needed to continue.' : `${n} answers needed to continue.`;
   };
 
-  const showPanel = () => {
-    if (!panel) return;
-    renderPanel();
-    if (invalidWrappers().length > 0) {
-      panel.hidden = false;
-      root?.classList.add('has-panel');
-      liftPanel();
-    }
-  };
-
-  // Marks every question in `errors`, shows the panel and moves to the first.
-  const showErrors = (errors: Errors) => {
-    invalidWrappers().forEach(unmark);
-    const entries = byQuestion(errors);
+  // Marks each question in `entries`, says how many, and moves to the first.
+  const showErrors = (entries: [HTMLElement, string][]) => {
     for (const [wrap, message] of entries) mark(wrap, message);
-    showPanel();
-    const first = entries[0]?.[0];
-    if (announce) {
-      const labels = entries.map(([w]) => w.dataset.label ?? '').filter(Boolean);
-      // Cleared first, so the same text announced twice is still announced.
-      announce.textContent = '';
-      window.setTimeout(() => {
-        announce.textContent = `${entries.length === 1 ? '1 answer' : `${entries.length} answers`} needed: ${labels.join(', ')}.`;
-      }, 50);
+    const here = entries.filter(([w]) => stepIndexOf(w) === current);
+    const n = here.length;
+    if (n > 0) {
+      setStatus(neededText(n), true);
+      const labels = here.map(([w]) => w.dataset.label ?? '').filter(Boolean);
+      say(`${n === 1 ? '1 answer' : `${n} answers`} needed: ${labels.join(', ')}.`);
+      focusQuestion(here[0]![0]);
     }
-    if (first) focusQuestion(first);
   };
 
   // Keep each marked question's message current and clear it once it is
@@ -438,66 +454,60 @@ if (form instanceof HTMLFormElement) {
   // halfway through typing.
   const refreshMarks = () => {
     if (invalidWrappers().length === 0) return;
-    const current = new Map(byQuestion(collectErrors()));
+    const now = new Map(byQuestion(collectErrors()));
     for (const wrap of invalidWrappers()) {
-      const message = current.get(wrap);
+      const message = now.get(wrap);
       if (message) mark(wrap, message);
       else unmark(wrap);
     }
     // A question hidden since (its trigger changed) is not waiting any more.
     form.querySelectorAll<HTMLElement>('.field.is-invalid[hidden]').forEach(unmark);
-    if (panel && !panel.hidden) renderPanel();
+    const left = invalidWrappers().filter((w) => stepIndexOf(w) === current).length;
+    if (status?.classList.contains('is-error') && !sending) {
+      if (left === 0) setStatus(steps[current]?.dataset.step === 'review' ? REPLY_PROMISE : '');
+      else setStatus(neededText(left), true);
+    }
   };
 
   // --- Live feedback ------------------------------------------------------
 
   const updateWhenSummary = () => {
     if (!whenSummary) return;
-    const { start, end, nextDay } = localTimes();
-    const inIso = start && helsinkiLocalToISO(start);
-    const outIso = end && helsinkiLocalToISO(end);
-    const hours = inIso && outIso ? (Date.parse(outIso) - Date.parse(inIso)) / 3_600_000 : NaN;
-    if (!(hours > 0)) {
+    const { end, nextDay } = localTimes();
+    const length = lengthText();
+    if (!length) {
       whenSummary.hidden = true;
       whenSummary.textContent = '';
       return;
     }
-    // Hours and minutes, never a decimal: 12.75 hours reads like 12:75.
-    const totalMin = Math.round(hours * 60);
-    const hh = Math.floor(totalMin / 60);
-    const mm = totalMin % 60;
-    const hPart = hh ? `${hh} ${hh === 1 ? 'hour' : 'hours'}` : '';
-    const mPart = mm ? `${mm} minutes` : '';
-    const length = [hPart, mPart].filter(Boolean).join(' ');
     const until = end.slice(11);
     let text = `${length} in total, until ${until}.`;
     if (nextDay) text = `${length} in total, ending the next day at ${until}.`;
-    if (valuesOf('multi_day').includes('true')) {
-      const fmt = new Intl.DateTimeFormat('en-GB', {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-      });
-      const [y, m, d] = end.slice(0, 10).split('-').map(Number) as [number, number, number];
-      text = `Until ${fmt.format(new Date(y, m - 1, d))} at ${until}.`;
-    }
+    if (ticked('multi_day')) text = `Until ${formatDate(end.slice(0, 10))} at ${until}.`;
     whenSummary.textContent = text;
     whenSummary.hidden = false;
   };
 
-  const updateNotices = () => {
+  const warnings = () => {
     const p = readPayload();
+    return {
+      shortNotice: shortNoticeWarning(p, new Date()),
+      capacity: capacityWarning(p.space, p.headcount_estimate),
+      steward: (p.headcount_estimate ?? 0) > 100,
+    };
+  };
+
+  const updateNotices = () => {
+    const w = warnings();
     if (notice) {
-      const warning = shortNoticeWarning(p, new Date());
-      notice.textContent = warning ?? '';
-      notice.hidden = !warning;
+      notice.textContent = w.shortNotice ?? '';
+      notice.hidden = !w.shortNotice;
     }
     if (capacity) {
-      const warning = capacityWarning(p.space, p.headcount_estimate);
-      capacity.textContent = warning ?? '';
-      capacity.hidden = !warning;
+      capacity.textContent = w.capacity ?? '';
+      capacity.hidden = !w.capacity;
     }
-    if (steward) steward.hidden = !((p.headcount_estimate ?? 0) > 100);
+    if (steward) steward.hidden = !w.steward;
     updateWhenSummary();
   };
 
@@ -514,12 +524,12 @@ if (form instanceof HTMLFormElement) {
 
   // --- Picker-only dates ------------------------------------------------
 
-  // A date is chosen from the calendar, never typed (2026-09-24). A click or
-  // tap anywhere on the field opens the browser's own picker, and Enter or
-  // Space does the same from the keyboard. Keys that would type into the
-  // field are swallowed; Tab, Escape and the arrow keys are left alone, so
-  // the field stays operable without a mouse. Where showPicker() is missing
-  // (older browsers) the native field simply behaves as before.
+  // A date is chosen from the calendar, never typed. A click or tap anywhere
+  // on the field opens the browser's own picker, and Enter or Space does the
+  // same from the keyboard. Keys that would type into the field are
+  // swallowed; Tab, Escape and the arrow keys are left alone, so the field
+  // stays operable without a mouse. Where showPicker() is missing (older
+  // browsers) the native field simply behaves as before.
   const openPicker = (input: HTMLInputElement) => {
     try {
       input.showPicker?.();
@@ -541,6 +551,192 @@ if (form instanceof HTMLFormElement) {
     input.addEventListener('paste', (ev) => ev.preventDefault());
   });
 
+  // --- Check and send -----------------------------------------------------
+
+  type Row = [label: string, value: string | undefined];
+
+  // What the summary shows for each numbered step. Empty answers are left
+  // out; the required ones cannot be empty by the time the summary shows.
+  const summaryRows = (): Row[][] => {
+    const multi = ticked('multi_day');
+    const { nextDay } = localTimes();
+    const from = value('time_from');
+    const until = value('time_until');
+    const length = lengthText();
+    const alts = ticked('has_alt_dates')
+      ? [value('alt_date_1'), value('alt_date_2')].filter(Boolean).map(formatDate)
+      : [];
+    const fixed = form.querySelector<HTMLElement>('[data-show-when^="space="] .bk-fixed');
+    const layoutFixed = fixed ? !fixed.closest<HTMLElement>('.field')!.hidden : false;
+    const layout = layoutFixed
+      ? 'Fixed tiered seating'
+      : value('layout') === 'custom'
+        ? value('layout_custom')
+        : choiceLabels('layout')[0] || 'Not decided yet';
+    const tech = choiceLabels('tech');
+    const member = value('is_member');
+    return [
+      [
+        [
+          multi ? 'Dates' : 'Date',
+          value('event_date') &&
+            formatDate(value('event_date')) +
+              (multi && value('end_date') ? ` to ${formatDate(value('end_date'))}` : ''),
+        ],
+        [
+          'Hours',
+          from && until
+            ? `${from} to ${until}${nextDay ? ' the next day' : ''}${length && !multi ? `, ${length}` : ''}`
+            : undefined,
+        ],
+        ['Other dates', alts.join(', ') || undefined],
+        [
+          'Series',
+          ticked('is_series') && value('series_count')
+            ? `${value('series_count')} events`
+            : undefined,
+        ],
+      ],
+      [
+        ['People', value('headcount_estimate')],
+        ['Room', choiceLabels('space')[0]],
+        ['Layout', layout],
+      ],
+      [
+        ['Name', value('event_title')],
+        ['Kind', choiceLabels('event_type')[0]],
+        ['Who can come', choiceLabels('audience')[0]],
+        ['About it', value('event_description')],
+      ],
+      [
+        ['Help from us', choiceLabels('support_level')[0]],
+        ['Kit', tech.join(', ') || 'Nothing extra'],
+        ['Microphones', value('mic_count') || undefined],
+        ['Own equipment', ticked('own_equipment') ? value('own_equipment_detail') : undefined],
+        ['Alcohol', choiceLabels('alcohol')[0]],
+        ['Music', choiceLabels('music')[0]],
+        ['Smoke or flame', ticked('has_pyro') ? value('pyro_flame_detail') : undefined],
+      ],
+      [
+        [
+          'Name',
+          [value('contact_first_name'), value('contact_last_name')].filter(Boolean).join(' '),
+        ],
+        ['Email', value('contact_email')],
+        ['Phone', value('contact_phone') || undefined],
+        ['Booking as', choiceLabels('org_type')[0]],
+        ['Organisation', value('org_name') || undefined],
+        [
+          'ODDspace member',
+          member === 'true'
+            ? ['Yes', ...choiceLabels('membership_tier')].join(', ')
+            : member === 'false'
+              ? 'No'
+              : undefined,
+        ],
+        ['Anything else', value('notes') || undefined],
+      ],
+    ];
+  };
+
+  // Built from text nodes only, never HTML, because every value is the
+  // visitor's own typing.
+  const renderReview = () => {
+    if (!review) return;
+    const groups = summaryRows().map((rows, i) => {
+      const group = document.createElement('section');
+      group.className = 'bk-review-group';
+      const head = document.createElement('div');
+      head.className = 'bk-review-head';
+      const title = document.createElement('h3');
+      title.className = 'bk-review-title';
+      const stepTitle = numbered[i]?.querySelector('.bk-step-head > span:last-child')?.textContent;
+      title.textContent = stepTitle ?? '';
+      const edit = document.createElement('button');
+      edit.type = 'button';
+      edit.className = 'bk-review-edit';
+      edit.textContent = 'Edit';
+      edit.setAttribute('aria-label', `Edit ${stepTitle ?? 'this step'}`);
+      edit.addEventListener('click', () => {
+        editing = true;
+        showStep(i, { back: true });
+      });
+      head.append(title, edit);
+      const dl = document.createElement('dl');
+      for (const [label, val] of rows) {
+        if (!val) continue;
+        const dt = document.createElement('dt');
+        dt.textContent = label;
+        const dd = document.createElement('dd');
+        dd.textContent = val;
+        dl.append(dt, dd);
+      }
+      group.append(head, dl);
+      return group;
+    });
+    review.replaceChildren(...groups);
+
+    if (reviewNotes) {
+      const w = warnings();
+      const notes = [w.shortNotice, w.capacity].filter(Boolean).map((text) => {
+        const p = document.createElement('p');
+        p.className = 'booking-warning';
+        p.textContent = text!;
+        return p;
+      });
+      reviewNotes.replaceChildren(...notes);
+      reviewNotes.hidden = notes.length === 0;
+    }
+  };
+
+  // --- Steps --------------------------------------------------------------
+
+  const isReview = (i: number) => steps[i]?.dataset.step === 'review';
+
+  const primaryLabel = (i: number) => {
+    if (isReview(i)) return 'Send enquiry';
+    if (editing) return 'Back to summary';
+    if (i === numbered.length - 1) return 'Check your answers';
+    return 'Next';
+  };
+
+  const showStep = (i: number, { back = false, focus = true } = {}) => {
+    const target = steps[i];
+    if (!target) return;
+    steps.forEach((s, k) => {
+      s.hidden = k !== i;
+    });
+    current = i;
+    if (isReview(i)) {
+      editing = false;
+      renderReview();
+    }
+    target.classList.remove('is-entering', 'from-back');
+    // Restart the entrance animation for this step.
+    void target.offsetWidth;
+    target.classList.add('is-entering');
+    target.classList.toggle('from-back', back);
+    target.addEventListener(
+      'animationend',
+      () => target.classList.remove('is-entering', 'from-back'),
+      { once: true },
+    );
+    if (body) body.scrollTop = 0;
+
+    const atReview = isReview(i);
+    if (count)
+      count.textContent = atReview ? 'Ready to send' : `Step ${i + 1} of ${numbered.length}`;
+    progress.forEach((li, k) => li.classList.toggle('is-done', atReview || k <= i));
+    if (backBtn) backBtn.hidden = i === 0;
+    if (nextBtn) nextBtn.textContent = primaryLabel(i);
+    setStatus(atReview ? REPLY_PROMISE : '');
+    if (focus) target.querySelector<HTMLElement>('.bk-step-head')?.focus({ preventScroll: true });
+  };
+
+  backBtn?.addEventListener('click', () => {
+    if (current > 0) showStep(current - 1, { back: true });
+  });
+
   // --- Wiring -------------------------------------------------------------
 
   const onEdit = () => {
@@ -553,7 +749,7 @@ if (form instanceof HTMLFormElement) {
   form.addEventListener('input', onEdit);
 
   // An email address that is plainly wrong is worth saying so as soon as
-  // the visitor leaves the field. An empty one waits for submit.
+  // the visitor leaves the field. An empty one waits for Next.
   const email = form.querySelector<HTMLInputElement>('input[name="contact_email"]');
   email?.addEventListener('blur', () => {
     const v = email.value.trim();
@@ -563,60 +759,32 @@ if (form instanceof HTMLFormElement) {
     else if (!attempted) unmark(wrap);
   });
 
-  panel?.querySelector('[data-panel-next]')?.addEventListener('click', () => {
-    const open = invalidWrappers();
-    if (open.length === 0) return;
-    const active = document.activeElement;
-    const next =
-      open.find(
-        (w) =>
-          !(active instanceof Node && w.contains(active)) &&
-          active instanceof Node &&
-          active.compareDocumentPosition(w) & Node.DOCUMENT_POSITION_FOLLOWING,
-      ) ?? open[0]!;
-    focusQuestion(next);
-  });
-  panel?.querySelector('[data-panel-close]')?.addEventListener('click', () => {
-    hidePanel();
-    focusQuestion(invalidWrappers()[0] ?? form);
-  });
-  document.addEventListener('keydown', (ev) => {
-    if (ev.key === 'Escape' && panel && !panel.hidden) hidePanel();
-  });
-
   applyConditionals();
   syncEndMin();
 
-  const setStatus = (text: string, isError = false) => {
-    if (!status) return;
-    status.textContent = text;
-    status.classList.toggle('is-error', isError);
-  };
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (sending) return;
+  // Sends the whole enquiry. Anything missing takes the visitor to the step
+  // it belongs to, with every missing answer marked.
+  const send = async () => {
     attempted = true;
-
-    const errors = collectErrors();
-    if (Object.keys(errors).length > 0) {
-      setStatus(statusDefault);
-      showErrors(errors);
+    const entries = byQuestion(collectErrors());
+    if (entries.length > 0) {
+      const first = stepIndexOf(entries[0]![0]);
+      if (first !== current && first >= 0) showStep(first, { back: true, focus: false });
+      showErrors(entries);
       return;
     }
     invalidWrappers().forEach(unmark);
-    hidePanel();
 
     const payload = readPayload();
     sending = true;
-    submitBtn?.setAttribute('disabled', 'true');
+    nextBtn?.setAttribute('disabled', 'true');
     form.setAttribute('aria-busy', 'true');
     setStatus('Sending…');
 
     const controller = new AbortController();
     const timer = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
     let res: Response | null = null;
-    let body = null as ResponseBody | null;
+    let reply = null as ResponseBody | null;
     try {
       res = await fetch(`${API_BASE}/api/booking-enquiry`, {
         method: 'POST',
@@ -624,7 +792,7 @@ if (form instanceof HTMLFormElement) {
         body: JSON.stringify(payload),
         signal: controller.signal,
       });
-      body = (await res.json().catch(() => null)) as ResponseBody | null;
+      reply = (await res.json().catch(() => null)) as ResponseBody | null;
     } catch {
       res = null;
     } finally {
@@ -633,33 +801,54 @@ if (form instanceof HTMLFormElement) {
 
     const tracked = { space: payload.space, event_type: payload.event_type };
 
-    if (res && (res.status === 200 || res.status === 202) && body?.ok !== false) {
+    if (res && (res.status === 200 || res.status === 202) && reply?.ok !== false) {
       // 202 means the Worker could not reach Notion and has queued the
       // enquiry to retry. The visitor's side is the same either way.
       trackEvent('booking_enquiry_submit', { ...tracked, queued: res.status === 202 });
-      const emailSlot = done?.querySelector('[data-done-email]');
-      const refSlot = done?.querySelector('[data-done-ref]');
-      if (emailSlot) emailSlot.textContent = payload.contact_email;
-      if (refSlot) refSlot.textContent = submissionId.slice(0, 8).toUpperCase();
+      sent = true;
+      const ref = submissionId.slice(0, 8).toUpperCase();
+      done?.querySelectorAll('[data-done-email]').forEach((el) => {
+        el.textContent = payload.contact_email;
+      });
+      done?.querySelectorAll('[data-done-ref]').forEach((el) => {
+        el.textContent = ref;
+      });
       form.hidden = true;
+      if (count) count.textContent = 'Sent';
+      progress.forEach((li) => li.classList.add('is-done'));
       if (done) {
         done.hidden = false;
-        done.scrollIntoView({
-          block: 'center',
-          behavior: reducedMotion.matches ? 'auto' : 'smooth',
-        });
-        done.focus({ preventScroll: true });
+        done.focus();
       }
+      // The page says so too, in place of the button.
+      const sentNote = document.getElementById('bk-sent');
+      const ask = document.querySelector<HTMLElement>('.bk-opener');
+      sentNote?.querySelectorAll('[data-sent-ref]').forEach((el) => {
+        el.textContent = ref;
+      });
+      if (sentNote) sentNote.hidden = false;
+      if (ask) ask.hidden = true;
+      updateSticky();
       return;
     }
 
     sending = false;
-    submitBtn?.removeAttribute('disabled');
+    nextBtn?.removeAttribute('disabled');
     form.removeAttribute('aria-busy');
 
-    if (res?.status === 400 && body?.errors && Object.keys(body.errors).length > 0) {
-      setStatus(statusDefault);
-      showErrors(body.errors as Errors);
+    if (res?.status === 400 && reply?.errors && Object.keys(reply.errors).length > 0) {
+      setStatus(REPLY_PROMISE);
+      const refused = byQuestion(reply.errors as Errors);
+      if (refused.length > 0) {
+        const first = stepIndexOf(refused[0]![0]);
+        if (first !== current && first >= 0) showStep(first, { back: true, focus: false });
+        showErrors(refused);
+      } else {
+        setStatus(
+          `Something in the enquiry was refused. Check your answers, or email ${FALLBACK_EMAIL}.`,
+          true,
+        );
+      }
       trackEvent('booking_enquiry_error', { ...tracked, error_kind: 'invalid' });
       return;
     }
@@ -679,42 +868,137 @@ if (form instanceof HTMLFormElement) {
       ...tracked,
       error_kind: res === null ? 'network' : 'rejected',
     });
+  };
+
+  // The one primary button is the form's submit button, so Enter in a text
+  // field moves on too. On a step it means Next; on the summary, Send.
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (sending || sent) return;
+    if (isReview(current)) {
+      void send();
+      return;
+    }
+    const here = byQuestion(collectErrors()).filter(([w]) => stepIndexOf(w) === current);
+    if (here.length > 0) {
+      showErrors(here);
+      return;
+    }
+    const reviewIndex = steps.findIndex((s) => s.dataset.step === 'review');
+    showStep(editing ? reviewIndex : current + 1);
   });
 
-  // --- Opening the form ---------------------------------------------------
+  // --- Opening and closing ------------------------------------------------
 
-  // The form starts closed behind one button. Opening it is one-way (there
-  // is no close), so a half-filled form can never be folded away by mistake.
-  // The hero's "#booking-form" link and arriving with that hash open it too.
-  const opener = document.getElementById('bk-open');
-  const openerWrap = opener?.closest<HTMLElement>('.bk-opener') ?? null;
-  opener?.setAttribute('aria-expanded', 'false');
-  opener?.setAttribute('aria-controls', form.id);
-  const openForm = ({ focus = true } = {}) => {
-    if (!form.hidden || done?.hidden === false) return;
-    form.hidden = false;
-    opener?.setAttribute('aria-expanded', 'true');
-    if (openerWrap) openerWrap.hidden = true;
-    trackEvent('booking_enquiry_open');
-    if (focus) {
-      const first = form.querySelector<HTMLElement>('#bk-step-1');
-      form.scrollIntoView({ block: 'start', behavior: reducedMotion.matches ? 'auto' : 'smooth' });
-      first?.focus({ preventScroll: true });
+  const html = document.documentElement;
+  let returnFocus: HTMLElement | null = null;
+  let opened = false;
+
+  const openDialog = (entry: string) => {
+    if (dialog.open) return;
+    // Where focus goes back to on close. Opened from a link on arrival
+    // (/oddspace's card, a shared URL) nothing on the page had focus, so it
+    // falls back to the page's own ask: the button, or the sent note.
+    const active = document.activeElement;
+    returnFocus =
+      active instanceof HTMLElement && active !== document.body
+        ? active
+        : (document.querySelector<HTMLElement>('.bk-opener:not([hidden]) #bk-open') ??
+          document.getElementById('bk-sent'));
+    // The URL gains #booking-form as its own history entry, so the back
+    // button closes the enquiry rather than leaving the page. Arriving with
+    // the hash already set, the plain URL goes underneath it first.
+    const plain = window.location.pathname + window.location.search;
+    if (window.location.hash !== HASH) {
+      history.pushState({ bk: true }, '', HASH);
+    } else if (!(history.state as { bk?: boolean } | null)?.bk) {
+      history.replaceState(null, '', plain);
+      history.pushState({ bk: true }, '', HASH);
     }
+    dialog.showModal();
+    html.classList.add('bk-lock');
+    updateSticky();
+    if (!opened) trackEvent('booking_enquiry_open', { entry });
+    opened = true;
+    const focusTarget =
+      done && !done.hidden ? done : steps[current]?.querySelector<HTMLElement>('.bk-step-head');
+    focusTarget?.focus({ preventScroll: true });
   };
-  opener?.addEventListener('click', () => openForm());
-  document.querySelectorAll<HTMLAnchorElement>('a[href="#booking-form"]').forEach((a) => {
+
+  dialog.addEventListener('close', () => {
+    html.classList.remove('bk-lock');
+    // Closed by × or Esc: take the #booking-form entry back off the history.
+    if (window.location.hash === HASH) {
+      if ((history.state as { bk?: boolean } | null)?.bk) history.back();
+      else history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    returnFocus?.focus({ preventScroll: true });
+    updateSticky();
+  });
+  dialog
+    .querySelectorAll<HTMLElement>('.bk-close, .bk-done-close')
+    .forEach((b) => b.addEventListener('click', () => dialog.close()));
+
+  window.addEventListener('popstate', () => {
+    if (window.location.hash === HASH) openDialog('history');
+    else if (dialog.open) dialog.close();
+  });
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash === HASH && !dialog.open) openDialog('link');
+  });
+
+  document.getElementById('bk-open')?.addEventListener('click', () => openDialog('final'));
+  document.querySelector('.bk-sticky-cta')?.addEventListener('click', () => openDialog('sticky'));
+  const heroCta = document.querySelector<HTMLAnchorElement>(`a[href="${HASH}"]`);
+  document.querySelectorAll<HTMLAnchorElement>(`a[href="${HASH}"]`).forEach((a) => {
     a.addEventListener('click', (ev) => {
       ev.preventDefault();
-      history.replaceState(null, '', '#booking-form');
-      openForm();
+      openDialog(a === heroCta ? 'hero' : 'link');
     });
   });
-  const openFromHash = () => {
-    if (window.location.hash === '#booking-form') openForm();
+
+  // --- The sticky "Get a quote" bar ---------------------------------------
+
+  // Shown once the hero's "Get a quote" has scrolled away and until the
+  // final section (with its own button) comes into view. Hidden while the
+  // enquiry is open, while the cookie banner is up (consent comes first,
+  // and both want the foot of the screen), and after an enquiry is sent.
+  const sticky = document.getElementById('bk-sticky');
+  const finalSection = root?.closest('section') ?? root;
+  const bannerUp = () => document.querySelector('[data-consent-banner].is-visible') !== null;
+  const modal: HTMLDialogElement = dialog;
+  function updateSticky() {
+    if (!sticky) return;
+    const heroGone = heroCta
+      ? heroCta.getBoundingClientRect().bottom < 0
+      : window.scrollY > window.innerHeight;
+    const finalNear = finalSection
+      ? finalSection.getBoundingClientRect().top < window.innerHeight
+      : false;
+    const show = heroGone && !finalNear && !modal.open && !bannerUp() && !sent;
+    sticky.classList.toggle('is-shown', show);
+  }
+  let frame = 0;
+  const queueSticky = () => {
+    if (frame) return;
+    frame = window.requestAnimationFrame(() => {
+      frame = 0;
+      updateSticky();
+    });
   };
-  window.addEventListener('hashchange', openFromHash);
-  openFromHash();
+  window.addEventListener('scroll', queueSticky, { passive: true });
+  window.addEventListener('resize', queueSticky);
+  const bannerEl = document.querySelector('[data-consent-banner]');
+  if (bannerEl) {
+    new MutationObserver(queueSticky).observe(bannerEl, {
+      attributes: true,
+      attributeFilter: ['class', 'hidden'],
+    });
+  }
+  updateSticky();
+
+  showStep(0, { focus: false });
+  if (window.location.hash === HASH) openDialog('link');
 
   // Readiness flag so a test can wait for the handler (same convention as
   // contact-form.ts and work-enquiry-form.ts).
