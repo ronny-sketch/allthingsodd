@@ -144,6 +144,7 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
           <h2>{page.credits.title}</h2>
         </div>
         <p class="ty-lede reveal">{page.credits.lede}</p>
+        {page.credits.note && <p class="ty-credits-note reveal">{page.credits.note}</p>}
         {
           page.credits.lists.map((group) => (
             <div class="ty-group">
@@ -356,6 +357,18 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
     margin-top: var(--space-6);
     color: var(--color-paper);
     font-weight: 600;
+  }
+
+  /* The apology under the credits lede: quieter than the lede, because it is
+     an aside to the reader, and it carries the one address on the page that
+     asks someone to write in. */
+  .ty-credits-note {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    margin-block: var(--space-4) 0;
+    text-align: center;
+    font: var(--text-small);
+    color: var(--color-paper-40);
   }
 
   /* Credits: each group is a new group in the section's flow. */

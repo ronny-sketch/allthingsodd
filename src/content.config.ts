@@ -732,6 +732,9 @@ const pages = defineCollection({
           eyebrow: z.string(),
           title: z.string(),
           lede: z.string(),
+          // The apology under the lede: with this many names, some will have
+          // been missed, so the page says so and gives an address to fix it.
+          note: z.string().optional(),
           // Every list renders as the same thing: alphabetical columns of
           // names (the page sorts them, so stored order doesn't matter), with
           // `subgroups` as labelled rows (the partners). The core team had
