@@ -26,12 +26,26 @@ import Pill from '../primitives/Pill.astro';
 // The Worker emails hello@oddfest.co alongside its Attio write (since
 // 2026-09-20 server-side — nothing to configure here).
 
+// Kept in sync by hand with src/scripts/work-enquiry-form.ts, which maps this
+// value back onto a real product before submitting. See the option below.
+const STUDIO_OPTION = 'oddstudio';
+
 const PRODUCTS = [
   { value: 'oddference_corporate', label: 'ODDference' },
   { value: 'oddmembership', label: 'ODDnetwork' },
   { value: 'strategic_partnership', label: 'Partnership' },
   { value: 'oddagency', label: 'ODDagency / project' },
   { value: 'oddspace', label: 'ODDspace — membership or renting the space' },
+  // ODDstudio's own option (2026-09-24, Ronny). NOT a products.yml value and
+  // deliberately so: Attio's `product` select has no such option, and a studio
+  // booking really is an ODDspace enquiry with a narrower purpose — which is
+  // exactly what the Worker's `intent` axis exists for (see validate.ts's
+  // INTENTS). work-enquiry-form.ts translates this value to
+  // interest=oddspace + intent=studio before the POST, so nothing downstream
+  // sees a product it doesn't know. Booking the studio was previously
+  // reachable only by following a link from /oddstudio; anyone who came
+  // straight to this page had to guess that "ODDspace" covered it.
+  { value: STUDIO_OPTION, label: 'ODDstudio — booking the studio' },
   { value: 'other', label: 'Something else' },
 ];
 ---

@@ -18,6 +18,7 @@ import SpaceHero from '../../components/sections/SpaceHero.astro';
 import SectionIntro from '../../components/sections/SectionIntro.astro';
 import ResourceList from '../../components/sections/ResourceList.astro';
 import SpaceShowcase from '../../components/sections/SpaceShowcase.astro';
+import VenueRateCalculator from '../../components/sections/VenueRateCalculator.astro';
 import FeatureGrid from '../../components/sections/FeatureGrid.astro';
 import FAQList from '../../components/sections/FAQList.astro';
 import PhotoBreak from '../../components/sections/PhotoBreak.astro';
@@ -73,7 +74,13 @@ const page = entry.data;
       </div>
     </section>
 
-    <!-- 3. Price: what is published, and plainly why the rest is quoted. -->
+    <!-- 3. Price. Until 2026-09-24 this section published the member rates
+         and said everything else was quoted per event — which was the honest
+         thing to say while three internal price lists disagreed with each
+         other. There is one list now (Ronny's, 2026-09-24), so the page
+         publishes it and lets a visitor price their own event. The
+         "negotiable case by case" line under the card is not a softener: it
+         is the actual policy, and it is why these are starting numbers. -->
     <section class="odsv-sub odsv-pricing">
       <div class="wrap flow">
         <div class="section-head">
@@ -81,8 +88,16 @@ const page = entry.data;
           <h2>{page.pricing.headline}</h2>
         </div>
         <p class="odsv-pricing-body reveal">{page.pricing.body}</p>
+        <VenueRateCalculator
+          vatRate={page.rateCard.vatRate}
+          lanesLabel={page.rateCard.lanesLabel}
+          estimateLabel={page.rateCard.estimateLabel}
+          lanes={page.rateCard.lanes}
+          note={page.rateCard.note}
+          cta={page.rateCard.cta}
+        />
         <div class="odsv-rates reveal">
-          <span class="odsv-rates-label">ODDspace members</span>
+          <span class="odsv-rates-label">Booked separately</span>
           {
             page.memberRates.map((r) => (
               <div class="odsv-rate-row">

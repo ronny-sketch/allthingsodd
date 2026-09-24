@@ -2,8 +2,8 @@
   "_template": "oddstudio",
   "_slug": "oddstudio",
   "seo": {
-    "title": "ODDstudio — recording and production studio at ODDspace, Helsinki",
-    "description": "A studio at ODDspace in Vallila, Helsinki for recording, co-writing and production. Genelec monitoring, mics, instruments and room to work as a group. Bookable by the hour, or as a monthly membership.",
+    "title": "ODDstudio — a creative music studio at ODDspace, Helsinki",
+    "description": "A creative music studio at ODDspace in Vallila, Helsinki for recording, co-writing and production. Genelec monitoring, mics, instruments and room to work as a group. Bookable by the hour, or as a monthly membership.",
     "ogImage": "/og/oddspace.jpg"
   },
   "eyebrow": "ODDstudio · Inside ODDspace",
@@ -21,7 +21,7 @@
   "heroPhotos": [
     {
       "image": "../../assets/oddstudio/studio-room-wide.jpg",
-      "alt": "The full ODDstudio room — blue acoustic curtains, a production desk, drums and a sofa"
+      "alt": "The full ODDstudio room — blue acoustic curtains, a production desk and a sofa"
     },
     {
       "image": "../../assets/oddstudio/instruments-lineup.jpg",
@@ -34,10 +34,6 @@
     {
       "image": "../../assets/oddstudio/microphone-detail.jpg",
       "alt": "A microphone and pop filter on a boom arm in the studio"
-    },
-    {
-      "image": "../../assets/oddstudio/electronic-drums.jpg",
-      "alt": "The electronic drum kit set up against the acoustic curtains"
     },
     {
       "image": "../../assets/oddstudio/studio-room-sofa.jpg",
@@ -55,7 +51,7 @@
   "intro": "Bring the idea. The room is ready.",
   "whatItIs": {
     "eyebrow": "What ODDstudio is",
-    "headline": "A space built for creating sound.",
+    "headline": "A creative music studio.",
     "body": "Record, write, produce, or gather a few people and start something from scratch. It's open, comfortable and properly equipped — the kind of room where a session can run from a first idea to a finished take without leaving. There's real space to spread out and work as a group, or to shut the door and go deep on your own. It works for recording, co-writing and songwriting sessions, production, and pretty much any creative sound or music work."
   },
   "kit": [
@@ -67,7 +63,7 @@
     },
     {
       "name": "Microphones",
-      "body": "A small, deliberate set that covers voice, amps and drums.",
+      "body": "A small, deliberate set that covers voice, amps and instruments.",
       "bullets": ["Shure SM7B", "Røde NT1-A", "Shure SM58", "Sennheiser Vintage MD 421-N"],
       "image": "../../assets/oddstudio/microphone-detail.jpg"
     },
@@ -76,7 +72,6 @@
       "body": "Enough in the room to start writing without carrying anything in.",
       "bullets": [
         "Digital piano and Korg microKEY",
-        "Electronic drums",
         "Four guitars — two semi-acoustics (nylon and steel), a resonator and an electric",
         "Percussion instruments"
       ],
@@ -117,9 +112,18 @@
     }
   ],
   "publicRates": [
-    { "name": "Hourly", "price": "€30" },
-    { "name": "Half day (4 hours)", "price": "€100" },
-    { "name": "Full day (8 hours)", "price": "€180" }
+    {
+      "name": "Hourly",
+      "price": "€30"
+    },
+    {
+      "name": "Half day (4 hours)",
+      "price": "€100"
+    },
+    {
+      "name": "Full day (8 hours)",
+      "price": "€180"
+    }
   ],
   "ratesNote": "All prices include VAT (25.5%). Payment by email invoice, due within 14 days.",
   "howItWorks": [
@@ -195,19 +199,51 @@
       "label": "TUNEMENT's privacy policy",
       "href": "https://www.tunement.com/privacy.html",
       "external": true
+    },
+    "about": "TUNEMENT is an award-winning audio branding agency working out of the same building — sound logos, brand ambience and whole sonic identity systems, and a winner at the International Sound Awards 2026.",
+    "logo": "../../assets/oddstudio/tunement-logo.svg",
+    "logoAlt": "TUNEMENT",
+    "website": {
+      "label": "tunement.com",
+      "href": "https://www.tunement.com",
+      "external": true
     }
   },
   "photoCredit": "Photography: Erica Dahlström Dezonne",
   "railLeft": [
-    { "kind": "word", "text": "ODDstudio" },
-    { "kind": "meta", "text": "Vallila" },
-    { "kind": "word", "text": "Record" },
-    { "kind": "meta", "text": "Helsinki" }
+    {
+      "kind": "word",
+      "text": "ODDstudio"
+    },
+    {
+      "kind": "meta",
+      "text": "Vallila"
+    },
+    {
+      "kind": "word",
+      "text": "Record"
+    },
+    {
+      "kind": "meta",
+      "text": "Helsinki"
+    }
   ],
   "railRight": [
-    { "kind": "meta", "text": "Inside ODDspace" },
-    { "kind": "word", "text": "Write" },
-    { "kind": "meta", "text": "With TUNEMENT" },
-    { "kind": "word", "text": "Produce" }
+    {
+      "kind": "meta",
+      "text": "Inside ODDspace"
+    },
+    {
+      "kind": "word",
+      "text": "Write"
+    },
+    {
+      "kind": "meta",
+      "text": "With TUNEMENT"
+    },
+    {
+      "kind": "word",
+      "text": "Produce"
+    }
   ]
 }
