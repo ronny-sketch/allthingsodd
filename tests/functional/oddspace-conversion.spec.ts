@@ -226,8 +226,19 @@ test('ODDspace shows only the two starting event prices', async ({ page }) => {
 
 test('ODDspace routes visitors into both journeys', async ({ page }) => {
   await page.goto(SPACE);
-  // Every membership and event CTA on /oddspace should now lead to a page
-  // that answers the question, not straight into an enquiry form.
+  // Membership CTAs lead to the page that answers the question; event CTAs
+  // open the venue page's Get a quote form (2026-09-24).
   await expect(page.locator('a[href*="/oddspace/membership"]').first()).toBeVisible();
   await expect(page.locator('a[href*="/oddspace/venue"]').first()).toBeVisible();
+});
+
+test('every event link on ODDspace goes to the Get a quote form', async ({ page }) => {
+  await page.goto(SPACE);
+  await expect(page.locator('a[href*="intent=event"]')).toHaveCount(0);
+  for (const label of [/Organise an event/, /Enquire about the gallery/, /Get a quote/]) {
+    await expect(page.getByRole('link', { name: label }).first()).toHaveAttribute(
+      'href',
+      '/oddspace/venue/#booking-form',
+    );
+  }
 });

@@ -15,7 +15,7 @@
   },
   "secondaryCta": {
     "label": "Organise an event",
-    "href": "/oddspace/venue"
+    "href": "/oddspace/venue/#booking-form"
   },
   "intro": "Come here to work. Meet people. Host events. Create something. Or simply have somewhere to keep going between projects.",
   "visit": {
@@ -87,7 +87,7 @@
       ],
       "image": "../../assets/oddspace/opening-full-house.jpg",
       "goLabel": "Enquire about the gallery",
-      "href": "/oddspace/venue"
+      "href": "/oddspace/venue/#booking-form"
     },
     {
       "name": "Auditorium",
@@ -95,7 +95,7 @@
       "bullets": ["Talks and screenings", "Presentations", "Workshops", "Smaller events"],
       "image": "../../assets/oddspace/auditorium-tiered.jpg",
       "goLabel": "Enquire about the auditorium",
-      "href": "/oddspace/venue"
+      "href": "/oddspace/venue/#booking-form"
     },
     {
       "name": "ODDstudio",
@@ -206,8 +206,8 @@
       }
     ],
     "cta": {
-      "label": "Want to put something on here? Tell us about it",
-      "href": "/oddspace/venue"
+      "label": "Want to put something on here? Get a quote",
+      "href": "/oddspace/venue/#booking-form"
     }
   },
   "gallery": {
@@ -317,7 +317,7 @@
     },
     {
       "question": "Can non-members organise events?",
-      "answer": "Yes. Renting the gallery or auditorium doesn't require membership — get in touch with what you have in mind."
+      "answer": "Yes. Renting the gallery or auditorium doesn't require membership — get a quote on the venue page with what you have in mind."
     },
     {
       "question": "What kinds of events can happen there?",
@@ -329,11 +329,11 @@
     },
     {
       "question": "How much does event use cost?",
-      "answer": "From €300 + VAT for creative organisations and cultural workers, and from €750 + VAT for companies. Every price is open to discussion — the venue page has the full rate card and a calculator that prices your own case."
+      "answer": "From €300 + VAT for creative organisations and cultural workers, and from €750 + VAT for companies. For your own event, get a quote on the venue page — tell us the date and what you're planning, and we reply with availability and a price within one working day."
     },
     {
       "question": "How do I enquire about an event?",
-      "answer": "Start from the venue page: it covers the rooms, member rates, how booking works and what we confirm per event. You don't need to be a member first."
+      "answer": "Get a quote on the venue page. You don't need to be a member first."
     },
     {
       "question": "Is ODDspace accessible?",
