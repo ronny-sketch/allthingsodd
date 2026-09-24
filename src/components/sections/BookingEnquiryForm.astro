@@ -2,9 +2,13 @@
 // The ODDspace booking enquiry form, on /oddspace/venue. First built
 // 2026-09-23; reworked 2026-09-24 for brand, order and error handling.
 //
-// It asks for what a quote depends on (the date and hours, the room, the
-// headcount, how much help, alcohol, music after 22:00, smoke and flame), so
-// nobody has to write back with twenty questions. The order follows the
+// It asks only for what a quote depends on (the date and hours, the room,
+// the headcount, how much help and kit, alcohol, smoke and flame), so nobody
+// has to write back with twenty questions (lighter pass, 2026-09-24).
+// Catering, cleaning, the final layout, music after 22:00 and filming are
+// settled after the booking is confirmed, and budget is not asked: none of
+// them changes the quote. See .design/booking-form in the Claude project for
+// the brief. The order follows the
 // visitor's own question, which is the section's headline: "Is your date
 // free?". So the date comes first, then the people and the room, then the
 // event, then the practical details, and contact details come last.
@@ -21,7 +25,10 @@
 // - "How many people?" is a number, and `headcount_band` is derived from it.
 // - "Who can come?" fills both `event_visibility` and `event_access`.
 // - In a space with fixed seating (the Auditorium) the layout is not asked
-//   and is sent as `theatre`.
+//   and is sent as `theatre`. Elsewhere it is optional.
+// - The smoke, haze or flame tick box sends `pyro_flame` as yes or no.
+// - Times come from quarter-hour lists and the date from the calendar only;
+//   nothing in "When" can be typed.
 //
 // Every option list comes from booking-enquiry-schema.ts, the same module
 // the submit script validates against. Labels are UI copy and stay in code,
@@ -46,13 +53,9 @@ import {
   LAYOUTS,
   SUPPORT_LEVELS,
   TECH_OFFERED,
-  CATERING,
   ALCOHOL,
   MUSIC,
-  YES_NO_NOT_SURE,
-  MEDIA,
-  CLEANING,
-  BUDGET_BANDS,
+  QUARTER_HOURS,
   LIMITS,
 } from '../../scripts/booking-enquiry-schema';
 
@@ -75,7 +78,7 @@ const YES_NO = [
     <p class="booking-key">
       Questions marked <span class="req" aria-hidden="true">*</span><span class="sr-only"
         >with an asterisk</span
-      > are required. The rest help us quote, but can wait.
+      > are required. Everything else is optional.
     </p>
 
     <!-- Honeypot. A person never sees it. A non-empty value means a bot. -->
@@ -101,45 +104,38 @@ const YES_NO = [
               name="event_date"
               type="date"
               required
+              data-picker-only
               aria-describedby="bk-when-hint"
             />
           </div>
           <div class="bk-sub">
             <label for="bk-from">From</label>
-            <input
-              id="bk-from"
-              name="time_from"
-              type="time"
-              step="900"
-              required
-              aria-describedby="bk-when-hint"
-            />
+            <select id="bk-from" name="time_from" required aria-describedby="bk-when-hint">
+              <option value="" selected disabled>––:––</option>
+              {QUARTER_HOURS.map((t) => <option value={t}>{t}</option>)}
+            </select>
           </div>
           <div class="bk-sub">
             <label for="bk-until">Until</label>
-            <input
-              id="bk-until"
-              name="time_until"
-              type="time"
-              step="900"
-              required
-              aria-describedby="bk-when-hint"
-            />
+            <select id="bk-until" name="time_until" required aria-describedby="bk-when-hint">
+              <option value="" selected disabled>––:––</option>
+              {QUARTER_HOURS.map((t) => <option value={t}>{t}</option>)}
+            </select>
           </div>
-        </div>
-        <label class="check">
-          <input type="checkbox" name="multi_day" value="true" />
-          <span>It runs over more than one day</span>
-        </label>
-        <div class="bk-sub bk-sub-date" data-show-when="multi_day=true">
-          <label for="bk-enddate">Last day</label>
-          <input id="bk-enddate" name="end_date" type="date" required />
         </div>
         <p class="field-hint" id="bk-when-hint">
           Helsinki time. Start from when your first person arrives to set up, and end when the last
           person leaves after clearing up. The hire covers everything in between.
         </p>
         <p class="bk-derived" id="bk-when-summary" aria-live="polite" hidden></p>
+        <label class="check">
+          <input type="checkbox" name="multi_day" value="true" />
+          <span>It runs over more than one day</span>
+        </label>
+        <div class="bk-sub bk-sub-date" data-show-when="multi_day=true">
+          <label for="bk-enddate">Last day</label>
+          <input id="bk-enddate" name="end_date" type="date" required data-picker-only />
+        </div>
         <input type="hidden" name="get_in" />
         <input type="hidden" name="get_out" />
         <p class="field-error" id="bk-when-err" hidden></p>
@@ -147,15 +143,21 @@ const YES_NO = [
 
       <p class="booking-warning" id="bk-notice" role="status" aria-live="polite" hidden></p>
 
-      <div class="field-row">
+      <div class="field">
+        <label class="check">
+          <input type="checkbox" name="has_alt_dates" value="true" />
+          <span>Other dates would work too</span>
+        </label>
+      </div>
+      <div class="field-row" data-show-when="has_alt_dates=true">
         <div class="field" data-label="Another date">
-          <label for="bk-alt1">Another date that would work</label>
-          <input id="bk-alt1" name="alt_date_1" type="date" />
+          <label for="bk-alt1">Another date</label>
+          <input id="bk-alt1" name="alt_date_1" type="date" data-picker-only />
           <p class="field-error" id="bk-alt1-err" hidden></p>
         </div>
-        <div class="field" data-label="A third date" data-show-when="alt_date_1=*">
+        <div class="field" data-label="A third date">
           <label for="bk-alt2">And another</label>
-          <input id="bk-alt2" name="alt_date_2" type="date" />
+          <input id="bk-alt2" name="alt_date_2" type="date" data-picker-only />
           <p class="field-error" id="bk-alt2-err" hidden></p>
         </div>
       </div>
@@ -254,11 +256,12 @@ const YES_NO = [
       </fieldset>
 
       <fieldset class="field" id="bk-layout" data-label="Layout" data-show-when={`space!=${FIXED}`}>
-        <legend>How should the room be set up? <span class="req" aria-hidden="true">*</span></legend
-        >
-        <ChoiceChips name="layout" options={LAYOUTS} required idPrefix="bk-layout" />
-        <p class="field-hint" data-show-when="space=full_triangle">
-          This is for the Gallery and the Aula. The Auditorium's seats are fixed.
+        <legend>How should the room be set up?</legend>
+        <ChoiceChips name="layout" options={LAYOUTS} idPrefix="bk-layout" />
+        <p class="field-hint">
+          <span data-show-when="space=full_triangle"
+            >This is for the Gallery and the Aula; the Auditorium's seats are fixed.{' '}</span
+          >If you are not sure yet, leave it. We confirm the layout with you before the event.
         </p>
         <p class="field-error" id="bk-layout-err" hidden></p>
       </fieldset>
@@ -329,17 +332,17 @@ const YES_NO = [
           maxlength={LIMITS.long}
           aria-describedby="bk-desc-hint"></textarea>
         <p class="field-hint" id="bk-desc-hint">
-          What happens, for whom, and what the room needs to do.
+          Two or three lines is plenty: what happens, and who it is for.
         </p>
         <p class="field-error" id="bk-desc-err" hidden></p>
       </div>
     </div>
 
-    <!-- 04 Help, food and sound ------------------------------------------------ -->
+    <!-- 04 What you need ---------------------------------------------------- -->
     <div class="bk-step" role="group" aria-labelledby="bk-step-4">
       <h3 class="bk-step-head" id="bk-step-4">
         <span class="bk-step-num" aria-hidden="true">04</span>
-        <span>Help, food and sound</span>
+        <span>What you need</span>
       </h3>
 
       <fieldset class="field" id="bk-support" data-label="Help from us">
@@ -355,13 +358,16 @@ const YES_NO = [
       </fieldset>
 
       <fieldset class="field" id="bk-tech" data-label="Kit from us">
-        <legend>Kit you would like from us</legend>
+        <legend>Kit you will use</legend>
         <ChoiceChips name="tech" options={TECH_OFFERED} type="checkbox" idPrefix="bk-tech" />
-        <p class="field-hint">Every booking already includes the PA system and one microphone.</p>
+        <p class="field-hint">
+          Pick any. The PA and one microphone come with every booking; tick them if you will use
+          them, so they are set up for you.
+        </p>
       </fieldset>
       <div class="field bk-narrow" data-label="Microphones" data-show-when="tech=mics">
         <label for="bk-mics"
-          >Microphones in total <span class="req" aria-hidden="true">*</span></label
+          >How many microphones? <span class="req" aria-hidden="true">*</span></label
         >
         <input
           id="bk-mics"
@@ -403,19 +409,6 @@ const YES_NO = [
         <p class="field-error" id="bk-equip-err" hidden></p>
       </div>
 
-      <fieldset class="field" id="bk-catering" data-label="Food and drink">
-        <legend>Food and drink <span class="req" aria-hidden="true">*</span></legend>
-        <ChoiceChips name="catering" options={CATERING} required idPrefix="bk-catering" />
-        <p class="field-error" id="bk-catering-err" hidden></p>
-      </fieldset>
-      <div class="field" data-label="Caterer" data-show-when="catering=own_caterer">
-        <label for="bk-caterer"
-          >Who is the caterer? <span class="req" aria-hidden="true">*</span></label
-        >
-        <input id="bk-caterer" name="caterer_name" type="text" maxlength={LIMITS.short} required />
-        <p class="field-error" id="bk-caterer-err" hidden></p>
-      </div>
-
       <fieldset class="field" id="bk-alcohol" data-label="Alcohol">
         <legend>Alcohol <span class="req" aria-hidden="true">*</span></legend>
         <ChoiceChips name="alcohol" options={ALCOHOL} required idPrefix="bk-alcohol" />
@@ -431,74 +424,31 @@ const YES_NO = [
         <ChoiceChips name="music" options={MUSIC} required idPrefix="bk-music" />
         <p class="field-error" id="bk-music-err" hidden></p>
       </fieldset>
-      <fieldset
-        class="field"
-        id="bk-late"
-        data-label="Music after 22:00"
-        data-show-when="music=background|live|dj"
-      >
-        <legend>
-          Will the music carry on past 22:00? <span class="req" aria-hidden="true">*</span>
-        </legend>
-        <ChoiceChips name="music_past_2200" options={YES_NO_NOT_SURE} required idPrefix="bk-late" />
-        <p class="field-hint">Loud music after 22:00 needs the building owner's approval.</p>
-        <p class="field-error" id="bk-late-err" hidden></p>
-      </fieldset>
 
-      <fieldset class="field" id="bk-pyro" data-label="Smoke, haze or flame">
-        <legend>
-          Smoke, haze, candles or open flame? <span class="req" aria-hidden="true">*</span>
-        </legend>
-        <ChoiceChips name="pyro_flame" options={YES_NO_NOT_SURE} required idPrefix="bk-pyro" />
-        <p class="field-hint" data-show-when="pyro_flame=yes|not_sure">
-          Smoke, haze, steam and candles set off the building's fire alarm, so they are not allowed
-          indoors at the moment. Tell us what you have in mind and we will tell you what can be
-          arranged.
-        </p>
-        <p class="field-error" id="bk-pyro-err" hidden></p>
-      </fieldset>
-      <div
-        class="field"
-        data-label="Smoke, haze or flame details"
-        data-show-when="pyro_flame=yes|not_sure"
-      >
+      <div class="field">
+        <label class="check">
+          <input type="checkbox" name="has_pyro" value="true" />
+          <span>It involves smoke, haze, candles or open flame</span>
+        </label>
+      </div>
+      <div class="field" data-label="Smoke, haze or flame" data-show-when="has_pyro=true">
         <label for="bk-pyro-detail"
-          >What do you have in mind?<span
-            class="req"
-            aria-hidden="true"
-            data-show-when="pyro_flame=yes"
-          >
-            *</span
-          ></label
+          >What do you have in mind? <span class="req" aria-hidden="true">*</span></label
         >
         <textarea
           id="bk-pyro-detail"
           name="pyro_flame_detail"
           rows="2"
           maxlength={LIMITS.long}
-          data-required-when="pyro_flame=yes"></textarea>
+          required
+          aria-describedby="bk-pyro-hint"></textarea>
+        <p class="field-hint" id="bk-pyro-hint">
+          Smoke, haze, steam and candles set off the building's fire alarm, so they are not allowed
+          indoors at the moment. Tell us the idea and we will tell you what can be arranged.
+        </p>
+        <input type="hidden" name="pyro_flame" />
         <p class="field-error" id="bk-pyro-detail-err" hidden></p>
       </div>
-
-      <fieldset class="field" id="bk-media" data-label="Photography, filming or streaming">
-        <legend>Photography, filming or streaming</legend>
-        <ChoiceChips name="media" options={MEDIA} type="checkbox" idPrefix="bk-media" />
-        <p class="field-hint">Anyone doing it at the event, including your own team.</p>
-      </fieldset>
-
-      <fieldset class="field" id="bk-cleaning" data-label="Cleaning">
-        <legend>Cleaning afterwards <span class="req" aria-hidden="true">*</span></legend>
-        <ChoiceChips name="cleaning" options={CLEANING} required idPrefix="bk-cleaning" />
-        <p class="field-error" id="bk-cleaning-err" hidden></p>
-      </fieldset>
-
-      <fieldset class="field" id="bk-budget" data-label="Budget">
-        <legend
-          >Budget for the space and our help <span class="req" aria-hidden="true">*</span></legend
-        >
-        <ChoiceChips name="budget_band" options={BUDGET_BANDS} required idPrefix="bk-budget" />
-        <p class="field-error" id="bk-budget-err" hidden></p>
-      </fieldset>
     </div>
 
     <!-- 05 About you ------------------------------------------------------------ -->
@@ -587,27 +537,19 @@ const YES_NO = [
         <p class="field-error" id="bk-tier-err" hidden></p>
       </fieldset>
 
-      <div class="field" data-label="Accessibility needs">
-        <label for="bk-access-notes">Accessibility needs</label>
-        <textarea
-          id="bk-access-notes"
-          name="accessibility_notes"
-          rows="2"
-          maxlength={LIMITS.long}
-          aria-describedby="bk-access-hint"></textarea>
-        <p class="field-hint" id="bk-access-hint">
-          Yours or your guests'. Step-free access, lifts and toilets are still being documented, so
-          we tell you exactly what the space can do today.
-        </p>
-        <p class="field-error" id="bk-access-notes-err" hidden></p>
-      </div>
-      <div class="field" data-label="How you heard about us">
-        <label for="bk-referral">How did you hear about us?</label>
-        <input id="bk-referral" name="referral_source" type="text" maxlength={LIMITS.short} />
-      </div>
       <div class="field" data-label="Anything else">
         <label for="bk-notes">Anything else?</label>
-        <textarea id="bk-notes" name="notes" rows="3" maxlength={LIMITS.long}></textarea>
+        <textarea
+          id="bk-notes"
+          name="notes"
+          rows="3"
+          maxlength={LIMITS.long}
+          aria-describedby="bk-notes-hint"></textarea>
+        <p class="field-hint" id="bk-notes-hint">
+          Accessibility needs, timings, questions: anything that helps us plan. Step-free access,
+          lifts and toilets are still being documented, so we tell you exactly what the space can do
+          today.
+        </p>
         <p class="field-error" id="bk-notes-err" hidden></p>
       </div>
 
@@ -761,6 +703,7 @@ const YES_NO = [
   .booking-done[hidden],
   .bk-derived[hidden],
   .field[hidden],
+  .field-row[hidden],
   .bk-sub[hidden],
   .req[hidden],
   .field-hint[hidden],
@@ -822,9 +765,58 @@ const YES_NO = [
   :global(.theme-light) .field input[type='time'] {
     color-scheme: light;
   }
+  /* The time lists: the same underline field as the inputs, with a chevron
+     drawn from two gradients in the text colour, so it flips with the theme
+     and needs no icon. `appearance: none` is what lets iOS Safari take the
+     underline instead of its own grey pill; the native list or wheel still
+     opens on tap. */
+  .field select {
+    width: 100%;
+    min-width: 0;
+    min-height: 2.75rem;
+    appearance: none;
+    border: none;
+    border-bottom: 1px solid var(--color-paper-20);
+    border-radius: 0;
+    padding: 0.6rem 1.5rem 0.6rem 0;
+    font: var(--text-body);
+    color: var(--color-paper);
+    background-color: transparent;
+    background-image:
+      linear-gradient(45deg, transparent 50%, currentColor 50%),
+      linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position:
+      calc(100% - 0.55rem) 55%,
+      calc(100% - 0.25rem) 55%;
+    background-size: 0.3rem 0.3rem;
+    background-repeat: no-repeat;
+    outline: none;
+    cursor: pointer;
+    color-scheme: dark;
+    transition: border-color var(--duration-fast) ease;
+  }
+  :global(.theme-light) .field select {
+    color-scheme: light;
+  }
+  .field select:invalid {
+    color: var(--color-paper-60);
+  }
+  .field select option {
+    color: initial;
+  }
+  /* Picker-only dates: the whole field opens the calendar. */
+  .field input[data-picker-only] {
+    cursor: pointer;
+    caret-color: transparent;
+  }
   .field input:focus,
+  .field select:focus,
   .field textarea:focus {
     border-color: var(--color-paper);
+  }
+  .field select:focus-visible {
+    outline: none;
+    box-shadow: inset 0 -1px 0 var(--color-paper);
   }
   /* Focus on an underline input: the line goes to full figure and doubles,
      drawn as an inset shadow so the field never changes height. The
@@ -1027,6 +1019,7 @@ const YES_NO = [
     color: var(--color-heat);
   }
   .field.is-invalid input:not([type='radio'], [type='checkbox'], [type='hidden']),
+  .field.is-invalid select,
   .field.is-invalid textarea {
     border-bottom-color: var(--color-heat);
     box-shadow: inset 0 -1px 0 var(--color-heat);

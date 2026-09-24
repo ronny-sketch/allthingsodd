@@ -192,7 +192,7 @@ export const LAYOUTS = opts([
 // the form does not describe them. The quote explains the one that fits.
 export const SUPPORT_LEVELS = opts([
   ['raw', 'Raw — just the room'],
-  ['basic_infra', 'Basic infra'],
+  ['basic_infra', 'Basic infrastructure'],
   ['standard', 'Standard'],
   ['premium', 'Premium'],
   ['turnkey', 'Turnkey — we run it with you'],
@@ -203,15 +203,23 @@ export const TECH = opts([
   ['projector', 'Projector'],
   ['screen', 'Screen'],
   ['pa', 'PA system'],
-  ['mics', 'Extra microphones'],
+  ['mics', 'Microphones'],
   ['livestream', 'Livestream kit'],
   ['recording', 'Recording kit'],
 ]);
 
-// What the form offers. The PA system is left out because the event info
-// pack lists "PA sound system and one microphone" in every booking, so there
-// is nothing to ask for. `pa` stays a valid value for the Worker.
-export const TECH_OFFERED = TECH.filter((t) => t.value !== 'pa');
+// Every item is offered, the PA included (2026-09-24). The info pack puts
+// the PA and one microphone in every booking, so ticking them costs nothing,
+// but it tells ODD what to have set up and tested on the day.
+export const TECH_OFFERED = TECH;
+
+// Times are picked, never typed, in quarter hours: "14:42" is not a booking
+// time. 00:00 to 23:45, as HH:MM strings the datetime helpers already take.
+export const QUARTER_HOURS: string[] = Array.from({ length: 96 }, (_, i) => {
+  const h = String(Math.floor(i / 4)).padStart(2, '0');
+  const m = String((i % 4) * 15).padStart(2, '0');
+  return `${h}:${m}`;
+});
 
 export const CATERING = opts([
   ['none', 'None'],
@@ -305,7 +313,7 @@ export interface BookingPayload {
   series_count?: number;
 
   space: string;
-  layout: string;
+  layout?: string;
   layout_custom?: string;
   support_level: string;
   tech: string[];
@@ -313,7 +321,7 @@ export interface BookingPayload {
   own_equipment: boolean;
   own_equipment_detail?: string;
 
-  catering: string;
+  catering?: string;
   caterer_name?: string;
   alcohol: string;
   music: string;
@@ -322,9 +330,9 @@ export interface BookingPayload {
   pyro_flame_detail?: string;
   media: string[];
 
-  cleaning: string;
+  cleaning?: string;
   accessibility_notes?: string;
-  budget_band: string;
+  budget_band?: string;
   referral_source?: string;
   notes?: string;
 }
@@ -491,7 +499,11 @@ export function validateBooking(p: BookingPayload, now: Date = new Date()): Fiel
     intIn('series_count', 2, LIMITS.maxSeries, 'How many events in the series? At least 2.');
 
   oneOf('space', SPACES, 'Pick a space, or ask us to advise.');
-  oneOf('layout', LAYOUTS, 'Pick a layout, or say you are not sure.');
+  // Layout, catering, cleaning, music after 22:00 and budget are optional
+  // (2026-09-24): none of them changes the quote, so they are settled after
+  // the booking is confirmed. The Worker applies the same rule. A value that
+  // is sent is still checked.
+  if (p.layout) oneOf('layout', LAYOUTS, 'Pick a layout, or say you are not sure.');
   if (p.layout === 'custom') req('layout_custom', 'Describe the layout you have in mind.');
   oneOf('support_level', SUPPORT_LEVELS, 'Pick a level of support, or ask us to advise.');
   if (!Array.isArray(p.tech) || !p.tech.every((t) => has(TECH, t))) e.tech = 'Unknown option.';
@@ -500,18 +512,20 @@ export function validateBooking(p: BookingPayload, now: Date = new Date()): Fiel
     e.own_equipment = 'Tell us whether you are bringing equipment.';
   if (p.own_equipment === true) req('own_equipment_detail', 'Tell us what you are bringing in.');
 
-  oneOf('catering', CATERING, 'Tell us about food and drink.');
+  if (p.catering) oneOf('catering', CATERING, 'Tell us about food and drink.');
   if (p.catering === 'own_caterer') req('caterer_name', 'Who is the caterer?');
   oneOf('alcohol', ALCOHOL, 'Will there be alcohol?');
   oneOf('music', MUSIC, 'Will there be music?');
-  if (p.music && p.music !== 'none')
+  if (p.music && p.music !== 'none' && p.music_past_2200)
     oneOf('music_past_2200', YES_NO_NOT_SURE, 'Will music carry on past 22:00?');
   oneOf('pyro_flame', YES_NO_NOT_SURE, 'Tell us about smoke, haze or flame.');
-  if (p.pyro_flame === 'yes') req('pyro_flame_detail', 'Tell us what you have in mind.');
+  if (p.pyro_flame === 'yes')
+    req('pyro_flame_detail', 'Tell us what you have in mind, so we can say what is possible.');
   if (!Array.isArray(p.media) || !p.media.every((m) => has(MEDIA, m))) e.media = 'Unknown option.';
 
-  oneOf('cleaning', CLEANING, 'Who cleans up afterwards?');
-  oneOf('budget_band', BUDGET_BANDS, 'Pick a range, or say you would rather not.');
+  if (p.cleaning) oneOf('cleaning', CLEANING, 'Who cleans up afterwards?');
+  if (p.budget_band)
+    oneOf('budget_band', BUDGET_BANDS, 'Pick a range, or say you would rather not.');
 
   for (const k of [
     'contact_first_name',

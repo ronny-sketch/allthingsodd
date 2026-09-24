@@ -127,11 +127,11 @@ if (form instanceof HTMLFormElement) {
       for (const el of conditionals) {
         const show = applies(el.dataset.showWhen ?? '');
         el.hidden = !show;
-        el.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea').forEach(
-          (c) => {
-            c.disabled = !show;
-          },
-        );
+        el.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+          'input, select, textarea',
+        ).forEach((c) => {
+          c.disabled = !show;
+        });
       }
     }
   };
@@ -222,7 +222,7 @@ if (form instanceof HTMLFormElement) {
       series_count: int(fd, 'series_count'),
 
       space: str(fd, 'space'),
-      layout: str(fd, 'layout'),
+      layout: opt(fd, 'layout'),
       layout_custom: opt(fd, 'layout_custom'),
       support_level: str(fd, 'support_level'),
       tech: fd.getAll('tech').map(String),
@@ -230,19 +230,15 @@ if (form instanceof HTMLFormElement) {
       own_equipment: bool(fd, 'own_equipment'),
       own_equipment_detail: opt(fd, 'own_equipment_detail'),
 
-      catering: str(fd, 'catering'),
-      caterer_name: opt(fd, 'caterer_name'),
       alcohol: str(fd, 'alcohol'),
       music: str(fd, 'music'),
-      music_past_2200: opt(fd, 'music_past_2200'),
-      pyro_flame: str(fd, 'pyro_flame'),
+      // One tick box in the form, the spec's yes/no in the payload.
+      pyro_flame: bool(fd, 'has_pyro') ? 'yes' : 'no',
       pyro_flame_detail: opt(fd, 'pyro_flame_detail'),
-      media: fd.getAll('media').map(String),
+      // Not asked any more (settled after booking); the Worker still takes
+      // the key, so it goes as an empty list.
+      media: [],
 
-      cleaning: str(fd, 'cleaning'),
-      accessibility_notes: opt(fd, 'accessibility_notes'),
-      budget_band: str(fd, 'budget_band'),
-      referral_source: opt(fd, 'referral_source'),
       notes: opt(fd, 'notes'),
     };
   };
@@ -290,8 +286,8 @@ if (form instanceof HTMLFormElement) {
 
   const controlsIn = (wrap: HTMLElement) =>
     Array.from(
-      wrap.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
-        'input:not([type="hidden"]), textarea',
+      wrap.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+        'input:not([type="hidden"]), select, textarea',
       ),
     ).filter((c) => !c.disabled);
 
@@ -510,6 +506,35 @@ if (form instanceof HTMLFormElement) {
     const end = form.querySelector<HTMLInputElement>('input[name="end_date"]');
     if (end) end.min = value('event_date') || today;
   };
+
+  // --- Picker-only dates ------------------------------------------------
+
+  // A date is chosen from the calendar, never typed (2026-09-24). A click or
+  // tap anywhere on the field opens the browser's own picker, and Enter or
+  // Space does the same from the keyboard. Keys that would type into the
+  // field are swallowed; Tab, Escape and the arrow keys are left alone, so
+  // the field stays operable without a mouse. Where showPicker() is missing
+  // (older browsers) the native field simply behaves as before.
+  const openPicker = (input: HTMLInputElement) => {
+    try {
+      input.showPicker?.();
+    } catch {
+      // Refused (not a user gesture, or inside a cross-origin frame).
+    }
+  };
+  form.querySelectorAll<HTMLInputElement>('input[data-picker-only]').forEach((input) => {
+    input.addEventListener('click', () => openPicker(input));
+    input.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        openPicker(input);
+        return;
+      }
+      if (ev.key === 'Backspace' || ev.key === 'Delete') return;
+      if (ev.key.length === 1 && !ev.metaKey && !ev.ctrlKey) ev.preventDefault();
+    });
+    input.addEventListener('paste', (ev) => ev.preventDefault());
+  });
 
   // --- Wiring -------------------------------------------------------------
 

@@ -100,23 +100,9 @@ const { name, options, type = 'radio', required = false, idPrefix } = Astro.prop
     border-color: var(--color-paper);
     color: var(--color-bg);
   }
-  /* A checkbox group says it takes several answers with a tick, so it never
-     reads as a single choice. */
-  .chips-multi .chip-face::before {
-    content: '';
-    flex: none;
-    width: 0.8rem;
-    height: 0.8rem;
-    border: 1px solid currentColor;
-  }
-  .chips-multi .chip-input:checked + .chip-face::before {
-    content: '✓';
-    border-color: transparent;
-    display: grid;
-    place-items: center;
-    font-size: inherit;
-    line-height: 1;
-  }
+  /* No tick square inside a multi-select pill (2026-09-24): the fill is the
+     selected state, and a box inside a button said the same thing twice.
+     The question's hint says "Pick any" where several answers fit. */
   .chip-input:focus-visible + .chip-face {
     outline: 2px solid var(--color-paper);
     outline-offset: 2px;

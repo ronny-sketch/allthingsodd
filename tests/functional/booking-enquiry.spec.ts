@@ -51,8 +51,8 @@ function dateIn(days: number) {
 
 async function fillValid(page: Page, { days = 40 } = {}) {
   await page.fill('#bk-date', dateIn(days));
-  await page.fill('#bk-from', '14:00');
-  await page.fill('#bk-until', '22:00');
+  await page.selectOption('#bk-from', '14:00');
+  await page.selectOption('#bk-until', '22:00');
   await page.fill('#bk-estimate', '80');
   await page.check('#bk-space-gallery');
   await page.check('#bk-layout-cocktail');
@@ -61,14 +61,8 @@ async function fillValid(page: Page, { days = 40 } = {}) {
   await page.check('#bk-audience-private');
   await page.fill('#bk-desc', 'A product launch with a short talk and drinks.');
   await page.check('#bk-support-basic_infra');
-  await page.check('#bk-catering-own_caterer');
-  await page.fill('#bk-caterer', 'Test Catering Oy');
   await page.check('#bk-alcohol-served');
   await page.check('#bk-music-background');
-  await page.check('#bk-late-no');
-  await page.check('#bk-pyro-no');
-  await page.check('#bk-cleaning-via_odd');
-  await page.check('#bk-budget-1000_2500');
   await page.fill('#bk-first', 'Test');
   await page.fill('#bk-last', 'Person');
   await page.fill('#bk-email', 'test@example.com');
@@ -206,12 +200,6 @@ test('conditional questions appear only when they apply', async ({ page }) => {
   await page.check('#bk-member-false');
   await expect(tier).toBeHidden();
 
-  await expect(page.locator('#bk-late')).toBeHidden();
-  await page.check('#bk-music-dj');
-  await expect(page.locator('#bk-late')).toBeVisible();
-  await page.check('#bk-music-none');
-  await expect(page.locator('#bk-late')).toBeHidden();
-
   await expect(page.locator('#bk-mics')).toBeHidden();
   await page.check('#bk-tech-mics');
   await expect(page.locator('#bk-mics')).toBeVisible();
@@ -220,20 +208,96 @@ test('conditional questions appear only when they apply', async ({ page }) => {
   await page.check('#bk-layout-custom');
   await expect(page.locator('input[name="layout_custom"]')).toBeVisible();
 
-  // The second alternative date only appears once there is a first.
-  await expect(page.locator('#bk-alt2')).toBeHidden();
-  await page.fill('#bk-alt1', dateIn(50));
+  // Other dates sit behind a tick box.
+  await expect(page.locator('#bk-alt1')).toBeHidden();
+  await page.check('input[name="has_alt_dates"]');
+  await expect(page.locator('#bk-alt1')).toBeVisible();
   await expect(page.locator('#bk-alt2')).toBeVisible();
+
+  await expect(page.locator('#bk-pyro-detail')).toBeHidden();
+  await page.check('input[name="has_pyro"]');
+  await expect(page.locator('#bk-pyro-detail')).toBeVisible();
 
   await expect(page.locator('#bk-enddate')).toBeHidden();
   await page.check('input[name="multi_day"]');
   await expect(page.locator('#bk-enddate')).toBeVisible();
 });
 
-test('the PA system is not offered, because every booking includes it', async ({ page }) => {
+test('the kit list includes the PA, so ODD knows to set it up', async ({ page }) => {
   await openForm(page);
-  await expect(page.locator('input[name="tech"][value="pa"]')).toHaveCount(0);
-  await expect(page.locator('#bk-tech')).toContainText('includes the PA system');
+  await expect(page.locator('#bk-tech-pa')).toHaveCount(1);
+  await expect(page.locator('#bk-tech')).toContainText('come with every booking');
+  // A multi-select pill is marked by its fill alone, with no box inside.
+  const before = await page
+    .locator('label[for="bk-tech-pa"] .chip-face')
+    .evaluate((el) => getComputedStyle(el, '::before').content);
+  expect(before === 'none' || before === 'normal').toBe(true);
+});
+
+test('questions that do not change the quote are not asked', async ({ page }) => {
+  await openForm(page);
+  for (const name of [
+    'catering',
+    'caterer_name',
+    'cleaning',
+    'budget_band',
+    'music_past_2200',
+    'media',
+    'accessibility_notes',
+    'referral_source',
+  ]) {
+    await expect(page.locator(`#bookingEnquiryForm [name="${name}"]`), name).toHaveCount(0);
+  }
+  // Layout is optional: no mark, and an enquiry without it still goes.
+  await expect(page.locator('#bk-layout .req')).toHaveCount(0);
+});
+
+test('the date is picked from the calendar and cannot be typed', async ({ page }) => {
+  await openForm(page);
+  const date = page.locator('#bk-date');
+  await date.focus();
+  await page.keyboard.type('12122026');
+  await expect(date).toHaveValue('');
+});
+
+test('times come in quarter hours only', async ({ page }) => {
+  await openForm(page);
+  const values = await page
+    .locator('#bk-from option:not([disabled])')
+    .evaluateAll((os) => os.map((o) => (o as HTMLOptionElement).value));
+  expect(values).toHaveLength(96);
+  expect(values[0]).toBe('00:00');
+  expect(values[values.length - 1]).toBe('23:45');
+  expect(values.every((v) => /^\d{2}:(00|15|30|45)$/.test(v))).toBe(true);
+  expect(await page.locator('#bk-from').evaluate((el) => el.tagName)).toBe('SELECT');
+});
+
+test('an enquiry without a layout, other dates or smoke still sends', async ({ page }) => {
+  await openForm(page);
+  await fillValid(page);
+  await page.uncheck('#bk-layout-cocktail').catch(() => undefined);
+  await page.evaluate(() => {
+    document.querySelectorAll<HTMLInputElement>('input[name="layout"]').forEach((r) => {
+      r.checked = false;
+    });
+  });
+  const sent = await sendAndCapture(page);
+  expect(sent.layout).toBeUndefined();
+  expect(sent.alt_date_1).toBeUndefined();
+  expect(sent.pyro_flame).toBe('no');
+  expect(sent.media).toEqual([]);
+});
+
+test('ticking smoke or flame asks what is planned and sends yes', async ({ page }) => {
+  await openForm(page);
+  await fillValid(page);
+  await page.check('input[name="has_pyro"]');
+  await page.click(SEND);
+  await expect(page.locator('#bk-pyro-detail-err')).toBeVisible();
+  await page.fill('#bk-pyro-detail', 'Candles on the tables.');
+  const sent = await sendAndCapture(page);
+  expect(sent.pyro_flame).toBe('yes');
+  expect(sent.pyro_flame_detail).toBe('Candles on the tables.');
 });
 
 test('the Auditorium has fixed seating, so no layout is asked and theatre is sent', async ({
@@ -289,8 +353,8 @@ test('the space descriptions still match the event info pack', async ({ page }) 
 test('an end time before the start means the next day', async ({ page }) => {
   await openForm(page);
   await fillValid(page);
-  await page.fill('#bk-from', '20:00');
-  await page.fill('#bk-until', '02:00');
+  await page.selectOption('#bk-from', '20:00');
+  await page.selectOption('#bk-until', '02:00');
   await expect(page.locator('#bk-when-summary')).toHaveText(/6 hours .* next day at 02:00/);
   const sent = await sendAndCapture(page);
   const start = new Date(sent.get_in).getTime();
@@ -346,15 +410,28 @@ test('a valid enquiry posts the spec payload and shows the thank-you state', asy
   expect(sent.headcount_band).toBe('51_100');
   expect(sent.space).toBe('gallery');
   expect(sent.layout).toBe('cocktail');
-  expect(sent.caterer_name).toBe('Test Catering Oy');
-  expect(sent.music_past_2200).toBe('no');
+  expect(sent.alcohol).toBe('served');
+  expect(sent.music).toBe('background');
+  expect(sent.pyro_flame).toBe('no');
+  // Settled after booking, so never sent.
+  for (const k of ['catering', 'cleaning', 'budget_band', 'music_past_2200']) {
+    expect(sent[k], k).toBeUndefined();
+  }
   // Hidden conditional fields are not sent at all.
   expect(sent.mic_count).toBeUndefined();
   expect(sent.pyro_flame_detail).toBeUndefined();
   expect(sent.series_count).toBeUndefined();
   expect(sent.tech).toEqual([]);
   // UI-only questions never reach the Worker.
-  for (const k of ['event_date', 'time_from', 'time_until', 'audience', 'multi_day']) {
+  for (const k of [
+    'event_date',
+    'time_from',
+    'time_until',
+    'audience',
+    'multi_day',
+    'has_alt_dates',
+    'has_pyro',
+  ]) {
     expect(sent[k]).toBeUndefined();
   }
 
