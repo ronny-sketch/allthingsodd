@@ -71,6 +71,21 @@ export const EVENT_ACCESS = opts([
   ['invite_only', 'Invite only'],
 ]);
 
+// "Who can come?" is one question in the form and two fields in the payload
+// (event_visibility + event_access), because the spec's two questions
+// overlap: a private event is an invited one, and "invite only" is never
+// public. Each answer below maps to exactly one pair.
+export const AUDIENCE = [
+  { value: 'public_free', label: 'Anyone, free', visibility: 'public', access: 'free' },
+  {
+    value: 'public_ticketed',
+    label: 'Anyone, with a ticket',
+    visibility: 'public',
+    access: 'ticketed',
+  },
+  { value: 'private', label: 'Invited guests only', visibility: 'private', access: 'invite_only' },
+] as const;
+
 export const HEADCOUNT_BANDS = opts([
   ['upto_50', 'Up to 50'],
   ['51_100', '51–100'],
@@ -78,16 +93,91 @@ export const HEADCOUNT_BANDS = opts([
   ['200_plus', '200 or more'],
 ]);
 
+// The form asks for a number and derives the spec's band from it.
+export function headcountBand(n: number): (typeof HEADCOUNT_BANDS)[number]['value'] {
+  if (n <= 50) return 'upto_50';
+  if (n <= 100) return '51_100';
+  if (n < 200) return '101_199';
+  return '200_plus';
+}
+
 export const SPACES = opts([
   ['gallery', 'Gallery'],
   ['aula', 'Aula'],
   ['auditorium', 'Auditorium'],
+  ['second_floor', '2nd-floor co-creation space'],
   ['gallery_aula', 'Gallery + Aula'],
   ['auditorium_aula', 'Auditorium + Aula'],
   ['full_triangle', 'Gallery, Aula and Auditorium'],
-  ['second_floor', '2nd-floor co-creation space'],
-  ['advise_me', 'Not sure yet — advise me'],
+  ['advise_me', 'Not sure yet'],
 ]);
+
+// What the space picker says about each room (2026-09-24). Every figure and
+// description is taken from the event info pack
+// (src/content/pages/oddspace-event-info-pack.json), never estimated.
+// `capacity` is the most people inside at once, counting guests, crew and
+// performers. For a combination it is the sum of the rooms, because the pack
+// says "capacities add up", and the pack also says the combined limits are
+// still being confirmed, which is why the combinations show their parts
+// rather than a total. tests/functional/booking-enquiry.spec.ts fails if the
+// pack stops saying these numbers, so the two cannot drift apart quietly.
+export interface SpaceInfo {
+  capacity?: number;
+  /** Shown under the room name. */
+  meta: string;
+  blurb: string;
+  /** The room's seating cannot be rearranged (the Auditorium's tiers). */
+  fixedSeating?: boolean;
+}
+export const SPACE_INFO: Record<(typeof SPACES)[number]['value'], SpaceInfo> = {
+  gallery: {
+    capacity: 150,
+    meta: '150 people · 320 m²',
+    blurb: 'The big room at street level. Openings, launches, concerts, club nights.',
+  },
+  aula: {
+    capacity: 30,
+    meta: '30 people',
+    blurb: 'Where guests arrive: registration, coats, drinks. Rarely booked on its own.',
+  },
+  auditorium: {
+    capacity: 50,
+    meta: '50 seated · fixed tiers',
+    blurb: 'Tiered seating, a large screen and sound. Talks, panels, screenings.',
+    fixedSeating: true,
+  },
+  second_floor: {
+    capacity: 150,
+    meta: '150 people',
+    blurb: 'One floor up. Seminars, workshops, away-days and dinners.',
+  },
+  gallery_aula: {
+    capacity: 180,
+    meta: '150 + 30 people',
+    blurb: 'The Gallery, with the Aula for arrivals and drinks.',
+  },
+  auditorium_aula: {
+    capacity: 80,
+    meta: '50 seated + 30 people',
+    blurb: 'A talk in the Auditorium, with the Aula for arrivals and drinks.',
+    fixedSeating: true,
+  },
+  full_triangle: {
+    capacity: 230,
+    meta: '230 people together',
+    blurb: 'All three rooms, for a programme that moves between them.',
+  },
+  advise_me: {
+    meta: 'We suggest one',
+    blurb: 'Tell us about the event and we will suggest the room that fits.',
+  },
+};
+
+// Spaces whose seating is fixed. For these the form sends layout "theatre"
+// (rows facing the front, which is what tiered seating is) and does not ask.
+export const FIXED_SEATING_SPACES = (Object.keys(SPACE_INFO) as (keyof typeof SPACE_INFO)[]).filter(
+  (k) => SPACE_INFO[k].fixedSeating,
+);
 
 export const LAYOUTS = opts([
   ['theatre', 'Theatre — rows of chairs'],
@@ -113,17 +203,22 @@ export const TECH = opts([
   ['projector', 'Projector'],
   ['screen', 'Screen'],
   ['pa', 'PA system'],
-  ['mics', 'Microphones'],
-  ['livestream', 'Livestream'],
-  ['recording', 'Recording'],
+  ['mics', 'Extra microphones'],
+  ['livestream', 'Livestream kit'],
+  ['recording', 'Recording kit'],
 ]);
 
+// What the form offers. The PA system is left out because the event info
+// pack lists "PA sound system and one microphone" in every booking, so there
+// is nothing to ask for. `pa` stays a valid value for the Worker.
+export const TECH_OFFERED = TECH.filter((t) => t.value !== 'pa');
+
 export const CATERING = opts([
-  ['none', 'No food or drink'],
-  ['own_food', 'We bring our own food'],
-  ['own_caterer', 'We bring our own caterer'],
+  ['none', 'None'],
+  ['own_food', 'Our own food'],
+  ['own_caterer', 'Our own caterer'],
   ['coffee_service', 'Coffee service'],
-  ['odd_coordinates', 'We would like ODD to arrange it'],
+  ['odd_coordinates', 'ODD arranges it'],
 ]);
 
 export const ALCOHOL = opts([
@@ -313,6 +408,24 @@ export function shortNoticeWarning(
   return null;
 }
 
+// A soft warning when the headcount is more than the chosen space holds. It
+// never blocks the enquiry: ODD may suggest a different room, and the pack
+// says the combined limits are still being confirmed.
+export function capacityWarning(space: string, people: number | undefined): string | null {
+  if (!people || !(space in SPACE_INFO)) return null;
+  const info = SPACE_INFO[space as keyof typeof SPACE_INFO];
+  if (!info.capacity || people <= info.capacity) return null;
+  const name = SPACES.find((s) => s.value === space)?.label ?? 'That space';
+  if (space === 'auditorium') {
+    return `The Auditorium seats 50, and its seating is fixed. For ${people} people the Gallery or the 2nd-floor space may suit better. Send it anyway and we will suggest what fits.`;
+  }
+  const combined = ['gallery_aula', 'auditorium_aula', 'full_triangle'].includes(space);
+  const limit = combined
+    ? `${name} together take about ${info.capacity} people, and the building is still confirming the combined limit.`
+    : `The ${name} holds ${info.capacity} people at once.`;
+  return `${limit} Send it anyway and we will suggest what fits ${people}.`;
+}
+
 // Every rule the form enforces. The Worker applies the same rules again,
 // because nothing a browser sends can be trusted.
 export function validateBooking(p: BookingPayload, now: Date = new Date()): FieldErrors {
@@ -359,7 +472,7 @@ export function validateBooking(p: BookingPayload, now: Date = new Date()): Fiel
   else if (getIn <= now) e.get_in = 'Pick a time in the future.';
   if (!p.get_out || Number.isNaN(getOut.getTime()))
     e.get_out = 'When will you be out of the space?';
-  else if (!e.get_in && getOut <= getIn) e.get_out = 'Get-out has to be after get-in.';
+  else if (!e.get_in && getOut <= getIn) e.get_out = 'The end has to be after the start.';
   else if (!e.get_in && getOut.getTime() - getIn.getTime() > 7 * 86_400_000)
     e.get_out = 'For more than a week, send the first day and tell us the rest in the notes.';
 
@@ -387,17 +500,17 @@ export function validateBooking(p: BookingPayload, now: Date = new Date()): Fiel
     e.own_equipment = 'Tell us whether you are bringing equipment.';
   if (p.own_equipment === true) req('own_equipment_detail', 'Tell us what you are bringing in.');
 
-  oneOf('catering', CATERING, 'Pick one.');
+  oneOf('catering', CATERING, 'Tell us about food and drink.');
   if (p.catering === 'own_caterer') req('caterer_name', 'Who is the caterer?');
-  oneOf('alcohol', ALCOHOL, 'Pick one.');
-  oneOf('music', MUSIC, 'Pick one.');
+  oneOf('alcohol', ALCOHOL, 'Will there be alcohol?');
+  oneOf('music', MUSIC, 'Will there be music?');
   if (p.music && p.music !== 'none')
     oneOf('music_past_2200', YES_NO_NOT_SURE, 'Will music carry on past 22:00?');
-  oneOf('pyro_flame', YES_NO_NOT_SURE, 'Pick one.');
+  oneOf('pyro_flame', YES_NO_NOT_SURE, 'Tell us about smoke, haze or flame.');
   if (p.pyro_flame === 'yes') req('pyro_flame_detail', 'Tell us what you have in mind.');
   if (!Array.isArray(p.media) || !p.media.every((m) => has(MEDIA, m))) e.media = 'Unknown option.';
 
-  oneOf('cleaning', CLEANING, 'Pick one.');
+  oneOf('cleaning', CLEANING, 'Who cleans up afterwards?');
   oneOf('budget_band', BUDGET_BANDS, 'Pick a range, or say you would rather not.');
 
   for (const k of [

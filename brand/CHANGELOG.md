@@ -1,5 +1,26 @@
 # Brand system changelog
 
+## 1.3 — 2026-09-24 · Choices and missing answers
+
+The ODDspace booking form needed two things the system did not have yet.
+Neither adds a colour, a size or a radius.
+
+- **ChoiceChips** (`src/components/primitives/ChoiceChips.astro`): options as
+  pills, backed by real radio buttons or checkboxes. Round is for what you
+  touch, so a choice is a pill; selected, it takes the figure as a fill, the
+  solid Pill's own inversion. Multi-select pills carry a tick so they never
+  read as a single choice.
+- **Needs an answer:** Heat marks it, as it marks anything you touch. A
+  keyline in the gutter, the label and the line in Heat, and a message, so
+  colour is never the only signal. Heat is Amber on Paper (4.9:1) and Ember on
+  Ink.
+- **The missing-answers panel** is a floating surface, so it takes
+  `--radius-panel` and `--shadow-panel`, on Ink on either ground, like the
+  newsletter popup. It never blocks the page and moves above the cookie
+  banner while that is open.
+- Rooms to choose from are square hairline cells, the grid convention, with
+  the selected one keylined inside the cell.
+
 ## 1.2 — 2026-09-21 · ODD on Instagram, second pass
 
 `brand/social/` is now one set in one language: fifty-nine posts, five stories,

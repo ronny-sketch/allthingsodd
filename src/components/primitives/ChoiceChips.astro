@@ -1,0 +1,134 @@
+---
+// ChoiceChips: a row of pill-shaped options backed by real radio buttons or
+// checkboxes (2026-09-24, for the ODDspace booking form). Round is for what
+// you touch (BRAND-GUIDE §2.5), and these are touched, so they take
+// --radius-pill; the venue page already shows its event types as the same
+// hairline pills.
+//
+// The native input stays in the page, visually hidden but focusable. That
+// keeps everything a browser gives a radio group for free: arrow keys move
+// through one group, Space toggles a checkbox, the form serialises it, and a
+// screen reader announces "radio button, 2 of 4, required". Only the look is
+// ours.
+//
+// The caller owns the question: wrap this in a <fieldset> with a <legend>.
+// `required` marks the group required through its first input, which is how
+// HTML makes a whole radio group required.
+interface Option {
+  value: string;
+  label: string;
+}
+interface Props {
+  name: string;
+  options: readonly Option[];
+  type?: 'radio' | 'checkbox';
+  required?: boolean;
+  /** Prefix for the input ids, so a label can point at one if it needs to. */
+  idPrefix: string;
+}
+const { name, options, type = 'radio', required = false, idPrefix } = Astro.props;
+---
+
+<div class:list={['chips', type === 'checkbox' && 'chips-multi']}>
+  {
+    options.map((o, i) => (
+      <label class="chip" for={`${idPrefix}-${o.value}`}>
+        <input
+          class="chip-input"
+          id={`${idPrefix}-${o.value}`}
+          type={type}
+          name={name}
+          value={o.value}
+          required={type === 'radio' && required && i === 0}
+        />
+        <span class="chip-face">{o.label}</span>
+      </label>
+    ))
+  }
+</div>
+
+<style>
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .chip {
+    position: relative;
+    display: inline-flex;
+    max-width: 100%;
+    cursor: pointer;
+  }
+  /* Visually hidden, still focusable and still in the form. Not
+     display:none, which would take it out of the tab order. */
+  .chip-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .chip-face {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    /* 44px touch target, the Pill's own rule for touch. */
+    min-height: 2.75rem;
+    padding: 0.5rem 1.05rem;
+    border: 1px solid var(--color-paper-35);
+    border-radius: var(--radius-pill);
+    font: var(--text-small);
+    color: var(--color-paper-80);
+    background: transparent;
+    transition:
+      background-color var(--duration-fast) ease,
+      border-color var(--duration-fast) ease,
+      color var(--duration-fast) ease;
+  }
+  @media (hover: hover) {
+    .chip:hover .chip-face {
+      border-color: var(--color-paper);
+      color: var(--color-paper);
+    }
+  }
+  /* Selected: the figure colour as a fill, the same inversion the solid Pill
+     makes. It flips with .theme-light like every role token. */
+  .chip-input:checked + .chip-face {
+    background: var(--color-paper);
+    border-color: var(--color-paper);
+    color: var(--color-bg);
+  }
+  /* A checkbox group says it takes several answers with a tick, so it never
+     reads as a single choice. */
+  .chips-multi .chip-face::before {
+    content: '';
+    flex: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    border: 1px solid currentColor;
+  }
+  .chips-multi .chip-input:checked + .chip-face::before {
+    content: '✓';
+    border-color: transparent;
+    display: grid;
+    place-items: center;
+    font-size: inherit;
+    line-height: 1;
+  }
+  .chip-input:focus-visible + .chip-face {
+    outline: 2px solid var(--color-paper);
+    outline-offset: 2px;
+  }
+  .chip-input:disabled + .chip-face {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  /* The invalid state belongs to the question (the fieldset), so it is read
+     from the wrapper the form marks. Heat carries it: Amber on ODDspace's
+     light ground (4.9:1), Ember on Ink. */
+  :global(.is-invalid) .chip-input:not(:checked) + .chip-face {
+    border-color: var(--color-heat);
+  }
+</style>
