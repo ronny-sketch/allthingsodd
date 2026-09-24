@@ -201,6 +201,27 @@ test("opened from a link, closing it puts focus on the page's own button", async
   await expect(page.locator('#bk-open')).toBeFocused();
 });
 
+test('the drawn cursor moves into the dialog while it is open, and back after', async ({
+  page,
+}) => {
+  // A modal <dialog> sits in the browser's top layer, above every z-index,
+  // so the site's cursor (z-index 9999) would otherwise be hidden under it
+  // (reported 24 September, desktop).
+  await load(page);
+  const parentOfCursor = () =>
+    page.evaluate(() => {
+      const c = document.querySelector('.cursor');
+      return c?.parentElement?.id || c?.parentElement?.tagName || null;
+    });
+  expect(await parentOfCursor()).toBe('BODY');
+  await page.click('#bk-open');
+  await expect(page.locator(DIALOG)).toBeVisible();
+  await expect.poll(parentOfCursor).toBe('bk-dialog');
+  await page.keyboard.press('Escape');
+  await expect(page.locator(DIALOG)).toBeHidden();
+  expect(await parentOfCursor()).toBe('BODY');
+});
+
 test('the ODDspace page leads straight into the enquiry', async ({ page }) => {
   await page.goto('/oddspace/');
   const cta = page.locator('a[href="/oddspace/venue/#booking-form"]');

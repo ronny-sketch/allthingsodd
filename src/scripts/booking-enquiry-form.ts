@@ -894,6 +894,50 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
   let returnFocus: HTMLElement | null = null;
   let opened = false;
 
+  // The site's drawn cursor (Cursor.astro) is a fixed element at z-index
+  // 9999, but a modal <dialog> is painted in the browser's top layer, above
+  // every z-index. Left where it is, the cursor would slide under the sheet,
+  // and the native pointer is hidden site-wide, so there would be no cursor
+  // at all over the enquiry. While the dialog is open the cursor element
+  // lives inside it (in the top layer too), and it goes back on close.
+  // It moves once the sheet's entrance animation has finished: a transform
+  // on an ancestor would make the fixed cursor position against the sheet
+  // instead of the screen for that moment.
+  const cursorEl = document.querySelector<HTMLElement>('.cursor');
+  const cursorHome = cursorEl?.parentElement ?? null;
+  const cursorNext = cursorEl?.nextSibling ?? null;
+  let cursorTimer = 0;
+  const adoptCursor = () => {
+    if (!cursorEl) return;
+    const move = () => {
+      window.clearTimeout(cursorTimer);
+      if (dialog.open && cursorEl.parentElement !== dialog) dialog.append(cursorEl);
+    };
+    if (getComputedStyle(dialog).animationName === 'none') {
+      move();
+      return;
+    }
+    const onEnd = (ev: AnimationEvent) => {
+      if (ev.target !== dialog) return;
+      dialog.removeEventListener('animationend', onEnd);
+      move();
+    };
+    dialog.addEventListener('animationend', onEnd);
+    // In case the animation never reports its end (a hidden tab).
+    cursorTimer = window.setTimeout(() => {
+      dialog.removeEventListener('animationend', onEnd);
+      move();
+    }, 600);
+  };
+  const releaseCursor = () => {
+    window.clearTimeout(cursorTimer);
+    if (!cursorEl || !cursorHome || cursorEl.parentElement === cursorHome) return;
+    cursorHome.insertBefore(
+      cursorEl,
+      cursorNext && cursorNext.parentNode === cursorHome ? cursorNext : null,
+    );
+  };
+
   const openDialog = (entry: string) => {
     if (dialog.open) return;
     // Where focus goes back to on close. Opened from a link on arrival
@@ -916,6 +960,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
       history.pushState({ bk: true }, '', HASH);
     }
     dialog.showModal();
+    adoptCursor();
     html.classList.add('bk-lock');
     updateSticky();
     if (!opened) trackEvent('booking_enquiry_open', { entry });
@@ -926,6 +971,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
   };
 
   dialog.addEventListener('close', () => {
+    releaseCursor();
     html.classList.remove('bk-lock');
     // Closed by × or Esc: take the #booking-form entry back off the history.
     if (window.location.hash === HASH) {
