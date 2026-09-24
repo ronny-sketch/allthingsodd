@@ -381,7 +381,8 @@ collections_config:
         label: Event rate card + calculator (ODDspace venue only)
         comment: >-
           The published prices for renting the space, and the picker built on
-          them. Four lanes (member, creative organisation, promoter, company),
+          them. Three lanes (member, creative organisation, company — promoters
+          book as a creative organisation since 2026-09-24),
           each with its own rates and its own add-ons. Prices are numbers, not
           text — the page adds them together and applies VAT from vatRate, so
           write 300, not "EUR300 + VAT". A rate with no number of its own (the
@@ -472,8 +473,9 @@ collections_config:
         type: array
         label: Event space rental rates (ODDspace only)
         comment: >-
-          Member pricing for renting the gallery/auditorium, shown inside
-          the "organise an event" card in "Enter the space". No invented
+          Starting prices for renting the space, shown inside the "organise
+          an event" card in "Enter the space". Keep it to the "from" rates;
+          the full card lives on the venue page. No invented
           prices — these are real, current rates.
         options:
           required: false

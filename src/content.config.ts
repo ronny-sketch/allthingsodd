@@ -1074,7 +1074,8 @@ const pages = defineCollection({
           body: z.string(),
           cta: linkCta,
         }),
-        // Event-space rental rates (member pricing) — a plain price list,
+        // Event-space starting prices (2026-09-24: just "from" rates, no member
+        // rates — the venue page has the full card) — a plain price list,
         // not the fuller pricingTier shape (no benefits list/CTA per row
         // needed here, just name/price/note). Rendered inside the event
         // half of "Enter the space", next to the button that acts on them.

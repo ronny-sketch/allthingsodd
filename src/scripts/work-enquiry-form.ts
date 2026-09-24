@@ -94,7 +94,6 @@ if (form instanceof HTMLFormElement) {
   const LANE_PHRASES: Record<string, string> = {
     member: 'as an ODDspace member',
     creative: 'as a creative organisation',
-    promoter: 'as a promoter',
     company: 'as a company or organisation',
   };
   const OFFER_PHRASES: Record<string, string> = {

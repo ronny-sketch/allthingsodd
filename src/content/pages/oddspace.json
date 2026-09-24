@@ -137,22 +137,12 @@
   },
   "rentalRates": [
     {
-      "name": "Half day (members)",
-      "price": "€100"
+      "name": "Creative organisations and cultural workers",
+      "price": "from €300 + VAT"
     },
     {
-      "name": "Full day (members)",
-      "price": "€200"
-    },
-    {
-      "name": "Creative organisations and promoters",
-      "price": "from €300",
-      "note": "Or nothing upfront on a revenue share, where the first €350 of net ticket sales covers the room. Companies and other organisations from €750 for a half day, €1,200 for a full day or evening. All + VAT 25.5%."
-    },
-    {
-      "name": "ODDstudio, per hour (members)",
-      "price": "€20",
-      "note": "Or €100 / month for full studio access. See the ODDstudio page for non-member rates."
+      "name": "Companies",
+      "price": "from €750 + VAT"
     }
   ],
   "howItWorks": [
@@ -356,7 +346,7 @@
     },
     {
       "question": "How much does event use cost?",
-      "answer": "Members pay €100 for a half day and €200 for a full day. A creative organisation pays €300 for the room, or nothing upfront on a revenue share. A promoter pays €400, or €450 on the same share. Companies and other organisations pay €750 for a half day and €1,200 for a full day or evening. All + VAT 25.5%, and all open to discussion — the venue page has the full card and a calculator that prices your own case."
+      "answer": "From €300 + VAT for creative organisations and cultural workers, and from €750 + VAT for companies. Every price is open to discussion — the venue page has the full rate card and a calculator that prices your own case."
     },
     {
       "question": "How do I enquire about an event?",

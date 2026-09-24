@@ -92,7 +92,9 @@ const page = entry.data;
 
     <!-- 4. Enter the space — the page's conversion chapter, and now the only
          place prices appear: the two ways in side by side, the one carve-out
-         from the membership, what joining involves, and where to turn up. -->
+         from the membership, what joining involves, and where to turn up.
+         Since 2026-09-24 the event card shows only the two starting prices;
+         the venue page carries the full card. -->
     <section class="odds-sub odds-enter">
       <div class="wrap flow">
         <div class="section-head">
@@ -127,7 +129,7 @@ const page = entry.data;
                  reader deciding whether to enquire about an event is the
                  only reader these numbers are for. */
             }
-            <span class="odds-rates-label">Selected member rates</span>
+            <span class="odds-rates-label">Event rates</span>
             <div class="odds-rates-list">
               {
                 page.rentalRates.map((r) => (
@@ -139,7 +141,6 @@ const page = entry.data;
                 ))
               }
             </div>
-            <p class="odds-rates-nonmember">Non-member pricing: ask us about your event.</p>
             <div class="odds-enter-action">
               <Pill href={page.eventEnquiry.cta.href} variant="outline" magnetic>
                 {page.eventEnquiry.cta.label}
@@ -413,12 +414,6 @@ const page = entry.data;
     grid-column: 1 / -1;
     font: var(--text-small);
     color: var(--color-paper-40);
-  }
-  .odds-rates-nonmember {
-    font-size: var(--font-size-small) !important;
-    line-height: var(--line-height-small) !important;
-    color: var(--color-paper-40) !important;
-    margin-top: var(--space-3) !important;
   }
 
   /* Bordered, not a filled card: this qualifies the membership price above

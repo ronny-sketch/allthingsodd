@@ -174,7 +174,7 @@
     },
     {
       "question": "What does it cost?",
-      "answer": "Members pay €100 for a half day and €200 for a full day. A creative organisation pays €300 for the room, or nothing upfront on a revenue share where the first €350 of net ticket sales covers it. A promoter pays €400, or €450 on the same revenue share. Companies and other organisations pay €750 for a half day and €1,200 for a full day or evening. All + VAT 25.5%, a house technician is €200 where you need one, and every price is open to discussion — the calculator above gives you a starting number for your own case."
+      "answer": "Members pay €100 for a half day and €200 for a full day. A creative organisation or a promoter pays €300 for the room, or nothing upfront on a revenue share where the first €350 of net ticket sales covers it. Companies and other organisations pay €750 for a half day and €1,200 for a full day or evening. All + VAT 25.5%, a house technician is €200 where you need one, and every price is open to discussion — the calculator above gives you a starting number for your own case."
     },
     {
       "question": "How many people fit?",
@@ -285,7 +285,7 @@
       {
         "id": "creative",
         "name": "Creative organisation",
-        "blurb": "A registered association, an artist collective, a curator, an artist. Ticketed or free.",
+        "blurb": "A registered association, an artist collective, a curator, an artist, a promoter with a gig or a club night. Ticketed or free.",
         "rates": [
           {
             "id": "flat",
@@ -299,34 +299,6 @@
             "price": 0,
             "priceLabel": "€0 upfront",
             "note": "Nothing upfront. The first €350 of net ticket sales covers the room, and most of what comes after that is yours — we agree the split when we agree the night."
-          }
-        ],
-        "addOns": [
-          {
-            "id": "technician",
-            "label": "House technician",
-            "price": 200,
-            "note": "Required on the house PA unless your own engineer is approved in advance."
-          }
-        ]
-      },
-      {
-        "id": "promoter",
-        "name": "Promoter",
-        "blurb": "A gig, a club night, a comedy evening, a series of them.",
-        "rates": [
-          {
-            "id": "flat",
-            "label": "Flat fee for the room",
-            "price": 400,
-            "note": "You keep every ticket."
-          },
-          {
-            "id": "share",
-            "label": "Revenue share",
-            "price": 0,
-            "priceLabel": "€0 upfront",
-            "note": "Nothing upfront. The first €450 of net ticket sales covers the room, and most of what comes after that is yours — we agree the split when we agree the night."
           }
         ],
         "addOns": [

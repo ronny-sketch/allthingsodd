@@ -56,14 +56,16 @@ test('the venue page publishes the whole rate card', async ({ page }) => {
   await page.goto(VENUE);
   const body = (await page.locator('body').textContent()) ?? '';
 
-  // Member (half/full), creative org, promoter, company (half/full).
-  for (const price of ['€100', '€200', '€300', '€400', '€750', '€1,200']) {
+  // Member (half/full), creative org (promoters included), company (half/full).
+  for (const price of ['€100', '€200', '€300', '€750', '€1,200']) {
     expect(body, `the rate card lost ${price}`).toContain(price);
   }
-  // Both revenue-share thresholds, which are the part a creative org and a
-  // promoter actually decide on.
+  // The revenue-share threshold, which is the part a creative org or a
+  // promoter actually decides on.
   expect(body).toContain('€350');
-  expect(body).toContain('€450');
+  // Promoters were folded into creative organisations on 2026-09-24: no
+  // separate €400 / €450 promoter rate.
+  expect(body).not.toContain('€450');
   // A published price without its VAT treatment is not a published price.
   expect(body).toMatch(/\+ VAT 25\.5%/);
   // You do not have to be a member to book, which is the single most common
@@ -85,11 +87,11 @@ test('the rate card prices a selection and carries it into the enquiry', async (
   await expect(card.locator('.vrc-estimate-figure')).toHaveText('€1,200');
   await expect(card.locator('.vrc-estimate-vat')).toContainText('€1,506');
 
-  // Promoter, flat fee, with the technician: €400 + €200.
-  await card.getByRole('radio', { name: 'Promoter', exact: true }).check();
+  // Creative organisation, flat fee, with the technician: €300 + €200.
+  await card.getByRole('radio', { name: 'Creative organisation' }).check();
   await card.getByRole('radio', { name: /Flat fee/ }).check();
   await card.getByRole('checkbox', { name: /House technician/ }).check();
-  await expect(card.locator('.vrc-estimate-figure')).toHaveText('€600');
+  await expect(card.locator('.vrc-estimate-figure')).toHaveText('€500');
 
   // The revenue share has no price of its own; whatever is added to it is
   // only what is payable upfront, and the figure has to say so.
@@ -98,7 +100,7 @@ test('the rate card prices a selection and carries it into the enquiry', async (
 
   // And the choice travels to the form, so the first reply is about the date.
   const href = await card.locator('.vrc-cta a').getAttribute('href');
-  expect(href).toContain('lane=promoter');
+  expect(href).toContain('lane=creative');
   expect(href).toContain('offer=share');
   expect(href).toContain('#enquiry-form');
 });
@@ -127,11 +129,11 @@ test.describe('without JavaScript', () => {
     const body = (await page.locator('body').textContent()) ?? '';
     // The script is what turns the card into a picker. If it never runs, the
     // visitor gets the whole card instead of an empty box — which is the
-    // point of rendering all four lanes server-side.
-    for (const lane of ['ODDspace member', 'Creative organisation', 'Promoter', 'Company']) {
+    // point of rendering every lane server-side.
+    for (const lane of ['ODDspace member', 'Creative organisation', 'Company']) {
       expect(body, `${lane} disappeared without JS`).toContain(lane);
     }
-    for (const price of ['€100', '€200', '€300', '€400', '€750', '€1,200']) {
+    for (const price of ['€100', '€200', '€300', '€750', '€1,200']) {
       expect(body, `${price} disappeared without JS`).toContain(price);
     }
     // The estimate line is the one thing that needs the script, and it stays
@@ -171,6 +173,16 @@ test('both pages keep the unverified-accessibility answer rather than reassuring
       /do not have verified accessibility information/i,
     );
   }
+});
+
+test('ODDspace shows only the two starting event prices', async ({ page }) => {
+  await page.goto(SPACE);
+  // Just the "from" rates here (2026-09-24); the venue page carries the
+  // full card, member rates included.
+  const rates = page.locator('.odds-rates-list');
+  await expect(rates).toContainText('€300');
+  await expect(rates).toContainText('€750');
+  await expect(rates).not.toContainText(/member/i);
 });
 
 test('ODDspace routes visitors into both journeys', async ({ page }) => {
