@@ -24,8 +24,8 @@ test('hero mosaic never shows two cells with the same source image at once', asy
     );
   }
 
-  // Poll across several real swap cycles (swaps start 4s in, then every
-  // ~1.6-2.2s — see mosaic.ts) rather than a single snapshot, so this
+  // Poll across several real swap cycles (swaps start 2.5s in, then every
+  // ~0.55-0.85s — see mosaic.ts) rather than a single snapshot, so this
   // actually exercises the ongoing self-swap loop, not just the initial
   // fly-in state.
   for (let i = 0; i < 6; i++) {
@@ -35,6 +35,34 @@ test('hero mosaic never shows two cells with the same source image at once', asy
     expect(unique.size, `duplicate source image(s) across mosaic cells: ${srcs.join(', ')}`).toBe(
       srcs.length,
     );
+  }
+});
+
+// Swapped-in photos are created by mosaic.ts, so Hero.astro's scoped `img`
+// rules never reached them: every one rendered at its intrinsic size from the
+// cell's top-left corner, uncropped and unpanned (fixed 2026-09-24 with
+// :global(img)). This checks the photos that arrived by swap, not the twenty
+// server-rendered ones, which were always fine.
+test('hero mosaic: swapped-in photos are cover-fit and keep their crop point', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.mosaic-cell img').first()).toBeVisible();
+  await page.waitForTimeout(7000); // first swap at 2.5s, then one every ~0.7s
+  // Server-rendered cells carry loading="eager"; mosaic.ts sets no loading.
+  const swapped = await page.locator('.mosaic-cell img:not([loading])').evaluateAll((imgs) =>
+    imgs.map((img) => {
+      const cs = getComputedStyle(img);
+      return {
+        fit: cs.objectFit,
+        position: cs.position,
+        crop: (img as HTMLElement).style.objectPosition,
+      };
+    }),
+  );
+  expect(swapped.length, 'no photo had been swapped in after 7s').toBeGreaterThan(0);
+  for (const s of swapped) {
+    expect(s.fit).toBe('cover');
+    expect(s.position).toBe('absolute');
+    expect(s.crop, 'swapped photo lost its mosaic-focus.ts crop point').not.toBe('');
   }
 });
 
