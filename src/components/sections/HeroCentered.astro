@@ -28,16 +28,23 @@ interface Props {
   intro: string;
   primaryCta?: { label: string; href: string };
   image?: ImageMetadata;
+  // Several photos side by side instead of one (Work with ODD, 2026-09-24:
+  // the partner-built things from ODDfest 2025 in one frame). One photo in
+  // this list renders exactly like `image`.
+  images?: ImageMetadata[];
   warpTitle?: boolean;
 }
-const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.props;
+const { eyebrow, title, intro, primaryCta, image, images, warpTitle = true } = Astro.props;
+const photos = images ?? (image ? [image] : []);
 ---
 
-<section class={`hero-centered ${image ? '' : 'is-plain'}`}>
+<section class={`hero-centered ${photos.length ? '' : 'is-plain'}`}>
   {
-    image && (
-      <div class="hero-centered-media">
-        <Image src={image} alt="" width={2200} />
+    photos.length > 0 && (
+      <div class={`hero-centered-media ${photos.length > 1 ? 'is-collage' : ''}`}>
+        {photos.map((p) => (
+          <Image src={p} alt="" width={photos.length > 1 ? 900 : 2200} />
+        ))}
         <div class="hero-centered-scrim" />
       </div>
     )
@@ -115,6 +122,29 @@ const { eyebrow, title, intro, primaryCta, image, warpTitle = true } = Astro.pro
     object-fit: cover;
     display: block;
     filter: contrast(1.05) saturate(1.15) brightness(0.7);
+  }
+  /* Columns of equal width, one per photo; a phone gets two columns and
+     shows the first four, and an odd last photo takes the whole row. */
+  .hero-centered-media.is-collage {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 2px;
+  }
+  @media (max-width: 700px) {
+    .hero-centered-media.is-collage {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: none;
+      grid-auto-rows: minmax(0, 1fr);
+    }
+    .hero-centered-media.is-collage > :global(img:nth-of-type(n + 5)) {
+      display: none;
+    }
+    .hero-centered-media.is-collage > :global(img:last-of-type:nth-of-type(odd)) {
+      grid-column: span 2;
+    }
   }
   .hero-centered-scrim {
     position: absolute;
