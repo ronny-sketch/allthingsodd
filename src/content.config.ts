@@ -1246,7 +1246,7 @@ const pages = defineCollection({
         }),
       }),
 
-      // ODDstudio (2026-09-11) — the recording/production room inside
+      // ODDstudio (2026-09-11) — the creative music studio inside
       // ODDspace, run with TUNEMENT. It exists as its own page rather than a
       // longer section on /oddspace for one commercial reason: it is the one
       // thing in the building that is NOT covered by the €150 membership, and
@@ -1323,6 +1323,16 @@ const pages = defineCollection({
           eyebrow: z.string(),
           headline: z.string(),
           body: z.string(),
+          // A second paragraph about TUNEMENT itself, plus their mark and a
+          // link to their own site (2026-09-24). `body` says what they do
+          // *for the studio*; this says who they are, which is the bit that
+          // makes "run with TUNEMENT" mean something to a visitor who has
+          // never heard of them. All three optional — the section renders
+          // without any of them, same as it did before.
+          about: z.string().optional(),
+          logo: image().optional(),
+          logoAlt: z.string().optional(),
+          website: linkCta.optional(),
           image: image().optional(),
           imageAlt: z.string().optional(),
           cta: linkCta,

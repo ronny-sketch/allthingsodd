@@ -49,14 +49,38 @@ if (form instanceof HTMLFormElement) {
   const INTENTS = ['membership', 'event', 'studio'] as const;
   const requestedIntent = params.get('intent');
   const intent = INTENTS.find((i) => i === requestedIntent);
-  if (intent) {
+
+  // The dropdown's ODDstudio entry (2026-09-24) — a UI-only value, translated
+  // below into the interest/intent pair the Worker and Attio actually know.
+  // Kept in sync by hand with WorkEnquiryForm.astro's STUDIO_OPTION.
+  const STUDIO_OPTION = 'oddstudio';
+  // /oddstudio still deep-links with ?interest=oddspace&intent=studio, because
+  // every ?interest= value on the site has to be a real products.yml product
+  // (CLAUDE.md, Growth OS integration). Land those visitors on the option they
+  // came for rather than on the broader "ODDspace" one.
+  if (intent === 'studio' && interestSelect) interestSelect.value = STUDIO_OPTION;
+  const isStudio = () => intent === 'studio' || interestSelect?.value === STUDIO_OPTION;
+
+  // Neither a personal member, someone renting the space for an evening, nor a
+  // solo musician booking studio time is necessarily part of a business, so
+  // none of them should be asked for a "work email" and a required
+  // "organisation" as though they were.
+  const relaxForIndividual = () => {
     const emailLabel = form.querySelector<HTMLLabelElement>('#we-email-label');
     const orgLabel = form.querySelector<HTMLLabelElement>('#we-org-label');
     const orgInput = form.querySelector<HTMLInputElement>('#we-org');
     if (emailLabel) emailLabel.textContent = 'Email';
     if (orgLabel) orgLabel.textContent = 'Organisation (leave blank if applying as an individual)';
     if (orgInput) orgInput.required = false;
-  }
+  };
+  if (intent || isStudio()) relaxForIndividual();
+  // Picking ODDstudio here is the same person as arriving from /oddstudio. Not
+  // reversed on a later change: re-imposing a required field someone has
+  // already walked past is worse than accepting a blank organisation, which
+  // the Worker handles anyway.
+  interestSelect?.addEventListener('change', () => {
+    if (isStudio()) relaxForIndividual();
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -66,9 +90,13 @@ if (form instanceof HTMLFormElement) {
     submitBtn?.setAttribute('disabled', 'true');
     status.textContent = 'Sending…';
 
+    const fields = Object.fromEntries(new FormData(form));
+    const studio = isStudio();
     const payload = {
-      ...Object.fromEntries(new FormData(form)),
-      ...(intent ? { intent } : {}),
+      ...fields,
+      // See STUDIO_OPTION above: `oddstudio` is not a product the Worker or
+      // Attio recognise, so it never leaves the browser under that name.
+      ...(studio ? { interest: 'oddspace', intent: 'studio' } : intent ? { intent } : {}),
       ...captureFirstTouch(),
     };
 
