@@ -1418,7 +1418,8 @@ const pages = defineCollection({
         eyebrow: z.string(),
         title: z.string(),
         intro: z.string(),
-        heroImage: image(),
+        // Side by side in the hero — see HeroCentered's `images`.
+        heroImages: z.array(image()).min(1),
         primaryCta: linkCta,
         // NEW SECTION (2026-09-02 copywriting pass) — "When ODD is useful":
         // the clearest articulation of the organisational use case, right
