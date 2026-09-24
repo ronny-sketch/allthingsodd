@@ -180,7 +180,7 @@
         ]
       },
       {
-        "title": "Artists, performers & collectives",
+        "title": "Artists, performers, speakers & collectives",
         "items": [
           {
             "name": "25films"
@@ -384,9 +384,6 @@
             "name": "Muovipussi"
           },
           {
-            "name": "MUSH"
-          },
-          {
             "name": "Night Lore"
           },
           {
@@ -406,9 +403,6 @@
           },
           {
             "name": "Odd Latent Games"
-          },
-          {
-            "name": "Oddacity"
           },
           {
             "name": "ODDarcade"
@@ -664,6 +658,15 @@
           },
           {
             "name": "Helsinki Perfume Club"
+          },
+          {
+            "name": "ODDlings"
+          },
+          {
+            "name": "House of Gorgeous Gucci"
+          },
+          {
+            "name": "The House of Vineyard"
           }
         ]
       },
@@ -918,6 +921,12 @@
               },
               {
                 "name": "Roudaamo"
+              },
+              {
+                "name": "Rajupaja"
+              },
+              {
+                "name": "ODDproduction"
               }
             ]
           },
@@ -935,10 +944,10 @@
                 "name": "Burger Company"
               },
               {
-                "name": "Dottir Law"
+                "name": "Dottir"
               },
               {
-                "name": "EMU Group"
+                "name": "EMU Growth Partners"
               },
               {
                 "name": "Gilda"
@@ -955,21 +964,36 @@
                 "href": "https://www.nescafe.com/fi/"
               },
               {
-                "name": "Netvisor / Visma"
+                "name": "Netvisor"
               },
               {
                 "name": "Nordic Bridge Music",
                 "href": "https://www.nordicbridgemusic.com/"
               },
               {
-                "name": "Randöm"
+                "name": "RÄNDÖM"
               },
               {
-                "name": "Republic PR"
+                "name": "Republic Agency"
               },
               {
                 "name": "Tiketti",
                 "href": "https://www.tiketti.fi/"
+              },
+              {
+                "name": "Business Helsinki"
+              },
+              {
+                "name": "BMG"
+              },
+              {
+                "name": "Mikkeller"
+              },
+              {
+                "name": "Blend Beverages"
+              },
+              {
+                "name": "Espoo Game LAB"
               }
             ]
           },
@@ -1127,6 +1151,9 @@
               },
               {
                 "name": "Jyry"
+              },
+              {
+                "name": "Delgalleria"
               }
             ]
           },
@@ -1147,7 +1174,7 @@
               },
               {
                 "name": "Design Forum Finland",
-                "href": "https://designforum.fi/en/"
+                "href": "https://designforum.fi/uutiset/oddfest-tuo-kansainvalisen-tason-luovia-tekijoita-helsinkiin-kesakuussa/"
               },
               {
                 "name": "Evento",
@@ -1163,6 +1190,10 @@
               {
                 "name": "V2.fi",
                 "href": "https://www.v2.fi/"
+              },
+              {
+                "name": "Rumba",
+                "href": "https://www.rumba.fi/uutiset/helsingissa-jarjestettava-oddfest-julkisti-ensi-kesan-ohjelmistoaan/"
               }
             ]
           },
