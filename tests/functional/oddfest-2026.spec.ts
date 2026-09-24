@@ -61,7 +61,11 @@ test('the thank-you page is a site page with its credits and no dead ends', asyn
   // new site. The date is content, not a fixture, so it is not pinned here.
   expect(await page.locator('#credits .ty-names > li.reveal').count()).toBeGreaterThan(200);
   await expect(page.locator('#afterparty a.pill')).toHaveAttribute('href', '/oddspace');
-  await expect(page.locator('#invite-card .ty-invite-facts li')).toHaveCount(3);
+  // The card's hierarchy, not its wording: when / doors / where each render,
+  // and the address is the one the site gives guests everywhere else.
+  await expect(page.locator('#invite-card .ty-invite-when')).not.toBeEmpty();
+  await expect(page.locator('#invite-card .ty-invite-doors')).not.toBeEmpty();
+  await expect(page.locator('#invite-card .ty-invite-where')).toContainText('Teollisuuskatu 9D');
   // The card is the films' closing frame, so the eyebrow, the ask and the
   // page's last word have to be inside it together — see
   // scripts/render-oddfest-2026-film.mjs.

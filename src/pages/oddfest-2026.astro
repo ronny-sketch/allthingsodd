@@ -144,6 +144,7 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
           <h2>{page.credits.title}</h2>
         </div>
         <p class="ty-lede reveal">{page.credits.lede}</p>
+        {page.credits.note && <p class="ty-credits-note reveal">{page.credits.note}</p>}
         {
           page.credits.lists.map((group) => (
             <div class="ty-group">
@@ -221,16 +222,15 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
               <span class="ty-dim">{page.afterparty.premise}</span> {page.afterparty.point}
             </p>
             <p class="ty-after-body reveal">{page.afterparty.body}</p>
+            <p class="ty-after-body reveal">{page.afterparty.practical}</p>
+            <p class="ty-after-note reveal">{page.afterparty.contribute}</p>
+            <p class="ty-after-note reveal">{page.afterparty.access}</p>
             <div class="ty-invite reveal" id="invite-card">
               <span class="eyebrow ty-after-eyebrow">{page.afterparty.eyebrow}</span>
               <h2 class="ty-invite-title">{page.afterparty.inviteTitle}</h2>
-              {page.afterparty.facts.length > 0 && (
-                <ul class="ty-invite-facts" role="list">
-                  {page.afterparty.facts.map((fact) => (
-                    <li>{fact}</li>
-                  ))}
-                </ul>
-              )}
+              <p class="ty-invite-when">{page.afterparty.when}</p>
+              <p class="ty-invite-doors">{page.afterparty.doors}</p>
+              <p class="ty-invite-where">{page.afterparty.where}</p>
               <div class="ty-actions">
                 <Pill href={page.afterparty.link.href} variant="outline" magnetic>
                   {page.afterparty.link.label}
@@ -359,6 +359,18 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
     font-weight: 600;
   }
 
+  /* The apology under the credits lede: quieter than the lede, because it is
+     an aside to the reader, and it carries the one address on the page that
+     asks someone to write in. */
+  .ty-credits-note {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    margin-block: var(--space-4) 0;
+    text-align: center;
+    font: var(--text-small);
+    color: var(--color-paper-40);
+  }
+
   /* Credits: each group is a new group in the section's flow. */
   .flow > .ty-group + .ty-group {
     margin-block-start: var(--space-group);
@@ -456,6 +468,16 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
     font: var(--text-body);
     color: var(--color-paper-60);
   }
+  /* The two practical lines — how to offer a programme idea, and the four
+     steps at the door. Quieter than the invitation itself and above the card,
+     so the closing frame stays the invitation; but on the page they sit where
+     someone deciding whether to come will actually read them. */
+  .ty-after-note {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    font: var(--text-small);
+    color: var(--color-paper-40);
+  }
 
   /* The invitation card: the page's last block, and the films' last frame.
      The three labelled rows it replaced (WHEN / WHERE / PRICE, 2026-09-19)
@@ -484,18 +506,29 @@ const [quoteBefore, quoteAfter] = page.quote.emphasis
     letter-spacing: var(--tracking-display);
     color: var(--color-paper);
   }
-  .ty-invite-facts {
+  /* Three equal Body lines became a hierarchy (2026-09-22): the date is the
+     thing a reader has to catch at a glance and the thing the film's last
+     frame is for, so it takes the Heading role; the practical detail sits
+     under it in the caps meta style the hero's own line uses; the address is
+     Body, quieter, because it is what you read once you have decided. */
+  .ty-invite-when {
     margin: var(--space-6) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-  .ty-invite-facts li {
-    font: var(--text-body);
-    font-weight: 600;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
   }
-  .ty-invite-facts li + li {
-    margin-top: var(--space-2);
+  .ty-invite-doors {
+    margin: var(--space-2) 0 0;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--color-amber-bright);
+  }
+  .ty-invite-where {
+    margin: var(--space-4) 0 0;
+    font: var(--text-body);
+    color: var(--color-paper-60);
   }
   .ty-invite .ty-actions {
     margin-top: var(--space-6);
