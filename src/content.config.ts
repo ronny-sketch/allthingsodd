@@ -1246,13 +1246,17 @@ const pages = defineCollection({
         whatItIs: sectionIntro,
         eventTypes: z.array(z.string()),
         spacesIntro: z.object({ eyebrow: z.string(), headline: z.string() }),
-        // Same shape and component as /oddspace's own room cards.
+        // Same shape and component as /oddspace's own room cards. href +
+        // goLabel added 2026-09-24 so the ODDstudio card carries the same
+        // button here as it does on /oddspace.
         spaces: z.array(
           z.object({
             name: z.string(),
             body: z.string(),
             bullets: z.array(z.string()).optional(),
             image: image().optional(),
+            href: z.string().optional(),
+            goLabel: z.string().optional(),
           }),
         ),
         pricing: sectionIntro,

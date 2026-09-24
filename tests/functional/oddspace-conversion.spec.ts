@@ -56,10 +56,14 @@ test('the venue page publishes the whole rate card', async ({ page }) => {
   await page.goto(VENUE);
   const body = (await page.locator('body').textContent()) ?? '';
 
-  // Member (half/full), creative org (promoters included), company (half/full).
-  for (const price of ['€100', '€200', '€300', '€750', '€1,200']) {
+  // Creative org (promoters included), company (half/full). Members came off
+  // the card on 2026-09-24: it is the guest rate card, and every number on it
+  // is a starting price.
+  for (const price of ['€300', '€750', '€1,200']) {
     expect(body, `the rate card lost ${price}`).toContain(price);
   }
+  await expect(page.locator('.vrc')).not.toContainText(/ODDspace member/);
+  await expect(page.locator('.vrc-row-price').first()).toContainText(/^from /);
   // The revenue-share threshold, which is the part a creative org or a
   // promoter actually decides on.
   expect(body).toContain('€350');
@@ -121,11 +125,12 @@ test('the rate card rounds VAT to the cent', async ({ page }) => {
   const figure = card.locator('.vrc-estimate-figure');
   const vat = card.locator('.vrc-estimate-vat');
 
-  // Member, half day: €100 net is €125.50 gross (it used to print €125).
-  await card.getByRole('radio', { name: 'ODDspace member' }).check();
+  // Company, half day: €750 net is €941.25 gross, to the cent. (Members
+  // came off the card on 2026-09-24; their €100 half day was the old example.)
+  await card.getByRole('radio', { name: 'Company or organisation' }).check();
   await card.getByRole('radio', { name: /Half day/ }).check();
-  await expect(figure).toHaveText('€100');
-  await expect(vat).toHaveText('+ VAT 25.5% · €125.50 incl. VAT');
+  await expect(figure).toHaveText('€750');
+  await expect(vat).toHaveText('+ VAT 25.5% · €941.25 incl. VAT');
 
   // Revenue share with nothing added: no money, and no VAT line.
   await card.getByRole('radio', { name: 'Creative organisation' }).check();
@@ -135,8 +140,8 @@ test('the rate card rounds VAT to the cent', async ({ page }) => {
 
   // A fractional net keeps its cents, and VAT rounds half-up once:
   // €99.99 × 1.255 = €125.48745 → €125.49.
-  await card.getByRole('radio', { name: 'ODDspace member' }).check();
-  await card.locator('.vrc-panel[data-lane="member"] input[value="half"]').evaluate((input) => {
+  await card.getByRole('radio', { name: 'Company or organisation' }).check();
+  await card.locator('.vrc-panel[data-lane="company"] input[value="half"]').evaluate((input) => {
     input.dataset.price = '99.99';
     input.dispatchEvent(new Event('change', { bubbles: true }));
   });
@@ -169,10 +174,10 @@ test.describe('without JavaScript', () => {
     // The script is what turns the card into a picker. If it never runs, the
     // visitor gets the whole card instead of an empty box — which is the
     // point of rendering every lane server-side.
-    for (const lane of ['ODDspace member', 'Creative organisation', 'Company']) {
+    for (const lane of ['Creative organisation', 'Company']) {
       expect(body, `${lane} disappeared without JS`).toContain(lane);
     }
-    for (const price of ['€100', '€200', '€300', '€750', '€1,200']) {
+    for (const price of ['€300', '€750', '€1,200']) {
       expect(body, `${price} disappeared without JS`).toContain(price);
     }
     // The estimate line is the one thing that needs the script, and it stays
@@ -217,7 +222,7 @@ test('both pages keep the unverified-accessibility answer rather than reassuring
 test('ODDspace shows only the two starting event prices', async ({ page }) => {
   await page.goto(SPACE);
   // Just the "from" rates here (2026-09-24); the venue page carries the
-  // full card, member rates included.
+  // full guest card.
   const rates = page.locator('.odds-rates-list');
   await expect(rates).toContainText('€300');
   await expect(rates).toContainText('€750');
@@ -240,5 +245,15 @@ test('every event link on ODDspace goes to the Get a quote form', async ({ page 
       'href',
       '/oddspace/venue/#booking-form',
     );
+  }
+});
+
+test('the ODDstudio card links to the studio page from both ODDspace pages', async ({ page }) => {
+  for (const route of [SPACE, VENUE]) {
+    await page.goto(route);
+    await expect(
+      page.getByRole('link', { name: 'Learn more about ODDstudio' }).first(),
+      `${route} lost its ODDstudio button`,
+    ).toHaveAttribute('href', '/oddstudio');
   }
 });

@@ -113,22 +113,24 @@
         "From €20 / hour for members, from €30 / hour without",
         "Booked on its own page"
       ],
-      "image": "../../assets/oddspace/podcast-studio.jpg"
+      "image": "../../assets/oddspace/podcast-studio.jpg",
+      "href": "/oddstudio",
+      "goLabel": "Learn more about ODDstudio"
     }
   ],
   "pricing": {
     "eyebrow": "What it costs",
     "headline": "Pick who you are. Get a number.",
-    "body": "The price follows who is putting the event on, not how much we like the idea. Choose the closest fit and you have a starting number in a few seconds — then tell us what you are actually planning and we price that."
+    "body": "The price follows who is putting the event on, not how much we like the idea. Every price here is a starting price: choose the closest fit and you have a floor in a few seconds — then tell us what you are actually planning and we price that."
   },
   "memberRates": [
     {
-      "name": "ODDstudio, per hour (members)",
-      "price": "€20",
-      "note": "The studio is booked separately from the event rooms — €100 / month for full access, and non-member rates are on the ODDstudio page."
+      "name": "ODDstudio, per hour",
+      "price": "from €30",
+      "note": "The studio is booked separately from the event rooms. Full rates are on the ODDstudio page."
     }
   ],
-  "ratesNote": "All prices are + VAT 25.5%, for the room across your booked hours with setup and teardown inside them. Cleaning, catering, a bar licence and anything rigged are yours or quoted separately. Membership is €150 a month, so a run of events often costs less as a member than as a guest — ask and we will do that comparison with you.",
+  "ratesNote": "All prices are + VAT 25.5%, for the room across your booked hours with setup and teardown inside them. Cleaning, catering, a bar licence and anything rigged are yours or quoted separately.",
   "whatWeCanDo": {
     "eyebrow": "Beyond the room",
     "headline": "Need more than a venue?",
@@ -269,33 +271,8 @@
   "rateCard": {
     "vatRate": 25.5,
     "lanesLabel": "Who's putting it on?",
-    "estimateLabel": "Roughly",
+    "estimateLabel": "From",
     "lanes": [
-      {
-        "id": "member",
-        "name": "ODDspace member",
-        "blurb": "You already pay €150 a month, so you book the rooms at the member rate.",
-        "rates": [
-          {
-            "id": "half",
-            "label": "Half day, up to 5 hours",
-            "price": 100
-          },
-          {
-            "id": "full",
-            "label": "Full day, up to 10 hours",
-            "price": 200
-          }
-        ],
-        "addOns": [
-          {
-            "id": "technician",
-            "label": "House technician",
-            "price": 200,
-            "note": "Required on the house PA unless your own engineer is approved in advance."
-          }
-        ]
-      },
       {
         "id": "creative",
         "name": "Creative organisation",

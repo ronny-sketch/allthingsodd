@@ -108,7 +108,7 @@
       ],
       "image": "../../assets/oddstudio/studio-room-sofa.jpg",
       "href": "/oddstudio",
-      "goLabel": "Read more about ODDstudio"
+      "goLabel": "Learn more about ODDstudio"
     }
   ],
   "membership": {
@@ -131,7 +131,7 @@
     "headline": "The studio is not included.",
     "body": "ODDstudio — the creative music studio, run with TUNEMENT — is booked separately from the €150 / month membership. Members add full studio access for €100 / month (€250 / month in total), or book it at €20 / hour. Without a membership the studio rents from €30 / hour.",
     "cta": {
-      "label": "Read more about ODDstudio",
+      "label": "Learn more about ODDstudio",
       "href": "/oddstudio"
     }
   },
