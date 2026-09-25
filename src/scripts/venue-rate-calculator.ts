@@ -56,7 +56,9 @@ if (root) {
     // values are read back from a fixed list on the other side
     // (work-enquiry-form.ts), never echoed as free text.
     if (ctaLink && ctaHref) {
-      const url = new URL(ctaHref, window.location.origin);
+      // Resolved against this page, not the site root, so an in-page link
+      // (the booking enquiry's "#booking-form") stays on this page.
+      const url = new URL(ctaHref, window.location.href);
       url.searchParams.set('lane', lane);
       if (rate?.value) url.searchParams.set('offer', rate.value);
       ctaLink.setAttribute('href', `${url.pathname}${url.search}${url.hash}`);

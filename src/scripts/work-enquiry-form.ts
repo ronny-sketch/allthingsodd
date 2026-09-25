@@ -4,6 +4,7 @@
 // why it's a cross-origin absolute URL, not same-origin). No API key or
 // vendor SDK here — this is a plain fetch to our own endpoint, which is
 // what actually holds the Attio secret.
+import { lanePhrase } from './venue-lanes';
 import { captureFirstTouch } from './utm';
 import { API_BASE } from './api-base';
 import { trackEvent } from './analytics';
@@ -85,28 +86,12 @@ if (form instanceof HTMLFormElement) {
   // The venue rate calculator (2026-09-24) links here with ?lane=&offer=
   // after someone has priced their own event on /oddspace/venue. Open the
   // message with what they already chose, so the first reply can be about
-  // the date instead of re-establishing who they are.
-  //
-  // Both values are looked up in the maps below and never echoed into the
-  // page as text: a link is something a stranger can write, and this one
-  // ends up in a textarea whose contents a human at ODD then reads as if we
-  // had asked for it. An unknown value simply adds nothing.
-  const LANE_PHRASES: Record<string, string> = {
-    member: 'as an ODDspace member',
-    creative: 'as a creative organisation',
-    company: 'as a company or organisation',
-  };
-  const OFFER_PHRASES: Record<string, string> = {
-    half: 'a half day',
-    full: 'a full day or evening',
-    flat: 'the flat fee for the room',
-    share: 'the revenue share, nothing upfront',
-  };
-  const lanePhrase = LANE_PHRASES[params.get('lane') ?? ''];
-  const offerPhrase = OFFER_PHRASES[params.get('offer') ?? ''];
+  // the date instead of re-establishing who they are. The phrases come from
+  // a fixed list (venue-lanes.ts), never from the link itself.
+  const phrase = lanePhrase(params.get('lane'), params.get('offer'));
   const goal = form.querySelector<HTMLTextAreaElement>('#we-goal');
-  if (goal && !goal.value && lanePhrase) {
-    goal.value = `Booking the space ${lanePhrase}${offerPhrase ? `, ${offerPhrase}` : ''}.\n\n`;
+  if (goal && !goal.value && phrase) {
+    goal.value = `Booking the space ${phrase}.\n\n`;
   }
 
   form.addEventListener('submit', async (e) => {

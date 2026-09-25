@@ -338,8 +338,8 @@
     ],
     "note": "Every number here is a starting point, not a till receipt. We talk each event through — the room, the hours, the help you want — and price that. If your event is for a cause and the budget is not there, say so; we would rather hear it early.",
     "cta": {
-      "label": "Enquire about a date",
-      "href": "/work-with-odd/?interest=oddspace&intent=event#enquiry-form"
+      "label": "Get a quote",
+      "href": "#booking-form"
     }
   }
 }

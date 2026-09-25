@@ -31,6 +31,7 @@
 import { API_BASE } from './api-base';
 import { captureFirstTouch } from './utm';
 import { trackEvent } from './analytics';
+import { lanePhrase } from './venue-lanes';
 import {
   AUDIENCE,
   LIMITS,
@@ -996,11 +997,42 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
   document.getElementById('bk-open')?.addEventListener('click', () => openDialog('final'));
   document.querySelector('.bk-sticky-cta')?.addEventListener('click', () => openDialog('sticky'));
   const heroCta = document.querySelector<HTMLAnchorElement>(`a[href="${HASH}"]`);
-  document.querySelectorAll<HTMLAnchorElement>(`a[href="${HASH}"]`).forEach((a) => {
-    a.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      openDialog(a === heroCta ? 'hero' : 'link');
-    });
+
+  // The rate calculator's button (VenueRateCalculator.astro) links here with
+  // ?lane=&offer= once someone has priced their own event. Carry that in, so
+  // the first reply can be about the date: a member is marked as a member, a
+  // company as a company, and the choice is written into "Anything else?"
+  // from a fixed list (venue-lanes.ts), never from the link itself. Only
+  // questions that are still unanswered are touched.
+  const carryRateChoice = (url: URL) => {
+    const lane = url.searchParams.get('lane');
+    const phrase = lanePhrase(lane, url.searchParams.get('offer'));
+    if (!phrase) return;
+    const pick = (id: string, name: string) => {
+      const input = form.querySelector<HTMLInputElement>(`#${id}`);
+      if (input && valuesOf(name).length === 0) input.checked = true;
+    };
+    if (lane === 'member') pick('bk-member-true', 'is_member');
+    if (lane === 'company') pick('bk-orgtype-company', 'org_type');
+    const notes = form.querySelector<HTMLTextAreaElement>('#bk-notes');
+    if (notes && !notes.value.trim()) {
+      notes.value = `From the rate card: booking the space ${phrase}.`;
+    }
+    applyConditionals();
+  };
+
+  // Every link to this page's #booking-form opens the enquiry, whatever its
+  // query string. One listener for the whole document, because the
+  // calculator rewrites its link's href after the page has loaded.
+  document.addEventListener('click', (ev) => {
+    if (ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey) return;
+    const a = (ev.target as Element | null)?.closest?.('a');
+    if (!(a instanceof HTMLAnchorElement) || a.hash !== HASH) return;
+    const url = new URL(a.href, window.location.href);
+    if (url.origin !== window.location.origin || url.pathname !== window.location.pathname) return;
+    ev.preventDefault();
+    carryRateChoice(url);
+    openDialog(a === heroCta ? 'hero' : a.closest('.vrc') ? 'rate-card' : 'link');
   });
 
   // --- The sticky "Get a quote" bar ---------------------------------------

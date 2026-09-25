@@ -222,6 +222,36 @@ test('the drawn cursor moves into the dialog while it is open, and back after', 
   expect(await parentOfCursor()).toBe('BODY');
 });
 
+test('the rate card opens the enquiry with its choice carried in', async ({ page }) => {
+  await load(page);
+  const card = page.locator('.vrc');
+  await card.getByRole('radio', { name: 'Company or organisation' }).check();
+  await card.getByRole('radio', { name: /Full day or evening/ }).check();
+  await card.locator('.vrc-cta a').click();
+  await expect(page.locator(DIALOG)).toBeVisible();
+  await expect(stepHead(page, 1)).toBeFocused();
+  // Nothing reloaded: the page never left.
+  expect(new URL(page.url()).pathname).toBe(VENUE);
+  await expect(page.locator('#bk-orgtype-company')).toBeChecked();
+  await expect(page.locator('#bk-notes')).toHaveValue(
+    'From the rate card: booking the space as a company or organisation, a full day or evening.',
+  );
+});
+
+test('a made-up lane in the link carries nothing in', async ({ page }) => {
+  await load(page);
+  await page.evaluate(() => {
+    const a = document.createElement('a');
+    a.href = '/oddspace/venue/?lane=%3Cimg+src%3Dx%3E&offer=free#booking-form';
+    a.id = 'fake-link';
+    a.textContent = 'x';
+    document.body.append(a);
+  });
+  await page.locator('#fake-link').click();
+  await expect(page.locator(DIALOG)).toBeVisible();
+  await expect(page.locator('#bk-notes')).toHaveValue('');
+});
+
 test('the ODDspace page leads straight into the enquiry', async ({ page }) => {
   await page.goto('/oddspace/');
   const cta = page.locator('a[href="/oddspace/venue/#booking-form"]');
