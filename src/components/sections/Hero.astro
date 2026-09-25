@@ -365,10 +365,22 @@ const { mosaicAlt, headline } = Astro.props;
        moving from a swapped-in archive photo to this heading. That is also
        the honest number: the headline really is readable within half a
        second. Keep the delay at 0 — reintroducing one puts the metric back
-       on a thumbnail with no visible change to the page. */
+       on a thumbnail with no visible change to the page.
+
+       And no opacity ramp at all (2026-09-25). A 0s delay was not enough:
+       with `opacity: 0` as the first keyframe the headline's first paint is
+       still invisible, so Chrome never made it a candidate and LCP was a
+       mosaic cell again — then the first ambient swap, 2.7s in, because the
+       initial cells first paint mid-fly-in at scale(0.82) and a swapped-in
+       photo paints at full size. It rises into place instead of fading.
+       tests/functional/hero-performance.spec.ts pins LCP to this heading. */
     .hero-headline {
-      opacity: 0;
-      animation: hero-logo-in 1.2s 0s var(--ease-out-expo) both;
+      animation: hero-headline-in 1.2s 0s var(--ease-out-expo) both;
+    }
+  }
+  @keyframes hero-headline-in {
+    from {
+      transform: translateY(10px);
     }
   }
   @media (prefers-reduced-motion: no-preference) {

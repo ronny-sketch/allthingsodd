@@ -74,19 +74,26 @@ if (hero && mosaic && spotlight && !touch && !reduceMotion) {
   let tgtTY = 0;
   let raf: number | null = null;
   let inside = false;
+  let spot = '';
 
+  // One write per frame, and the loop stops itself once the tilt has
+  // settled (2026-09-25). It used to repaint every frame for as long as the
+  // pointer sat in the hero, moving or not, and repainted the full-hero
+  // spotlight on every mousemove event, which can fire several times a frame.
   function tick() {
     tiltX += (tgtTX - tiltX) * 0.06;
     tiltY += (tgtTY - tiltY) * 0.06;
     mosaic!.style.transform = `rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) scale(1.02)`;
     if (logo)
       logo.style.transform = `translate(${(-tiltY * 1.4).toFixed(1)}px,${(-tiltX * 1.4).toFixed(1)}px)`;
-    raf = requestAnimationFrame(tick);
+    if (spot) spotlight!.style.background = spot;
+    spot = '';
+    const settled = Math.abs(tgtTX - tiltX) < 0.01 && Math.abs(tgtTY - tiltY) < 0.01;
+    raf = settled ? null : requestAnimationFrame(tick);
   }
 
   hero.addEventListener('mouseenter', () => {
     inside = true;
-    if (!raf) raf = requestAnimationFrame(tick);
   });
   hero.addEventListener('mousemove', (e) => {
     const rect = hero.getBoundingClientRect();
@@ -94,13 +101,16 @@ if (hero && mosaic && spotlight && !touch && !reduceMotion) {
     const ny = (e.clientY - rect.top) / rect.height;
     tgtTX = (ny - 0.5) * -9;
     tgtTY = (nx - 0.5) * 9;
-    spotlight!.style.background = `radial-gradient(circle 320px at ${(nx * 100).toFixed(1)}% ${(ny * 100).toFixed(1)}%, rgba(226,223,222,0.10) 0%, transparent 68%)`;
+    spot = `radial-gradient(circle 320px at ${(nx * 100).toFixed(1)}% ${(ny * 100).toFixed(1)}%, rgba(226,223,222,0.10) 0%, transparent 68%)`;
+    if (!raf) raf = requestAnimationFrame(tick);
   });
   hero.addEventListener('mouseleave', () => {
     inside = false;
     tgtTX = 0;
     tgtTY = 0;
+    spot = '';
     spotlight!.style.background = 'none';
+    if (!raf) raf = requestAnimationFrame(tick);
     setTimeout(() => {
       if (!inside && raf) {
         cancelAnimationFrame(raf);
