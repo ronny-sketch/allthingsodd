@@ -159,7 +159,14 @@ if (mosaic) {
           }
         });
       };
-      if (newImg.decode) newImg.decode().then(reveal, reveal);
+      // A photo that fails to load is skipped, not revealed (2026-09-25).
+      // Revealing on rejection too faded a broken image in over a good one,
+      // so a flaky connection left empty cells behind. The cell keeps its
+      // photo and gives its slot back; the next tick tries another cell.
+      const skip = () => {
+        assigned[cellIndex] = oldImg?.getAttribute('src') ?? '';
+      };
+      if (newImg.decode) newImg.decode().then(reveal, skip);
       else reveal();
     }
 
