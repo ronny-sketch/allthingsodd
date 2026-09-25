@@ -43,7 +43,13 @@ const photos = images ?? (image ? [image] : []);
     photos.length > 0 && (
       <div class={`hero-centered-media ${photos.length > 1 ? 'is-collage' : ''}`}>
         {photos.map((p) => (
-          <Image src={p} alt="" width={photos.length > 1 ? 900 : 2200} />
+          <Image
+            src={p}
+            alt=""
+            width={photos.length > 1 ? 900 : 2200}
+            loading="eager"
+            fetchpriority="high"
+          />
         ))}
         <div class="hero-centered-scrim" />
       </div>
@@ -121,7 +127,7 @@ const photos = images ?? (image ? [image] : []);
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: contrast(1.05) saturate(1.15) brightness(0.7);
+    filter: contrast(1.05) saturate(1.15) brightness(0.85);
   }
   /* Columns of equal width, one per photo; a phone gets two columns and
      shows the first four, and an odd last photo takes the whole row. */

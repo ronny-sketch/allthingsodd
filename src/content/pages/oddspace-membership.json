@@ -42,6 +42,14 @@
     {
       "image": "../../assets/oddspace/exterior-building.jpg",
       "alt": "The industrial Vallila building that houses ODDspace"
+    },
+    {
+      "image": "../../assets/oddspace/coworking-laptop-sofa.jpg",
+      "alt": "A member working on a laptop on a sofa at ODDspace"
+    },
+    {
+      "image": "../../assets/oddspace/everyday-lunch.jpg",
+      "alt": "Members having lunch together around a table at ODDspace"
     }
   ],
   "intro": "Everything you need to decide is on this page. If something isn't here, ask us — we would rather tell you than let you find out later.",

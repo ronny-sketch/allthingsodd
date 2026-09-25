@@ -46,6 +46,10 @@
     {
       "image": "../../assets/oddstudio/lounge-corner.jpg",
       "alt": "The seating corner of the studio with a sofa and armchair"
+    },
+    {
+      "image": "../../assets/oddstudio/electronic-drums.jpg",
+      "alt": "An electronic drum kit in front of the blue acoustic curtains in ODDstudio"
     }
   ],
   "intro": "Bring the idea. The room is ready.",
@@ -209,7 +213,6 @@
       "external": true
     }
   },
-  "photoCredit": "Photography: Erica Dahlström Dezonne",
   "railLeft": [
     {
       "kind": "word",

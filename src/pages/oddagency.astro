@@ -14,7 +14,12 @@ if (!entry || entry.data._template !== 'oddagency')
 const page = entry.data;
 ---
 
-<Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
+<Layout
+  title={page.seo.title}
+  description={page.seo.description}
+  ogImage={page.seo.ogImage}
+  extraPhotos={[photoCraft]}
+>
   <!-- 2026-08-31 final implementation pass: dropped SubpageFrame's side-rail
        ticker + SplitHero in favour of Work with ODD's own HeroCentered —
        ODDagency is a deeper way to work with ODD, not a fourth core

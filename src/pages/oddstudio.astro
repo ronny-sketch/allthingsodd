@@ -246,7 +246,6 @@ const page = entry.data;
             </p>
           )
         }
-        {page.photoCredit && <p class="odst-credit reveal">{page.photoCredit}</p>}
       </div>
     </section>
   </SubpageFrame>
@@ -453,19 +452,13 @@ const page = entry.data;
 
   /* Block-end 0 cancels the UA paragraph margin, which would otherwise pad
      the last section; the top is the wrap's flow step. */
-  .odst-terms-note,
-  .odst-credit {
+  .odst-terms-note {
     max-width: 42rem;
     margin-inline: auto;
     margin-block-end: 0;
     text-align: center;
     font: var(--text-small);
     color: var(--color-paper-40);
-  }
-  /* The credit reads as the note's second line, not a new block — but only
-     when the note is there; on its own it takes the flow step. */
-  .odst-terms-note + .odst-credit {
-    margin-block-start: var(--space-4);
   }
   .odst-terms-note a {
     color: var(--color-paper-80);

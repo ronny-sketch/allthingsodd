@@ -5,6 +5,12 @@ import SocialIcon from '../primitives/SocialIcon.astro';
 import { socialLinkLabel } from '../primitives/social-handle';
 import NewsletterForm from '../primitives/NewsletterForm.astro';
 
+interface Props {
+  /** The photographers behind this page's photos — see photo-credits.ts. */
+  photoCredits?: string[];
+}
+const { photoCredits = [] } = Astro.props;
+
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
 const { nav, social, contact, footerAddress, newsletterLabel, newsletterHref, supportedBy } =
@@ -104,6 +110,13 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
           that is an address, not a claim about where you are. */
       }
     </div>
+    {
+      photoCredits.length > 0 && (
+        <p class="foot-credits">
+          Photography: {new Intl.ListFormat('en-GB', { type: 'conjunction' }).format(photoCredits)}
+        </p>
+      )
+    }
   </div>
 </footer>
 
@@ -335,6 +348,12 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
   }
   .foot-bottom p {
     margin: 0;
+  }
+  /* The brand book's rule: name the photographer wherever the archive does.
+     Its own full-width line, so a long list wraps under the address and the
+     legal links rather than squeezing between them. */
+  .foot-credits {
+    flex-basis: 100%;
   }
   .foot-bottom a {
     color: var(--color-clay-read);

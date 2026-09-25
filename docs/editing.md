@@ -248,6 +248,20 @@ longer in the header or the mobile menu. Both reuse the same sign-up
 mechanism, so there's nothing extra to configure beyond the newsletter
 sign-up link above.
 
+## Photo credits
+
+Every page names its photographers in the footer ("Photography: …"), worked
+out from the photos the page actually shows. The names are not a CloudCannon
+field: they live in `src/components/sections/photo-credits.json`, keyed by the
+image's file name without its extension (`oddfest-card`, `07-54584147091`).
+
+Adding a new photo therefore needs one line there too — the photographer's
+name as the archive gives it (Flickr title or tag, or the Drive folder's
+owner), or `null` when the archive names nobody (ODDspace's own house and
+phone photos, speakers' supplied portraits, frames from a film). `npm run
+quality` fails with `check:credits` until the entry exists, so a new photo
+can't go live uncredited by accident.
+
 ## Contact form setup
 
 The Contact page's form and the Work with ODD enquiry form both post to the

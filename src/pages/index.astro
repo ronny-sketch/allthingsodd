@@ -70,6 +70,7 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   preloadImage={preloadImage.src}
   preloadImageSrcset={preloadImage.srcset}
   preloadImageSizes={MOSAIC_SIZES}
+  extraPhotos={[talentPhoto, Object.values(archiveModules).map((m) => m.default)]}
 >
   <Hero mosaicAlt={page.hero.mosaicAlt} headline={page.opening.headline} />
 

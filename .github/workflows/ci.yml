@@ -93,6 +93,10 @@ jobs:
       # brand/tokens/brand-tokens.json mirrors src/styles/ for decks, print
       # and agents; this fails when the mirror drifts (2026-09-18).
       - run: npm run check:brand
+      # Every photo a page shows has a photographer entry (or a deliberate
+      # null) in photo-credits.json — CloudCannon edits never run
+      # `npm run quality`, so this is where a new uncredited photo is caught.
+      - run: npm run check:credits
       # The CI tiering rule decides what does and doesn't get tested, so it
       # gets tested itself.
       - run: node scripts/ci-scope.mjs --self-test
