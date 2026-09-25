@@ -162,7 +162,11 @@ const {
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: contrast(1.05) saturate(1.1) brightness(0.82);
+    /* 0.95, not 0.82 (2026-09-25): measured on screen, the hero photos sat
+       at 7-34% luminance with up to 80% of the frame near-black. Same lift
+       FullbleedVideoHero got the day before; the scrim below carries the
+       text contrast. */
+    filter: contrast(1.05) saturate(1.1) brightness(0.95);
   }
   /* An asymmetric 8-cell layout — cell-1 (the first of heroPhotos) anchors
      the grid as the largest cell, the rest fill in around it. Deliberately
@@ -285,12 +289,12 @@ const {
     inset: 0;
     pointer-events: none;
     background:
-      radial-gradient(ellipse 55% 60% at 50% 55%, rgb(14 9 11 / 45%) 0%, rgb(14 9 11 / 72%) 100%),
+      radial-gradient(ellipse 55% 60% at 50% 55%, rgb(14 9 11 / 30%) 0%, rgb(14 9 11 / 52%) 100%),
       linear-gradient(
         to top,
-        rgb(14 9 11 / 82%) 0%,
-        rgb(14 9 11 / 20%) 40%,
-        rgb(14 9 11 / 45%) 100%
+        rgb(14 9 11 / 72%) 0%,
+        rgb(14 9 11 / 10%) 40%,
+        rgb(14 9 11 / 30%) 100%
       );
   }
   .space-hero-overlay {

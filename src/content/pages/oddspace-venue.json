@@ -42,6 +42,14 @@
     {
       "image": "../../assets/oddspace/exterior-building.jpg",
       "alt": "The industrial Vallila building that houses ODDspace"
+    },
+    {
+      "image": "../../assets/oddspace/opening-full-house.jpg",
+      "alt": "A full room at an ODDspace event, people seated and standing to listen"
+    },
+    {
+      "image": "../../assets/oddspace/coworking-desks.jpg",
+      "alt": "The 2nd-floor co-creation space: desks and lounge chairs by tall windows over the Konepaja chimney"
     }
   ],
   "intro": "You do not need to be a member to book. Tell us the date and what you're planning, and we'll tell you whether the space can do it.",

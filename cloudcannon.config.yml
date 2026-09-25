@@ -465,10 +465,6 @@ collections_config:
           not ours.
         options:
           subtype: object
-      photoCredit:
-        type: text
-        label: Photographer credit (ODDstudio only)
-        comment: Credit line for the photography on this page.
       rentalRates:
         type: array
         label: Event space rental rates (ODDspace only)

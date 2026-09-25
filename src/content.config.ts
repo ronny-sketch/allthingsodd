@@ -1404,7 +1404,6 @@ const pages = defineCollection({
           privacyPolicy: linkCta.optional(),
         }),
         // Photographer credit for the whole set on this page.
-        photoCredit: z.string().optional(),
       }),
 
       z.object({

@@ -27,6 +27,8 @@ import SteamFilters from '../components/media/SteamFilters.astro';
 import StructuredData from '../components/media/StructuredData.astro';
 import NewsletterPopup from '../components/media/NewsletterPopup.astro';
 import ConsentBanner from '../components/navigation/ConsentBanner.astro';
+import { getEntry } from 'astro:content';
+import { photographers } from '../components/sections/photo-credits';
 
 interface Props {
   title: string;
@@ -54,6 +56,9 @@ interface Props {
    * out of search results without affecting any of the site's ten real
    * content pages, which never set this. */
   noindex?: boolean;
+  /** Photos a page imports directly instead of through its content entry,
+   * so the footer can credit them too (photo-credits.ts). */
+  extraPhotos?: unknown[];
 }
 const {
   title,
@@ -64,7 +69,16 @@ const {
   preloadImageSizes,
   theme,
   noindex,
+  extraPhotos,
 } = Astro.props;
+
+// Credits come from the page's own content entry — /oddspace/venue/ is
+// pages/oddspace-venue.json, / is pages/index.json — plus anything the page
+// imports itself. A route with no entry (tickets, brand book) credits only
+// what it passes in.
+const entryId = Astro.url.pathname.replace(/^\/|\/$/g, '').replace(/\//g, '-') || 'index';
+const pageEntry = await getEntry('pages', entryId);
+const photoCredits = photographers(pageEntry?.data, extraPhotos);
 
 // The site-wide social card, used by any page that does not name its own.
 // public/og/home.jpg is the only designed card in that folder — the rest are
@@ -230,7 +244,7 @@ const revealOptIn = `(function(){var d=document.documentElement;try{if(!window.m
     <main id="main-content">
       <slot />
     </main>
-    <Footer />
+    <Footer photoCredits={photoCredits} />
     <MobileMenu />
     <NewsletterPopup />
     <ConsentBanner />
