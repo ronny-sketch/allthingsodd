@@ -82,3 +82,32 @@ test('reduced motion: hero mosaic renders statically and never self-swaps', asyn
   );
   expect(after, 'mosaic cells changed under prefers-reduced-motion: reduce').toEqual(before);
 });
+
+// Phones and portrait tablets lay the twenty cells out 3x7, which is 21
+// slots: until 2026-09-25 the bottom-right one rendered as an empty tile on
+// every mobile homepage. The grid must be exactly filled at every layout.
+for (const viewport of [
+  { width: 375, height: 812 },
+  { width: 820, height: 1180 },
+  { width: 844, height: 390 },
+  { width: 1440, height: 900 },
+]) {
+  test(`hero mosaic fills every grid slot at ${viewport.width}x${viewport.height}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport);
+    await page.goto('/');
+    const { slots, used } = await page.locator('#heroMosaic').evaluate((mosaic) => {
+      const cs = getComputedStyle(mosaic);
+      const span = (v: string) => Number(/span (\d+)/.exec(v)?.[1] ?? 1);
+      return {
+        slots: cs.gridTemplateColumns.split(' ').length * cs.gridTemplateRows.split(' ').length,
+        used: Array.from(mosaic.querySelectorAll('.mosaic-cell')).reduce((n, cell) => {
+          const c = getComputedStyle(cell);
+          return n + span(c.gridColumnStart) * span(c.gridRowStart);
+        }, 0),
+      };
+    });
+    expect(used, 'mosaic grid has an empty slot').toBe(slots);
+  });
+}
