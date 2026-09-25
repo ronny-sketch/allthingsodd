@@ -13,9 +13,10 @@ import Aftermovie from '../components/sections/Aftermovie.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
 import PartnerTiers from '../components/sections/PartnerTiers.astro';
 import BuiltAround from '../components/sections/BuiltAround.astro';
-// The one photograph left in "Why ODD"'s grid. Also one of the hero mosaic's
-// first twenty cells, which is deliberate: it is the photo that stays when the
-// grid above is emptied. Portrait, so it fills the two-row cell uncropped.
+// The one photograph left in "Why ODD"'s grid. Portrait, so it fills the
+// two-row cell uncropped. (It was also one of the hero mosaic's first twenty
+// cells until the mosaic moved to its own photo set, src/assets/mosaic, on
+// 2026-09-24.)
 import talentPhoto from '../assets/hero/archive-20.jpg';
 
 // Content file is named index.json (not home.json) so CloudCannon's
@@ -55,7 +56,7 @@ const whyOddCtas = [page.opening.primaryCta, page.opening.secondaryCta].filter(
 // It was, but only because the real one — the <h1> — was disqualified by an
 // entrance animation; measurement moved LCP back to the heading at ~0.5s.
 // See Hero.astro's .hero-headline comment for the full finding.
-const archiveModules = import.meta.glob<{ default: ImageMetadata }>('../assets/hero/*.jpg', {
+const archiveModules = import.meta.glob<{ default: ImageMetadata }>('../assets/mosaic/*.jpg', {
   eager: true,
 });
 const firstArchiveImage = Object.values(archiveModules)[0].default;

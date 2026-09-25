@@ -12,6 +12,8 @@ if (mosaic) {
     srcset: string;
     width?: number | string;
     height?: number | string;
+    /** CSS object-position that keeps the subject in frame (mosaic-focus.ts). */
+    position?: string;
   }
   const pool: PoolImage[] = JSON.parse(mosaic.dataset.pool ?? '[]');
   // The `sizes` the cells are laid out with, kept on the element so the
@@ -19,17 +21,45 @@ if (mosaic) {
   const MOSAIC_SIZES = mosaic.dataset.sizes ?? '';
   const cells = Array.from(mosaic.querySelectorAll<HTMLElement>('.mosaic-cell'));
 
+  function shuffled<T>(items: T[]): T[] {
+    const out = items.slice();
+    for (let s = out.length - 1; s > 0; s--) {
+      const j = Math.floor(Math.random() * (s + 1));
+      [out[s], out[j]] = [out[j], out[s]];
+    }
+    return out;
+  }
+
+  // The zoom origin sits within 10% of the photo's focus point (its
+  // object-position), so the pan closes in on the subject instead of
+  // drifting a face out of a small cell. No focus: anywhere in the middle 70%.
+  function origin(focus: string | undefined, axis: 0 | 1) {
+    const f = Number.parseFloat(focus?.split(' ')[axis] ?? '');
+    if (Number.isNaN(f)) return 15 + Math.random() * 70;
+    return Math.min(100, Math.max(0, f - 10 + Math.random() * 20));
+  }
+
+  // How far the pan may drift (as a % translate, the unit ken-burns uses)
+  // without uncovering an edge of the cell. The 1.16 zoom only grows the
+  // photo past an edge in proportion to how far the origin is from it, so an
+  // origin near the top (a face near the top of a photo) leaves almost no
+  // room to drift down. An unbounded drift showed a strip of the empty cell
+  // there. 1.16 is the ken-burns keyframe's scale in Hero.astro.
+  function pan(originPct: number, max: number) {
+    const dir = Math.random() > 0.5 ? 1 : -1;
+    const room = (0.16 / 1.16) * (dir > 0 ? originPct : 100 - originPct);
+    return `${(dir * Math.min(max, room) * (0.3 + 0.7 * Math.random())).toFixed(1)}%`;
+  }
+
   function randomKenBurns(img: HTMLImageElement) {
     const kd = `${(12 + Math.random() * 9).toFixed(0)}s`;
-    const kox = `${(15 + Math.random() * 70).toFixed(0)}%`;
-    const koy = `${(15 + Math.random() * 70).toFixed(0)}%`;
-    const kx = `${((Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * 3)).toFixed(1)}%`;
-    const ky = `${((Math.random() > 0.5 ? 1 : -1) * (1 + Math.random() * 2)).toFixed(1)}%`;
+    const ox = Math.round(origin(img.style.objectPosition, 0));
+    const oy = Math.round(origin(img.style.objectPosition, 1));
     img.style.setProperty('--kd', kd);
-    img.style.setProperty('--kox', kox);
-    img.style.setProperty('--koy', koy);
-    img.style.setProperty('--kx', kx);
-    img.style.setProperty('--ky', ky);
+    img.style.setProperty('--kox', `${ox}%`);
+    img.style.setProperty('--koy', `${oy}%`);
+    img.style.setProperty('--kx', pan(ox, 4));
+    img.style.setProperty('--ky', pan(oy, 3));
   }
 
   cells.forEach((cell, i) => {
@@ -59,12 +89,27 @@ if (mosaic) {
     // literal, unresolved attribute value, matching `pool`'s format exactly.
     const assigned = cells.map((cell) => cell.querySelector('img')?.getAttribute('src') ?? '');
 
+    // A shuffled deck, not a random pick per swap (2026-09-24). Picking at
+    // random let a few photos come round again and again while others never
+    // showed; the deck deals every photo once, in a fresh random order each
+    // visit, before any repeats. The first deal leaves out the twenty already
+    // on screen, so the photos a visitor has not seen come first.
+    let deck = shuffled(pool.filter((p) => !assigned.includes(p.src)));
+
+    function draw(): PoolImage {
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const i = deck.findIndex((p) => !assigned.includes(p.src));
+        if (i !== -1) return deck.splice(i, 1)[0];
+        deck = shuffled(pool);
+      }
+      // Only reachable with a pool no bigger than the grid.
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
     function swap(cellIndex: number) {
       const cell = cells[cellIndex];
       const oldImg = cell.querySelector('img');
-      let candidates = pool.filter((p) => !assigned.includes(p.src));
-      if (!candidates.length) candidates = pool;
-      const next = candidates[Math.floor(Math.random() * candidates.length)];
+      const next = draw();
       assigned[cellIndex] = next.src;
 
       const newImg = document.createElement('img');
@@ -84,13 +129,12 @@ if (mosaic) {
       // corresponding appendChild. This element is swapped in deliberately
       // and immediately — "lazy" was never the right loading mode for it.
       newImg.style.opacity = '0';
-      // 1.4s, not the original 2.2s — tuned down alongside the faster swap
-      // cadence below (roughly the same crossfade-to-interval ratio as
-      // before) so a cell's own fade still reads as smooth/continuous
-      // rather than still resolving when its neighbors are already several
-      // swaps ahead — see the 2026-08-30 homepage revision's "hero feels
-      // alive" brief.
-      newImg.style.transition = 'opacity 1.4s ease';
+      // 1s (was 1.4s, originally 2.2s), shortened with the faster cadence
+      // below so each change lands as a change rather than a slow dissolve.
+      // A cell is only revisited every twenty swaps (~14s), far longer than
+      // its own fade, so fades never overlap within one cell.
+      newImg.style.transition = 'opacity 1s ease';
+      if (next.position) newImg.style.objectPosition = next.position;
       randomKenBurns(newImg);
       // srcset + sizes, not just src. Without them this element loaded the
       // widest pool file into a cell a fraction of its size, and its larger
@@ -109,9 +153,9 @@ if (mosaic) {
         requestAnimationFrame(() => {
           newImg.style.opacity = '1';
           if (oldImg) {
-            oldImg.style.transition = 'opacity 1.4s ease';
+            oldImg.style.transition = 'opacity 1s ease';
             oldImg.style.opacity = '0';
-            setTimeout(() => oldImg.remove(), 1500);
+            setTimeout(() => oldImg.remove(), 1100);
           }
         });
       };
@@ -119,11 +163,7 @@ if (mosaic) {
       else reveal();
     }
 
-    const order = cells.map((_, i) => i);
-    for (let s = order.length - 1; s > 0; s--) {
-      const j = Math.floor(Math.random() * (s + 1));
-      [order[s], order[j]] = [order[j], order[s]];
-    }
+    const order = shuffled(cells.map((_, i) => i));
     let oi = 0;
     let timer: number | null = null;
 
@@ -144,18 +184,20 @@ if (mosaic) {
       return onScreen && !document.hidden;
     }
 
+    // 0.55–0.85s between swaps (2026-09-24; was 1.6–2.2s, originally
+    // 2.6–3.5s). With 73 photos and 20 cells, the old pace needed well over
+    // a minute to show the other 53, so most visitors never saw the range of
+    // the archive. At this pace every photo has appeared within ~40s. Still
+    // one swap per tick through a shuffled cell order, so the `assigned`
+    // reservation in swap() keeps any photo from showing in two cells.
+    const gap = () => 550 + Math.random() * 300;
+
     function scheduleTick() {
       timer = null;
       if (!running()) return;
       swap(order[oi % order.length]);
       oi++;
-      // 1.6–2.2s between swaps (was 2.6–3.5s) — the hero read as slightly
-      // too quiet/slow at the old cadence; see the 2026-08-30 homepage
-      // revision brief. The shared-timer/shuffled-order/one-swap-per-tick
-      // structure above is unchanged, so the "no two cells ever show the
-      // same source image at once" invariant (the `assigned` reservation in
-      // swap()) still holds at the faster rate.
-      timer = window.setTimeout(scheduleTick, 1600 + Math.random() * 600);
+      timer = window.setTimeout(scheduleTick, gap());
     }
 
     function sync() {
@@ -165,7 +207,7 @@ if (mosaic) {
       // will-change still holds its own compositor layer.
       mosaic!.classList.toggle('mosaic-is-idle', !go);
       if (go && timer === null) {
-        timer = window.setTimeout(scheduleTick, 1600 + Math.random() * 600);
+        timer = window.setTimeout(scheduleTick, gap());
       } else if (!go && timer !== null) {
         clearTimeout(timer);
         timer = null;
@@ -183,7 +225,8 @@ if (mosaic) {
       ).observe(mosaic);
     }
 
-    timer = window.setTimeout(scheduleTick, 4000);
+    // First swap once the fly-in (~1.5s with its stagger) has settled.
+    timer = window.setTimeout(scheduleTick, 2500);
   }
 }
 

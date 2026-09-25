@@ -68,8 +68,9 @@ const ROUTES = [
 ];
 
 // Long enough to outlast anything on a timer. The mosaic swaps its first
-// image at 4000ms, and a measurement window shorter than that would have
-// reported the homepage as passing while a real visitor saw 4.3s.
+// image at 2500ms (4000ms until 2026-09-24), and a measurement window
+// shorter than that would have reported the homepage as passing while a
+// real visitor saw 4.3s.
 const SETTLE_MS = 6000;
 
 async function measure(page, route) {

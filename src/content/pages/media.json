@@ -8,19 +8,40 @@
   "title": "ODD media & press.",
   "intro": "Official facts, boilerplate copy, photos, video, logos and press material for anyone covering ODD.",
   "jumpLinks": [
-    { "label": "About ODD", "href": "#about-odd" },
-    { "label": "Media bank", "href": "#media-bank" },
-    { "label": "Archive", "href": "#archive" },
-    { "label": "Press contact", "href": "#press-contact" }
+    {
+      "label": "About ODD",
+      "href": "#about-odd"
+    },
+    {
+      "label": "Media bank",
+      "href": "#media-bank"
+    },
+    {
+      "label": "Archive",
+      "href": "#archive"
+    },
+    {
+      "label": "Press contact",
+      "href": "#press-contact"
+    }
   ],
   "boilerplate": {
     "eyebrow": "Boilerplate",
     "headline": "ODD in one paragraph.",
     "body": "ODD is a Helsinki-born initiative working to strengthen creative and cultural work and bring its expertise closer to business and wider society. Its current work includes ODDfest, Helsinki's creative week bringing cultural and creative scenes together through independently made events across the city; ODDference, a business conference powered by creative & cultural expertise; ODDspace, a year-round workspace, studios and event space in Vallila; and project work with organisations. ODD is operated by New Nordic Way rf, a Finnish non-profit association based in Helsinki.",
     "keyFacts": [
-      { "label": "Based in", "value": "Helsinki, Finland" },
-      { "label": "Operated by", "value": "New Nordic Way rf" },
-      { "label": "Main activities", "value": "ODDfest · ODDference · ODDspace · Work with ODD" }
+      {
+        "label": "Based in",
+        "value": "Helsinki, Finland"
+      },
+      {
+        "label": "Operated by",
+        "value": "New Nordic Way rf"
+      },
+      {
+        "label": "Main activities",
+        "value": "ODDfest · ODDference · ODDspace · Work with ODD"
+      }
     ]
   },
   "background": [
@@ -82,6 +103,27 @@
       }
     ],
     "video": [
+      {
+        "title": "ODDfest 2026 thank-you film — 9:16",
+        "type": "Video",
+        "year": "2026",
+        "description": "87 s · MP4 · vertical, for Reels, TikTok and Stories",
+        "href": "/video/oddfest-2026-thank-you-9x16.mp4"
+      },
+      {
+        "title": "ODDfest 2026 thank-you film — 4:5",
+        "type": "Video",
+        "year": "2026",
+        "description": "87 s · MP4 · for the Instagram and LinkedIn feed",
+        "href": "/video/oddfest-2026-thank-you-4x5.mp4"
+      },
+      {
+        "title": "ODDfest 2026 thank-you film — 16:9",
+        "type": "Video",
+        "year": "2026",
+        "description": "87 s · MP4 · widescreen, for YouTube and embeds",
+        "href": "/video/oddfest-2026-thank-you-16x9.mp4"
+      },
       {
         "title": "ODDfest 2025 Aftermovie",
         "type": "Video",

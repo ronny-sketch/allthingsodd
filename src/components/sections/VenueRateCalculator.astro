@@ -1,0 +1,273 @@
+---
+// The published ODDspace rate card, as something you operate rather than
+// read (2026-09-24). It answers the one question the venue page could not
+// answer before — "what would my event cost?" — without pretending the
+// answer is final: the number is a starting point and the page says so.
+//
+// Progressive enhancement, because a price a visitor cannot see is worse
+// than no calculator at all. Every lane, every rate and every add-on is
+// plain visible text in document order: with no JS the section is simply the
+// whole rate card, three lanes deep. The script is what turns it into a
+// picker — it hides the lanes you are not in, adds the selection up, and
+// carries the choice into the enquiry form as ?lane=&offer=. It never owns a
+// price. That is also why the panels are not hidden in CSS: a stylesheet
+// that hid them would hide them for a visitor whose script never ran.
+import Pill from '../primitives/Pill.astro';
+
+interface Rate {
+  id: string;
+  label: string;
+  price: number;
+  priceLabel?: string;
+  note?: string;
+}
+interface Lane {
+  id: string;
+  name: string;
+  blurb: string;
+  rates: Rate[];
+  addOns: { id: string; label: string; price: number; note?: string }[];
+}
+interface Props {
+  vatRate: number;
+  lanesLabel: string;
+  estimateLabel: string;
+  lanes: Lane[];
+  note: string;
+  cta: { label: string; href: string };
+}
+const { vatRate, lanesLabel, estimateLabel, lanes, note, cta } = Astro.props;
+
+// Whole euros: every rate on this card is one, and "€1,200.00" on a starting
+// price reads like a quote that has already been calculated.
+const euro = (n: number) => `€${n.toLocaleString('en-IE')}`;
+---
+
+<div class="vrc" data-vat={vatRate} data-cta-href={cta.href}>
+  <fieldset class="vrc-lanes">
+    <legend class="eyebrow">{lanesLabel}</legend>
+    <div class="vrc-lane-row">
+      {
+        lanes.map((lane, i) => (
+          <label class="vrc-lane">
+            <input
+              type="radio"
+              name="vrc-lane"
+              id={`vrc-lane-${lane.id}`}
+              value={lane.id}
+              checked={i === 0}
+            />
+            <span>{lane.name}</span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+
+  {
+    lanes.map((lane) => (
+      <div class="vrc-panel" data-lane={lane.id}>
+        <p class="vrc-blurb">{lane.blurb}</p>
+        <fieldset class="vrc-rates">
+          <legend class="sr-only">{lane.name} rates</legend>
+          {lane.rates.map((rate, i) => (
+            <label class="vrc-row">
+              <input
+                type="radio"
+                name={`vrc-offer-${lane.id}`}
+                value={rate.id}
+                data-price={rate.price}
+                checked={i === 0}
+              />
+              <span class="vrc-row-name">{rate.label}</span>
+              <span class="vrc-row-price">{rate.priceLabel ?? euro(rate.price)}</span>
+              {rate.note && <span class="vrc-row-note">{rate.note}</span>}
+            </label>
+          ))}
+          {lane.addOns.map((addOn) => (
+            <label class="vrc-row vrc-row--add">
+              <input type="checkbox" value={addOn.id} data-price={addOn.price} />
+              <span class="vrc-row-name">{addOn.label}</span>
+              <span class="vrc-row-price">+ {euro(addOn.price)}</span>
+              {addOn.note && <span class="vrc-row-note">{addOn.note}</span>}
+            </label>
+          ))}
+        </fieldset>
+      </div>
+    ))
+  }
+
+  <p class="vrc-estimate" hidden>
+    <span class="vrc-estimate-label">{estimateLabel}</span>
+    <span class="vrc-estimate-figure"></span>
+    <span class="vrc-estimate-vat"></span>
+  </p>
+
+  <p class="vrc-note">{note}</p>
+
+  <div class="vrc-cta">
+    <Pill href={cta.href} variant="solid" magnetic>{cta.label}</Pill>
+  </div>
+</div>
+
+<style>
+  .vrc {
+    max-width: 42rem;
+    margin-inline: auto;
+  }
+
+  /* Lane picker. Chips, like the event-type row further up this page, so the
+     two rows of choices on one page read as the same kind of thing. */
+  .vrc-lanes {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .vrc-lanes legend {
+    padding: 0;
+    color: var(--color-paper-60);
+  }
+  .vrc-lane-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+  .vrc-lane {
+    position: relative;
+  }
+  .vrc-lane input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .vrc-lane span {
+    display: block;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--color-paper-12);
+    border-radius: var(--radius-pill);
+    font: var(--text-small);
+    color: var(--color-paper-80);
+    cursor: pointer;
+  }
+  .vrc-lane input:checked + span {
+    border-color: var(--color-paper-40);
+    color: var(--color-paper);
+  }
+  .vrc-lane input:focus-visible + span {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+
+  /* Visible by default; the script hides the lanes you are not in. See the
+     route comment — nothing here may depend on the script having run. */
+  .vrc-panel {
+    margin-top: var(--space-6);
+  }
+
+  .vrc-blurb {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .vrc-rates {
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    border: 0;
+  }
+
+  /* Same row rhythm as this page's member-rate rows, plus the control. */
+  .vrc-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    gap: 0 var(--space-4);
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--color-paper-12);
+    font: var(--text-body);
+    cursor: pointer;
+  }
+  .vrc-row:last-of-type {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .vrc-row input {
+    accent-color: var(--color-paper-80);
+    margin: 0;
+    cursor: pointer;
+  }
+  .vrc-row-name {
+    color: var(--color-paper-80);
+  }
+  .vrc-row-price {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .vrc-row-note {
+    grid-column: 2 / -1;
+    margin-top: var(--space-2);
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .vrc-row--add .vrc-row-price {
+    color: var(--color-paper-60);
+  }
+
+  /* The estimate. Shown by the script, so it never sits there empty —
+     and `display: flex` on a class beats the UA's `[hidden]` rule, so the
+     hidden state has to be restated here or a no-JS visitor gets an empty
+     "Roughly" line. */
+  .vrc-estimate[hidden] {
+    display: none;
+  }
+  .vrc-estimate {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--space-3);
+    margin: var(--space-6) 0 0;
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--color-paper-40);
+  }
+  .vrc-estimate-label {
+    font: var(--text-small);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .vrc-estimate-figure {
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    font-variant-numeric: tabular-nums;
+  }
+  .vrc-estimate-vat {
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+
+  .vrc-note {
+    margin: var(--space-4) 0 0;
+    max-width: var(--measure-prose);
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .vrc-cta {
+    margin-top: var(--space-6);
+  }
+
+  @media (max-width: 480px) {
+    .vrc-row {
+      grid-template-columns: auto 1fr;
+    }
+    .vrc-row-price {
+      grid-column: 2;
+      text-align: left;
+      margin-top: var(--space-2);
+    }
+  }
+</style>
+
+<script src="../../scripts/venue-rate-calculator.ts"></script>

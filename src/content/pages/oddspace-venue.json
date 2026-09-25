@@ -3,7 +3,7 @@
   "_slug": "oddspace",
   "seo": {
     "title": "Host an event at ODDspace — gallery and auditorium in Vallila",
-    "description": "ODDspace as a venue: a gallery and event floor, an auditorium and a studio in Vallila, Helsinki. Exhibitions, launches, workshops, talks, screenings, shoots and performances. Member and enquiry-based rates.",
+    "description": "ODDspace as a venue: a gallery, a co-creation floor, an auditorium and a studio in Vallila, Helsinki. Exhibitions, launches, workshops, talks, screenings, shoots and performances. Member and enquiry-based rates.",
     "ogImage": "/og/oddspace.jpg"
   },
   "eyebrow": "ODDspace · As a venue",
@@ -47,8 +47,8 @@
   "intro": "You do not need to be a member to book. Tell us the date and what you're planning, and we'll tell you whether the space can do it.",
   "whatItIs": {
     "eyebrow": "What it's good for",
-    "headline": "A gallery floor, an auditorium, and flexible space for events.",
-    "body": "ODDspace is a working creative space in Vallila with two bookable event rooms in it — a gallery and event floor, and an auditorium with tiered seating. Exhibitions, launches, workshops, talks, screenings, shoots, gatherings, performances and organisational events have all happened here. It does not feel like a hotel conference room — which is exactly why many choose it."
+    "headline": "A gallery, a co-creation floor and an auditorium.",
+    "body": "ODDspace is a working creative space in Vallila with three bookable event rooms in it — a gallery at street level, a co-creation space one floor up, and an auditorium with tiered seating. Exhibitions, launches, workshops, talks, screenings, shoots, gatherings, performances and organisational events have all happened here. It does not feel like a hotel conference room — which is exactly why many choose it."
   },
   "eventTypes": [
     "Exhibitions and openings",
@@ -61,19 +61,29 @@
   ],
   "spacesIntro": {
     "eyebrow": "The rooms",
-    "headline": "Two bookable rooms, plus the studio."
+    "headline": "Three bookable rooms, plus the studio."
   },
   "spaces": [
     {
-      "name": "Event & gallery floor",
-      "body": "The raised, curved main floor — the room most events happen in. Exhibitions, launches, workshops, shoots, receptions and performances.",
+      "name": "Gallery",
+      "body": "The big room at street level — the raised, curved floor most evenings happen on. Openings, receptions, launches, concerts, club nights and performances. Its walls are usually hung with work, so tell us early if you need them clear.",
       "bullets": [
-        "The main event room",
+        "Up to 150 people, 320 m²",
         "Exhibitions, launches and receptions",
-        "Workshops, shoots and performances",
+        "Concerts, club nights and performances",
         "Member rate: €200 for a full day"
       ],
       "image": "../../assets/oddspace/gallery-floor.jpg"
+    },
+    {
+      "name": "Event & co-creation space",
+      "body": "One floor up, and closer to a living room than a venue: sofas, big black speakers and daylight from the windows. The room for a day-long programme rather than an evening crowd.",
+      "bullets": [
+        "Up to 150 people, on the 2nd floor",
+        "Seminars, workshops and away-days",
+        "Dinners and smaller parties"
+      ],
+      "image": "../../assets/oddspace/lounge.jpg"
     },
     {
       "name": "Auditorium",
@@ -88,7 +98,7 @@
     },
     {
       "name": "ODDstudio",
-      "body": "The recording and production room, run with TUNEMENT. Booked separately from the event rooms — useful alongside an event for recording, podcasts or live sessions.",
+      "body": "The creative music studio, run with TUNEMENT. Booked separately from the event rooms — useful alongside an event for recording, podcasts or live sessions.",
       "bullets": [
         "Recording, co-writing and production",
         "Genelec monitoring and a mic locker",
@@ -100,25 +110,17 @@
   ],
   "pricing": {
     "eyebrow": "What it costs",
-    "headline": "Member rates are published. Everything else is quoted.",
-    "body": "Members book the rooms at fixed member rates. For everyone else we quote per event, because the number depends on which room, how long, how much setup and teardown time you need, and whether you want us to help run it. Tell us those four things and you'll have a price."
+    "headline": "Pick who you are. Get a number.",
+    "body": "The price follows who is putting the event on, not how much we like the idea. Choose the closest fit and you have a starting number in a few seconds — then tell us what you are actually planning and we price that."
   },
   "memberRates": [
     {
-      "name": "Full day, 1st floor gallery (members)",
-      "price": "€200"
-    },
-    {
-      "name": "Half day, auditorium (members)",
-      "price": "€100"
-    },
-    {
       "name": "ODDstudio, per hour (members)",
       "price": "€20",
-      "note": "Or €100 / month for full studio access. Non-member studio rates are on the ODDstudio page."
+      "note": "The studio is booked separately from the event rooms — €100 / month for full access, and non-member rates are on the ODDstudio page."
     }
   ],
-  "ratesNote": "Non-member rates are set per event rather than from a rate card — ask, and you'll get a number for your date. Membership is €150 / month, so for a series of events it is often worth comparing the two.",
+  "ratesNote": "All prices are + VAT 25.5%, for the room across your booked hours with setup and teardown inside them. Cleaning, catering, a bar licence and anything rigged are yours or quoted separately. Membership is €150 a month, so a run of events often costs less as a member than as a guest — ask and we will do that comparison with you.",
   "whatWeCanDo": {
     "eyebrow": "Beyond the room",
     "headline": "Need more than a venue?",
@@ -182,7 +184,7 @@
     },
     {
       "question": "What does it cost?",
-      "answer": "Member rates are €200 for a full day in the 1st floor gallery and €100 for a half day in the auditorium. Non-member pricing is quoted per event, based on the room, the hours, the setup you need and whether you want help running it."
+      "answer": "Members pay €100 for a half day and €200 for a full day. A creative organisation or a promoter pays €300 for the room, or nothing upfront on a revenue share where the first €350 of net ticket sales covers it. Companies and other organisations pay €750 for a half day and €1,200 for a full day or evening. All + VAT 25.5%, a house technician is €200 where you need one, and every price is open to discussion — the calculator above gives you a starting number for your own case."
     },
     {
       "question": "How many people fit?",
@@ -255,5 +257,89 @@
       "kind": "word",
       "text": "ODDspace"
     }
-  ]
+  ],
+  "rateCard": {
+    "vatRate": 25.5,
+    "lanesLabel": "Who's putting it on?",
+    "estimateLabel": "Roughly",
+    "lanes": [
+      {
+        "id": "member",
+        "name": "ODDspace member",
+        "blurb": "You already pay €150 a month, so you book the rooms at the member rate.",
+        "rates": [
+          {
+            "id": "half",
+            "label": "Half day, up to 5 hours",
+            "price": 100
+          },
+          {
+            "id": "full",
+            "label": "Full day, up to 10 hours",
+            "price": 200
+          }
+        ],
+        "addOns": [
+          {
+            "id": "technician",
+            "label": "House technician",
+            "price": 200,
+            "note": "Required on the house PA unless your own engineer is approved in advance."
+          }
+        ]
+      },
+      {
+        "id": "creative",
+        "name": "Creative organisation",
+        "blurb": "A registered association, an artist collective, a curator, an artist, a promoter with a gig or a club night. Ticketed or free.",
+        "rates": [
+          {
+            "id": "flat",
+            "label": "Flat fee for the room",
+            "price": 300,
+            "note": "You keep every ticket."
+          },
+          {
+            "id": "share",
+            "label": "Revenue share",
+            "price": 0,
+            "priceLabel": "€0 upfront",
+            "note": "Nothing upfront. The first €350 of net ticket sales covers the room, and most of what comes after that is yours — we agree the split when we agree the night."
+          }
+        ],
+        "addOns": [
+          {
+            "id": "technician",
+            "label": "House technician",
+            "price": 200,
+            "note": "Required on the house PA unless your own engineer is approved in advance."
+          }
+        ]
+      },
+      {
+        "id": "company",
+        "name": "Company or organisation",
+        "blurb": "A launch, a workshop, an away-day, a party. Room, staff and cleaning handled.",
+        "rates": [
+          {
+            "id": "half",
+            "label": "Half day, up to 5 hours",
+            "price": 750
+          },
+          {
+            "id": "full",
+            "label": "Full day or evening, up to 10 hours",
+            "price": 1200,
+            "note": "Every hour after that is €150."
+          }
+        ],
+        "addOns": []
+      }
+    ],
+    "note": "Every number here is a starting point, not a till receipt. We talk each event through — the room, the hours, the help you want — and price that. If your event is for a cause and the budget is not there, say so; we would rather hear it early.",
+    "cta": {
+      "label": "Enquire about a date",
+      "href": "/work-with-odd/?interest=oddspace&intent=event#enquiry-form"
+    }
+  }
 }

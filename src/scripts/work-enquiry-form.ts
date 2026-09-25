@@ -49,13 +49,64 @@ if (form instanceof HTMLFormElement) {
   const INTENTS = ['membership', 'event', 'studio'] as const;
   const requestedIntent = params.get('intent');
   const intent = INTENTS.find((i) => i === requestedIntent);
-  if (intent) {
+
+  // The dropdown's ODDstudio entry (2026-09-24) — a UI-only value, translated
+  // below into the interest/intent pair the Worker and Attio actually know.
+  // Kept in sync by hand with WorkEnquiryForm.astro's STUDIO_OPTION.
+  const STUDIO_OPTION = 'oddstudio';
+  // /oddstudio still deep-links with ?interest=oddspace&intent=studio, because
+  // every ?interest= value on the site has to be a real products.yml product
+  // (CLAUDE.md, Growth OS integration). Land those visitors on the option they
+  // came for rather than on the broader "ODDspace" one.
+  if (intent === 'studio' && interestSelect) interestSelect.value = STUDIO_OPTION;
+  const isStudio = () => intent === 'studio' || interestSelect?.value === STUDIO_OPTION;
+
+  // Neither a personal member, someone renting the space for an evening, nor a
+  // solo musician booking studio time is necessarily part of a business, so
+  // none of them should be asked for a "work email" and a required
+  // "organisation" as though they were.
+  const relaxForIndividual = () => {
     const emailLabel = form.querySelector<HTMLLabelElement>('#we-email-label');
     const orgLabel = form.querySelector<HTMLLabelElement>('#we-org-label');
     const orgInput = form.querySelector<HTMLInputElement>('#we-org');
     if (emailLabel) emailLabel.textContent = 'Email';
     if (orgLabel) orgLabel.textContent = 'Organisation (leave blank if applying as an individual)';
     if (orgInput) orgInput.required = false;
+  };
+  if (intent || isStudio()) relaxForIndividual();
+  // Picking ODDstudio here is the same person as arriving from /oddstudio. Not
+  // reversed on a later change: re-imposing a required field someone has
+  // already walked past is worse than accepting a blank organisation, which
+  // the Worker handles anyway.
+  interestSelect?.addEventListener('change', () => {
+    if (isStudio()) relaxForIndividual();
+  });
+
+  // The venue rate calculator (2026-09-24) links here with ?lane=&offer=
+  // after someone has priced their own event on /oddspace/venue. Open the
+  // message with what they already chose, so the first reply can be about
+  // the date instead of re-establishing who they are.
+  //
+  // Both values are looked up in the maps below and never echoed into the
+  // page as text: a link is something a stranger can write, and this one
+  // ends up in a textarea whose contents a human at ODD then reads as if we
+  // had asked for it. An unknown value simply adds nothing.
+  const LANE_PHRASES: Record<string, string> = {
+    member: 'as an ODDspace member',
+    creative: 'as a creative organisation',
+    company: 'as a company or organisation',
+  };
+  const OFFER_PHRASES: Record<string, string> = {
+    half: 'a half day',
+    full: 'a full day or evening',
+    flat: 'the flat fee for the room',
+    share: 'the revenue share, nothing upfront',
+  };
+  const lanePhrase = LANE_PHRASES[params.get('lane') ?? ''];
+  const offerPhrase = OFFER_PHRASES[params.get('offer') ?? ''];
+  const goal = form.querySelector<HTMLTextAreaElement>('#we-goal');
+  if (goal && !goal.value && lanePhrase) {
+    goal.value = `Booking the space ${lanePhrase}${offerPhrase ? `, ${offerPhrase}` : ''}.\n\n`;
   }
 
   form.addEventListener('submit', async (e) => {
@@ -66,9 +117,13 @@ if (form instanceof HTMLFormElement) {
     submitBtn?.setAttribute('disabled', 'true');
     status.textContent = 'Sending…';
 
+    const fields = Object.fromEntries(new FormData(form));
+    const studio = isStudio();
     const payload = {
-      ...Object.fromEntries(new FormData(form)),
-      ...(intent ? { intent } : {}),
+      ...fields,
+      // See STUDIO_OPTION above: `oddstudio` is not a product the Worker or
+      // Attio recognise, so it never leaves the browser under that name.
+      ...(studio ? { interest: 'oddspace', intent: 'studio' } : intent ? { intent } : {}),
       ...captureFirstTouch(),
     };
 

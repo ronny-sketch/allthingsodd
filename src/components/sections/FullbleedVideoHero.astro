@@ -179,7 +179,7 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: contrast(1.05) saturate(1.15) brightness(0.8);
+    filter: contrast(1.05) saturate(1.15) brightness(0.95);
   }
   .oddfest-hero video {
     opacity: 0;
@@ -402,17 +402,18 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
   .oddfest-hero--frame-space .oddfest-hero-scrim {
     background:
       radial-gradient(ellipse 45% 55% at 84% 14%, var(--hero-accent-wash) 0%, transparent 60%),
-      radial-gradient(ellipse 55% 60% at 50% 55%, rgb(14 9 11 / 45%) 0%, rgb(14 9 11 / 72%) 100%),
+      radial-gradient(ellipse 55% 60% at 50% 55%, rgb(14 9 11 / 30%) 0%, rgb(14 9 11 / 52%) 100%),
       linear-gradient(
         to top,
-        rgb(14 9 11 / 82%) 0%,
-        rgb(14 9 11 / 20%) 40%,
-        rgb(14 9 11 / 45%) 100%
+        rgb(14 9 11 / 72%) 0%,
+        rgb(14 9 11 / 10%) 40%,
+        rgb(14 9 11 / 30%) 100%
       );
   }
-  /* The film is already darkened by the shared brightness(0.8) filter above,
-     which ODDspace's photography also carries (brightness(0.82)) — so the
-     scrim change is the only ground adjustment needed. */
+  /* Lightened 2026-09-24 (Ronny: the film was hard to see on /oddfest and
+     /oddference) — brightness(0.95) above instead of 0.8, and this scrim
+     about a third lighter. The stack keeps its text-shadow, so it still
+     reads over the brightest frames. ODDspace's SpaceHero is unchanged. */
 
   /* min(22.5rem, 64vw), not ODDspace's min(18.75rem, 56vw): the ODDference
      mark is 6.47:1 where the ODDspace wordmark is 5.42:1, so the same

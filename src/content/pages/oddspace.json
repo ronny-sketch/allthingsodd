@@ -42,7 +42,7 @@
     },
     {
       "image": "../../assets/oddstudio/studio-room-sofa.jpg",
-      "alt": "ODDstudio: a producer at the desk between blue curtains, with guitars, percussion, keys and drums around a sofa"
+      "alt": "ODDstudio: a producer at the desk between blue curtains, with guitars, percussion and keys around a sofa"
     },
     {
       "image": "../../assets/oddspace/opening-audience.jpg",
@@ -99,10 +99,10 @@
     },
     {
       "name": "ODDstudio",
-      "body": "A room built for making sound — recording, co-writing, production. Run with TUNEMENT, and booked separately from membership.",
+      "body": "A creative music studio — recording, co-writing, production. Run with TUNEMENT, and booked separately from membership.",
       "bullets": [
         "Genelec monitoring and a mic locker",
-        "Guitars, keys, electronic drums and percussion",
+        "Guitars, keys and percussion",
         "Recording, co-writing and production",
         "Not included in membership — from €20 / hour for members, €30 without"
       ],
@@ -129,7 +129,7 @@
   "studioCallout": {
     "eyebrow": "One exception",
     "headline": "The studio is not included.",
-    "body": "ODDstudio — the recording and production room, run with TUNEMENT — is booked separately from the €150 / month membership. Members add full studio access for €100 / month (€250 / month in total), or book it at €20 / hour. Without a membership the studio rents from €30 / hour.",
+    "body": "ODDstudio — the creative music studio, run with TUNEMENT — is booked separately from the €150 / month membership. Members add full studio access for €100 / month (€250 / month in total), or book it at €20 / hour. Without a membership the studio rents from €30 / hour.",
     "cta": {
       "label": "Read more about ODDstudio",
       "href": "/oddstudio"
@@ -137,17 +137,12 @@
   },
   "rentalRates": [
     {
-      "name": "Full-day, 1st floor gallery (members)",
-      "price": "€200"
+      "name": "Creative organisations and cultural workers",
+      "price": "from €300 + VAT"
     },
     {
-      "name": "Half-day, auditorium (members)",
-      "price": "€100"
-    },
-    {
-      "name": "ODDstudio, per hour (members)",
-      "price": "€20",
-      "note": "Or €100 / month for full studio access. See the ODDstudio page for non-member rates."
+      "name": "Companies",
+      "price": "from €750 + VAT"
     }
   ],
   "howItWorks": [
@@ -211,12 +206,12 @@
         "description": "A choir that exists for one afternoon: you arrive without needing to read music or have sung before, and you leave having sung together."
       },
       {
-        "title": "ODDfest afterparty",
+        "title": "AFTER ODD — the ODDfest afterparty",
         "category": "One-off · free",
         "date": "Sat 26 Sep",
-        "time": "From 18:00",
+        "time": "19:00–00:00",
         "venue": "ODDspace, Teollisuuskatu 9D",
-        "description": "The afterparty ODDfest never had in June. Artists playing things they've never played anywhere, burgers, and the drinks we didn't manage to sell. Free, and everyone is welcome."
+        "description": "The afterparty ODDfest never had in June. Music and open decks, art installations. Bring your own wine or beer; non-alcoholic beer is on the house. Free, and everyone is welcome."
       },
       {
         "title": "Birds Nest Ambient Festival",
@@ -307,7 +302,7 @@
     },
     {
       "question": "What is ODDspace?",
-      "answer": "A workspace and event space in Vallila, Helsinki with coworking areas, meeting rooms, an event/gallery floor, an auditorium and ODDstudio, a recording and production studio. People can work independently while the space also makes it easier to share work, ask for input and collaborate when useful."
+      "answer": "A workspace and event space in Vallila, Helsinki with coworking areas, meeting rooms, an event/gallery floor, an auditorium and ODDstudio, a creative music studio. People can work independently while the space also makes it easier to share work, ask for input and collaborate when useful."
     },
     {
       "question": "Do I need to be a physical member to be part of ODDspace?",
@@ -347,11 +342,11 @@
     },
     {
       "question": "What spaces are available?",
-      "answer": "Co-working space, an event/gallery floor, an auditorium and ODDstudio, a recording and production studio."
+      "answer": "Co-working space, an event/gallery floor, an auditorium and ODDstudio, a creative music studio."
     },
     {
       "question": "How much does event use cost?",
-      "answer": "Member rates: €200 for a full day in the 1st floor gallery, €100 for a half day in the auditorium. Non-member pricing is quoted per event — the venue page explains what shapes the number."
+      "answer": "From €300 + VAT for creative organisations and cultural workers, and from €750 + VAT for companies. Every price is open to discussion — the venue page has the full rate card and a calculator that prices your own case."
     },
     {
       "question": "How do I enquire about an event?",

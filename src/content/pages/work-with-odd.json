@@ -8,7 +8,13 @@
   "eyebrow": "For organisations",
   "title": "Start with the question, not the format.",
   "intro": "Bring us a brief, a question, an event or a partnership idea — including one that is still taking shape. ODD is most useful when the work needs creative and cultural understanding as well as strategy and production.",
-  "heroImage": "../../assets/hero/archive-12.jpg",
+  "heroImages": [
+    "../../assets/work-with-odd/bajamyart-gold-booth.jpg",
+    "../../assets/work-with-odd/oddlygood-booth.jpg",
+    "../../assets/work-with-odd/bajamyart-knitted-toilet.jpg",
+    "../../assets/work-with-odd/holvi-love-stage.jpg",
+    "../../assets/work-with-odd/bajamyart-painted-door.jpg"
+  ],
   "primaryCta": {
     "label": "Start a conversation",
     "href": "#enquiry-form"
@@ -48,7 +54,7 @@
       "body": "The easiest way to experience ODD professionally. Come yourself, bring colleagues, or build something around the event with us.",
       "goLabel": "Explore ODDference →",
       "href": "/oddference",
-      "image": "../../assets/programs/oddference-card.jpg"
+      "image": "../../assets/programs/oddference-pathway.jpg"
     },
     {
       "number": "02",
@@ -78,7 +84,7 @@
       "body": "For briefs and questions that need cultural understanding, concept development and a project-specific team.",
       "goLabel": "Explore ODDagency →",
       "href": "/oddagency",
-      "image": "../../assets/programs/oddagency-card.jpg"
+      "image": "../../assets/programs/oddagency-pathway.jpg"
     }
   ],
   "casesIntro": {

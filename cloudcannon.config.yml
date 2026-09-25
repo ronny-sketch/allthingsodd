@@ -376,6 +376,22 @@ collections_config:
           but do not remove the fact.
         options:
           subtype: object
+      rateCard:
+        type: object
+        label: Event rate card + calculator (ODDspace venue only)
+        comment: >-
+          The published prices for renting the space, and the picker built on
+          them. Three lanes (member, creative organisation, company — promoters
+          book as a creative organisation since 2026-09-24),
+          each with its own rates and its own add-ons. Prices are numbers, not
+          text — the page adds them together and applies VAT from vatRate, so
+          write 300, not "EUR300 + VAT". A rate with no number of its own (the
+          revenue share) uses priceLabel for what the row shows and note for
+          the deal itself. Every rate here is a starting point: the note under
+          the card says so, and it must keep saying so, because that is the
+          actual policy. Changing a price here changes what the site quotes.
+        options:
+          subtype: object
       memberRates:
         type: array
         label: Studio rates for ODDspace members (ODDstudio only)
@@ -457,8 +473,9 @@ collections_config:
         type: array
         label: Event space rental rates (ODDspace only)
         comment: >-
-          Member pricing for renting the gallery/auditorium, shown inside
-          the "organise an event" card in "Enter the space". No invented
+          Starting prices for renting the space, shown inside the "organise
+          an event" card in "Enter the space". Keep it to the "from" rates;
+          the full card lives on the venue page. No invented
           prices — these are real, current rates.
         options:
           required: false
@@ -674,7 +691,9 @@ collections_config:
         comment: >-
           The thank-you list. Every list shows as columns of names and the
           page sorts them alphabetically itself, so the order you see here
-          doesn't matter — add a name anywhere. "subgroups" show as labelled
+          doesn't matter — add a name anywhere. "note" is the line under the
+          lede apologising for anyone missed and giving them an address to
+          write to; leave it empty to hide it. "subgroups" show as labelled
           rows (the partners). A name with an "href" becomes a link that opens
           in a new tab. Only people and organisations that actually took part
           in 2026.

@@ -1,5 +1,5 @@
 ---
-// ODDstudio (2026-09-11) — the recording/production room inside ODDspace,
+// ODDstudio (2026-09-11) — the creative music studio inside ODDspace,
 // run with TUNEMENT. See content.config.ts's oddstudio extend block for why
 // this is its own route rather than a longer section on /oddspace.
 //
@@ -56,7 +56,7 @@ const page = entry.data;
       <div class="wrap flow">
         <div class="section-head">
           <span class="eyebrow">What's in the room</span>
-          <h2>Properly equipped, not over-equipped.</h2>
+          <h2>Everything's already in the room.</h2>
         </div>
         <SpaceShowcase spaces={page.kit} />
       </div>
@@ -182,13 +182,47 @@ const page = entry.data;
             <span class="eyebrow">{page.operator.eyebrow}</span>
             <h2>{page.operator.headline}</h2>
             <p>{page.operator.body}</p>
+            {page.operator.about && <p>{page.operator.about}</p>}
             {
-              /* No `target` — this is a mailto:, which should hand off to the
-                visitor's mail client in place, not open a blank tab. */
+              /* Their mark, at their own colours — a third party's logo is not
+                ours to recolour to the page's palette. Raw <img> rather than
+                <Image>: it's an SVG, which astro:assets passes through
+                unoptimised anyway. */
             }
-            <Pill href={page.operator.cta.href} variant="outline" magnetic>
-              {page.operator.cta.label}
-            </Pill>
+            {
+              page.operator.logo && (
+                <img
+                  class="odst-operator-logo"
+                  src={page.operator.logo.src}
+                  alt={page.operator.logoAlt ?? ''}
+                  width="56"
+                  height="56"
+                  loading="lazy"
+                />
+              )
+            }
+            {
+              /* No `target` on the mailto: — it should hand off to the
+                visitor's mail client in place, not open a blank tab. The
+                website link is a real external destination, so it does. */
+            }
+            <div class="odst-operator-links">
+              <Pill href={page.operator.cta.href} variant="outline" magnetic>
+                {page.operator.cta.label}
+              </Pill>
+              {
+                page.operator.website && (
+                  <Pill
+                    href={page.operator.website.href}
+                    variant="outline"
+                    target="_blank"
+                    magnetic
+                  >
+                    {page.operator.website.label}
+                  </Pill>
+                )
+              }
+            </div>
           </div>
         </div>
       </div>
@@ -402,7 +436,18 @@ const page = entry.data;
     margin: var(--space-3) 0 0;
     max-width: var(--measure-prose);
   }
-  .odst-operator-copy :global(.pill) {
+  /* Sits between the copy and the two links, at the same step the single
+     pill used to take off the paragraph. */
+  .odst-operator-logo {
+    display: block;
+    width: 3.5rem;
+    height: auto;
+    margin-block-start: var(--space-6);
+  }
+  .odst-operator-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
     margin-block-start: var(--space-6);
   }
 
