@@ -18,6 +18,14 @@ if (root) {
   const ctaHref = root.dataset.ctaHref ?? ctaLink?.getAttribute('href') ?? '';
 
   const euro = (n: number) => `€${Math.round(n).toLocaleString('en-IE')}`;
+  // The VAT-inclusive figure to the cent. `total * (1 + 25.5 / 100)` is
+  // 125.4999… for €100, which rounded to €125 while €500 rounded up to €628.
+  // Whole-euro totals times (100 + rate) are exact, so divide last.
+  const euroInclVat = (net: number) => {
+    const gross = Math.round(net * (100 + vatRate)) / 100;
+    const cents = Number.isInteger(gross) ? 0 : 2;
+    return `€${gross.toLocaleString('en-IE', { minimumFractionDigits: cents, maximumFractionDigits: 2 })}`;
+  };
   const currentLane = () => laneInputs.find((i) => i.checked)?.value ?? laneInputs[0]?.value ?? '';
   const panelFor = (lane: string) => panels.find((p) => p.dataset.lane === lane);
 
@@ -47,8 +55,7 @@ if (root) {
 
     figure.textContent =
       total === 0 ? '€0 upfront' : isUpfrontOnly ? `${euro(total)} upfront` : euro(total);
-    vatLine.textContent =
-      total === 0 ? '' : `+ VAT ${vatRate}% · ${euro(total * (1 + vatRate / 100))} incl. VAT`;
+    vatLine.textContent = total === 0 ? '' : `+ VAT ${vatRate}% · ${euroInclVat(total)} incl. VAT`;
     estimate.hidden = false;
 
     // Land in the enquiry form with the choice already made, so the first

@@ -92,6 +92,9 @@ test('the rate card prices a selection and carries it into the enquiry', async (
   await card.getByRole('radio', { name: /Flat fee/ }).check();
   await card.getByRole('checkbox', { name: /House technician/ }).check();
   await expect(card.locator('.vrc-estimate-figure')).toHaveText('€500');
+  // €500 × 1.255 is €627.50 exactly. Float maths used to print €628 here
+  // and €125 (not €125.50) for a €100 half day.
+  await expect(card.locator('.vrc-estimate-vat')).toContainText('€627.50 incl. VAT');
 
   // The revenue share has no price of its own; whatever is added to it is
   // only what is payable upfront, and the figure has to say so.
