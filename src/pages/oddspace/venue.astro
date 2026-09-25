@@ -23,6 +23,7 @@ import FeatureGrid from '../../components/sections/FeatureGrid.astro';
 import FAQList from '../../components/sections/FAQList.astro';
 import PhotoBreak from '../../components/sections/PhotoBreak.astro';
 import Pill from '../../components/primitives/Pill.astro';
+import BookingEnquiryForm from '../../components/sections/BookingEnquiryForm.astro';
 
 const entry = await getEntry('pages', 'oddspace-venue');
 if (!entry || entry.data._template !== 'oddspace-venue')
@@ -180,17 +181,31 @@ const page = entry.data;
       </div>
     </section>
 
-    <!-- 8. The ask. -->
+    <!-- 8. The ask, and since 2026-09-23 the booking enquiry form itself.
+         Event organisers used to be sent on to the generic Work with ODD
+         form. That form cannot ask for get-in and get-out, spaces, alcohol
+         or music after 22:00, so every quote began with an email asking for
+         them. The form posts to the Growth OS Worker; see
+         BookingEnquiryForm.astro. Since v2 (2026-09-24) this section holds
+         its "Get a quote" button, and the questions open in a dialog, from
+         here, from the hero or from the sticky bar. The button sits outside
+         the `reveal` block on purpose, so it never waits on an entrance
+         animation. -->
     <section class="odsv-sub odsv-final">
-      <div class="wrap">
+      <div class="wrap flow">
         <div class="odsv-final-inner reveal">
           <span class="eyebrow">{page.finalCta.eyebrow}</span>
           <h2>{page.finalCta.headline}</h2>
           <p>{page.finalCta.body}</p>
-          <Pill href={page.finalCta.cta.href} variant="solid" magnetic>
-            {page.finalCta.cta.label}
-          </Pill>
+          {
+            page.finalCta.cta && (
+              <Pill href={page.finalCta.cta.href} variant="solid" magnetic>
+                {page.finalCta.cta.label}
+              </Pill>
+            )
+          }
         </div>
+        <BookingEnquiryForm />
       </div>
     </section>
   </SubpageFrame>

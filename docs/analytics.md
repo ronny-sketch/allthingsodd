@@ -76,18 +76,24 @@ The mapping lives in `src/scripts/tickets/ecommerce.ts`.
 
 ### Forms
 
-| Event                     | Fired when                                    | Carries                                |
-| ------------------------- | --------------------------------------------- | -------------------------------------- |
-| `newsletter_signup`       | beehiiv accepts a signup                      | `signup_source`                        |
-| `newsletter_error`        | beehiiv refuses, or the request throws        | `signup_source`, `error_kind`          |
-| `contact_submit`          | `/api/contact` accepts a message              | `contact_topic`                        |
-| `contact_error`           | `/api/contact` refuses, or the request throws | `contact_topic`, `error_kind`          |
-| `business_enquiry_submit` | A Work with ODD enquiry reaches Attio         | `product_interest`                     |
-| `business_enquiry_error`  | The enquiry is refused, or the request throws | `product_interest`, `error_kind`       |
-| `cta_click`               | A `mailto:` or an `?interest=` deep link      | `cta_id`, `cta_intent`, `cta_location` |
+| Event                     | Fired when                                    | Carries                                            |
+| ------------------------- | --------------------------------------------- | -------------------------------------------------- |
+| `newsletter_signup`       | beehiiv accepts a signup                      | `signup_source`                                    |
+| `newsletter_error`        | beehiiv refuses, or the request throws        | `signup_source`, `error_kind`                      |
+| `contact_submit`          | `/api/contact` accepts a message              | `contact_topic`                                    |
+| `contact_error`           | `/api/contact` refuses, or the request throws | `contact_topic`, `error_kind`                      |
+| `business_enquiry_submit` | A Work with ODD enquiry reaches Attio         | `product_interest`                                 |
+| `business_enquiry_error`  | The enquiry is refused, or the request throws | `product_interest`, `error_kind`                   |
+| `booking_enquiry_open`    | The enquiry dialog is first opened on a page  | `entry` (hero/sticky/final/rate-card/link/history) |
+| `booking_enquiry_submit`  | `/api/booking-enquiry` accepts an enquiry     | `space`, `event_type`, `queued`                    |
+| `booking_enquiry_error`   | The enquiry is refused, or the request throws | `space`, `event_type`, `error_kind`                |
+| `cta_click`               | A `mailto:` or an `?interest=` deep link      | `cta_id`, `cta_intent`, `cta_location`             |
 
 `error_kind` is `network` when the fetch threw and `rejected` when the
-backend answered with `ok: false`. The distinction is the whole point: one is
+backend answered with `ok: false`. The booking form (2026-09-23) adds `invalid` (the
+Worker's 400 with field errors) and `rate_limited` (429), and `queued: true`
+on a submit means the Worker answered 202: Notion was unreachable and the
+enquiry is waiting in its retry queue. The distinction is the whole point: one is
 the visitor's connection, the other is ours, and before 2026-09-21 neither
 was reported at all — a broken Worker and a quiet week produced identical
 numbers.

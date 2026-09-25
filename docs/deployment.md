@@ -488,6 +488,28 @@ rm -f dist/CNAME
 npx surge dist https://odd-field-guide.surge.sh
 ```
 
+## Pull-request previews
+
+Added 2026-09-23 with the ODDspace booking form. The `preview` job in
+`.github/workflows/ci.yml` publishes every pull request from a branch in
+this repo to **https://allthingsodd-preview.surge.sh**, the one shared
+preview host, where the most recent push wins. It never runs on `main` and
+refuses to publish to a production host.
+
+Preview builds set `PUBLIC_API_BASE` (see `src/scripts/api-base.ts`), so
+every form on the preview talks to the Growth OS **staging** Worker
+(`odd-growth-os-staging`), which writes to the TEST copy of the Notion
+Events Pipeline. Testing a preview therefore never creates a real enquiry,
+Attio record or newsletter subscriber. Forms other than the booking form
+will simply fail on the preview, because staging has no Attio, beehiiv or
+Resend secrets. That is expected.
+
+The preview has a `Disallow: /` robots.txt, and every page keeps its
+`allthingsodd.co` canonical link.
+
+To point previews at a different staging Worker, set the repo variable
+`PREVIEW_API_BASE`. No code change is needed.
+
 ## CI history
 
 **Every CI run in this repo's history failed at the `npm ci` step until

@@ -102,7 +102,10 @@ test('the rate card prices a selection and carries it into the enquiry', async (
   const href = await card.locator('.vrc-cta a').getAttribute('href');
   expect(href).toContain('lane=creative');
   expect(href).toContain('offer=share');
-  expect(href).toContain('#enquiry-form');
+  // Since the booking enquiry went live, the rate card's button opens it on
+  // this page rather than sending people to the Work with ODD form.
+  expect(href).toContain('#booking-form');
+  expect(href).toMatch(/^\/oddspace\/venue\/\?/);
 });
 
 test('the enquiry form opens with the choice already written in', async ({ page }) => {

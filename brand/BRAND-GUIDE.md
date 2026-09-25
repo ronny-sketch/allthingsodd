@@ -353,7 +353,7 @@ src/styles/tokens.css        colour, space, radius, motion, fonts  (canonical)
 src/styles/typography.css    the five-size ladder                  (canonical)
 brand/tokens/odd.css         all of it in one file, for use elsewhere (generated)
 src/styles/layout.css        containers, section rhythm, .flow
-src/components/primitives/   Logo, Pill, SocialIcon, NewsletterForm
+src/components/primitives/   Logo, Pill, SocialIcon, NewsletterForm, ChoiceChips
 src/components/sections/     every section shape the site has
 src/content/pages/*.json     all editorial copy
 src/pages/brand-book.astro   the designed brand book (/brand-book/)

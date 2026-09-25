@@ -1,5 +1,47 @@
 # Brand system changelog
 
+## 1.4 — 2026-09-24 · The guided enquiry
+
+The ODDspace booking form became a guided enquiry in a dialog. Nothing new in
+colour, size or radius; three existing conventions were applied to new places.
+
+- **A dialog is a floating surface.** The enquiry is a native `<dialog>`: full
+  screen on phones, a centred Paper sheet from 720px with `--radius-panel`,
+  `--shadow-panel` and the Ink scrim, like the newsletter popup.
+- **Progress is five hairline segments** in the figure colour, filled up to
+  the current step, with the step count in text beside the close button.
+- **Choice cards** replace the room cells: still square hairline cells with an
+  inside keyline when chosen, now with the room's photograph (square corners,
+  4:3) and a "More about this room" disclosure marked with a round + that
+  turns into a minus. The help levels use the same card without a photo.
+- **The sticky ask** on the venue page is Ink on either ground, like the
+  newsletter popup: a bar at the foot of the screen on phones, a floating
+  panel from 720px.
+- **Retired:** the floating missing-answers panel from 1.3. Each step is now
+  checked when you press Next, so there is never a long list to float.
+
+## 1.3 — 2026-09-24 · Choices and missing answers
+
+The ODDspace booking form needed two things the system did not have yet.
+Neither adds a colour, a size or a radius.
+
+- **ChoiceChips** (`src/components/primitives/ChoiceChips.astro`): options as
+  pills, backed by real radio buttons or checkboxes. Round is for what you
+  touch, so a choice is a pill; selected, it takes the figure as a fill, the
+  solid Pill's own inversion. Multi-select pills are marked by the fill
+  alone (the tick was dropped the same day: a box inside a pill read as a
+  second control).
+- **Needs an answer:** Heat marks it, as it marks anything you touch. A
+  keyline in the gutter, the label and the line in Heat, and a message, so
+  colour is never the only signal. Heat is Amber on Paper (4.9:1) and Ember on
+  Ink.
+- **The missing-answers panel** is a floating surface, so it takes
+  `--radius-panel` and `--shadow-panel`, on Ink on either ground, like the
+  newsletter popup. It never blocks the page and moves above the cookie
+  banner while that is open.
+- Rooms to choose from are square hairline cells, the grid convention, with
+  the selected one keylined inside the cell.
+
 ## 1.2 — 2026-09-21 · ODD on Instagram, second pass
 
 `brand/social/` is now one set in one language: fifty-nine posts, five stories,

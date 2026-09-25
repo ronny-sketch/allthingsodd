@@ -352,6 +352,17 @@ the newsletter form POSTs to `/api/newsletter`. Neither of those two files
 imports any Growth OS code, and neither should ever start to — the same
 now applies to every file under `src/scripts/tickets/`.
 
+**Added 2026-09-23: the ODDspace booking enquiry.**
+`src/components/sections/BookingEnquiryForm.astro` (on `/oddspace/venue`, via
+`src/scripts/booking-enquiry-form.ts`) POSTs JSON to `/api/booking-enquiry`.
+The payload is the ODDspace booking system build spec's contract, v0.1 of
+22 Sep 2026. The Worker validates it again, writes the Notion Events Pipeline
+record, and forwards it to Make once `MAKE_BOOKING_WEBHOOK_URL` is set. The
+field values and rules live in `src/scripts/booking-enquiry-schema.ts`, and
+the Worker keeps its own copy of them. There is no shared package, same as
+`products.yml`, so a change to either copy means changing the other in the
+same pull request.
+
 **Corrected 2026-08-28:** these are cross-origin `fetch()` calls to the
 Worker's own `workers.dev` URL, not same-origin relative paths. Production
 here is Surge, which has no Cloudflare zone in front of it, so a same-origin

@@ -1305,7 +1305,9 @@ const pages = defineCollection({
           eyebrow: z.string(),
           headline: z.string(),
           body: z.string(),
-          cta: linkCta,
+          // Optional since 2026-09-23: the venue page renders the booking form
+          // under this block, so a button pointing at it is redundant.
+          cta: linkCta.optional(),
         }),
       }),
 

@@ -1,0 +1,1877 @@
+---
+// The ODDspace booking enquiry, on /oddspace/venue. First built 2026-09-23;
+// reworked 2026-09-24 for brand, order and error handling, then for what a
+// quote needs (the lighter pass); and on 2026-09-24 (v2) turned into a
+// guided enquiry in a full-screen dialog. See .design/booking-form in the
+// Claude project for the brief and the information architecture.
+//
+// One ask, "Get a quote", opens a native <dialog> over the venue page: five
+// short steps (When → People and room → The event → What you need → About
+// you), a progress bar, and a "Check and send" summary where anything can be
+// edited before it goes. Each step is checked when you press Next, and only
+// that step. The page's own "Get a quote" buttons, the sticky bar and any
+// link to `#booking-form` open it; the browser's back button, Esc and ×
+// close it, and the answers stay until the page is reloaded (nothing is
+// stored in the browser).
+//
+// It asks only for what a quote depends on, so nobody has to write back with
+// twenty questions. Catering, cleaning, the final layout, music after 22:00
+// and filming are settled after the booking is confirmed, and budget is not
+// asked: none of them changes the quote.
+//
+// It posts JSON to POST /api/booking-enquiry on the Growth OS Worker
+// (../odd-growth-os). The Worker writes the Notion Events Pipeline record and
+// hands the submission to Make. This file holds no keys and imports no
+// Growth OS code (CLAUDE.md, "Growth OS integration").
+//
+// A few questions are asked differently from the payload they fill, and the
+// submit script converts them. The Worker contract is unchanged.
+// - Date, from and until become `get_in` and `get_out`. An end time earlier
+//   than the start means the next day.
+// - "How many people?" is a number, and `headcount_band` is derived from it.
+// - "Who can come?" fills both `event_visibility` and `event_access`.
+// - In a space with fixed seating (the Auditorium) the layout is not asked
+//   and is sent as `theatre`. Elsewhere it is optional.
+// - The smoke, haze or flame tick box sends `pyro_flame` as yes or no.
+// - Times come from quarter-hour lists and the date from the calendar only;
+//   nothing in "When" can be typed.
+//
+// Every option list comes from booking-enquiry-schema.ts, the same module
+// the submit script validates against. Labels are UI copy and stay in code,
+// following WorkEnquiryForm.astro, and are not exposed in CloudCannon. The
+// room photographs are the ones the venue page and the info pack already
+// use.
+//
+// Conditional fields carry `data-show-when="<name>=<value>[|<value>]"`,
+// `<name>!=<value>` or `<name>=*` (any answer). booking-enquiry-form.ts hides
+// them until they apply and disables their inputs while hidden, so a hidden
+// field is never sent or validated. Without JavaScript the "Get a quote"
+// button is hidden and the <noscript> note gives the email route, because
+// the enquiry cannot send without JavaScript.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Pill from '../primitives/Pill.astro';
+import ChoiceChips from '../primitives/ChoiceChips.astro';
+import {
+  ORG_TYPES,
+  MEMBERSHIP_TIERS,
+  EVENT_TYPES,
+  AUDIENCE,
+  SPACES,
+  SPACE_INFO,
+  FIXED_SEATING_SPACES,
+  LAYOUTS,
+  SUPPORT_OFFERED,
+  SUPPORT_DESCRIPTIONS,
+  TECH_OFFERED,
+  ALCOHOL,
+  MUSIC,
+  QUARTER_HOURS,
+  LIMITS,
+} from '../../scripts/booking-enquiry-schema';
+import galleryPhoto from '../../assets/oddspace/gallery-floor.jpg';
+import aulaPhoto from '../../assets/oddspace/lounge.jpg';
+import auditoriumPhoto from '../../assets/oddspace/auditorium.jpg';
+import secondFloorPhoto from '../../assets/oddspace/coworking-desks.jpg';
+
+const FIXED = FIXED_SEATING_SPACES.join('|');
+const YES_NO = [
+  { value: 'true', label: 'Yes' },
+  { value: 'false', label: 'No' },
+];
+
+// One photograph per room; a combination shows each of its rooms side by
+// side. The alt text follows the info pack's, shortened.
+interface Photo {
+  src: ImageMetadata;
+  alt: string;
+}
+const GALLERY: Photo = {
+  src: galleryPhoto,
+  alt: 'The Gallery: an open concrete-floored hall with white columns and tall windows.',
+};
+const AULA: Photo = {
+  src: aulaPhoto,
+  alt: 'The Aula: sofas and a round table, with artworks leaning against the wall.',
+};
+const AUDITORIUM: Photo = {
+  src: auditoriumPhoto,
+  alt: 'The Auditorium from the back: curved tiered seats facing a screen.',
+};
+const SECOND_FLOOR: Photo = {
+  src: secondFloorPhoto,
+  alt: 'The 2nd-floor co-creation space: desks and lounge chairs by tall windows.',
+};
+const SPACE_PHOTOS: Record<string, Photo[]> = {
+  gallery: [GALLERY],
+  aula: [AULA],
+  auditorium: [AUDITORIUM],
+  second_floor: [SECOND_FLOOR],
+  gallery_aula: [GALLERY, AULA],
+  auditorium_aula: [AUDITORIUM, AULA],
+  full_triangle: [GALLERY, AULA, AUDITORIUM],
+};
+
+const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About you'];
+---
+
+<div class="booking" id="booking-form">
+  <noscript>
+    <p class="booking-noscript">
+      This form needs JavaScript to send. You can email the same details to{' '}
+      <a href="mailto:hello@oddfest.co">hello@oddfest.co</a> instead.
+    </p>
+    <style is:inline>
+      .bk-opener,
+      .bk-sticky {
+        display: none !important;
+      }
+    </style>
+  </noscript>
+
+  <!-- The section's heading and this one button are the ask. -->
+  <div class="bk-opener">
+    <Pill type="button" variant="solid" id="bk-open" class="bk-open">Get a quote</Pill>
+    <p class="bk-opener-note">
+      Five short steps. Nothing is booked until we confirm it in writing.
+    </p>
+  </div>
+  <p class="bk-sent" id="bk-sent" role="status" tabindex="-1" hidden>
+    Your enquiry is in, reference <strong data-sent-ref></strong>. We reply within one working day.
+  </p>
+
+  <!-- The enquiry. `data-suppress-newsletter-popup`: while it is open the
+       timed newsletter popup stays away (newsletter-popup.ts). -->
+  <dialog
+    class="bk-dialog"
+    id="bk-dialog"
+    aria-labelledby="bk-dialog-title"
+    data-suppress-newsletter-popup
+  >
+    <header class="bk-head">
+      <div class="bk-head-row">
+        <p class="bk-head-title" id="bk-dialog-title">Get a quote</p>
+        <p class="bk-count" id="bk-count" aria-live="polite">Step 1 of {STEPS.length}</p>
+        <button type="button" class="bk-close" data-bk-close aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <ol class="bk-progress" aria-hidden="true">
+        {STEPS.map(() => <li />)}
+      </ol>
+    </header>
+
+    <form class="booking-form" id="bookingEnquiryForm" novalidate>
+      <div class="bk-body" id="bk-body">
+        <!-- Honeypot. A person never sees it. A non-empty value means a bot. -->
+        <div class="botcheck" aria-hidden="true">
+          <label for="bk-hp">Leave this empty</label>
+          <input id="bk-hp" name="hp_field" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <!-- 01 When ---------------------------------------------------------- -->
+        <section class="bk-step" data-step="1" aria-labelledby="bk-step-1">
+          <h2 class="bk-step-head" id="bk-step-1" tabindex="-1">
+            <span class="bk-step-num" aria-hidden="true">01</span>
+            <span>When</span>
+          </h2>
+          <p class="booking-key">
+            Questions marked <span class="req" aria-hidden="true">*</span><span class="sr-only"
+              >with an asterisk</span
+            > need an answer. Everything else is optional.
+          </p>
+
+          <fieldset class="field" id="bk-when" data-label="Date and time">
+            <legend>Date and time <span class="req" aria-hidden="true">*</span></legend>
+            <div class="bk-when-grid">
+              <div class="bk-sub bk-sub-date">
+                <label for="bk-date">Date</label>
+                <input
+                  id="bk-date"
+                  name="event_date"
+                  type="date"
+                  required
+                  data-picker-only
+                  aria-describedby="bk-when-hint"
+                />
+              </div>
+              <div class="bk-sub">
+                <label for="bk-from">From</label>
+                <select id="bk-from" name="time_from" required aria-describedby="bk-when-hint">
+                  <option value="" selected disabled>––:––</option>
+                  {QUARTER_HOURS.map((t) => <option value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div class="bk-sub">
+                <label for="bk-until">Until</label>
+                <select id="bk-until" name="time_until" required aria-describedby="bk-when-hint">
+                  <option value="" selected disabled>––:––</option>
+                  {QUARTER_HOURS.map((t) => <option value={t}>{t}</option>)}
+                </select>
+              </div>
+            </div>
+            <p class="field-hint" id="bk-when-hint">
+              Helsinki time. Start from when your first person arrives to set up, and end when the
+              last person leaves after clearing up. The hire covers everything in between.
+            </p>
+            <p class="bk-derived" id="bk-when-summary" aria-live="polite" hidden></p>
+            <label class="check">
+              <input type="checkbox" name="multi_day" value="true" />
+              <span>It runs over more than one day</span>
+            </label>
+            <div class="bk-sub bk-sub-date" data-show-when="multi_day=true">
+              <label for="bk-enddate">Last day</label>
+              <input id="bk-enddate" name="end_date" type="date" required data-picker-only />
+            </div>
+            <input type="hidden" name="get_in" />
+            <input type="hidden" name="get_out" />
+            <p class="field-error" id="bk-when-err" hidden></p>
+          </fieldset>
+
+          <p class="booking-warning" id="bk-notice" role="status" aria-live="polite" hidden></p>
+
+          <div class="field">
+            <label class="check">
+              <input type="checkbox" name="has_alt_dates" value="true" />
+              <span>Other dates would work too</span>
+            </label>
+          </div>
+          <div class="field-row" data-show-when="has_alt_dates=true">
+            <div class="field" data-label="Another date">
+              <label for="bk-alt1">Another date</label>
+              <input id="bk-alt1" name="alt_date_1" type="date" data-picker-only />
+              <p class="field-error" id="bk-alt1-err" hidden></p>
+            </div>
+            <div class="field" data-label="A third date">
+              <label for="bk-alt2">And another</label>
+              <input id="bk-alt2" name="alt_date_2" type="date" data-picker-only />
+              <p class="field-error" id="bk-alt2-err" hidden></p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="check">
+              <input type="checkbox" name="is_series" value="true" />
+              <span>It is one of a series of events</span>
+            </label>
+          </div>
+          <div
+            class="field bk-narrow"
+            data-label="Events in the series"
+            data-show-when="is_series=true"
+          >
+            <label for="bk-series"
+              >How many events? <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="bk-series"
+              name="series_count"
+              type="number"
+              inputmode="numeric"
+              min="2"
+              max={LIMITS.maxSeries}
+              step="1"
+              required
+            />
+            <p class="field-error" id="bk-series-err" hidden></p>
+          </div>
+        </section>
+
+        <!-- 02 People and room ---------------------------------------------- -->
+        <section class="bk-step" data-step="2" aria-labelledby="bk-step-2" hidden>
+          <h2 class="bk-step-head" id="bk-step-2" tabindex="-1">
+            <span class="bk-step-num" aria-hidden="true">02</span>
+            <span>People and room</span>
+          </h2>
+
+          <div class="field bk-narrow" data-label="Number of people">
+            <label for="bk-estimate"
+              >How many people? <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="bk-estimate"
+              name="headcount_estimate"
+              type="number"
+              inputmode="numeric"
+              min="1"
+              max={LIMITS.maxHeadcount}
+              step="1"
+              required
+              aria-describedby="bk-estimate-hint"
+            />
+            <p class="field-hint" id="bk-estimate-hint">
+              The most people inside at once, counting guests, crew and performers. A rough number
+              is fine.
+            </p>
+            <p class="field-hint" id="bk-steward" hidden>
+              Over 100 people needs a licensed security steward on site, which is not part of the
+              hire.
+            </p>
+            <input type="hidden" name="headcount_band" />
+            <p class="field-error" id="bk-estimate-err" hidden></p>
+          </div>
+
+          <fieldset class="field" id="bk-space" data-label="Room">
+            <legend>Which room? <span class="req" aria-hidden="true">*</span></legend>
+            <div class="bk-cards bk-cards-rooms">
+              {
+                SPACES.map((o, i) => {
+                  const info = SPACE_INFO[o.value];
+                  const photos = SPACE_PHOTOS[o.value] ?? [];
+                  const id = `bk-space-${o.value}`;
+                  return (
+                    <Fragment>
+                      {o.value === 'gallery_aula' && <p class="bk-cards-label">Or combine rooms</p>}
+                      <div
+                        class:list={[
+                          'bk-card',
+                          photos.length === 0 && 'bk-card-plain',
+                          info.more && 'has-more',
+                        ]}
+                      >
+                        <label class="bk-card-main" for={id}>
+                          <input
+                            class="bk-card-input"
+                            id={id}
+                            type="radio"
+                            name="space"
+                            value={o.value}
+                            required={i === 0}
+                            aria-labelledby={`${id}-name ${id}-meta`}
+                            aria-describedby={`${id}-blurb`}
+                          />
+                          {photos.length > 0 && (
+                            <span class="bk-card-photo" data-count={photos.length}>
+                              {photos.map((ph) => (
+                                <Image
+                                  src={ph.src}
+                                  alt={ph.alt}
+                                  widths={[160, 320, 640]}
+                                  sizes="(min-width: 720px) 8rem, 6rem"
+                                  loading="lazy"
+                                />
+                              ))}
+                            </span>
+                          )}
+                          <span class="bk-card-text">
+                            <span class="bk-card-name" id={`${id}-name`}>
+                              {o.label}
+                            </span>
+                            <span class="bk-card-meta" id={`${id}-meta`}>
+                              {info.meta}
+                            </span>
+                            <span class="bk-card-blurb" id={`${id}-blurb`}>
+                              {info.blurb}
+                            </span>
+                          </span>
+                        </label>
+                        {info.more && (
+                          <details class="bk-more">
+                            <summary aria-label={`More about ${o.label}`}>
+                              <span class="bk-more-icon" aria-hidden="true" />
+                              <span class="bk-more-label">More about this room</span>
+                            </summary>
+                            <p class="bk-more-blurb">{info.blurb}</p>
+                            {info.more.map((line) => (
+                              <p>{line}</p>
+                            ))}
+                          </details>
+                        )}
+                      </div>
+                    </Fragment>
+                  );
+                })
+              }
+            </div>
+            <p class="field-hint">
+              The <a href="/oddspace/event-info-pack/" target="_blank" rel="noopener"
+                >event info pack</a
+              > (opens in a new tab) has the floor plans and house rules.
+            </p>
+            <p class="booking-warning" id="bk-capacity" role="status" aria-live="polite" hidden></p>
+            <p class="field-error" id="bk-space-err" hidden></p>
+          </fieldset>
+
+          <fieldset
+            class="field"
+            id="bk-layout"
+            data-label="Layout"
+            data-show-when={`space!=${FIXED}`}
+          >
+            <legend>How should the room be set up?</legend>
+            <ChoiceChips name="layout" options={LAYOUTS} idPrefix="bk-layout" />
+            <p class="field-hint">
+              <span data-show-when="space=full_triangle"
+                >This is for the Gallery and the Aula; the Auditorium's seats are fixed.{' '}</span
+              >If you are not sure yet, leave it. We confirm the layout with you before the event.
+            </p>
+            <p class="field-error" id="bk-layout-err" hidden></p>
+          </fieldset>
+          <div class="field" data-show-when={`space=${FIXED}`}>
+            <p class="bk-fixed">
+              The Auditorium has fixed tiered seating, so there is no layout to choose.
+            </p>
+            <input type="hidden" name="layout" value="theatre" />
+          </div>
+          <div class="field" data-label="Layout details" data-show-when="layout=custom">
+            <label for="bk-layout-detail"
+              >Describe the layout <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="bk-layout-detail"
+              name="layout_custom"
+              type="text"
+              maxlength={LIMITS.short}
+              required
+            />
+            <p class="field-error" id="bk-layout-detail-err" hidden></p>
+          </div>
+        </section>
+
+        <!-- 03 The event ------------------------------------------------------ -->
+        <section class="bk-step" data-step="3" aria-labelledby="bk-step-3" hidden>
+          <h2 class="bk-step-head" id="bk-step-3" tabindex="-1">
+            <span class="bk-step-num" aria-hidden="true">03</span>
+            <span>The event</span>
+          </h2>
+
+          <div class="field" data-label="Name of the event">
+            <label for="bk-title"
+              >Name of the event <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="bk-title"
+              name="event_title"
+              type="text"
+              required
+              maxlength={LIMITS.short}
+              aria-describedby="bk-title-hint"
+            />
+            <p class="field-hint" id="bk-title-hint">A working title is fine.</p>
+            <p class="field-error" id="bk-title-err" hidden></p>
+          </div>
+
+          <fieldset class="field" id="bk-type" data-label="Kind of event">
+            <legend>What kind of event? <span class="req" aria-hidden="true">*</span></legend>
+            <ChoiceChips name="event_type" options={EVENT_TYPES} required idPrefix="bk-type" />
+            <p class="field-error" id="bk-type-err" hidden></p>
+          </fieldset>
+
+          <fieldset class="field" id="bk-audience" data-label="Who can come">
+            <legend>Who can come? <span class="req" aria-hidden="true">*</span></legend>
+            <ChoiceChips name="audience" options={AUDIENCE} required idPrefix="bk-audience" />
+            <input type="hidden" name="event_visibility" />
+            <input type="hidden" name="event_access" />
+            <p class="field-error" id="bk-audience-err" hidden></p>
+          </fieldset>
+
+          <div class="field" data-label="About the event">
+            <label for="bk-desc"
+              >Tell us about it <span class="req" aria-hidden="true">*</span></label
+            >
+            <textarea
+              id="bk-desc"
+              name="event_description"
+              rows="4"
+              required
+              maxlength={LIMITS.long}
+              aria-describedby="bk-desc-hint"></textarea>
+            <p class="field-hint" id="bk-desc-hint">
+              Two or three lines is plenty: what happens, and who it is for.
+            </p>
+            <p class="field-error" id="bk-desc-err" hidden></p>
+          </div>
+        </section>
+
+        <!-- 04 What you need -------------------------------------------------- -->
+        <section class="bk-step" data-step="4" aria-labelledby="bk-step-4" hidden>
+          <h2 class="bk-step-head" id="bk-step-4" tabindex="-1">
+            <span class="bk-step-num" aria-hidden="true">04</span>
+            <span>What you need</span>
+          </h2>
+
+          <fieldset class="field" id="bk-support" data-label="Help from us">
+            <legend
+              >How much help do you want from us? <span class="req" aria-hidden="true">*</span
+              ></legend
+            >
+            <div class="bk-cards bk-cards-list">
+              {
+                SUPPORT_OFFERED.map((o, i) => {
+                  const id = `bk-support-${o.value}`;
+                  return (
+                    <div class="bk-card bk-card-plain">
+                      <label class="bk-card-main" for={id}>
+                        <input
+                          class="bk-card-input"
+                          id={id}
+                          type="radio"
+                          name="support_level"
+                          value={o.value}
+                          required={i === 0}
+                          aria-labelledby={`${id}-name`}
+                          aria-describedby={`${id}-blurb`}
+                        />
+                        <span class="bk-card-text">
+                          <span class="bk-card-name" id={`${id}-name`}>
+                            {o.label}
+                          </span>
+                          <span class="bk-card-blurb" id={`${id}-blurb`}>
+                            {SUPPORT_DESCRIPTIONS[o.value]}
+                          </span>
+                        </span>
+                      </label>
+                    </div>
+                  );
+                })
+              }
+            </div>
+            <p class="field-hint">
+              Your quote spells out exactly what the level you pick includes.
+            </p>
+            <p class="field-error" id="bk-support-err" hidden></p>
+          </fieldset>
+
+          <fieldset class="field" id="bk-tech" data-label="Kit from us">
+            <legend>Kit you will use</legend>
+            <ChoiceChips name="tech" options={TECH_OFFERED} type="checkbox" idPrefix="bk-tech" />
+            <p class="field-hint">
+              Pick any. The PA and one microphone come with every booking; tick them if you will use
+              them, so they are set up for you.
+            </p>
+          </fieldset>
+          <div class="field bk-narrow" data-label="Microphones" data-show-when="tech=mics">
+            <label for="bk-mics"
+              >How many microphones? <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="bk-mics"
+              name="mic_count"
+              type="number"
+              inputmode="numeric"
+              min="1"
+              max={LIMITS.maxMics}
+              step="1"
+              required
+            />
+            <p class="field-error" id="bk-mics-err" hidden></p>
+          </div>
+
+          <div class="field">
+            <label class="check">
+              <input
+                type="checkbox"
+                name="own_equipment"
+                value="true"
+                aria-describedby="bk-equip-hint"
+              />
+              <span>We are bringing our own equipment</span>
+            </label>
+            <p class="field-hint" id="bk-equip-hint">
+              Staging, rigging, lighting, or anything that needs more than a normal socket.
+            </p>
+          </div>
+          <div class="field" data-label="Your equipment" data-show-when="own_equipment=true">
+            <label for="bk-equip"
+              >What are you bringing? <span class="req" aria-hidden="true">*</span></label
+            >
+            <textarea
+              id="bk-equip"
+              name="own_equipment_detail"
+              rows="3"
+              maxlength={LIMITS.long}
+              required></textarea>
+            <p class="field-error" id="bk-equip-err" hidden></p>
+          </div>
+
+          <fieldset class="field" id="bk-alcohol" data-label="Alcohol">
+            <legend>Alcohol <span class="req" aria-hidden="true">*</span></legend>
+            <ChoiceChips name="alcohol" options={ALCOHOL} required idPrefix="bk-alcohol" />
+            <p class="field-hint" data-show-when="alcohol=sold">
+              Selling alcohol needs a licence from Lupa- ja valvontavirasto, applied for about a
+              month ahead. We will talk you through it.
+            </p>
+            <p class="field-error" id="bk-alcohol-err" hidden></p>
+          </fieldset>
+
+          <fieldset class="field" id="bk-music" data-label="Music">
+            <legend>Music <span class="req" aria-hidden="true">*</span></legend>
+            <ChoiceChips name="music" options={MUSIC} required idPrefix="bk-music" />
+            <p class="field-error" id="bk-music-err" hidden></p>
+          </fieldset>
+
+          <div class="field">
+            <label class="check">
+              <input type="checkbox" name="has_pyro" value="true" />
+              <span>It involves smoke, haze, candles or open flame</span>
+            </label>
+          </div>
+          <div class="field" data-label="Smoke, haze or flame" data-show-when="has_pyro=true">
+            <label for="bk-pyro-detail"
+              >What do you have in mind? <span class="req" aria-hidden="true">*</span></label
+            >
+            <textarea
+              id="bk-pyro-detail"
+              name="pyro_flame_detail"
+              rows="2"
+              maxlength={LIMITS.long}
+              required
+              aria-describedby="bk-pyro-hint"></textarea>
+            <p class="field-hint" id="bk-pyro-hint">
+              Smoke, haze, steam and candles set off the building's fire alarm, so they are not
+              allowed indoors at the moment. Tell us the idea and we will tell you what can be
+              arranged.
+            </p>
+            <input type="hidden" name="pyro_flame" />
+            <p class="field-error" id="bk-pyro-detail-err" hidden></p>
+          </div>
+        </section>
+
+        <!-- 05 About you ------------------------------------------------------ -->
+        <section class="bk-step" data-step="5" aria-labelledby="bk-step-5" hidden>
+          <h2 class="bk-step-head" id="bk-step-5" tabindex="-1">
+            <span class="bk-step-num" aria-hidden="true">05</span>
+            <span>About you</span>
+          </h2>
+
+          <div class="field-row">
+            <div class="field" data-label="First name">
+              <label for="bk-first">First name <span class="req" aria-hidden="true">*</span></label>
+              <input
+                id="bk-first"
+                name="contact_first_name"
+                type="text"
+                required
+                maxlength={LIMITS.short}
+                autocomplete="given-name"
+              />
+              <p class="field-error" id="bk-first-err" hidden></p>
+            </div>
+            <div class="field" data-label="Last name">
+              <label for="bk-last">Last name <span class="req" aria-hidden="true">*</span></label>
+              <input
+                id="bk-last"
+                name="contact_last_name"
+                type="text"
+                required
+                maxlength={LIMITS.short}
+                autocomplete="family-name"
+              />
+              <p class="field-error" id="bk-last-err" hidden></p>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field" data-label="Email">
+              <label for="bk-email">Email <span class="req" aria-hidden="true">*</span></label>
+              <input
+                id="bk-email"
+                name="contact_email"
+                type="email"
+                required
+                maxlength={LIMITS.short}
+                autocomplete="email"
+                spellcheck="false"
+              />
+              <p class="field-error" id="bk-email-err" hidden></p>
+            </div>
+            <div class="field" data-label="Phone">
+              <label for="bk-phone">Phone</label>
+              <input
+                id="bk-phone"
+                name="contact_phone"
+                type="tel"
+                maxlength="30"
+                autocomplete="tel"
+              />
+              <p class="field-error" id="bk-phone-err" hidden></p>
+            </div>
+          </div>
+
+          <fieldset class="field" id="bk-orgtype" data-label="Booking as">
+            <legend>You are booking as <span class="req" aria-hidden="true">*</span></legend>
+            <ChoiceChips name="org_type" options={ORG_TYPES} required idPrefix="bk-orgtype" />
+            <p class="field-error" id="bk-orgtype-err" hidden></p>
+          </fieldset>
+          <div class="field" data-label="Organisation">
+            <label for="bk-org">Organisation</label>
+            <input
+              id="bk-org"
+              name="org_name"
+              type="text"
+              maxlength={LIMITS.short}
+              autocomplete="organization"
+            />
+          </div>
+
+          <fieldset class="field" id="bk-member" data-label="ODDspace member">
+            <legend
+              >Are you an ODDspace member? <span class="req" aria-hidden="true">*</span></legend
+            >
+            <ChoiceChips name="is_member" options={YES_NO} required idPrefix="bk-member" />
+            <p class="field-error" id="bk-member-err" hidden></p>
+          </fieldset>
+          <fieldset
+            class="field"
+            id="bk-tier"
+            data-label="Membership"
+            data-show-when="is_member=true"
+          >
+            <legend>Which membership? <span class="req" aria-hidden="true">*</span></legend>
+            <ChoiceChips
+              name="membership_tier"
+              options={MEMBERSHIP_TIERS}
+              required
+              idPrefix="bk-tier"
+            />
+            <p class="field-error" id="bk-tier-err" hidden></p>
+          </fieldset>
+
+          <div class="field" data-label="Anything else">
+            <label for="bk-notes">Anything else?</label>
+            <textarea
+              id="bk-notes"
+              name="notes"
+              rows="3"
+              maxlength={LIMITS.long}
+              aria-describedby="bk-notes-hint"></textarea>
+            <p class="field-hint" id="bk-notes-hint">
+              Accessibility needs, timings, questions: anything that helps us plan. Step-free
+              access, lifts and toilets are still being documented, so we tell you exactly what the
+              space can do today.
+            </p>
+            <p class="field-error" id="bk-notes-err" hidden></p>
+          </div>
+        </section>
+
+        <!-- Check and send ---------------------------------------------------- -->
+        <section class="bk-step" data-step="review" aria-labelledby="bk-step-review" hidden>
+          <h2 class="bk-step-head" id="bk-step-review" tabindex="-1">
+            <span>Check and send</span>
+          </h2>
+          <p class="booking-key">This is what we will quote from. Anything can still be changed.</p>
+          <div class="bk-review" id="bk-review"></div>
+          <div class="bk-review-notes" id="bk-review-notes" hidden></div>
+
+          <div class="field" id="bk-consent" data-label="Privacy consent">
+            <label class="check">
+              <input type="checkbox" name="consent_privacy" value="true" required />
+              <span>
+                I agree that ODD stores these details to answer this enquiry, as the{' '}
+                <a href="/privacy/" target="_blank" rel="noopener">privacy notice</a> describes.{
+                  ' '
+                }
+                <span class="req" aria-hidden="true">*</span>
+              </span>
+            </label>
+            <p class="field-error" id="bk-consent-err" hidden></p>
+          </div>
+        </section>
+      </div>
+
+      <footer class="bk-foot">
+        <p class="form-status" role="status" aria-live="polite"></p>
+        <div class="bk-foot-actions">
+          <button type="button" class="bk-back" data-bk-back hidden>Back</button>
+          <Pill type="submit" variant="solid" class="bk-next">Next</Pill>
+        </div>
+      </footer>
+    </form>
+
+    <div class="booking-done" id="bk-done" tabindex="-1" hidden>
+      <h2>Got it. Your enquiry is in.</h2>
+      <p>
+        We check the date against the building's schedule and come back to{' '}
+        <strong data-done-email></strong> with availability and a price within one working day.
+      </p>
+      <p class="booking-ref">Reference <span data-done-ref></span></p>
+      <Pill type="button" variant="outline" class="bk-done-close" data-bk-close>Close</Pill>
+    </div>
+
+    <p class="sr-only" id="bk-announce" role="alert"></p>
+  </dialog>
+
+  <!-- Keeps the ask in reach on the venue page between the hero and the
+       final section. Hidden while the enquiry is open, while the cookie
+       banner is up, and once an enquiry has been sent. -->
+  <div class="bk-sticky" id="bk-sticky">
+    <p class="bk-sticky-text">Availability and a price within one working day.</p>
+    <Pill type="button" variant="solid" class="bk-sticky-cta">Get a quote</Pill>
+  </div>
+</div>
+
+<script src="../../scripts/booking-enquiry-form.ts"></script>
+
+<style>
+  /* Brand (2026-09-24 pass, and v2 the same day). The frame is the site's
+     own: a floating Paper sheet (NewsletterPopup's panel language) holding
+     numbered steps with a Forta title over a hairline, the same underline inputs and small
+     tracked labels as WorkEnquiryForm and ContactForm, pills for what you
+     touch, square hairline cells for the rooms. Colour is ground, figure and
+     one accent. Heat marks what needs an answer, the way the site uses it
+     for anything you touch; on ODDspace's light ground that is Amber
+     (4.9:1). Role tokens only, so it also works on Ink. */
+  .booking {
+    max-width: 44rem;
+    margin-inline: auto;
+    text-align: left;
+  }
+  .bk-opener {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    text-align: center;
+  }
+  .bk-opener-note,
+  .bk-sent {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .bk-sent {
+    text-align: center;
+    color: var(--color-paper);
+  }
+  .booking-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+  .booking-key {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .req {
+    color: var(--color-heat);
+    font-weight: 600;
+  }
+
+  /* ---- steps ---- */
+  .bk-step {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    min-width: 0;
+  }
+  .bk-step-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin: 0;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-paper-12);
+    /* One step fills the sheet, so its title takes the Heading role, the
+       same as the thank-you: each step reads as its own page. */
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+  }
+  .bk-step-head:focus {
+    outline: none;
+  }
+  .bk-step-num {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--color-paper-40);
+  }
+
+  /* ---- fields ---- */
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1.6rem;
+    row-gap: var(--space-6);
+    align-items: start;
+  }
+  @media (max-width: 640px) {
+    .field-row {
+      grid-template-columns: 1fr;
+    }
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    /* Jumping to a field from the panel lands it clear of the fixed nav. */
+    scroll-margin-block: var(--space-6);
+  }
+  .bk-narrow input {
+    max-width: 16rem;
+  }
+  /* Scoped `display` rules beat the browser's own [hidden] style, so every
+     element this form hides says so explicitly. */
+  .bk-opener[hidden],
+  .bk-sent[hidden],
+  .bk-step[hidden],
+  .bk-back[hidden],
+  .bk-review-notes[hidden],
+  .booking-form[hidden],
+  .booking-warning[hidden],
+  .booking-done[hidden],
+  .bk-derived[hidden],
+  .field[hidden],
+  .field-row[hidden],
+  .bk-sub[hidden],
+  .req[hidden],
+  .field-hint[hidden],
+  .field-error[hidden] {
+    display: none;
+  }
+  .field > label:not(.check),
+  .field > legend {
+    padding: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+    transition: color var(--duration-fast) ease;
+  }
+  /* The parts of one question (date, from, until) are named quietly, so
+     the question itself stays the label. */
+  .bk-sub > label {
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  /* The asterisk keeps its own weight and no tracking inside a tracked,
+     uppercase label. */
+  .field > label .req,
+  .field > legend .req,
+  .check .req {
+    letter-spacing: 0;
+  }
+  .field > legend {
+    /* A legend is not a flex item, so it takes the gap by margin. */
+    margin-bottom: var(--space-3);
+  }
+  .field input:not([type='radio'], [type='checkbox'], [type='hidden']),
+  .field textarea {
+    width: 100%;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-paper-20);
+    border-radius: 0;
+    padding: 0.6rem 0;
+    /* Body — whose 1rem floor is also what stops iOS Safari zooming the page
+       when a field receives focus. */
+    font: var(--text-body);
+    color: var(--color-paper);
+    outline: none;
+    resize: vertical;
+    transition: border-color var(--duration-fast) ease;
+  }
+  /* Date and time pickers draw their icons in the browser's own colours;
+     this keeps them in the page's scheme on both grounds. */
+  .field input[type='date'],
+  .field input[type='time'] {
+    color-scheme: dark;
+    min-height: 2.75rem;
+  }
+  :global(.theme-light) .field input[type='date'],
+  :global(.theme-light) .field input[type='time'] {
+    color-scheme: light;
+  }
+  /* The time lists: the same underline field as the inputs, with a chevron
+     drawn from two gradients in the text colour, so it flips with the theme
+     and needs no icon. `appearance: none` is what lets iOS Safari take the
+     underline instead of its own grey pill; the native list or wheel still
+     opens on tap. */
+  .field select {
+    width: 100%;
+    min-width: 0;
+    min-height: 2.75rem;
+    appearance: none;
+    border: none;
+    border-bottom: 1px solid var(--color-paper-20);
+    border-radius: 0;
+    padding: 0.6rem 1.5rem 0.6rem 0;
+    font: var(--text-body);
+    color: var(--color-paper);
+    background-color: transparent;
+    background-image:
+      linear-gradient(45deg, transparent 50%, currentColor 50%),
+      linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position:
+      calc(100% - 0.55rem) 55%,
+      calc(100% - 0.25rem) 55%;
+    background-size: 0.3rem 0.3rem;
+    background-repeat: no-repeat;
+    outline: none;
+    cursor: pointer;
+    color-scheme: dark;
+    transition: border-color var(--duration-fast) ease;
+  }
+  :global(.theme-light) .field select {
+    color-scheme: light;
+  }
+  .field select:invalid {
+    color: var(--color-paper-60);
+  }
+  .field select option {
+    color: initial;
+  }
+  /* Picker-only dates: the whole field opens the calendar. */
+  .field input[data-picker-only] {
+    cursor: pointer;
+    caret-color: transparent;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--color-paper);
+  }
+  .field select:focus-visible {
+    outline: none;
+    box-shadow: inset 0 -1px 0 var(--color-paper);
+  }
+  /* Focus on an underline input: the line goes to full figure and doubles,
+     drawn as an inset shadow so the field never changes height. The
+     sitewide outline would draw a box around a boxless field. */
+  .field input:not([type='radio'], [type='checkbox']):focus-visible,
+  .field textarea:focus-visible {
+    outline: none;
+    box-shadow: inset 0 -1px 0 var(--color-paper);
+  }
+
+  .bk-when-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-4) 1.6rem;
+  }
+  @media (max-width: 520px) {
+    .bk-when-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .bk-when-grid .bk-sub-date {
+      grid-column: 1 / -1;
+    }
+  }
+  .bk-sub {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+  .bk-sub-date {
+    max-width: 16rem;
+  }
+  .bk-when-grid .bk-sub-date {
+    max-width: none;
+  }
+  .bk-derived {
+    margin: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    color: var(--color-paper);
+  }
+
+  /* ---- choice cards: the rooms and the help levels ----
+     Square cells in a hairline grid, the site's content shape. A room card
+     carries its photograph as a thumbnail beside the text, and "More about
+     this room" opens inside the card, outside its label, so reading it
+     never changes the choice. The selected card
+     takes a figure keyline drawn inside the cell, so the grid never moves.
+
+     The rooms (2026-09-24, after the design review): the step had grown
+     to about three and a half screens. A carousel was considered and not
+     used: it would show one room at a time, hide "Not sure yet" at the end,
+     make capacities impossible to compare side by side and put a sideways
+     swipe inside a vertical scroll. Instead each room is one compact row
+     (thumbnail, name, capacity) at every width, with the round + in the
+     corner; on phones the description moves behind the + as well. The
+     single rooms come before "Or combine rooms", and every option can be
+     scanned and compared in one pass. One column at every width: two
+     columns inside the 44rem sheet squeezed the names to a word a line. */
+  .bk-cards {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1px;
+    background: var(--color-paper-12);
+    border: 1px solid var(--color-paper-12);
+  }
+  /* A row heading inside the hairline grid: the combinations. */
+  .bk-cards-label {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .bk-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg);
+    box-shadow: inset 0 0 0 0 var(--color-paper);
+    transition:
+      background-color var(--duration-fast) ease,
+      box-shadow var(--duration-fast) ease;
+  }
+  .bk-card:has(.bk-card-input:checked) {
+    background: var(--color-backstage);
+    box-shadow: inset 0 0 0 2px var(--color-paper);
+  }
+  @media (hover: hover) {
+    .bk-card:hover {
+      background: var(--color-backstage);
+    }
+  }
+  .bk-card-main {
+    position: relative;
+    display: flex;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    cursor: pointer;
+  }
+  .bk-card-plain .bk-card-main {
+    padding: var(--space-4) var(--space-5);
+  }
+  .bk-card-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .bk-card-main:has(.bk-card-input:focus-visible) {
+    outline: 2px solid var(--color-paper);
+    outline-offset: -6px;
+  }
+  /* The photograph: square corners, 4:3. A combination shares the frame
+     between its rooms. */
+  .bk-card-photo {
+    flex: none;
+    align-self: flex-start;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: 1px;
+    width: 6rem;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--color-paper-12);
+  }
+  @media (max-width: 400px) {
+    .bk-card-photo {
+      width: 5rem;
+    }
+  }
+  @media (min-width: 720px) {
+    .bk-card-photo {
+      width: 8rem;
+    }
+  }
+  .bk-card-photo :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .bk-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+  .bk-card-name {
+    font-family: var(--font-display);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+    color: var(--color-paper);
+  }
+  .bk-card-meta {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .bk-card-blurb {
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .bk-card-input:checked ~ .bk-card-text .bk-card-blurb {
+    color: var(--color-paper-80);
+  }
+
+  /* "More about this room": a quiet disclosure with a + that turns into a
+     minus. It sits outside the card's label, above the input's hit area. */
+  .bk-more {
+    position: relative;
+    padding: 0 var(--space-4) var(--space-3);
+  }
+  /* The description repeats inside it only where the card hides it. */
+  .bk-more .bk-more-blurb {
+    display: none;
+  }
+  /* On phones the description itself moves behind the +. */
+  @media (max-width: 719px) {
+    .bk-cards-rooms .bk-card.has-more .bk-card-blurb {
+      display: none;
+    }
+    .bk-cards-rooms .bk-more .bk-more-blurb {
+      display: block;
+    }
+  }
+  /* Room cards: the + is a 44px round button in the card's top-right
+     corner, and the text keeps clear of it. Closed, the disclosure takes no
+     height at all. */
+  .bk-cards-rooms .has-more .bk-card-main {
+    padding-right: calc(2.75rem + var(--space-4));
+  }
+  .bk-cards-rooms .bk-more {
+    position: static;
+    padding: 0 var(--space-4);
+  }
+  .bk-cards-rooms .bk-more[open] {
+    padding-bottom: var(--space-3);
+  }
+  .bk-cards-rooms .bk-more summary {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-pill);
+  }
+  .bk-cards-rooms .bk-more-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .bk-more summary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    font: var(--text-small);
+    font-weight: 600;
+    color: var(--color-paper-80);
+    cursor: pointer;
+    list-style: none;
+  }
+  .bk-more summary::-webkit-details-marker {
+    display: none;
+  }
+  .bk-more summary:focus-visible {
+    outline: 2px solid var(--color-paper);
+    outline-offset: 2px;
+    border-radius: var(--radius-pill);
+  }
+  .bk-more-icon {
+    position: relative;
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 1px solid var(--color-paper-35);
+    border-radius: var(--radius-pill);
+  }
+  .bk-more-icon::before,
+  .bk-more-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.55rem;
+    height: 1px;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+    transition: transform var(--duration-fast) ease;
+  }
+  .bk-more-icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+  .bk-more[open] .bk-more-icon::after {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bk-more-icon::after {
+      transition: none;
+    }
+  }
+  .bk-more p {
+    margin: 0 0 var(--space-2);
+    font: var(--text-small);
+    color: var(--color-paper-80);
+  }
+  .bk-fixed {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-80);
+  }
+
+  /* ---- single checkboxes ---- */
+  .check {
+    display: inline-flex;
+    gap: 0.75rem;
+    /* 44px touch target on the whole row, not just the tiny native control. */
+    min-height: 2.75rem;
+    align-items: center;
+    font: var(--text-body);
+    color: var(--color-paper-80);
+    cursor: pointer;
+  }
+  .check input {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin: 0;
+    accent-color: var(--color-paper);
+  }
+  #bk-consent .check {
+    align-items: flex-start;
+  }
+  #bk-consent .check input {
+    margin-top: 0.3rem;
+  }
+
+  .field-hint {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .field-hint a,
+  .check a,
+  .booking-noscript a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  /* ---- what needs an answer ----
+     A question that needs an answer gets four signals, so colour is never
+     the only one: a Heat keyline in the gutter beside it (the same keyline
+     the notices use), its label in Heat, its line or its pills' outline in
+     Heat, and a message saying what is missing. The keyline sits outside
+     the column and the line thickens inward, so marking and clearing a
+     question never moves the layout. */
+  .field {
+    position: relative;
+  }
+  .field::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(-1 * var(--space-4));
+    width: 2px;
+    background: var(--color-heat);
+    opacity: 0;
+    transition: opacity var(--duration-fast) ease;
+  }
+  .field.is-invalid::before {
+    opacity: 1;
+  }
+  /* A fieldset draws its legend in its own top edge, above the box the
+     keyline is positioned in, so the legend carries the top of the line,
+     down through its own margin to meet the rest. */
+  .field > legend {
+    position: relative;
+  }
+  .field.is-invalid > legend::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: calc(-1 * var(--space-3));
+    left: calc(-1 * var(--space-4));
+    width: 2px;
+    background: var(--color-heat);
+  }
+  .field.is-invalid > label:not(.check),
+  .field.is-invalid > legend,
+  .field.is-invalid .bk-sub > label {
+    color: var(--color-heat);
+  }
+  .field.is-invalid input:not([type='radio'], [type='checkbox'], [type='hidden']),
+  .field.is-invalid select,
+  .field.is-invalid textarea {
+    border-bottom-color: var(--color-heat);
+    box-shadow: inset 0 -1px 0 var(--color-heat);
+  }
+  .field.is-invalid .bk-cards {
+    border-color: var(--color-heat);
+  }
+  .field.is-invalid .check {
+    color: var(--color-paper);
+  }
+  .field-error {
+    display: flex;
+    gap: 0.4rem;
+    margin: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    color: var(--color-heat);
+  }
+  .field-error::before {
+    content: '↳';
+    flex: none;
+  }
+
+  /* Notices that are not errors: a Heat keyline down the left, square. */
+  .booking-warning {
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    border-left: 2px solid var(--color-heat);
+    background: var(--color-paper-03);
+    font: var(--text-small);
+    color: var(--color-paper);
+  }
+
+  /* Clipped in place rather than pushed off to the left: inside the
+     scrolling body an element at -9999px would make it scroll sideways. */
+  .botcheck {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .form-status {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .form-status.is-error {
+    color: var(--color-heat);
+    font-weight: 600;
+  }
+
+  /* ---- after sending ---- */
+  .booking-done {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-10) var(--space-6);
+    text-align: center;
+    overflow-y: auto;
+  }
+  .booking-done:focus {
+    outline: none;
+  }
+  .booking-done h2 {
+    margin: 0 0 var(--space-4);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+  }
+  .booking-done p {
+    margin: 0 auto var(--space-2);
+    max-width: 46ch;
+    font: var(--text-body);
+    color: var(--color-paper-80);
+  }
+  .booking-done p.booking-ref {
+    margin: var(--space-4) 0 var(--space-6);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .booking-noscript {
+    font: var(--text-body);
+  }
+
+  /* ---- the dialog ----
+     Full screen on phones; from 720px a centred Paper sheet over an Ink
+     scrim, with the panel shape because it floats over the page. It has a
+     fixed height on desktop, so moving between a short step and a long one
+     never makes the sheet jump. Only an open dialog is given a layout, so a
+     closed one stays out of the page. */
+  .bk-dialog {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--color-bg);
+    color: var(--color-paper);
+    overflow: hidden;
+  }
+  .bk-dialog[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  .bk-dialog::backdrop {
+    background: rgb(14 9 11 / 55%);
+  }
+  @media (min-width: 720px) {
+    .bk-dialog {
+      width: min(44rem, calc(100vw - 2 * var(--space-8)));
+      height: min(90dvh, 50rem);
+      margin: auto;
+      border-radius: var(--radius-panel);
+      box-shadow: var(--shadow-panel);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .bk-dialog[open] {
+      animation: bk-sheet-in var(--duration-base) var(--ease-out-expo);
+    }
+    .bk-dialog[open]::backdrop {
+      animation: bk-fade-in var(--duration-base) ease;
+    }
+  }
+  @keyframes bk-sheet-in {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+  }
+  @keyframes bk-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  /* The page behind does not scroll while the enquiry is open. */
+  :global(html.bk-lock) {
+    overflow: hidden;
+  }
+
+  /* Header: what this is, where you are, and the way out. */
+  /* The bottom padding keeps a step's scrolling content from running
+     straight into the progress bar. */
+  .bk-head {
+    flex: none;
+    padding: max(var(--space-4), env(safe-area-inset-top)) var(--space-5) var(--space-3);
+  }
+  @media (min-width: 720px) {
+    .bk-head {
+      padding: var(--space-5) var(--space-8) var(--space-3);
+    }
+  }
+  .bk-head-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .bk-head-title {
+    margin: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper);
+  }
+  .bk-count {
+    margin: 0 0 0 auto;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .bk-close {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: calc(-1 * var(--space-2));
+    border: none;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-paper-80);
+    font: var(--text-heading);
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) ease,
+      color var(--duration-fast) ease;
+  }
+  @media (hover: hover) {
+    .bk-close:hover {
+      background: var(--color-paper-12);
+      color: var(--color-paper);
+    }
+  }
+  /* Progress: five segments, filled up to the current step. */
+  .bk-progress {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-1);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .bk-progress li {
+    height: 3px;
+    background: var(--color-paper-12);
+    transition: background-color var(--duration-base) ease;
+  }
+  .bk-progress li.is-done {
+    background: var(--color-paper);
+  }
+
+  /* Body: one step at a time, scrolling on its own. The side padding holds
+     the Heat keyline that sits in the gutter beside a marked question. */
+  .bk-body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--space-8) var(--space-6) var(--space-10);
+  }
+  @media (min-width: 720px) {
+    .bk-body {
+      padding: var(--space-10) var(--space-10) var(--space-12);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .bk-step.is-entering {
+      animation: bk-step-in var(--duration-base) var(--ease-out-expo);
+    }
+    .bk-step.is-entering.from-back {
+      animation-name: bk-step-in-back;
+    }
+  }
+  /* Under reduced motion the step only fades, and quickly. */
+  @media (prefers-reduced-motion: reduce) {
+    .bk-step.is-entering {
+      animation: bk-fade-in var(--duration-fast) ease;
+    }
+  }
+  @keyframes bk-step-in {
+    from {
+      opacity: 0;
+      transform: translateX(1.5rem);
+    }
+  }
+  @keyframes bk-step-in-back {
+    from {
+      opacity: 0;
+      transform: translateX(-1.5rem);
+    }
+  }
+
+  /* Footer: Back and the one next action, always in reach. */
+  .bk-foot {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5) max(var(--space-4), env(safe-area-inset-bottom));
+    border-top: 1px solid var(--color-paper-12);
+    background: var(--color-bg);
+  }
+  @media (min-width: 720px) {
+    .bk-foot {
+      padding: var(--space-4) var(--space-8) var(--space-5);
+    }
+  }
+  .bk-foot .form-status:empty {
+    display: none;
+  }
+  .bk-foot-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .bk-foot-actions :global(.bk-next) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    margin-left: auto;
+  }
+  @media (max-width: 719px) {
+    .bk-foot-actions :global(.bk-next) {
+      flex: 1;
+      text-align: center;
+    }
+  }
+  .bk-foot-actions :global(.bk-next[disabled]) {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .bk-back {
+    min-height: 2.75rem;
+    padding: 0.55rem 1.25rem;
+    border: 1px solid var(--color-paper-35);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-paper);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color var(--duration-fast) ease;
+  }
+  @media (hover: hover) {
+    .bk-back:hover {
+      border-color: var(--color-paper);
+    }
+  }
+
+  /* ---- check and send ---- */
+  .bk-review {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .bk-review :global(.bk-review-group) {
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .bk-review :global(.bk-review-head) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-2);
+  }
+  .bk-review :global(.bk-review-title) {
+    margin: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .bk-review :global(.bk-review-edit) {
+    min-height: 2.75rem;
+    padding: 0 var(--space-2);
+    border: none;
+    background: transparent;
+    color: var(--color-paper);
+    font: var(--text-small);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+  }
+  .bk-review :global(dl) {
+    display: grid;
+    grid-template-columns: minmax(7rem, 11rem) minmax(0, 1fr);
+    gap: var(--space-2) var(--space-4);
+    margin: 0;
+  }
+  @media (max-width: 480px) {
+    .bk-review :global(dl) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+    .bk-review :global(dd) {
+      margin-bottom: var(--space-2);
+    }
+  }
+  .bk-review :global(dt) {
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .bk-review :global(dd) {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+  .bk-review-notes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  /* ---- the sticky "Get a quote" bar ----
+     Ink on either ground, pinned to the swatches like NewsletterPopup, so it
+     reads as something over the page. A full-width bar at the foot of the
+     screen on phones; a floating panel from 720px. It slides in and out;
+     under reduced motion it simply appears. */
+  .bk-sticky {
+    --color-paper: var(--swatch-paper);
+    --color-ink: var(--swatch-ink);
+    position: fixed;
+    z-index: 150;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-5) max(var(--space-3), env(safe-area-inset-bottom));
+    background: var(--swatch-ink);
+    color: var(--swatch-paper);
+    box-shadow: var(--shadow-panel);
+    transform: translateY(110%);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      transform var(--duration-base) var(--ease-out-expo),
+      opacity var(--duration-base) ease,
+      visibility 0s linear var(--duration-base);
+  }
+  .bk-sticky.is-shown {
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    transition:
+      transform var(--duration-base) var(--ease-out-expo),
+      opacity var(--duration-base) ease,
+      visibility 0s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bk-sticky,
+    .bk-sticky.is-shown {
+      transition: none;
+    }
+  }
+  @media (min-width: 720px) {
+    .bk-sticky {
+      left: 50%;
+      right: auto;
+      bottom: var(--space-5);
+      width: max-content;
+      max-width: calc(100vw - 2 * var(--space-5));
+      padding: var(--space-3) var(--space-3) var(--space-3) var(--space-6);
+      border-radius: var(--radius-panel);
+      transform: translate(-50%, 150%);
+    }
+    .bk-sticky.is-shown {
+      transform: translate(-50%, 0);
+    }
+  }
+  .bk-sticky-text {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font: var(--text-small);
+    color: rgb(226 223 222 / 80%);
+  }
+  .bk-sticky :global(.bk-sticky-cta) {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+  .bk-sticky :global(.bk-sticky-cta:focus-visible) {
+    outline: 2px solid var(--swatch-paper);
+    outline-offset: 2px;
+  }
+</style>
