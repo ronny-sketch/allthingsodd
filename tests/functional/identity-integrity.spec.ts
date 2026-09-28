@@ -305,3 +305,34 @@ test('the four-stat proof row does not overflow at supported mobile widths', asy
     expect(overflow.doc, `the page scrolls horizontally at ${width}px`).toBeLessThanOrEqual(1);
   }
 });
+
+test('ODDference is positioned as where creative expertise meets business and society', async ({
+  page,
+  request,
+}) => {
+  // 2026-09-28: "a business conference powered by creative expertise" was
+  // rejected; the page headline had already moved to the approved line, but
+  // its SEO title and description, the homepage card and the press
+  // boilerplate still said the old one. Rendered HTML, so meta tags count.
+  for (const route of [...ROUTES, '/brand-book']) {
+    const html = await (await request.get(route)).text();
+    expect(html, `${route} still uses the rejected ODDference line`).not.toMatch(
+      /powered by creative/i,
+    );
+  }
+  await page.goto('/oddference');
+  await expect(page).toHaveTitle(/^ODDference 2027/);
+  await expect(page.locator('h1')).toContainText(
+    'Where creative expertise meets business and society.',
+  );
+  for (const meta of ['meta[name="description"]', 'meta[property="og:description"]']) {
+    await expect(page.locator(meta)).toHaveAttribute(
+      'content',
+      /^Where creative expertise meets business and society\./,
+    );
+  }
+  await page.goto('/');
+  await expect(page.locator('main')).toContainText(
+    'Where creative expertise meets business and society.',
+  );
+});
