@@ -56,22 +56,43 @@ test('the thank-you page is a site page with its credits and no dead ends', asyn
   expect(flickr).toEqual([]);
 
   // 2026-09-19: every credited name rises on its own line (the reveal hook
-  // sits on the <li>, so the mobile reveal sweep covers each name); the
-  // afterparty invitation links to the building, and the sign-off to the
-  // new site. The date is content, not a fixture, so it is not pinned here.
+  // sits on the <li>, so the mobile reveal sweep covers each name).
   expect(await page.locator('#credits .ty-names > li.reveal').count()).toBeGreaterThan(200);
-  await expect(page.locator('#afterparty a.pill')).toHaveAttribute('href', '/oddspace');
-  // The card's hierarchy, not its wording: when / doors / where each render,
-  // and the address is the one the site gives guests everywhere else.
-  await expect(page.locator('#invite-card .ty-invite-when')).not.toBeEmpty();
-  await expect(page.locator('#invite-card .ty-invite-doors')).not.toBeEmpty();
-  await expect(page.locator('#invite-card .ty-invite-where')).toContainText('Teollisuuskatu 9D');
-  // The card is the films' closing frame, so the eyebrow, the ask and the
-  // page's last word have to be inside it together — see
-  // scripts/render-oddfest-2026-film.mjs.
-  await expect(page.locator('#invite-card .eyebrow')).toHaveText('ODD is back');
-  await expect(page.locator('#invite-card .ty-invite-title')).toHaveText("You're invited.");
-  await expect(page.locator('#invite-card .ty-invite-closer')).toHaveText('Stay ODD.');
+});
+
+// The afterparty invitation was for Saturday 26 September 2026 (archived
+// 2026-09-28). The page stays as the thank-you and archive; nothing on it may
+// still read as an invitation, and nothing may link to the hidden section.
+test('the thank-you page is an archive, not an invitation', async ({ page, request }) => {
+  await page.goto(PAGE);
+  await expect(page.locator('#afterparty')).toHaveCount(0);
+  await expect(page.locator('#invite-card')).toHaveCount(0);
+  await expect(page.locator('a[href$="#afterparty"]')).toHaveCount(0);
+  for (const stale of [
+    "You're invited",
+    'Come to the afterparty',
+    '26 September',
+    '24 September',
+  ]) {
+    await expect(page.locator('body'), `"${stale}" is still on the page`).not.toContainText(stale);
+  }
+  for (const meta of ['meta[name="description"]', 'meta[property="og:description"]']) {
+    const content = (await page.locator(meta).getAttribute('content')) ?? '';
+    expect(content, `${meta} still invites people`).not.toMatch(/afterparty|September|19:00/i);
+    expect(content).toContain('ODDfest 2026');
+  }
+
+  // The hero's second button goes to the photographs, and they are there.
+  const second = page.locator('.space-hero a.pill').nth(1);
+  await expect(second).toHaveText('See the photographs');
+  await expect(second).toHaveAttribute('href', '#photos');
+  await second.click();
+  await expect(page.locator('#photos')).toBeInViewport();
+  expect(await page.locator('#photos .photo-wall img').count()).toBeGreaterThan(0);
+
+  // The ODDspace programme does not list it as an upcoming event either.
+  const oddspace = await (await request.get('/oddspace/')).text();
+  expect(oddspace).not.toContain('AFTER ODD');
 });
 
 test('"Play the credits" plays the soundtrack and rolls the page until the reader scrolls', async ({

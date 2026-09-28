@@ -725,7 +725,8 @@ collections_config:
           them only here if anything moves. Empty "facts" to run the
           invitation without a date. "show: false" hides the whole section
           (and with it the page's sign-off); the hero's second button links
-          to it, so point that somewhere else at the same time.
+          to it, so point that somewhere else at the same time. Archived
+          2026-09-28: the afterparty was on 26 September, so this stays off.
         options:
           subtype: object
       examplesIntro:

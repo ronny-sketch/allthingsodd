@@ -1,9 +1,17 @@
 ---
-// Two independently-animated turbulence layers, composited, then used to displace
-// a shape's own path — the sauna-steam idea, tuned once at hero scale (#steam-hero)
-// and again gentler for the tiny nav/footer mark (#steam-nav) so it doesn't read as
-// broken noise at that size. Lives outside any page content so both can reference it
-// regardless of route.
+// Two turbulence layers, composited, then used to displace a shape's own path —
+// the sauna-steam idea, tuned at hero scale. Lives outside any page content so
+// any route can reference it.
+//
+// Static on purpose (2026-09-25). Both layers used to <animate> their
+// baseFrequency, which makes the browser regenerate the noise and re-run the
+// displacement on the CPU every frame, for as long as the logo is on screen.
+// Measured on the homepage at 1440x900 / 4x CPU, main-thread task time over
+// 6s, median of 3: 4053ms animated, 517ms static, 547ms with no filter at all.
+// The drift was barely visible; it was 87% of the page's CPU. The torn edge
+// stays, and the logo's own float keeps it moving. Do not add <animate> back:
+// tests/functional/hero-performance.spec.ts fails if you do. (The unused
+// #steam-nav went too.)
 ---
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -14,27 +22,13 @@
         baseFrequency="0.008 0.02"
         numOctaves="2"
         seed="7"
-        result="n1"
-      >
-        <animate
-          attributeName="baseFrequency"
-          values="0.008 0.02;0.011 0.024;0.008 0.02"
-          dur="11s"
-          repeatCount="indefinite"></animate>
-      </feTurbulence>
+        result="n1"></feTurbulence>
       <feTurbulence
         type="fractalNoise"
         baseFrequency="0.02 0.05"
         numOctaves="2"
         seed="3"
-        result="n2"
-      >
-        <animate
-          attributeName="baseFrequency"
-          values="0.02 0.05;0.026 0.045;0.02 0.05"
-          dur="7s"
-          repeatCount="indefinite"></animate>
-      </feTurbulence>
+        result="n2"></feTurbulence>
       <feComposite
         in="n1"
         in2="n2"
@@ -48,49 +42,6 @@
         in="SourceGraphic"
         in2="noise"
         scale="34"
-        xChannelSelector="R"
-        yChannelSelector="G"></feDisplacementMap>
-    </filter>
-    <filter id="steam-nav" x="-60%" y="-60%" width="220%" height="220%">
-      <feTurbulence
-        type="fractalNoise"
-        baseFrequency="0.03 0.07"
-        numOctaves="2"
-        seed="7"
-        result="n1"
-      >
-        <animate
-          attributeName="baseFrequency"
-          values="0.03 0.07;0.04 0.085;0.03 0.07"
-          dur="11s"
-          repeatCount="indefinite"></animate>
-      </feTurbulence>
-      <feTurbulence
-        type="fractalNoise"
-        baseFrequency="0.07 0.16"
-        numOctaves="2"
-        seed="3"
-        result="n2"
-      >
-        <animate
-          attributeName="baseFrequency"
-          values="0.07 0.16;0.09 0.18;0.07 0.16"
-          dur="7s"
-          repeatCount="indefinite"></animate>
-      </feTurbulence>
-      <feComposite
-        in="n1"
-        in2="n2"
-        operator="arithmetic"
-        k1="0"
-        k2="0.6"
-        k3="0.6"
-        k4="0"
-        result="noise"></feComposite>
-      <feDisplacementMap
-        in="SourceGraphic"
-        in2="noise"
-        scale="5"
         xChannelSelector="R"
         yChannelSelector="G"></feDisplacementMap>
     </filter>

@@ -140,7 +140,9 @@ if (mosaic) {
       // widest pool file into a cell a fraction of its size, and its larger
       // intrinsic size made every swap a fresh, later LCP candidate.
       if (next.srcset) newImg.srcset = next.srcset;
-      if (MOSAIC_SIZES) newImg.sizes = MOSAIC_SIZES;
+      // The cell's own `sizes`, so the wide last cell keeps its wider pick.
+      const sizes = oldImg?.getAttribute('sizes') || MOSAIC_SIZES;
+      if (sizes) newImg.sizes = sizes;
       if (next.width) newImg.width = Number(next.width);
       if (next.height) newImg.height = Number(next.height);
       newImg.src = next.src;
@@ -159,8 +161,19 @@ if (mosaic) {
           }
         });
       };
-      if (newImg.decode) newImg.decode().then(reveal, reveal);
-      else reveal();
+      // A photo that fails to load is skipped, not revealed (2026-09-25).
+      // Revealing on rejection too faded a broken image in over a good one,
+      // so a flaky connection left empty cells behind. The cell keeps its
+      // photo and gives its slot back; the next tick tries another cell.
+      const skip = () => {
+        assigned[cellIndex] = oldImg?.getAttribute('src') ?? '';
+      };
+      if (newImg.decode) newImg.decode().then(reveal, skip);
+      else {
+        // No decode(): wait for the load either way, same rule.
+        newImg.onload = reveal;
+        newImg.onerror = skip;
+      }
     }
 
     const order = shuffled(cells.map((_, i) => i));
