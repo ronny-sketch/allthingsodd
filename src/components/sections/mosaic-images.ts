@@ -14,6 +14,12 @@ import { getImage } from 'astro:assets';
  *  cell is ~20vw on desktop and ~34vw on a phone. */
 export const MOSAIC_SIZES = '(max-width: 820px) 34vw, 20vw';
 
+/** The last cell spans two of the three columns in the portrait phone and
+ *  tablet grid (Hero.astro), so it asks for a two-column file there. Only
+ *  that one tile pays for it; landscape phones are back on five columns. */
+export const MOSAIC_WIDE_SIZES =
+  '(max-width: 820px) and (max-height: 520px) 20vw, (max-width: 820px) 67vw, 20vw';
+
 /** 500 stays in the set and is the plain `src`, so a browser that ignores
  *  srcset renders exactly what it rendered before. The smaller steps are
  *  what stop a 130px phone cell being handed a desktop-sized file, twenty

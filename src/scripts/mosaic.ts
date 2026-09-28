@@ -140,7 +140,9 @@ if (mosaic) {
       // widest pool file into a cell a fraction of its size, and its larger
       // intrinsic size made every swap a fresh, later LCP candidate.
       if (next.srcset) newImg.srcset = next.srcset;
-      if (MOSAIC_SIZES) newImg.sizes = MOSAIC_SIZES;
+      // The cell's own `sizes`, so the wide last cell keeps its wider pick.
+      const sizes = oldImg?.getAttribute('sizes') || MOSAIC_SIZES;
+      if (sizes) newImg.sizes = sizes;
       if (next.width) newImg.width = Number(next.width);
       if (next.height) newImg.height = Number(next.height);
       newImg.src = next.src;

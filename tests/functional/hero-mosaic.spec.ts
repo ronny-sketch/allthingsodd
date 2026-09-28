@@ -111,3 +111,30 @@ for (const viewport of [
     expect(used, 'mosaic grid has an empty slot').toBe(slots);
   });
 }
+
+// The wide last cell (two of three columns on phones and portrait tablets)
+// used to be handed the one-column file and stretched to twice its width.
+// It asks for its own width now; 640px is the widest these sources come.
+for (const viewport of [
+  { width: 390, height: 844 },
+  { width: 820, height: 1180 },
+]) {
+  test(`the wide mosaic tile is not a stretched one-column file at ${viewport.width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport);
+    await page.goto('/');
+    const img = page.locator('.mosaic-cell:last-child img').first();
+    await expect
+      .poll(() => img.evaluate((i) => (i as HTMLImageElement).naturalWidth))
+      .toBeGreaterThan(0);
+    const { shown, natural, dpr } = await img.evaluate((i) => ({
+      shown: i.getBoundingClientRect().width,
+      natural: (i as HTMLImageElement).naturalWidth,
+      dpr: devicePixelRatio,
+    }));
+    expect(natural, 'the wide tile is upscaled from a one-column file').toBeGreaterThanOrEqual(
+      Math.min(shown, 640 / dpr) * 0.9,
+    );
+  });
+}
