@@ -100,6 +100,7 @@ test('the rate card prices a selection and carries it into the enquiry', async (
   // only what is payable upfront, and the figure has to say so.
   await card.getByRole('radio', { name: /Revenue share/ }).check();
   await expect(card.locator('.vrc-estimate-figure')).toHaveText('€200 upfront');
+  await expect(card.locator('.vrc-estimate-vat')).toHaveText('+ VAT 25.5% · €251 incl. VAT');
 
   // And the choice travels to the form, so the first reply is about the date.
   const href = await card.locator('.vrc-cta a').getAttribute('href');
@@ -109,6 +110,38 @@ test('the rate card prices a selection and carries it into the enquiry', async (
   // this page rather than sending people to the Work with ODD form.
   expect(href).toContain('#booking-form');
   expect(href).toMatch(/^\/oddspace\/venue\/\?/);
+});
+
+// Money to the cent, never to the euro (2026-09-28). The two documented
+// examples, the empty states, and a fractional net, which the schema allows
+// (`price: z.number()`) even though every published rate is whole euros.
+test('the rate card rounds VAT to the cent', async ({ page }) => {
+  await page.goto(VENUE);
+  const card = page.locator('.vrc');
+  const figure = card.locator('.vrc-estimate-figure');
+  const vat = card.locator('.vrc-estimate-vat');
+
+  // Member, half day: €100 net is €125.50 gross (it used to print €125).
+  await card.getByRole('radio', { name: 'ODDspace member' }).check();
+  await card.getByRole('radio', { name: /Half day/ }).check();
+  await expect(figure).toHaveText('€100');
+  await expect(vat).toHaveText('+ VAT 25.5% · €125.50 incl. VAT');
+
+  // Revenue share with nothing added: no money, and no VAT line.
+  await card.getByRole('radio', { name: 'Creative organisation' }).check();
+  await card.getByRole('radio', { name: /Revenue share/ }).check();
+  await expect(figure).toHaveText('€0 upfront');
+  await expect(vat).toHaveText('');
+
+  // A fractional net keeps its cents, and VAT rounds half-up once:
+  // €99.99 × 1.255 = €125.48745 → €125.49.
+  await card.getByRole('radio', { name: 'ODDspace member' }).check();
+  await card.locator('.vrc-panel[data-lane="member"] input[value="half"]').evaluate((input) => {
+    input.dataset.price = '99.99';
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+  await expect(figure).toHaveText('€99.99');
+  await expect(vat).toHaveText('+ VAT 25.5% · €125.49 incl. VAT');
 });
 
 test('the enquiry form opens with the choice already written in', async ({ page }) => {

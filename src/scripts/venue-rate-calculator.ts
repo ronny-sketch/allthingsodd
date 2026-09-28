@@ -17,15 +17,19 @@ if (root) {
   const ctaLink = root.querySelector<HTMLAnchorElement>('.vrc-cta a');
   const ctaHref = root.dataset.ctaHref ?? ctaLink?.getAttribute('href') ?? '';
 
-  const euro = (n: number) => `€${Math.round(n).toLocaleString('en-IE')}`;
-  // The VAT-inclusive figure to the cent. `total * (1 + 25.5 / 100)` is
-  // 125.4999… for €100, which rounded to €125 while €500 rounded up to €628.
-  // Whole-euro totals times (100 + rate) are exact, so divide last.
-  const euroInclVat = (net: number) => {
-    const gross = Math.round(net * (100 + vatRate)) / 100;
-    const cents = Number.isInteger(gross) ? 0 : 2;
-    return `€${gross.toLocaleString('en-IE', { minimumFractionDigits: cents, maximumFractionDigits: 2 })}`;
-  };
+  // All money here is whole cents (2026-09-28). `total * (1 + 25.5 / 100)` is
+  // 125.4999… for €100, which printed €125 (really €125.50) while €500
+  // rounded up to €628 (really €627.50): float noise decided the direction.
+  // Integer cents times the rate in basis points is exact, so VAT rounds once,
+  // half-up, to the cent. Whole euros print without decimals, like the card.
+  const toCents = (euros: number) => Math.round(euros * 100);
+  const grossBps = Math.round((100 + vatRate) * 100);
+  const withVat = (cents: number) => Math.round((cents * grossBps) / 10_000);
+  const euro = (cents: number) =>
+    `€${(cents / 100).toLocaleString('en-IE', {
+      minimumFractionDigits: cents % 100 ? 2 : 0,
+      maximumFractionDigits: 2,
+    })}`;
   const currentLane = () => laneInputs.find((i) => i.checked)?.value ?? laneInputs[0]?.value ?? '';
   const panelFor = (lane: string) => panels.find((p) => p.dataset.lane === lane);
 
@@ -41,8 +45,8 @@ if (root) {
       panel.querySelectorAll<HTMLInputElement>('input[type="checkbox"]:checked'),
     );
     const total =
-      Number(rate?.dataset.price ?? 0) +
-      addOns.reduce((sum, a) => sum + Number(a.dataset.price ?? 0), 0);
+      toCents(Number(rate?.dataset.price ?? 0)) +
+      addOns.reduce((sum, a) => sum + toCents(Number(a.dataset.price ?? 0)), 0);
 
     // A revenue-share rate carries no number of its own — its row says
     // "€0 upfront" and the real money is the door split in the note beside
@@ -55,7 +59,8 @@ if (root) {
 
     figure.textContent =
       total === 0 ? '€0 upfront' : isUpfrontOnly ? `${euro(total)} upfront` : euro(total);
-    vatLine.textContent = total === 0 ? '' : `+ VAT ${vatRate}% · ${euroInclVat(total)} incl. VAT`;
+    vatLine.textContent =
+      total === 0 ? '' : `+ VAT ${vatRate}% · ${euro(withVat(total))} incl. VAT`;
     estimate.hidden = false;
 
     // Land in the enquiry form with the choice already made, so the first
