@@ -158,7 +158,7 @@ test('hero tilt settles, stops scheduling frames, resumes and resets', async ({
 }) => {
   test.skip(isMobile, 'pointer branch only; touch gets the scroll-linked tilt');
   // Waits for the ease-out to finish at whatever frame rate the engine has.
-  test.setTimeout(60_000);
+  test.setTimeout(90_000);
   // The newsletter popup and consent banner open over the cursor, which is a
   // real mouseleave and resets the tilt before anything here is measured.
   await suppressInterruptions(page);
@@ -220,7 +220,9 @@ test('hero tilt settles, stops scheduling frames, resumes and resets', async ({
     .poll(tiltRequestsPerSecond, {
       message: 'the tilt loop kept running with the pointer at rest',
       intervals: [0],
-      timeout: 20_000,
+      // ~96 frames of ease-out; headless Firefox has run this at ~5fps
+      // under the full suite's load.
+      timeout: 45_000,
     })
     .toBe(0);
   const leaves = await page.evaluate(() => (window as unknown as { __leaves: number }).__leaves);
