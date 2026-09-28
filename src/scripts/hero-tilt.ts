@@ -111,13 +111,17 @@ if (hero && mosaic && spotlight && !touch && !reduceMotion) {
     spot = '';
     spotlight!.style.background = 'none';
     if (!raf) raf = requestAnimationFrame(tick);
+    // Reset whether or not the loop is still running: a small tilt settles
+    // inside 600ms and stops itself, which used to leave its last frame
+    // (scale(1.02)) on the mosaic until the next hover.
     setTimeout(() => {
-      if (!inside && raf) {
-        cancelAnimationFrame(raf);
-        raf = null;
-        mosaic!.style.transform = '';
-        if (logo) logo.style.transform = '';
-      }
+      if (inside) return;
+      if (raf) cancelAnimationFrame(raf);
+      raf = null;
+      tiltX = 0;
+      tiltY = 0;
+      mosaic!.style.transform = '';
+      if (logo) logo.style.transform = '';
     }, 600);
   });
 }

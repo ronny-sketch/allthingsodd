@@ -167,7 +167,11 @@ if (mosaic) {
         assigned[cellIndex] = oldImg?.getAttribute('src') ?? '';
       };
       if (newImg.decode) newImg.decode().then(reveal, skip);
-      else reveal();
+      else {
+        // No decode(): wait for the load either way, same rule.
+        newImg.onload = reveal;
+        newImg.onerror = skip;
+      }
     }
 
     const order = shuffled(cells.map((_, i) => i));
