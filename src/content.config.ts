@@ -780,6 +780,9 @@ const pages = defineCollection({
         // run the invitation without them. `show: false` removes the section
         // — then the hero's `secondaryCta` (which links to `#afterparty`)
         // needs a new target, which site-integrity.spec.ts enforces.
+        // Archived 2026-09-28: the invitation was for Saturday 26 September,
+        // so `show` is false and the hero's second button goes to #photos.
+        // The copy stays as the record of what was announced, not as news.
         afterparty: z.object({
           show: z.boolean(),
           eyebrow: z.string(),

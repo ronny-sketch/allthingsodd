@@ -2,7 +2,7 @@
   "_template": "oddfest2026",
   "seo": {
     "title": "ODDfest 2026 — Thank you",
-    "description": "Thank you to everyone who made ODDfest 2026 — the team, artists, volunteers and partners behind it. The credits, the photographs, and the afterparty we never threw: Saturday 26 September at ODDspace, from 19:00.",
+    "description": "Thank you to everyone who made ODDfest 2026, Helsinki's creative week in June: the team, artists, volunteers and partners behind it, every one of them named in the credits, and the festival in photographs.",
     "ogImage": "/og/oddfest-2026.jpg"
   },
   "title": "An ODD thousand thank yous.",
@@ -13,8 +13,8 @@
     "href": "#credits"
   },
   "secondaryCta": {
-    "label": "Come to the afterparty",
-    "href": "#afterparty"
+    "label": "See the photographs",
+    "href": "#photos"
   },
   "heroPhotos": [
     {
@@ -1469,7 +1469,7 @@
     }
   },
   "afterparty": {
-    "show": true,
+    "show": false,
     "eyebrow": "ODD is back",
     "premise": "We never threw the afterparty. ODDfest ended on 13 June, everyone went home, and then summer came — no last drink, no proper thank you, nothing. It has been bothering us since.",
     "point": "So we're doing it in September instead.",
