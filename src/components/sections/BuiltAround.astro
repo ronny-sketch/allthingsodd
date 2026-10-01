@@ -224,6 +224,13 @@ const PIECE_SLOTS = ['tl', 'tr', 'bl', 'br'] as const;
     color: var(--color-paper-80);
     text-wrap: balance;
   }
+  /* The third label is longer than the others. Let it fill the first line
+     naturally instead of balancing into three short lines. At the current
+     cell width this gives “Networks to” / “collaborate” without shrinking
+     the type or changing the other three labels. */
+  .ba-bl .ba-label {
+    text-wrap: wrap;
+  }
 
   .ba-text {
     display: grid;
