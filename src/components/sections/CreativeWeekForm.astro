@@ -1,0 +1,1543 @@
+---
+// The ODDfest 2027 Creative Week submission, on /oddfest/ (2026-10-04). It
+// replaces sending would-be hosts to /contact/?topic=oddfest_2027_event, and
+// asks the ODDfest team's Google Form questions ("ODDfest 2027 form") itself.
+//
+// It is the venue page's "Get a quote" journey (BookingEnquiryForm.astro)
+// with different questions: a native <dialog>, one step at a time with a
+// progress bar, each step checked when you press Next, and a "Check and
+// send" summary where anything can be edited. Every link to
+// `#creative-week-form` opens it (the hero, How to join, the "Want your
+// event in the next one?" band, the sticky bar); the browser's back button,
+// Esc and × close it; the answers stay until the page is reloaded and
+// nothing is stored in the browser. No timed popup ever opens it.
+//
+// The shell, its markup and its styles mirror BookingEnquiryForm's on
+// purpose (same sheet, steps, marks, summary and sticky bar), kept as a
+// copy so this branch leaves the live quote form untouched. ponytail: two
+// copies of the dialog shell; extract one shared shell when either changes.
+// No venue questions, prices or response-time promises carry over.
+//
+// The steps regroup the Google Form's sections so the idea comes first and
+// the contact details last, the quote form's order: Your idea (2) → Making
+// it happen (3) → Where and when (5; the form has no section 4) → Audience
+// and access (6) → What you need (7) → About you (1, 8 and 9's questions).
+// The acknowledgements and the privacy tick box are on the summary.
+//
+// Every option list and rule comes from creative-week-schema.ts, which the
+// submit script validates against. Labels are UI copy and stay in code,
+// like the quote form's, out of CloudCannon. It posts JSON to POST
+// /api/creative-week-submission on the Growth OS Worker (../odd-growth-os),
+// which writes the Creative Week Notion database. This file holds no keys
+// and imports no Growth OS code (AGENTS.md, "Growth OS integration").
+//
+// Conditional questions carry `data-show-when="<name>=<value>[|<value>]"`
+// (the quote form's convention); the script hides them until they apply and
+// disables their inputs while hidden, so a hidden answer is never sent.
+// Without JavaScript the <noscript> note gives the email route.
+import Pill from '../primitives/Pill.astro';
+import ChoiceChips from '../primitives/ChoiceChips.astro';
+import {
+  APPLICANT_TYPES,
+  EVENT_KINDS,
+  FORMATS,
+  FIELDS,
+  READINESS,
+  VENUE_STATUS,
+  VENUE_NAMED,
+  VENUE_OPEN,
+  TIMING,
+  AUDIENCES,
+  ACCESS,
+  HELP,
+  FINANCING,
+  REFERRAL,
+  LIMITS,
+} from '../../scripts/creative-week-schema';
+
+const STEPS = [
+  'Your idea',
+  'Making it happen',
+  'Where and when',
+  'Audience and access',
+  'What you need',
+  'About you',
+];
+const num = (i: number) => String(i + 1).padStart(2, '0');
+---
+
+<div class="cw" id="creative-week-form">
+  <noscript>
+    <p class="cw-noscript">
+      This form needs JavaScript to send. You can email your idea to{' '}
+      <a href="mailto:hello@oddfest.co">hello@oddfest.co</a> instead.
+    </p>
+    <style is:inline>
+      .cw-sticky {
+        display: none !important;
+      }
+    </style>
+  </noscript>
+
+  <p class="cw-sent" id="cw-sent" role="status" tabindex="-1" hidden>
+    Your idea is in, reference <strong data-sent-ref></strong>. Thank you.
+  </p>
+
+  <!-- `data-suppress-newsletter-popup`: while it is open the timed
+       newsletter popup stays away (newsletter-popup.ts). -->
+  <dialog
+    class="cw-dialog"
+    id="cw-dialog"
+    aria-labelledby="cw-dialog-title"
+    data-suppress-newsletter-popup
+  >
+    <header class="cw-head">
+      <div class="cw-head-row">
+        <p class="cw-head-title" id="cw-dialog-title">Submit an event idea</p>
+        <p class="cw-count" id="cw-count" aria-live="polite">Step 1 of {STEPS.length}</p>
+        <button type="button" class="cw-close" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <ol class="cw-progress" aria-hidden="true">
+        {STEPS.map(() => <li />)}
+      </ol>
+    </header>
+
+    <form class="cw-form" id="creativeWeekForm" novalidate>
+      <div class="cw-body" id="cw-body">
+        <!-- Honeypot. A person never sees it. A non-empty value means a bot. -->
+        <div class="botcheck" aria-hidden="true">
+          <label for="cw-hp">Leave this empty</label>
+          <input id="cw-hp" name="hp_field" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <!-- 01 Your idea (the Google Form's section 2) ------------------------ -->
+        <section class="cw-step" data-step="1" aria-labelledby="cw-step-1">
+          <h2 class="cw-step-head" id="cw-step-1" tabindex="-1">
+            <span class="cw-step-num" aria-hidden="true">{num(0)}</span>
+            <span>{STEPS[0]}</span>
+          </h2>
+          <p class="cw-key">
+            An exhibition, an industry gathering, a club night or a workshop: what would you bring
+            to Helsinki’s creative week? You should have a clear concept, but your venue, team or
+            funding can still be taking shape. It takes around 5–10 minutes, one submission per
+            idea.
+          </p>
+          <p class="cw-key">
+            Questions marked <span class="req" aria-hidden="true">*</span><span class="sr-only"
+              >with an asterisk</span
+            > need an answer. Everything else is optional.
+          </p>
+
+          <div class="field" data-label="Working title">
+            <label for="cw-title">Working title <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="cw-title"
+              name="title"
+              type="text"
+              required
+              maxlength={LIMITS.short}
+              aria-describedby="cw-title-hint"
+            />
+            <p class="field-hint" id="cw-title-hint">A rough title is fine.</p>
+            <p class="field-error" id="cw-title-err" hidden></p>
+          </div>
+
+          <div class="field" data-label="Your idea">
+            <label for="cw-desc"
+              >Describe your idea in a few sentences <span class="req" aria-hidden="true">*</span
+              ></label
+            >
+            <textarea
+              id="cw-desc"
+              name="description"
+              rows="5"
+              required
+              maxlength={LIMITS.long}
+              aria-describedby="cw-desc-hint"></textarea>
+            <p class="field-hint" id="cw-desc-hint">
+              What actually happens? What would someone experience? Focus on the event rather than
+              your biography.
+            </p>
+            <p class="field-error" id="cw-desc-err" hidden></p>
+          </div>
+
+          <fieldset class="field" data-label="Type of event">
+            <legend>What type of event is it? <span class="req" aria-hidden="true">*</span></legend>
+            <p class="field-hint">Educating, entertaining, or both?</p>
+            <div class="cw-options">
+              {
+                EVENT_KINDS.map((o, i) => (
+                  <label class="check" for={`cw-kind-${o.value}`}>
+                    <input
+                      id={`cw-kind-${o.value}`}
+                      type="radio"
+                      name="event_kind"
+                      value={o.value}
+                      required={i === 0}
+                    />
+                    <span class="cw-option-text">{o.label}</span>
+                  </label>
+                ))
+              }
+            </div>
+            <p class="field-error" id="cw-kind-err" hidden></p>
+          </fieldset>
+
+          <fieldset class="field" data-label="Formats">
+            <legend
+              >Which of these describes the event in more detail? <span
+                class="req"
+                aria-hidden="true">*</span
+              ></legend
+            >
+            <p class="field-hint">Select all that apply. Hybrid formats are welcome.</p>
+            <ChoiceChips name="formats" options={FORMATS} type="checkbox" idPrefix="cw-format" />
+            <p class="field-error" id="cw-format-err" hidden></p>
+          </fieldset>
+          <div class="field" data-label="Other format" data-show-when="formats=other">
+            <label for="cw-format-other-text"
+              >Other format <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="cw-format-other-text"
+              name="formats_other"
+              type="text"
+              required
+              maxlength={LIMITS.line}
+            />
+            <p class="field-error" id="cw-format-other-err" hidden></p>
+          </div>
+
+          <fieldset class="field" data-label="Creative fields">
+            <legend
+              >Which creative fields does it connect to? <span class="req" aria-hidden="true"
+                >*</span
+              ></legend
+            >
+            <p class="field-hint">Select all that apply.</p>
+            <ChoiceChips name="fields" options={FIELDS} type="checkbox" idPrefix="cw-field" />
+            <p class="field-error" id="cw-field-err" hidden></p>
+          </fieldset>
+          <div class="field" data-label="Other creative field" data-show-when="fields=other">
+            <label for="cw-field-other-text"
+              >Other creative field <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="cw-field-other-text"
+              name="fields_other"
+              type="text"
+              required
+              maxlength={LIMITS.line}
+            />
+            <p class="field-error" id="cw-field-other-err" hidden></p>
+          </div>
+
+          <div class="field" data-label="Why ODDfest">
+            <label for="cw-why">Why would you like to make this part of ODDfest?</label>
+            <textarea
+              id="cw-why"
+              name="motivation"
+              rows="3"
+              maxlength={LIMITS.long}
+              aria-describedby="cw-why-hint"></textarea>
+            <p class="field-hint" id="cw-why-hint">
+              Maybe you want to reach another audience, meet another scene, try something new, find
+              collaborators, or simply bring something you care about into the shared week. One or
+              two sentences is enough.
+            </p>
+            <p class="field-error" id="cw-why-err" hidden></p>
+          </div>
+        </section>
+
+        <!-- 02 Making it happen (section 3) ------------------------------------ -->
+        <section class="cw-step" data-step="2" aria-labelledby="cw-step-2" hidden>
+          <h2 class="cw-step-head" id="cw-step-2" tabindex="-1">
+            <span class="cw-step-num" aria-hidden="true">{num(1)}</span>
+            <span>{STEPS[1]}</span>
+          </h2>
+          <p class="cw-key">
+            What’s already in place, and what’s still open? A rough picture is enough. You don’t
+            need every answer yet.
+          </p>
+
+          <fieldset class="field" data-label="Where the idea is">
+            <legend
+              >Where is the idea right now? <span class="req" aria-hidden="true">*</span></legend
+            >
+            <div class="cw-options">
+              {
+                READINESS.map((o, i) => (
+                  <label class="check" for={`cw-ready-${o.value}`}>
+                    <input
+                      id={`cw-ready-${o.value}`}
+                      type="radio"
+                      name="readiness"
+                      value={o.value}
+                      required={i === 0}
+                    />
+                    <span class="cw-option-text">{o.label}</span>
+                  </label>
+                ))
+              }
+            </div>
+            <p class="field-error" id="cw-ready-err" hidden></p>
+          </fieldset>
+          <div
+            class="field"
+            data-label="Where the idea is (other)"
+            data-show-when="readiness=other"
+          >
+            <label for="cw-ready-other-text"
+              >Tell us where it is <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="cw-ready-other-text"
+              name="readiness_other"
+              type="text"
+              required
+              maxlength={LIMITS.line}
+            />
+            <p class="field-error" id="cw-ready-other-err" hidden></p>
+          </div>
+
+          <div class="field" data-label="Who is involved">
+            <label for="cw-involved">Who is already involved in the event?</label>
+            <input id="cw-involved" name="involved" type="text" maxlength={LIMITS.line} />
+            <p class="field-error" id="cw-involved-err" hidden></p>
+          </div>
+
+          <div class="field" data-label="What is still needed">
+            <label for="cw-needed"
+              >What’s still needed to make this event happen? <span class="req" aria-hidden="true"
+                >*</span
+              ></label
+            >
+            <input
+              id="cw-needed"
+              name="still_needed"
+              type="text"
+              required
+              maxlength={LIMITS.line}
+            />
+            <p class="field-error" id="cw-needed-err" hidden></p>
+          </div>
+        </section>
+
+        <!-- 03 Where and when (section 5; the Google Form has no section 4) ---- -->
+        <section class="cw-step" data-step="3" aria-labelledby="cw-step-3" hidden>
+          <h2 class="cw-step-head" id="cw-step-3" tabindex="-1">
+            <span class="cw-step-num" aria-hidden="true">{num(2)}</span>
+            <span>{STEPS[2]}</span>
+          </h2>
+          <p class="cw-key">
+            Where could it happen, and what timing might work? Share what you know so far. A
+            confirmed venue isn’t needed to submit.
+          </p>
+
+          <fieldset class="field" data-label="Venue or location">
+            <legend
+              >Do you have a venue or location? <span class="req" aria-hidden="true">*</span
+              ></legend
+            >
+            <p class="field-hint">
+              For an outdoor or mobile event, choose the first or second option if the location or
+              route is already agreed or being discussed.
+            </p>
+            <div class="cw-options">
+              {
+                VENUE_STATUS.map((o, i) => (
+                  <label class="check" for={`cw-venue-${o.value}`}>
+                    <input
+                      id={`cw-venue-${o.value}`}
+                      type="radio"
+                      name="venue_status"
+                      value={o.value}
+                      required={i === 0}
+                    />
+                    <span class="cw-option-text">{o.label}</span>
+                  </label>
+                ))
+              }
+            </div>
+            <p class="field-error" id="cw-venue-err" hidden></p>
+          </fieldset>
+          <div
+            class="field"
+            data-label="Venue, location or route"
+            data-show-when={`venue_status=${VENUE_NAMED.join('|')}`}
+          >
+            <label for="cw-venue-name"
+              >Venue, location or route <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="cw-venue-name"
+              name="venue"
+              type="text"
+              required
+              maxlength={LIMITS.line}
+              aria-describedby="cw-venue-name-hint"
+            />
+            <p class="field-hint" id="cw-venue-name-hint">
+              Name the place and neighbourhood, or the route. A place you have in mind is fine: it
+              does not count as confirmed.
+            </p>
+            <p class="field-error" id="cw-venue-name-err" hidden></p>
+          </div>
+          <div
+            class="field"
+            data-label="Space needed"
+            data-show-when={`venue_status=${VENUE_OPEN.join('|')}`}
+          >
+            <label for="cw-space"
+              >What kind of space do you need? <span class="req" aria-hidden="true">*</span></label
+            >
+            <textarea
+              id="cw-space"
+              name="space_needs"
+              rows="3"
+              required
+              maxlength={LIMITS.long}
+              aria-describedby="cw-space-hint"></textarea>
+            <p class="field-hint" id="cw-space-hint">
+              Approximate size, indoor or outdoor, audience capacity and any essential technical
+              needs. Only the essentials; no technical rider needed.
+            </p>
+            <p class="field-error" id="cw-space-err" hidden></p>
+          </div>
+
+          <fieldset class="field" data-label="Timing">
+            <legend
+              >How flexible is your timing during ODDfest week? <span class="req" aria-hidden="true"
+                >*</span
+              ></legend
+            >
+            <p class="field-hint">
+              Exact 2027 festival dates will be confirmed separately. Answer based on your current
+              flexibility.
+            </p>
+            <ChoiceChips name="timing_flexibility" options={TIMING} required idPrefix="cw-timing" />
+            <p class="field-error" id="cw-timing-err" hidden></p>
+          </fieldset>
+
+          <div class="field" data-label="Timing constraints">
+            <label for="cw-timing-notes">Any timing constraints or rough duration?</label>
+            <input
+              id="cw-timing-notes"
+              name="timing_notes"
+              type="text"
+              maxlength={LIMITS.line}
+              aria-describedby="cw-timing-notes-hint"
+            />
+            <p class="field-hint" id="cw-timing-notes-hint">
+              For example: one evening, a two-hour workshop, a weekend, an exhibition already
+              running, or a date you cannot move. Leave blank if flexible.
+            </p>
+            <p class="field-error" id="cw-timing-notes-err" hidden></p>
+          </div>
+        </section>
+
+        <!-- 04 Audience and access (section 6) --------------------------------- -->
+        <section class="cw-step" data-step="4" aria-labelledby="cw-step-4" hidden>
+          <h2 class="cw-step-head" id="cw-step-4" tabindex="-1">
+            <span class="cw-step-num" aria-hidden="true">{num(3)}</span>
+            <span>{STEPS[3]}</span>
+          </h2>
+          <p class="cw-key">
+            Who do you want to bring together, and how could they take part? Rough estimates are
+            fine for now.
+          </p>
+
+          <fieldset class="field" data-label="Audience">
+            <legend>Who is the event for? <span class="req" aria-hidden="true">*</span></legend>
+            <p class="field-hint">Select all that apply.</p>
+            <ChoiceChips
+              name="audiences"
+              options={AUDIENCES}
+              type="checkbox"
+              idPrefix="cw-audience"
+            />
+            <p class="field-error" id="cw-audience-err" hidden></p>
+          </fieldset>
+          <div class="field" data-label="Other audience" data-show-when="audiences=other">
+            <label for="cw-audience-other-text"
+              >Other audience <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="cw-audience-other-text"
+              name="audiences_other"
+              type="text"
+              required
+              maxlength={LIMITS.line}
+            />
+            <p class="field-error" id="cw-audience-other-err" hidden></p>
+          </div>
+
+          <fieldset class="field" data-label="Access">
+            <legend
+              >How do you expect people to access it? <span class="req" aria-hidden="true">*</span
+              ></legend
+            >
+            <ChoiceChips name="access" options={ACCESS} required idPrefix="cw-access" />
+            <p class="field-error" id="cw-access-err" hidden></p>
+          </fieldset>
+
+          <div class="field" data-label="Number of people">
+            <label for="cw-capacity"
+              >Roughly how many people could take part? <span class="req" aria-hidden="true">*</span
+              ></label
+            >
+            <input
+              id="cw-capacity"
+              name="capacity"
+              type="text"
+              required
+              maxlength={LIMITS.line}
+              aria-describedby="cw-capacity-hint"
+            />
+            <p class="field-hint" id="cw-capacity-hint">
+              For a performance or workshop, think per session. For a drop-in exhibition or
+              installation, think total visitors during ODDfest week. A rough estimate is enough.
+            </p>
+            <p class="field-error" id="cw-capacity-err" hidden></p>
+          </div>
+        </section>
+
+        <!-- 05 What you need (section 7) --------------------------------------- -->
+        <section class="cw-step" data-step="5" aria-labelledby="cw-step-5" hidden>
+          <h2 class="cw-step-head" id="cw-step-5" tabindex="-1">
+            <span class="cw-step-num" aria-hidden="true">{num(4)}</span>
+            <span>{STEPS[4]}</span>
+          </h2>
+          <p class="cw-key">
+            What connections could help your idea happen? Tell us what you’re looking for and what
+            you already have. We’ll see where we may be able to help.
+          </p>
+
+          <fieldset class="field" data-label="Help from ODDfest">
+            <legend
+              >What help would be useful from ODDfest? <span class="req" aria-hidden="true">*</span
+              ></legend
+            >
+            <p class="field-hint">Select all that apply.</p>
+            <div class="cw-options">
+              {
+                HELP.map((o) => (
+                  <label class="check" for={`cw-help-${o.value}`}>
+                    <input id={`cw-help-${o.value}`} type="checkbox" name="help" value={o.value} />
+                    <span class="cw-option-text">{o.label}</span>
+                  </label>
+                ))
+              }
+            </div>
+            <p class="field-error" id="cw-help-err" hidden></p>
+          </fieldset>
+          <div class="field" data-label="Other help" data-show-when="help=other">
+            <label for="cw-help-other-text"
+              >Other help <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="cw-help-other-text"
+              name="help_other"
+              type="text"
+              required
+              maxlength={LIMITS.line}
+            />
+            <p class="field-error" id="cw-help-other-err" hidden></p>
+          </div>
+
+          <div class="field" data-label="What you need">
+            <label for="cw-help-details"
+              >Tell us more about what you need <span class="req" aria-hidden="true">*</span></label
+            >
+            <textarea
+              id="cw-help-details"
+              name="help_details"
+              rows="3"
+              required
+              maxlength={LIMITS.long}
+              aria-describedby="cw-help-details-hint"></textarea>
+            <p class="field-hint" id="cw-help-details-hint">
+              Only add anything we haven’t already covered. If something is essential for the event
+              to happen, tell us.
+            </p>
+            <p class="field-error" id="cw-help-details-err" hidden></p>
+          </div>
+
+          <fieldset class="field" data-label="Resources">
+            <legend
+              >How will the event be resourced or financed? <span class="req" aria-hidden="true"
+                >*</span
+              ></legend
+            >
+            <p class="field-hint">
+              No detailed budget needed at this stage. Organisers remain responsible for financing
+              their events. ODDfest does not automatically provide production funding, artist fees
+              or travel costs.
+            </p>
+            <div class="cw-options">
+              {
+                FINANCING.map((o, i) => (
+                  <label class="check" for={`cw-money-${o.value}`}>
+                    <input
+                      id={`cw-money-${o.value}`}
+                      type="radio"
+                      name="financing"
+                      value={o.value}
+                      required={i === 0}
+                    />
+                    <span class="cw-option-text">{o.label}</span>
+                  </label>
+                ))
+              }
+            </div>
+            <p class="field-error" id="cw-money-err" hidden></p>
+          </fieldset>
+        </section>
+
+        <!-- 06 About you (sections 1, 8 and 9) ---------------------------------- -->
+        <section class="cw-step" data-step="6" aria-labelledby="cw-step-6" hidden>
+          <h2 class="cw-step-head" id="cw-step-6" tabindex="-1">
+            <span class="cw-step-num" aria-hidden="true">{num(5)}</span>
+            <span>{STEPS[5]}</span>
+          </h2>
+          <p class="cw-key">
+            Who’s behind the idea? Tell us a little about yourself or your crew, and how we can
+            reach you.
+          </p>
+
+          <div class="field" data-label="Full name">
+            <label for="cw-name">Full name <span class="req" aria-hidden="true">*</span></label>
+            <input
+              id="cw-name"
+              name="full_name"
+              type="text"
+              required
+              maxlength={LIMITS.short}
+              autocomplete="name"
+            />
+            <p class="field-error" id="cw-name-err" hidden></p>
+          </div>
+          <div class="field-row">
+            <div class="field" data-label="Email">
+              <label for="cw-email">Email <span class="req" aria-hidden="true">*</span></label>
+              <input
+                id="cw-email"
+                name="email"
+                type="email"
+                required
+                maxlength={LIMITS.short}
+                autocomplete="email"
+                spellcheck="false"
+              />
+              <p class="field-error" id="cw-email-err" hidden></p>
+            </div>
+            <div class="field" data-label="Phone">
+              <label for="cw-phone"
+                >Phone number <span class="req" aria-hidden="true">*</span></label
+              >
+              <input
+                id="cw-phone"
+                name="phone"
+                type="tel"
+                required
+                maxlength={LIMITS.phone}
+                autocomplete="tel"
+              />
+              <p class="field-error" id="cw-phone-err" hidden></p>
+            </div>
+          </div>
+          <div class="field" data-label="Organisation, collective or project">
+            <label for="cw-org"
+              >Organisation, collective or project name <span class="req" aria-hidden="true">*</span
+              ></label
+            >
+            <input
+              id="cw-org"
+              name="org_name"
+              type="text"
+              required
+              maxlength={LIMITS.short}
+              autocomplete="organization"
+              aria-describedby="cw-org-hint"
+            />
+            <p class="field-hint" id="cw-org-hint">Applying as yourself is welcome too.</p>
+            <p class="field-error" id="cw-org-err" hidden></p>
+          </div>
+          <div class="field" data-label="Website, Instagram or portfolio">
+            <label for="cw-web"
+              >Website, Instagram or portfolio <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="cw-web"
+              name="website"
+              type="text"
+              required
+              maxlength={LIMITS.line}
+              autocomplete="url"
+              spellcheck="false"
+              aria-describedby="cw-web-hint"
+            />
+            <p class="field-hint" id="cw-web-hint">A link or handle is enough.</p>
+            <p class="field-error" id="cw-web-err" hidden></p>
+          </div>
+
+          <fieldset class="field" data-label="Which describes you">
+            <legend>Which describes you best? <span class="req" aria-hidden="true">*</span></legend>
+            <ChoiceChips
+              name="applicant_type"
+              options={APPLICANT_TYPES}
+              required
+              idPrefix="cw-applicant"
+            />
+            <p class="field-error" id="cw-applicant-err" hidden></p>
+          </fieldset>
+          <div
+            class="field"
+            data-label="Which describes you (other)"
+            data-show-when="applicant_type=other"
+          >
+            <label for="cw-applicant-other-text"
+              >Tell us what describes you <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="cw-applicant-other-text"
+              name="applicant_type_other"
+              type="text"
+              required
+              maxlength={LIMITS.line}
+            />
+            <p class="field-error" id="cw-applicant-other-err" hidden></p>
+          </div>
+
+          <div class="field" data-label="Links">
+            <label for="cw-links"
+              >Links that help us understand the idea or the people behind it</label
+            >
+            <textarea
+              id="cw-links"
+              name="links"
+              rows="3"
+              maxlength={LIMITS.long}
+              spellcheck="false"
+              aria-describedby="cw-links-hint"></textarea>
+            <p class="field-hint" id="cw-links-hint">
+              Portfolio, previous events, Instagram, video, references. One or two links is enough;
+              no polished materials needed. Skip anything you’ve already shared.
+            </p>
+            <p class="field-error" id="cw-links-err" hidden></p>
+          </div>
+
+          <div class="field" data-label="Anything else">
+            <label for="cw-notes">Anything else you’d like us to know?</label>
+            <textarea id="cw-notes" name="notes" rows="3" maxlength={LIMITS.long}></textarea>
+            <p class="field-error" id="cw-notes-err" hidden></p>
+          </div>
+
+          <fieldset class="field" data-label="How you heard about ODDfest">
+            <legend>How did you hear about ODDfest?</legend>
+            <ChoiceChips name="referral" options={REFERRAL} idPrefix="cw-referral" />
+            <p class="field-error" id="cw-referral-err" hidden></p>
+          </fieldset>
+          <div class="field" data-label="How you heard (other)" data-show-when="referral=other">
+            <label for="cw-referral-other-text"
+              >Where did you hear about it? <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="cw-referral-other-text"
+              name="referral_other"
+              type="text"
+              required
+              maxlength={LIMITS.line}
+            />
+            <p class="field-error" id="cw-referral-other-err" hidden></p>
+          </div>
+        </section>
+
+        <!-- Check and send ---------------------------------------------------- -->
+        <section class="cw-step" data-step="review" aria-labelledby="cw-step-review" hidden>
+          <h2 class="cw-step-head" id="cw-step-review" tabindex="-1">
+            <span>Check and send</span>
+          </h2>
+          <p class="cw-key">This is what we will read. Anything can still be changed.</p>
+          <div class="cw-review" id="cw-review"></div>
+
+          <div class="field" data-label="Programme selection">
+            <label class="check">
+              <input type="checkbox" name="ack_selection" value="true" required />
+              <span>
+                I understand that submitting an idea does not guarantee inclusion in the ODDfest
+                programme. <span class="req" aria-hidden="true">*</span>
+              </span>
+            </label>
+            <p class="field-error" id="cw-ack-selection-err" hidden></p>
+          </div>
+          <div class="field" data-label="Organiser responsibility">
+            <label class="check">
+              <input type="checkbox" name="ack_responsibility" value="true" required />
+              <span>
+                I understand that, if the event goes ahead, the organiser remains responsible for
+                its production and financing, including any necessary permissions. ODDfest does not
+                guarantee funding, artist fees, a venue or production support. <span
+                  class="req"
+                  aria-hidden="true">*</span
+                >
+              </span>
+            </label>
+            <p class="field-error" id="cw-ack-responsibility-err" hidden></p>
+          </div>
+          <div class="field" data-label="Privacy consent">
+            <label class="check">
+              <input
+                type="checkbox"
+                name="consent_privacy"
+                value="true"
+                required
+                aria-describedby="cw-consent-hint"
+              />
+              <span>
+                I agree that New Nordic Way rf stores these details to review my idea, contact me
+                about it and coordinate a possible place in ODDfest 2027, as the{' '}
+                <a href="/privacy/" target="_blank" rel="noopener">privacy notice</a> describes.{
+                  ' '
+                }
+                <span class="req" aria-hidden="true">*</span>
+              </span>
+            </label>
+            <p class="field-hint" id="cw-consent-hint">
+              This form does not publish your idea as an event listing. Please avoid including other
+              people’s private contact details.
+            </p>
+            <p class="field-error" id="cw-consent-err" hidden></p>
+          </div>
+        </section>
+      </div>
+
+      <footer class="cw-foot">
+        <p class="form-status" role="status" aria-live="polite"></p>
+        <div class="cw-foot-actions">
+          <button type="button" class="cw-back" hidden>Back</button>
+          <Pill type="submit" variant="solid" class="cw-next">Next</Pill>
+        </div>
+      </footer>
+    </form>
+
+    <!-- After sending: one message per answer the Worker can give
+         (creative-week-schema.ts readOutcome). Only the one that applies is
+         shown, so "queued" and "emailed" never borrow each other's words. -->
+    <div class="cw-done" id="cw-done" tabindex="-1" hidden>
+      <div data-done="delivered" hidden>
+        <h2>Got it. Your idea is in.</h2>
+        <p>
+          It is with the ODDfest team now. If it looks like a fit, we will be in touch at{' '}
+          <strong data-done-email></strong> to take it further.
+        </p>
+      </div>
+      <div data-done="queued" hidden>
+        <h2>Got it. Your idea is saved.</h2>
+        <p>
+          It is taking a little longer than usual to reach the ODDfest team, and it will get there
+          on its own. There is nothing more you need to do. If it looks like a fit, we will be in
+          touch at <strong data-done-email></strong>.
+        </p>
+      </div>
+      <div data-done="emailed" hidden>
+        <h2>Got it. Your idea reached us by email.</h2>
+        <p>
+          Our usual system was not available, so your answers went to the ODDfest team by email
+          instead. There is nothing more you need to do. If it looks like a fit, we will be in touch
+          at <strong data-done-email></strong>.
+        </p>
+      </div>
+      <p class="cw-ref">Reference <span data-done-ref></span></p>
+      <Pill type="button" variant="outline" class="cw-done-close">Close</Pill>
+    </div>
+
+    <p class="sr-only" id="cw-announce" role="alert"></p>
+  </dialog>
+
+  <!-- Keeps the ask in reach while no other way into the form is on screen.
+       Hidden while the dialog is open, while the cookie banner is up, and
+       once an idea has been sent. -->
+  <div class="cw-sticky" id="cw-sticky">
+    <p class="cw-sticky-text">We are collecting ideas for ODDfest 2027 now.</p>
+    <Pill type="button" variant="solid" class="cw-sticky-cta">Submit an event idea</Pill>
+  </div>
+</div>
+
+<script src="../../scripts/creative-week-form.ts"></script>
+
+<style>
+  /* The quote form's sheet (BookingEnquiryForm.astro), rule for rule where
+     the two share a part: a floating Paper sheet with numbered steps, the
+     underline inputs and tracked labels of the site's other forms, pills
+     for what you touch, Heat for what needs an answer. Role tokens only, so
+     it works on the ODDfest page's Ink ground as well as a light one. */
+  /* The dialog and the bar sit inside whatever section the page puts this
+     in (How to join is centred), and inherit from it like any element. */
+  .cw-dialog,
+  .cw-sticky {
+    text-align: left;
+  }
+  .cw-sent {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper);
+  }
+  .cw-noscript {
+    margin: 0;
+    font: var(--text-body);
+  }
+  .cw-noscript a,
+  .field-hint a,
+  .check a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+  .cw-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+  .cw-key {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .req {
+    color: var(--color-heat);
+    font-weight: 600;
+  }
+
+  /* ---- steps ---- */
+  .cw-step {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    min-width: 0;
+  }
+  .cw-step-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin: 0;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-paper-12);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+  }
+  .cw-step-head:focus {
+    outline: none;
+  }
+  .cw-step-num {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--color-paper-40);
+  }
+
+  /* ---- fields ---- */
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1.6rem;
+    row-gap: var(--space-6);
+    align-items: start;
+  }
+  @media (max-width: 640px) {
+    .field-row {
+      grid-template-columns: 1fr;
+    }
+  }
+  .field {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    scroll-margin-block: var(--space-6);
+  }
+  /* Scoped `display` rules beat the browser's own [hidden] style, so every
+     element this form hides says so explicitly. */
+  .cw-sent[hidden],
+  .cw-step[hidden],
+  .cw-back[hidden],
+  .cw-form[hidden],
+  .cw-done[hidden],
+  .cw-done [data-done][hidden],
+  .field[hidden],
+  .field-row[hidden],
+  .field-hint[hidden],
+  .field-error[hidden] {
+    display: none;
+  }
+  .field > label:not(.check),
+  .field > legend {
+    padding: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+    transition: color var(--duration-fast) ease;
+  }
+  .field > label .req,
+  .field > legend .req,
+  .check .req {
+    letter-spacing: 0;
+  }
+  .field > legend {
+    position: relative;
+    margin-bottom: var(--space-3);
+  }
+  .field input:not([type='radio'], [type='checkbox'], [type='hidden']),
+  .field textarea {
+    width: 100%;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-paper-20);
+    border-radius: 0;
+    padding: 0.6rem 0;
+    font: var(--text-body);
+    color: var(--color-paper);
+    outline: none;
+    resize: vertical;
+    transition: border-color var(--duration-fast) ease;
+  }
+  .field input:focus,
+  .field textarea:focus {
+    border-color: var(--color-paper);
+  }
+  .field input:not([type='radio'], [type='checkbox']):focus-visible,
+  .field textarea:focus-visible {
+    outline: none;
+    box-shadow: inset 0 -1px 0 var(--color-paper);
+  }
+
+  /* ---- single checkboxes, and the long-answer option lists ---- */
+  .check {
+    display: inline-flex;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    align-items: center;
+    font: var(--text-body);
+    color: var(--color-paper-80);
+    cursor: pointer;
+  }
+  .check input {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin: 0;
+    accent-color: var(--color-paper);
+  }
+  /* An answer that runs to two lines keeps its control on the first. */
+  .cw-step[data-step='review'] .check,
+  .cw-options .check {
+    align-items: flex-start;
+  }
+  .cw-step[data-step='review'] .check input,
+  .cw-options .check input {
+    margin-top: 0.3rem;
+  }
+  /* Answers too long for a pill: one per row, the radio or tick box first. */
+  .cw-options {
+    display: flex;
+    flex-direction: column;
+  }
+  .cw-options .check {
+    padding-block: var(--space-2);
+  }
+  .cw-options .check:has(input:checked) {
+    color: var(--color-paper);
+  }
+
+  .field-hint {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+
+  /* ---- what needs an answer ----
+     Four signals, so colour is never the only one: a Heat keyline in the
+     gutter, the label in Heat, the line in Heat, and a message. */
+  .field::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(-1 * var(--space-4));
+    width: 2px;
+    background: var(--color-heat);
+    opacity: 0;
+    transition: opacity var(--duration-fast) ease;
+  }
+  .field.is-invalid::before {
+    opacity: 1;
+  }
+  .field.is-invalid > legend::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: calc(-1 * var(--space-3));
+    left: calc(-1 * var(--space-4));
+    width: 2px;
+    background: var(--color-heat);
+  }
+  .field.is-invalid > label:not(.check),
+  .field.is-invalid > legend {
+    color: var(--color-heat);
+  }
+  .field.is-invalid input:not([type='radio'], [type='checkbox'], [type='hidden']),
+  .field.is-invalid textarea {
+    border-bottom-color: var(--color-heat);
+    box-shadow: inset 0 -1px 0 var(--color-heat);
+  }
+  .field.is-invalid .check {
+    color: var(--color-paper);
+  }
+  .field-error {
+    display: flex;
+    gap: 0.4rem;
+    margin: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    color: var(--color-heat);
+  }
+  .field-error::before {
+    content: '↳';
+    flex: none;
+  }
+
+  /* Clipped in place rather than pushed off to the left: inside the
+     scrolling body an element at -9999px would make it scroll sideways. */
+  .botcheck {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .form-status {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .form-status.is-error {
+    color: var(--color-heat);
+    font-weight: 600;
+  }
+
+  /* ---- after sending ---- */
+  .cw-done {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-10) var(--space-6);
+    text-align: center;
+    overflow-y: auto;
+  }
+  .cw-done:focus {
+    outline: none;
+  }
+  .cw-done h2 {
+    margin: 0 0 var(--space-4);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+  }
+  .cw-done p {
+    margin: 0 auto var(--space-2);
+    max-width: 46ch;
+    font: var(--text-body);
+    color: var(--color-paper-80);
+  }
+  .cw-done p.cw-ref {
+    margin: var(--space-4) 0 var(--space-6);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+
+  /* ---- the dialog ----
+     Full screen on phones; from 720px a centred sheet over an Ink scrim,
+     with the panel shape because it floats over the page. */
+  .cw-dialog {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--color-bg);
+    color: var(--color-paper);
+    overflow: hidden;
+  }
+  .cw-dialog[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  .cw-dialog::backdrop {
+    background: rgb(14 9 11 / 55%);
+  }
+  @media (min-width: 720px) {
+    .cw-dialog {
+      width: min(44rem, calc(100vw - 2 * var(--space-8)));
+      height: min(90dvh, 50rem);
+      margin: auto;
+      border-radius: var(--radius-panel);
+      box-shadow: var(--shadow-panel);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cw-dialog[open] {
+      animation: cw-sheet-in var(--duration-base) var(--ease-out-expo);
+    }
+    .cw-dialog[open]::backdrop {
+      animation: cw-fade-in var(--duration-base) ease;
+    }
+  }
+  @keyframes cw-sheet-in {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+  }
+  @keyframes cw-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  /* The page behind does not scroll while the dialog is open. */
+  :global(html.cw-lock) {
+    overflow: hidden;
+  }
+
+  .cw-head {
+    flex: none;
+    padding: max(var(--space-4), env(safe-area-inset-top)) var(--space-5) var(--space-3);
+  }
+  @media (min-width: 720px) {
+    .cw-head {
+      padding: var(--space-5) var(--space-8) var(--space-3);
+    }
+  }
+  .cw-head-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .cw-head-title {
+    margin: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper);
+  }
+  .cw-count {
+    margin: 0 0 0 auto;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+    white-space: nowrap;
+  }
+  .cw-close {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: calc(-1 * var(--space-2));
+    border: none;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-paper-80);
+    font: var(--text-heading);
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) ease,
+      color var(--duration-fast) ease;
+  }
+  @media (hover: hover) {
+    .cw-close:hover {
+      background: var(--color-paper-12);
+      color: var(--color-paper);
+    }
+  }
+  /* Progress: one segment per step, filled up to the current one. */
+  .cw-progress {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: var(--space-1);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cw-progress li {
+    height: 3px;
+    background: var(--color-paper-12);
+    transition: background-color var(--duration-base) ease;
+  }
+  .cw-progress li.is-done {
+    background: var(--color-paper);
+  }
+
+  .cw-body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--space-8) var(--space-6) var(--space-10);
+  }
+  @media (min-width: 720px) {
+    .cw-body {
+      padding: var(--space-10) var(--space-10) var(--space-12);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cw-step.is-entering {
+      animation: cw-step-in var(--duration-base) var(--ease-out-expo);
+    }
+    .cw-step.is-entering.from-back {
+      animation-name: cw-step-in-back;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cw-step.is-entering {
+      animation: cw-fade-in var(--duration-fast) ease;
+    }
+  }
+  @keyframes cw-step-in {
+    from {
+      opacity: 0;
+      transform: translateX(1.5rem);
+    }
+  }
+  @keyframes cw-step-in-back {
+    from {
+      opacity: 0;
+      transform: translateX(-1.5rem);
+    }
+  }
+
+  .cw-foot {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5) max(var(--space-4), env(safe-area-inset-bottom));
+    border-top: 1px solid var(--color-paper-12);
+    background: var(--color-bg);
+  }
+  @media (min-width: 720px) {
+    .cw-foot {
+      padding: var(--space-4) var(--space-8) var(--space-5);
+    }
+  }
+  .cw-foot .form-status:empty {
+    display: none;
+  }
+  .cw-foot-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .cw-foot-actions :global(.cw-next) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    margin-left: auto;
+  }
+  @media (max-width: 719px) {
+    .cw-foot-actions :global(.cw-next) {
+      flex: 1;
+      text-align: center;
+    }
+  }
+  .cw-foot-actions :global(.cw-next[disabled]) {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .cw-back {
+    min-height: 2.75rem;
+    padding: 0.55rem 1.25rem;
+    border: 1px solid var(--color-paper-35);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-paper);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color var(--duration-fast) ease;
+  }
+  @media (hover: hover) {
+    .cw-back:hover {
+      border-color: var(--color-paper);
+    }
+  }
+
+  /* ---- check and send ---- */
+  .cw-review {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .cw-review :global(.cw-review-group) {
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .cw-review :global(.cw-review-head) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-2);
+  }
+  .cw-review :global(.cw-review-title) {
+    margin: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .cw-review :global(.cw-review-edit) {
+    min-height: 2.75rem;
+    padding: 0 var(--space-2);
+    border: none;
+    background: transparent;
+    color: var(--color-paper);
+    font: var(--text-small);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+  }
+  .cw-review :global(dl) {
+    display: grid;
+    grid-template-columns: minmax(7rem, 11rem) minmax(0, 1fr);
+    gap: var(--space-2) var(--space-4);
+    margin: 0;
+  }
+  @media (max-width: 480px) {
+    .cw-review :global(dl) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+    .cw-review :global(dd) {
+      margin-bottom: var(--space-2);
+    }
+  }
+  .cw-review :global(dt) {
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .cw-review :global(dd) {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+
+  /* ---- the sticky bar ----
+     Ink on either ground, pinned to the swatches, so it reads as something
+     over the page: a full-width bar at the foot of a phone screen, a
+     floating panel from 720px. Under reduced motion it simply appears. */
+  .cw-sticky {
+    --color-paper: var(--swatch-paper);
+    --color-ink: var(--swatch-ink);
+    position: fixed;
+    z-index: 150;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-5) max(var(--space-3), env(safe-area-inset-bottom));
+    background: var(--swatch-ink);
+    color: var(--swatch-paper);
+    box-shadow: var(--shadow-panel);
+    transform: translateY(110%);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      transform var(--duration-base) var(--ease-out-expo),
+      opacity var(--duration-base) ease,
+      visibility 0s linear var(--duration-base);
+  }
+  .cw-sticky.is-shown {
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    transition:
+      transform var(--duration-base) var(--ease-out-expo),
+      opacity var(--duration-base) ease,
+      visibility 0s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cw-sticky,
+    .cw-sticky.is-shown {
+      transition: none;
+    }
+  }
+  @media (min-width: 720px) {
+    .cw-sticky {
+      left: 50%;
+      right: auto;
+      bottom: var(--space-5);
+      width: max-content;
+      max-width: calc(100vw - 2 * var(--space-5));
+      padding: var(--space-3) var(--space-3) var(--space-3) var(--space-6);
+      border-radius: var(--radius-panel);
+      transform: translate(-50%, 150%);
+    }
+    .cw-sticky.is-shown {
+      transform: translate(-50%, 0);
+    }
+  }
+  .cw-sticky-text {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font: var(--text-small);
+    color: rgb(226 223 222 / 80%);
+  }
+  .cw-sticky :global(.cw-sticky-cta) {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+  .cw-sticky :global(.cw-sticky-cta:focus-visible) {
+    outline: 2px solid var(--swatch-paper);
+    outline-offset: 2px;
+  }
+</style>

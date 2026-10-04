@@ -11,7 +11,7 @@
   "meta": "Helsinki · 2027",
   "primaryCta": {
     "label": "Submit an event idea",
-    "href": "/contact/?topic=oddfest_2027_event"
+    "href": "/oddfest/#creative-week-form"
   },
   "secondaryCta": {
     "label": "Look back at 2026",
@@ -81,7 +81,7 @@
     "reassurance": "An idea still at the notes-on-your-phone stage is a fine thing to send. Sending it commits you to nothing, and we would far rather hear it early than hear it finished and too late.",
     "cta": {
       "label": "Submit an event idea",
-      "href": "/contact/?topic=oddfest_2027_event"
+      "href": "/oddfest/#creative-week-form"
     },
     "altCta": {
       "label": "Ask us a question first",
@@ -206,7 +206,7 @@
     "body": "An exhibition, a club night, a talk, a dinner, an open studio — or a format nobody has tried yet. We are collecting ideas for 2027 now, and yours does not need to be finished.",
     "cta": {
       "label": "Submit your event",
-      "href": "/contact/?topic=oddfest_2027_event"
+      "href": "/oddfest/#creative-week-form"
     }
   },
   "faq": [

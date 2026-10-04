@@ -27,6 +27,14 @@
 // way in for a reader who has no event to submit yet, and a line of
 // reassurance for the one who thinks their idea is too unfinished to show.
 //
+// The three "Submit an event idea" asks (hero, How to join, the "Want your
+// event in the next one?" band) and the sticky bar open the Creative Week
+// submission dialog (CreativeWeekForm.astro, 2026-10-04) at
+// #creative-week-form, which lives in How to join. Until then they sent
+// people to /contact/?topic=oddfest_2027_event; that topic still works for
+// links already out there. "Ask us a question first" and the partner route
+// are unchanged.
+//
 // "What has happened before" — the 2025/2026/2027 timeline chapter that sat
 // between How to join and the FAQ — was deleted on 2026-09-14 at Ronny's
 // request, field and all. The highlights and programme names below still
@@ -42,6 +50,7 @@ import ProgrammeList from '../components/sections/ProgrammeList.astro';
 import OddfestExamples from '../components/sections/OddfestExamples.astro';
 import AudienceList from '../components/sections/AudienceList.astro';
 import FAQList from '../components/sections/FAQList.astro';
+import CreativeWeekForm from '../components/sections/CreativeWeekForm.astro';
 import Pill from '../components/primitives/Pill.astro';
 import oddfestWordmark from '../assets/logos/oddfest-wordmark.svg';
 
@@ -161,6 +170,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
           </Pill>
         </div>
         <p class="oddf-join-reassurance">{page.join.reassurance}</p>
+        <CreativeWeekForm />
       </div>
     </section>
 
@@ -483,6 +493,12 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
   .oddf-join .oddf-join-reassurance {
     font: var(--text-small);
     color: var(--color-paper-40);
+    margin-top: var(--space-5);
+  }
+  /* The Creative Week form's own lines under it (CreativeWeekForm.astro):
+     its "sent" note, and the email route when JavaScript is off. */
+  .oddf-join :global(.cw-sent),
+  .oddf-join :global(.cw-noscript) {
     margin-top: var(--space-5);
   }
   @media (max-width: 460px) {

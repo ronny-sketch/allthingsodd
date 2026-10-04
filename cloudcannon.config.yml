@@ -755,7 +755,8 @@ collections_config:
         comment: >-
           The short ask under the programme names, sending hosts to the event
           submission form. Keep its link on the same route as "How to join"
-          (/contact/?topic=oddfest_2027_event) so both asks land in one place.
+          (/oddfest/#creative-week-form, which opens the form on this page)
+          so both asks land in one place.
         options:
           subtype: object
       casesIntro:

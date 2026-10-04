@@ -363,6 +363,19 @@ the Worker keeps its own copy of them. There is no shared package, same as
 `products.yml`, so a change to either copy means changing the other in the
 same pull request.
 
+**Added 2026-10-04: the ODDfest 2027 event idea form.**
+`src/components/sections/CreativeWeekForm.astro` (on `/oddfest`, opened by
+any link to `/oddfest/#creative-week-form`, via
+`src/scripts/creative-week-form.ts`) POSTs JSON to
+`/api/creative-week-submission`. Its questions come from the team's Google
+Form; the values and rules live in `src/scripts/creative-week-schema.ts`, and
+the Worker keeps its own copy (`../odd-growth-os/worker/src/creative-week/`),
+so a change to either copy means a matching change to the other, deployed
+backend first. The Worker writes a
+Notion record of its own (not the Events Pipeline) and answers `delivered`,
+`queued` or `emailed`; `readOutcome()` accepts nothing else as a success. The
+dialog shell is a copy of the booking form's, not a shared component yet.
+
 **Corrected 2026-08-28:** these are cross-origin `fetch()` calls to the
 Worker's own `workers.dev` URL, not same-origin relative paths. Production
 here is Surge, which has no Cloudflare zone in front of it, so a same-origin
