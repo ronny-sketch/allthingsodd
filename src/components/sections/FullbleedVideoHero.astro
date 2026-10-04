@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Logo from '../primitives/Logo.astro';
 import Pill from '../primitives/Pill.astro';
+import VideoToggle from '../primitives/VideoToggle.astro';
 
 interface Props {
   video: string;
@@ -107,12 +108,15 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
        cut. As a sibling layer it is the guaranteed rendering, and the video
        crossfades over it only once autoplay-video.ts has confirmed real
        playback (mobile Safari refuses inline autoplay in more cases than
-       Chromium; a refusal now leaves a photograph, never a black frame). */
+       Chromium; a refusal now leaves a photograph, never a black frame).
+       The 2026 posters are 1920px wide (2026-10-04), so a phone gets a
+       smaller one from the srcset rather than the full-size file. */
   }
   <Image
     src={poster}
     alt=""
-    width={poster.width}
+    widths={[800, 1200, poster.width]}
+    sizes="100vw"
     data-video-poster
     loading="eager"
     fetchpriority="high"
@@ -144,6 +148,7 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
       )
     }
   </div>
+  <VideoToggle name={logoAlt ? `${logoAlt} background video` : 'background video'} />
 </header>
 
 <script src="../../scripts/autoplay-video.ts"></script>
@@ -287,6 +292,9 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
   @media (min-width: 821px) {
     .oddfest-hero-overlay {
       padding-inline: calc(68px + var(--space-8));
+    }
+    .oddfest-hero {
+      --video-toggle-right: calc(68px + var(--space-4));
     }
   }
   .oddfest-hero-logo {

@@ -527,7 +527,28 @@ const pages = defineCollection({
         // "doing") while every field around it was updated.
         participateTitle: z.string().optional(),
         participate: z.array(cta),
-        aftermovie: z.object({ poster: image(), video: z.string() }),
+        // "ODDfest 2026 in video and pictures" (2026-10-04), replacing the
+        // single `aftermovie` loop: one card per film, then the photo bank.
+        // `preview` is the short muted loop the card plays (the same file
+        // as that page's hero); `film` is the full film with sound, fetched
+        // only when someone presses the card. See VideoAndPictures.astro.
+        videoAndPictures: z.object({
+          title: z.string(),
+          films: z.array(
+            z.object({
+              label: z.string(),
+              poster: image(),
+              preview: z.string(),
+              film: z.string(),
+            }),
+          ),
+          photoBank: z.object({
+            label: z.string(),
+            href: z.string().url(),
+            image: image(),
+            alt: z.string(),
+          }),
+        }),
       }),
 
       // The 2027 ODDfest rebuild: a distributed city-wide creative week, not
@@ -920,13 +941,13 @@ const pages = defineCollection({
         // settled about 2027 — everything still open (exact dates, venues,
         // the programme) says so rather than being filled in.
         faq: z.array(faqItem),
-        // No dedicated ODDference aftermovie exists yet (checked the repo
-        // and the live 2026 oddfest.co/oddference/ page — neither has one).
-        // Ships undefined; the section doesn't render until Ronny supplies
-        // real footage. Deliberately not the homepage's Aftermovie.astro
-        // (a fixed 3-brand marquee built for the generic home-aftermovie.mp4
-        // — reusing it here would either mislabel that generic video as
-        // ODDference's or fork the marquee for no real content to show).
+        // Still unset on purpose (2026-10-04). The ODDference 2026
+        // aftermovie exists now, but it is shown as this page's hero preview
+        // and on the homepage's "in video and pictures" card, and the block
+        // this field drives in oddference.astro is a bare
+        // `<video autoplay>` that skips autoplay-video.ts: no reduced-motion
+        // branch, no deferred loading, no pause button. Rebuild that block
+        // on VideoAndPictures.astro's film card before setting this.
         aftermovie: z
           .object({
             poster: image(),

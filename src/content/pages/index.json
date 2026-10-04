@@ -160,8 +160,27 @@
       "audience": "For business"
     }
   ],
-  "aftermovie": {
-    "poster": "../../assets/video/home-aftermovie-poster.jpg",
-    "video": "/video/home-aftermovie.mp4"
+  "videoAndPictures": {
+    "title": "ODDfest 2026 in video and pictures",
+    "films": [
+      {
+        "label": "Watch ODDfest 2026 aftermovie",
+        "poster": "../../assets/video/oddfest-2026-poster.jpg",
+        "preview": "/video/oddfest-2026-preview.mp4",
+        "film": "/video/oddfest-2026-aftermovie.mp4"
+      },
+      {
+        "label": "Watch ODDference 2026 aftermovie",
+        "poster": "../../assets/video/oddference-2026-poster.jpg",
+        "preview": "/video/oddference-2026-preview.mp4",
+        "film": "/video/oddference-2026-aftermovie.mp4"
+      }
+    ],
+    "photoBank": {
+      "label": "Explore the photo bank",
+      "href": "https://www.flickr.com/photos/204686183@N06/",
+      "image": "../../assets/oddfest-2026/2026/street-dancers-vanha.jpg",
+      "alt": "Dancers in tulle skirts performing on the steps outside Vanha Ylioppilastalo"
+    }
   }
 }

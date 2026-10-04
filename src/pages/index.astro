@@ -9,7 +9,7 @@ import ProgramGrid from '../components/sections/ProgramGrid.astro';
 import ProofGrid from '../components/sections/ProofGrid.astro';
 import ParticipateBand from '../components/sections/ParticipateBand.astro';
 import CaseGrid from '../components/sections/CaseGrid.astro';
-import Aftermovie from '../components/sections/Aftermovie.astro';
+import VideoAndPictures from '../components/sections/VideoAndPictures.astro';
 import LogoStrip from '../components/sections/LogoStrip.astro';
 import PartnerTiers from '../components/sections/PartnerTiers.astro';
 import BuiltAround from '../components/sections/BuiltAround.astro';
@@ -240,7 +240,7 @@ const preloadImage = await mosaicImage(firstArchiveImage);
   {
     /* CaseGrid's root is a bare grid with no outer margin, so the page gives
        it a plain <section> to take the section rhythm from layout.css —
-       without it the card would sit flush on the aftermovie's top rule. */
+       without it the card would sit flush on the next section's rule. */
     page.caseTeaser && (
       <section>
         <CaseGrid items={[page.caseTeaser]} />
@@ -252,16 +252,11 @@ const preloadImage = await mosaicImage(firstArchiveImage);
     /* The one moving-image break on the page, and it earns its place by
        position: everything above it is argument, everything below it is the
        ask. A page that goes straight from a logo wall into four CTA cards
-       gives the reader nothing to feel before deciding. Brand marquee
-       (ODDfest/ODDference/ODDspace banner) is off here — those three names
-       are already the "What we do" cards above; see Aftermovie.astro's
-       `showBrandMarquee` comment. */
+       gives the reader nothing to feel before deciding. Since 2026-10-04 it
+       is the 2026 films and photo bank as three cards (VideoAndPictures)
+       rather than one full-bleed loop. */
   }
-  <Aftermovie
-    poster={page.aftermovie.poster}
-    video={page.aftermovie.video}
-    showBrandMarquee={false}
-  />
+  <VideoAndPictures {...page.videoAndPictures} />
 
   {
     /* Grouped by audience (2026-09-11), creatives first — the order lives in

@@ -188,7 +188,11 @@ real decisions worth recording:
      `oddfest.co/oddference/` page), so the new `aftermovie` field ships
      `undefined` and the section renders nothing until real footage exists
      — same "don't invent it, ship it empty" rule `oddfest.examples`
-     already established.
+     already established. (2026-10-04: `Aftermovie.astro` is gone, replaced
+     on Home by `VideoAndPictures.astro`. The ODDference 2026 aftermovie
+     exists now and plays in the hero and on Home's card; this field stays
+     unset because the block it turns on is a bare autoplaying `<video>`
+     outside `autoplay-video.ts`.)
    - **`partners` ships empty for the same reason.** The live 2026 page has
      no partners section, and `global.json`'s sitewide partner/press logos
      aren't attributable to ODDference specifically — showing them here
@@ -494,7 +498,7 @@ What we do            ODDfest / ODDference / ODDspace
 Work with ODD         full-width band, directly under those three
 Already in motion     the cumulative numbers
 Featured in           press logos, same chapter as the numbers
-Aftermovie            the one moving image, between argument and ask
+In video and pictures the 2026 films and photo bank, between argument and ask
 The way in is by doing  four CTAs, grouped under For creatives / For business
 ```
 

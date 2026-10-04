@@ -197,9 +197,9 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
     }
 
     {
-      // No dedicated ODDference aftermovie exists yet (checked the repo and
-      // the live 2026 site); this stays hidden rather than showing the
-      // generic home-aftermovie.mp4 under the ODDference name. See
+      // Off, and not to be switched on as it is (2026-10-04): this is a bare
+      // autoplaying <video> outside autoplay-video.ts. The ODDference 2026
+      // aftermovie plays in the hero and on the homepage instead. See
       // content.config.ts's comment on this field.
       page.aftermovie && (
         <section class="oddc-sub flow">

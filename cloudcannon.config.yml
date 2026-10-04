@@ -77,6 +77,36 @@ collections_config:
           disable_reorder: false
           required: false
         cascade: true
+      videoAndPictures:
+        type: object
+        label: '"ODDfest 2026 in video and pictures" (Home only)'
+        comment: >-
+          Three equal cards near the end of Home: one per film, then the
+          photo bank. A film card plays its short muted preview and opens
+          the full film, with sound, when someone presses it. The preview and
+          the film are files in public/video that a developer adds (they are
+          too large to upload here), so only point "preview" and "film" at a
+          file that already exists.
+        options:
+          subtype: object
+      films:
+        type: array
+        label: Films
+        comment: >-
+          The label is the card's link text ("Watch ODDfest 2026
+          aftermovie"). The poster is the still shown before the preview
+          plays, and all the time under reduced motion.
+        options:
+          structures: _structures.film_card
+      photoBank:
+        type: object
+        label: Photo bank card
+        comment: >-
+          The photo is credited on the card and in the footer from
+          photo-credits.json, so a new photo needs an entry there. The link
+          opens in a new tab.
+        options:
+          subtype: object
       participateTitle:
         type: text
         label: Participation band headline (Home and the ODDfest 2026 thank-you)
@@ -1063,9 +1093,9 @@ collections_config:
         type: object
         label: Aftermovie (ODDference only)
         comment: >-
-          No dedicated ODDference aftermovie exists yet — leave this field
-          out entirely (the section doesn't render) rather than reusing the
-          generic homepage aftermovie footage under the ODDference name.
+          Leave this out. The ODDference 2026 aftermovie already plays in
+          this page's hero and on Home, and the section this field turns on
+          is not built for it yet (see content.config.ts).
         options:
           subtype: object
           required: false
@@ -1524,6 +1554,25 @@ _structures:
           goLabel: ''
           href: '#'
           image:
+  film_card:
+    style: select
+    values:
+      - label: Film card
+        default: false
+        preview:
+          text:
+            - key: label
+          icon:
+            - movie
+          image:
+            - key: poster
+        place_groups_below: false
+        tabbed: false
+        value:
+          label: ''
+          poster:
+          preview: ''
+          film: ''
   pathway_card:
     style: select
     values:

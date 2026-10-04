@@ -178,7 +178,7 @@ for (const route of ROUTES) {
           // ODDagency — regardless of any real layout change. The text
           // content itself still has its own coverage (the h1-count
           // assertion above, functional nav/heading tests).
-          '.mosaic, .news-panel img, .four-card-bg, .aftermovie-full, .oddfest-hero video, .oddfest-hero img, .oddf-hero-video video, .oddf-hero-video img, .photo-break img, .odds-calendar-embed, .warping-text',
+          '.mosaic, .news-panel img, .four-card-bg, .vp-media, .video-toggle, .oddfest-hero video, .oddfest-hero img, .oddf-hero-video video, .oddf-hero-video img, .photo-break img, .odds-calendar-embed, .warping-text',
         ),
       ],
     });
