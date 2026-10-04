@@ -233,33 +233,36 @@ test.describe('the lifecycle around playback', () => {
       return {
         state: stage.dataset.videoState,
         playing: !v.paused,
-        src: v.currentSrc,
         reduce: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
       };
     });
 
+  // Whether the hero has asked for its preview is read off the network, not
+  // the element: an engine that cannot decode the file drops the src again
+  // (markFailed), so currentSrc can't tell a refused load from no load.
   test('a preview that finishes loading offscreen does not start playing', async ({ page }) => {
     // Hold the file until the visitor has scrolled past the hero. The old
     // code called play() the moment the load finished, wherever they were.
     // The key press is what lets WebKit play at all (gotoAfterInput), so a
     // wrongly timed play() fails there too rather than being refused.
     let release!: () => void;
+    let asked = false;
     const held = new Promise<void>((r) => (release = r));
     await page.route('**/oddfest-2026-preview.mp4', async (route) => {
+      asked = true;
       await held;
       await route.continue();
     });
     await page.goto('/oddfest', { waitUntil: 'domcontentloaded' });
     await page.keyboard.press('Shift');
+    // On screen until it has asked for the file (a slow CI page may not have
+    // yet), then off screen before the file arrives.
+    await expect.poll(() => asked, 'the hero starts loading while it is on screen').toBe(true);
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     await page.waitForTimeout(500);
     release();
     await page.waitForTimeout(3000);
-    const s = await hero(page);
-    expect(s.src, 'the hero did start loading while it was on screen').toContain(
-      'oddfest-2026-preview.mp4',
-    );
-    expect(s.playing, 'nothing plays while it is offscreen').toBe(false);
+    expect((await hero(page)).playing, 'nothing plays while it is offscreen').toBe(false);
   });
 
   test('a hidden tab pauses the preview and showing it again resumes it', async ({ page }) => {
@@ -299,14 +302,19 @@ test.describe('the lifecycle around playback', () => {
   test('a page opened under reduced motion loads its preview once that is switched off', async ({
     page,
   }) => {
+    let asked = false;
+    await page.route('**/oddfest-2026-preview.mp4', (route) => {
+      asked = true;
+      return route.continue();
+    });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/oddfest');
     await page.waitForLoadState('load');
     await page.waitForTimeout(1000);
-    expect((await hero(page)).src, 'nothing is fetched under reduced motion').toBe('');
+    expect(asked, 'nothing is fetched under reduced motion').toBe(false);
 
     await page.emulateMedia({ reducedMotion: 'no-preference' });
-    await expect.poll(async () => (await hero(page)).src).toContain('oddfest-2026-preview.mp4');
+    await expect.poll(() => asked, 'switched off, the preview loads').toBe(true);
   });
 
   test('the pause button stops a preview, and it stays stopped', async ({ page }) => {

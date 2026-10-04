@@ -544,7 +544,7 @@ const pages = defineCollection({
           ),
           photoBank: z.object({
             label: z.string(),
-            href: z.string().url(),
+            href: z.url({ protocol: /^https$/ }),
             image: image(),
             alt: z.string(),
           }),
