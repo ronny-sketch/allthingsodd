@@ -250,9 +250,9 @@ sign-up link above.
 
 ## Photo credits
 
-Every page names its photographers in the footer ("Photography: …"), worked
-out from the photos the page actually shows. The names are not a CloudCannon
-field: they live in `src/components/sections/photo-credits.json`, keyed by the
+The footer no longer names photographers (removed 2026-10-05); the photo
+bank card on the home page still credits its own picture. The names are kept as a
+record and are not a CloudCannon field: they live in `src/components/sections/photo-credits.json`, keyed by the
 image's file name without its extension (`oddfest-card`, `07-54584147091`).
 
 Adding a new photo therefore needs one line there too — the photographer's

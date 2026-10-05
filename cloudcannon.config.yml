@@ -102,9 +102,8 @@ collections_config:
         type: object
         label: Photo bank card
         comment: >-
-          The photo is credited on the card and in the footer from
-          photo-credits.json, so a new photo needs an entry there. The link
-          opens in a new tab.
+          The photo is credited on the card from photo-credits.json, so a
+          new photo needs an entry there. The link opens in a new tab.
         options:
           subtype: object
       participateTitle:

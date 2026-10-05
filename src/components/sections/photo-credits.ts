@@ -4,7 +4,8 @@
 // so a rendered image can be traced back without threading credits through
 // every component. `null` means checked and deliberately unnamed: ODDspace's
 // own house and phone photos, speakers' supplied portraits, frames from a
-// film, floor plans. `npm run check:credits` fails when a page uses a photo
+// film, floor plans. The footer no longer shows these (2026-10-05); the home page's photo bank card
+// still does. `npm run check:credits` fails when a page uses a photo
 // that has no entry at all.
 //
 // Sources (2026-09-25): the photographer in each Flickr title or tag on

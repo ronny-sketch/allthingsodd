@@ -21,8 +21,7 @@ interface Props {
   photoBank: { label: string; href: string; image: ImageMetadata; alt: string };
 }
 const { title, films, photoBank } = Astro.props;
-// The footer credits it too (photo-credits.ts reads every image in the
-// page's content); on the card it says whose picture is advertising the bank.
+// On the card it says whose picture is advertising the bank.
 const [photographer] = photographers(photoBank.image);
 // One column on a phone, a third of the container from 761px.
 const sizes = '(min-width: 761px) 33vw, 100vw';
