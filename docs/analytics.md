@@ -87,13 +87,19 @@ The mapping lives in `src/scripts/tickets/ecommerce.ts`.
 | `booking_enquiry_open`    | The enquiry dialog is first opened on a page  | `entry` (hero/sticky/final/rate-card/link/history) |
 | `booking_enquiry_submit`  | `/api/booking-enquiry` accepts an enquiry     | `space`, `event_type`, `queued`                    |
 | `booking_enquiry_error`   | The enquiry is refused, or the request throws | `space`, `event_type`, `error_kind`                |
+| `creative_week_open`      | The event idea dialog is first opened         | `entry` (hero/join/host/sticky/link/history)       |
+| `creative_week_submit`    | `/api/creative-week-submission` accepts it    | `event_kind`, `outcome`                            |
+| `creative_week_error`     | The idea is refused, or the request throws    | `event_kind`, `error_kind`                         |
 | `cta_click`               | A `mailto:` or an `?interest=` deep link      | `cta_id`, `cta_intent`, `cta_location`             |
 
 `error_kind` is `network` when the fetch threw and `rejected` when the
 backend answered with `ok: false`. The booking form (2026-09-23) adds `invalid` (the
 Worker's 400 with field errors) and `rate_limited` (429), and `queued: true`
 on a submit means the Worker answered 202: Notion was unreachable and the
-enquiry is waiting in its retry queue. The distinction is the whole point: one is
+enquiry is waiting in its retry queue. The ODDfest event idea form
+(2026-10-04) uses the same four `error_kind` values, and its `outcome` is the
+Worker's own word: `delivered` (in Notion), `queued` (waiting in the retry
+queue) or `emailed` (no queue; the team was emailed the whole idea). The distinction is the whole point: one is
 the visitor's connection, the other is ours, and before 2026-09-21 neither
 was reported at all — a broken Worker and a quiet week produced identical
 numbers.
