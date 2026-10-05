@@ -29,7 +29,8 @@
 // button closes it again, as do Esc and ×. The answers live in the page and
 // stay until it is reloaded; nothing is stored in the browser.
 import { API_BASE } from './api-base';
-import { captureFirstTouch } from './utm';
+import { readOutcome } from './submission-outcome';
+import { captureSubmitSource } from './utm';
 import { trackEvent } from './analytics';
 import { lanePhrase } from './venue-lanes';
 import {
@@ -235,7 +236,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
   const bool = (fd: FormData, k: string) => str(fd, k) === 'true';
 
   const sourceOf = () => {
-    const touch = captureFirstTouch();
+    const touch = captureSubmitSource();
     const utm = [
       touch.utm_source && `utm_source=${touch.utm_source}`,
       touch.utm_medium && `utm_medium=${touch.utm_medium}`,
@@ -802,10 +803,13 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
 
     const tracked = { space: payload.space, event_type: payload.event_type };
 
-    if (res && (res.status === 200 || res.status === 202) && reply?.ok !== false) {
-      // 202 means the Worker could not reach Notion and has queued the
-      // enquiry to retry. The visitor's side is the same either way.
-      trackEvent('booking_enquiry_submit', { ...tracked, queued: res.status === 202 });
+    // Strict (submission-outcome.ts): a 2xx counts only when the Worker says
+    // it kept the enquiry and echoes this form's id. An empty or malformed
+    // body used to count as success. The visitor's wording is the same for
+    // all three kept states: in each, a person replies.
+    const outcome = readOutcome(res?.status ?? null, reply, submissionId);
+    if (outcome.kind === 'delivered' || outcome.kind === 'queued' || outcome.kind === 'emailed') {
+      trackEvent('booking_enquiry_submit', { ...tracked, queued: outcome.kind !== 'delivered' });
       sent = true;
       const ref = submissionId.slice(0, 8).toUpperCase();
       done?.querySelectorAll('[data-done-email]').forEach((el) => {

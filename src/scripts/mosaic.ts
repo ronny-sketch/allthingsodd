@@ -3,7 +3,7 @@
 // order, not 20 independent timers landing on top of each other).
 const mosaic = document.getElementById('heroMosaic');
 if (mosaic) {
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
   // Each pool entry carries the same responsive set the rendered cells use
   // (src + srcset + intrinsic width/height), not a bare URL — see
   // Hero.astro's `pool` for why, and what it cost when it was one 500px file.
@@ -71,7 +71,7 @@ if (mosaic) {
     if (img) randomKenBurns(img);
   });
 
-  if (!reduceMotion && pool.length) {
+  if (pool.length) {
     // Source of truth for "what's showing (or about to show) in each cell" — reserved
     // the instant a swap is decided, not scanned from the DOM, so two swaps landing
     // back to back can never both grab the same photo.
@@ -191,10 +191,21 @@ if (mosaic) {
     // Deliberately NOT a reduction in what the hero does while it is being
     // looked at: the cadence, the crossfade and the pan are all unchanged.
     // The saving comes from not doing the work at all when it can't be seen.
+    //
+    // Reduced motion also stops the swaps, read live (2026-10-05): it used to
+    // be checked once at load, so turning it on mid-visit left them running,
+    // and turning it off never started them. It does not make the mosaic
+    // idle: `.mosaic-is-idle` hides the whole grid (content-visibility), which
+    // is only right when nobody can see it. The pan is CSS and follows the
+    // media query by itself.
     let onScreen = true;
 
-    function running() {
+    function visible() {
       return onScreen && !document.hidden;
+    }
+
+    function running() {
+      return visible() && !REDUCED.matches;
     }
 
     // 0.55–0.85s between swaps (2026-09-24; was 1.6–2.2s, originally
@@ -218,7 +229,7 @@ if (mosaic) {
       // `.mosaic-is-idle` parks the CSS pan animations and drops their
       // `will-change` hint (see Hero.astro) — a paused animation with
       // will-change still holds its own compositor layer.
-      mosaic!.classList.toggle('mosaic-is-idle', !go);
+      mosaic!.classList.toggle('mosaic-is-idle', !visible());
       if (go && timer === null) {
         timer = window.setTimeout(scheduleTick, gap());
       } else if (!go && timer !== null) {
@@ -228,6 +239,7 @@ if (mosaic) {
     }
 
     document.addEventListener('visibilitychange', sync);
+    REDUCED.addEventListener('change', sync);
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(
         (entries) => {
@@ -239,7 +251,7 @@ if (mosaic) {
     }
 
     // First swap once the fly-in (~1.5s with its stagger) has settled.
-    timer = window.setTimeout(scheduleTick, 2500);
+    if (running()) timer = window.setTimeout(scheduleTick, 2500);
   }
 }
 

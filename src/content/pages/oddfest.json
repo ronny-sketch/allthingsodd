@@ -200,6 +200,12 @@
       }
     ]
   },
+  "aftermovie": {
+    "title": "Watch the ODDfest 2026 aftermovie",
+    "label": "Play the aftermovie · 1:36",
+    "poster": "../../assets/video/oddfest-2026-aftermovie-poster.jpg",
+    "film": "/video/oddfest-2026-aftermovie.mp4"
+  },
   "hostCta": {
     "eyebrow": "ODDfest 2027",
     "headline": "Want your event in the next one?",

@@ -5,9 +5,13 @@
 // vendor SDK here — this is a plain fetch to our own endpoint, which is
 // what actually holds the Attio secret.
 import { lanePhrase } from './venue-lanes';
-import { captureFirstTouch } from './utm';
+import { captureSubmitSource } from './utm';
 import { API_BASE } from './api-base';
 import { trackEvent } from './analytics';
+import { postJson, failureText } from './post-json';
+
+// The Worker copies every enquiry to this inbox (CLAUDE.md, Growth OS).
+const FALLBACK_EMAIL = 'hello@oddfest.co';
 
 const form = document.getElementById('workEnquiryForm');
 if (form instanceof HTMLFormElement) {
@@ -94,11 +98,13 @@ if (form instanceof HTMLFormElement) {
     goal.value = `Booking the space ${phrase}.\n\n`;
   }
 
+  const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+  let sending = false;
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!status) return;
-
-    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (!status || sending) return;
+    sending = true;
     submitBtn?.setAttribute('disabled', 'true');
     status.textContent = 'Sending…';
 
@@ -109,41 +115,39 @@ if (form instanceof HTMLFormElement) {
       // See STUDIO_OPTION above: `oddstudio` is not a product the Worker or
       // Attio recognise, so it never leaves the browser under that name.
       ...(studio ? { interest: 'oddspace', intent: 'studio' } : intent ? { intent } : {}),
-      ...captureFirstTouch(),
+      ...captureSubmitSource(),
     };
+    const interest = (payload as { interest?: string }).interest;
 
     // One POST: the Worker writes Attio and emails partners@ itself.
-    let crm: { ok: boolean; message: string } | null = null;
-    try {
-      const res = await fetch(`${API_BASE}/api/business-enquiry`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      crm = (await res.json()) as { ok: boolean; message: string };
-    } catch {
-      crm = null;
-    }
-
-    if (crm?.ok) {
-      status.textContent = crm.message;
-      trackEvent('business_enquiry_submit', {
-        product_interest: (payload as { interest?: string }).interest,
-      });
+    const result = await postJson(`${API_BASE}/api/business-enquiry`, payload);
+    if (result.kind === 'ok') {
+      status.textContent = result.message;
+      trackEvent('business_enquiry_submit', { product_interest: interest });
       form.reset();
     } else {
       status.textContent =
-        crm?.message ?? "We couldn't submit this right now. Please try again or email us directly.";
+        result.kind === 'refused'
+          ? result.message
+          : failureText(result.kind, `email ${FALLBACK_EMAIL}`);
       // A lost business enquiry is the most expensive failure on the site and
       // it had no event: a broken Worker and a quiet week looked the same.
-      // `crm === null` is a thrown fetch; a body with ok:false is a refusal.
       trackEvent('business_enquiry_error', {
-        product_interest: (payload as { interest?: string }).interest,
-        error_kind: crm === null ? 'network' : 'rejected',
+        product_interest: interest,
+        error_kind:
+          result.kind === 'refused'
+            ? 'rejected'
+            : result.kind === 'timeout'
+              ? 'timeout'
+              : 'network',
       });
     }
+    sending = false;
     submitBtn?.removeAttribute('disabled');
   });
+
+  // Rendered disabled (WorkEnquiryForm.astro) until this handler exists.
+  submitBtn?.removeAttribute('disabled');
 
   // See contact-form.ts — readiness flag so a test can wait for the submit
   // handler rather than race the module script that attaches it.

@@ -389,6 +389,18 @@ const pages = defineCollection({
       image: image().optional(),
     });
 
+    // One aftermovie shown big on its own event page (2026-10-05,
+    // AftermovieFeature.astro): /oddference and /oddfest. `film` is the full
+    // film with sound under public/video/, loaded only when someone presses
+    // play; `poster` is a still from that film; `label` is the button's
+    // words. Leave it out and the section is not rendered.
+    const aftermovieFeature = z.object({
+      title: z.string(),
+      label: z.string(),
+      poster: image(),
+      film: z.string().regex(/^\/video\/[a-z0-9-]+\.mp4$/),
+    });
+
     // Shared by ODDfest/ODDference/ODDagency/ODDspace — the rail+hero shape
     // that made them "subpages" in the first place. Each extends this with
     // the fields that are actually different between them, rather than all
@@ -659,6 +671,9 @@ const pages = defineCollection({
           body: z.string(),
           groups: z.array(audienceItem),
         }),
+        // The ODDfest 2026 aftermovie, just before the host ask below
+        // (2026-10-05); see AftermovieFeature.astro.
+        aftermovie: aftermovieFeature.optional(),
         // "Want your event in the next one?" (2026-09-14): the proof chapter's
         // closing ask, pointing back at the same submission route as "How to
         // join". A quieter band than `join`, so the page keeps one loudest ask.
@@ -941,19 +956,10 @@ const pages = defineCollection({
         // settled about 2027 — everything still open (exact dates, venues,
         // the programme) says so rather than being filled in.
         faq: z.array(faqItem),
-        // Still unset on purpose (2026-10-04). The ODDference 2026
-        // aftermovie exists now, but it is shown as this page's hero preview
-        // and on the homepage's "in video and pictures" card, and the block
-        // this field drives in oddference.astro is a bare
-        // `<video autoplay>` that skips autoplay-video.ts: no reduced-motion
-        // branch, no deferred loading, no pause button. Rebuild that block
-        // on VideoAndPictures.astro's film card before setting this.
-        aftermovie: z
-          .object({
-            poster: image(),
-            video: z.string(),
-          })
-          .optional(),
+        // The ODDference 2026 aftermovie, after the session highlights
+        // (2026-10-05). Replaced a bare `<video autoplay>` block that skipped
+        // autoplay-video.ts; see AftermovieFeature.astro.
+        aftermovie: aftermovieFeature.optional(),
         // No ODDference-specific partner/collaborator list could be
         // verified (the live 2026 page has no partners section; global
         // partners/press are sitewide and undated, not attributable to

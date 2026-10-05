@@ -21,6 +21,10 @@ interface Props {
   // below is what stops a mouse click, so all three input routes are
   // covered rather than only the visual one.
   ariaDisabled?: boolean;
+  // A real <button disabled>: a form's submit button that its script enables
+  // once its handler is attached (ContactForm, WorkEnquiryForm). A disabled
+  // default button also blocks Enter-to-submit, so nothing submits natively.
+  disabled?: boolean;
 }
 const {
   href,
@@ -32,6 +36,7 @@ const {
   id,
   target,
   ariaDisabled = false,
+  disabled = false,
 } = Astro.props;
 const classes = ['pill', `pill-${variant}`, magnetic && 'magnetic', className]
   .filter(Boolean)
@@ -49,6 +54,7 @@ const Tag = href ? 'a' : 'button';
   rel={target === '_blank' ? 'noreferrer' : undefined}
   aria-disabled={ariaDisabled ? 'true' : undefined}
   tabindex={ariaDisabled ? '-1' : undefined}
+  disabled={!href && disabled ? true : undefined}
 >
   <slot />
 </Tag>
@@ -85,6 +91,11 @@ const Tag = href ? 'a' : 'button';
      unlocks becomes magnetic again on its own. */
   .pill[aria-disabled='true'] {
     pointer-events: none;
+    cursor: default;
+  }
+  /* A submit button waiting for its script, or for its request to finish. */
+  .pill:disabled {
+    opacity: 0.55;
     cursor: default;
   }
   .pill-outline {

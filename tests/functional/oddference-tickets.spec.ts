@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { CATALOG_ROUTE, catalogBody } from '../catalog-fixture';
 
 // The /oddference marketing page's ticket block must never be a second
 // source of truth for price or sale state. On main @ 3a656fe it was: the
@@ -10,16 +11,13 @@ import { test, expect, type Page } from '@playwright/test';
 // These tests drive the sync against a mocked catalog so they assert
 // behaviour, not the state of a third-party service on the day they run.
 
-const CATALOG_ROUTE = '**/api/tickets/catalog**';
-
-// Engines disagree about where Intl puts the euro sign for `en-FI`: Chromium
-// and Firefox render "€250", WebKit renders "250 €". Both are that locale's
-// business, and both pages get it from the same formatMinor(), so the
-// marketing page and the storefront still agree inside any one browser —
-// which is the invariant these tests exist to hold. Assert the amount, not
-// the glyph order.
+// The exact text, euro sign first, in every engine. formatMinor() used to
+// take its format from Intl's 'en-FI' currency style, and engines disagreed:
+// WebKit rendered "250 €" after hydration while the static HTML said "€250".
+// It is built by hand now (tickets/money.ts), so the marketing page, the
+// storefront and the static fallback all read the same.
 function expectPrice(text: string | null, amount: string) {
-  expect((text ?? '').replace(/[^0-9]/g, '')).toBe(amount);
+  expect(text ?? '').toBe(`€${amount}`);
 }
 
 // The sync only runs once the ticket block is near the viewport (it is a long
@@ -27,59 +25,6 @@ function expectPrice(text: string | null, amount: string) {
 // src/scripts/oddference-tickets.ts), so every test scrolls to it first.
 async function tickets(page: Page) {
   await page.locator('#tickets').scrollIntoViewIfNeeded();
-}
-
-function catalogBody(overrides: Record<string, unknown>[] = [], pricesIncludeTax = false) {
-  const base = [
-    {
-      id: 'tt_blind_bird',
-      slug: 'blind-bird',
-      name: 'Blind Bird',
-      description: 'x',
-      status: 'active',
-      currency: 'EUR',
-      displayPriceMinor: 29900,
-      taxRateBps: 1350,
-      maxPerOrder: 10,
-      admissionsPerUnit: 1,
-      benefits: ['Full ODDference 2027 access'],
-      availableToPurchase: 10,
-    },
-    {
-      id: 'tt_early_bird',
-      slug: 'early-bird',
-      name: 'Early Bird',
-      description: 'x',
-      status: 'upcoming',
-      currency: 'EUR',
-      displayPriceMinor: 39900,
-      taxRateBps: 1350,
-      maxPerOrder: 10,
-      admissionsPerUnit: 1,
-      benefits: ['Full ODDference 2027 access'],
-      availableToPurchase: 0,
-    },
-    {
-      id: 'tt_regular',
-      slug: 'regular',
-      name: 'Regular Ticket',
-      description: 'x',
-      status: 'upcoming',
-      currency: 'EUR',
-      displayPriceMinor: 49900,
-      taxRateBps: 1350,
-      maxPerOrder: 10,
-      admissionsPerUnit: 1,
-      benefits: ['Full ODDference 2027 access'],
-      availableToPurchase: 0,
-    },
-  ];
-  const merged = base.map((tt, i) => ({ ...tt, ...(overrides[i] ?? {}) }));
-  return JSON.stringify({
-    ok: true,
-    event: { slug: 'oddference-2027', name: 'ODDference 2027', currency: 'EUR', pricesIncludeTax },
-    ticketTypes: merged,
-  });
 }
 
 test('ticket prices and states come from the catalog, not the page', async ({ page }) => {
@@ -106,6 +51,28 @@ test('ticket prices and states come from the catalog, not the page', async ({ pa
     await page.locator('[data-ticket-slug="regular"] .pricing-price').textContent(),
     '499',
   );
+});
+
+test('benefits rebuilt from the catalog keep their list styling', async ({ page }) => {
+  await page.route(CATALOG_ROUTE, (route) =>
+    route.fulfill({
+      contentType: 'application/json',
+      body: catalogBody([{ slug: 'blind-bird', benefits: ['From the catalog', 'A second one'] }]),
+    }),
+  );
+  await page.goto('/oddference');
+  await tickets(page);
+
+  const items = page.locator('[data-ticket-slug="blind-bird"] .pricing-benefits li');
+  await expect(items).toHaveText(['From the catalog', 'A second one']);
+  // createElement('li') carries no Astro scope attribute; PricingGrid's rule
+  // must still reach it, bullet included.
+  const style = await items.first().evaluate((li) => ({
+    padding: getComputedStyle(li).paddingLeft,
+    bullet: getComputedStyle(li, '::before').width,
+  }));
+  expect(style.padding).not.toBe('0px');
+  expect(style.bullet).toBe('5px');
 });
 
 test('the VAT note follows whether the catalog price includes VAT', async ({ page }) => {

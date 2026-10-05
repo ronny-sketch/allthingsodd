@@ -50,7 +50,12 @@ const PRODUCTS = [
 ];
 ---
 
-<form class="enquiry-form" id="workEnquiryForm">
+{
+  /* method="post" and a disabled button until work-enquiry-form.ts is ready:
+    with no script a native submit would otherwise GET this page with the
+    visitor's name and email in the URL. */
+}
+<form class="enquiry-form" id="workEnquiryForm" method="post">
   <input
     type="text"
     name="botcheck"
@@ -91,9 +96,13 @@ const PRODUCTS = [
     <input id="we-timing" name="timing" type="text" placeholder="e.g. this quarter, 2027" />
   </div>
   <div class="field-submit">
-    <Pill type="submit" variant="solid">Send enquiry</Pill>
+    <Pill type="submit" variant="solid" disabled>Send enquiry</Pill>
     <p class="form-status" role="status" aria-live="polite"></p>
   </div>
+  <p class="form-fallback">
+    If the button stays greyed out, the form can't load here. Email
+    <a href="mailto:hello@oddfest.co">hello@oddfest.co</a> instead.
+  </p>
 </form>
 
 <script src="../../scripts/work-enquiry-form.ts"></script>
@@ -182,6 +191,14 @@ const PRODUCTS = [
     display: flex;
     align-items: center;
     gap: 1.2rem;
+  }
+  .form-fallback {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .enquiry-form[data-ready] .form-fallback {
+    display: none;
   }
   .form-status {
     margin: 0;

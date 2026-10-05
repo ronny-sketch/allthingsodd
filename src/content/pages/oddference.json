@@ -43,7 +43,7 @@
       "eyebrow": "Meet",
       "title": "Connect with people outside your usual circuit.",
       "body": "ODDference brings together creative leaders, business leaders, founders, policymakers, institutions and researchers — putting potential clients, partners and collaborators in the same room who rarely meet at a single-industry conference.",
-      "image": "../../assets/oddfest-2026/oddference-claus-raasted-batman.jpg"
+      "image": "../../assets/oddfest-2026/oddference-elisabet-lahti-stage.jpg"
     },
     {
       "number": "03",
@@ -136,6 +136,12 @@
       "speakers": "Karoliina Jarenko, Simo Routarinne & Mikko Heikinpoika"
     }
   ],
+  "aftermovie": {
+    "title": "Watch the ODDference 2026 aftermovie",
+    "label": "Play the aftermovie · 1:31",
+    "poster": "../../assets/video/oddference-2026-aftermovie-poster.jpg",
+    "film": "/video/oddference-2026-aftermovie.mp4"
+  },
   "programme": [],
   "tickets": [
     {

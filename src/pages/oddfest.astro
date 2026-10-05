@@ -35,6 +35,7 @@
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SubpageFrame from '../components/sections/SubpageFrame.astro';
+import AftermovieFeature from '../components/sections/AftermovieFeature.astro';
 import FullbleedVideoHero from '../components/sections/FullbleedVideoHero.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
@@ -236,6 +237,12 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
           </div>
         </section>
       )
+    }
+
+    {
+      /* The ODDfest 2026 aftermovie (2026-10-05): the last of the proof,
+         right before a would-be host is asked for their own event. */
+      page.aftermovie && <AftermovieFeature {...page.aftermovie} />
     }
 
     <!-- "Want your event in the next one?" (2026-09-14). The proof chapter

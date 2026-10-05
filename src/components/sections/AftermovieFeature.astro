@@ -1,0 +1,114 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import FilmDialog from './FilmDialog.astro';
+
+// One aftermovie, shown big on its own event page (2026-10-05): /oddference
+// after "What was actually on stage.", /oddfest before "Want your event in
+// the next one?". A still from the film and a play button; the whole
+// picture is a link to the full .mp4, which film-player.ts opens with sound
+// in FilmDialog. Nothing moves and nothing of the film loads until it is
+// pressed: the page's hero already plays the short preview, so a second
+// loop here would only repeat it. Without JS the link still plays the file
+// in the browser's own player.
+interface Props {
+  title: string;
+  /** The button's words, e.g. "Play the aftermovie · 1:31". */
+  label: string;
+  poster: ImageMetadata;
+  /** The full film, a path under public/ (/video/….mp4). */
+  film: string;
+}
+const { title, label, poster, film } = Astro.props;
+---
+
+<section class="aftermovie-feature">
+  <div class="wrap flow">
+    <div class="section-head"><h2>{title}</h2></div>
+    <a class="af-film reveal" href={film} data-film data-film-title={title}>
+      <span class="af-still">
+        <Image
+          src={poster}
+          alt=""
+          widths={[640, 1200, 1920]}
+          sizes="(min-width: 1240px) 1180px, 100vw"
+        />
+      </span>
+      <span class="af-play">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path
+            d="M4.5 2.8v10.4a.8.8 0 0 0 1.2.7l8.4-5.2a.8.8 0 0 0 0-1.4L5.7 2.1a.8.8 0 0 0-1.2.7Z"
+          ></path>
+        </svg>
+        {label}
+      </span>
+    </a>
+  </div>
+  <FilmDialog />
+</section>
+
+<style>
+  .af-film {
+    position: relative;
+    display: block;
+    color: var(--color-paper);
+    text-decoration: none;
+  }
+  /* The films are 2:1, so the still is too; a phone gets a taller crop so
+     the picture is not a strip. */
+  .af-still {
+    display: block;
+    aspect-ratio: 2 / 1;
+    overflow: hidden;
+    background: var(--swatch-ink);
+  }
+  .af-still :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .af-play {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--color-paper-35);
+    border-radius: var(--radius-pill);
+    background: rgb(14 9 11 / 60%);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+  }
+  /* On the picture, bottom left (clear of the faces in both stills), from
+     761px; under it on a phone, where it would cover half the still. */
+  @media (min-width: 761px) {
+    .af-play {
+      position: absolute;
+      left: var(--space-4);
+      bottom: var(--space-4);
+    }
+  }
+  @media (max-width: 760px) {
+    .af-still {
+      aspect-ratio: 16 / 10;
+    }
+    .af-play {
+      margin-top: var(--space-3);
+    }
+  }
+  .af-play svg {
+    flex: none;
+    width: 0.85em;
+    height: 0.85em;
+    fill: currentColor;
+  }
+  @media (hover: hover) {
+    .af-film:hover .af-play {
+      background: rgb(14 9 11 / 80%);
+      border-color: var(--color-paper-60);
+    }
+  }
+</style>

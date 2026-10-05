@@ -168,8 +168,10 @@ Two independent fixes, both shipped 2026-09-21 and both tested in
 
 As of 2026-09-21, about 1,892 of 1,982 sessions are `(direct)/(none)` and
 there are **zero** social referrals — despite ODD posting steadily. Not one
-of 11 ticket orders carries a `utm_source`, although first-touch capture
-(`src/scripts/utm.ts`) works and has stored the column all along.
+of 11 ticket orders carries a `utm_source`, although submit-time source capture
+(`src/scripts/utm.ts`) works and has stored the column all along. It is not
+first-touch: it reads the address of the page the form is sent from (see the
+file's header), so tagged links need to land on the page with the form.
 
 The cause is untagged links. In-app browsers on Instagram, LinkedIn and
 TikTok strip referrers, so an untagged link from a post is indistinguishable

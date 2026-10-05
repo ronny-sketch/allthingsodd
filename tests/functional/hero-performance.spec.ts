@@ -157,30 +157,33 @@ test('hero tilt settles, stops scheduling frames, resumes and resets', async ({
   isMobile,
 }) => {
   test.skip(isMobile, 'pointer branch only; touch gets the scroll-linked tilt');
-  // Waits for the ease-out to finish at whatever frame rate the engine has.
-  test.setTimeout(90_000);
+  // Everything below is measured in frames, not seconds. CI's Linux WebKit
+  // renders this 3D-transformed hero in software and, under the suite's
+  // parallel load, delivers about two frames a second. The ease-out takes
+  // ~99 frames (0.06 per frame down to 0.01deg), so it can outlast any
+  // fixed one-second window or 45 s poll without being wrong. That is how this
+  // test failed on #113: every window read "too few frames to tell" until the
+  // poll gave up. The timeout only has to cover the frame budget below at
+  // that rate.
+  test.setTimeout(240_000);
   // The newsletter popup and consent banner open over the cursor, which is a
   // real mouseleave and resets the tilt before anything here is measured.
   await suppressInterruptions(page);
   await withMotion(page);
   await page.setViewportSize({ width: 1440, height: 900 });
   // Counts the rAF requests the tilt loop makes (its callback is the one that
-  // writes rotateX), next to the frames that really happened, counted with the
-  // unwrapped rAF. Headless frame rates collapse under parallel load
-  // (Firefox drops to a few fps), so the test waits for the count to reach
-  // zero rather than expecting a number by a deadline, and only trusts a
-  // window that contained real frames.
+  // writes rotateX), and keeps the unwrapped rAF so the page can count real
+  // frames itself.
   await page.addInitScript(() => {
-    const w = window as unknown as { __tilt: number; __frames: number; __leaves: number };
+    const w = window as unknown as {
+      __tilt: number;
+      __leaves: number;
+      __raf: typeof requestAnimationFrame;
+    };
     w.__tilt = 0;
     w.__leaves = 0;
-    w.__frames = 0;
     const raf = window.requestAnimationFrame.bind(window);
-    const frame = () => {
-      w.__frames++;
-      raf(frame);
-    };
-    raf(frame);
+    w.__raf = raf;
     window.requestAnimationFrame = (cb) => {
       if (String(cb).includes('rotateX')) w.__tilt++;
       return raf(cb);
@@ -197,34 +200,43 @@ test('hero tilt settles, stops scheduling frames, resumes and resets', async ({
   await expectMotion(page);
   const mosaic = page.locator('#heroMosaic');
   const transform = () => mosaic.evaluate((el) => el.style.transform);
-  const counts = () =>
-    page.evaluate(() => {
-      const w = window as unknown as { __tilt: number; __frames: number };
-      return { tilt: w.__tilt, frames: w.__frames };
-    });
-  const tiltRequestsPerSecond = async () => {
-    const a = await counts();
-    await page.waitForTimeout(1000);
-    const b = await counts();
-    return b.frames - a.frames < 3 ? 'too few frames to tell' : b.tilt - a.tilt;
-  };
+  const tiltRequests = () => page.evaluate(() => (window as unknown as { __tilt: number }).__tilt);
 
+  // Started: the move asks for tilt frames and one of them paints.
+  const before = await tiltRequests();
   await page.mouse.move(700, 440);
   await page.mouse.move(1300, 150, { steps: 8 });
   await expect.poll(transform).toContain('rotateX(');
-  expect(await tiltRequestsPerSecond(), 'the tilt loop never ran').not.toBe(0);
+  expect((await tiltRequests()) - before, 'the tilt loop never ran').toBeGreaterThan(0);
 
-  // Pointer at rest: the loop eases in and then stops asking for frames. It
-  // used to keep requesting one every frame for as long as the pointer stayed.
-  await expect
-    .poll(tiltRequestsPerSecond, {
-      message: 'the tilt loop kept running with the pointer at rest',
-      intervals: [0],
-      // ~96 frames of ease-out; headless Firefox has run this at ~5fps
-      // under the full suite's load.
-      timeout: 45_000,
-    })
-    .toBe(0);
+  // Pointer at rest: the loop eases in, then stops asking for frames. It used
+  // to keep requesting one every frame for as long as the pointer stayed.
+  // Settled means 10 real frames in a row with no tilt request, since a
+  // running loop asks once per frame. Budget: 400 frames, about four times
+  // the ease-out. A loop that never stops fails here at frame 400, and a
+  // stalled engine runs into the test timeout. Neither can pass.
+  const rest = await page.evaluate(
+    () =>
+      new Promise<{ frames: number; quiet: boolean }>((resolve) => {
+        const w = window as unknown as { __tilt: number; __raf: typeof requestAnimationFrame };
+        let frames = 0;
+        let quietFor = 0;
+        let last = w.__tilt;
+        const step = () => {
+          frames++;
+          quietFor = w.__tilt === last ? quietFor + 1 : 0;
+          last = w.__tilt;
+          if (quietFor >= 10) return resolve({ frames, quiet: true });
+          if (frames >= 400) return resolve({ frames, quiet: false });
+          w.__raf(step);
+        };
+        w.__raf(step);
+      }),
+  );
+  expect(
+    rest.quiet,
+    `the tilt loop kept running with the pointer at rest (still asking after ${rest.frames} frames)`,
+  ).toBe(true);
   const leaves = await page.evaluate(() => (window as unknown as { __leaves: number }).__leaves);
   expect(leaves, 'the pointer left the hero, so the loop stopped for another reason').toBe(0);
   const settled = await transform();

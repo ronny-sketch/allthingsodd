@@ -9,9 +9,11 @@
 //   - keeps the real text as the accessible, SSR'd node and layers a
 //     client-built, aria-hidden visual replacement on top — never owns the
 //     only copy of the words;
-//   - `prefers-reduced-motion: reduce` no-ops the whole module. The plain
-//     heading already in the markup is what renders — nothing to pause, per
-//     the reduced-motion rule in CLAUDE.md.
+//   - `prefers-reduced-motion: reduce` leaves the plain heading already in
+//     the markup as what renders — nothing to pause, per the reduced-motion
+//     rule in CLAUDE.md. Read live (2026-10-05): turning it on mid-visit
+//     stops the loop and shows the plain heading again; turning it off
+//     builds (or re-shows) the effect.
 const SVGNS = 'http://www.w3.org/2000/svg';
 
 /*
@@ -75,7 +77,10 @@ function svgEl<K extends keyof SVGElementTagNameMap>(
   return node;
 }
 
-function initInstance(container: HTMLElement) {
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+/** Builds one instance and returns its on/off switch (undefined if it can't run). */
+function initInstance(container: HTMLElement): ((on: boolean) => void) | undefined {
   const fallbackOrNull = container.querySelector<HTMLElement>('[data-warping-fallback]');
   if (!fallbackOrNull) return;
   // Reassigning the narrowed value gives this a real non-null static type —
@@ -394,7 +399,7 @@ function initInstance(container: HTMLElement) {
 
   let onScreen = true;
   function syncLoop() {
-    intersecting = onScreen && !document.hidden;
+    intersecting = onScreen && !document.hidden && !REDUCED.matches;
     if (intersecting) startLoop();
   }
 
@@ -416,14 +421,36 @@ function initInstance(container: HTMLElement) {
 
   remeasure();
   startLoop();
+
+  return (on: boolean) => {
+    fallback.classList.toggle('warping-fallback--hidden', on);
+    for (const el of [measure, canvas, svg]) if (el) el.style.display = on ? '' : 'none';
+    if (on) {
+      remeasure();
+      syncLoop();
+    } else if (raf !== null) {
+      cancelAnimationFrame(raf);
+      raf = null;
+    }
+  };
 }
 
-if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  let uid = 0;
+const switches = new Map<HTMLElement, (on: boolean) => void>();
+let uid = 0;
+
+function applyMotionPreference() {
+  const on = !REDUCED.matches;
   document.querySelectorAll<HTMLElement>('[data-warping-text]').forEach((container) => {
+    const existing = switches.get(container);
+    if (existing) return existing(on);
+    if (!on) return;
     if (!container.id) container.id = `warping-text-${uid++}`;
-    initInstance(container);
+    const set = initInstance(container);
+    if (set) switches.set(container, set);
   });
 }
+
+applyMotionPreference();
+REDUCED.addEventListener('change', applyMotionPreference);
 
 export {};

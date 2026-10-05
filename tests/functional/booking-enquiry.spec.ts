@@ -277,6 +277,9 @@ test.describe('the newsletter popup', () => {
     await page.clock.install();
     await page.goto(VENUE);
     await expect(page.locator('#bookingEnquiryForm')).toHaveAttribute('data-ready', 'true');
+    // The cookie banner holds the popup off too (newsletter-popup.ts).
+    await page.getByRole('button', { name: 'Reject all' }).click();
+    await expect(page.locator('[data-consent-banner]')).toBeHidden();
     await page.clock.fastForward(20_000);
     await expect(page.locator('#newsletterPopup')).toBeVisible();
   });

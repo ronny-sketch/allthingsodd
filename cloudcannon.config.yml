@@ -1091,11 +1091,16 @@ collections_config:
         cascade: true
       aftermovie:
         type: object
-        label: Aftermovie (ODDference only)
+        label: Aftermovie (ODDfest and ODDference)
         comment: >-
-          Leave this out. The ODDference 2026 aftermovie already plays in
-          this page's hero and on Home, and the section this field turns on
-          is not built for it yet (see content.config.ts).
+          The big "Watch the … aftermovie" section: a still from the film
+          and a play button that opens the full film, with sound. On
+          ODDference it sits after the session highlights, on ODDfest just
+          before "Want your event in the next one?". The label is the
+          button's words. The film is a file in public/video that a
+          developer adds (too large to upload here), so only point "film" at
+          a file that already exists. Remove the whole field to hide the
+          section.
         options:
           subtype: object
           required: false

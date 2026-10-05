@@ -3,7 +3,7 @@
 // API_BASE pattern as work-enquiry-form.ts/newsletter-form.ts (see
 // ../api-base.ts's own comment on why this isn't a relative path yet).
 import { API_BASE } from '../api-base';
-import type { FirstTouch } from '../utm';
+import type { SubmitSource } from '../utm';
 
 export interface CatalogTicketType {
   id: string;
@@ -63,7 +63,7 @@ export async function createCheckout(
   eventSlug: string,
   items: CheckoutItem[],
   buyer: CheckoutBuyer,
-  attribution: FirstTouch,
+  attribution: SubmitSource,
 ): Promise<CheckoutResponse> {
   try {
     const res = await fetch(`${API_BASE}/api/tickets/checkout`, {

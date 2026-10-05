@@ -15,7 +15,12 @@ const { contact, social } = site.data;
 
 <section class="contact-section">
   <div class="wrap contact-grid reveal">
-    <form class="contact-form" id="contactForm">
+    {
+      /* method="post" and a disabled button until contact-form.ts is ready:
+        with no script (blocked, slow, failed) a native submit would otherwise
+        GET this page with name, email and message in the URL. */
+    }
+    <form class="contact-form" id="contactForm" method="post">
       {
         /* Set by contact-form.ts from a ?topic= deep link: the wording the inbox
           subject uses, so two different ODDfest asks never read as one. */
@@ -65,9 +70,13 @@ const { contact, social } = site.data;
         aria-hidden="true"
       />
       <div class="field-submit">
-        <Pill type="submit" variant="solid">Send message</Pill>
+        <Pill type="submit" variant="solid" disabled>Send message</Pill>
         <p class="form-status" role="status" aria-live="polite"></p>
       </div>
+      <p class="form-fallback">
+        If the button stays greyed out, the form can't load here. Email us at the addresses on this
+        page instead.
+      </p>
     </form>
 
     <div class="contact-direct">
@@ -176,6 +185,14 @@ const { contact, social } = site.data;
     display: flex;
     align-items: center;
     gap: 1.2rem;
+  }
+  .form-fallback {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .contact-form[data-ready] .form-fallback {
+    display: none;
   }
   .form-status {
     margin: 0;

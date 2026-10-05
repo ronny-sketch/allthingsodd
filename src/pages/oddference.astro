@@ -38,6 +38,7 @@ import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SubpageFrame from '../components/sections/SubpageFrame.astro';
+import AftermovieFeature from '../components/sections/AftermovieFeature.astro';
 import FullbleedVideoHero from '../components/sections/FullbleedVideoHero.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
@@ -197,25 +198,10 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
     }
 
     {
-      // Off, and not to be switched on as it is (2026-10-04): this is a bare
-      // autoplaying <video> outside autoplay-video.ts. The ODDference 2026
-      // aftermovie plays in the hero and on the homepage instead. See
-      // content.config.ts's comment on this field.
-      page.aftermovie && (
-        <section class="oddc-sub flow">
-          <div class="wrap">
-            <div class="section-head">
-              <h2>See what happened last time.</h2>
-            </div>
-          </div>
-          <div class="oddc-aftermovie">
-            <Image src={page.aftermovie.poster} alt="" width={2200} />
-            <video autoplay muted loop playsinline poster={page.aftermovie.poster.src}>
-              <source src={page.aftermovie.video} type="video/mp4" />
-            </video>
-          </div>
-        </section>
-      )
+      /* 5b. The ODDference 2026 aftermovie, between what was on stage and
+         the ticket ask: having read the session list, the reader can watch
+         the room. */
+      page.aftermovie && <AftermovieFeature {...page.aftermovie} />
     }
 
     <!-- 6. Conversion: tickets + partnerships, side by side. -->
@@ -555,24 +541,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
       white-space: normal;
       text-align: center;
     }
-  }
-
-  /* Aftermovie — plain single poster+video block, only rendered once a real
-     ODDference asset exists. It sits outside the heading's .wrap (full
-     width), so the section itself is the flow parent that spaces it. */
-  .oddc-aftermovie {
-    position: relative;
-    background: var(--swatch-ink);
-  }
-  .oddc-aftermovie :global(img),
-  .oddc-aftermovie video {
-    width: 100%;
-    height: min(78vh, 680px);
-    object-fit: cover;
-    display: block;
-  }
-  .oddc-aftermovie video {
-    display: none;
   }
 
   /* Partners */

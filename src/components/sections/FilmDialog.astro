@@ -1,0 +1,71 @@
+---
+// The dialog the full aftermovies play in, with sound (2026-10-05; moved out
+// of VideoAndPictures.astro so /oddfest and /oddference can open the same
+// films from AftermovieFeature.astro). film-player.ts opens it for any
+// `a[data-film]` on the page. Render it once per page: the components that
+// carry film links each include it, and no page uses two of them.
+//
+// `data-suppress-newsletter-popup`: the popup never lands on top of a film
+// someone chose to watch. No captions track yet: none were supplied with the
+// films.
+---
+
+<dialog class="film-dialog" id="film-dialog" data-suppress-newsletter-popup>
+  <button type="button" class="film-close" aria-label="Close">
+    <span aria-hidden="true">×</span>
+  </button>
+  <video controls playsinline preload="none"></video>
+</dialog>
+
+<script src="../../scripts/film-player.ts"></script>
+
+<style>
+  .film-dialog {
+    --film-close: 2.75rem;
+    /* The films are 2:1: as wide as the screen allows, and never so tall that
+       the film and the close button above it stop fitting on the screen. */
+    width: min(
+      100vw - 2 * var(--space-4),
+      (100dvh - 2 * var(--space-4) - var(--film-close) - var(--space-2)) * 2
+    );
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    border: 0;
+    overflow: visible;
+    background: transparent;
+    color: var(--color-paper);
+  }
+  .film-dialog::backdrop {
+    background: rgb(14 9 11 / 88%);
+  }
+  .film-dialog video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    background: var(--swatch-ink);
+  }
+  /* Above the film, not on it: the browsers draw their own controls in the
+     video's corners (Safari's volume slider is in the top right). */
+  .film-close {
+    display: grid;
+    place-items: center;
+    width: var(--film-close);
+    height: var(--film-close);
+    margin: 0 0 var(--space-2) auto;
+    padding: 0;
+    border: 1px solid var(--color-paper-35);
+    border-radius: var(--radius-pill);
+    background: rgb(14 9 11 / 55%);
+    color: var(--color-paper);
+    font: var(--text-heading);
+    line-height: 1;
+    cursor: pointer;
+  }
+  @media (hover: hover) {
+    .film-close:hover {
+      background: rgb(14 9 11 / 80%);
+      border-color: var(--color-paper-60);
+    }
+  }
+</style>

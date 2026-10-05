@@ -16,22 +16,33 @@
   Explicitly not done here: no synthetic mouse events, and no
   DeviceOrientation (which would demand a permission prompt on iOS for a
   decorative effect). Scroll position is already free and already exact.
+
+  Reduced motion is read live (2026-10-05), not once at load: switching it
+  on mid-visit puts the hero back flat and stops the loop; switching it off
+  lets the next scroll or mouse move start the effect.
 */
 const hero = document.querySelector<HTMLElement>('.hero');
 const mosaic = document.getElementById('heroMosaic');
 const spotlight = document.getElementById('heroSpotlight');
 const logo = document.getElementById('heroLogo');
 
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
 const touch = window.matchMedia('(hover: none)').matches;
 
-if (hero && mosaic && spotlight && touch && !reduceMotion) {
+function flatten() {
+  mosaic!.style.transform = '';
+  if (logo) logo.style.transform = '';
+  spotlight!.style.background = '';
+}
+
+if (hero && mosaic && spotlight && touch) {
   // Scroll-driven, so there is no rAF loop idling when nothing is moving —
   // the handler runs on scroll, coalesced to one write per frame.
   let queued = false;
 
   function paint() {
     queued = false;
+    if (REDUCED.matches) return;
     const rect = hero!.getBoundingClientRect();
     // How far the hero has travelled through the viewport, -1 (just below) to
     // 1 (fully past). Clamped so a rubber-band overscroll can't overshoot.
@@ -65,9 +76,10 @@ if (hero && mosaic && spotlight && touch && !reduceMotion) {
     { passive: true },
   );
   window.addEventListener('resize', () => requestAnimationFrame(paint), { passive: true });
+  REDUCED.addEventListener('change', () => (REDUCED.matches ? flatten() : paint()));
 }
 
-if (hero && mosaic && spotlight && !touch && !reduceMotion) {
+if (hero && mosaic && spotlight && !touch) {
   let tiltX = 0;
   let tiltY = 0;
   let tgtTX = 0;
@@ -96,6 +108,7 @@ if (hero && mosaic && spotlight && !touch && !reduceMotion) {
     inside = true;
   });
   hero.addEventListener('mousemove', (e) => {
+    if (REDUCED.matches) return;
     const rect = hero.getBoundingClientRect();
     const nx = (e.clientX - rect.left) / rect.width;
     const ny = (e.clientY - rect.top) / rect.height;
@@ -123,6 +136,14 @@ if (hero && mosaic && spotlight && !touch && !reduceMotion) {
       mosaic!.style.transform = '';
       if (logo) logo.style.transform = '';
     }, 600);
+  });
+
+  REDUCED.addEventListener('change', () => {
+    if (!REDUCED.matches) return;
+    if (raf) cancelAnimationFrame(raf);
+    raf = null;
+    tiltX = tiltY = tgtTX = tgtTY = 0;
+    flatten();
   });
 }
 
