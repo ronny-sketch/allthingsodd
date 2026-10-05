@@ -992,6 +992,7 @@ export function templateDeck(pres) {
       ['INSTAGRAM', '@allthingsodd.co'],
       ['LINKEDIN', 'linkedin.com/company/all-things-odd'],
       ['YOUTUBE', 'youtube.com/@all-things-odd'],
+      ['TIKTOK', '@allthingsodd.co'],
       ['NEWSLETTER', 'oddfest.beehiiv.com'],
     ];
     rows.forEach(([label, value], i) => {

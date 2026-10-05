@@ -10,7 +10,7 @@
 //
 // (B14 in docs/IDENTITY_LAUNCH_MATRIX_2026-09-04.md — whether ODD gets its own
 // masterbrand accounts — was settled on 2026-10-05: the site now links the All
-// Things ODD Instagram, LinkedIn and YouTube accounts.)
+// Things ODD Instagram, LinkedIn, YouTube and TikTok accounts.)
 
 /**
  * `https://www.instagram.com/allthingsodd.co` -> `@allthingsodd.co`.
