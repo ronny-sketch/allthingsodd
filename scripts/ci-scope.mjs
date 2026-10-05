@@ -48,6 +48,15 @@ const SITE_WIDE = [
 // `brand/` is NOT here: it feeds /brand-book/ and the token drift check.
 const DOCS_ONLY = [/^docs\//, /^\.claude\//, /^[^/]+\.md$/];
 
+// Copy and content entries (2026-10-05). Rendered, but only through
+// templates the browser suite already covers, and `checks` still validates
+// them: the content schema (`astro check`, build), CloudCannon's config,
+// photo credits. No test asserts copy. So a text-only edit skips the browser
+// suite and deploys in ~4 min instead of ~7. The ceiling: copy long enough to
+// break a layout on one viewport surfaces at the nightly sweep, not before
+// it is live. Most of Aki's and CloudCannon's edits land here.
+const CONTENT_ONLY = [/^src\/content\//];
+
 // `mobile` is NOT in this list although it is a visual project: it is
 // `devices['iPhone 13']`, which is WebKit. With only Chromium's OS packages
 // installed it fails at browser start (libevent missing — PR #78, 2026-09-21).
@@ -66,6 +75,8 @@ export function scope(files) {
   if (!files.length) return { mode: 'full', projects: '', browsers: ALL_ENGINES };
   if (files.every((f) => DOCS_ONLY.some((r) => r.test(f))))
     return { mode: 'docs', projects: '', browsers: 'chromium' };
+  if (files.every((f) => [...DOCS_ONLY, ...CONTENT_ONLY].some((r) => r.test(f))))
+    return { mode: 'content', projects: '', browsers: 'chromium' };
   if (files.some((f) => SITE_WIDE.some((r) => r.test(f))))
     return { mode: 'full', projects: '', browsers: ALL_ENGINES };
   return { mode: 'fast', projects: CHROMIUM_ONLY, browsers: 'chromium' };
@@ -82,7 +93,11 @@ function selfTest() {
   eq(['docs/deployment.md'], 'docs');
   eq(['README.md', 'docs/architecture.md'], 'docs');
   eq(['src/pages/index.astro'], 'fast');
-  eq(['src/content/events/oddfest-2026.md'], 'fast');
+  eq(['src/content/events/oddfest-2026.md'], 'content');
+  eq(['src/content/pages/index.json', 'docs/editing.md'], 'content');
+  // Copy plus a component (Aki's #111) still gets the browser suite.
+  eq(['src/content/pages/index.json', 'src/components/sections/BuiltAround.astro'], 'fast');
+  eq(['src/content.config.ts'], 'full'); // the schema itself is site-wide
   eq(['src/assets/hero.jpg', 'public/favicon.svg'], 'fast');
   eq(['brand/BRAND-GUIDE.md'], 'fast'); // renders at /brand-book/
   eq(['src/layouts/Layout.astro'], 'full');

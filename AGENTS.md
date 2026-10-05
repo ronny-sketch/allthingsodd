@@ -594,7 +594,8 @@ branch or a draft PR to ask again.
    `gh pr create --fill`, then `gh pr merge --merge` once it's green.
    Merging is the deploy.
 5. `gh run watch $(gh run list --branch main --event push -L 1 --json databaseId --jq '.[0].databaseId')`.
-   Green means live, about 5 minutes for a content edit.
+   Green means live: about 4 minutes when only `src/content/` changed
+   (no browser tests), about 7 with a component or page, 12 site-wide.
 6. Red means **not live**, and a later green nightly run does not deploy
    it. A `functional` failure on a page you didn't touch is usually a
    flake: `gh run rerun <id> --failed` (or "Re-run failed jobs" on GitHub).
