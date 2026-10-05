@@ -7,7 +7,7 @@
 // Progressive enhancement, because a price a visitor cannot see is worse
 // than no calculator at all. Every lane, every rate and every add-on is
 // plain visible text in document order: with no JS the section is simply the
-// whole rate card, three lanes deep. The script is what turns it into a
+// whole rate card, every lane deep. The script is what turns it into a
 // picker — it hides the lanes you are not in, adds the selection up, and
 // carries the choice into the enquiry form as ?lane=&offer=. It never owns a
 // price. That is also why the panels are not hidden in CSS: a stylesheet
@@ -80,7 +80,7 @@ const euro = (n: number) => `€${n.toLocaleString('en-IE')}`;
                 checked={i === 0}
               />
               <span class="vrc-row-name">{rate.label}</span>
-              <span class="vrc-row-price">{rate.priceLabel ?? euro(rate.price)}</span>
+              <span class="vrc-row-price">{rate.priceLabel ?? `from ${euro(rate.price)}`}</span>
               {rate.note && <span class="vrc-row-note">{rate.note}</span>}
             </label>
           ))}

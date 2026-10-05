@@ -260,7 +260,9 @@ test('a made-up lane in the link carries nothing in', async ({ page }) => {
 
 test('the ODDspace page leads straight into the enquiry', async ({ page }) => {
   await page.goto('/oddspace/');
-  const cta = page.locator('a[href="/oddspace/venue/#booking-form"]');
+  // Every event link on /oddspace opens the form now; this one is the
+  // event card's own button.
+  const cta = page.locator('.odds-enter-card a[href="/oddspace/venue/#booking-form"]');
   await expect(cta).toHaveText(/Get a quote/i);
 });
 

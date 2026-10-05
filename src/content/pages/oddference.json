@@ -18,7 +18,7 @@
     "href": "/work-with-odd/?interest=oddference_corporate#enquiry-form"
   },
   "heroMedia": {
-    "video": "/video/oddference-2026-preview.mp4",
+    "video": "/video/oddference-2026-aftermovie-preview.mp4",
     "poster": "../../assets/video/oddference-2026-poster.jpg"
   },
   "concept": {
@@ -138,7 +138,7 @@
   ],
   "aftermovie": {
     "title": "Watch the ODDference 2026 aftermovie",
-    "label": "Play the aftermovie · 1:31",
+    "label": "Play the aftermovie · 1:36",
     "poster": "../../assets/video/oddference-2026-aftermovie-poster.jpg",
     "film": "/video/oddference-2026-aftermovie.mp4"
   },

@@ -8,9 +8,17 @@ import FilmDialog from './FilmDialog.astro';
 // the next one?". A still from the film and a play button; the whole
 // picture is a link to the full .mp4, which film-player.ts opens with sound
 // in FilmDialog. Nothing moves and nothing of the film loads until it is
-// pressed: the page's hero already plays the short preview, so a second
-// loop here would only repeat it. Without JS the link still plays the file
-// in the browser's own player.
+// pressed: the page's hero already plays this film muted, so a second loop
+// here would only repeat it. Without JS the link still plays the file in the
+// browser's own player.
+//
+// The hero loops (/video/*-aftermovie-preview.mp4, 2026-10-05) are the whole
+// aftermovie at 1280×640 with no sound, replacing 10 s clips, so the hero
+// shows the breadth of the event. The shots with burned-in text are cut
+// because they clash with the hero's h1: ODDfest drops 10.5–16.8 s ("IS TO
+// DARE TO BE") and 71 s to the end (lyric captions, logo); ODDference drops
+// 0–4.4 s (logo), 13.1–15 s ("BE BRAVE"), 16.7–20.16 s ("BE THE ODD ONE")
+// and 94.7 s to the end (logo).
 interface Props {
   title: string;
   /** The button's words, e.g. "Play the aftermovie · 1:31". */

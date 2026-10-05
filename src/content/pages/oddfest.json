@@ -18,7 +18,7 @@
     "href": "/oddfest-2026/"
   },
   "heroMedia": {
-    "video": "/video/oddfest-2026-preview.mp4",
+    "video": "/video/oddfest-2026-aftermovie-preview.mp4",
     "poster": "../../assets/video/oddfest-2026-poster.jpg",
     "sub": "Helsinki's creative week, bringing cultural and creative scenes together."
   },
@@ -202,7 +202,7 @@
   },
   "aftermovie": {
     "title": "Watch the ODDfest 2026 aftermovie",
-    "label": "Play the aftermovie · 1:36",
+    "label": "Play the aftermovie · 1:31",
     "poster": "../../assets/video/oddfest-2026-aftermovie-poster.jpg",
     "film": "/video/oddfest-2026-aftermovie.mp4"
   },
