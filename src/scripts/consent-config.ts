@@ -18,7 +18,7 @@
 // the one a visitor who has seen any other EU cookie banner will recognise.
 
 // Four entries were missing until 2026-09-21 — odd_tickets_cart_v1,
-// odd_tickets_order_token_v1, odd_first_touch_v1 and
+// odd_tickets_order_token_v1, odd_submit_source_v1 and
 // odd_tickets_purchase_reported_v1, all added to the site after the
 // 2026-09-03 rebuild of this declaration and none of them registered here.
 // That is exactly the failure the paragraph above says is a bug, and
@@ -114,10 +114,10 @@ export function buildDeclaration(measurementId: string | null): CategoryDeclarat
           scope: 'Only from the ticket checkout onwards',
         },
         {
-          name: 'odd_first_touch_v1',
+          name: 'odd_submit_source_v1',
           provider: 'ODD (this site)',
           purpose:
-            'Records which page you arrived on and which campaign link brought you, and sends it with a form you choose to submit, so we can tell where an enquiry came from. Written only at the moment you submit a form, never on arrival.',
+            'Records the page you send a form from, any campaign tags in its address and the site that linked to it, and sends them with that form, so we can tell where an enquiry came from. Written only at the moment you submit a form, never on arrival; a second form sent from the same tab reports the same source.',
           retention: 'Until the browser tab is closed',
           kind: 'sessionStorage',
           scope: 'Only when you submit a form',

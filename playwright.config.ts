@@ -113,5 +113,10 @@ export default defineConfig({
       testDir: './tests/mobile-reduced',
       use: { ...devices['iPhone 13'], ...({ reducedMotion: 'reduce' } as const) },
     },
+
+    // The live backend contract smoke (tests/contract, 2026-10-05): real
+    // requests to the production Worker, so it only exists when asked for
+    // (`npm run test:contract`) and never runs in `npm test` or CI.
+    ...(process.env.CONTRACT ? [{ name: 'contract', testDir: './tests/contract' }] : []),
   ],
 });

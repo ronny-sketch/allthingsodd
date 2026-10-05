@@ -22,7 +22,7 @@ test('home tells the story in the order the copy master specifies', async ({ pag
       audience: html.indexOf('Who ODD is for'),
       featuredIn: html.indexOf('Featured in'),
       workWithOdd: html.indexOf('wwo-band'),
-      video: html.indexOf('aftermovie-section'),
+      video: html.indexOf('video-and-pictures'),
       participate: html.indexOf('Ways to take part'),
     };
   });

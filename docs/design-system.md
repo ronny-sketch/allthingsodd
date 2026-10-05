@@ -372,7 +372,12 @@ no-preference)` around the animation declaration itself (not just a
    poster `<img>` as a permanent sibling layer and only fades the `<video>`
    in over it once real playback is confirmed — so reduced motion never
    starts (or even downloads) the video, and a refused autoplay anywhere
-   leaves a photograph rather than an empty frame.
+   leaves a photograph rather than an empty frame. Since 2026-10-04 it plays
+   a video only while it is on screen (it loads 200px early), restarts it
+   when reduced motion is switched off again, pauses every preview while a
+   full film plays (`film-player.ts`), and shows a pause button
+   (`VideoToggle.astro`) once a loop is running: a loop that never ends
+   needs a way to stop it (WCAG 2.2.2).
 
 Anything new that moves needs the same treatment.
 

@@ -17,7 +17,7 @@ import { suppressInterruptions } from './helpers';
 */
 
 const STAGES = [
-  { route: '/', name: 'homepage aftermovie' },
+  { route: '/', name: 'homepage film previews' },
   { route: '/oddfest', name: 'ODDfest hero' },
   { route: '/oddference', name: 'ODDference hero' },
 ];
@@ -59,6 +59,27 @@ async function bringStageIntoView(page: Page) {
   await page.evaluate(() =>
     document.querySelector('[data-video-stage]')?.scrollIntoView({ block: 'center' }),
   );
+}
+
+/*
+  Playwright's WebKit refuses a muted preview's play() until the page has had
+  some input (measured 2026-10-04: the /oddfest hero never played there
+  without it, even held back a second), although WebKit's published policy
+  lets muted video autoplay. So a test that needs real playback presses a key
+  first — Shift does nothing on this site — and holds every preview back
+  until it has, and WebKit plays instead of skipping.
+*/
+async function gotoAfterInput(page: Page, route: string) {
+  let release!: () => void;
+  const held = new Promise<void>((r) => (release = r));
+  await page.route('**/*-preview.mp4', async (r) => {
+    await held;
+    await r.continue();
+  });
+  // Not 'load': a <video> still fetching may hold the load event back.
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  await page.keyboard.press('Shift');
+  release();
 }
 
 for (const { route, name } of STAGES) {
@@ -133,7 +154,7 @@ for (const { route, name } of STAGES) {
     });
 
     test('playback pauses when the stage leaves the viewport', async ({ page }) => {
-      await page.goto(route);
+      await gotoAfterInput(page, route);
       await page.waitForLoadState('load');
       await bringStageIntoView(page);
       await page.waitForTimeout(5000);
@@ -175,6 +196,8 @@ for (const { route, name } of STAGES) {
         expect(s.posterVisible).toBe(true);
         expect(s.videoVisible).toBe(false);
       }
+      // Nothing is moving, so there is nothing to pause.
+      await expect(page.locator('.video-toggle:visible')).toHaveCount(0);
     });
 
     test('an unloadable video keeps the poster', async ({ page }) => {
@@ -191,3 +214,137 @@ for (const { route, name } of STAGES) {
     });
   });
 }
+
+/*
+  2026-10-04: loading and playing are separate decisions (autoplay-video.ts).
+  Each test below failed against the previous single-observer version.
+  A test that needs real playback still skips itself when the engine never
+  started any (a Chromium without H.264, as on the Linux runners).
+*/
+test.describe('the lifecycle around playback', () => {
+  test.beforeEach(async ({ page }) => {
+    await suppressInterruptions(page);
+  });
+
+  const hero = (page: Page) =>
+    page.evaluate(() => {
+      const stage = document.querySelector('.oddfest-hero') as HTMLElement;
+      const v = stage.querySelector('video') as HTMLVideoElement;
+      return {
+        state: stage.dataset.videoState,
+        playing: !v.paused,
+        reduce: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      };
+    });
+
+  // Whether the hero has asked for its preview is read off the network, not
+  // the element: an engine that cannot decode the file drops the src again
+  // (markFailed), so currentSrc can't tell a refused load from no load.
+  test('a preview that finishes loading offscreen does not start playing', async ({ page }) => {
+    // Hold the file until the visitor has scrolled past the hero. The old
+    // code called play() the moment the load finished, wherever they were.
+    // The key press is what lets WebKit play at all (gotoAfterInput), so a
+    // wrongly timed play() fails there too rather than being refused.
+    let release!: () => void;
+    let asked = false;
+    const held = new Promise<void>((r) => (release = r));
+    await page.route('**/oddfest-2026-preview.mp4', async (route) => {
+      asked = true;
+      await held;
+      await route.continue();
+    });
+    await page.goto('/oddfest', { waitUntil: 'domcontentloaded' });
+    await page.keyboard.press('Shift');
+    // On screen until it has asked for the file (a slow CI page may not have
+    // yet), then off screen before the file arrives.
+    await expect.poll(() => asked, 'the hero starts loading while it is on screen').toBe(true);
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await page.waitForTimeout(500);
+    release();
+    await page.waitForTimeout(3000);
+    expect((await hero(page)).playing, 'nothing plays while it is offscreen').toBe(false);
+  });
+
+  test('a hidden tab pauses the preview and showing it again resumes it', async ({ page }) => {
+    await gotoAfterInput(page, '/oddfest');
+    await page.waitForTimeout(5000);
+    test.skip(!(await hero(page)).playing, 'playback never started in this engine');
+
+    const setHidden = (hidden: boolean) =>
+      page.evaluate((h) => {
+        Object.defineProperty(document, 'hidden', { configurable: true, get: () => h });
+        document.dispatchEvent(new Event('visibilitychange'));
+      }, hidden);
+    await setHidden(true);
+    expect((await hero(page)).playing).toBe(false);
+    await setHidden(false);
+    await expect.poll(async () => (await hero(page)).playing).toBe(true);
+  });
+
+  test('reduced motion turned on shows the poster; turned off plays again', async ({ page }) => {
+    await gotoAfterInput(page, '/oddfest');
+    await page.waitForTimeout(5000);
+    test.skip((await hero(page)).state !== 'playing', 'playback never started in this engine');
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    // matchMedia itself, in the page: the guard that the change really landed.
+    await expect.poll(async () => (await hero(page)).reduce).toBe(true);
+    await expect.poll(() => hero(page)).toMatchObject({ state: 'poster', playing: false });
+
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect.poll(async () => (await hero(page)).reduce).toBe(false);
+    // The old code left the poster for good here.
+    await expect
+      .poll(() => hero(page), { timeout: 8000 })
+      .toMatchObject({ state: 'playing', playing: true });
+  });
+
+  test('a page opened under reduced motion loads its preview once that is switched off', async ({
+    page,
+  }) => {
+    let asked = false;
+    await page.route('**/oddfest-2026-preview.mp4', (route) => {
+      asked = true;
+      return route.continue();
+    });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/oddfest');
+    await page.waitForLoadState('load');
+    await page.waitForTimeout(1000);
+    expect(asked, 'nothing is fetched under reduced motion').toBe(false);
+
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect.poll(() => asked, 'switched off, the preview loads').toBe(true);
+  });
+
+  test('the pause button stops a preview, and it stays stopped', async ({ page }) => {
+    await gotoAfterInput(page, '/');
+    await bringStageIntoView(page);
+    await page.waitForTimeout(5000);
+    const first = () =>
+      page.evaluate(
+        () => !(document.querySelector('[data-video-stage] video') as HTMLVideoElement).paused,
+      );
+    test.skip(!(await first()), 'playback never started in this engine');
+
+    const toggle = page.locator('[data-video-stage] .video-toggle').first();
+    await expect(toggle).toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-label', /^Pause preview of ODDfest 2026/);
+    await toggle.click();
+    expect(await first()).toBe(false);
+    await expect(toggle).toHaveAttribute('aria-label', /^Play preview of ODDfest 2026/);
+    // The button sits over a card that is one big link: pressing it must not
+    // also open the film.
+    await expect(page.locator('#film-dialog')).not.toHaveAttribute('open', '');
+
+    // Off screen and back is not a reason to start again.
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(800);
+    await bringStageIntoView(page);
+    await page.waitForTimeout(1500);
+    expect(await first(), 'a paused preview stays paused').toBe(false);
+
+    await toggle.click();
+    await expect.poll(first).toBe(true);
+  });
+});

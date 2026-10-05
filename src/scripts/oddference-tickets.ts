@@ -74,7 +74,11 @@ function applyTier(
   }
 
   // Benefits are backend-owned too — an inclusion added to a ticket type in
-  // D1 should not need a second edit here to become true on the page.
+  // D1 should not need a second edit here to become true on the page. An
+  // empty list from the backend means "not set there", not "no benefits":
+  // the reviewed CMS list stays rather than a blank card. Its items are
+  // styled by PricingGrid.astro's :global(li) rule, since these new ones
+  // carry no Astro scope attribute.
   const benefits = card.querySelector('.pricing-benefits');
   if (benefits && tt.benefits.length > 0) {
     benefits.replaceChildren(

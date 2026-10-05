@@ -1,0 +1,77 @@
+---
+// Pause/play for a decorative looping video (2026-10-04). A loop that plays
+// on its own for longer than five seconds needs a way to stop it (WCAG
+// 2.2.2), and these never end. Sits inside a `data-video-stage`, which has to
+// be positioned; src/scripts/autoplay-video.ts un-hides it once playback is
+// confirmed, so it never appears over a poster that has nothing to pause
+// (reduced motion, refused autoplay, no JS). Its pause outranks everything
+// else: a paused video stays paused through scrolling and tab switches.
+//
+// It sits in the stage's bottom right corner; `--video-toggle-right` moves it
+// in further (the full-bleed heroes keep it clear of SubpageFrame's rails).
+interface Props {
+  /** What it pauses, for the accessible name: "Pause <name>". */
+  name: string;
+}
+const { name } = Astro.props;
+---
+
+<button
+  class="video-toggle"
+  type="button"
+  data-video-toggle
+  data-pause-label={`Pause ${name}`}
+  data-play-label={`Play ${name}`}
+  aria-label={`Pause ${name}`}
+  hidden
+>
+  <svg class="vt-pause" viewBox="0 0 16 16" aria-hidden="true">
+    <rect x="3.5" y="2.5" width="3" height="11" rx="1"></rect>
+    <rect x="9.5" y="2.5" width="3" height="11" rx="1"></rect>
+  </svg>
+  <svg class="vt-play" viewBox="0 0 16 16" aria-hidden="true">
+    <path d="M4.5 2.8v10.4a.8.8 0 0 0 1.2.7l8.4-5.2a.8.8 0 0 0 0-1.4L5.7 2.1a.8.8 0 0 0-1.2.7Z"
+    ></path>
+  </svg>
+</button>
+
+<style>
+  .video-toggle {
+    position: absolute;
+    right: var(--video-toggle-right, var(--space-4));
+    bottom: var(--space-4);
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    /* 44px: the touch-target floor (tests/mobile). */
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--color-paper-35);
+    border-radius: var(--radius-pill);
+    background: rgb(14 9 11 / 55%);
+    color: var(--color-paper);
+    cursor: pointer;
+  }
+  .video-toggle[hidden] {
+    display: none;
+  }
+  .video-toggle svg {
+    width: 1rem;
+    height: 1rem;
+    fill: currentColor;
+  }
+  .vt-play,
+  .video-toggle[data-paused='true'] .vt-pause {
+    display: none;
+  }
+  .video-toggle[data-paused='true'] .vt-play {
+    display: block;
+  }
+  @media (hover: hover) {
+    .video-toggle:hover {
+      background: rgb(14 9 11 / 80%);
+      border-color: var(--color-paper-60);
+    }
+  }
+</style>

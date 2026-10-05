@@ -6,7 +6,7 @@ import { loadCart, saveCart, revalidateCart, cartTotalQuantity, type Cart } from
 import { formatMinor, formatRate, previewOrder, vatSuffix, type OrderPreview } from './money';
 import { EVENT_SLUG, STRIPE_PUBLISHABLE_KEY, salesEnabled } from './config';
 import { loadStripe, type EmbeddedCheckout } from './stripe-loader';
-import { captureFirstTouch } from '../utm';
+import { captureSubmitSource } from '../utm';
 import { trackEvent } from '../analytics';
 import { itemFor, toMajor } from './ecommerce';
 
@@ -237,7 +237,7 @@ if (
         : undefined,
     };
 
-    const result = await createCheckout(EVENT_SLUG, items, buyer, captureFirstTouch());
+    const result = await createCheckout(EVENT_SLUG, items, buyer, captureSubmitSource());
 
     if (!result.ok) {
       status.textContent = '';

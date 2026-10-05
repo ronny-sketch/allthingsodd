@@ -11,12 +11,35 @@ test.beforeEach(async ({ context }) => {
 });
 
 test('is invisible until a mouse moves, then sits on the pointer', async ({ page }) => {
+  // Asserts the order — nothing shows before the first pointer event — not
+  // that no event arrives before our move. CI's Linux Chromium can fire its
+  // own pointer event at the virtual mouse's (0,0) start while the cookie
+  // scrim lands under it, which failed main's deploy on 2026-10-01 (both
+  // attempts) though the same commit passed on its PR and locally.
+  await page.addInitScript(() => {
+    const w = window as unknown as { __sawPointer?: boolean; __early?: string[] };
+    w.__early = [];
+    const saw = () => (w.__sawPointer = true);
+    addEventListener('pointerover', saw, { capture: true });
+    addEventListener('pointermove', saw, { capture: true });
+    new MutationObserver(() => {
+      if (w.__sawPointer) return;
+      if (document.body?.classList.contains('cursor-ready')) w.__early!.push('body.cursor-ready');
+      if (document.querySelector('.cursor.is-on')) w.__early!.push('.cursor.is-on');
+    }).observe(document, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+  });
   await page.goto('/');
   const cursor = page.locator('.cursor');
-  await expect(cursor).toHaveCSS('opacity', '0');
-  await expect(page.locator('body')).not.toHaveClass(/cursor-ready/);
+  await expect(cursor).toBeAttached();
 
   await page.mouse.move(300, 400);
+  expect(await page.evaluate(() => (window as unknown as { __early: string[] }).__early)).toEqual(
+    [],
+  );
   await expect(cursor).toHaveClass(/is-on/);
   await expect(page.locator('body')).toHaveClass(/cursor-ready/);
   await expect(page.locator('main')).toHaveCSS('cursor', 'none');

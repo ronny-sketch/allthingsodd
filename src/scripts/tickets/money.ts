@@ -3,12 +3,25 @@
 // authoritatively. Nothing here is ever sent to checkout.
 import type { CatalogTicketType } from './api';
 
+const SYMBOLS: Record<string, string> = { EUR: '€' };
+
+/**
+ * 29900 → "€299", 4036 → "€40.36", the way the static copy writes prices.
+ * Built by hand rather than with Intl's currency style: 'en-FI' currency
+ * output depends on each engine's locale data (Safari printed "299 €" after
+ * hydration while the static HTML said "€299"). Only the digit grouping
+ * comes from Intl, in en-GB, which every engine renders the same.
+ */
 export function formatMinor(amountMinor: number, currency: string): string {
-  return new Intl.NumberFormat('en-FI', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: amountMinor % 100 === 0 ? 0 : 2,
-  }).format(amountMinor / 100);
+  const digits = amountMinor % 100 === 0 ? 0 : 2;
+  const amount = Math.abs(amountMinor / 100).toLocaleString('en-GB', {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
+  const sign = amountMinor < 0 ? '-' : '';
+  const code = currency.toUpperCase();
+  const symbol = SYMBOLS[code];
+  return symbol ? `${sign}${symbol}${amount}` : `${sign}${amount} ${code}`;
 }
 
 /** 1350 → "13.5%". */

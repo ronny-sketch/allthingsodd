@@ -628,6 +628,11 @@ select:focus-visible {
   pointer-events: none;
   cursor: default;
 }
+/* A submit button waiting for its script, or for its request to finish. */
+.pill:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
 .pill-outline {
   background: transparent;
   color: var(--color-paper);

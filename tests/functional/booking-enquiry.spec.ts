@@ -115,11 +115,17 @@ async function reach(page: Page, step: number, { days = 40 } = {}) {
 
 const fillValid = (page: Page, opts: { days?: number } = {}) => fillFrom(page, 1, opts);
 
+// The Worker's kept-it answers (odd-growth-os booking/handler.ts): the state
+// and this enquiry's own id, which the form checks (submission-outcome.ts).
 const ok = (route: Route, status = 200) =>
   route.fulfill({
     status,
     contentType: 'application/json',
-    body: JSON.stringify({ ok: true, submission_id: 'x' }),
+    body: JSON.stringify({
+      ok: true,
+      status: status === 202 ? 'queued' : 'delivered',
+      submission_id: route.request().postDataJSON().submission_id,
+    }),
   });
 
 async function sendAndCapture(page: Page) {
@@ -277,6 +283,9 @@ test.describe('the newsletter popup', () => {
     await page.clock.install();
     await page.goto(VENUE);
     await expect(page.locator('#bookingEnquiryForm')).toHaveAttribute('data-ready', 'true');
+    // The cookie banner holds the popup off too (newsletter-popup.ts).
+    await page.getByRole('button', { name: 'Reject all' }).click();
+    await expect(page.locator('[data-consent-banner]')).toBeHidden();
     await page.clock.fastForward(20_000);
     await expect(page.locator('#newsletterPopup')).toBeVisible();
   });
@@ -796,6 +805,20 @@ test('a 202 (queued) is treated as success', async ({ page }) => {
   await page.route(SUBMIT, (r) => ok(r, 202));
   await page.click(NEXT);
   await expect(page.locator('#bk-done')).toBeVisible();
+});
+
+test('a 200 that does not say the enquiry was kept is not a thank-you', async ({ page }) => {
+  await openForm(page);
+  await fillValid(page);
+  // The pre-2026-10 reply, and any 2xx without this enquiry's own id.
+  await page.route(SUBMIT, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' }),
+  );
+  await page.click(NEXT);
+  await expect(page.locator('#bookingEnquiryForm .form-status')).toContainText(
+    /did not go through/,
+  );
+  await expect(page.locator('#bk-done')).toBeHidden();
 });
 
 test('a server error keeps the answers and reuses the same submission id on retry', async ({

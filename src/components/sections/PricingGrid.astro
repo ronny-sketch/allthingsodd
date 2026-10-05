@@ -277,13 +277,17 @@ const { items } = Astro.props;
     gap: var(--space-2);
     flex: 1;
   }
-  .pricing-benefits li {
+  /* :global(li): oddference-tickets.ts rebuilds this list from the live
+     catalogue with createElement('li'), and those items never carry Astro's
+     scope attribute. The list itself keeps it, so this still only matches
+     inside .pricing-benefits. */
+  .pricing-benefits :global(li) {
     font: var(--text-body);
     color: var(--color-paper-80);
     padding-left: 1.1rem;
     position: relative;
   }
-  .pricing-benefits li::before {
+  .pricing-benefits :global(li)::before {
     content: '';
     position: absolute;
     left: 0;

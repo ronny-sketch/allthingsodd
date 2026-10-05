@@ -18,8 +18,8 @@
     "href": "/oddfest-2026/"
   },
   "heroMedia": {
-    "video": "/video/oddfest-hero.mp4",
-    "poster": "../../assets/video/oddfest-hero-poster.jpg",
+    "video": "/video/oddfest-2026-preview.mp4",
+    "poster": "../../assets/video/oddfest-2026-poster.jpg",
     "sub": "Helsinki's creative week, bringing cultural and creative scenes together."
   },
   "whatItIs": {
@@ -199,6 +199,12 @@
         "description": "City of Helsinki · Finnish Cultural Foundation · Alfred Kordelin Foundation · Yksityisyrittäjäin Säätiö · Amos Anderson Foundation · Bo and Allan Hjelt Art Foundation"
       }
     ]
+  },
+  "aftermovie": {
+    "title": "Watch the ODDfest 2026 aftermovie",
+    "label": "Play the aftermovie · 1:36",
+    "poster": "../../assets/video/oddfest-2026-aftermovie-poster.jpg",
+    "film": "/video/oddfest-2026-aftermovie.mp4"
   },
   "hostCta": {
     "eyebrow": "ODDfest 2027",

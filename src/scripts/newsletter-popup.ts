@@ -26,10 +26,14 @@ const SUPPRESSED_PATHS = [
   '/oddspace/event-info-pack',
   '/oddspace/code-of-conduct',
 ];
-const isSuppressed = SUPPRESSED_PATHS.some((path) => {
-  const normalized = window.location.pathname.replace(/\/+$/, '') || '/';
-  return normalized === path;
-});
+// Ticket buying (2026-10-05): /tickets and everything under it — the
+// storefront, the embedded Stripe checkout and the confirmation page are one
+// purchase in progress, and nothing may sit on top of a payment form.
+const normalizedPath = window.location.pathname.replace(/\/+$/, '') || '/';
+const isSuppressed =
+  SUPPRESSED_PATHS.includes(normalizedPath) ||
+  normalizedPath === '/tickets' ||
+  normalizedPath.startsWith('/tickets/');
 
 const backdrop = document.getElementById('newsletterPopupBackdrop');
 const popup = document.getElementById('newsletterPopup');
@@ -140,17 +144,39 @@ if (!isSuppressed && backdrop && popup && closeBtn) {
 
     // A page can hold the popup off while something more important is on
     // screen (2026-09-24): any visible element with
-    // `data-suppress-newsletter-popup`. The ODDspace booking enquiry dialog
-    // carries it, so an event organiser is never interrupted mid-enquiry. A
-    // <dialog> counts while it is open; anything else while it has a box on
-    // screen (getClientRects, not offsetParent, which is null for anything
-    // position: fixed). The check runs when the timer fires, so something
-    // opened after page load still counts. Nothing is marked as seen, so the
-    // popup can still appear on a later page.
+    // `data-suppress-newsletter-popup`. The ODDspace booking and event idea
+    // dialogs, the film dialog, the consent banner and the mobile menu carry
+    // it, so nobody is interrupted mid-enquiry, mid-film, mid-choice or
+    // mid-navigation, and no two overlays fight over focus. A <dialog> counts
+    // while it is open; anything else while it has a box on screen
+    // (getClientRects, not offsetParent, which is null for anything
+    // position: fixed) and is not `visibility: hidden`, which is how the
+    // banner and the menu put themselves away (2026-10-05). Someone typing in
+    // a form field counts too: on a phone that is the on-screen keyboard
+    // being up, and the field is the higher-intent thing. The check runs
+    // when the timer fires, so something opened after page load still
+    // counts. Nothing is marked as seen, so the popup can still appear on a
+    // later page.
+    const shown = (el: HTMLElement) =>
+      el instanceof HTMLDialogElement
+        ? el.open
+        : !el.hidden &&
+          el.getClientRects().length > 0 &&
+          getComputedStyle(el).visibility !== 'hidden';
+    const typing = () => {
+      const el = document.activeElement;
+      return (
+        el instanceof HTMLTextAreaElement ||
+        el instanceof HTMLSelectElement ||
+        (el instanceof HTMLInputElement &&
+          !['button', 'checkbox', 'radio', 'submit', 'reset'].includes(el.type)) ||
+        (el instanceof HTMLElement && el.isContentEditable)
+      );
+    };
     const suppressedNow = () =>
+      typing() ||
       Array.from(document.querySelectorAll<HTMLElement>('[data-suppress-newsletter-popup]')).some(
-        (el) =>
-          el instanceof HTMLDialogElement ? el.open : !el.hidden && el.getClientRects().length > 0,
+        shown,
       );
     setTimeout(() => {
       if (!suppressedNow()) open();

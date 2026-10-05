@@ -389,6 +389,18 @@ const pages = defineCollection({
       image: image().optional(),
     });
 
+    // One aftermovie shown big on its own event page (2026-10-05,
+    // AftermovieFeature.astro): /oddference and /oddfest. `film` is the full
+    // film with sound under public/video/, loaded only when someone presses
+    // play; `poster` is a still from that film; `label` is the button's
+    // words. Leave it out and the section is not rendered.
+    const aftermovieFeature = z.object({
+      title: z.string(),
+      label: z.string(),
+      poster: image(),
+      film: z.string().regex(/^\/video\/[a-z0-9-]+\.mp4$/),
+    });
+
     // Shared by ODDfest/ODDference/ODDagency/ODDspace — the rail+hero shape
     // that made them "subpages" in the first place. Each extends this with
     // the fields that are actually different between them, rather than all
@@ -527,7 +539,28 @@ const pages = defineCollection({
         // "doing") while every field around it was updated.
         participateTitle: z.string().optional(),
         participate: z.array(cta),
-        aftermovie: z.object({ poster: image(), video: z.string() }),
+        // "ODDfest 2026 in video and pictures" (2026-10-04), replacing the
+        // single `aftermovie` loop: one card per film, then the photo bank.
+        // `preview` is the short muted loop the card plays (the same file
+        // as that page's hero); `film` is the full film with sound, fetched
+        // only when someone presses the card. See VideoAndPictures.astro.
+        videoAndPictures: z.object({
+          title: z.string(),
+          films: z.array(
+            z.object({
+              label: z.string(),
+              poster: image(),
+              preview: z.string(),
+              film: z.string(),
+            }),
+          ),
+          photoBank: z.object({
+            label: z.string(),
+            href: z.url({ protocol: /^https$/ }),
+            image: image(),
+            alt: z.string(),
+          }),
+        }),
       }),
 
       // The 2027 ODDfest rebuild: a distributed city-wide creative week, not
@@ -638,6 +671,9 @@ const pages = defineCollection({
           body: z.string(),
           groups: z.array(audienceItem),
         }),
+        // The ODDfest 2026 aftermovie, just before the host ask below
+        // (2026-10-05); see AftermovieFeature.astro.
+        aftermovie: aftermovieFeature.optional(),
         // "Want your event in the next one?" (2026-09-14): the proof chapter's
         // closing ask, pointing back at the same submission route as "How to
         // join". A quieter band than `join`, so the page keeps one loudest ask.
@@ -920,19 +956,10 @@ const pages = defineCollection({
         // settled about 2027 — everything still open (exact dates, venues,
         // the programme) says so rather than being filled in.
         faq: z.array(faqItem),
-        // No dedicated ODDference aftermovie exists yet (checked the repo
-        // and the live 2026 oddfest.co/oddference/ page — neither has one).
-        // Ships undefined; the section doesn't render until Ronny supplies
-        // real footage. Deliberately not the homepage's Aftermovie.astro
-        // (a fixed 3-brand marquee built for the generic home-aftermovie.mp4
-        // — reusing it here would either mislabel that generic video as
-        // ODDference's or fork the marquee for no real content to show).
-        aftermovie: z
-          .object({
-            poster: image(),
-            video: z.string(),
-          })
-          .optional(),
+        // The ODDference 2026 aftermovie, after the session highlights
+        // (2026-10-05). Replaced a bare `<video autoplay>` block that skipped
+        // autoplay-video.ts; see AftermovieFeature.astro.
+        aftermovie: aftermovieFeature.optional(),
         // No ODDference-specific partner/collaborator list could be
         // verified (the live 2026 page has no partners section; global
         // partners/press are sitewide and undated, not attributable to

@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { CATALOG_ROUTE } from '../catalog-fixture';
 
 // Every real route in the rebuilt site. Screenshots are checked into
 // tests/visual/pages.spec.ts-snapshots/ as the visual-regression baseline —
@@ -112,6 +113,17 @@ for (const route of ROUTES) {
     // already never sees it twice; doesn't change what a first-time visitor
     // sees in production.
     await page.addInitScript(() => sessionStorage.setItem('oddNewsletterPopupSeen', '1'));
+    // Fixed inputs (2026-10-05, finding F16). The motion state is set on the
+    // page, because the project-level `reducedMotion` never reached the
+    // browser (see scrollThroughPage below), so these baselines used to be
+    // captured mid-animation. The /oddference ticket cards used to hydrate
+    // from the production catalogue mid-capture, which changed the
+    // screenshot whenever the live prices or states did; the request is
+    // refused here, so the cards show the content an editor wrote (their
+    // designed offline state). Hydration itself is tested against a fixed
+    // catalogue in functional/oddference-tickets.spec.ts.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.route(CATALOG_ROUTE, (r) => r.abort());
     await page.goto(route);
     // Not 'networkidle': WarpingText's per-frame canvas.toDataURL() call (see
     // src/scripts/warping-text.ts) is heavy enough that on a page carrying an
@@ -178,7 +190,7 @@ for (const route of ROUTES) {
           // ODDagency — regardless of any real layout change. The text
           // content itself still has its own coverage (the h1-count
           // assertion above, functional nav/heading tests).
-          '.mosaic, .news-panel img, .four-card-bg, .aftermovie-full, .oddfest-hero video, .oddfest-hero img, .oddf-hero-video video, .oddf-hero-video img, .photo-break img, .odds-calendar-embed, .warping-text',
+          '.mosaic, .news-panel img, .four-card-bg, .vp-media, .video-toggle, .oddfest-hero video, .oddfest-hero img, .oddf-hero-video video, .oddf-hero-video img, .photo-break img, .odds-calendar-embed, .warping-text',
         ),
       ],
     });
