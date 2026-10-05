@@ -256,13 +256,21 @@ jobs:
     # content edit from CloudCannon lands here as a normal push to main, same
     # as a code change, so this is what actually closes the loop from "edit
     # in CloudCannon" to "live on allthingsodd.co". See docs/deployment.md.
-    # `!failure() && !cancelled()` rather than a bare condition: `functional` is
-    # skipped outright on a docs-only change, and a skipped dependency would
-    # otherwise skip the deploy with it. A *failed* one still blocks — that is
-    # the guarantee this job exists to keep.
+    # Each dependency's result is checked by name rather than with a bare
+    # `!failure()`: `functional` is skipped outright on a docs or content
+    # change, and a skipped dependency would otherwise skip the deploy with
+    # it — but a *cancelled* job is neither a failure nor a cancelled
+    # workflow. On 2026-10-05 (run 37364391784) "Decide test scope" was
+    # cancelled during a GitHub Actions outage, `functional` skipped, and the
+    # site published with no browser tests. So: scope and checks must have
+    # succeeded, and functional must have passed or been skipped — which, once
+    # scope has succeeded, only its own docs/content rule can do.
     if: >-
       github.ref == 'refs/heads/main' && github.event_name == 'push'
-      && !failure() && !cancelled()
+      && !cancelled()
+      && needs.scope.result == 'success'
+      && needs.checks.result == 'success'
+      && (needs.functional.result == 'success' || needs.functional.result == 'skipped')
     env:
       # The canonical production host, cut over from odd-field-guide.surge.sh
       # on 2026-09-03. Published with an explicit https:// scheme, which is
