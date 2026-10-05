@@ -6,10 +6,10 @@ setup collecting steadily and reporting almost nothing usable.
 
 ## The property
 
-|                |                                                                 |
-| -------------- | --------------------------------------------------------------- |
-| Measurement ID | `G-9Q90CQMBK8`                                                  |
-| Property       | `551982005`                                                     |
+|                |                                                                         |
+| -------------- | ----------------------------------------------------------------------- |
+| Measurement ID | `G-9Q90CQMBK8`                                                          |
+| Property       | `551982005`                                                             |
 | Stream         | "All things ODD webpage" (`15519249031`), URL `https://allthingsodd.co` |
 
 **2026-10-05: back on property `551982005`.** Around 2026-09-22 the launch
