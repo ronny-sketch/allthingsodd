@@ -562,8 +562,36 @@ while implementing a website feature.
    exist, stop and classify them before continuing.
 5. Don't silently stash unrelated work and continue.
 6. Never deploy from a dirty tree.
-7. Prefer PR → main for production changes — a push to `main` auto-deploys,
-   see Deployment workflow above.
+7. Copy, content, an asset swap or a one-line fix: commit straight to
+   `main`. Anything structural, or anything whose reasoning is worth
+   keeping: a PR. Decided 2026-09-21, see
+   `docs/deployment.md#pr-or-straight-to-main`.
+
+## Shipping an edit
+
+Anyone with write access to the repo (Ronny, Aki) ships their own edits.
+When the person you are working with asks for an edit to go live, that
+request is the approval: carry it all the way to live, don't stop at a
+branch or a draft PR to ask again.
+
+1. `git switch main && git pull` (and `npm ci` if `node_modules` is missing).
+2. Make the edit. Copy lives in `src/content/**/*.json`, see `docs/editing.md`.
+3. `npm run quality`, the same gate CI's `checks` job runs.
+4. `git commit` and `git push origin main`. For a PR instead:
+   `gh pr create --fill`, then `gh pr merge --merge` once it's green.
+   Merging is the deploy.
+5. `gh run watch $(gh run list --branch main --event push -L 1 --json databaseId --jq '.[0].databaseId')`.
+   Green means live, about 5 minutes for a content edit.
+6. Red means **not live**, and a later green nightly run does not deploy
+   it. A `functional` failure on a page you didn't touch is usually a
+   flake: `gh run rerun <id> --failed` (or "Re-run failed jobs" on GitHub).
+   A real failure: fix it and push again.
+7. Confirm: `curl -s https://allthingsodd.co/build-info.json` shows your
+   commit's SHA.
+
+An agent that can only open a PR (ChatGPT/Codex in the browser, Claude on
+the web) opens it with a clear title; the person merges it on GitHub, and
+the Merge button is the deploy. Then step 5.
 
 ## Doctrine
 
@@ -571,9 +599,10 @@ while implementing a website feature.
   copy; a human sends it. This repo has no CRM writes of its own (see
   "Growth OS integration" above) — that rule lives fully in
   `../odd-growth-os/CLAUDE.md` now, this is the website-side echo of it.
-- **No destructive production actions without explicit approval** — this
-  includes DNS changes and deploying to `main` (which auto-publishes to
-  the live site, see Deployment workflow above).
+- **No destructive production actions without explicit approval**: DNS
+  changes, force-pushing or deleting branches, secrets, the Surge account.
+  A normal push or merge to `main` is not one of them. It is how an edit
+  ships, see "Shipping an edit" above.
 - The broader source-of-truth/MCP-control-plane/no-new-SaaS doctrine that
   used to live here pre-split now lives in `../odd-growth-os/CLAUDE.md`,
   where the systems it governs (Attio, beehiiv, Notion) actually live.
