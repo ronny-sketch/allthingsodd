@@ -8,9 +8,16 @@ setup collecting steadily and reporting almost nothing usable.
 
 |                |                                                                 |
 | -------------- | --------------------------------------------------------------- |
-| Measurement ID | `G-FCGTBXT9KS`                                                  |
-| Property       | `555204778` ("All things ODD")                                  |
-| Stream         | "All things ODD" (`15816308905`), URL `https://allthingsodd.co` |
+| Measurement ID | `G-9Q90CQMBK8`                                                  |
+| Property       | `551982005`                                                     |
+| Stream         | "All things ODD webpage" (`15519249031`), URL `https://allthingsodd.co` |
+
+**2026-10-05: back on property `551982005`.** Around 2026-09-22 the launch
+tag `G-FCGTBXT9KS` was combined into Google tag `G-9Q90CQMBK8`. Its own
+gtag.js then returned 404, so nothing was recorded 22 Sept – 5 Oct. Its
+stream was deleted from `555204778` on 5 Oct, and the old stream was renamed
+and repointed at allthingsodd.co. Text below that calls `555204778` the live
+property predates this.
 
 The ID lives in exactly one place, `src/scripts/analytics-config.ts`. It is
 host-independent, which is why the 2026-09-03 move from

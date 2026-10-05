@@ -1,5 +1,12 @@
 // Single source of truth for the GA4 property this site reports to.
 //
+// 2026-10-05 — CURRENT, overrides the history below: stream "All things ODD
+// webpage" (15519249031, URL https://allthingsodd.co) on property 551982005.
+// The launch stream G-FCGTBXT9KS was combined into this Google tag around
+// 2026-09-22, after which its own gtag.js returned 404 and nothing was
+// recorded 22 Sept – 5 Oct; its stream was then deleted from 555204778.
+// Before changing this ID, check gtag/js?id=<ID> returns 200.
+//
 // Stream "All things ODD" (stream ID 15816308905) on property 555204778,
 // created 2026-09-21 for the allthingsodd.co launch with the stream URL
 // correct from the start.
@@ -33,4 +40,4 @@
 // Search Console is not analytics tracking and shares nothing with this
 // file but a vendor; keep the two responsibilities apart when reading
 // docs/analytics.md.
-export const GA_MEASUREMENT_ID: string | null = 'G-FCGTBXT9KS';
+export const GA_MEASUREMENT_ID: string | null = 'G-9Q90CQMBK8';

@@ -480,6 +480,11 @@ short version a future agent needs before touching `/tickets/*`):
   only place the pre-launch traffic exists, and Growth OS reads both IDs so
   the numbers stay continuous. Not to be confused with `G-40BNRGTY1T`
   (oddfest.co), a separate live site with its own GTM container.
+  **2026-10-05: live ID is `G-9Q90CQMBK8`** (property `551982005`, stream
+  "All things ODD webpage"). `G-FCGTBXT9KS` was combined into it ~22 Sept,
+  404'd from then (zero hits 22 Sept – 5 Oct), and its stream is deleted. Check
+  `curl -o /dev/null -w '%{http_code}' 'https://www.googletagmanager.com/gtag/js?id=<ID>'`
+  returns 200 before ever changing the ID.
   It still ships the "inert until configured" contract: a `null` ID collapses
   the statistics category out of the banner entirely. `trackEvent()` is
   called from the two forms and the ticketing funnel and is a safe no-op
