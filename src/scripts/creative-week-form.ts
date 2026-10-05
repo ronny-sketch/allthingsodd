@@ -26,7 +26,7 @@
 // ×. The answers live in the page until it is reloaded; nothing is stored in
 // the browser.
 import { API_BASE } from './api-base';
-import { captureFirstTouch } from './utm';
+import { captureSubmitSource } from './utm';
 import { trackEvent } from './analytics';
 import {
   readOutcome,
@@ -70,7 +70,8 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
   const nextBtn = form.querySelector<HTMLButtonElement>('.cw-next');
   const steps = Array.from(form.querySelectorAll<HTMLElement>('.cw-step[data-step]'));
   const numbered = steps.filter((s) => s.dataset.step !== 'review');
-  const submissionId = newSubmissionId();
+  // `let`: after a 409 conflict the next Send is a new idea under a new id.
+  let submissionId = newSubmissionId();
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let sending = false;
   let sent = false;
@@ -122,7 +123,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
   // --- From questions to payload ------------------------------------------
 
   const sourceOf = () => {
-    const touch = captureFirstTouch();
+    const touch = captureSubmitSource();
     const utm = [
       touch.utm_source && `utm_source=${touch.utm_source}`,
       touch.utm_medium && `utm_medium=${touch.utm_medium}`,
@@ -583,6 +584,19 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
         true,
       );
       trackEvent('creative_week_error', { ...tracked, error_kind: 'rate_limited' });
+      return;
+    }
+    if (outcome.kind === 'conflict') {
+      // An earlier try did reach us, with the answers as they were then, and
+      // that copy is the one the team sees. Say so, and let the visitor
+      // choose: Send again files this version as a separate idea.
+      const ref = submissionId.slice(0, 8).toUpperCase();
+      submissionId = newSubmissionId();
+      setStatus(
+        `We already have an earlier version of this idea (reference ${ref}), so these changes were not added to it. Press Send again to send this version as a separate idea, or email ${FALLBACK_EMAIL} the changes.`,
+        true,
+      );
+      trackEvent('creative_week_error', { ...tracked, error_kind: 'conflict' });
       return;
     }
     setStatus(

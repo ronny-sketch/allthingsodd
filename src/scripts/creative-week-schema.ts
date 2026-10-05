@@ -309,31 +309,6 @@ export function validateCreativeWeek(p: CreativeWeekPayload): FieldErrors {
   return e;
 }
 
-/**
- * What the Worker's answer means, read strictly: success only for the three
- * states the Worker says it keeps the idea in, with this submission's own id
- * echoed back. Anything else, including a 2xx that does not say so, is a
- * failure the visitor can retry.
- */
-export type Outcome =
-  | { kind: 'delivered' | 'queued' | 'emailed' }
-  | { kind: 'invalid'; errors: FieldErrors }
-  | { kind: 'rate_limited' }
-  | { kind: 'failed' };
-
-const SUCCESS: Record<number, string[]> = { 200: ['delivered'], 202: ['queued', 'emailed'] };
-
-export function readOutcome(status: number | null, body: unknown, submissionId: string): Outcome {
-  const b = (body && typeof body === 'object' ? body : {}) as Record<string, unknown>;
-  if (status !== null && SUCCESS[status]?.includes(b.status as string)) {
-    if (b.ok === true && b.submission_id === submissionId) {
-      return { kind: b.status as 'delivered' | 'queued' | 'emailed' };
-    }
-    return { kind: 'failed' };
-  }
-  if (status === 400 && b.status === 'invalid' && b.errors && typeof b.errors === 'object') {
-    return { kind: 'invalid', errors: b.errors as FieldErrors };
-  }
-  if (status === 429) return { kind: 'rate_limited' };
-  return { kind: 'failed' };
-}
+// The Worker's answer is read by the shared strict reader, which the quote
+// form uses too. Re-exported so this module stays the form's one import.
+export { readOutcome, type Outcome } from './submission-outcome';
