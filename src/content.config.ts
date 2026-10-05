@@ -329,14 +329,14 @@ const pages = defineCollection({
       image: image().optional(),
     });
 
-    // Work with ODD's four entry points — platformCard plus a number ("01"–
-    // "04") and a one-line "stage" ("Come in." / "Stay involved." / ...).
+    // Work with ODD's entry points — platformCard plus a number ("01"–"03").
     // These aren't sequential funnel steps an organisation must pass through
-    // in order (any card can be the starting point) — the number/stage pair
-    // is a lightweight progression cue for scanning the row, not a gate.
+    // in order (any card can be the starting point) — the number is a
+    // lightweight cue for scanning the row, not a gate. The one-line "stage"
+    // under it ("Come in" / "Build inside ODD" / ...) went on 2026-10-05
+    // (Ronny).
     const pathwayCard = platformCard.extend({
       number: z.string(),
-      stage: z.string(),
     });
 
     // Work with ODD's "What we've built with our partners" references
@@ -1472,22 +1472,17 @@ const pages = defineCollection({
         // work-with-odd.astro).
         whatWeDo: sectionIntro,
         pathways: z.array(pathwayCard),
-        // ODDfest's editions so far (2026-10-05): one box per year with its
-        // facts, numbers and several links (film, photos, report). Not a
-        // CaseGrid card, because a case card is one link and an edition has
-        // three. Numbers come from allthingsodd.co's own media page and the
-        // 2026 thank-you page, nowhere else.
-        editionsIntro: z.object({ eyebrow: z.string(), headline: z.string() }),
-        editions: z.array(
-          z.object({
-            title: z.string(),
-            meta: z.string(),
-            summary: z.string(),
-            image: image(),
-            metrics: z.array(z.object({ value: z.string(), label: z.string() })),
-            links: z.array(linkCta),
-          }),
-        ),
+        // "Two years of ODD, in numbers" (2026-10-05): the same shape and the
+        // same four figures as About's `impact` (and Home's "Already in
+        // motion") — change one and change the others. It replaced two
+        // per-edition ODDfest boxes, which Ronny found messy. `ctas` are the
+        // Impact Report and the aftermovies.
+        impact: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          items: z.array(proofItem),
+          ctas: z.array(linkCta),
+        }),
         // The references section's own heading (2026-09-14) — was hardcoded
         // as "Selected work" / "Things we've built together" in the page
         // markup. `body` is an optional one-line lede under it.
