@@ -107,7 +107,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: scope
     # Docs-only changes never reach a browser.
-    if: needs.scope.outputs.mode != 'docs'
+    if: needs.scope.outputs.mode != 'docs' && needs.scope.outputs.mode != 'content'
     # Six runners in parallel rather than 838 tests in series on one. This repo
     # is public, so Actions minutes are unmetered and extra runners are free —
     # the only real limit is that each shard pays ~1 minute of fixed setup, so
