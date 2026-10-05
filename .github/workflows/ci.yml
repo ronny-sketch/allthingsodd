@@ -498,8 +498,8 @@ jobs:
             esac
           }
 
-          check_legacy_domain oddfest.co       https://allthingsodd.co/oddfest  || fail=1
-          check_legacy_domain www.oddfest.co   https://allthingsodd.co/oddfest  || fail=1
+          check_legacy_domain oddfest.co       https://allthingsodd.co/         || fail=1
+          check_legacy_domain www.oddfest.co   https://allthingsodd.co/         || fail=1
           check_legacy_domain oddspace.co      https://allthingsodd.co/oddspace || fail=1
           check_legacy_domain www.oddspace.co  https://allthingsodd.co/oddspace || fail=1
 

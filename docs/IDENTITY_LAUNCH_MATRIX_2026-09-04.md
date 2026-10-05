@@ -181,7 +181,7 @@ Taken from `oddfest.co`'s own sitemap and link graph (237 URLs) and
 
 | Old path                                                                               | Destination   | Why                                                                                                             |
 | -------------------------------------------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------- |
-| `/`                                                                                    | `/oddfest`    |                                                                                                                 |
+| `/`                                                                                    | `/`           | Decided 2026-10-05: the bare domain opens the ODD homepage, as set in Vercel                                    |
 | `/about/` (already 308s to the next row) and `/about-creative-festival-helsinki-2026/` | `/oddfest`    |                                                                                                                 |
 | `/creative-week/`                                                                      | `/oddfest`    | Creative Week is what `/oddfest` now is                                                                         |
 | `/info/`                                                                               | `/oddfest`    |                                                                                                                 |
