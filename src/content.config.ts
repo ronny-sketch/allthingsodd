@@ -593,19 +593,14 @@ const pages = defineCollection({
         // is `whatItIs` and `ownership` directly below the hero, at length.
         secondaryCta: linkCta.optional(),
         whatItIs: sectionIntro,
-        // The two ways to look back at ODDfest 2026, as a pair of buttons
-        // under `whatItIs` (2026-09-11): the thank-you page at /oddfest-2026/
-        // (a real route since 2026-09-17 — the `oddfest2026` template), and
-        // oddfest.co, the 2026 site still live on its own domain. Both are
-        // history rather than the current offer, which is why they sit under
-        // the explainer instead of competing with the hero's own CTAs.
-        // `external: true` on a link opens it in a new tab — set it on
-        // oddfest.co (a different domain) and leave it off the archived
-        // page, which is on this site and carries its own way back.
+        // The way to look back at ODDfest 2026, a button under `whatItIs`:
+        // the thank-you page at /oddfest-2026/. History rather than the
+        // current offer, so it sits under the explainer instead of competing
+        // with the hero's CTAs. The second button, to the old oddfest.co
+        // site, went 2026-10-05: that domain now redirects here.
         lookBack: z.object({
           label: z.string(),
           thankYou: linkCta,
-          oldSite: linkCta,
         }),
         // The host/ODD responsibility split. Was `sharedLayer` until
         // 2026-09-11; renamed because the thing it was named after is gone.
@@ -1516,44 +1511,6 @@ const pages = defineCollection({
         logos: z.array(z.object({ name: z.string(), logo: image() })),
         network: z.object({ eyebrow: z.string(), title: z.string() }),
         contact: z.object({ eyebrow: z.string(), title: z.string(), body: z.string() }),
-      }),
-
-      z.object({
-        _template: z.literal('membership'),
-        seo,
-        eyebrow: z.string(),
-        title: z.string(),
-        intro: z.string(),
-        // NEW SECTION (2026-09-02 copywriting pass) — "Why this exists":
-        // explains the need for year-round continuity without promising
-        // benefits that are not yet designed.
-        whyThisExists: sectionIntro,
-        // "What we are shaping" — SIMPLIFIED (2026-09-02 copywriting pass)
-        // from `whatItIs` + the three-card `whoItsFor` audience list + the
-        // three-card `includes` benefit grid down to one deliberately small
-        // paragraph. The doc is explicit: "Remove the current three
-        // audience cards and three benefit cards until the offer, cadence,
-        // tiers and annual price are actually approved. This page can be
-        // deliberately small." Removed rather than left as stale CMS
-        // controls, same convention as the 2026-08-31 pass this section
-        // itself replaces — re-add a richer version once ODDnetwork's real
-        // model is settled.
-        whatWeAreShaping: sectionIntro,
-        // Optional so tiers can be dropped from the page entirely until
-        // pricing is final — see PricingGrid.astro.
-        tiers: z.array(pricingTier).optional(),
-        // No "network" field here (unlike About's/Work with ODD's) — this
-        // page's own shared-partner-logo-strip section used to reuse the
-        // sitewide sponsor list under a "members" heading, which is
-        // misleading before any real member organisations exist (a
-        // launch-readiness pass caught this: don't present ODD's ODDfest
-        // partners as ODDmembership members). Removed rather than left
-        // empty — re-add it, and its rendering in membership.astro, once
-        // real members exist to show under it honestly.
-        // Named "finalCta" (not "contact") — this is a single cta-shaped
-        // closing CTA, a different shape from Work with ODD's "contact"
-        // (an eyebrow/title/body intro above an embedded form).
-        finalCta: cta,
       }),
 
       z.object({

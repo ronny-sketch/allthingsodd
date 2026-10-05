@@ -54,7 +54,7 @@ test('hero mosaic starts swapping when reduced motion is turned off after load',
 
 test('warping text falls back to the plain heading and back again', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await page.goto('/membership/');
+  await page.goto('/about/');
   const box = page.locator('[data-warping-text]').first();
   const fallback = box.locator('[data-warping-fallback]');
   const svg = box.locator('.warping-svg');
@@ -73,7 +73,7 @@ test('warping text falls back to the plain heading and back again', async ({ pag
 
 test('warping text is built when reduced motion is turned off after load', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/membership/');
+  await page.goto('/about/');
   const box = page.locator('[data-warping-text]').first();
   await expect(box.locator('[data-warping-fallback]')).toHaveCSS('opacity', '1');
   await expect(box.locator('.warping-svg')).toHaveCount(0);

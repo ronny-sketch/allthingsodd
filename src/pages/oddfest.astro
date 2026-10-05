@@ -115,14 +115,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
         >
           {page.lookBack.thankYou.label}
         </Pill>
-        <Pill
-          href={page.lookBack.oldSite.href}
-          variant="outline"
-          magnetic
-          target={page.lookBack.oldSite.external ? '_blank' : undefined}
-        >
-          {page.lookBack.oldSite.label}
-        </Pill>
       </div>
     </div>
 
@@ -339,8 +331,8 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     }
   }
 
-  /* "Look back at 2026" — the two archive buttons under the explainer.
-     Deliberately quiet (both outline, small label above) so they read as a
+  /* "Look back at 2026" — the archive button under the explainer.
+     Deliberately quiet (outline, small label above) so it reads as a
      footnote to "What ODDfest is" rather than a second offer competing with
      the hero's CTAs or the ask further down.
 

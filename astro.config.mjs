@@ -16,6 +16,10 @@ export default defineConfig({
   // (a static file Astro copies verbatim) — update its Sitemap: line too.
   site: 'https://allthingsodd.co',
 
+  // /membership was the ODDnetwork page, retired 2026-10-05. Old links land
+  // on the membership that exists: ODDspace's.
+  redirects: { '/membership': '/oddspace/membership/' },
+
   integrations: [
     sitemap({
       // The two transient ticketing pages carry <meta name="robots"

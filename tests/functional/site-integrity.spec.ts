@@ -18,7 +18,6 @@ const ROUTES = [
   '/oddspace/code-of-conduct',
   '/oddstudio',
   '/work-with-odd',
-  '/membership',
   '/about',
   '/media',
   '/contact',

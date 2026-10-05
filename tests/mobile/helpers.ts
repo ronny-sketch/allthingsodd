@@ -13,7 +13,6 @@ export const ROUTES = [
   '/oddagency',
   '/about',
   '/media',
-  '/membership',
   '/contact',
   '/brand-book',
   '/tickets',
