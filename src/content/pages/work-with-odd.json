@@ -48,7 +48,6 @@
   "pathways": [
     {
       "number": "01",
-      "stage": "Come in",
       "meta": "The easiest way to experience ODD",
       "title": "ODDference",
       "body": "The easiest way to experience ODD professionally. Come yourself, bring colleagues, or build something around the event with us.",
@@ -58,7 +57,6 @@
     },
     {
       "number": "02",
-      "stage": "Build inside ODD",
       "meta": "For ODDference, ODDfest, ODDspace and beyond",
       "title": "Partnerships",
       "body": "Bring resources, expertise or an idea into ODDference, ODDfest, ODDspace or another ODD context when there is a clear reason to build something together.",
@@ -68,7 +66,6 @@
     },
     {
       "number": "03",
-      "stage": "Bring us a project",
       "meta": "A concrete brief, question or idea",
       "title": "ODDagency",
       "body": "For briefs and questions that need cultural understanding, concept development and a project-specific team.",
@@ -77,89 +74,55 @@
       "image": "../../assets/programs/oddagency-pathway.jpg"
     }
   ],
-  "editionsIntro": {
-    "eyebrow": "ODDfest so far",
-    "headline": "Two editions. Here’s what happened."
+  "impact": {
+    "eyebrow": "2025–2026",
+    "title": "Two years of ODD, in numbers.",
+    "items": [
+      {
+        "value": "5,000+",
+        "label": "Participants"
+      },
+      {
+        "value": "500+",
+        "label": "Collaborators"
+      },
+      {
+        "value": "100+",
+        "label": "Partners"
+      },
+      {
+        "value": "€400K+",
+        "label": "Directly into creative & cultural industries",
+        "srValue": "More than €400,000"
+      }
+    ],
+    "ctas": [
+      {
+        "label": "2025 Impact Report",
+        "href": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ",
+        "external": true
+      },
+      {
+        "label": "ODDfest 2025 aftermovie",
+        "href": "https://www.youtube.com/watch?v=lBM1Lc3noQE",
+        "external": true
+      },
+      {
+        "label": "ODDfest 2026 aftermovie",
+        "href": "/video/oddfest-2026-aftermovie.mp4",
+        "external": true
+      },
+      {
+        "label": "ODDference 2026 aftermovie",
+        "href": "/video/oddference-2026-aftermovie.mp4",
+        "external": true
+      }
+    ]
   },
-  "editions": [
-    {
-      "title": "ODDfest 2025",
-      "meta": "6–7 June 2025 · Lasipalatsikortteli, Helsinki · Theme: Chaos & Acceleration",
-      "summary": "The first one. Two days, eight stages and one city block in the middle of Helsinki, where talks, music, art and business shared the same yard.",
-      "image": "../../assets/cases/oddfest-2025-lasipalatsi-yard.jpg",
-      "metrics": [
-        {
-          "value": "2,600",
-          "label": "Attendees"
-        },
-        {
-          "value": "83",
-          "label": "Sessions"
-        },
-        {
-          "value": "150+",
-          "label": "Speakers and artists"
-        }
-      ],
-      "links": [
-        {
-          "label": "Watch the aftermovie",
-          "href": "https://www.youtube.com/watch?v=lBM1Lc3noQE",
-          "external": true
-        },
-        {
-          "label": "Browse the photos",
-          "href": "https://www.flickr.com/photos/oddfest/albums/",
-          "external": true
-        },
-        {
-          "label": "Read the impact report",
-          "href": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ",
-          "external": true
-        }
-      ]
-    },
-    {
-      "title": "ODDfest 2026",
-      "meta": "8–14 June 2026 · Across central Helsinki · Theme: Bravery",
-      "summary": "The second edition became a week: Creative Week events across the city, two days of ODDference, then ODDfest itself, from Vanha Ylioppilastalo to Tavastia.",
-      "image": "../../assets/cases/oddfest-2026-valerie-june.jpg",
-      "metrics": [
-        {
-          "value": "1,000+",
-          "label": "At Creative Week events"
-        },
-        {
-          "value": "50+",
-          "label": "ODDference speakers"
-        },
-        {
-          "value": "150+",
-          "label": "Acts at ODDfest"
-        }
-      ],
-      "links": [
-        {
-          "label": "Watch the film",
-          "href": "/video/oddfest-2026-thank-you-16x9.mp4",
-          "external": true
-        },
-        {
-          "label": "Browse the photos",
-          "href": "https://www.flickr.com/photos/204686183@N06/albums",
-          "external": true
-        },
-        {
-          "label": "See who made it",
-          "href": "/oddfest-2026/"
-        }
-      ]
-    }
-  ],
   "casesIntro": {
     "eyebrow": "Selected work",
     "headline": "What we’ve built with our partners",
-    "body": "Brands, universities, foundations and cities. Each of these happened because a partner built it with us."
+    "body": "A few things from ODDfest 2025 and 2026 that only happened because partners built them with us."
   },
   "cases": [
     {

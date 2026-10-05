@@ -236,13 +236,14 @@ collections_config:
           subtype: object
       impact:
         type: object
-        label: 2025–2026 in numbers (About only)
+        label: 2025–2026 in numbers (About and Work with ODD)
         comment: >-
           ODD's cumulative figures — the same four as the homepage's
           "Already in motion" row. Change a number here and change it on the
-          homepage too. Never add a figure that hasn't been verified.
-          "ctas" are the buttons under the figures (today: the 2025 Impact
-          Report and the ODDfest 2026 thank-you page).
+          homepage and the other page too. Never add a figure that hasn't
+          been verified. "ctas" are the buttons under the figures (About: the
+          2025 Impact Report and the ODDfest 2026 thank-you page; Work with
+          ODD: the Impact Report and the aftermovies).
         options:
           subtype: object
       ctas:
@@ -796,25 +797,6 @@ collections_config:
           cards. The section is hidden while "Case studies" is empty.
         options:
           subtype: object
-      editionsIntro:
-        type: object
-        label: '"ODDfest so far" heading (Work with ODD only)'
-        comment: Eyebrow and headline above the two ODDfest edition boxes.
-        options:
-          subtype: object
-      editions:
-        type: array
-        label: ODDfest editions (Work with ODD only)
-        comment: >-
-          One box per ODDfest year: title, a meta line (dates · place ·
-          theme), a short summary, a photo, three numbers and its links (film,
-          photos, report). Numbers must match the Media page and the ODDfest
-          2026 thank-you page. Set "external: true" on a link that opens in a
-          new tab.
-        options:
-          disable_add: false
-          disable_remove: false
-          disable_reorder: false
       pressIntro:
         type: object
         label: '"In the press" heading (Work with ODD only)'
@@ -1622,7 +1604,7 @@ _structures:
         preview:
           text:
             - key: title
-            - key: stage
+            - key: meta
           icon:
             - image
           image:
@@ -1631,7 +1613,6 @@ _structures:
         tabbed: false
         value:
           number: '01'
-          stage: ''
           meta: ''
           title: ''
           body: ''

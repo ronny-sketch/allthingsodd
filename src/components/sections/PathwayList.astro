@@ -3,15 +3,14 @@
 // a few seconds. Deliberately not ProgramGrid (which the homepage's "What
 // we do" section also uses — redesigning it in place would regress that
 // section too): compact rows, not four near-full-viewport cards. The
-// number/stage pair reads as a rough light→deep progression (see
-// content.config.ts's `pathwayCard` comment) without implying any card is
-// gated behind the one before it — every row links out on its own.
+// number reads as a rough light→deep progression (see content.config.ts's
+// `pathwayCard` comment) without implying any card is gated behind the one
+// before it — every row links out on its own.
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
 interface Card {
   number: string;
-  stage: string;
   meta: string;
   title: string;
   body: string;
@@ -35,7 +34,6 @@ const { title, cards } = Astro.props;
           <a class="pathway-row" href={card.href}>
             <div class="pathway-row-number">
               <span class="pathway-number">{card.number}</span>
-              <span class="pathway-stage">{card.stage}</span>
             </div>
             <div class="pathway-row-media">
               {card.image ? (
@@ -88,13 +86,6 @@ const { title, cards } = Astro.props;
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper-40);
-  }
-  .pathway-stage {
-    font: var(--text-small);
-    font-weight: 600;
-    letter-spacing: var(--tracking-caps);
-    text-transform: uppercase;
-    color: var(--color-paper-60);
   }
   .pathway-row-media {
     aspect-ratio: 1 / 1;
@@ -174,10 +165,8 @@ const { title, cards } = Astro.props;
 
   @media (max-width: 700px) {
     .pathway-row {
-      /* 6rem, the desktop number column's width, not the old 4rem: the stage
-         label under the number ("Stay involved") is Small-role capitals and
-         needs ~90px for its longest word. Fixed rather than auto, so every
-         row's thumbnail keeps the same 7rem size. */
+      /* 6rem, the desktop number column's width. Fixed rather than auto, so
+         every row's thumbnail keeps the same 7rem size. */
       grid-template-columns: 6rem 1fr;
       grid-template-areas:
         'number media'
