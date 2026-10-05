@@ -1,5 +1,6 @@
 ---
 import { getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import HeroCentered from '../components/sections/HeroCentered.astro';
 import PathwayList from '../components/sections/PathwayList.astro';
@@ -73,6 +74,57 @@ const page = entry.data;
   </section>
 
   {
+    /* "ODDfest so far" (2026-10-05) — one box per edition, before the
+       partner references, so a company sees the scale first and the
+       individual collaborations second. Each box carries several links
+       (film, photos, report), so it can't be a CaseGrid card, which is one
+       link; it borrows that card's surface, photo bleed and metric type so
+       the two sections read as one system. */
+  }
+  <section class="wwo-sub">
+    <div class="wrap flow">
+      <div class="section-head">
+        <span class="eyebrow">{page.editionsIntro.eyebrow}</span>
+        <h2>{page.editionsIntro.headline}</h2>
+      </div>
+      <div class="wwo-editions reveal">
+        {
+          page.editions.map((e) => (
+            <article class="wwo-edition">
+              <div class="wwo-edition-media">
+                <Image class="wwo-edition-img" src={e.image} alt="" width={800} />
+              </div>
+              <h3>{e.title}</h3>
+              <p class="wwo-edition-meta">{e.meta}</p>
+              <p class="wwo-edition-summary">{e.summary}</p>
+              <ul class="wwo-edition-metrics">
+                {e.metrics.map((m) => (
+                  <li>
+                    <b>{m.value}</b> <span>{m.label}</span>
+                  </li>
+                ))}
+              </ul>
+              <ul class="wwo-edition-links">
+                {e.links.map((l) => (
+                  <li>
+                    <a
+                      href={l.href}
+                      target={l.external ? '_blank' : undefined}
+                      rel={l.external ? 'noreferrer' : undefined}
+                    >
+                      {l.label} →
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {
     /* "What we've built with our partners" (2026-09-14) — real references
        from ODDfest 2025/2026, after "Why ODD" so the claim ("we work in the
        overlap") is followed straight away by the proof. The heading moved
@@ -89,6 +141,32 @@ const page = entry.data;
           </div>
           {page.casesIntro.body && <p class="wwo-cases-lede reveal">{page.casesIntro.body}</p>}
           <CaseGrid items={page.cases} maxColumns={2} />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    page.press.length > 0 && (
+      <section class="wwo-sub">
+        <div class="wrap flow">
+          <div class="section-head">
+            <span class="eyebrow">{page.pressIntro.eyebrow}</span>
+            <h2>{page.pressIntro.headline}</h2>
+          </div>
+          <ul class="wwo-press-list reveal">
+            {page.press.map((p) => (
+              <li>
+                <a href={p.href} target="_blank" rel="noreferrer">
+                  <span class="wwo-press-outlet">
+                    {p.outlet}
+                    {p.date && ` · ${p.date}`}
+                  </span>
+                  <span class="wwo-press-title">{p.title}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
     )
@@ -161,6 +239,151 @@ const page = entry.data;
     .wwo-useful-list li {
       grid-template-columns: 1fr;
       gap: var(--space-2);
+    }
+  }
+
+  /* "ODDfest so far" — two boxes on CaseGrid's surface (backstage, 1px
+     hairline gap, 4:3 photo bled to the edges) at the same width as the
+     two-column case grid below, so the editions and the references line up.
+     One column on phones. */
+  .wwo-editions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17.5rem, 1fr));
+    gap: 1px;
+    max-width: calc(2 * 20rem + 1px);
+    margin-inline: auto;
+  }
+  .wwo-edition {
+    display: flex;
+    flex-direction: column;
+    padding: 2.4rem;
+    background: var(--color-backstage);
+  }
+  .wwo-edition-media {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    margin: -2.4rem -2.4rem var(--space-6);
+  }
+  .wwo-edition-media :global(.wwo-edition-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: contrast(1.05) saturate(1.15) brightness(0.92);
+  }
+  .wwo-edition h3 {
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+    margin: 0;
+  }
+  .wwo-edition-meta {
+    margin: var(--space-2) 0 0;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--color-paper-40);
+  }
+  .wwo-edition-summary {
+    margin: var(--space-3) 0 0;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+  }
+  /* One number per row, value then label, in a two-column grid so the
+     labels line up. CaseGrid's side-by-side metrics wrap two-plus-one at a
+     20rem card once there are three of them. */
+  .wwo-edition-metrics {
+    list-style: none;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-3);
+    margin: var(--space-5) 0 0;
+    padding: 0;
+  }
+  /* Subgrid rather than display: contents, which drops the list-item role
+     in some screen readers. */
+  .wwo-edition-metrics li {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    align-items: baseline;
+  }
+  .wwo-edition-metrics b {
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .wwo-edition-metrics span {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .wwo-edition-links {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin: auto 0 0;
+    padding: var(--space-5) 0 0;
+  }
+  .wwo-edition-links a {
+    display: inline-block;
+    padding-block: 0.6rem 0.15rem;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--color-paper);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-paper-40);
+    transition: border-color var(--duration-fast) ease;
+  }
+  .wwo-edition-links a:hover {
+    border-color: var(--color-paper);
+  }
+
+  /* "In the press" — the same ruled list as "When to call us", one row per
+     article, outlet and date over the headline. */
+  .wwo-press-list {
+    list-style: none;
+    margin-inline: auto;
+    margin-block-end: 0;
+    padding: 0;
+    max-width: 46rem;
+  }
+  .wwo-press-list li {
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .wwo-press-list li:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .wwo-press-list a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: 1.4rem 0;
+    color: inherit;
+    text-decoration: none;
+  }
+  .wwo-press-outlet {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--color-paper-40);
+  }
+  .wwo-press-title {
+    font: var(--text-body);
+    font-weight: 600;
+    color: var(--color-paper);
+    transition: color var(--duration-fast) ease;
+  }
+  @media (hover: hover) {
+    .wwo-press-list a:hover .wwo-press-title {
+      color: var(--color-paper-60);
     }
   }
 
