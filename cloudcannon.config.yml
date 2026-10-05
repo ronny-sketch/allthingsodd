@@ -766,6 +766,42 @@ collections_config:
           cards. The section is hidden while "Case studies" is empty.
         options:
           subtype: object
+      editionsIntro:
+        type: object
+        label: '"ODDfest so far" heading (Work with ODD only)'
+        comment: Eyebrow and headline above the two ODDfest edition boxes.
+        options:
+          subtype: object
+      editions:
+        type: array
+        label: ODDfest editions (Work with ODD only)
+        comment: >-
+          One box per ODDfest year: title, a meta line (dates · place ·
+          theme), a short summary, a photo, three numbers and its links (film,
+          photos, report). Numbers must match the Media page and the ODDfest
+          2026 thank-you page. Set "external: true" on a link that opens in a
+          new tab.
+        options:
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
+      pressIntro:
+        type: object
+        label: '"In the press" heading (Work with ODD only)'
+        comment: Eyebrow and headline above the press list.
+        options:
+          subtype: object
+      press:
+        type: array
+        label: Press coverage (Work with ODD only)
+        comment: >-
+          Real articles about ODD: outlet, headline as published, date and the
+          article's https link. Opens in a new tab. The section is hidden while
+          this is empty.
+        options:
+          disable_add: false
+          disable_remove: false
+          disable_reorder: false
       concept:
         type: object
         label: Concept explainer (ODDference only)

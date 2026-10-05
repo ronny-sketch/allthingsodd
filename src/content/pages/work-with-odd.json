@@ -58,16 +58,6 @@
     },
     {
       "number": "02",
-      "stage": "Stay involved",
-      "meta": "A year-round organisational relationship",
-      "title": "ODDnetwork",
-      "body": "A year-round way to stay involved beyond one event or project. We are still shaping it with the first organisations taking part — including what it is finally called.",
-      "goLabel": "Ask about ODDnetwork →",
-      "href": "/membership",
-      "image": "../../assets/programs/oddmembership-card.jpg"
-    },
-    {
-      "number": "03",
       "stage": "Build inside ODD",
       "meta": "For ODDference, ODDfest, ODDspace and beyond",
       "title": "Partnerships",
@@ -77,7 +67,7 @@
       "image": "../../assets/programs/partnerships-card.jpg"
     },
     {
-      "number": "04",
+      "number": "03",
       "stage": "Bring us a project",
       "meta": "A concrete brief, question or idea",
       "title": "ODDagency",
@@ -87,10 +77,89 @@
       "image": "../../assets/programs/oddagency-pathway.jpg"
     }
   ],
+  "editionsIntro": {
+    "eyebrow": "ODDfest so far",
+    "headline": "Two editions. Here’s what happened."
+  },
+  "editions": [
+    {
+      "title": "ODDfest 2025",
+      "meta": "6–7 June 2025 · Lasipalatsikortteli, Helsinki · Theme: Chaos & Acceleration",
+      "summary": "The first one. Two days, eight stages and one city block in the middle of Helsinki, where talks, music, art and business shared the same yard.",
+      "image": "../../assets/cases/oddfest-2025-lasipalatsi-yard.jpg",
+      "metrics": [
+        {
+          "value": "2,600",
+          "label": "Attendees"
+        },
+        {
+          "value": "83",
+          "label": "Sessions"
+        },
+        {
+          "value": "150+",
+          "label": "Speakers and artists"
+        }
+      ],
+      "links": [
+        {
+          "label": "Watch the aftermovie",
+          "href": "https://www.youtube.com/watch?v=lBM1Lc3noQE",
+          "external": true
+        },
+        {
+          "label": "Browse the photos",
+          "href": "https://www.flickr.com/photos/oddfest/albums/",
+          "external": true
+        },
+        {
+          "label": "Read the impact report",
+          "href": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ",
+          "external": true
+        }
+      ]
+    },
+    {
+      "title": "ODDfest 2026",
+      "meta": "8–14 June 2026 · Across central Helsinki · Theme: Bravery",
+      "summary": "The second edition became a week: Creative Week events across the city, two days of ODDference, then ODDfest itself, from Vanha Ylioppilastalo to Tavastia.",
+      "image": "../../assets/cases/oddfest-2026-valerie-june.jpg",
+      "metrics": [
+        {
+          "value": "1,000+",
+          "label": "At Creative Week events"
+        },
+        {
+          "value": "50+",
+          "label": "ODDference speakers"
+        },
+        {
+          "value": "150+",
+          "label": "Acts at ODDfest"
+        }
+      ],
+      "links": [
+        {
+          "label": "Watch the film",
+          "href": "/video/oddfest-2026-thank-you-16x9.mp4",
+          "external": true
+        },
+        {
+          "label": "Browse the photos",
+          "href": "https://www.flickr.com/photos/204686183@N06/albums",
+          "external": true
+        },
+        {
+          "label": "See who made it",
+          "href": "/oddfest-2026/"
+        }
+      ]
+    }
+  ],
   "casesIntro": {
     "eyebrow": "Selected work",
-    "headline": "What we've built with our partners",
-    "body": "A few things from ODDfest 2025 and 2026 that only happened because partners built them with us."
+    "headline": "What we’ve built with our partners",
+    "body": "Brands, universities, foundations and cities. Each of these happened because a partner built it with us."
   },
   "cases": [
     {
@@ -104,31 +173,96 @@
       "external": true
     },
     {
-      "category": "Film",
-      "title": "ODDfest 2025 Aftermovie",
-      "summary": "Two days at Lasipalatsikortteli under the theme Chaos & Acceleration, eight stages and a city block full of people — the quickest way to see what the first ODDfest felt like.",
-      "image": "../../assets/cases/oddfest-2025-aftermovie-still.jpg",
-      "href": "https://www.youtube.com/watch?v=lBM1Lc3noQE",
-      "linkLabel": "Watch on YouTube →",
+      "category": "Interactive outdoor campaign",
+      "title": "Just Give a F*ck",
+      "partner": "RFSU · Outshine · Adventure Club",
+      "summary": "Before ODDfest 2025, RFSU, Outshine, Adventure Club and ODD turned a digital outdoor screen in Kamppi into a game you played with your body. Passers-by waved their arms to win festival tickets and merch, and RFSU’s message got its own street corner: using a condom is caring.",
+      "image": "../../assets/cases/rfsu-just-give-a-fck-kamppi.jpg",
+      "href": "https://outshine.fi/fi/ajankohtaista/caset/oddfest-x-rfsu",
+      "linkLabel": "Read the case at Outshine →",
       "external": true
     },
     {
-      "category": "Photo archive",
-      "title": "ODDfest 2025 in pictures",
-      "summary": "Nearly 900 photos from the first edition: the Chaos, Focus and Love stages, Genelec's immersive sound room, BajaMyArt in the yard, and the afterparty.",
-      "image": "../../assets/cases/oddfest-2025-lasipalatsi-yard.jpg",
-      "href": "https://www.flickr.com/photos/oddfest/albums/",
-      "linkLabel": "Browse on Flickr →",
+      "category": "Keynote",
+      "title": "Arthur C. Brooks at ODDfest",
+      "partner": "Humak · Hjelt Foundation",
+      "summary": "We brought Harvard professor and happiness researcher Arthur C. Brooks to Finland for ODDfest 2025: a keynote on the main stage and a smaller conversation with Humak on happiness, meaning and entrepreneurship. Humak and the Hjelt Foundation made the visit possible with us.",
+      "image": "../../assets/mosaic/45-54584304159.jpg",
+      "href": "https://www.youtube.com/watch?v=63KjNztyxJc",
+      "linkLabel": "Watch the Humak video →",
       "external": true
     },
     {
-      "category": "Photo archive",
-      "title": "ODDfest 2026 in pictures",
-      "summary": "Nearly 1,500 photos from a week across Helsinki: Tavastia, Vanha Ylioppilastalo, Bio Rex, ODDference and the Creative Week events around them.",
-      "image": "../../assets/cases/oddfest-2026-valerie-june.jpg",
-      "href": "https://www.flickr.com/photos/204686183@N06/albums",
-      "linkLabel": "Browse on Flickr →",
+      "category": "Brand activation",
+      "title": "Oddlygood at ODDfest",
+      "partner": "Oddlygood",
+      "summary": "ODDfest has no standard brand booths, so Oddlygood didn’t bring one. Their stand handed out drinks in exchange for ideas on how to recycle better, and Skyproduction filmed the day.",
+      "image": "../../assets/work-with-odd/oddlygood-booth.jpg",
+      "href": "https://www.linkedin.com/posts/miika-raty_skyproduction-marketing-video-activity-7339196496292052995-kWUX",
+      "linkLabel": "Watch the video →",
       "external": true
+    },
+    {
+      "category": "Guest programme",
+      "title": "ODD100",
+      "partner": "KULTA ry · City of Helsinki",
+      "summary": "A hundred leading voices from Finnish culture in the same room: organisation leaders, decision-makers, journalists, artists and curators. KULTA ry, the central organisation for Finnish culture and arts associations, curates the guest list with us. The City of Helsinki sponsored the tickets in 2025, and ODD100 came back in 2026.",
+      "image": "../../assets/about/oddfest-2025-shared-table.jpg",
+      "href": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ",
+      "linkLabel": "Read more in the impact report →",
+      "external": true
+    },
+    {
+      "category": "Award",
+      "title": "LUO(V)UUS award 2025",
+      "partner": "City of Tampere · Music x Media",
+      "summary": "The City of Tampere named ODDfest its 2025 creative-economy innovator at the Music x Media Industry Awards Gala. The jury picked us for an open-minded way of building cooperation between creative industries and the courage to try a new approach to it.",
+      "image": "../../assets/about/oddfest-2025-main-stage-crowd.jpg",
+      "href": "https://www.tampere.fi/en/current/2025/09/29/2025-tampere-music-award-lars-karlsson-and-luovuus-award-oddfest-were",
+      "linkLabel": "Read the City of Tampere news →",
+      "external": true
+    }
+  ],
+  "pressIntro": {
+    "eyebrow": "In the press",
+    "headline": "What others have written"
+  },
+  "press": [
+    {
+      "outlet": "Hufvudstadsbladet",
+      "title": "ODDfest förenar kultur och business",
+      "date": "6 June 2025",
+      "href": "https://www.hbl.fi/artikel/oddfest-forenar-kultur-och-business/"
+    },
+    {
+      "outlet": "Creve / Humak",
+      "title": "Yrittäjyyttä ei mitata rahassa – vaan siinä, mitä hyvää saimme aikaan",
+      "date": "13 June 2025",
+      "href": "https://www.creve.fi/blogit/yrittajyytta-ei-mitata-rahassa-vaan-siina-mita-hyvaa-saamme-aikaan/"
+    },
+    {
+      "outlet": "Helsingin Uutiset",
+      "title": "Tämä mies haluaa pelastaa Helsingin keskustan – uusi tapahtuma on ”Slushin ja Flow’n rakkauslapsi”",
+      "date": "16 May 2025",
+      "href": "https://www.helsinginuutiset.fi/paikalliset/8527698"
+    },
+    {
+      "outlet": "Rumba",
+      "title": "Uusi luovien alojen ammattitapahtuma Helsinkiin: ”Slushin ja Flow Festivalin rakkauslapsi”",
+      "date": "14 April 2025",
+      "href": "https://www.rumba.fi/uutiset/uusi-luovien-alojen-ammattitapahtuma-helsinkiin-slushin-ja-flow-festivalin-rakkauslapsi/"
+    },
+    {
+      "outlet": "Yle Vega",
+      "title": "Den nya festivalen Oddfest ska föra samman den kreativa branschen med företagare",
+      "date": "14 February 2025",
+      "href": "https://arenan.yle.fi/1-73647602"
+    },
+    {
+      "outlet": "Svenska Yle",
+      "title": "Ronny Eriksson vill ta kulturen till uppstartsvärlden: ”Det finns pengar”",
+      "date": "3 November 2024",
+      "href": "https://yle.fi/a/7-10065583"
     }
   ],
   "logos": [],

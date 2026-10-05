@@ -32,8 +32,8 @@ interface CaseItem {
 }
 interface Props {
   items: CaseItem[];
-  // Caps how many cards share a row. Work with ODD passes 2 so its four
-  // references read as a 2×2 block instead of three plus a stranded fourth.
+  // Caps how many cards share a row. Work with ODD passes 2 so its six
+  // references read as three even rows of two, never a row with a stray card.
   // Layout, not content — which is why it's a prop and not a CMS field.
   maxColumns?: number;
 }

@@ -21,6 +21,10 @@
 // of the four highlighted pathways — oddspace.json's own CTAs deep-link
 // here with ?interest=oddspace, and removing the option would leave that
 // link landing on a blank "Choose one" select.
+//
+// 2026-10-05: `oddmembership` (shown as "ODDnetwork") is off the visible list
+// with its pathway card — not something we are offering right now (Ronny).
+// It stays in products.yml, the same way `city_institution_programme` did.
 import Pill from '../primitives/Pill.astro';
 
 // The Worker emails hello@oddfest.co alongside its Attio write (since
@@ -32,7 +36,6 @@ const STUDIO_OPTION = 'oddstudio';
 
 const PRODUCTS = [
   { value: 'oddference_corporate', label: 'ODDference' },
-  { value: 'oddmembership', label: 'ODDnetwork' },
   { value: 'strategic_partnership', label: 'Partnership' },
   { value: 'oddagency', label: 'ODDagency / project' },
   { value: 'oddspace', label: 'ODDspace — membership or renting the space' },

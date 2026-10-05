@@ -1445,6 +1445,22 @@ const pages = defineCollection({
         // work-with-odd.astro).
         whatWeDo: sectionIntro,
         pathways: z.array(pathwayCard),
+        // ODDfest's editions so far (2026-10-05): one box per year with its
+        // facts, numbers and several links (film, photos, report). Not a
+        // CaseGrid card, because a case card is one link and an edition has
+        // three. Numbers come from allthingsodd.co's own media page and the
+        // 2026 thank-you page, nowhere else.
+        editionsIntro: z.object({ eyebrow: z.string(), headline: z.string() }),
+        editions: z.array(
+          z.object({
+            title: z.string(),
+            meta: z.string(),
+            summary: z.string(),
+            image: image(),
+            metrics: z.array(z.object({ value: z.string(), label: z.string() })),
+            links: z.array(linkCta),
+          }),
+        ),
         // The references section's own heading (2026-09-14) — was hardcoded
         // as "Selected work" / "Things we've built together" in the page
         // markup. `body` is an optional one-line lede under it.
@@ -1454,6 +1470,17 @@ const pages = defineCollection({
           body: z.string().optional(),
         }),
         cases: z.array(referenceCase),
+        // Press coverage (2026-10-05): real articles, each linking out. The
+        // section is hidden while the list is empty.
+        pressIntro: z.object({ eyebrow: z.string(), headline: z.string() }),
+        press: z.array(
+          z.object({
+            outlet: z.string(),
+            title: z.string(),
+            date: z.string().optional(),
+            href: z.url(),
+          }),
+        ),
         // Page-specific curated logo set for organisations ODD has actually
         // worked with — deliberately NOT the sitewide `partners`/`featuredIn`
         // lists (those mix festival sponsors, press and historical
