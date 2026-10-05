@@ -26,7 +26,7 @@ export function deriveHandle(platform: string, href: string): string | null {
       .replace(/^\/+|\/+$/g, '')
       .split('/')
       .pop();
-    return segment ? `@${segment}` : null;
+    return segment ? `@${segment.replace(/^@/, '')}` : null;
   } catch {
     return null;
   }

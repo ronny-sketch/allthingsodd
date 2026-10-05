@@ -38,11 +38,11 @@
   "social": [
     {
       "platform": "Instagram",
-      "href": "https://www.instagram.com/oddfest.fi"
+      "href": "https://www.instagram.com/allthingsodd.co"
     },
     {
       "platform": "LinkedIn",
-      "href": "https://www.linkedin.com/company/oddfest"
+      "href": "https://www.linkedin.com/company/all-things-odd/"
     },
     {
       "platform": "Facebook",
@@ -50,15 +50,11 @@
     },
     {
       "platform": "YouTube",
-      "href": "https://www.youtube.com/@oddfest"
+      "href": "https://www.youtube.com/@all-things-odd"
     },
     {
       "platform": "TikTok",
       "href": "https://www.tiktok.com/@oddfest"
-    },
-    {
-      "platform": "Discord",
-      "href": "https://discord.gg/ZXtkM6FjBw"
     }
   ],
   "contact": [
