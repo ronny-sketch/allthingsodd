@@ -248,7 +248,7 @@ test.describe('the lifecycle around playback', () => {
     let release!: () => void;
     let asked = false;
     const held = new Promise<void>((r) => (release = r));
-    await page.route('**/oddfest-2026-preview.mp4', async (route) => {
+    await page.route('**/oddfest-2026-aftermovie-preview.mp4', async (route) => {
       asked = true;
       await held;
       await route.continue();
@@ -303,7 +303,7 @@ test.describe('the lifecycle around playback', () => {
     page,
   }) => {
     let asked = false;
-    await page.route('**/oddfest-2026-preview.mp4', (route) => {
+    await page.route('**/oddfest-2026-aftermovie-preview.mp4', (route) => {
       asked = true;
       return route.continue();
     });
