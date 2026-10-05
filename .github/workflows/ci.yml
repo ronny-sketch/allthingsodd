@@ -56,13 +56,22 @@ jobs:
           fetch-depth: 0
       - id: pick
         env:
-          # A PR compares against its base; a push against what main was before
-          # it. Both can be absent (first push on a branch, a force push, the
-          # nightly schedule) — ci-scope.mjs reads an empty list as "run
-          # everything", which is the safe direction to fail.
-          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
         run: |
-          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+          # A PR compares against its base. A push compares against what is
+          # LIVE, not what main was before it (2026-10-05): after a failed run
+          # main is ahead of production, and a docs or content push would
+          # otherwise deploy those untested commits with no browser tests.
+          # Any base can be missing or unknown (the nightly schedule, the site
+          # not answering, a SHA outside this history) — ci-scope.mjs reads an
+          # empty list as "run everything", which is the safe direction to fail.
+          case "$GITHUB_EVENT_NAME" in
+            pull_request) BASE="$PR_BASE" ;;
+            push) BASE=$(curl -fsS --max-time 20 https://allthingsodd.co/build-info.json | jq -r '.sha // empty' || true) ;;
+            *) BASE="" ;;
+          esac
+          echo "Base: ${BASE:-none}"
+          if [ -z "$BASE" ]; then
             changed=""
           else
             changed=$(git diff --name-only "$BASE" "$GITHUB_SHA" || true)
@@ -105,6 +114,10 @@ jobs:
   functional:
     name: Functional (${{ needs.scope.outputs.mode }} ${{ matrix.shard }}/6)
     runs-on: ubuntu-latest
+    # Shards finish in under 10 minutes. Without a limit a hung one holds every
+    # deploy queued behind it for GitHub's default of 6 hours (2026-10-05: 46
+    # minutes, until cancelled by hand).
+    timeout-minutes: 20
     needs: scope
     # Docs-only changes never reach a browser.
     if: needs.scope.outputs.mode != 'docs' && needs.scope.outputs.mode != 'content'
