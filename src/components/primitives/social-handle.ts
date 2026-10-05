@@ -8,13 +8,12 @@
 // honest version, and it costs nothing: the handle is derived from the link
 // itself, so it can never drift from where the icon actually goes.
 //
-// (The underlying question — whether ODD wants masterbrand social accounts at
-// all, or keeps using the ODDfest ones — is a human decision, recorded as B14
-// in docs/IDENTITY_LAUNCH_MATRIX_2026-09-04.md. This does not pre-empt it; it
-// just stops the current arrangement from claiming to be something it isn't.)
+// (B14 in docs/IDENTITY_LAUNCH_MATRIX_2026-09-04.md — whether ODD gets its own
+// masterbrand accounts — was settled on 2026-10-05: the site now links the All
+// Things ODD Instagram, LinkedIn and YouTube accounts.)
 
 /**
- * `https://www.instagram.com/oddfest.fi` -> `@oddfest.fi`.
+ * `https://www.instagram.com/allthingsodd.co` -> `@allthingsodd.co`.
  * Returns null where the link has no meaningful handle (a Discord invite is a
  * random code, not an account name).
  */

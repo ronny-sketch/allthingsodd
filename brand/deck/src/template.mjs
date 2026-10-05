@@ -989,8 +989,9 @@ export function templateDeck(pres) {
       ['EMAIL', 'hello@oddfest.co'],
       ['WEB', 'allthingsodd.co'],
       ['ODDSPACE', 'Teollisuuskatu 9D, Vallila, Helsinki'],
-      ['INSTAGRAM', '@oddfest.fi'],
-      ['LINKEDIN', 'linkedin.com/company/oddfest'],
+      ['INSTAGRAM', '@allthingsodd.co'],
+      ['LINKEDIN', 'linkedin.com/company/all-things-odd'],
+      ['YOUTUBE', 'youtube.com/@all-things-odd'],
       ['NEWSLETTER', 'oddfest.beehiiv.com'],
     ];
     rows.forEach(([label, value], i) => {
