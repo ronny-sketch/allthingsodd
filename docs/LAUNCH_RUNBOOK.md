@@ -26,15 +26,16 @@ apart — they have before.
 
 Fill these in before you start. A runbook with an unnamed owner has no owner.
 
-| Role                   | Who   | What they hold                                               |
-| ---------------------- | ----- | ------------------------------------------------------------ |
-| Code freeze owner      | Ronny | The last commit that ships. Says no to anything after it.    |
-| Content freeze owner   | Ronny | Nothing merges from CloudCannon after this point.            |
-| Legal/factual approver | Ronny | Signs off prices, dates, refund terms, accessibility claims. |
-| Stripe monitor         |       | Watches the dashboard for the first hour.                    |
-| Inbox monitor          |       | Watches `hello@oddfest.co` for form deliveries and bounces.  |
-| Attio monitor          |       | Confirms enquiries land and do not duplicate.                |
-| Rollback authority     | Ronny | The only person who decides to roll back.                    |
+| Role                   | Who   | What they hold                                                             |
+| ---------------------- | ----- | -------------------------------------------------------------------------- |
+| Code freeze owner      | Ronny | The last commit that ships. Says no to anything after it.                  |
+| Content freeze owner   | Ronny | Nothing merges from CloudCannon after this point.                          |
+| Legal/factual approver | Ronny | Signs off prices, dates, refund terms, accessibility claims.               |
+| Stripe monitor         |       | Watches the dashboard for the first hour.                                  |
+| Inbox monitor          |       | Watches `hello@oddfest.co` for form deliveries and bounces.                |
+| Attio monitor          |       | Confirms enquiries land and do not duplicate.                              |
+| Notion monitor         |       | Watches Events Pipeline + Creative Week submissions — no email on success. |
+| Rollback authority     | Ronny | The only person who decides to roll back.                                  |
 
 ---
 
@@ -246,7 +247,7 @@ and `npx surge` sat at an interactive login prompt and exited 0.
 # Every route answers
 for p in / /oddfest/ /oddference/ /oddspace/ /oddspace/venue/ /oddspace/membership/ \
          /oddspace/event-info-pack/ /oddspace/code-of-conduct/ /oddstudio/ \
-         /work-with-odd/ /membership/ /oddagency/ /about/ /media/ /contact/ \
+         /work-with-odd/ /oddagency/ /about/ /media/ /contact/ \
          /privacy/ /tickets/ /oddfest-2026/ ; do
   printf '%-34s %s\n' "$p" "$(curl -s -o /dev/null -w '%{http_code}' https://allthingsodd.co$p)"
 done

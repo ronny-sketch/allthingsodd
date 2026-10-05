@@ -338,8 +338,8 @@ test('FAQ accordion opens and closes on click (native details/summary)', async (
   await expect(firstItem).not.toHaveAttribute('open', '');
 });
 
-test('Work with ODD and Membership pages load with a real h1 and working nav', async ({ page }) => {
-  for (const path of ['/work-with-odd', '/membership']) {
+test('Work with ODD loads with a real h1 and working nav', async ({ page }) => {
+  for (const path of ['/work-with-odd']) {
     const response = await page.goto(path);
     expect(response?.status()).toBe(200);
     await expect(page.locator('h1').first()).toBeVisible();

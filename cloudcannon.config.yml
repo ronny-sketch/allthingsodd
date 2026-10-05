@@ -307,28 +307,6 @@ collections_config:
           Membership, replaced by "whyThisExists"/"whatWeAreShaping" below.)
         options:
           subtype: object
-      whyThisExists:
-        type: object
-        label: '"Why this exists" (Membership only)'
-        comment: >-
-          NEW (2026-09-02 copywriting pass): explains the need for a
-          year-round organisational relationship without promising benefits
-          that are not yet designed. Rendered right after the hero.
-        options:
-          subtype: object
-      whatWeAreShaping:
-        type: object
-        label: '"What we are shaping" (Membership only)'
-        comment: >-
-          SIMPLIFIED (2026-09-02 copywriting pass) from a "what it is" intro
-          plus a three-card audience list ("whoItsFor") plus a three-card
-          benefit grid ("includes") down to one deliberately small
-          paragraph with a single CTA. Keep this small until ODDnetwork's
-          offer, cadence, tiers and annual price are actually approved —
-          don't re-add audience/benefit cards without a real product
-          decision behind them.
-        options:
-          subtype: object
       whatWeDo:
         type: object
         label: '"Why ODD" intro (Work with ODD only)'
@@ -667,14 +645,10 @@ collections_config:
           subtype: object
       lookBack:
         type: object
-        label: '"Look back at 2026" buttons (ODDfest only)'
+        label: '"Look back at 2026" button (ODDfest only)'
         comment: >-
-          The two archive links under "What ODDfest is": "thankYou" points at
-          the archived 2026 thank-you page hosted on this site at
-          /oddfest-2026/, and "oldSite" at oddfest.co, the 2026 site still
-          live on its own domain. Set "external: true" on a link to open it
-          in a new tab — it's on for oddfest.co (a different domain) and off
-          for the archived page, which is ours and has its own way back.
+          The archive link under "What ODDfest is": "thankYou" points at the
+          archived 2026 thank-you page hosted on this site at /oddfest-2026/.
         options:
           subtype: object
       letter:
