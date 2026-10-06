@@ -87,7 +87,9 @@ const {
     {
       logo && (
         <div class="space-hero-logo">
-          <Image src={logo} alt={logoAlt} width={420} />
+          {/* Eager: on a phone this logo is the page's LCP element, and
+              lazy held it back ~1.5s (Lighthouse mobile, 2026-10-06). */}
+          <Image src={logo} alt={logoAlt} width={420} loading="eager" />
         </div>
       )
     }

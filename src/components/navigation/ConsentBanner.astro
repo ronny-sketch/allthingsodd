@@ -327,11 +327,13 @@ const categories = togglableCategories(buildDeclaration(GA_MEASUREMENT_ID));
     border-color: var(--color-paper-60);
   }
   /* Signal-deep, not Signal: Paper on Signal measures 3.3:1, under AA for
-     this Small-size label; Signal-deep is the same hue at 4.7:1. */
+     this Small-size label; Signal-deep is the same hue at 4.7:1. The swatch,
+     not --color-paper: that flips to Ink on .theme-light pages (ODDspace),
+     which measured 3.1:1 on this fill. */
   .consent-btn-solid {
     background: var(--color-signal-deep);
     border: 1px solid var(--color-signal-deep);
-    color: var(--color-paper);
+    color: var(--swatch-paper);
   }
   .consent-btn-solid:hover {
     opacity: 0.85;
