@@ -15,7 +15,7 @@ import { test, expect } from '@playwright/test';
 // covered by tests/functional/newsletter-popup.spec.ts.
 test.beforeEach(async ({ context }) => {
   await context.addInitScript(() => {
-    sessionStorage.setItem('oddNewsletterPopupSeen', '1');
+    localStorage.setItem('oddNewsletterPopupSeen', '1');
   });
 });
 

@@ -28,7 +28,7 @@ export const MOBILE_WIDTHS = [320, 360, 375, 390, 393, 412, 430, 768, 820];
  */
 export async function suppressInterruptions(page: Page) {
   await page.addInitScript(() => {
-    sessionStorage.setItem('oddNewsletterPopupSeen', '1');
+    localStorage.setItem('oddNewsletterPopupSeen', '1');
     // Matches src/scripts/analytics.ts's CONSENT_KEY / 'denied' value.
     localStorage.setItem('odd_analytics_consent_v1', 'denied');
   });

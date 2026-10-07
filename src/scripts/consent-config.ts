@@ -91,9 +91,9 @@ export function buildDeclaration(measurementId: string | null): CategoryDeclarat
           name: 'oddNewsletterPopupSeen',
           provider: 'ODD (this site)',
           purpose:
-            'Records that the newsletter invitation has already been shown, so it does not reappear while you browse.',
-          retention: 'Until the browser tab is closed',
-          kind: 'sessionStorage',
+            'Records that the newsletter invitation has already been shown, or that you have signed up, so it is not shown to you again.',
+          retention: 'Until you clear it',
+          kind: 'localStorage',
         },
         {
           name: 'odd_tickets_cart_v1',

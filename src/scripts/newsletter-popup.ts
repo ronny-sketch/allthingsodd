@@ -1,9 +1,13 @@
-// Timed newsletter popup — shows once, ~15s after page load, at most once
-// per browser tab session (sessionStorage, not a cookie: closing the tab or
-// starting a new session clears it, matching "don't hit the same visitor
-// again navigating around the site during the same session" without
-// tracking them beyond that). See NewsletterPopup.astro and the 2026-08-30
-// homepage revision brief, section 13.
+// Timed newsletter popup — shows once, ~15s after page load, once per
+// browser, ever (localStorage, 2026-10-07). It used to be once per tab
+// session (sessionStorage), which meant every new tab or visit showed it
+// again to people who had already closed it. Signing up through any
+// newsletter form sets the same key (newsletter-form.ts), so subscribers
+// never see it either. Per browser, not per IP: a shared IP (ODDspace's
+// co-work wifi, an office, a phone network) would hide it from everyone
+// behind one person's click, and this is a static site with no server to
+// ask. See NewsletterPopup.astro and the 2026-08-30 homepage revision brief,
+// section 13.
 const SEEN_KEY = 'oddNewsletterPopupSeen';
 const DELAY_MS = 15000;
 
@@ -40,22 +44,24 @@ const popup = document.getElementById('newsletterPopup');
 const closeBtn = document.getElementById('newsletterPopupClose');
 
 if (!isSuppressed && backdrop && popup && closeBtn) {
-  let alreadySeen = false;
-  try {
-    alreadySeen = sessionStorage.getItem(SEEN_KEY) === '1';
-  } catch {
-    // Private-browsing/storage-blocked contexts throw on access — treat as
-    // "not seen" rather than crash; worst case the popup can reappear on a
-    // later navigation in that same edge-case session, which is a much
-    // smaller problem than breaking the page.
-  }
+  const seen = () => {
+    try {
+      return localStorage.getItem(SEEN_KEY) === '1';
+    } catch {
+      // Private-browsing/storage-blocked contexts throw on access — treat as
+      // "not seen" rather than crash; worst case the popup can reappear on a
+      // later navigation in that same edge-case session, which is a much
+      // smaller problem than breaking the page.
+      return false;
+    }
+  };
 
-  if (!alreadySeen) {
+  if (!seen()) {
     let previouslyFocused: HTMLElement | null = null;
 
     function markSeen() {
       try {
-        sessionStorage.setItem(SEEN_KEY, '1');
+        localStorage.setItem(SEEN_KEY, '1');
       } catch {
         // Same private-browsing fallback as above — non-fatal either way.
       }
@@ -156,7 +162,8 @@ if (!isSuppressed && backdrop && popup && closeBtn) {
     // being up, and the field is the higher-intent thing. The check runs
     // when the timer fires, so something opened after page load still
     // counts. Nothing is marked as seen, so the popup can still appear on a
-    // later page.
+    // later page. `seen()` is asked again too: a signup in the footer, or the
+    // popup shown in another tab, during these 15 seconds.
     const shown = (el: HTMLElement) =>
       el instanceof HTMLDialogElement
         ? el.open
@@ -179,7 +186,7 @@ if (!isSuppressed && backdrop && popup && closeBtn) {
         shown,
       );
     setTimeout(() => {
-      if (!suppressedNow()) open();
+      if (!seen() && !suppressedNow()) open();
     }, DELAY_MS);
   }
 }

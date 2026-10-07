@@ -21,7 +21,7 @@ test.beforeEach(async ({ context }) => {
   // Same reason as interactions.spec.ts: keep the newsletter popup's real
   // timer from landing on top of a long form test.
   await context.addInitScript(() => {
-    sessionStorage.setItem('oddNewsletterPopupSeen', '1');
+    localStorage.setItem('oddNewsletterPopupSeen', '1');
   });
 });
 
@@ -269,7 +269,7 @@ test('the ODDspace page leads straight into the enquiry', async ({ page }) => {
 test.describe('the newsletter popup', () => {
   test.beforeEach(async ({ context }) => {
     // Undo the file-wide "already seen", so the popup's own timer runs.
-    await context.addInitScript(() => sessionStorage.removeItem('oddNewsletterPopupSeen'));
+    await context.addInitScript(() => localStorage.removeItem('oddNewsletterPopupSeen'));
   });
 
   test('stays away while the enquiry is open', async ({ page }) => {

@@ -7,7 +7,7 @@ import { test, expect } from '@playwright/test';
 // engines via the functional-* projects.
 
 test.beforeEach(async ({ context }) => {
-  await context.addInitScript(() => sessionStorage.setItem('oddNewsletterPopupSeen', '1'));
+  await context.addInitScript(() => localStorage.setItem('oddNewsletterPopupSeen', '1'));
 });
 
 test('is invisible until a mouse moves, then sits on the pointer', async ({ page }) => {

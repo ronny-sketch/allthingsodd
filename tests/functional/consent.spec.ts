@@ -50,7 +50,7 @@ test.beforeEach(async ({ context }) => {
   // Same rationale as interactions.spec.ts: keep the unrelated 15s newsletter
   // popup out of tests that click things.
   await context.addInitScript(() => {
-    sessionStorage.setItem('oddNewsletterPopupSeen', '1');
+    localStorage.setItem('oddNewsletterPopupSeen', '1');
   });
 });
 

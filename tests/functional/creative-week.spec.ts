@@ -19,7 +19,7 @@ const ASK = 'a[href="/oddfest/#creative-week-form"]';
 test.beforeEach(async ({ context }) => {
   // Keep the newsletter popup's real timer from landing on a long form test.
   await context.addInitScript(() => {
-    sessionStorage.setItem('oddNewsletterPopupSeen', '1');
+    localStorage.setItem('oddNewsletterPopupSeen', '1');
   });
 });
 
