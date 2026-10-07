@@ -127,10 +127,19 @@ test('newsletter popup never appears to someone arriving from the newsletter', a
 }) => {
   await page.clock.install();
   // A suppressed page on purpose: the visit still counts there.
-  await page.goto('/oddspace/?utm_source=odd&utm_medium=newsletter&utm_campaign=issue');
+  await page.goto(
+    '/oddspace/?utm_source=allthingsodd.beehiiv.com&utm_medium=newsletter&utm_campaign=issue',
+  );
   const later = await context.newPage();
   await later.goto('/about/');
   await pastTheDelay(later);
+});
+
+test("someone else's newsletter does not count as ODD's", async ({ page }) => {
+  await page.clock.install();
+  await page.goto('/?utm_source=www.therundown.ai&utm_medium=newsletter');
+  await page.clock.fastForward(20_000);
+  await expect(page.locator('#newsletterPopup')).toBeVisible();
 });
 
 test('footer newsletter form still works and is the only persistent newsletter UI', async ({

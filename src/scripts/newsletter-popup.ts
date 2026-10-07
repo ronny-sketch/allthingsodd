@@ -47,13 +47,17 @@ function markSeen() {
   }
 }
 
-// Someone who clicked through from the newsletter already gets it
-// (2026-10-07). beehiiv tags its links utm_medium=newsletter; ODD's own
-// outreach mail does not use that medium. Checked before the path guard, so
-// a newsletter link straight to /oddspace still counts.
-// ponytail: assumes beehiiv's UTM setting is on for ODD's publication; if a
-// real issue's links carry no utm_medium, this does nothing (no harm).
-if (new URLSearchParams(window.location.search).get('utm_medium') === 'newsletter') markSeen();
+// Someone who clicked through from ODD's newsletter already gets it
+// (2026-10-07). By utm_source, not utm_medium: beehiiv's auto-UTM tags every
+// link utm_source=<publication subdomain>&utm_medium=newsletter (checked
+// against ODD's own post export; the publication moved from oddfest. to
+// allthingsodd.beehiiv.com), and the welcome email's hand-tagged links use
+// utm_source=newsletter. Other people's newsletters send utm_medium=newsletter
+// too, and their readers should still be asked. Checked before the path
+// guard, so a newsletter link straight to /oddspace still counts.
+const NEWSLETTER_SOURCES = ['allthingsodd.beehiiv.com', 'oddfest.beehiiv.com', 'newsletter'];
+const utmSource = new URLSearchParams(window.location.search).get('utm_source') ?? '';
+if (NEWSLETTER_SOURCES.includes(utmSource)) markSeen();
 
 const backdrop = document.getElementById('newsletterPopupBackdrop');
 const popup = document.getElementById('newsletterPopup');
