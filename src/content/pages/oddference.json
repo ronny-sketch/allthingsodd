@@ -160,7 +160,7 @@
       "ctaLabel": "See ticket details",
       "href": "/tickets",
       "recommended": true,
-      "badgeLabel": "Available until 1 Nov 2026",
+      "badgeLabel": "Until 1 Nov 2026 or sold out",
       "noteLink": {
         "label": "Questions before you commit? Email hello@oddfest.co",
         "href": "mailto:hello@oddfest.co"

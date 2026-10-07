@@ -145,7 +145,7 @@ test('the badge on the live tier states the sale deadline', async ({ page }) => 
 
   const badge = page.locator('[data-ticket-slug="blind-bird"] .pricing-badge');
   await expect(badge).toBeVisible();
-  await expect(badge).toHaveText('Available until 1 Nov 2026');
+  await expect(badge).toHaveText('Until 1 Nov 2026 or sold out');
   // The catalog has no field for this text, so the sync must leave it alone
   // rather than overwrite it with anything of its own.
   await expect(badge).not.toHaveText(/recommended/i);
