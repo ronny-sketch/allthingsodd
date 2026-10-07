@@ -72,6 +72,9 @@ import Layout from '../../layouts/Layout.astro';
               Payment isn't connected yet — email
               <a href="mailto:hello@oddfest.co">hello@oddfest.co</a> to reserve your ticket in the meantime.
             </p>
+            <p class="tixc-terms">
+              By continuing to payment you accept the <a href="/tickets/terms/">ticket terms</a>.
+            </p>
             <button type="submit" class="pill pill-solid tixc-continue-btn" id="tixcContinueBtn">
               Continue to payment
             </button>
@@ -285,6 +288,14 @@ import Layout from '../../layouts/Layout.astro';
     color: var(--color-paper-80);
   }
   .tixc-not-connected a {
+    color: var(--color-paper);
+  }
+  .tixc-terms {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .tixc-terms a {
     color: var(--color-paper);
   }
   .tixc-continue-btn {

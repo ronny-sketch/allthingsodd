@@ -5,12 +5,13 @@ export const EVENT_SLUG = 'oddference-2027';
 
 // Public by design (Stripe publishable keys are meant to ship to the
 // browser) — same "ships inert until configured" pattern as
-// analytics-config.ts's GA_MEASUREMENT_ID. TEST MODE key (pk_test_), set
-// 2026-09-01 alongside the matching sk_test_ Worker secret in
-// ../../../odd-growth-os — see that repo's ops/TICKETING_IMPLEMENTATION_PLAN.md
-// launch checklist before ever swapping this for a pk_live_ value.
+// analytics-config.ts's GA_MEASUREMENT_ID. LIVE key (pk_live_), set
+// 2026-10-07 — this alone opens sales on the public hosts (salesEnabled()).
+// It must match the live STRIPE_SECRET_KEY + STRIPE_WEBHOOK_SECRET on the
+// Worker in ../../../odd-growth-os; mismatched modes break checkout. The
+// previous test key (pk_test_51UAbRu…, a Stripe sandbox) is in git history.
 export const STRIPE_PUBLISHABLE_KEY: string | null =
-  'pk_test_51UAbRuEWKidxDSktHTSDUyrhnE4YkbqZVJ1kfGdCKrwTBaZXE8JqbPMYJPk2iTYBlbm35wC4lp34lh7nFiL8gtVR00UBKrfrTU';
+  'pk_live_51UAX8rI8d2WCGJyIoZp80ObRQowPMeNG7EQ6Ft7thajpLoeAIisD1aeWKVKecZhrc7gIMviG9jFyWwVo4TRYvzVv002acQf0wL';
 
 // Loaded only on /tickets/checkout — never sitewide. "dahlia" matches the
 // API version pinned in ../../../odd-growth-os/worker/src/tickets/stripe.ts;

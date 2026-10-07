@@ -16,6 +16,7 @@ const ROUTES = [
   '/oddspace',
   '/oddspace/event-info-pack',
   '/oddspace/code-of-conduct',
+  '/tickets/terms',
   '/oddstudio',
   '/work-with-odd',
   '/about',

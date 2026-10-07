@@ -1,0 +1,92 @@
+{
+  "_template": "legal",
+  "seo": {
+    "title": "Ticket terms — ODDference 2027",
+    "description": "What you agree to when you buy an ODDference 2027 ticket: refunds, passing a ticket on, cancellation, photography and who you are buying from.",
+    "ogImage": "/og/oddference.jpg"
+  },
+  "eyebrow": "ODDference 2027 · Tickets",
+  "title": "Ticket terms",
+  "lastUpdated": "7 October 2026",
+  "intro": "The short version: change your mind within 14 days and you get your money back. After that, the ticket is yours to use or to pass on.",
+  "sections": [
+    {
+      "title": "Who you're buying from",
+      "body": [
+        "New Nordic Way rf, a Finnish non-profit association based in Helsinki, Business ID 3406363-2. We run ODD and ODDference.",
+        "Questions about anything here go to hello@oddfest.co."
+      ]
+    },
+    {
+      "title": "What you get",
+      "body": [
+        "One ticket gets one person into ODDference 2027, on Thursday 22 and Friday 23 April 2027 at Tanssin talo, Helsinki. What each tier includes is listed on the ticket page when you buy.",
+        "Prices are shown without VAT. VAT at 13.5% is added and shown before you pay. You pay by card through Stripe when you order, up to 10 tickets per order. If your organisation needs an invoice instead, email us."
+      ]
+    },
+    {
+      "title": "The programme",
+      "body": [
+        "Blind Bird is sold before the programme is confirmed, which is why it is the lowest price. Ticket holders hear first as speakers are confirmed.",
+        "Speakers and sessions can change, and a change to the programme is not by itself a reason for a refund."
+      ]
+    },
+    {
+      "title": "Changed your mind",
+      "body": [
+        "Email hello@oddfest.co within 14 days of buying and we will refund the full amount. You don't need to give a reason."
+      ]
+    },
+    {
+      "title": "Passing your ticket on",
+      "body": [
+        "Can't make it? Give your ticket to someone else. You can change the name on it yourself, free, through the link in your confirmation email."
+      ]
+    },
+    {
+      "title": "If we cancel or move the event",
+      "body": [
+        "If we cancel ODDference 2027 or move it to other dates, you can have a full refund. We can't cover travel or hotel costs."
+      ]
+    },
+    {
+      "title": "How refunds work",
+      "body": [
+        "Refunds go back to the card you paid with, within 14 days of us confirming them. Outside the cases above, tickets aren't refundable — but you can always pass yours on."
+      ]
+    },
+    {
+      "title": "Access needs",
+      "body": [
+        "Tell us what you need when you buy, or any time before the event, and we will send you Tanssin talo's access details."
+      ]
+    },
+    {
+      "title": "At the event",
+      "body": [
+        "We photograph and film ODDference, and the photos and video may appear on ODD's channels. Tell the crew if you would rather stay out of shot.",
+        "We expect everyone to treat each other with respect. Anyone who doesn't may be asked to leave, without a refund."
+      ]
+    },
+    {
+      "title": "Your details",
+      "body": [
+        "We use buyer and attendee details to run your order and the event, as described on our Privacy & cookies page."
+      ],
+      "links": [{ "label": "Privacy & cookies", "href": "/privacy/" }]
+    },
+    {
+      "title": "If we disagree",
+      "body": [
+        "Finnish law applies. If we can't sort something out together, consumers can take it to the Consumer Disputes Board at kuluttajariita.fi."
+      ]
+    }
+  ],
+  "contact": {
+    "title": "Questions",
+    "body": ["About these terms or an existing order, write to us and a person will answer."],
+    "name": "New Nordic Way rf",
+    "email": "hello@oddfest.co",
+    "address": "Sturenportti 3, Helsinki, Finland"
+  }
+}
