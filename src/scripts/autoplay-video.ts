@@ -43,9 +43,21 @@
   and play() ran as soon as a load finished even if the visitor had scrolled
   past or switched tabs in the meantime. Turning reduced motion off again
   mid-visit now restarts playback; it used to leave the poster for good.
+
+  2026-10-06: a refusal is no longer the end. An iPhone in Low Power Mode
+  (and Playwright's WebKit) rejects a muted play() with NotAllowedError until
+  the visitor touches the page, and WebKit lifts that per element once play()
+  runs inside a tap or key press (MediaElementSession,
+  RequireUserGestureForVideoDueToLowPowerMode). This used to tear the loaded
+  video down on the first refusal, so those visitors kept the poster even
+  after tapping. Now the video stays loaded and the first tap starts it.
+  Data Saver (navigator.connection.saveData) keeps the poster and loads
+  nothing: these are the heaviest files on the site.
 */
 
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
+const SAVE_DATA =
+  (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
 
 interface Stage {
   root: HTMLElement;
@@ -117,7 +129,7 @@ function whenReady(video: HTMLVideoElement): Promise<boolean> {
 }
 
 async function load(stage: Stage) {
-  if (stage.loading || stage.failed || REDUCED.matches) return;
+  if (stage.loading || stage.failed || REDUCED.matches || SAVE_DATA) return;
   stage.loading = true;
 
   const src = stage.video.dataset.src;
@@ -148,10 +160,13 @@ async function play(stage: Stage) {
     // a normal outcome here, not an error to report — it just means this
     // visitor keeps the poster. AbortError is different: our own pause()
     // interrupted the start because the stage left the screen, and the next
-    // sync() will try again.
+    // sync() will try again. NotAllowedError means "not without a tap": the
+    // file is fine, so it stays loaded for the visitor's first touch.
     await stage.video.play();
   } catch (e) {
-    if (!stage.confirmed && (e as DOMException | null)?.name !== 'AbortError') markFailed(stage);
+    const name = (e as DOMException | null)?.name;
+    if (name === 'NotAllowedError') waitForGesture(stage);
+    else if (!stage.confirmed && name !== 'AbortError') markFailed(stage);
     return;
   }
   if (stage.confirmed) return;
@@ -191,6 +206,40 @@ function sync(stage: Stage) {
   const want = wanted(stage);
   if (want && stage.video.paused) void play(stage);
   else if (!want && !stage.video.paused) stage.video.pause();
+}
+
+/** Stages whose play() was refused until the visitor interacts. */
+const refused = new Set<Stage>();
+const GESTURES = ['pointerup', 'touchend', 'keydown'];
+
+function waitForGesture(stage: Stage) {
+  if (!refused.size) {
+    GESTURES.forEach((t) =>
+      document.addEventListener(t, onGesture, { capture: true, passive: true }),
+    );
+  }
+  refused.add(stage);
+}
+
+function onGesture() {
+  GESTURES.forEach((t) => document.removeEventListener(t, onGesture, true));
+  // play() has to run inside the gesture, so no await before it. A stage that
+  // shouldn't be moving yet (offscreen) is started and stopped at once: that
+  // is enough to lift WebKit's restriction on it, and sync() plays it once it
+  // scrolls in. A refusal again (not a gesture after all) re-arms via play().
+  refused.forEach((s) => {
+    if (wanted(s)) sync(s);
+    else if (!REDUCED.matches) {
+      s.video.play().then(
+        () => {
+          s.video.pause();
+          sync(s);
+        },
+        () => {},
+      );
+    }
+  });
+  refused.clear();
 }
 
 /** film-player.ts: true while a full film plays, false when it closes. */

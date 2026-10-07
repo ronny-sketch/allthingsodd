@@ -265,6 +265,45 @@ test.describe('the lifecycle around playback', () => {
     expect((await hero(page)).playing, 'nothing plays while it is offscreen').toBe(false);
   });
 
+  // 2026-10-06. Playwright's WebKit refuses a muted play() with no input yet,
+  // the same refusal an iPhone in Low Power Mode gives. The old code dropped
+  // the video on that refusal, so the visitor's first tap changed nothing.
+  // The first outcome is read off the console, not polled with
+  // page.evaluate(): WebKit counts an evaluate as user input, which would let
+  // the first play() through and leave nothing refused to test.
+  test('a refused autoplay starts on the first tap or key press', async ({ page }) => {
+    await page.addInitScript(() => {
+      const say = (m: string) => console.log(`video-outcome:${m}`);
+      const play = HTMLMediaElement.prototype.play;
+      HTMLMediaElement.prototype.play = function () {
+        const p = play.call(this);
+        p.then(
+          () => say('playing'),
+          (e: DOMException) => e.name === 'NotAllowedError' && say('refused'),
+        );
+        return p;
+      };
+      document.addEventListener(
+        'error',
+        (e) => e.target instanceof HTMLVideoElement && say('failed'),
+        true,
+      );
+    });
+    const outcome = page.waitForEvent('console', {
+      predicate: (m) => m.text().startsWith('video-outcome:'),
+      timeout: 15000,
+    });
+    await page.goto('/oddfest', { waitUntil: 'domcontentloaded' });
+    const first = (await outcome).text().split(':')[1];
+    test.skip(first === 'playing', 'this engine autoplays without input; nothing was refused');
+    test.skip(first === 'failed', 'this engine cannot play the file');
+
+    await page.keyboard.press('Shift');
+    await expect
+      .poll(() => hero(page), { timeout: 8000 })
+      .toMatchObject({ state: 'playing', playing: true });
+  });
+
   test('a hidden tab pauses the preview and showing it again resumes it', async ({ page }) => {
     await gotoAfterInput(page, '/oddfest');
     await page.waitForTimeout(5000);
