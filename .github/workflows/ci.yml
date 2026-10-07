@@ -50,6 +50,7 @@ jobs:
       mode: ${{ steps.pick.outputs.mode }}
       projects: ${{ steps.pick.outputs.projects }}
       browsers: ${{ steps.pick.outputs.browsers }}
+      playwright: ${{ steps.pick.outputs.playwright }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -78,6 +79,9 @@ jobs:
           fi
           echo "Changed files:"; echo "$changed" | sed 's/^/  /'
           printf '%s\n' "$changed" | node scripts/ci-scope.mjs | tee -a "$GITHUB_OUTPUT"
+          # The functional job's container tag must equal the installed
+          # @playwright/test, or its browsers are the wrong build.
+          echo "playwright=$(node -p "require('./package-lock.json').packages['node_modules/@playwright/test'].version")" | tee -a "$GITHUB_OUTPUT"
 
   checks:
     name: Check, lint, build
@@ -119,6 +123,15 @@ jobs:
     # minutes, until cancelled by hand).
     timeout-minutes: 20
     needs: scope
+    # Browsers and their OS packages come baked into Playwright's own image
+    # (2026-10-07). Installing them per shard meant six apt-get runs against
+    # the runner's Ubuntu mirror; that day the mirror slowed to KB/s, two
+    # shards spent all 20 minutes in `install-deps` without running a test,
+    # and the deploy was skipped. `--user 1001` is the runner's uid, so the
+    # mounted workspace and caches stay writable (Playwright's CI docs).
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.scope.outputs.playwright }}-noble
+      options: --user 1001
     # Docs-only changes never reach a browser.
     if: needs.scope.outputs.mode != 'docs' && needs.scope.outputs.mode != 'content'
     # Six runners in parallel rather than 838 tests in series on one. This repo
@@ -141,27 +154,6 @@ jobs:
           cache: npm
       - run: npm install -g npm@11
       - run: npm ci
-      # Only the engines this tier will actually launch. Installing all three
-      # took 46s of every shard job, and a Chromium-only run never opened two
-      # of them. ci-scope.mjs decides, and its self-test asserts the list is
-      # never narrower than the chosen projects need.
-      #
-      # Cached on top of that, because with six shards this cost is paid six
-      # times per run. The key carries the Playwright version and the engine
-      # list: a version bump or a wider tier must miss, or the run launches a
-      # browser that isn't there. The OS packages `--with-deps` installs live
-      # outside the cached directory, so a hit still runs `install-deps`.
-      - id: pw
-        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-      - id: pwcache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}-${{ needs.scope.outputs.browsers }}
-      - if: steps.pwcache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps ${{ needs.scope.outputs.browsers }}
-      - if: steps.pwcache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps ${{ needs.scope.outputs.browsers }}
       - run: npm run build
       - name: Start preview server
         run: npx astro preview --host &
