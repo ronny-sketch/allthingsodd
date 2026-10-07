@@ -92,6 +92,25 @@ function loadGtag(): void {
   script.async = true;
   script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
   document.head.appendChild(script);
+  initScrollDepth();
+}
+
+// Enhanced measurement reports one scroll, at 90%. These add 25/50/75 under
+// the same event name and parameter, so `percent_scrolled` reads as one
+// distribution. Same measure as GA4's own: how far down the page the bottom
+// of the viewport has been. Started only once consent exists, so a mark
+// passed before Accept is reported on the next scroll rather than lost.
+function initScrollDepth(): void {
+  const marks = [25, 50, 75];
+  const onScroll = () => {
+    const root = document.documentElement;
+    const seen = ((window.scrollY + window.innerHeight) / root.scrollHeight) * 100;
+    while (marks.length && seen >= marks[0]) {
+      trackEvent('scroll', { percent_scrolled: marks.shift() });
+    }
+    if (!marks.length) window.removeEventListener('scroll', onScroll);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
 }
 
 /** Called once per page load from ConsentBanner.astro, which mounts on every
@@ -137,6 +156,14 @@ function initCtaTracking(): void {
 
       if (href.startsWith('mailto:')) {
         trackEvent('cta_click', { cta_id: 'email', cta_location: window.location.pathname });
+        return;
+      }
+
+      // Every ticket button on the site links to /tickets (2026-10-07).
+      // view_item_list only says someone reached the shop, not which page's
+      // button sent them there.
+      if (/^\/tickets\/?([?#]|$)/.test(href)) {
+        trackEvent('cta_click', { cta_id: 'tickets', cta_location: window.location.pathname });
         return;
       }
 

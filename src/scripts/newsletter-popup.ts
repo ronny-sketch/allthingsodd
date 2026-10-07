@@ -8,6 +8,8 @@
 // a phone network) would hide it from everyone behind one person's click,
 // and this is a static site with no server to ask. See NewsletterPopup.astro and the 2026-08-30 homepage revision brief,
 // section 13.
+import { trackEvent } from './analytics';
+
 const SEEN_KEY = 'oddNewsletterPopupSeen';
 const DELAY_MS = 15000;
 
@@ -115,6 +117,9 @@ if (!isSuppressed && backdrop && popup && closeBtn) {
       });
       document.addEventListener('keydown', onKeydown);
       markSeen();
+      // Shown vs. newsletter_signup with signup_source popup_newsletter is
+      // the popup's whole report card.
+      trackEvent('newsletter_popup_shown');
     }
 
     function close() {
@@ -122,6 +127,7 @@ if (!isSuppressed && backdrop && popup && closeBtn) {
       backdrop.classList.remove('is-open');
       popup.classList.remove('is-open');
       document.removeEventListener('keydown', onKeydown);
+      trackEvent('newsletter_popup_closed');
       const finish = () => {
         backdrop.hidden = true;
         popup.hidden = true;

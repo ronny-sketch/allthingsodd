@@ -140,6 +140,43 @@ test('a newsletter signup cannot rewrite the session traffic source', async ({ p
   expect(params[0]).toHaveProperty('signup_source', 'footer_newsletter');
 });
 
+/** The params of every queued gtag('event', name, …) call. */
+function eventsNamed(page: Page, name: string) {
+  return page.evaluate(
+    (n) =>
+      (window.dataLayer ?? [])
+        .filter((e) => String((e as IArguments)[1] ?? '') === n)
+        .map((e) => ({ ...((e as IArguments)[2] as object) }) as Record<string, unknown>),
+    name,
+  );
+}
+
+test('scroll depth, film opens and ticket buttons are measured', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#consentAccept').click();
+  await expect.poll(() => page.evaluate(() => typeof window.gtag)).toBe('function');
+
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await expect
+    .poll(async () => (await eventsNamed(page, 'scroll')).map((p) => p.percent_scrolled))
+    .toEqual([25, 50, 75]);
+
+  await page.locator('a[data-film]').first().click();
+  await expect.poll(async () => (await eventsNamed(page, 'video_start')).length).toBe(1);
+  const [start] = await eventsNamed(page, 'video_start');
+  expect(start.video_title).toBeTruthy();
+  expect(start.video_url).toMatch(/\.mp4$/);
+
+  await page.goto('/oddference');
+  await expect.poll(() => page.evaluate(() => typeof window.gtag)).toBe('function');
+  // Keep the click on this page, so its dataLayer can still be read.
+  await page.evaluate(() => document.addEventListener('click', (e) => e.preventDefault()));
+  await page.locator('a[href^="/tickets"]').first().click();
+  await expect
+    .poll(async () => (await eventsNamed(page, 'cta_click')).map((p) => p.cta_id))
+    .toContain('tickets');
+});
+
 // Replaces the two Google Calendar tests this file carried until 2026-09-11,
 // when /oddspace's consent-gated embed was replaced by a hand-kept list of
 // events. The embed was the `preferences` category's only entry, so what is
