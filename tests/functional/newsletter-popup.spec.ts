@@ -2,7 +2,7 @@ import { test, expect, type BrowserContext, type Page } from '@playwright/test';
 
 // Timed newsletter popup — see NewsletterPopup.astro, newsletter-popup.ts,
 // and the 2026-08-30 homepage revision brief, section 13. Each test gets a
-// fresh browser context (Playwright's default), so sessionStorage starts
+// fresh browser context (Playwright's default), so localStorage starts
 // empty every time — no manual cleanup needed between tests.
 //
 // Since 2026-10-05 the popup also stays away while the cookie banner is up
@@ -69,12 +69,68 @@ test('newsletter popup does not reappear on a later navigation in the same sessi
   await page.locator('#newsletterPopupClose').click();
   await expect(popup).toBeHidden();
 
-  // Navigate elsewhere and wait past the delay again — sessionStorage
-  // (shared across same-tab navigations, unlike a fresh browser context)
+  // Navigate elsewhere and wait past the delay again — the stored flag
   // should keep it from showing a second time.
   await page.goto('/oddfest');
   await page.waitForTimeout(17_000);
   await expect(page.locator('#newsletterPopup')).toBeHidden();
+});
+
+// The 2026-10-07 bug: the flag lived in sessionStorage, so a new tab or a
+// later visit showed the popup again to people who had already closed it.
+// A second page in the same context is a new tab: its own sessionStorage,
+// the same localStorage.
+test('newsletter popup does not reappear in a new tab or a later visit', async ({
+  page,
+  context,
+}) => {
+  await page.clock.install();
+  await page.goto('/');
+  await page.clock.fastForward(20_000);
+  await expect(page.locator('#newsletterPopup')).toBeVisible();
+  await page.locator('#newsletterPopupClose').click();
+
+  const later = await context.newPage();
+  // page.clock is the context's clock, already installed for this tab too.
+  await later.goto('/about/');
+  await pastTheDelay(later);
+});
+
+test('newsletter popup never appears after a signup in the footer', async ({ page, context }) => {
+  await page.route('**/api/newsletter', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, message: "You're on the list." }),
+    }),
+  );
+  await page.clock.install();
+  await page.goto('/');
+  const footerForm = page.locator('#newsletterForm');
+  await footerForm.locator('input[name="email"]').fill('test@example.com');
+  await footerForm.locator('button[type="submit"]').click();
+  await expect(page.locator('.foot-nl .nl-status')).toHaveText("You're on the list.");
+
+  // Not on this page, whose timer was already running…
+  await pastTheDelay(page);
+
+  // …and not on the next visit either.
+  const later = await context.newPage();
+  // page.clock is the context's clock, already installed for this tab too.
+  await later.goto('/about/');
+  await pastTheDelay(later);
+});
+
+test('newsletter popup never appears to someone arriving from the newsletter', async ({
+  page,
+  context,
+}) => {
+  await page.clock.install();
+  // A suppressed page on purpose: the visit still counts there.
+  await page.goto('/oddspace/?utm_source=odd&utm_medium=newsletter&utm_campaign=issue');
+  const later = await context.newPage();
+  await later.goto('/about/');
+  await pastTheDelay(later);
 });
 
 test('footer newsletter form still works and is the only persistent newsletter UI', async ({
@@ -127,7 +183,10 @@ test('mobile menu shows About/Media/Contact as direct items, no newsletter form'
 
 async function pastTheDelay(page: Page) {
   await page.clock.fastForward(20_000);
-  await expect(page.locator('#newsletterPopup')).toBeHidden();
+  // The attribute, not toBeHidden(): open() drops `hidden` at once but only
+  // turns visible two frames later, so toBeHidden() also passes on a popup
+  // that is already opening.
+  await expect(page.locator('#newsletterPopup')).toHaveAttribute('hidden', '');
 }
 
 test('stays away while the cookie banner is waiting for an answer', async ({ page }) => {

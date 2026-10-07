@@ -41,6 +41,13 @@ document.querySelectorAll<HTMLFormElement>('[data-newsletter-form]').forEach((fo
     if (result.kind === 'ok') {
       status.textContent = result.message;
       trackEvent('newsletter_signup', { signup_source: source });
+      // Subscribed: the timed popup has nothing left to ask
+      // (newsletter-popup.ts's SEEN_KEY).
+      try {
+        localStorage.setItem('oddNewsletterPopupSeen', '1');
+      } catch {
+        // Storage blocked — the popup may show once more, nothing breaks.
+      }
       form.reset();
     } else {
       status.textContent =

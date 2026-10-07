@@ -1,8 +1,8 @@
 ---
 // Timed newsletter popup — the one deliberate exception to "newsletter UI
 // lives only in the footer" (see Footer.astro, Nav.astro, MobileMenu.astro's
-// own comments). Appears ~15s after page load, once per browser session
-// (sessionStorage, not a cookie — see newsletter-popup.ts), reuses the exact
+// own comments). Appears ~15s after page load, once per browser and never
+// after a signup (localStorage, not a cookie — see newsletter-popup.ts), reuses the exact
 // same submission logic/endpoint as the footer via NewsletterForm.astro
 // (different `source` tag only), and is mounted sitewide from Layout.astro
 // since the brief asks for "the visitor enters the site", not a homepage-

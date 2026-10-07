@@ -162,7 +162,7 @@ const context = await browser.newContext({
 const page = await context.newPage();
 await page.addInitScript(() => {
   // The two timed interruptions, off (same keys as tests/mobile/helpers.ts).
-  sessionStorage.setItem('oddNewsletterPopupSeen', '1');
+  localStorage.setItem('oddNewsletterPopupSeen', '1');
   localStorage.setItem('odd_analytics_consent_v1', 'denied');
   // ponytail: drops every timer of 5 s or more — today that is only
   // reveal.ts's 6 s backstop (see the file comment); narrow it if another

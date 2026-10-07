@@ -14,7 +14,7 @@ const FILM = /-aftermovie\.mp4/;
 
 async function load(page: Page) {
   await page.addInitScript(() => {
-    sessionStorage.setItem('oddNewsletterPopupSeen', '1');
+    localStorage.setItem('oddNewsletterPopupSeen', '1');
     localStorage.setItem('odd_analytics_consent_v1', 'denied');
   });
   await page.goto('/');

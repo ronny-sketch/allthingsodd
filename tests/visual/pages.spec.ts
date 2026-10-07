@@ -111,7 +111,7 @@ for (const route of ROUTES) {
     // layout regression. Matches how a real returning-same-session visitor
     // already never sees it twice; doesn't change what a first-time visitor
     // sees in production.
-    await page.addInitScript(() => sessionStorage.setItem('oddNewsletterPopupSeen', '1'));
+    await page.addInitScript(() => localStorage.setItem('oddNewsletterPopupSeen', '1'));
     // Fixed inputs (2026-10-05, finding F16). The motion state is set on the
     // page, because the project-level `reducedMotion` never reached the
     // browser (see scrollThroughPage below), so these baselines used to be
