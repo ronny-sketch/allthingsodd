@@ -121,6 +121,18 @@ test('newsletter popup never appears after a signup in the footer', async ({ pag
   await pastTheDelay(later);
 });
 
+test('newsletter popup never appears to someone arriving from the newsletter', async ({
+  page,
+  context,
+}) => {
+  await page.clock.install();
+  // A suppressed page on purpose: the visit still counts there.
+  await page.goto('/oddspace/?utm_source=odd&utm_medium=newsletter&utm_campaign=issue');
+  const later = await context.newPage();
+  await later.goto('/about/');
+  await pastTheDelay(later);
+});
+
 test('footer newsletter form still works and is the only persistent newsletter UI', async ({
   page,
 }) => {

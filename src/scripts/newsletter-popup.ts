@@ -2,11 +2,11 @@
 // browser, ever (localStorage, 2026-10-07). It used to be once per tab
 // session (sessionStorage), which meant every new tab or visit showed it
 // again to people who had already closed it. Signing up through any
-// newsletter form sets the same key (newsletter-form.ts), so subscribers
-// never see it either. Per browser, not per IP: a shared IP (ODDspace's
-// co-work wifi, an office, a phone network) would hide it from everyone
-// behind one person's click, and this is a static site with no server to
-// ask. See NewsletterPopup.astro and the 2026-08-30 homepage revision brief,
+// newsletter form sets the same key (newsletter-form.ts), and so does
+// arriving from a newsletter link, so subscribers never see it either.
+// Per browser, not per IP: a shared IP (ODDspace's co-work wifi, an office,
+// a phone network) would hide it from everyone behind one person's click,
+// and this is a static site with no server to ask. See NewsletterPopup.astro and the 2026-08-30 homepage revision brief,
 // section 13.
 const SEEN_KEY = 'oddNewsletterPopupSeen';
 const DELAY_MS = 15000;
@@ -39,6 +39,22 @@ const isSuppressed =
   normalizedPath === '/tickets' ||
   normalizedPath.startsWith('/tickets/');
 
+function markSeen() {
+  try {
+    localStorage.setItem(SEEN_KEY, '1');
+  } catch {
+    // Storage blocked (private browsing) — non-fatal, see seen() below.
+  }
+}
+
+// Someone who clicked through from the newsletter already gets it
+// (2026-10-07). beehiiv tags its links utm_medium=newsletter; ODD's own
+// outreach mail does not use that medium. Checked before the path guard, so
+// a newsletter link straight to /oddspace still counts.
+// ponytail: assumes beehiiv's UTM setting is on for ODD's publication; if a
+// real issue's links carry no utm_medium, this does nothing (no harm).
+if (new URLSearchParams(window.location.search).get('utm_medium') === 'newsletter') markSeen();
+
 const backdrop = document.getElementById('newsletterPopupBackdrop');
 const popup = document.getElementById('newsletterPopup');
 const closeBtn = document.getElementById('newsletterPopupClose');
@@ -58,14 +74,6 @@ if (!isSuppressed && backdrop && popup && closeBtn) {
 
   if (!seen()) {
     let previouslyFocused: HTMLElement | null = null;
-
-    function markSeen() {
-      try {
-        localStorage.setItem(SEEN_KEY, '1');
-      } catch {
-        // Same private-browsing fallback as above — non-fatal either way.
-      }
-    }
 
     function getFocusable(): HTMLElement[] {
       if (!popup) return [];
