@@ -1,0 +1,21 @@
+---
+// /membership was the ODDnetwork page, retired 2026-10-05. Old links land on
+// the membership that exists: ODDspace's.
+//
+// Hand-written instead of astro.config's `redirects`, because Astro's
+// generated stub carries <meta name="robots" content="noindex">: Search
+// Console then files the old URL under "Excluded by 'noindex' tag" instead of
+// following it. Surge (free) can't send a real 301, so this is the next best
+// thing: an instant meta refresh, which Google treats as a permanent redirect,
+// plus a canonical to the target. Kept out of the sitemap in astro.config.mjs.
+const target = '/oddspace/membership/';
+const canonical = new URL(target, Astro.site);
+---
+
+<!doctype html>
+<title>Redirecting to: {target}</title>
+<meta http-equiv="refresh" content={`0;url=${target}`} />
+<link rel="canonical" href={canonical} />
+<body>
+  <a href={target}>ODDspace membership</a>
+</body>

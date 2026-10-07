@@ -16,10 +16,6 @@ export default defineConfig({
   // (a static file Astro copies verbatim) — update its Sitemap: line too.
   site: 'https://allthingsodd.co',
 
-  // /membership was the ODDnetwork page, retired 2026-10-05. Old links land
-  // on the membership that exists: ODDspace's.
-  redirects: { '/membership': '/oddspace/membership/' },
-
   integrations: [
     sitemap({
       // The two transient ticketing pages carry <meta name="robots"
@@ -33,9 +29,12 @@ export default defineConfig({
       // stays in. Keep in sync with the pages that pass `noindex` to Layout.
       // /brand-book/ is `noindex` for the same reason: a working document
       // for designers, partners and agents, not a page for search (2026-09-18).
+      // /membership/ is a redirect stub (src/pages/membership.astro), not a page.
+      // Exact pathname match: endsWith('/membership/') would also drop
+      // /oddspace/membership/.
       filter: (page) =>
-        !['/tickets/checkout/', '/tickets/confirmation/', '/brand-book/'].some((path) =>
-          page.endsWith(path),
+        !['/tickets/checkout/', '/tickets/confirmation/', '/brand-book/', '/membership/'].includes(
+          new URL(page).pathname,
         ),
     }),
   ],
