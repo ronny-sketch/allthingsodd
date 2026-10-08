@@ -226,6 +226,8 @@ no channel. The rules do not bend for that; these two answer it:
 - **Signage:** Forta names the room, Gabarito says where it is, one hairline per
   division.
 - The mark keeps its clear space (half its height) everywhere.
+- **Video:** `brand/VIDEO.md`, the bar every ODD video clears before anyone sees it:
+  cut to the music's measured hits, three formats, the checks run on every build.
 
 ## 10. When you think the system needs something new
 
@@ -361,6 +363,7 @@ brand/tokens/                brand-tokens.json + the drift check
 brand/logos/                 build.py, rasterize.mjs, svg/, png/
 brand/fonts/                 Forta + Gabarito, OFL
 brand/deck/                  the PowerPoint system (isolated tooling)
+brand/VIDEO.md               the bar for video: picture, sound, rhythm, the checks
 brand/AUDIT.md               what the 2026-09-18 audit found
 brand/CHANGELOG.md           what changed, and why
 docs/design-system.md        the engineering-side rules, in more depth
