@@ -60,9 +60,13 @@ const saleCouldOpen = STRIPE_PUBLISHABLE_KEY?.startsWith('pk_live_') ?? false;
          one frame before storefront.ts hides it, which no visitor sees and
          no budget measures. The no-JS reader now gets the closed notice too
          — true on production, and better than the nothing they saw before;
-         the <noscript> below still explains the missing store. */
+         the <noscript> below still explains the missing store.
+         The same reasoning, flipped, once a live key ships (2026-10-07): a
+         live-key build is open on every public host, so it serves the notice
+         HIDDEN and storefront.ts only reveals it for `?sales=closed`. Served
+         visible, production measured CLS 0.158 the day sales opened. */
     }
-    <div class="wrap tix-closed" id="tixClosed">
+    <div class="wrap tix-closed" id="tixClosed" hidden={saleCouldOpen}>
       <span class="eyebrow">Not yet on sale</span>
       <h2>Card payment isn't open yet.</h2>
       <p>

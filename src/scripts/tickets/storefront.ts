@@ -30,7 +30,8 @@ const salesOpen = salesEnabled(window.location);
 // from the hostname, so this costs no round trip; the reveal it replaces
 // waited for the catalogue fetch and shifted the page 350px at 557ms. See
 // the markup comment in ../../pages/tickets/index.astro for the measurement.
-if (salesOpen) document.getElementById('tixClosed')?.setAttribute('hidden', '');
+// Both directions: a live-key build serves it hidden (see index.astro).
+document.getElementById('tixClosed')?.toggleAttribute('hidden', salesOpen);
 
 // An `active` tier that cannot be bought because card payment is not open is
 // not sold out and its sale has not ended — it has not started. Every other
