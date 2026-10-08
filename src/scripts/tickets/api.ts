@@ -49,7 +49,11 @@ export interface CheckoutItem {
 
 export interface CheckoutBuyer {
   email: string;
+  firstName: string;
+  lastName: string;
+  /** "First Last". Only a Worker deployed before 2026-10-08 reads it. */
   name: string;
+  phone: string;
   companyName?: string;
   vatId?: string;
   billingCountry?: string;
@@ -84,6 +88,9 @@ export interface OrderStatusResponse {
   /** Optional only because a Worker deployed before 2026-09-21 does not
    *  send it — see ecommerce.ts's transactionIdFor() for the fallback. */
   orderId?: string;
+  /** "ODD-AF4D1F3C" — the code in the buyer's confirmation email. Absent from
+   *  a Worker deployed before 2026-10-08. */
+  confirmationCode?: string;
   totalMinor: number;
   currency: string;
   tickets: Array<{ ticketCode: string; ticketTypeId: string; attendeeAssigned: boolean }>;
@@ -98,27 +105,5 @@ export async function fetchOrderStatus(orderToken: string): Promise<OrderStatusR
     return (await res.json()) as OrderStatusResponse;
   } catch {
     return null;
-  }
-}
-
-export type AssignResponse = { ok: true } | { ok: false; code?: string; message: string };
-
-export async function assignAttendee(
-  orderToken: string,
-  ticketCode: string,
-  name: string,
-  email?: string,
-  company?: string,
-  jobTitle?: string,
-): Promise<AssignResponse> {
-  try {
-    const res = await fetch(`${API_BASE}/api/tickets/assign`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ orderToken, ticketCode, name, email, company, jobTitle }),
-    });
-    return (await res.json()) as AssignResponse;
-  } catch {
-    return { ok: false, message: "We couldn't save that right now. Please try again." };
   }
 }

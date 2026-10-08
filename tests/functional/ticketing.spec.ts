@@ -218,6 +218,14 @@ test.describe('/tickets/checkout', () => {
     // own "never touch real Stripe in tests" rule above.
     await expect(page.locator('#tixcNotConnected')).toBeHidden();
 
+    // The four required fields, and the company ones only once asked for.
+    for (const id of ['tixc-first-name', 'tixc-last-name', 'tixc-email', 'tixc-phone']) {
+      await expect(page.locator(`#${id}`)).toHaveAttribute('required', '');
+    }
+    await expect(page.locator('#tixcCompanyFields')).toBeHidden();
+    await page.locator('#tixc-company-toggle').check();
+    await expect(page.locator('#tixcCompanyFields')).toBeVisible();
+
     expect(errors, `console/page errors: ${errors.join('; ')}`).toEqual([]);
   });
 
@@ -289,7 +297,9 @@ test.describe('/tickets/confirmation', () => {
     expect(errors, `console/page errors: ${errors.join('; ')}`).toEqual([]);
   });
 
-  test('a paid order renders real tickets, QR codes, and exactly one heading', async ({ page }) => {
+  test('a paid order shows its confirmation code, no tickets, and exactly one heading', async ({
+    page,
+  }) => {
     const errors = collectConsoleErrors(page);
     // The confirmation page reads the catalog once, purely to turn ticket
     // type ids into readable names on GA4's purchase event. Cosmetic, and
@@ -300,6 +310,7 @@ test.describe('/tickets/confirmation', () => {
       ok: true,
       status: 'paid',
       eventId: EVENT_SLUG,
+      confirmationCode: 'ODD-TEST1234',
       totalMinor: 60000,
       currency: 'EUR',
       tickets: [
@@ -319,11 +330,11 @@ test.describe('/tickets/confirmation', () => {
     await page.waitForLoadState('load');
 
     await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('h1')).toHaveText(/tickets are yours/i);
-    await expect(page.locator('.tixf-ticket')).toHaveCount(2);
-    // QRCode.toDataURL resolves async — wait for the real <img> it inserts
-    // rather than asserting immediately.
-    await expect(page.locator('.tixf-ticket-qr img').first()).toBeVisible();
+    await expect(page.locator('h1')).toHaveText(/thank you for your purchase/i);
+    await expect(page.locator('#tixfCode')).toHaveText('ODD-TEST1234');
+    await expect(page.locator('#tixfSuccess')).toContainText('by 22 March 2027');
+    // The official ticket comes by email later — the codes stay off this page.
+    await expect(page.locator('#tixfSuccess')).not.toContainText('TEST-TICKET-CODE-1');
 
     expect(errors, `console/page errors: ${errors.join('; ')}`).toEqual([]);
   });
@@ -431,7 +442,7 @@ test.describe('GA4 ecommerce events', () => {
     });
 
     await page.goto('/tickets/confirmation/?order_token=test-token-123');
-    await expect(page.locator('h1')).toHaveText(/tickets are yours/i);
+    await expect(page.locator('h1')).toHaveText(/thank you for your purchase/i);
 
     await expect
       .poll(async () => (await trackedEvents(page)).filter((e) => e.name === 'purchase').length)
@@ -459,7 +470,7 @@ test.describe('GA4 ecommerce events', () => {
     // not the guard: the guard living through the reload is the point.
     await clearTrackedEvents(page);
     await page.reload();
-    await expect(page.locator('h1')).toHaveText(/tickets are yours/i);
+    await expect(page.locator('h1')).toHaveText(/thank you for your purchase/i);
     await page.waitForTimeout(500);
     expect((await trackedEvents(page)).filter((e) => e.name === 'purchase')).toHaveLength(0);
   });
