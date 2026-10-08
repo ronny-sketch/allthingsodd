@@ -139,7 +139,7 @@ test('the confirmation page takes the token out of the address bar', async ({ pa
   );
 
   await page.goto('/tickets/confirmation/?order_token=scrub-me-xyz789&session_id=cs_test_scrub');
-  await expect(page.locator('h1')).toHaveText(/tickets are yours/i);
+  await expect(page.locator('h1')).toHaveText(/thank you for your purchase/i);
 
   // Gone from the URL, so it is out of browser history and out of the Referer
   // header of anything linked from this page.
@@ -152,8 +152,8 @@ test('the confirmation page takes the token out of the address bar', async ({ pa
   // was persisted before being scrubbed. Losing the buyer's order to protect
   // their token would be a worse bug than the one being fixed.
   await page.reload();
-  await expect(page.locator('h1')).toHaveText(/tickets are yours/i);
-  await expect(page.locator('.tixf-ticket')).toHaveCount(1);
+  await expect(page.locator('h1')).toHaveText(/thank you for your purchase/i);
+  await expect(page.locator('#tixfSuccess')).toBeVisible();
 });
 
 test('purchase reports the same item_id the rest of the funnel does', async ({ page }) => {
@@ -184,7 +184,7 @@ test('purchase reports the same item_id the rest of the funnel does', async ({ p
   );
 
   await page.goto('/tickets/confirmation/?order_token=items-token');
-  await expect(page.locator('h1')).toHaveText(/tickets are yours/i);
+  await expect(page.locator('h1')).toHaveText(/thank you for your purchase/i);
 
   await expect
     .poll(async () => (await gtagCommands(page)).filter((c) => c[1] === 'purchase').length)
@@ -225,10 +225,10 @@ test('refusing statistics stores nothing for analytics, even on a paid order', a
   );
 
   await page.goto('/tickets/confirmation/?order_token=no-consent-token');
-  // The buyer still gets their tickets. Declining measurement is not
+  // The buyer still gets their confirmation. Declining measurement is not
   // declining the thing they paid for.
-  await expect(page.locator('h1')).toHaveText(/tickets are yours/i);
-  await expect(page.locator('.tixf-ticket')).toHaveCount(1);
+  await expect(page.locator('h1')).toHaveText(/thank you for your purchase/i);
+  await expect(page.locator('#tixfSuccess')).toBeVisible();
 
   expect(
     await page.evaluate(() => sessionStorage.getItem('odd_tickets_purchase_reported_v1')),

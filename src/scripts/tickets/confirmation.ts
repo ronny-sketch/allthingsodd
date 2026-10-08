@@ -6,7 +6,6 @@
 import {
   fetchCatalog,
   fetchOrderStatus,
-  assignAttendee,
   type CatalogTicketType,
   type OrderStatusResponse,
 } from './api';
@@ -25,7 +24,8 @@ const success = document.getElementById('tixfSuccess');
 const failed = document.getElementById('tixfFailed');
 const timeout = document.getElementById('tixfTimeout');
 const notFound = document.getElementById('tixfNotFound');
-const ticketList = document.getElementById('tixfTicketList')!;
+const codeLine = document.getElementById('tixfCodeLine');
+const code = document.getElementById('tixfCode');
 const failedMessage = document.getElementById('tixfFailedMessage');
 
 // One real heading text per state, keyed by the same element each state's
@@ -33,17 +33,11 @@ const failedMessage = document.getElementById('tixfFailedMessage');
 // page has a single shared <h1> instead of one per state.
 const HEADINGS: Record<string, string> = {
   tixfProcessing: 'Processing your payment…',
-  tixfSuccess: 'Your tickets are yours.',
+  tixfSuccess: 'Thank you for your purchase.',
   tixfFailed: "This order didn't go through",
   tixfTimeout: 'Still processing',
   tixfNotFound: "We couldn't find that order",
 };
-
-function escapeHtml(value: string): string {
-  const div = document.createElement('div');
-  div.textContent = value;
-  return div.innerHTML;
-}
 
 function show(el: HTMLElement | null): void {
   if (!el) return;
@@ -52,85 +46,6 @@ function show(el: HTMLElement | null): void {
 }
 function hide(el: HTMLElement | null): void {
   el?.setAttribute('hidden', '');
-}
-
-function ticketRowHtml(index: number, ticketCode: string, assigned: boolean): string {
-  return `<div class="tixf-ticket" data-code="${escapeHtml(ticketCode)}">
-    <div class="tixf-ticket-head">
-      <span class="tixf-ticket-number">Ticket ${index + 1}</span>
-      <span class="tixf-ticket-code">${escapeHtml(ticketCode)}</span>
-    </div>
-    <div class="tixf-ticket-qr" data-role="qr"></div>
-    <form class="tixf-assign-form" data-role="assign-form">
-      <div class="field">
-        <label for="tixf-name-${index}">Attendee name</label>
-        <input id="tixf-name-${index}" name="name" type="text" required autocomplete="off" />
-      </div>
-      <div class="field">
-        <label for="tixf-email-${index}">Attendee email (optional)</label>
-        <input id="tixf-email-${index}" name="email" type="email" autocomplete="off" />
-      </div>
-      <button type="submit" class="pill pill-outline">${assigned ? 'Update' : 'Assign this ticket'}</button>
-      <p class="tixf-assign-status" role="status" aria-live="polite">${assigned ? 'Assigned' : ''}</p>
-    </form>
-  </div>`;
-}
-
-async function renderQr(container: HTMLElement, ticketCode: string): Promise<void> {
-  try {
-    const QRCode = await import('qrcode');
-    const dataUrl = await QRCode.toDataURL(ticketCode, { margin: 1, width: 220 });
-    const img = document.createElement('img');
-    img.src = dataUrl;
-    img.alt = `QR code for ticket ${ticketCode}`;
-    img.width = 220;
-    img.height = 220;
-    container.appendChild(img);
-  } catch (err) {
-    console.error('QR generation failed', err);
-    container.textContent = 'QR code unavailable — use the code above at check-in.';
-  }
-}
-
-async function renderTickets(orderToken: string, order: OrderStatusResponse): Promise<void> {
-  if (!ticketList) return;
-  ticketList.innerHTML = order.tickets
-    .map((t, i) => ticketRowHtml(i, t.ticketCode, t.attendeeAssigned))
-    .join('');
-
-  ticketList.querySelectorAll<HTMLElement>('[data-role="qr"]').forEach((el) => {
-    const code = el.closest<HTMLElement>('.tixf-ticket')?.dataset.code;
-    if (code) renderQr(el, code);
-  });
-
-  ticketList.querySelectorAll<HTMLFormElement>('[data-role="assign-form"]').forEach((form) => {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const ticketCode = form.closest<HTMLElement>('.tixf-ticket')?.dataset.code;
-      if (!ticketCode) return;
-      const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-      const statusEl = form.querySelector<HTMLElement>('.tixf-assign-status');
-      const formData = new FormData(form);
-      const name = String(formData.get('name') ?? '').trim();
-      const email = String(formData.get('email') ?? '').trim() || undefined;
-      if (!name) return;
-
-      submitBtn?.setAttribute('disabled', 'true');
-      if (statusEl) statusEl.textContent = 'Saving…';
-
-      const result = await assignAttendee(orderToken, ticketCode, name, email);
-      if (result.ok) {
-        if (statusEl) statusEl.textContent = 'Assigned';
-        if (submitBtn) submitBtn.textContent = 'Update';
-        // `event_slug`, not `event`: GA4 treats `event` as reserved-sounding and
-        // a parameter that collides with a reserved name is silently dropped.
-        trackEvent('ticket_assigned', { event_slug: EVENT_SLUG });
-      } else if (statusEl) {
-        statusEl.textContent = result.message;
-      }
-      submitBtn?.removeAttribute('disabled');
-    });
-  });
 }
 
 /** The one place real revenue enters GA4.
@@ -201,7 +116,7 @@ async function reportPurchase(order: OrderStatusResponse, orderToken: string): P
   //
   // Stripe sends the buyer here with ?session_id=…&order_token=…, and the
   // token is a bearer capability: it authorises reading this order's status
-  // and buyer details and reassigning its attendees. In the URL it also
+  // and buyer details. In the URL it also
   // reaches browser history, the Referer header of anything linked from this
   // page, and — before the sanitising in scripts/analytics.ts — GA4's
   // page_location.
@@ -258,8 +173,13 @@ async function reportPurchase(order: OrderStatusResponse, orderToken: string): P
       } catch {
         /* non-fatal */
       }
+      // Sent by Workers deployed from 2026-10-08; an older one leaves the
+      // sentence without its code rather than with an empty one.
+      if (order.confirmationCode && code && codeLine) {
+        code.textContent = order.confirmationCode;
+        codeLine.hidden = false;
+      }
       await reportPurchase(order, orderToken!);
-      await renderTickets(orderToken!, order);
       return;
     }
 

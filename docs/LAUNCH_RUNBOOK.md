@@ -354,8 +354,8 @@ issued.**
       route and a way to ask a question. (This is also what production shows.)
 - [ ] On localhost, a full test-mode purchase completes end to end: cart →
       buyer details → Stripe embedded payment with card `4242 4242 4242 4242`
-      → webhook → order `paid` → tickets issued with QR codes → attendee
-      assignment → confirmation email.
+      → webhook → order `paid` → tickets issued → confirmation email with the
+      code (official tickets follow by 22 March 2027).
 - [ ] €299 / €399 / €499 ex VAT, VAT at 13.5%, rounding per line. Blind Bird
       × 1 = €339.37. The summary and Stripe must agree to the cent.
 - [ ] Inventory decrements. Maximum quantity per order is enforced.

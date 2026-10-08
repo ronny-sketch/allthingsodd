@@ -206,10 +206,15 @@ if (
     e.preventDefault();
     if (continueBtn.disabled) return; // double-click guard
 
+    // The form is novalidate, so the browser checks nothing on submit by
+    // itself; this shows its messages on the first empty or malformed field.
+    if (!buyerForm.reportValidity()) return;
     const formData = new FormData(buyerForm);
-    const email = String(formData.get('email') ?? '').trim();
-    const name = String(formData.get('name') ?? '').trim();
-    if (!email || !name) return; // native required-field validation already covers this
+    const field = (key: string) => String(formData.get(key) ?? '').trim();
+    const email = field('email');
+    const firstName = field('firstName');
+    const lastName = field('lastName');
+    const phone = field('phone');
 
     if (!STRIPE_PUBLISHABLE_KEY) {
       status.textContent =
@@ -228,7 +233,10 @@ if (
     }));
     const buyer = {
       email,
-      name,
+      firstName,
+      lastName,
+      name: `${firstName} ${lastName}`,
+      phone,
       companyName: companyToggle.checked
         ? String(formData.get('companyName') ?? '').trim() || undefined
         : undefined,

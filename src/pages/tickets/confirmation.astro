@@ -1,15 +1,21 @@
 ---
-// Order confirmation + digital tickets. Never shows "paid" from the
+// Order confirmation. Never shows "paid" from the
 // Stripe redirect alone — see ../../scripts/tickets/confirmation.ts,
 // which polls the backend order status (only the webhook handler ever
 // sets it to 'paid'). See
 // ../../../../odd-growth-os/ops/TICKETING_IMPLEMENTATION_PLAN.md.
+import { getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import Pill from '../../components/primitives/Pill.astro';
+
+const site = await getEntry('site', 'global');
+if (!site) throw new Error('Missing site/global.json content entry');
+const { social } = site.data;
 ---
 
 <Layout
   title="Order confirmation — ODDference 2027"
-  description="Your ODDference 2027 order confirmation and tickets."
+  description="Your ODDference 2027 order confirmation."
   noindex
 >
   <section class="tixf-page">
@@ -38,24 +44,37 @@ import Layout from '../../layouts/Layout.astro';
         <div class="tixf-spinner" aria-hidden="true"></div>
       </div>
 
-      <!-- Success wording deliberately stops at "saved to your browser" —
-           no confirmation-email promise. There's no email-sending step
-           anywhere in this flow yet (only order-status polling — see
-           confirmation.ts), so the copywriting master doc's "we'll also
-           confirm by email" line would be untrue. Reinstate it once a real
-           confirmation email exists — see the doc's TICKETS / CHECKOUT /
-           CONFIRMATION section, "[NEEDS FACT CHECK]" note. -->
-      <div id="tixfSuccess" class="tixf-state flow" hidden>
+      <!-- Ronny's wording (2026-10-08). The same email goes out from the
+           Worker's webhook (odd-growth-os worker/src/tickets/
+           confirmation-email.ts) — keep the two saying the same thing. No
+           tickets or QR codes here: the official ticket follows by email. -->
+      <div id="tixfSuccess" class="tixf-state" hidden>
         <p>
-          Your order is confirmed. Assign attendee details now, or come back to this page later —
-          this link is saved to your browser.
+          Your order is confirmed<span id="tixfCodeLine" hidden
+            >, confirmation code <strong id="tixfCode"></strong></span
+          >. We've emailed you a confirmation.
         </p>
-        <div id="tixfTicketList" class="tixf-ticket-list"></div>
+        <p>
+          Your official event ticket and event info will arrive by email no later than one month
+          before the event, by 22 March 2027.
+        </p>
+        <p>
+          In the meantime, <a href="#newsletter">sign up to our newsletter</a> and follow us on {
+            social.map((s, i) => (
+              <>
+                {i > 0 && (i === social.length - 1 ? ' and ' : ', ')}
+                <a href={s.href} rel="noopener">
+                  {s.platform}
+                </a>
+              </>
+            ))
+          } to stay up to date.
+        </p>
       </div>
 
       <div id="tixfFailed" class="tixf-state" hidden>
         <p id="tixfFailedMessage"></p>
-        <a class="pill pill-solid" href="/tickets">Back to tickets</a>
+        <Pill href="/tickets">Back to tickets</Pill>
       </div>
 
       <div id="tixfTimeout" class="tixf-state" hidden>
@@ -65,16 +84,12 @@ import Layout from '../../layouts/Layout.astro';
         </p>
       </div>
 
-      <!-- Same "no live confirmation email yet" constraint as Success above
-           — pointing people at "the confirmation link sent to your email"
-           would be false, so this stays anchored to the truthful
-           browser-saved-link fallback instead. -->
       <div id="tixfNotFound" class="tixf-state" hidden>
         <p>
-          We could not find this order. If you just completed a purchase, use the confirmation link
-          saved in your browser, or <a href="mailto:hello@oddfest.co">contact us</a>.
+          We could not find this order. If you just completed a purchase, your confirmation is in
+          your email. Not there? <a href="mailto:hello@oddfest.co">Contact us</a>.
         </p>
-        <a class="pill pill-solid" href="/tickets">Back to tickets</a>
+        <Pill href="/tickets">Back to tickets</Pill>
       </div>
     </div>
   </section>
@@ -103,12 +118,16 @@ import Layout from '../../layouts/Layout.astro';
     font: var(--text-body);
     color: var(--color-paper-60);
   }
-  #tixfSuccess {
-    max-width: none;
+  .tixf-state strong {
+    color: var(--color-paper);
+  }
+  .tixf-state a:not(.pill) {
+    color: var(--color-paper);
   }
   /* "Back to tickets" sat flush under its paragraph. inline-block so the
      top margin applies to the bare link. */
-  .tixf-state .pill {
+  /* :global — Pill renders in its own scope, not this page's. */
+  .tixf-state :global(.pill) {
     display: inline-block;
     margin-top: var(--space-6);
   }
@@ -129,85 +148,5 @@ import Layout from '../../layouts/Layout.astro';
     to {
       transform: rotate(360deg);
     }
-  }
-
-  /* The tickets start one group step under the page title, the same step as
-     the store on /tickets and the form on checkout (a replacement for
-     #tixfSuccess's flow step). */
-  .tixf-ticket-list {
-    margin-block-start: var(--space-group);
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(17.5rem, 1fr));
-    gap: var(--space-grid);
-  }
-  :global(.tixf-ticket) {
-    background: var(--color-backstage);
-    border: 1px solid var(--color-paper-12);
-    padding: 1.75rem;
-  }
-  :global(.tixf-ticket-head) {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1rem;
-  }
-  /* Forta at the Body size — a ticket's own label inside its card. */
-  :global(.tixf-ticket-number) {
-    font-family: var(--font-display);
-    font-size: var(--font-size-body);
-    color: var(--color-paper);
-  }
-  :global(.tixf-ticket-code) {
-    font: var(--text-small);
-    letter-spacing: var(--tracking-caps);
-    color: var(--color-paper-40);
-  }
-  :global(.tixf-ticket-qr) {
-    margin: var(--space-5) auto 0;
-    width: 220px;
-    min-height: 220px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--color-paper);
-  }
-  :global(.tixf-ticket-qr img) {
-    display: block;
-  }
-  :global(.tixf-assign-form) {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    margin-top: var(--space-5);
-  }
-  :global(.tixf-assign-form) :global(.field) {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-  :global(.tixf-assign-form label) {
-    font: var(--text-small);
-    font-weight: 600;
-    letter-spacing: var(--tracking-eyebrow);
-    text-transform: uppercase;
-    color: var(--color-paper-40);
-  }
-  :global(.tixf-assign-form input) {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--color-paper-20);
-    padding: 0.5rem 0;
-    /* Body — whose 1rem floor is also the iOS no-zoom guarantee. */
-    font: var(--text-body);
-    color: var(--color-paper);
-    outline: none;
-  }
-  :global(.tixf-assign-form) :global(.pill) {
-    align-self: flex-start;
-  }
-  :global(.tixf-assign-status) {
-    margin: 0;
-    font: var(--text-small);
-    color: var(--color-paper-40);
   }
 </style>

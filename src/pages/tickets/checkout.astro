@@ -4,6 +4,7 @@
 // and CLAUDE.md's low-friction-checkout instruction) — no account creation,
 // attendee assignment happens after payment on /tickets/confirmation.
 import Layout from '../../layouts/Layout.astro';
+import Pill from '../../components/primitives/Pill.astro';
 ---
 
 <Layout
@@ -41,12 +42,46 @@ import Layout from '../../layouts/Layout.astro';
           <form id="tixcBuyerForm" novalidate>
             <h2>Your details</h2>
             <div class="field">
+              <label for="tixc-first-name">First name</label>
+              <input
+                id="tixc-first-name"
+                name="firstName"
+                type="text"
+                required
+                autocomplete="given-name"
+              />
+            </div>
+            <div class="field">
+              <label for="tixc-last-name">Last name</label>
+              <input
+                id="tixc-last-name"
+                name="lastName"
+                type="text"
+                required
+                autocomplete="family-name"
+              />
+            </div>
+            <div class="field">
               <label for="tixc-email">Email</label>
               <input id="tixc-email" name="email" type="email" required autocomplete="email" />
             </div>
             <div class="field">
-              <label for="tixc-name">Full name</label>
-              <input id="tixc-name" name="name" type="text" required autocomplete="name" />
+              <label for="tixc-phone">Phone number</label>
+              {
+                /* Same shape the Worker accepts (validate.ts PHONE_RE). The
+                   parentheses and hyphen are escaped because browsers now
+                   compile `pattern` with the v flag, which rejects them bare —
+                   and an invalid pattern is silently no pattern at all. */
+              }
+              <input
+                id="tixc-phone"
+                name="phone"
+                type="tel"
+                required
+                autocomplete="tel"
+                pattern="\+?[0-9][0-9 \(\)\-]{5,}"
+                title="Digits and spaces, with + and the country code if you're not in Finland"
+              />
             </div>
             <label class="tixc-checkbox">
               <input type="checkbox" id="tixc-company-toggle" />
@@ -75,9 +110,14 @@ import Layout from '../../layouts/Layout.astro';
             <p class="tixc-terms">
               By continuing to payment you accept the <a href="/tickets/terms/">ticket terms</a>.
             </p>
-            <button type="submit" class="pill pill-solid tixc-continue-btn" id="tixcContinueBtn">
+            {
+              /* Pill, not a bare class="pill" button: Pill's styles are scoped
+                 to Pill.astro, so the bare one rendered as a grey browser
+                 default on the live site until 2026-10-08. */
+            }
+            <Pill type="submit" id="tixcContinueBtn" class="tixc-continue-btn">
               Continue to payment
-            </button>
+            </Pill>
           </form>
 
           <div id="tixcPaymentSection" class="tixc-payment" hidden>
@@ -273,6 +313,11 @@ import Layout from '../../layouts/Layout.astro';
     padding-left: 1.5rem;
     border-left: 1px solid var(--color-paper-12);
   }
+  /* display: flex above beats the [hidden] attribute's UA display: none, so
+     the company fields showed with the box unticked until 2026-10-08. */
+  .tixc-company-fields[hidden] {
+    display: none;
+  }
   .tixc-status {
     margin: 0;
     font: var(--text-small);
@@ -298,10 +343,11 @@ import Layout from '../../layouts/Layout.astro';
   .tixc-terms a {
     color: var(--color-paper);
   }
-  .tixc-continue-btn {
+  /* :global — the button is a Pill, rendered in Pill's scope, not this page's. */
+  .tixc-main :global(.tixc-continue-btn) {
     align-self: flex-start;
   }
-  .tixc-continue-btn:disabled {
+  .tixc-main :global(.tixc-continue-btn:disabled) {
     opacity: 0.5;
     cursor: not-allowed;
   }

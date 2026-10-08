@@ -61,15 +61,14 @@ purchase journey, monetisation — key off these exact names and off the
 sent `ticket_page_viewed`, `checkout_started`, `payment_succeeded` and
 similar. GA4 accepted all of them and built nothing from any of them.
 
-| Event              | Fired when                         | Carries                                 |
-| ------------------ | ---------------------------------- | --------------------------------------- |
-| `view_item_list`   | The catalog resolves on `/tickets` | Active ticket types                     |
-| `add_to_cart`      | A stepper goes up                  | The change, `value`, `items`            |
-| `remove_from_cart` | A stepper goes down                | The change, `value`, `items`            |
-| `begin_checkout`   | Leaving for `/tickets/checkout`    | Cart total, `items`                     |
-| `add_payment_info` | Stripe's form mounts               | Order total, `items`                    |
-| `purchase`         | The webhook confirms payment       | `transaction_id`, `value`, `items`      |
-| `ticket_assigned`  | An attendee name is saved          | `event_slug`. Custom, no GA4 equivalent |
+| Event              | Fired when                         | Carries                            |
+| ------------------ | ---------------------------------- | ---------------------------------- |
+| `view_item_list`   | The catalog resolves on `/tickets` | Active ticket types                |
+| `add_to_cart`      | A stepper goes up                  | The change, `value`, `items`       |
+| `remove_from_cart` | A stepper goes down                | The change, `value`, `items`       |
+| `begin_checkout`   | Leaving for `/tickets/checkout`    | Cart total, `items`                |
+| `add_payment_info` | Stripe's form mounts               | Order total, `items`               |
+| `purchase`         | The webhook confirms payment       | `transaction_id`, `value`, `items` |
 
 `purchase`'s `items` carry the catalogue **slug** as `item_id`, plus `price`,
 exactly as the four steps above them do. Until 2026-09-21 it sent the raw
