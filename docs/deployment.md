@@ -455,7 +455,14 @@ survives as a one-line commit message. A PR is also the last point where a
 change can be looked at before it is live, because nothing else gates `main`.
 
 Run `npm run quality` locally before either. It is the same gate CI's
-`checks` job runs, and it is faster to fail on your own machine.
+`checks` job runs, and it is faster to fail on your own machine. Since
+2026-10-09 `lint` and `format:check` only warn in CI: a missing trailing
+newline in a Codex-made PR (#133) had kept the site at the previous build
+for hours, and nothing cosmetic should hold a deploy. A push to `main` that
+does not deploy now opens a `not-live` issue assigned to whoever pushed
+(the `not-live` job in ci.yml); the next deploy that goes live closes it.
+Actions -> CI -> "Run workflow" on `main` is the Deploy button: it runs the
+full suite and publishes the current `main`, for anyone with write access.
 
 The deploy job needs a `SURGE_TOKEN` repository secret to authenticate
 non-interactively. One-time setup (from a terminal where `gh` is

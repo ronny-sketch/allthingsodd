@@ -594,7 +594,8 @@ branch or a draft PR to ask again.
 
 1. `git switch main && git pull` (and `npm ci` if `node_modules` is missing).
 2. Make the edit. Copy lives in `src/content/**/*.json`, see `docs/editing.md`.
-3. `npm run quality`, the same gate CI's `checks` job runs.
+3. `npm run quality`, the same gate CI's `checks` job runs. In CI, `lint`
+   and `format:check` only warn; `npm run format` fixes the Prettier ones.
 4. `git commit` and `git push origin main`. For a PR instead:
    `gh pr create --fill`, then `gh pr merge --merge` once it's green.
    Merging is the deploy.
@@ -604,7 +605,11 @@ branch or a draft PR to ask again.
 6. Red means **not live**, and a later green nightly run does not deploy
    it. A `functional` failure on a page you didn't touch is usually a
    flake: `gh run rerun <id> --failed` (or "Re-run failed jobs" on GitHub).
-   A real failure: fix it and push again.
+   A real failure: fix it and push again. CI opens a `not-live` issue
+   assigned to whoever pushed, so a red run is never silent; the next
+   deploy that goes live closes it. To deploy what main is now without
+   pushing anything: GitHub -> Actions -> CI -> "Run workflow" on main
+   (the Deploy button, full suite, about 12 minutes).
 7. Confirm: `curl -s https://allthingsodd.co/build-info.json` shows your
    commit's SHA.
 
