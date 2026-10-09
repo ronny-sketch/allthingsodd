@@ -95,8 +95,15 @@ jobs:
       - run: npm install -g npm@11
       - run: npm ci
       - run: npm run check
+      # Lint and Prettier findings warn, they do not gate the deploy: on
+      # 2026-10-09 a missing trailing newline in a Codex-made PR (#133) held
+      # the site at the previous build for hours (run 37897262060). Build,
+      # `astro check` and the browser tests are the gate; `npm run format`
+      # fixes what these two report. Decided by Ronny the same day.
       - run: npm run lint
+        continue-on-error: true
       - run: npm run format:check
+        continue-on-error: true
       - run: npm run cc:validate
       # The source half of the identity contract (2026-09-04) — a retired
       # project name reappearing in a doc, a package field or a deploy
@@ -244,6 +251,9 @@ jobs:
     name: Deploy to production
     runs-on: ubuntu-latest
     needs: [scope, checks, functional]
+    permissions:
+      contents: read
+      issues: write
     # Only main, and only on an actual push (a green PR doesn't deploy) — a
     # content edit from CloudCannon lands here as a normal push to main, same
     # as a code change, so this is what actually closes the loop from "edit
@@ -517,8 +527,52 @@ jobs:
           check_legacy_domain www.oddspace.co  https://allthingsodd.co/oddspace || fail=1
 
           exit $fail
+      # `not-live` (below) opens an issue when a push to main does not deploy;
+      # the next deploy that verifies live closes whatever is still open.
+      - name: Close not-live issues
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue list -R "$GITHUB_REPOSITORY" --label not-live --state open --json number --jq '.[].number' 2>/dev/null \
+            | xargs -r -I{} gh issue close -R "$GITHUB_REPOSITORY" {} --comment "Live again: ${GITHUB_SHA} deployed." || true
     # Growth OS's own Cloudflare Worker deploy (formerly a
     # `deploy-cloudflare-preview` job here) now lives in its own repo,
     # ../odd-growth-os, with its own CI — see that repo's
     # .github/workflows/ci.yml and AGENTS.md's "Growth OS integration"
     # section for the /api/* boundary this site's forms rely on.
+
+  not-live:
+    name: Flag an undeployed main
+    runs-on: ubuntu-latest
+    needs: [scope, checks, functional, deploy]
+    # A push to main that did not deploy used to be silent: the only signal
+    # was GitHub's failure email to whoever pushed, and allthingsodd.co kept
+    # serving the previous build until someone asked why (#111 on 2026-10-01,
+    # #133 on 2026-10-09). This opens an issue assigned to that person with
+    # the run and what to do next; the next deploy that goes live closes it.
+    # `always()` on purpose: a cancelled run is also a main that is not live.
+    if: >-
+      always() && github.ref == 'refs/heads/main' && github.event_name == 'push'
+      && needs.deploy.result != 'success'
+    permissions:
+      issues: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          gh label create not-live -R "$GITHUB_REPOSITORY" --color B60205 --force \
+            --description "A push to main that did not reach allthingsodd.co"
+          title="main is not live: ${GITHUB_SHA:0:7}"
+          body="Your push \`${GITHUB_SHA:0:7}\` to main did not deploy. allthingsodd.co still serves the previous build.
+
+          Run: ${RUN_URL}
+
+          - A red **Functional** job on a page you did not touch is usually a flake: open the run, press *Re-run failed jobs*.
+          - A red **Check, lint, build** is real: \`npm run quality\` reproduces it locally. Fix it, push to main again.
+          - Green means live. Confirm with \`curl -s https://allthingsodd.co/build-info.json\`.
+
+          This issue closes itself when the next deploy goes live."
+          gh issue create -R "$GITHUB_REPOSITORY" --label not-live --title "$title" --body "$body" --assignee "$ACTOR" \
+            || gh issue create -R "$GITHUB_REPOSITORY" --label not-live --title "$title" --body "$body"
