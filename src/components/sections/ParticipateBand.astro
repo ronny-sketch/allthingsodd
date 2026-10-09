@@ -233,6 +233,19 @@ const isGrouped = groups.length > 1;
     margin-top: auto;
     padding-top: var(--space-5);
   }
+  /* The homepage grouped cards have no in-card eyebrow. Let each title own
+     the flexible middle of the card so 2-line and 3-line headings share the
+     same visual centre while the action remains pinned at the bottom. */
+  .participate.is-grouped .p-cta h3 {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0;
+  }
+  .participate.is-grouped .p-cta .go {
+    margin-top: 0;
+  }
   .p-cta:hover {
     background: var(--color-bg);
     color: var(--color-paper);
