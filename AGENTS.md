@@ -607,7 +607,9 @@ branch or a draft PR to ask again.
    flake: `gh run rerun <id> --failed` (or "Re-run failed jobs" on GitHub).
    A real failure: fix it and push again. CI opens a `not-live` issue
    assigned to whoever pushed, so a red run is never silent; the next
-   deploy that goes live closes it.
+   deploy that goes live closes it. To deploy what main is now without
+   pushing anything: GitHub -> Actions -> CI -> "Run workflow" on main
+   (the Deploy button, full suite, about 12 minutes).
 7. Confirm: `curl -s https://allthingsodd.co/build-info.json` shows your
    commit's SHA.
 

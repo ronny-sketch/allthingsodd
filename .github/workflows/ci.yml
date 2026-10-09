@@ -27,6 +27,11 @@ on:
   # change. This runs the whole matrix nightly regardless of what changed.
   schedule:
     - cron: '17 3 * * *'
+  # The Deploy button. Actions -> CI -> "Run workflow" on main runs the full
+  # suite and deploys whatever main is now. Anyone with write access can
+  # press it (Aki, Ronny); it is how to redeploy after a cancelled or flaky
+  # run without pushing an empty commit (2026-10-09).
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -254,7 +259,8 @@ jobs:
     permissions:
       contents: read
       issues: write
-    # Only main, and only on an actual push (a green PR doesn't deploy) — a
+    # Only main, and only on an actual push or the Deploy button above (a
+    # green PR doesn't deploy) — a
     # content edit from CloudCannon lands here as a normal push to main, same
     # as a code change, so this is what actually closes the loop from "edit
     # in CloudCannon" to "live on allthingsodd.co". See docs/deployment.md.
@@ -268,7 +274,8 @@ jobs:
     # succeeded, and functional must have passed or been skipped — which, once
     # scope has succeeded, only its own docs/content rule can do.
     if: >-
-      github.ref == 'refs/heads/main' && github.event_name == 'push'
+      github.ref == 'refs/heads/main'
+      && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
       && !cancelled()
       && needs.scope.result == 'success'
       && needs.checks.result == 'success'
@@ -552,7 +559,8 @@ jobs:
     # the run and what to do next; the next deploy that goes live closes it.
     # `always()` on purpose: a cancelled run is also a main that is not live.
     if: >-
-      always() && github.ref == 'refs/heads/main' && github.event_name == 'push'
+      always() && github.ref == 'refs/heads/main'
+      && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
       && needs.deploy.result != 'success'
     permissions:
       issues: write
