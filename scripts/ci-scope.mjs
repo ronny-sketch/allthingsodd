@@ -48,14 +48,37 @@ const SITE_WIDE = [
 // `brand/` is NOT here: it feeds /brand-book/ and the token drift check.
 const DOCS_ONLY = [/^docs\//, /^\.claude\//, /^[^/]+\.md$/];
 
-// Copy and content entries (2026-10-05). Rendered, but only through
-// templates the browser suite already covers, and `checks` still validates
-// them: the content schema (`astro check`, build), CloudCannon's config,
-// photo credits. No test asserts copy. So a text-only edit skips the browser
-// suite and deploys in ~4 min instead of ~7. The ceiling: copy long enough to
-// break a layout on one viewport surfaces at the nightly sweep, not before
-// it is live. Most of Aki's and CloudCannon's edits land here.
-const CONTENT_ONLY = [/^src\/content\//];
+// The content lane (2026-10-05, narrowed and made a lane of its own
+// 2026-10-11). A change made only of these files skips the browser suite
+// AND the separate `checks` job: the deploy job validates and publishes in
+// one go (~2 min from push to live; ci.yml's deploy job lists what it
+// runs). What still guards it: the build parses every entry against the
+// Zod schema in src/content.config.ts (malformed JSON or a wrong field type
+// fails it), CloudCannon's config, photo credits, the identity check, and
+// scripts/check-links.mjs on the exact build being published. The ceiling:
+// copy long enough to break a layout, or wording the editorial/identity
+// specs guard, surfaces at the nightly sweep, not before it is live.
+//
+// An allowlist of exact files, not a directory: an image or a script that
+// lands under src/content/ is not copy. Most of Aki's and CloudCannon's
+// edits land here.
+const CONTENT_ONLY = /^src\/content\/(pages|site)\/[a-z0-9-]+\.json$/;
+
+// Content files that are also wiring, so they keep the browser suite:
+// - oddference.json: `syncSlug` hands a ticket card to the live ticket
+//   backend's catalog and checkout (src/scripts/oddference-tickets.ts).
+// - oddspace-venue.json: rate `id`s travel as `?offer=` into the booking and
+//   work enquiry forms, and `price`/`vatRate` feed the calculator's sums.
+// - oddspace-event-info-pack.json: the booking form's SPACE_INFO repeats its
+//   capacities; booking-enquiry.spec.ts fails if the two drift apart.
+const WIRED = [
+  'src/content/pages/oddference.json',
+  'src/content/pages/oddspace-venue.json',
+  'src/content/pages/oddspace-event-info-pack.json',
+];
+
+const isContent = (f) =>
+  DOCS_ONLY.some((r) => r.test(f)) || (CONTENT_ONLY.test(f) && !WIRED.includes(f));
 
 // `mobile` is NOT in this list although it is a visual project: it is
 // `devices['iPhone 13']`, which is WebKit. With only Chromium's OS packages
@@ -73,10 +96,8 @@ export function scope(files) {
   // No file list means we can't tell what changed (first push on a branch, a
   // force push, the nightly run) — assume the worst and run everything.
   if (!files.length) return { mode: 'full', projects: '', browsers: ALL_ENGINES };
-  if (files.every((f) => DOCS_ONLY.some((r) => r.test(f))))
-    return { mode: 'docs', projects: '', browsers: 'chromium' };
-  if (files.every((f) => [...DOCS_ONLY, ...CONTENT_ONLY].some((r) => r.test(f))))
-    return { mode: 'content', projects: '', browsers: 'chromium' };
+  // Docs used to be a tier of their own; it behaved exactly like content.
+  if (files.every(isContent)) return { mode: 'content', projects: '', browsers: 'chromium' };
   if (files.some((f) => SITE_WIDE.some((r) => r.test(f))))
     return { mode: 'full', projects: '', browsers: ALL_ENGINES };
   return { mode: 'fast', projects: CHROMIUM_ONLY, browsers: 'chromium' };
@@ -90,11 +111,22 @@ function selfTest() {
     }
   };
   eq([], 'full');
-  eq(['docs/deployment.md'], 'docs');
-  eq(['README.md', 'docs/architecture.md'], 'docs');
+  eq(['docs/deployment.md'], 'content');
+  eq(['README.md', 'docs/architecture.md'], 'content');
   eq(['src/pages/index.astro'], 'fast');
-  eq(['src/content/events/oddfest-2026.md'], 'content');
+  eq(['src/content/pages/about.json'], 'content');
+  eq(['src/content/site/global.json'], 'content');
   eq(['src/content/pages/index.json', 'docs/editing.md'], 'content');
+  // Not copy, although it sits under src/content/.
+  eq(['src/content/pages/hero.jpg'], 'fast');
+  eq(['src/content/pages/helpers.ts'], 'fast');
+  // Content that is also wiring (tickets, booking form) keeps the browser suite.
+  eq(['src/content/pages/oddference.json'], 'fast');
+  eq(['src/content/pages/oddspace-venue.json'], 'fast');
+  eq(['src/content/pages/oddspace-event-info-pack.json'], 'fast');
+  eq(['src/content/pages/about.json', 'src/content/pages/oddference.json'], 'fast');
+  // Copy plus global CSS in one push is a code change.
+  eq(['src/content/pages/about.json', 'src/styles/global.css'], 'full');
   // Copy plus a component (Aki's #111) still gets the browser suite.
   eq(['src/content/pages/index.json', 'src/components/sections/BuiltAround.astro'], 'fast');
   eq(['src/content.config.ts'], 'full'); // the schema itself is site-wide

@@ -54,8 +54,9 @@ env:
 jobs:
   # Which tier of the test matrix this change needs — see scripts/ci-scope.mjs
   # for the rule and its self-test (which `checks` runs, so the rule itself is
-  # covered). Site-wide edits still pay full price; a page or content edit runs
-  # Chromium only; docs skip the browser entirely.
+  # covered). Site-wide edits still pay full price; a page edit runs Chromium
+  # only; copy and docs skip the browser and the `checks` job (the content
+  # lane — the deploy job runs their checks itself).
   scope:
     name: Decide test scope
     runs-on: ubuntu-latest
@@ -65,9 +66,18 @@ jobs:
       browsers: ${{ steps.pick.outputs.browsers }}
       playwright: ${{ steps.pick.outputs.playwright }}
     steps:
+      # Every commit and tree, but the contents of only the two files this job
+      # reads; sparse-checkout makes it a blobless clone. `git diff
+      # --name-only --no-renames` compares trees, so it needs no other file.
+      # The full clone took 40-55 s, and every other job starts behind this
+      # one (2026-10-11).
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          sparse-checkout: |
+            /scripts/ci-scope.mjs
+            /package-lock.json
+          sparse-checkout-cone-mode: false
       - id: pick
         env:
           PR_BASE: ${{ github.event.pull_request.base.sha }}
@@ -85,10 +95,12 @@ jobs:
             *) BASE="" ;;
           esac
           echo "Base: ${BASE:-none}"
+          # --no-renames: a moved file lists both its old and new path, so
+          # moving a component into src/content/ is not mistaken for copy.
           if [ -z "$BASE" ]; then
             changed=""
           else
-            changed=$(git diff --name-only "$BASE" "$GITHUB_SHA" || true)
+            changed=$(git diff --name-only --no-renames "$BASE" "$GITHUB_SHA" || true)
           fi
           echo "Changed files:"; echo "$changed" | sed 's/^/  /'
           printf '%s\n' "$changed" | node scripts/ci-scope.mjs | tee -a "$GITHUB_OUTPUT"
@@ -99,6 +111,12 @@ jobs:
   checks:
     name: Check, lint, build
     runs-on: ubuntu-latest
+    needs: scope
+    # Skipped on a push in the content lane only: the deploy job then runs the
+    # checks content can break and publishes in the same job, instead of
+    # waiting for this one and repeating its install and build (that wait was
+    # half of the old ~4 min). Pull requests always run it.
+    if: github.event_name != 'push' || needs.scope.outputs.mode != 'content'
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -133,7 +151,9 @@ jobs:
       # The CI tiering rule decides what does and doesn't get tested, so it
       # gets tested itself.
       - run: node scripts/ci-scope.mjs --self-test
+      - run: node scripts/check-links.mjs --self-test
       - run: npm run build
+      - run: npm run check:links
 
   functional:
     name: Functional (${{ needs.scope.outputs.mode }} ${{ matrix.shard }}/6)
@@ -152,8 +172,8 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.scope.outputs.playwright }}-noble
       options: --user 1001
-    # Docs-only changes never reach a browser.
-    if: needs.scope.outputs.mode != 'docs' && needs.scope.outputs.mode != 'content'
+    # Copy and docs never reach a browser before they are live.
+    if: needs.scope.outputs.mode != 'content'
     # Six runners in parallel rather than 838 tests in series on one. This repo
     # is public, so Actions minutes are unmetered and extra runners are free —
     # the only real limit is that each shard pays ~1 minute of fixed setup, so
@@ -278,15 +298,16 @@ jobs:
     # it — but a *cancelled* job is neither a failure nor a cancelled
     # workflow. On 2026-10-05 (run 37364391784) "Decide test scope" was
     # cancelled during a GitHub Actions outage, `functional` skipped, and the
-    # site published with no browser tests. So: scope and checks must have
-    # succeeded, and functional must have passed or been skipped — which, once
-    # scope has succeeded, only its own docs/content rule can do.
+    # site published with no browser tests. So: scope must have succeeded;
+    # checks must have passed, or been skipped by the content lane, whose
+    # checks then run in this job; and functional must have passed or been
+    # skipped — which, once scope has succeeded, only the content rule can do.
     if: >-
       github.ref == 'refs/heads/main'
       && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
       && !cancelled()
       && needs.scope.result == 'success'
-      && needs.checks.result == 'success'
+      && (needs.checks.result == 'success' || (needs.checks.result == 'skipped' && needs.scope.outputs.mode == 'content'))
       && (needs.functional.result == 'success' || needs.functional.result == 'skipped')
     env:
       # The canonical production host, cut over from odd-field-guide.surge.sh
@@ -319,7 +340,20 @@ jobs:
           cache: npm
       - run: npm install -g npm@11
       - run: npm ci
+      # The content lane's half of `checks`, which it skipped: the checks that
+      # read copy. The build below then parses every entry against the content
+      # schema, and check:links reads the exact pages about to be published.
+      # Left out: `astro check` (types come from the schema, not the data),
+      # lint, Prettier, the brand-token mirror and the scope self-test — they
+      # read code this lane, by definition, did not change.
+      - name: Content checks
+        if: needs.scope.outputs.mode == 'content'
+        run: |
+          npm run cc:validate
+          npm run check:identity
+          npm run check:credits
       - run: npm run build
+      - run: npm run check:links
       # A public, secret-free fingerprint of exactly which commit this dist/
       # was built from — see docs/deployment.md#deploy-verification for why
       # this exists: on 2026-08-31, every deploy on this workflow silently
