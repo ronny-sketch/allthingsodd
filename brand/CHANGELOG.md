@@ -1,5 +1,38 @@
 # Brand system changelog
 
+## 1.6 — 2026-10-09 · Decks: monochrome type and a mark that can be seen
+
+Two rules added for decks, after the review of the City of Helsinki deck.
+Nothing new in colour tokens, size or radius.
+
+- **In a deck, type is Paper or Ink at full strength, everywhere.** Eyebrows,
+  numerals, labels, source lines and credits included. No accent colour in
+  text and no grey step; colour comes from the photographs. Trigger: Ember
+  eyebrows and grey secondary lines that did not carry on screen. Written into
+  §8 and §12.
+- **The mark is 80px in the bottom-right corner** (72px from the right, 64px
+  from the bottom) on every content slide, 150px top-right on cover and close.
+  Trigger: a 48px mark 128px in from the corner that nobody noticed. §8.
+- **Words first.** Decks are built with the `deck-editorial-director` skill
+  before layout; the design rules now also live as the `odd-deck-design` skill
+  in `~/.claude/skills`, which points back here.
+
+## 1.5 — 2026-10-09 · Paper or Ink on photographs
+
+One rule added. Nothing new in colour, size or radius.
+
+- **On a photograph, only Paper or Ink.** Type, the mark, lockups, captions,
+  credits and rules placed over a photo are Paper at full opacity (over a dark
+  or scrimmed photo) or Ink (over a light one). No accent and no opacity step
+  on a photo; the scrim stays Ink. Colour that carries meaning moves to a solid
+  panel beside the photo. Written into §3, §4, §8, §9 and §12 of the guide and
+  into the social README. Trigger: the City of Helsinki deck, where Ember
+  eyebrows and grey credit lines sat on full-bleed photographs.
+- **Still to check on the site**, listed and not changed here:
+  `FullbleedVideoHero` (Paper 80/60 text and a Signal wash over film),
+  `HeroCentered`, `ProgramGrid` and `NewsFilmstrip` (opacity steps and a Heat
+  hover near scrimmed photographs).
+
 ## 1.4 — 2026-09-24 · The guided enquiry
 
 The ODDspace booking form became a guided enquiry in a dialog. Nothing new in

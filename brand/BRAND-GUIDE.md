@@ -50,6 +50,12 @@ Never fix either one by adding decoration.
 - **Every animation has a reduced-motion branch,** and animation never makes
   content visible.
 - **Photographs are real ODD moments.** No stock, no generated people, no renders.
+- **On a photograph, only Paper or Ink.** Everything placed over a photo — type,
+  the mark, a lockup, a caption, a credit, a rule — is Paper at full opacity over
+  a dark or scrimmed photo, or Ink over a light one. Never an accent (Ember,
+  Amber, Signal, Heat, Ultraviolet) and never a Paper or Ink opacity step, which
+  reads as grey. The scrim itself is Ink. If a colour has to carry meaning, that
+  text moves to a solid Ink or Paper panel beside the photo.
 - **Never invent a number, date, price or name.** The site's content files and the
   ticket backend are the source; say "not announced" instead.
 - **British English.** Organisation, centre, colour, programme.
@@ -104,6 +110,9 @@ The page skeleton that works:
 - Then the ask, or nothing. No eyebrow above a lockup — the lockup is the label.
 - A photograph behind it needs the Ink scrim: `linear-gradient` from
   `rgb(14 9 11 / 78%)` at the text to `rgb(14 9 11 / 10%)` away from it.
+- Over that photograph everything is full Paper: the statement, the premise, the
+  meta line, the mark. The `--color-paper-40` premise belongs to an Ink ground,
+  not to a photo; on a photo, size carries the hierarchy.
 
 **Grid convention** (the breakpoints are in the tokens; this is what to do at
 them): three cells across from 820px, two from 640px, one below. An editorial
@@ -212,6 +221,20 @@ no channel. The rules do not bend for that; these two answer it:
 - One statement a slide. A slide with two competing headlines is two slides.
 - Ink ground by default; Paper for a daylight or data moment; never a third.
 - Photographs full-bleed or in hairline cells, never in rounded frames.
+- On a photograph: Paper or Ink type and marks only, at full opacity, over an
+  Ink scrim. An eyebrow loses its accent there; a credit line is Paper, not grey.
+- Type is Paper or Ink at full strength on every slide, not only on photos.
+  Eyebrows, numerals, labels, sources and credits included: no accent colour in
+  text, and no grey step. Colour enters a deck through the photographs; a figure
+  that needs a colour code gets a small solid marker beside the numeral, never
+  coloured text.
+- The mark sits bottom-right on every content slide, large enough to read from
+  the back of the room: 80px on a 1920px slide (about 0.55in on 13.333in), 72px
+  from the right edge and 64px from the bottom. Cover and close carry it
+  top-right at 150px. Smaller, or tucked in from the corner, it disappears.
+- A deck is built words first. Titles are claims, not topics, and the deck must
+  read without a presenter when it is sent ahead. The `deck-editorial-director`
+  skill owns the words; `odd-deck-design` (in `~/.claude/skills`) owns this list.
 - Pills only for real calls to action. Numbers in Forta with Small caps labels.
 - Speaker notes carry the argument; the slide carries the statement.
 - Deck tooling is isolated in `brand/deck/` and must never be imported by the site.
@@ -222,7 +245,8 @@ no channel. The rules do not bend for that; these two answer it:
   same ratios. Never enlarge one step alone. Margin = half the mark's height.
   No grain in print.
 - **Social:** 4:5 feed, 9:16 stories. Type sits in a Paper or Ink block, not on
-  the photograph — unless there is a scrim under it.
+  the photograph — unless there is a scrim under it, and then it is Paper or
+  Ink only, full strength, never an accent or a grey.
 - **Signage:** Forta names the room, Gabarito says where it is, one hairline per
   division.
 - The mark keeps its clear space (half its height) everywhere.
@@ -337,6 +361,8 @@ transition: color var(--duration-fast) ease;
 - `margin: 0 auto` on a `.flow` child — the shorthand zeroes the flow step. Use
   `margin-inline: auto`.
 - `#000` for a scrim or a shadow. Scrims are Ink: `rgb(14 9 11 / N%)`.
+- An Ember eyebrow, a Signal marker or a `--color-paper-40` credit on top of a
+  photograph. On a photo everything is Paper or Ink, full strength.
 - An accent as a large fill, or Ember as text on Paper (3.2:1 — use Amber).
 - Heat as text on a raised card (3.75:1 on `--color-backstage`). There the text
   goes to full figure and the underline or border carries the heat instead.
@@ -347,6 +373,11 @@ transition: color var(--duration-fast) ease;
 - Adding a route without adding it to `tests/functional/site-integrity.spec.ts`
   and `tests/mobile/helpers.ts`.
 - Editing `src/assets/logos/*` by hand. They are generated: `brand/logos/build.py`.
+- **Grey text on a slide.** Secondary lines go `--color-ink-60` by habit; on a
+  projector they vanish and the slide looks unfinished. In a deck every line is
+  Paper or Ink at full strength (§8).
+- **A small mark hiding inside the margin.** 48px, 128px in from the corner,
+  reads as a smudge. 80px in the corner, or no mark at all (§8).
 
 ## 13. Where everything lives
 

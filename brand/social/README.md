@@ -111,6 +111,8 @@ Plan twelve at a time. `src/grid.mjs` holds three editions — a quarter — and
   a series marker (portraits, archive), never a mood.
 - The crop is the square; `sq({ pos, zoom })` anchors the zoom on the point
   that matters. A panorama needs a photograph at least 1800px wide.
+- **Anything on the photograph is Paper or Ink**, full strength: the word, the
+  credit, the mark. No accent and no opacity step over a photo (guide §3).
 - **Credit is part of the design**: "Photo: ODDfest / name" in the top band,
   right. The examples say "Photo: ODDfest" because this generator does not
   know who shot which frame. Replace it before posting; the names are in the
