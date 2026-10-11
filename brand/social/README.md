@@ -156,6 +156,52 @@ cd brand/social/src && node build.mjs           # everything, ~3 min
 node build.mjs --only=post-2,story-5,grid        # just these (prefix match)
 ```
 
+The week's posts live in `src/whats-next.mjs` (the four "what's next"
+carousels and the three-frame post of October 2026) and render outside
+`examples/` with `--out`. Their model, set on 9 Oct 2026 after reading Uusi
+Juttu (@uusijuttu.fi): these are news from ODD, so every other frame is a
+photograph and every other frame is text on Ink. A photograph always carries
+a heading, Forta in Paper bottom left; the text frame after it explains and
+uses the whole frame: the lead at the top, the explanation at the bottom,
+the same 64px left edge as the headings, and no mark (11 Oct: no logo in
+every empty space). Text frames come in four kinds so no two in a carousel
+look alike: the explainer (Gabarito SemiBold 64 lead + Regular 50 body, one
+bold phrase), the Q&A (a Forta 72 question, the site's own FAQ answer), the
+number (a 200px Forta figure, the one size outside the ladder, because a
+price or a count is the frame) and the list (Forta 56 lines). The cover is the website's hero: the dateline in Gabarito
+caps, the Forta title through the site's warp (the maths of
+`src/scripts/warping-text.ts` frozen at one instant as static SVG filters,
+blur capped at fs × 0.035 so Forta's counters stay open; the cover is the
+only frame that uses it) and the photographer up the right edge. Once a
+carousel the photograph is seen through one lobe of the mark, any of the
+three (`lobe: 0|1|2`; their x-extents are `LOBES`), lifted so the heading
+lands on Ink. The last text frame is the ask and ends "Link in bio."; every
+carousel closes on the Paper card with the mark filled with the cover
+photograph and allthingsodd.co (the vision card carries the mission with the
+flat mark). A frame with `wide: 3` renders at 3240px and is cut into a, b, c:
+the three-frame post spreads the whole mark across the swipe, one lobe a
+frame. Photographers beyond the cover are credited in the caption, and
+NOTES.md in the export folder lists them per frame. Earlier passes (band
+layouts, big edge words, caption-sized type, photo-only with wordless frames,
+one text-frame shape) were rejected or superseded.
+
+The same file holds the LinkedIn set (`li-` decks, 11 Oct 2026): the same
+frames for a different reader, the organisation. Each deck is seven pages
+(the drop-off studies put the fall after page six or seven), the ask and
+the card print the address because LinkedIn has no link in bio and PDF
+pages are not clickable (`url` on `tx/qa/num` and `card`), and the
+three-part post is one 1.91:1 image (`three(panels, true)`, `w: 2580` on
+the frame) because LinkedIn shows several images as a collage. `pdf.mjs`
+turns a rendered deck into the document post, one 1080 × 1350 page a frame.
+
+```bash
+node build.mjs --only=oddfest-whats,oddference-whats,oddspace-whats,odd-vision \
+  --out=~/Projects/AI/exports/odd-social/2026-10-whats-next
+node build.mjs --only=li- --out=~/Projects/AI/exports/odd-social/2026-10-whats-next
+node pdf.mjs --out=~/Projects/AI/exports/odd-social/2026-10-whats-next \
+  li-oddfest li-oddference li-oddspace li-vision   # → …/linkedin/*.pdf
+```
+
 Out: `examples/post-NN.jpg` (1080×1350; a `wide: 3` post becomes `a/b/c`),
 `story-N.jpg` (1080×1920), `carousel-N.jpg`, `credits-N.jpg`, `reel-N.jpg`,
 `highlight-N.jpg` (1080×1080), `grid-1..3.jpg`, `phone.jpg`, `thumbs.jpg`. To

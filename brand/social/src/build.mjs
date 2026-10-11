@@ -21,15 +21,19 @@ import { chromium } from '../../../node_modules/@playwright/test/index.mjs';
 import { posts, css as postCss } from './posts.mjs';
 import { stories, carousels, reels, highlights, highlightCss } from './extras.mjs';
 import { editions } from './grid.mjs';
+import { carousels as weekly, css as weeklyCss } from './whats-next.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const OUT = join(HERE, '..', 'examples');
+const EXAMPLES = join(HERE, '..', 'examples');
+// --out=<dir> renders somewhere else (the week's posts), leaving examples/ alone.
+const outArg = process.argv.find((a) => a.startsWith('--out='))?.slice(6);
+const OUT = outArg ? resolve(outArg.replace(/^~/, process.env.HOME)) : EXAMPLES;
 const only = process.argv
   .find((a) => a.startsWith('--only='))
   ?.slice(7)
   .split(',');
 const wanted = (name) => !only || only.some((o) => name.startsWith(o));
-if (!only) rmSync(OUT, { recursive: true, force: true });
+if (!only && OUT === EXAMPLES) rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 
 // The ladder at social scale: the same ratios, lifted so Small still reads on a
@@ -57,6 +61,7 @@ body.paper { --color-bg: #e2dfde; --color-paper: #0e090b;
 .quiet { color: var(--color-paper-40) } .muted { color: var(--color-paper-60) }
 ${postCss}
 ${highlightCss}
+${weeklyCss}
 `;
 
 // Instagram truncates a caption after roughly 125 characters; the first
@@ -108,10 +113,11 @@ for (const s of stories) {
   const name = `story-${s.n}`;
   if (wanted(name)) console.log(await shot(name, s.html, ground(s), 1080, 1920), s.kind);
 }
-for (const c of carousels)
+for (const c of [...carousels, ...weekly])
   for (const f of c.frames) {
-    const name = `${c.name}-${f.n}`;
-    if (wanted(name)) console.log(await shot(name, f.html, ground(f), 1080, 1350));
+    // A wide frame (the three-part post) renders once and is cut into a, b, c.
+    const name = f.wide ? c.name : `${c.name}-${f.n}`;
+    if (wanted(name)) console.log(await shot(name, f.html, ground(f), f.w ?? 1080, f.h ?? 1350, f.wide ?? 1));
   }
 for (const r of reels) {
   const name = `reel-${r.n}`;
