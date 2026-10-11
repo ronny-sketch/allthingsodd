@@ -22,6 +22,8 @@ import VenueRateCalculator from '../../components/sections/VenueRateCalculator.a
 import FeatureGrid from '../../components/sections/FeatureGrid.astro';
 import FAQList from '../../components/sections/FAQList.astro';
 import PhotoBreak from '../../components/sections/PhotoBreak.astro';
+import InstagramGallery from '../../components/sections/InstagramGallery.astro';
+import { ODDSPACE_INSTAGRAM_FEED_ID } from '../../scripts/oddspace-instagram-config';
 import Pill from '../../components/primitives/Pill.astro';
 import BookingEnquiryForm from '../../components/sections/BookingEnquiryForm.astro';
 
@@ -169,6 +171,20 @@ const page = entry.data;
         <ResourceList items={page.resources} />
       </div>
     </section>
+
+    <!-- The live @oddspace.co wall (2026-10-11), the same one /oddspace
+         carries: the room in use, right before the practical questions.
+         Hidden until a Behold feed is connected; see
+         src/scripts/oddspace-instagram-config.ts. -->
+    {
+      page.instagram && ODDSPACE_INSTAGRAM_FEED_ID && (
+        <InstagramGallery
+          eyebrow={page.instagram.eyebrow}
+          headline={page.instagram.headline}
+          ctaLabel={page.instagram.ctaLabel}
+        />
+      )
+    }
 
     <!-- 7. FAQ. -->
     <section class="odsv-sub">

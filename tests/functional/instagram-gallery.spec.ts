@@ -21,6 +21,8 @@ import { test, expect, type Page } from '@playwright/test';
 const FEED_CONFIGURED = Boolean(process.env.PUBLIC_ODDSPACE_INSTAGRAM_FEED_ID?.trim());
 
 const FEED_ROUTE = 'https://feeds.behold.so/**';
+// /oddspace carries the wall too; these two joined it on 2026-10-11.
+const OTHER_WALL_ROUTES = ['/oddspace/venue', '/oddspace/membership'];
 
 function feedBody(count = 6, showBranding = false) {
   return JSON.stringify({
@@ -81,6 +83,15 @@ test.describe('feed not configured', () => {
     const privacy = await (await request.get('/privacy')).text();
     expect(privacy, '/privacy lists a processor this build never contacts').not.toContain('Behold');
   });
+
+  test('ships no gallery on the venue and membership pages either', async ({ request }) => {
+    for (const route of OTHER_WALL_ROUTES) {
+      const html = await (await request.get(route)).text();
+      expect(html, `${route} rendered a gallery with no feed configured`).not.toContain(
+        'data-instagram-gallery',
+      );
+    }
+  });
 });
 
 test.describe('feed configured', () => {
@@ -111,6 +122,21 @@ test.describe('feed configured', () => {
 
     const privacy = await (await request.get('/privacy')).text();
     expect(privacy, '/privacy must name the processor once it is live').toContain('Behold');
+  });
+
+  test('renders the same wall on the venue and membership pages', async ({ page }) => {
+    await stubImages(page);
+    await page.route(FEED_ROUTE, (route) =>
+      route.fulfill({ contentType: 'application/json', body: feedBody() }),
+    );
+
+    for (const route of OTHER_WALL_ROUTES) {
+      await page.goto(route);
+      const gallery = page.locator('[data-instagram-gallery]');
+      await gallery.scrollIntoViewIfNeeded();
+      await expect(gallery).toHaveAttribute('data-state', 'loaded');
+      await expect(gallery.locator('.ig-tile')).toHaveCount(6);
+    }
   });
 
   test('costs the visitor no cookies and no stored data', async ({ page, context }) => {

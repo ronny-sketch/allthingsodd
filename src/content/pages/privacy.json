@@ -48,7 +48,7 @@
       "items": [
         "Google Analytics (Google Ireland Limited) — anonymised usage statistics. Only after you accept.",
         {
-          "text": "Behold (Behold Studio, Inc.) — serves the Instagram gallery on the ODDspace page. It sets no cookies and stores nothing on your device; your browser requests the photographs from Behold’s servers the same way it requests any other image.",
+          "text": "Behold (Behold Studio, Inc.) — serves the Instagram gallery on the ODDspace pages. It sets no cookies and stores nothing on your device; your browser requests the photographs from Behold’s servers the same way it requests any other image.",
           "onlyWhen": "oddspace-instagram"
         },
         "Stripe Payments Europe, Ltd. — ticket payments and payment fraud prevention.",

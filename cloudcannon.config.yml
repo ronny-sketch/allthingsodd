@@ -521,10 +521,10 @@ collections_config:
           required: false
       instagram:
         type: object
-        label: Instagram wall framing (ODDspace only)
+        label: Instagram wall framing (ODDspace pages)
         comment: >-
           Eyebrow, headline and follow-link label for the live @oddspace.co
-          gallery under the events list. Editorial framing only — which account
+          gallery on /oddspace, /oddspace/venue and /oddspace/membership. Editorial framing only — which account
           it pulls from, which provider serves it and how many posts it shows
           are technical config in the codebase, not editable here. The
           section is hidden entirely until the feed is connected.
