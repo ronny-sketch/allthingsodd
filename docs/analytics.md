@@ -96,7 +96,7 @@ The mapping lives in `src/scripts/tickets/ecommerce.ts`.
 | `creative_week_open`      | The event idea dialog is first opened         | `entry` (hero/join/host/sticky/link/history)       |
 | `creative_week_submit`    | `/api/creative-week-submission` accepts it    | `event_kind`, `outcome`                            |
 | `creative_week_error`     | The idea is refused, or the request throws    | `event_kind`, `error_kind`                         |
-| `cta_click`               | A `mailto:` or an `?interest=` deep link      | `cta_id`, `cta_intent`, `cta_location`             |
+| `cta_click`               | A `mailto:`, `?interest=` or `/tickets` link  | `cta_id`, `cta_intent`, `cta_location`             |
 
 `error_kind` is `network` when the fetch threw and `rejected` when the
 backend answered with `ok: false`. The booking form (2026-09-23) adds `invalid` (the
@@ -113,8 +113,9 @@ numbers.
 `cta_click` is one event rather than the four the launch brief asked for
 (`partner_cta_click`, `oddspace_membership_click`,
 `oddspace_venue_enquiry_click`, `email_click`). They are the same question,
-and `cta_id` answers it: the product enum from the `?interest=` deep link, or
-`email` for a `mailto:`. One delegated listener in `analytics.ts` covers every
+and `cta_id` answers it: the product enum from the `?interest=` deep link,
+`email` for a `mailto:`, or `tickets` for any link to `/tickets` (2026-10-07).
+One delegated listener in `analytics.ts` covers every
 CTA on the site and keeps covering the next one without a code change.
 `external_social_click` is deliberately absent — GA4's enhanced measurement
 already reports outbound http(s) clicks with `link_domain`/`link_url`, and a
@@ -122,6 +123,38 @@ second event would double-count them. `cta_location` is the pathname only,
 never the full URL.
 
 Both are custom names, kept as-is because Growth OS already reads them.
+
+### Engagement (2026-10-07)
+
+| Event                     | Fired when                                  | Carries                                                            |
+| ------------------------- | ------------------------------------------- | ------------------------------------------------------------------ |
+| `scroll`                  | The page bottom passes 25, 50 and 75 %      | `percent_scrolled` (enhanced measurement adds 90)                  |
+| `video_start`             | A full film is opened (`film-player.ts`)    | `video_title`, `video_url`, `video_provider`                       |
+| `video_progress`          | The film passes 25, 50 and 75 %             | the above, `video_percent`, `video_duration`, `video_current_time` |
+| `video_complete`          | The film ends                               | the same                                                           |
+| `newsletter_popup_shown`  | The timed popup opens                       | —                                                                  |
+| `newsletter_popup_closed` | It is closed, by button, backdrop or Escape | —                                                                  |
+
+The video names are GA4's own, so the films sit in the same Video reports a
+YouTube embed would. Enhanced measurement's video tracking only sees YouTube;
+the films are self-hosted `.mp4`. The muted autoplay previews are not
+measured: nobody chose to watch them. Time on page needs no event: GA4's
+`user_engagement` already reports it as engagement time per page.
+
+## Custom definitions
+
+GA4 receives every parameter above but reports only the ones registered in
+**Admin → Custom definitions** (event scope). Unregistered, `cta_click` is a
+count with no answer to "which button". Registration is not retroactive.
+Register these:
+
+`cta_id`, `cta_intent`, `cta_location`, `signup_source`, `error_kind`,
+`contact_topic`, `product_interest`, `entry`, `space`, `event_type`,
+`queued`, `event_kind`, `outcome`, `event_slug`, `percent_scrolled`,
+`video_percent`
+
+`video_title`, `video_url`, `video_provider` and the `link_*`/`form_*`
+parameters are built-in dimensions already.
 
 ## Four traps, all of which have already bitten
 
@@ -246,12 +279,12 @@ Realtime shows event names but silently hides malformed `items` arrays.
 
 All done 2026-09-21, none of it visible from the code:
 
-|                         |                                                            |
-| ----------------------- | ---------------------------------------------------------- |
-| Search Console property | `https://allthingsodd.co/`, auto-verified as site owner    |
-| Sitemap                 | `sitemap-index.xml` submitted                              |
-| Key events              | `purchase`, `business_enquiry_submit`, `newsletter_signup` |
-| Event-data retention    | 14 months, raised from GA4's 2-month default               |
+|                         |                                                         |
+| ----------------------- | ------------------------------------------------------- |
+| Search Console property | `https://allthingsodd.co/`, auto-verified as site owner |
+| Sitemap                 | `sitemap-index.xml` submitted                           |
+| Key events              | `purchase` only on `551982005` (2026-10-07 check)       |
+| Event-data retention    | 14 months, raised from GA4's 2-month default            |
 
 The Search Console property auto-verified with no new file, because
 `google181860bcd4b9963d.html` in `public/` was already serving on the
@@ -278,3 +311,8 @@ Two smaller ones:
    read GA4 and Search Console.
 2. **`NOTION_API_KEY` is unset** in Growth OS, so the revenue tracker runs
    on an old snapshot.
+3. **Key events and custom definitions on `551982005`** (2026-10-07). The
+   three key events above were set on `555204778`, which is gone. Mark
+   `newsletter_signup`, `business_enquiry_submit`, `booking_enquiry_submit`,
+   `creative_week_submit` and `contact_submit`, and register the parameters
+   under "Custom definitions".
