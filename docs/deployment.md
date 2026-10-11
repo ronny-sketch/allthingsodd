@@ -425,7 +425,8 @@ commit to main (code, or CloudCannon content commit)
 ```
 
 `main` is the deploy branch. All three jobs — `checks`, `functional`,
-`deploy` — run on every push; `deploy` only runs after both others pass,
+`deploy` — run on every push (except in the content lane, below);
+`deploy` only runs after both others pass,
 only on `main`, only on an actual push (not a PR). **This is what makes a
 CloudCannon content edit actually go live without anyone running a manual
 command** — the commit CloudCannon makes is a normal push to `main`, same as
@@ -463,6 +464,25 @@ does not deploy now opens a `not-live` issue assigned to whoever pushed
 (the `not-live` job in ci.yml); the next deploy that goes live closes it.
 Actions -> CI -> "Run workflow" on `main` is the Deploy button: it runs the
 full suite and publishes the current `main`, for anyone with write access.
+
+### The content lane
+
+Since 2026-10-11 a push made only of copy and docs goes live in about two
+minutes, close to a CMS. `scripts/ci-scope.mjs` names the files: every
+`src/content/pages/*.json` and `src/content/site/global.json`, except
+three that also wire tickets or the booking form (`oddference.json`,
+`oddspace-venue.json`, `oddspace-event-info-pack.json`), plus docs. For
+those pushes CI skips the browser suite and the separate `checks` job, and
+the deploy job validates and publishes in one go: CloudCannon's config,
+the identity and photo-credit checks, the build (which parses every entry
+against the content schema, so malformed JSON or a wrong field type stops
+it) and `check:links` on the exact pages it then publishes. One file
+outside the list, even a CSS line, sends the whole push down the normal
+path; so does the Deploy button, which always runs the full suite. The
+diff is taken against what is live, so commits from an earlier run that
+did not deploy are always in it. What the lane gives up: copy that breaks
+a layout, or wording the editorial and identity specs guard, is caught by
+the nightly full run, not before publishing.
 
 The deploy job needs a `SURGE_TOKEN` repository secret to authenticate
 non-interactively. One-time setup (from a terminal where `gh` is
