@@ -41,7 +41,13 @@ const tiles = Array.from({ length: ODDSPACE_INSTAGRAM_POST_COUNT });
       data-instagram-gallery
       data-feed-id={ODDSPACE_INSTAGRAM_FEED_ID}
       data-state="idle"
+      data-count={ODDSPACE_INSTAGRAM_POST_COUNT}
     >
+      {
+        /* data-count starts at the full count so the empty grid already has
+           the 2x2 lead tile; without it the wall grew a whole row when the
+           feed arrived. The script lowers it only for a short feed. */
+      }
       <div class="ig-grid">
         {
           tiles.map(() => (

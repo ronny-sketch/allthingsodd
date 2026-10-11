@@ -527,7 +527,8 @@ change makes those tests fail, the change is wrong, not the test.
 Added 2026-09-03. Full reasoning: `docs/architecture.md#oddspace-instagram`.
 The short version:
 
-- The wall under the ODDspace calendar is **ODD's own markup fed by Behold's
+- The wall (on `/oddspace`, `/oddspace/venue` and `/oddspace/membership`)
+  is **ODD's own markup fed by Behold's
   JSON feed**, not an embedded widget. Do not "simplify" it to
   `<behold-widget>` or an Instagram embed — that trades the whole design
   system for provider chrome and, in Elfsight's case, a cookie.
@@ -539,6 +540,8 @@ The short version:
   `tests/functional/instagram-gallery.spec.ts` fails first.
 - `PUBLIC_ODDSPACE_INSTAGRAM_FEED_ID` is the one switch. Unset, the section
   is not rendered at all.
+  CI reads it from the repository variable `ODDSPACE_INSTAGRAM_FEED_ID`;
+  setup steps and the free-plan limit are in `docs/architecture.md`.
 
 ## ODDference ticket sync
 

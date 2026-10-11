@@ -138,6 +138,16 @@ const faqItem = z.object({
   answer: z.string(),
 });
 
+// The editorial framing of the live @oddspace.co Instagram wall
+// (InstagramGallery.astro). Shared since 2026-10-11, when the wall went onto
+// /oddspace/venue and /oddspace/membership as well as /oddspace: a reader
+// deciding to book or join wants to see the room in use too.
+const instagramWall = z.object({
+  eyebrow: z.string(),
+  headline: z.string(),
+  ctaLabel: z.string(),
+});
+
 // A titled, dated, linked-out resource — Media page's whole media bank and
 // archive share this exact shape. `type`/`year` are optional small badges
 // (e.g. "Press release" / "2026") that ResourceList.astro renders next to
@@ -1172,13 +1182,7 @@ const pages = defineCollection({
         // config, in src/scripts/oddspace-instagram-config.ts, per the CMS
         // rules in AGENTS.md. Optional so the section can be removed from
         // content without touching the page.
-        instagram: z
-          .object({
-            eyebrow: z.string(),
-            headline: z.string(),
-            ctaLabel: z.string(),
-          })
-          .optional(),
+        instagram: instagramWall.optional(),
         faq: z.array(faqItem),
       }),
 
@@ -1224,6 +1228,7 @@ const pages = defineCollection({
         audiencesIntro: z.object({ eyebrow: z.string(), headline: z.string() }),
         audiences: z.array(audienceItem),
         howItWorks: z.array(featureCard),
+        instagram: instagramWall.optional(),
         faq: z.array(faqItem),
         finalCta: z.object({
           eyebrow: z.string(),
@@ -1329,6 +1334,7 @@ const pages = defineCollection({
         // `resourceLink` and ResourceList rather than forking a component.
         beforeYourEvent: sectionIntro,
         resources: z.array(resourceLink),
+        instagram: instagramWall.optional(),
         faq: z.array(faqItem),
         finalCta: z.object({
           eyebrow: z.string(),

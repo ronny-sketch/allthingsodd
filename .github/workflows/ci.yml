@@ -43,6 +43,14 @@ concurrency:
   # commit contained the first.
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
+# The ODDspace Instagram wall's one switch (src/scripts/oddspace-instagram-
+# config.ts). Workflow-wide so every build and the test process agree:
+# tests/functional/instagram-gallery.spec.ts picks its "on" or "off" contract
+# from the same variable the build reads. A repository variable, not a
+# secret — the feed ID ships in the page HTML anyway. Unset = wall hidden.
+env:
+  PUBLIC_ODDSPACE_INSTAGRAM_FEED_ID: ${{ vars.ODDSPACE_INSTAGRAM_FEED_ID }}
+
 jobs:
   # Which tier of the test matrix this change needs — see scripts/ci-scope.mjs
   # for the rule and its self-test (which `checks` runs, so the rule itself is

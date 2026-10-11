@@ -742,9 +742,12 @@ activity first, rooms second.
 
 ## ODDspace Instagram
 
-The wall of recent `@oddspace.co` posts under the ODDspace events list
-(`InstagramGallery.astro` + `src/scripts/instagram-gallery.ts`), added
-2026-09-03.
+The wall of recent `@oddspace.co` posts (`InstagramGallery.astro` +
+`src/scripts/instagram-gallery.ts`), added 2026-09-03 under the ODDspace
+events list. Since 2026-10-11 it also sits before the FAQ on
+`/oddspace/venue` and `/oddspace/membership`: the visitor deciding to book or
+join is the one who most needs to see the room in use. Each page's framing
+is the optional `instagram` field in its own content file.
 
 **Provider: Behold, via its JSON feed, not its widget.**
 `GET https://feeds.behold.so/<feedId>` returns the posts as data — id,
@@ -781,6 +784,20 @@ same "inert until configured" contract as `analytics-config.ts` and
 `tickets/config.ts` — so a build without the account connected ships no empty
 gallery and no skeleton. The account connection itself is a one-time human
 OAuth step; see `FINAL_IMPLEMENTATION_MATRIX_2026-09-03.md` blocker B8.
+
+Turning it on (2026-10-11): sign in at behold.so, add `@oddspace.co` as a
+source (Instagram login, the account must be Business or Creator), create a
+**JSON** feed of six posts, copy its feed ID, then
+`gh variable set ODDSPACE_INSTAGRAM_FEED_ID --body <id>` on this repository.
+`.github/workflows/ci.yml` passes that variable to every job, so the next
+deploy builds the wall onto all three pages and switches the functional
+suite to its "feed configured" contract. Nothing in the code changes.
+
+**Plan limit.** Behold's free plan is 1,200 feed requests a month (images
+don't count), after which the feed pauses until the 1st. The wall then shows
+its "not loading" line and follow link, so a pause is quiet, not broken. Each
+page view that scrolls near a wall is one request; if ODDspace traffic
+outgrows that, Starter is $10/month for 15,000.
 
 **Cost.** Below the fold, so nothing is requested until the section is within
 400px of the viewport. The six tiles are server-rendered at final size before
