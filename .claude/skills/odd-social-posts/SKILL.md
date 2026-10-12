@@ -15,7 +15,8 @@ For each post (a _carousel_):
 - **LinkedIn:** the same story for organisations, 7 pages, as JPEGs plus one PDF (the document post).
 - **An editable claude.ai Design canvas.** Every frame sits at 1080 × 1350 with its words as live text. A note at the end of each row holds the caption credit line, the alt texts and the flags.
 - **`NOTES.md`:** every frame with its photo and credit, the facts with their sources, and the flags.
-- Only when asked: the B and C variants and Canva import files.
+- Only when asked: Canva import files.
+- **Option A only.** Ronny chose the Photo cover on 12 October 2026. B and C are retired; don't build or offer them.
 
 **Nothing gets posted, scheduled or sent by Claude.** A person posts. Captions are the person's (Aki writes them). Claude may draft a LinkedIn first line, marked as a draft.
 
@@ -230,11 +231,11 @@ Once the person approves, run `npm run quality` from the repository root. Then c
   3. Run `canvas.mjs design` and publish that artboard.
 - **A comment on the canvas** asking for a change: make it the same way, then answer the comment.
 
-## Variants and Canva, only when asked
+## Canva, only when asked
 
-- **B** puts the mark, filled with the cover photo, on Paper. **C** is a type-only cover. Use `set(…, ['a', 'b', 'c'])` and render with `--only=instagram/B`, and so on.
-- **Canva files:** `node canva.mjs --out=$OUT/canva`. The upload steps are in `brand/social/README.md`.
-- **A new warped title as a PNG:** `node canva.mjs --title="Your title." --t=1.4 --out=title.png` (`--ink` for B, `--big` for C).
+- **Canva files:** `node canva.mjs --out=$OUT/canva`. The upload steps are in `brand/social/README.md`. Canva's PowerPoint import never uses uploaded Brand Kit fonts, so the files carry three stand-ins (League Spartan = Forta, Montserrat = Gabarito SemiBold, Poppins = Gabarito). In Canva, one **Change all** per stand-in puts the brand font back. The steps are in the export's `canva/README.md`.
+- **A new warped title as a PNG:** `node canva.mjs --title="Your title." --t=1.4 --out=title.png`.
+- Every new set is `set(…, ['a'])`. B and C stay in `variant()` for the record only.
 
 ## Changing the system
 

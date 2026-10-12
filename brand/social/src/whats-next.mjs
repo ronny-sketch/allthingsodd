@@ -94,6 +94,7 @@ export const css = `
 .card .ct { align-self: start } .card .cb { align-self: end; min-width: min-content; font: 400 30px/1.4 var(--font-body) } /* min-content: a long address widens the box instead of spilling off-centre */
 .card .cb span { display: block; margin-top: 6px; font-size: 24px; color: rgb(14 9 11 / 60%) }
 .paper .card .cb span { color: rgb(226 223 222 / 60%) }
+.card .cb.big { font-size: 48px } .card .cb.big span { margin-top: 10px; font-size: 30px } /* the address readable at phone size (Ronny, 12 Oct) */
 .card svg { width: 132px; height: auto; fill: currentColor }
 .card svg.filled { width: 760px }
 `;
@@ -200,10 +201,10 @@ const list = ({ lead, items }) =>
 
 const MISSION =
   'ODD exists to build better conditions for creative work — and to bring creative and cultural fields closer to business and wider society.';
-const card = ({ top = '', line = '', fill, url = 'allthingsodd.co' }) => `
+const card = ({ top = '', line = '', fill, url = 'allthingsodd.co', big = false }) => `
   <div class="card"><p class="ct">${top}</p>
     <svg viewBox="0 0 434.41 137.892" class="${fill ? 'filled' : ''}" xmlns="http://www.w3.org/2000/svg">${fill ? `<defs><clipPath id="cm"><path d="${MARK}"/></clipPath></defs><image href="${fill}" width="434.41" height="137.892" preserveAspectRatio="xMidYMid slice" clip-path="url(#cm)"/>` : `<path d="${MARK}"/>`}</svg>
-    <p class="cb">${url}${line ? `<span>${line}</span>` : ''}</p></div>`;
+    <p class="cb${big ? ' big' : ''}">${url}${line ? `<span>${line}</span>` : ''}</p></div>`;
 
 const by = (name) => (name ? `ODDfest / ${name}` : null);
 const num1 = (frames) => frames.map((f, i) => ({ n: i + 1, ...f }));
@@ -817,6 +818,185 @@ const liOdd = [
   },
 ];
 
+// ── ODDfest 2027, what it is (12 Oct, Aki's direction): the week explained before the ask.
+// Instagram for everyone who might come, LinkedIn for organisations. Facts from /oddfest
+// and /about on 12 Oct. The page says 19–25 April; its event-idea form still says 19–26.
+const DATES =
+  'Dates: 19–25 April 2027, as the site says (Ronny chose it 12 Oct). The event-idea form on /oddfest still says “runs 19–26 April”: fix on the site.';
+const NAMES2026 =
+  '2026 naming: the site calls the five-venue programme ODDfest 2026 and the partner events Creative Week 2026. Both names kept as the site has them.';
+const whatCover = `${A}/about/oddfest-2025-love-stage-dancing.jpg`;
+const festWhat = num1([
+  {
+    alt: 'A crowd dancing on a wooden floor under a white tent. Helsinki’s creative week, 19–25 April 2027: one week, the whole city’s creative work. Photo: Sebastian Hiemann.',
+    flag: DATES,
+    credit: by('Sebastian Hiemann'),
+    html: cover({
+      img: whatCover,
+      pos: 'center 55%',
+      dateline: 'Helsinki’s creative week · 19–25 April 2027',
+      title: 'One week, the whole city’s creative work.',
+      t: 2.6,
+      credit: 'Sebastian Hiemann',
+    }),
+  },
+  {
+    alt: 'Text on Ink. ODDfest is a week of independently made events across Helsinki, in one shared programme. Exhibitions, performances, screenings, dinners, open studios and conversations, made by the people who do the work. Once the programme is out, you choose what you want to see across the week.',
+    credit: null,
+    html: tx({
+      lead: 'ODDfest is a week of independently made events across Helsinki, in one shared programme.',
+      body: 'Exhibitions, performances, screenings, dinners, open studios and conversations, made by the people who do the work. Once the programme is out, you choose what you want to see <b>across the week</b>.',
+    }),
+  },
+  {
+    alt: 'Visitors look at sculpted heads on plinths in a glass-walled gallery at Bio Rex. Go and see it.',
+    credit: by('Julius Töyrylä'),
+    html: ph({
+      img: `${A}/examples/smell-the-art-bio-rex.jpg`,
+      pos: '45% 58%',
+      zoom: 1.3,
+      point: 'Go and see it.',
+    }),
+  },
+  {
+    alt: 'Text on Ink. Every field, the same week. Visual arts, design, games, architecture, film, fashion, music and sound, performing arts, literature and publishing, creative technology and creative business.',
+    credit: null,
+    html: list({
+      lead: 'Every field, the same week.',
+      items: [
+        'Visual arts, design, games,',
+        'architecture, film, fashion,',
+        'music and sound,',
+        'performing arts,',
+        'literature and publishing,',
+        'creative tech and business.',
+      ],
+    }),
+  },
+  {
+    alt: 'An artist in a black hood paints on an easel beside a DJ setup, seen through the last lobe of the ODD mark. Made by its hosts.',
+    credit: by('@flyingwhalefv'),
+    html: ph({
+      win: `${A}/oddfest-2026/valiobeats-live-painting.jpg`,
+      lobe: 2,
+      point: 'Made by its hosts.',
+      long: true,
+    }),
+  },
+  {
+    alt: 'Text on Ink. Who makes it? Artists, collectives, venues, companies, communities, and people with no organisation behind them at all. There is no minimum size. ODD doesn’t produce the events: it builds the shared programme and spends the week telling people the whole thing is on.',
+    credit: null,
+    html: qa({
+      q: 'Who makes it?',
+      a: 'Artists, collectives, venues, companies, communities, and people with no organisation behind them at all. There is no minimum size. ODD doesn’t produce the events: it builds the shared programme and spends the week telling people the <b>whole thing is on</b>.',
+    }),
+  },
+  {
+    alt: 'Text on Ink. 150+ acts across five venues at ODDfest 2026. Creative Week 2026 brought 1,000+ people to partner events.',
+    flag: NAMES2026,
+    credit: null,
+    html: num({
+      big: '150+',
+      lead: 'acts across five venues at ODDfest 2026.',
+      body: 'Creative Week 2026 brought <b>1,000+ people</b> to partner events.',
+    }),
+  },
+  {
+    alt: 'Text on Ink. ODDfest 2027 runs 19–25 April, and the programme is being made now. Follow along. And if you’d rather be in it than at it, event ideas are open. Link in bio.',
+    flag: DATES,
+    credit: null,
+    html: tx({
+      lead: 'ODDfest 2027 runs 19–25 April, and the programme is being made now.',
+      body: 'Follow along. And if you’d rather be in it than at it, <b>event ideas are open</b>. Link&nbsp;in&nbsp;bio.',
+    }),
+  },
+  {
+    alt: 'A Paper card: the ODD mark filled with the dancing crowd photo. allthingsodd.co/oddfest. ODDfest 2027, 19–25 April, Helsinki.',
+    credit: by('Sebastian Hiemann'),
+    html: card({
+      fill: whatCover,
+      url: 'allthingsodd.co/oddfest',
+      line: 'ODDfest 2027 · 19–25 April · Helsinki',
+      big: true,
+    }),
+  },
+]);
+
+const liFestWhat = num1([
+  {
+    alt: 'A crowd dancing on a wooden floor under a white tent. ODDfest 2027, 19–25 April, Helsinki: why a creative week matters to organisations. Photo: Sebastian Hiemann.',
+    flag: DATES,
+    credit: by('Sebastian Hiemann'),
+    html: cover({
+      img: whatCover,
+      pos: 'center 55%',
+      dateline: 'ODDfest 2027 · 19–25 April · Helsinki',
+      title: 'Why a creative week matters to organisations.',
+      t: 3.2,
+      credit: 'Sebastian Hiemann',
+    }),
+  },
+  {
+    alt: 'Text on Ink. ODDfest is Helsinki’s creative week: independently made events across the city, in one shared programme. Artists, collectives, venues, communities and companies make and run their own events, and their own ticketing. ODD builds the shared identity, programme, communications, PR and map. In 2027 the week runs 19–25 April.',
+    credit: null,
+    html: tx({
+      lead: 'ODDfest is Helsinki’s creative week: independently made events across the city, in one shared programme.',
+      body: 'Artists, collectives, venues, communities and companies make and run their own events, and their own ticketing. ODD builds the shared identity, programme, communications, PR and map. In 2027 the week runs <b>19–25 April</b>.',
+    }),
+  },
+  {
+    alt: 'People lean over a long table of food at an ODDfest 2025 event, talking and serving themselves. Reasons to gather.',
+    flag: 'Identifiable people in an organisations post: check consent before posting.',
+    credit: by('Majakka'),
+    html: ph({
+      img: `${A}/about/oddfest-2025-shared-table.jpg`,
+      point: 'Reasons to gather.',
+      long: true,
+    }),
+  },
+  {
+    alt: 'Text on Ink. 1,000+ people at Creative Week partner events across Helsinki in 2026, and 150+ acts at five ODDfest venues. Creativity belongs closer to the centre, and events create reasons to gather. Across one shared week, scenes, audiences and ideas meet that might not otherwise, and creative expertise comes into closer contact with business, institutions and public life.',
+    flag: NAMES2026,
+    credit: null,
+    html: num({
+      big: '1,000+',
+      lead: 'people at Creative Week partner events in 2026, and 150+ acts at five ODDfest venues.',
+      body: 'Creativity belongs closer to the centre, and events create reasons to gather. Across one shared week, scenes, audiences and ideas meet that might not otherwise, and creative expertise comes into <b>closer contact with business, institutions and public life</b>.',
+    }),
+  },
+  {
+    alt: 'A standing audience of guests in a white-walled hall at Taidehalli, seen through the first lobe of the ODD mark. Three ways in.',
+    flag: 'Identifiable people at a partner event: check consent before posting.',
+    credit: by('Remu Shemeikka'),
+    html: ph({
+      win: `${A}/examples/soiree-of-serendipity.jpg`,
+      lobe: 0,
+      point: 'Three ways in.',
+      long: true,
+    }),
+  },
+  {
+    alt: 'Text on Ink. Back the week, reach the people in it, or build something inside it. In 2026 that looked like Creative x Tech with Junction and Maria 01, and Creative Capital Gathering at Amos Rex with FiBAN and Joy for Innovation. Tell us what you have in mind and we will work out whether there is a real fit. allthingsodd.co/oddfest',
+    flag: `Partner names used in a partner call: Ronny checks before posting. ${DATES}`,
+    credit: null,
+    html: tx({
+      lead: 'Back the week, reach the people in it, or build something inside it.',
+      body: 'In 2026 that looked like Creative x Tech with Junction and Maria 01, and Creative Capital Gathering at Amos Rex with FiBAN and Joy for Innovation. Tell us what you have in mind and we will work out whether there is a <b>real fit</b>.',
+      url: 'allthingsodd.co/oddfest',
+    }),
+  },
+  {
+    alt: 'A Paper card: the ODD mark filled with the dancing crowd photo. allthingsodd.co/oddfest. ODDfest 2027, 19–25 April, Helsinki.',
+    credit: by('Sebastian Hiemann'),
+    html: card({
+      fill: whatCover,
+      url: 'allthingsodd.co/oddfest',
+      line: 'ODDfest 2027 · 19–25 April · Helsinki',
+      big: true,
+    }),
+  },
+]);
+
 // ── Variants. A is the approved set. B and C test the hook: B the mark filled with
 // the photograph on Paper (text frames, windows and the card go Paper too, photo
 // frames stay Ink because type on a photograph is Paper on an Ink scrim), C the
@@ -851,6 +1031,7 @@ const kit = num1([
   vision[10], //       card, the mission
 ]);
 
+// Option A only from 12 Oct 2026 (Ronny). B and C stay in variant() for the record; add them back to a set to rebuild one.
 const V = { a: 'A', b: 'B', c: 'C' };
 const set = (list, platform, vs) =>
   vs.flatMap((v) =>
@@ -872,12 +1053,26 @@ export const carousels = [
       { name: 'odd-vision-mission', title: 'Why ODD exists', frames: vision },
     ],
     'instagram',
-    ['a', 'b', 'c'],
+    ['a'],
   ),
-  ...set([{ name: 'odd-in-three', title: 'ODD in three', frames: inThree }], 'instagram', [
-    'a',
-    'b',
-  ]),
+  ...set(
+    [{ name: 'oddfest-what-it-is', title: 'ODDfest 2027 · what it is', frames: festWhat }],
+    'instagram',
+    ['a'],
+  ),
+  ...set(
+    [
+      {
+        name: 'li-oddfest-what-it-is',
+        hook: 'ODDfest is Helsinki’s creative week, 19–25 April 2027: independently made events across the city, in one programme. What the week is, why it exists, what 2026 added up to, and three ways in for an organisation.',
+        title: 'ODDfest 2027 · what it is',
+        frames: liFestWhat,
+      },
+    ],
+    'linkedin',
+    ['a'],
+  ),
+  ...set([{ name: 'odd-in-three', title: 'ODD in three', frames: inThree }], 'instagram', ['a']),
   ...set(
     [
       {
@@ -906,7 +1101,7 @@ export const carousels = [
       },
     ],
     'linkedin',
-    ['a', 'b', 'c'],
+    ['a'],
   ),
   ...set(
     [
@@ -918,11 +1113,9 @@ export const carousels = [
       },
     ],
     'linkedin',
-    ['a', 'b'],
+    ['a'],
   ),
 ];
 export const templates = set([{ name: 'template', title: 'Template', frames: kit }], 'templates', [
   'a',
-  'b',
-  'c',
 ]);

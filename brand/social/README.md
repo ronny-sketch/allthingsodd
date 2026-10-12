@@ -196,12 +196,11 @@ three-part post is one 1.91:1 image (`three(panels, true)`, `w: 2580` on
 the frame) because LinkedIn shows several images as a collage. `pdf.mjs`
 turns a rendered deck into the document post, one 1080 × 1350 page a frame.
 
-Every set comes in three variants that test the hook (`variant()` in the same
-file): A is the approved set, B fills the mark with the cover photograph on
-Paper and turns the text frames, windows and card Paper (photo frames stay Ink:
-type on a photograph is Paper on the Ink scrim), C sets the title alone on Ink
-at 128px. Carousels carry a `dir` (instagram/B …) and frames a body `cls`, which
-build.mjs honours. `canva.mjs` turns every set, plus a 14-page template kit,
+Every set is built in option A, the Photo cover, which Ronny chose on
+12 Oct 2026. `variant()` in the same file still holds the retired B (the mark
+filled with the cover photograph, on Paper) and C (the title alone on Ink at
+128px) for the record; no set uses them. Carousels carry a `dir`
+(instagram/A …) and frames a body `cls`, which build.mjs honours. `canva.mjs` turns every set, plus a 14-page template kit,
 into PowerPoint files Canva imports as editable designs: it renders each frame
 and takes it apart into photos (replaceable), one full-frame overlay of the
 ground with the mark cut out, the scrim and veil, the warped title as a
@@ -210,9 +209,9 @@ warped title for a new cover. The page itself lives in `page.mjs`, shared by
 both scripts.
 
 ```bash
-node build.mjs --only=instagram/,linkedin/    # or --only=instagram/B, --only=oddfest-whats … --out=~/Projects/AI/exports/odd-social/2026-10-whats-next
-node pdf.mjs --out=~/Projects/AI/exports/odd-social/2026-10-whats-next/linkedin/B \
-  li-oddfest li-oddference li-oddspace li-vision   # → …/linkedin/B/*.pdf, likewise A and C
+node build.mjs --only=instagram/,linkedin/    # or --only=oddfest-whats … --out=~/Projects/AI/exports/odd-social/2026-10-whats-next
+node pdf.mjs --out=~/Projects/AI/exports/odd-social/2026-10-whats-next/linkedin/A \
+  li-oddfest li-oddference li-oddspace li-vision   # → …/linkedin/A/*.pdf
 node canva.mjs --out=~/Projects/AI/exports/odd-social/2026-10-whats-next/canva   # once: cd ../../deck/src && npm ci
 ```
 

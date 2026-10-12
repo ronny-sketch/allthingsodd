@@ -250,11 +250,22 @@ const hex = (c) =>
     .join('')
     .toUpperCase();
 const blend = (c, a, bg) => c.slice(0, 3).map((v, i) => v * a + bg[i] * (1 - a));
-// Canva matches a brand-kit font by the family name inside the file, exactly: Forta's
-// file says FORTA, and Gabarito SemiBold is a family of its own (the renders use 400 and
-// 600 only; a bold flag would land on Bold 700).
+// Canva's PowerPoint import never picks up uploaded Brand Kit fonts, under any name (tested
+// 12 Oct 2026: FORTA, Forta, Gabarito, Gabarito SemiBold and the PostScript names all land on
+// one fallback), but it does match its own library fonts. So each role gets a library font of
+// its own, and one "Change all" per role in Canva puts the brand font back (canva/README.md).
+// No bold flag: the renders use Gabarito 400 and 600 only.
+const STAND_INS = {
+  Forta: 'League Spartan',
+  Gabarito: 'Poppins',
+  'Gabarito SemiBold': 'Montserrat',
+};
 const face = (r) =>
-  r.font === 'Forta' ? 'FORTA' : r.font === 'Gabarito' && r.weight >= 600 ? 'Gabarito SemiBold' : r.font;
+  r.font === 'Forta'
+    ? STAND_INS.Forta
+    : r.font === 'Gabarito'
+      ? STAND_INS[r.weight >= 600 ? 'Gabarito SemiBold' : 'Gabarito']
+      : r.font;
 const inch = (r, dx = 0) => ({ x: (r.x - dx) / IN, y: r.y / IN, w: r.w / IN, h: r.h / IN });
 
 // Text: solid colours on a flat ground (blended, so Canva needs no transparency
