@@ -210,7 +210,8 @@ const by = (name) => (name ? `ODDfest / ${name}` : null);
 const num1 = (frames) => frames.map((f, i) => ({ n: i + 1, ...f }));
 const strip = (s) => s.replace(/<[^>]+>/g, '');
 
-// ── ODDfest 2027: the news is that ideas are being collected before the dates are fixed.
+// ── ODDfest 2027: the news WAS that ideas were collected before the dates were fixed.
+// Superseded 12 Oct (dates now 19–25 April on the site): kept for the record, don't re-import.
 const festCover = `${A}/about/oddfest-2026-tavastia-crowd.jpg`;
 const oddfest = num1([
   {
@@ -828,14 +829,14 @@ const NAMES2026 =
 const whatCover = `${A}/about/oddfest-2025-love-stage-dancing.jpg`;
 const festWhat = num1([
   {
-    alt: 'A crowd dancing on a wooden floor under a white tent. Helsinki’s creative week, 19–25 April 2027: one week, the whole city’s creative work. Photo: Sebastian Hiemann.',
+    alt: 'A crowd dancing on a wooden floor under a white tent. A new shape for ODDfest: Helsinki’s creative week, 19–25 April 2027. Photo: Sebastian Hiemann.',
     flag: DATES,
     credit: by('Sebastian Hiemann'),
     html: cover({
       img: whatCover,
       pos: 'center 55%',
       dateline: 'Helsinki’s creative week · 19–25 April 2027',
-      title: 'One week, the whole city’s creative work.',
+      title: 'A new shape for ODDfest.',
       t: 2.6,
       credit: 'Sebastian Hiemann',
     }),
