@@ -1,5 +1,13 @@
 import { test, expect, type Page } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 import { CATALOG_ROUTE, catalogBody } from '../catalog-fixture';
+
+// The deadline is copy the team edits (Blind Bird moved from 1 Nov to 1 Dec
+// on 2026-10-12), so the expected badge comes from the page file, not a literal.
+const oddference: { tickets?: { syncSlug?: string; badgeLabel?: string }[] } = JSON.parse(
+  readFileSync(new URL('../../src/content/pages/oddference.json', import.meta.url), 'utf8'),
+);
+const blindBirdBadge = oddference.tickets?.find((t) => t.syncSlug === 'blind-bird')?.badgeLabel;
 
 // The /oddference marketing page's ticket block must never be a second
 // source of truth for price or sale state. On main @ 3a656fe it was: the
@@ -145,7 +153,8 @@ test('the badge on the live tier states the sale deadline', async ({ page }) => 
 
   const badge = page.locator('[data-ticket-slug="blind-bird"] .pricing-badge');
   await expect(badge).toBeVisible();
-  await expect(badge).toHaveText('Until 1 Nov 2026 or sold out');
+  expect(blindBirdBadge).toMatch(/^Until \d{1,2} \w{3} \d{4} or sold out$/);
+  await expect(badge).toHaveText(blindBirdBadge!);
   // The catalog has no field for this text, so the sync must leave it alone
   // rather than overwrite it with anything of its own.
   await expect(badge).not.toHaveText(/recommended/i);
