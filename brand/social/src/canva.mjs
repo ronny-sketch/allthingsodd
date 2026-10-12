@@ -1,37 +1,44 @@
-// Canva import files. Every post and template as a PowerPoint file that Canva
-// opens as an editable design, layer by layer, taken from the same page
-// build.mjs renders:
+// Canva import files. Every post and template as a PDF that Canva opens as an
+// editable design, layer by layer, taken from the same page build.mjs renders:
 //   - photographs as images, so Canva's Replace swaps them;
 //   - the ground around the mark (window, filled card, cover B, three-part) as
 //     a transparent overlay with the mark's shape cut out, above the photo;
 //   - the Ink scrim and veil as transparent overlays;
-//   - text as live Forta and Gabarito, where the render put it;
+//   - text as live Forta and Gabarito, where the render put it, in the fonts the
+//     ODD Brand Kit holds, so Canva lands on them (below);
 //   - the warped cover title as a transparent PNG (the warp is a filter, so no
 //     design tool can keep it live; --title makes a new one).
 //
-//   (once) cd ../../deck/src && npm ci     pptxgenjs, the deck generator's own dependency
 //   node canva.mjs --out=~/Projects/AI/exports/odd-social/2026-10-whats-next/canva [--only="Template A"]
+//     [--forta=~/Projects/AI/Fonts/Forta-2.0.ttf]
 //   node canva.mjs --title="A new cover title." --t=1.4 [--ink] [--big] --out=title.png
 //     a warped title for a new cover: Paper by default, --ink for variant B,
 //     --big for variant C's 128px. `t` is the instant of the warp (any number).
 //
-// Out: "01 Templates", "02 Instagram", "03 LinkedIn", one .pptx a design, named
-// the way Canva lists it ("IG · ODDfest 2027 · B"). Alt text and the photo
-// credit go in each page's notes. Forta and Gabarito must be in the Canva brand
-// kit before importing, or Canva substitutes them (the export folder's README).
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+// Out: "01 Templates", "02 Instagram", "03 LinkedIn", one .pdf a design, named
+// the way Canva lists it ("IG · ODDfest 2027 · A"). Import with the Canva
+// connector's import-design-from-url (Surge serves .PDF, not .pdf) or drag in.
+//
+// Fonts (tested 12 Oct 2026): Canva's PDF import matches an embedded font to the
+// Brand Kit by the font file's own name; its PowerPoint import never does. The
+// Brand Kit's Forta is Forta 2.0 (internal name "Forta"; the renders' OFL Forta 1
+// says "FORTA" and lands elsewhere). Forta 2.0 is under a commercial EULA, so it
+// stays out of the repository: --forta points at it.
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '../../../node_modules/@playwright/test/index.mjs';
-import PptxGenJS from '../../deck/src/node_modules/pptxgenjs/dist/pptxgen.es.js';
 import { page as pageHtml } from './page.mjs';
 import { carousels, templates, warp } from './whats-next.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const arg = (k) => process.argv.find((a) => a.startsWith(`--${k}=`))?.slice(k.length + 3);
 const OUT = resolve((arg('out') ?? '.').replace(/^~/, process.env.HOME));
-const IN = 96; // pptx measures in inches; a Canva social design has 96 px to the inch
+const FORTA2 = resolve(
+  (arg('forta') ?? '~/Projects/AI/Fonts/Forta-2.0.ttf').replace(/^~/, process.env.HOME),
+);
+const FONTS = resolve(HERE, '../../fonts');
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ deviceScaleFactor: 2 });
@@ -164,10 +171,13 @@ function collect() {
   };
   const para = (s) => ({
     runs: [],
+    top: Infinity,
+    bottom: -Infinity,
     lh: parseFloat(s.lineHeight),
     before: parseFloat(s.marginTop) || 0,
     align: s.textAlign,
   });
+  const range = document.createRange();
   for (const el of root.querySelectorAll('.point, .dateline, .credit, .tx p, .card p')) {
     if (!el.textContent.trim()) continue;
     const cs = getComputedStyle(el);
@@ -177,6 +187,11 @@ function collect() {
       for (const c of node.childNodes) {
         if (c.nodeType === 3) {
           const s = getComputedStyle(node);
+          range.selectNodeContents(c);
+          for (const q of range.getClientRects()) {
+            paras.at(-1).top = Math.min(paras.at(-1).top, q.top);
+            paras.at(-1).bottom = Math.max(paras.at(-1).bottom, q.bottom);
+          }
           paras.at(-1).runs.push({
             text: c.textContent,
             font: s.fontFamily.split(',')[0].replace(/["']/g, '').trim(),
@@ -243,90 +258,77 @@ async function frame(f, w, h, dir, key) {
   return { ...info, layers };
 }
 
-const hex = (c) =>
-  c
-    .slice(0, 3)
-    .map((v) => Math.round(v).toString(16).padStart(2, '0'))
-    .join('')
-    .toUpperCase();
+const rgb = (c) => `rgb(${c.slice(0, 3).map(Math.round).join(',')})`;
 const blend = (c, a, bg) => c.slice(0, 3).map((v, i) => v * a + bg[i] * (1 - a));
-// Canva's PowerPoint import never picks up uploaded Brand Kit fonts, under any name (tested
-// 12 Oct 2026: FORTA, Forta, Gabarito, Gabarito SemiBold and the PostScript names all land on
-// one fallback), but it does match its own library fonts. So each role gets a library font of
-// its own, and one "Change all" per role in Canva puts the brand font back (canva/README.md).
-// No bold flag: the renders use Gabarito 400 and 600 only.
-const STAND_INS = {
-  Forta: 'League Spartan',
-  Gabarito: 'Poppins',
-  'Gabarito SemiBold': 'Montserrat',
-};
-const face = (r) =>
-  r.font === 'Forta'
-    ? STAND_INS.Forta
-    : r.font === 'Gabarito'
-      ? STAND_INS[r.weight >= 600 ? 'Gabarito SemiBold' : 'Gabarito']
-      : r.font;
-const inch = (r, dx = 0) => ({ x: (r.x - dx) / IN, y: r.y / IN, w: r.w / IN, h: r.h / IN });
+const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
-// Text: solid colours on a flat ground (blended, so Canva needs no transparency
-// support), Paper with transparency where a photograph is underneath.
-function addText(s, t, info, dx) {
-  const runs = [];
-  for (const [pi, p] of t.paras.entries()) {
-    const rs = p.runs
-      .map((r, ri) => {
-        let text = r.text.replace(/\s+/g, ' ');
-        if (ri === 0) text = text.trimStart();
-        if (ri === p.runs.length - 1) text = text.trimEnd();
-        if (r.upper || r.font === 'Forta') text = text.toUpperCase(); // Forta is caps-only; this keeps a substitute honest
-        const a = (r.color[3] ?? 1) * r.opacity;
-        return {
-          text,
-          options: {
-            fontFace: face(r),
-            fontSize: +(r.size * 0.75).toFixed(2),
-            color: hex(info.photoUnder ? r.color : blend(r.color, a, info.bg)),
-            ...(info.photoUnder && a < 1 ? { transparency: Math.round((1 - a) * 100) } : {}),
-            charSpacing: +(r.ls * 0.75).toFixed(2),
-            lineSpacing: +(p.lh * 0.75).toFixed(2),
-            paraSpaceBefore: +(p.before * 0.75).toFixed(2),
-            align: p.align === 'center' ? 'center' : 'left',
-          },
-        };
-      })
-      .filter((r) => r.text);
-    if (rs.length && pi < t.paras.length - 1) rs.at(-1).options.breakLine = true;
-    runs.push(...rs);
-  }
+// Text as positioned HTML: solid colours on a flat ground (blended), Paper with
+// alpha where a photograph is underneath.
+// A one-line paragraph gets no-break spaces. Canva's import tries to join a line to a bigger
+// line just above it (the number frame's line under the figure, the card's line under the
+// address) and drops most of its spaces doing it; with no-break spaces it joins them cleanly,
+// into one box with two paragraphs, as the page has them (tested 12 Oct 2026).
+function textHtml(t, info, dx) {
+  const face = (r) =>
+    `font-family:${r.font === 'Forta' ? 'Forta' : 'Gabarito'};font-weight:${r.weight >= 600 ? 600 : 400};font-size:${r.size}px`;
+  const paras = t.paras
+    .map((p, pi) => {
+      const oneLine = p.bottom - p.top < 1.5 * p.lh;
+      const runs = p.runs
+        .map((r, ri) => {
+          let text = r.text.replace(/[ \t\n\r]+/g, ' '); // not \s: it eats the &nbsp; that keeps “Link in bio.” together
+          if (ri === 0) text = text.replace(/^ /, '');
+          if (ri === p.runs.length - 1) text = text.replace(/ $/, '');
+          if (r.upper || r.font === 'Forta') text = text.toUpperCase(); // Forta is caps-only
+          if (oneLine) text = text.replaceAll(' ', '\u00a0'); // see above
+          const a = (r.color[3] ?? 1) * r.opacity;
+          const color = info.photoUnder
+            ? `rgba(${r.color.slice(0, 3).join(',')},${a})`
+            : rgb(blend(r.color, a, info.bg));
+          return text
+            ? `<span style="${face(r)};letter-spacing:${r.ls}px;color:${color}">${esc(text)}</span>`
+            : '';
+        })
+        .join('');
+      // The paragraph's own face too: a bare <p> sets its line strut in the default 16px font, which stretches the lines.
+      return `<p style="margin:${pi ? p.before : 0}px 0 0;${face(p.runs[0])};line-height:${p.lh}px;text-align:${p.align === 'center' ? 'center' : 'left'}">${runs}</p>`;
+    })
+    .join('');
   // A vertical credit is a horizontal box turned 270°, centred where the render put it.
   const r0 = t.vertical
     ? { x: t.r.x + t.r.w / 2 - t.r.h / 2, y: t.r.y + t.r.h / 2 - t.r.w / 2, w: t.r.h, h: t.r.w }
     : t.r;
-  // Slack, so a line that just fits in the render can't drop its last word in Canva:
+  // Slack, so a line that just fits in the render (Forta 1) still fits in the PDF (Forta 2.0):
   // generous on a one-line box (it can't reflow), 1% on a paragraph (keeps its breaks).
   const oneLine = r0.h < 1.5 * Math.max(...t.paras.map((p) => p.lh));
   const slack = oneLine ? Math.max(48, r0.w * 0.25) : Math.max(4, r0.w * 0.01);
   const centred = t.vertical || t.paras[0].align === 'center';
-  const r = { ...r0, x: r0.x - (centred ? slack / 2 : 0), w: r0.w + slack };
-  s.addText(runs, {
-    ...inch(r, dx),
-    margin: 0,
-    valign: 'top',
-    fit: 'none',
-    wrap: true,
-    ...(t.vertical ? { rotate: 270 } : {}),
-  });
+  const x = r0.x - dx - (centred ? slack / 2 : 0);
+  return `<div data-h="${r0.h}" style="position:absolute;left:${x}px;top:${r0.y}px;width:${r0.w + slack}px;${t.vertical ? 'transform:rotate(-90deg);' : ''}">${paras}</div>`;
 }
 
-async function design(c, file, title) {
+// Chrome sizes a PDF page in 1/75-inch steps, so 1350px comes out 1350.72 and Canva makes the
+// design 1351 tall. Crop the page box to the exact size, from the bottom (pages are laid out from
+// the top), padded to its old length so the file's byte offsets still hold.
+function crop(file, w, h) {
+  const s = readFileSync(file, 'latin1').replace(
+    /\/MediaBox \[0 0 [\d.]+ ([\d.]+)\]/g,
+    (box, H) => {
+      const fit = `/MediaBox [0 ${+(H - h * 0.75).toFixed(2)} ${w * 0.75} ${+(+H).toFixed(2)}]`;
+      if (fit.length > box.length) throw new Error(`canva.mjs: can't crop ${box}`);
+      return fit.padEnd(box.length);
+    },
+  );
+  writeFileSync(file, s, 'latin1');
+}
+
+const pdfPage = await browser.newPage();
+async function design(c, file) {
   if (arg('only') && !file.includes(arg('only'))) return;
   const dir = mkdtempSync(join(tmpdir(), 'odd-canva-'));
-  const pptx = new PptxGenJS();
   const pw = c.frames[0].w ?? 1080,
     ph = c.frames[0].h ?? 1350;
-  pptx.defineLayout({ name: 'ODD', width: pw / IN, height: ph / IN });
-  pptx.layout = 'ODD';
-  Object.assign(pptx, { author: 'New Nordic Way rf', company: 'ODD — allthingsodd.co', title });
+  const pages = [];
   for (const [fi, f] of c.frames.entries()) {
     const wide = f.wide ?? 1,
       w = (f.w ?? 1080) * wide,
@@ -336,22 +338,53 @@ async function design(c, file, title) {
     for (let i = 0; i < wide; i++) {
       const x0 = i * pw,
         x1 = x0 + pw;
-      const s = pptx.addSlide();
-      s.background = { color: hex(info.bg) };
-      for (const l of info.layers)
-        if (l.x < x1 && l.x + l.w > x0)
-          s.addImage({ path: l.path, altText: l.alt, ...inch(l, x0) });
-      for (const t of info.texts) {
-        const cx = t.r.x + t.r.w / 2;
-        if (cx >= x0 && cx < x1) addText(s, t, info, x0);
-      }
-      s.addNotes(
-        [f.alt && `Alt: ${f.alt}`, f.credit && `Credit: ${f.credit}`].filter(Boolean).join('\n'),
+      const imgs = info.layers
+        .filter((l) => l.x < x1 && l.x + l.w > x0)
+        .map(
+          (l) =>
+            `<img src="file://${l.path}" alt="${esc(l.alt)}" style="position:absolute;left:${l.x - x0}px;top:${l.y}px;width:${l.w}px;height:${l.h}px">`,
+        );
+      const texts = info.texts
+        .filter((t) => t.r.x + t.r.w / 2 >= x0 && t.r.x + t.r.w / 2 < x1)
+        .map((t) => textHtml(t, info, x0))
+        .reverse(); // bottom box first, so Canva can't join a box to the bigger one above it (see textHtml)
+      pages.push(
+        `<section style="background:${rgb(info.bg)}">${imgs.join('')}${texts.join('')}</section>`,
       );
     }
   }
+  const html = join(dir, 'design.html');
+  writeFileSync(
+    html,
+    `<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face { font-family: 'Forta'; src: url('file://${FORTA2}') }
+@font-face { font-family: 'Gabarito'; src: url('file://${FONTS}/Gabarito-Regular.ttf'); font-weight: 400 }
+@font-face { font-family: 'Gabarito'; src: url('file://${FONTS}/Gabarito-SemiBold.ttf'); font-weight: 600 }
+@page { size: ${pw}px ${ph}px; margin: 0 }
+html, body { margin: 0 }
+/* No kerning: kerned glyphs with negative tracking read to Canva as word gaps ("1 ,000 +"). */
+body { font-kerning: none }
+section { position: relative; width: ${pw}px; height: ${ph}px; overflow: hidden; break-after: page }
+</style></head><body>${pages.join('')}</body></html>`,
+  );
+  await pdfPage.goto(`file://${html}`, { waitUntil: 'networkidle' });
+  await pdfPage.evaluate(() => document.fonts.ready);
+  // Every box must wrap as the render does: a box taller or shorter than its source re-wrapped.
+  const moved = await pdfPage.evaluate(() =>
+    [...document.querySelectorAll('[data-h]')]
+      .filter((d) => Math.abs(d.offsetHeight - d.dataset.h) > 8)
+      .map((d) => d.textContent.slice(0, 48)),
+  );
+  for (const m of moved) console.warn(`  ⚑ wraps differently from the render: “${m}…”`);
   mkdirSync(dirname(file), { recursive: true });
-  await pptx.writeFile({ fileName: file });
+  await pdfPage.pdf({
+    path: file,
+    width: `${pw}px`,
+    height: `${ph}px`,
+    printBackground: true,
+    tagged: true,
+  });
+  crop(file, pw, ph);
   rmSync(dir, { recursive: true, force: true });
   console.log(file.slice(OUT.length + 1));
 }
@@ -380,17 +413,12 @@ if (title) {
   for (const c of templates)
     await design(
       c,
-      join(OUT, '01 Templates', `ODD · Template ${c.variant} · ${NAMES[c.variant]}.pptx`),
-      `ODD social template ${c.variant}`,
+      join(OUT, '01 Templates', `ODD · Template ${c.variant} · ${NAMES[c.variant]}.pdf`),
     );
   for (const c of carousels) {
     const [folder, tag] =
       c.platform === 'instagram' ? ['02 Instagram', 'IG'] : ['03 LinkedIn', 'LI'];
-    await design(
-      c,
-      join(OUT, folder, `${tag} · ${c.title} · ${c.variant}.pptx`),
-      `${tag} · ${c.title} · ${c.variant}`,
-    );
+    await design(c, join(OUT, folder, `${tag} · ${c.title} · ${c.variant}.pdf`));
   }
 }
 await browser.close();

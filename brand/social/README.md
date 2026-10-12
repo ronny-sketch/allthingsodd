@@ -201,18 +201,23 @@ Every set is built in option A, the Photo cover, which Ronny chose on
 filled with the cover photograph, on Paper) and C (the title alone on Ink at
 128px) for the record; no set uses them. Carousels carry a `dir`
 (instagram/A …) and frames a body `cls`, which build.mjs honours. `canva.mjs` turns every set, plus a 14-page template kit,
-into PowerPoint files Canva imports as editable designs: it renders each frame
-and takes it apart into photos (replaceable), one full-frame overlay of the
-ground with the mark cut out, the scrim and veil, the warped title as a
-transparent PNG and live text where the render put it. `--title` makes a
-warped title for a new cover. The page itself lives in `page.mjs`, shared by
+into PDFs Canva imports as editable designs: it renders each frame and takes
+it apart into photos (replaceable, with their alt text), one full-frame overlay
+of the ground with the mark cut out, the scrim and veil, the warped title as a
+transparent PNG and live text where the render put it. The PDFs embed Forta 2.0
+and Gabarito, the fonts the ODD Brand Kit holds, and Canva's PDF import matches
+them to the kit by name, so every text opens in the brand fonts (its PowerPoint
+import never does). Forta 2.0 is under a commercial licence and stays out of the
+repository: `--forta` points at it (default `~/Projects/AI/Fonts/Forta-2.0.ttf`).
+The build warns if any text box wraps differently from the render. `--title`
+makes a warped title for a new cover. The page itself lives in `page.mjs`, shared by
 both scripts.
 
 ```bash
 node build.mjs --only=instagram/,linkedin/    # or --only=oddfest-whats … --out=~/Projects/AI/exports/odd-social/2026-10-whats-next
 node pdf.mjs --out=~/Projects/AI/exports/odd-social/2026-10-whats-next/linkedin/A \
   li-oddfest li-oddference li-oddspace li-vision   # → …/linkedin/A/*.pdf
-node canva.mjs --out=~/Projects/AI/exports/odd-social/2026-10-whats-next/canva   # once: cd ../../deck/src && npm ci
+node canva.mjs --out=~/Projects/AI/exports/odd-social/2026-10-whats-next/canva   # needs Forta 2.0, see above
 ```
 
 `canvas.mjs` puts a set on an editable claude.ai Design canvas at Instagram

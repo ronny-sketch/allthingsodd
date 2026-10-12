@@ -100,7 +100,6 @@ The character limits are guides. `canvas.mjs render` checks the real layout, and
 ```bash
 git clone https://github.com/ronny-sketch/allthingsodd && cd allthingsodd
 npm ci && npx playwright install chromium
-(cd brand/deck/src && npm ci)        # only needed for Canva files
 ```
 
 Run Claude Code from the repository root; this skill loads from `.claude/skills/`. Pull `main` before each new week.
@@ -233,7 +232,7 @@ Once the person approves, run `npm run quality` from the repository root. Then c
 
 ## Canva, only when asked
 
-- **Canva files:** `node canva.mjs --out=$OUT/canva`. The upload steps are in `brand/social/README.md`. Canva's PowerPoint import never uses uploaded Brand Kit fonts, so the files carry three stand-ins (League Spartan = Forta, Montserrat = Gabarito SemiBold, Poppins = Gabarito). In Canva, one **Change all** per stand-in puts the brand font back. The steps are in the export's `canva/README.md`.
+- **Canva files:** `node canva.mjs --out=$OUT/canva` makes one PDF a design. It needs Forta 2.0, the Brand Kit's Forta, at `~/Projects/AI/Fonts/Forta-2.0.ttf` (or `--forta=<path>`); it is commercial, so it isn't in the repository. Canva's PDF import puts every text in the Brand Kit's Forta and Gabarito by itself: nothing to swap. The build must print no `⚑ wraps differently` line. Import with the Canva connector's import-design-from-url from a temporary host (Surge serves `.PDF`, not `.pdf`; tear it down afterwards) or drag the files in, then file each design under All Things ODD. Steps and checks: the export's `canva/README.md`.
 - **A new warped title as a PNG:** `node canva.mjs --title="Your title." --t=1.4 --out=title.png`.
 - Every new set is `set(…, ['a'])`. B and C stay in `variant()` for the record only.
 
