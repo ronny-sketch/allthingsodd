@@ -18,10 +18,11 @@ import { writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '../../../node_modules/@playwright/test/index.mjs';
-import { posts, css as postCss } from './posts.mjs';
-import { stories, carousels, reels, highlights, highlightCss } from './extras.mjs';
+import { posts } from './posts.mjs';
+import { stories, carousels, reels, highlights } from './extras.mjs';
 import { editions } from './grid.mjs';
-import { carousels as weekly, css as weeklyCss } from './whats-next.mjs';
+import { carousels as weekly } from './whats-next.mjs';
+import { css, page as pageHtml } from './page.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const EXAMPLES = join(HERE, '..', 'examples');
@@ -35,34 +36,6 @@ const only = process.argv
 const wanted = (name) => !only || only.some((o) => name.startsWith(o));
 if (!only && OUT === EXAMPLES) rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
-
-// The ladder at social scale: the same ratios, lifted so Small still reads on a
-// tile roughly 400px wide on a phone. Everything else lives in posts.mjs.
-const css = `
-@font-face { font-family: 'Forta'; src: url('../../fonts/Forta-Regular.ttf') }
-@font-face { font-family: 'Gabarito'; src: url('../../fonts/Gabarito-Regular.ttf'); font-weight: 400 }
-@font-face { font-family: 'Gabarito'; src: url('../../fonts/Gabarito-SemiBold.ttf'); font-weight: 600 }
-
-html, body { margin: 0; padding: 0 }
-body { position: relative; overflow: hidden; background: var(--color-bg);
-  color: var(--color-paper); font-family: var(--font-body) }
-body.paper { --color-bg: #e2dfde; --color-paper: #0e090b;
-  --color-paper-80: rgb(14 9 11 / 80%); --color-paper-60: rgb(14 9 11 / 70%);
-  --color-paper-40: rgb(14 9 11 / 62%); --color-paper-20: rgb(14 9 11 / 20%);
-  --color-paper-12: rgb(14 9 11 / 12%); --color-paper-06: rgb(14 9 11 / 6%) }
-
-.t-hero    { font: 400 104px/0.98 var(--font-display); letter-spacing: -0.02em; margin: 0 }
-.t-display { font: 400 72px/1.04 var(--font-display); letter-spacing: -0.015em; margin: 0 }
-.t-heading { font: 400 46px/1.12 var(--font-display); letter-spacing: -0.01em; margin: 0 }
-.t-body    { font: 400 34px/1.5 var(--font-body); margin: 0 }
-.t-small   { font: 400 26px/1.4 var(--font-body); margin: 0 }
-.eyebrow   { font: 600 26px/1.4 var(--font-body); letter-spacing: 0.16em;
-             text-transform: uppercase; color: var(--color-paper-40); margin: 0 }
-.quiet { color: var(--color-paper-40) } .muted { color: var(--color-paper-60) }
-${postCss}
-${highlightCss}
-${weeklyCss}
-`;
 
 // Instagram truncates a caption after roughly 125 characters; the first
 // sentence has to survive that. Every post needs alt text.
@@ -78,14 +51,8 @@ const page = await browser.newPage({ deviceScaleFactor: 1 });
 // One page per render; a three-tile panorama renders at 3× width and is clipped
 // into a, b, c so it can be posted (c first — the newest post lands top-left).
 async function shot(name, body, bodyClass, w, h, wide = 1) {
-  const file = join(HERE, `.render-${name}.html`);
-  writeFileSync(
-    file,
-    `<!doctype html><html><head><meta charset="utf-8">
-     <link rel="stylesheet" href="../../tokens/odd.css">
-     <style>${css}\nbody{width:${w * wide}px;height:${h}px}</style></head>
-     <body class="${bodyClass}">${body}</body></html>`,
-  );
+  const file = join(HERE, `.render-${name.replaceAll('/', '_')}.html`);
+  writeFileSync(file, pageHtml(body, bodyClass, w * wide, h));
   await page.setViewportSize({ width: w * wide, height: h });
   await page.goto(`file://${file}`, { waitUntil: 'networkidle' });
   const opts = { type: 'jpeg', quality: 90 };
@@ -116,8 +83,14 @@ for (const s of stories) {
 for (const c of [...carousels, ...weekly])
   for (const f of c.frames) {
     // A wide frame (the three-part post) renders once and is cut into a, b, c.
+    // `dir` files a carousel under OUT (instagram/B/…); `cls` is a variant's body class.
     const name = f.wide ? c.name : `${c.name}-${f.n}`;
-    if (wanted(name)) console.log(await shot(name, f.html, ground(f), f.w ?? 1080, f.h ?? 1350, f.wide ?? 1));
+    const path = c.dir ? `${c.dir}/${name}` : name;
+    if (!wanted(name) && !wanted(path)) continue;
+    if (c.dir) mkdirSync(join(OUT, c.dir), { recursive: true });
+    console.log(
+      await shot(path, f.html, f.cls ?? ground(f), f.w ?? 1080, f.h ?? 1350, f.wide ?? 1),
+    );
   }
 for (const r of reels) {
   const name = `reel-${r.n}`;

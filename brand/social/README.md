@@ -196,12 +196,42 @@ three-part post is one 1.91:1 image (`three(panels, true)`, `w: 2580` on
 the frame) because LinkedIn shows several images as a collage. `pdf.mjs`
 turns a rendered deck into the document post, one 1080 × 1350 page a frame.
 
+Every set comes in three variants that test the hook (`variant()` in the same
+file): A is the approved set, B fills the mark with the cover photograph on
+Paper and turns the text frames, windows and card Paper (photo frames stay Ink:
+type on a photograph is Paper on the Ink scrim), C sets the title alone on Ink
+at 128px. Carousels carry a `dir` (instagram/B …) and frames a body `cls`, which
+build.mjs honours. `canva.mjs` turns every set, plus a 14-page template kit,
+into PowerPoint files Canva imports as editable designs: it renders each frame
+and takes it apart into photos (replaceable), one full-frame overlay of the
+ground with the mark cut out, the scrim and veil, the warped title as a
+transparent PNG and live text where the render put it. `--title` makes a
+warped title for a new cover. The page itself lives in `page.mjs`, shared by
+both scripts.
+
 ```bash
-node build.mjs --only=oddfest-whats,oddference-whats,oddspace-whats,odd-vision \
-  --out=~/Projects/AI/exports/odd-social/2026-10-whats-next
-node build.mjs --only=li- --out=~/Projects/AI/exports/odd-social/2026-10-whats-next
-node pdf.mjs --out=~/Projects/AI/exports/odd-social/2026-10-whats-next \
-  li-oddfest li-oddference li-oddspace li-vision   # → …/linkedin/*.pdf
+node build.mjs --only=instagram/,linkedin/    # or --only=instagram/B, --only=oddfest-whats … --out=~/Projects/AI/exports/odd-social/2026-10-whats-next
+node pdf.mjs --out=~/Projects/AI/exports/odd-social/2026-10-whats-next/linkedin/B \
+  li-oddfest li-oddference li-oddspace li-vision   # → …/linkedin/B/*.pdf, likewise A and C
+node canva.mjs --out=~/Projects/AI/exports/odd-social/2026-10-whats-next/canva   # once: cd ../../deck/src && npm ci
+```
+
+`canvas.mjs` puts a set on an editable claude.ai Design canvas at Instagram
+size: every frame an artboard of its own (1080 × 1350), a flattened background
+(photo, scrim, mark, warped title) under the words as live Forta and Gabarito
+text at the render's positions, one row a post, a note per row with the
+caption credit line, the alt texts and the flags (`flag` on a frame, `hook` on
+a LinkedIn carousel; a photo with no credit flags itself). Its `render` step is
+also the layout check: it fails on any text in the 148px clearance, past the
+frame edge or touching another block, and writes a contact sheet per carousel.
+The whole weekly routine, rules included, is the project skill
+`.claude/skills/odd-social-posts/SKILL.md`, so anyone's Claude Code in this
+repository makes the posts the same way.
+
+```bash
+node canvas.mjs render --only=oddfest-whats,li-oddfest --out=<dir>   # → img/, frames.json, sheet-*.jpg; must say "checks: ok"
+# upload <dir>/img/* to the canvas artifact, write <dir>/blobs.json ({ file: "/_blob/<id>" })
+node canvas.mjs design --out=<dir> --title="ODD social — <week>"     # → <dir>/design/project: canvas.json + *.dc.html
 ```
 
 Out: `examples/post-NN.jpg` (1080×1350; a `wide: 3` post becomes `a/b/c`),
