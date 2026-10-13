@@ -1,45 +1,4 @@
 ---
-// ODDfest — rebuilt 2026-09-11 at Ronny's direct request, to this order:
-//
-//   1 hero · 2 what is ODDfest · 3 how it works · 4 how to join · 5 FAQ
-//
-// What changed, and why none of it is "hidden for later":
-//
-// The hero carries the same composition as ODDspace's and ODDference's —
-// wordmark, one short h1, meta, and two CTAs — because a visitor landing
-// here had no way to act without scrolling. It keeps the aftermovie rather
-// than adopting ODDspace's photo grid: the ask was for the same structure,
-// not the same medium, and the film is the one asset that shows what this
-// actually felt like. On 2026-09-14 it also took ODDspace's proportions
-// (`frame="space"`: display-sized h1, darker scrim, larger buttons) and lost
-// its eyebrow and support line — exactly the change ODDference got on
-// 2026-09-11, so the three product heroes now read as one family.
-//
-// "You make the event. ODD builds the shared layer." and "How it works" were
-// two adjacent sections making one argument — who does what, then what
-// actually happens — so they are now one chapter. The "shared platform"
-// sub-block inside the first one is deleted outright: it promised 2027
-// programme and discovery-platform features that nobody has built or
-// confirmed. See content.config.ts's `ownership` block for the field-level
-// record.
-//
-// "Register your event" became "How to join": same job, but with a second
-// way in for a reader who has no event to submit yet, and a line of
-// reassurance for the one who thinks their idea is too unfinished to show.
-//
-// The three "Submit an event idea" asks (hero, How to join, the "Want your
-// event in the next one?" band) and the sticky bar open the Creative Week
-// submission dialog (CreativeWeekForm.astro, 2026-10-04) at
-// #creative-week-form, which lives in How to join. Until then they sent
-// people to /contact/?topic=oddfest_2027_event; that topic still works for
-// links already out there. "Ask us a question first" and the partner route
-// are unchanged.
-//
-// "What has happened before" — the 2025/2026/2027 timeline chapter that sat
-// between How to join and the FAQ — was deleted on 2026-09-14 at Ronny's
-// request, field and all. The highlights and programme names below still
-// show what past editions were, and the look-back buttons under "What
-// ODDfest is" still link to the 2026 archive.
 import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SubpageFrame from '../components/sections/SubpageFrame.astro';
@@ -66,22 +25,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
   <SubpageFrame slug={page._slug} railLeft={page.railLeft} railRight={page.railRight}>
-    <!-- 1. Hero: ODDfest wordmark + a short positioning line (the page's one
-         h1), meta, and Submit an event idea / Look back at 2026 right in the
-         hero, over the aftermovie. `frame="space"` gives it ODDspace's and
-         ODDference's proportions — see FullbleedVideoHero.astro's `frame`
-         prop. The Ultraviolet accent (the component default) stays: that
-         wash is ODDfest's own identity, as Signal is ODDference's. -->
-    {
-      /* Deliberately not passed (2026-09-14), the same cut ODDference made on
-         2026-09-11: `page.eyebrow` ("ODDfest · Helsinki 2027") sat between
-         the ODDfest wordmark and a meta line that already says "Helsinki ·
-         2027", repeating all of it. The field stays in the content — it is
-         part of the shared subpageBase shape. The support paragraph is gone
-         from the content altogether (see content.config.ts), and `meta` lost
-         "dates to be confirmed": the FAQ's "When is ODDfest 2027?" and How to
-         join both say it, where a reader is actually asking. */
-    }
     <FullbleedVideoHero
       slot="hero"
       video={page.heroMedia.video}
@@ -95,38 +38,15 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       frame="space"
     />
 
-    <!-- 2. What ODDfest is — the one consolidated explainer, with the two
-         ways to look back at 2026 directly under it. They belong here and
-         not in the hero: 2026 is context for understanding what this is,
-         not the thing being offered. -->
+    <!-- Keep the current model explanation compact: proposition first, then who does what. -->
     <SectionIntro
       eyebrow={page.whatItIs.eyebrow}
       headline={page.whatItIs.headline}
       body={page.whatItIs.body}
     />
-    <div class="oddf-lookback reveal">
-      <span class="oddf-lookback-label">{page.lookBack.label}</span>
-      <div class="oddf-lookback-actions">
-        <Pill
-          href={page.lookBack.thankYou.href}
-          variant="outline"
-          magnetic
-          target={page.lookBack.thankYou.external ? '_blank' : undefined}
-        >
-          {page.lookBack.thankYou.label}
-        </Pill>
-      </div>
-    </div>
 
-    <!-- 3. How it works — one chapter, two movements: who is responsible for
-         what, then the four steps that follow from it. These were separate
-         adjacent sections until 2026-09-11; the "shared platform" block that
-         used to sit between them is deleted, not moved. -->
     <section class="oddf-sub oddf-layer">
       <div class="wrap flow">
-        <div class="section-head">
-          <h2>{page.ownership.headline}</h2>
-        </div>
         <div class="oddf-layer-grid reveal">
           <div class="oddf-layer-col">
             <h3>{page.ownership.host.title}</h3>
@@ -137,7 +57,8 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
             <p>{page.ownership.odd.body}</p>
           </div>
         </div>
-        <p class="oddf-layer-closing reveal">{page.ownership.closing}</p>
+
+        <!-- The step-by-step explanation intentionally stays unchanged. -->
         <div class="oddf-steps flow">
           <span class="oddf-steps-label">{page.ownership.stepsLabel}</span>
           <FeatureGrid cards={page.howItWorks} />
@@ -145,10 +66,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       </div>
     </section>
 
-    <!-- 4. How to join — the page's one ask, at the highest visual weight it
-         has. Two ways to act so the section has no dead end, and the
-         reassurance line directly under them, where someone hesitating over
-         whether their idea is "ready" will actually read it. -->
     <section id="join" class="oddf-sub oddf-join">
       <div class="wrap">
         <span class="eyebrow">{page.join.eyebrow}</span>
@@ -168,9 +85,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     </section>
 
     {
-      // Programme logic stays wired up for when the real 2027 programme goes
-      // live, but renders nothing while page.programme is empty — see
-      // content.config.ts's comment on this field.
       page.programme.length > 0 && (
         <section class="oddf-sub">
           <div class="wrap flow">
@@ -185,27 +99,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     }
 
     {
-      /* No PhotoBreak here (2026-08-31 correction) — the previous image
-         (assets/hero/archive-15.jpg, "Performers on stage during ODDfest")
-         is legacy centrally-produced festival-stage photography, and this
-         page's whole point is the new distributed, organiser-owned Creative
-         Week model; keeping it visually implied the opposite of the page's
-         own copy. Re-add a PhotoBreak here once real, verified Creative Week
-         imagery exists — same "don't guess" rule as the examples below. */
-    }
-
-    {
-      // Real, named examples — only renders while verified ones exist (see
-      // content.config.ts's `creativeWeekExample` comment: no invented events
-      // ship here). Filled 2026-09-14 with Creative Week and ODDfest 2026
-      // events, each checked against its partner's own event page and the
-      // ODDfest photo archive. The ODDfest 2025 Arthur C. Brooks keynote card
-      // was removed the same day at Ronny's request, and four ODDfest 2026
-      // programmes took its place (ODDgames, ODDtheatre, ODD Deep Space,
-      // Smell the Art), checked against their oddfest.co lineup pages and
-      // the 2026 thank-you credits. Since 2026-09-14 it follows How
-      // to join directly: the "What has happened before" chapter it used to
-      // sit under is gone.
       page.examples.length > 0 && (
         <section class="oddf-sub">
           <div class="wrap flow">
@@ -222,11 +115,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     }
 
     {
-      /* Programme highlights (2026-09-14): who was on the 2025 and 2026
-         programmes, grouped, directly under the examples. The examples show
-         what the formats looked like; this shows who was in them. Reuses
-         AudienceList's label + line treatment rather than inventing a logo
-         wall or tag cloud for what is, in the end, a list of names. */
       page.programmeHighlights.groups.length > 0 && (
         <section class="oddf-sub oddf-names">
           <div class="wrap flow">
@@ -241,18 +129,23 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       )
     }
 
-    {
-      /* The ODDfest 2026 aftermovie (2026-10-05): the last of the proof,
-         right before a would-be host is asked for their own event. */
-      page.aftermovie && <AftermovieFeature {...page.aftermovie} />
-    }
+    {page.aftermovie && <AftermovieFeature {...page.aftermovie} />}
 
-    <!-- "Want your event in the next one?" (2026-09-14). The proof chapter
-         ends by handing the reader straight back to the page's primary
-         conversion: having just seen who and what ODDfest has been, a
-         would-be host is asked for theirs. Same destination as "How to join"
-         but deliberately lighter (no backstage ground), so the page still has
-         one loudest ask. -->
+    <!-- History now sits with the proof/history material instead of interrupting the 2027 model explanation. -->
+    <div class="oddf-lookback reveal">
+      <span class="oddf-lookback-label">{page.lookBack.label}</span>
+      <div class="oddf-lookback-actions">
+        <Pill
+          href={page.lookBack.thankYou.href}
+          variant="outline"
+          magnetic
+          target={page.lookBack.thankYou.external ? '_blank' : undefined}
+        >
+          {page.lookBack.thankYou.label}
+        </Pill>
+      </div>
+    </div>
+
     <section class="oddf-sub oddf-bring">
       <div class="wrap">
         <div class="oddf-bring-inner reveal">
@@ -266,13 +159,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       </div>
     </section>
 
-    <!-- 6. Partner route (2026-09-11). The host ask above is this page's
-         primary conversion and keeps the loudest treatment; this is the
-         other real audience the page has to serve — an organisation that
-         wants to back the week rather than host inside it. It sits after
-         the proof chapter, where "is this real?" has just been answered,
-         and routes into the existing Work with ODD partnerships enquiry
-         rather than introducing a second form. -->
     <section class="oddf-sub oddf-partner">
       <div class="wrap">
         <div class="oddf-partner-inner reveal">
@@ -286,7 +172,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
       </div>
     </section>
 
-    <!-- 7. FAQ -->
     <section class="oddf-sub">
       <div class="wrap flow">
         <div class="section-head">
@@ -299,14 +184,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
 </Layout>
 
 <style>
-  /* Section rhythm and the hero→content gap are not set here: every .oddf-sub
-     takes layout.css's section padding (the class stays as a hook; How to
-     join, with its own ground, is the one exception — see .oddf-join), and
-     SubpageFrame's .oddf-center owns the space under the hero. */
-
-  /* Partner band. Bordered rather than filled: a solid panel here read as a
-     second primary CTA competing with "How to join", which is the one thing
-     this page most needs a visitor to do. */
   .oddf-partner-inner {
     max-width: 46rem;
     padding: var(--space-10);
@@ -331,20 +208,10 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     }
   }
 
-  /* "Look back at 2026" — the archive button under the explainer.
-     Deliberately quiet (outline, small label above) so it reads as a
-     footnote to "What ODDfest is" rather than a second offer competing with
-     the hero's CTAs or the ask further down.
-
-     A bare block between two sections, so it follows the section contract
-     from outside: no top margin — SectionIntro's half-gap bottom padding is
-     the joint that ties it to the explainer (this used to be a negative
-     margin clawing that padding back) — and the other half of the gap to
-     "How it works" as its bottom margin. */
   .oddf-lookback {
     max-width: 40rem;
     margin-inline: auto;
-    margin-block-end: calc(var(--space-section) / 2);
+    margin-block: calc(var(--space-section) / 2);
     padding: 0 1.5rem;
     display: flex;
     flex-direction: column;
@@ -365,9 +232,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     justify-content: center;
     gap: var(--space-3);
   }
-  /* The default Pill is `white-space: nowrap`, and these two labels are the
-     longest buttons on the page — below ~420px they would each force the
-     line box wider than the screen. Only these are released from it. */
   @media (max-width: 460px) {
     .oddf-lookback-actions {
       flex-direction: column;
@@ -380,11 +244,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     }
   }
 
-  /* "How it works" — the responsibility split, its closing line, then the
-     numbered steps, all inside one section; the wrap's .flow spaces them.
-     The two columns are unboxed text, not cards, so stacked on a phone they
-     sit a flow step apart rather than --space-grid (a card-grid gap would
-     glue the second heading to the first column's paragraph). */
   .oddf-layer-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -404,26 +263,12 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     font: var(--text-body);
     color: var(--color-paper-60);
   }
-  .oddf-layer-closing {
-    max-width: var(--measure-prose);
-    margin-inline: auto;
-    margin-block-end: 0;
-    text-align: center;
-    font: var(--text-body);
-    font-style: italic;
-    color: var(--color-paper-40);
-  }
   @media (max-width: 700px) {
     .oddf-layer-grid {
       grid-template-columns: 1fr;
       text-align: center;
     }
   }
-  /* The steps, now the second half of this same section rather than their
-     own. The rule above them is what keeps one section from reading as two:
-     it joins the two movements instead of separating them. A second group in
-     the section, so --space-group above the rule (a replacement for the flow
-     step) and a flow step from the rule to the label. */
   .oddf-steps {
     margin-block-start: var(--space-group);
     padding-top: var(--space-content);
@@ -439,14 +284,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     color: var(--color-paper-40);
   }
 
-  /* "How to join" — the page's one ask. Backstage ground and a ticket-variant
-     primary so it is unmistakably the conversion block and not another
-     editorial section.
-
-     Its own ground, so it follows layout.css's rule for one: a whole
-     --space-section inside the backstage panel, and half a gap outside it
-     as margin, so the neighbours' half-gap padding adds up to one full gap
-     to the panel's edge. */
   .oddf-join {
     text-align: center;
     background: var(--color-backstage);
@@ -480,22 +317,14 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     align-items: center;
     gap: var(--space-3);
   }
-  /* Visibly larger than an ordinary tertiary Pill, using the `ticket`
-     variant's existing shadow/lift treatment and roomier padding for extra
-     weight rather than inventing a new button style (2026-09-02 UX note,
-     kept). The label stays on the Small role like every other button. */
   .oddf-join-actions :global(.oddf-join-cta.pill) {
     padding: 1rem 2.4rem;
   }
-  /* Scoped under .oddf-join so it outranks `.oddf-join p` by specificity
-     rather than by !important. */
   .oddf-join .oddf-join-reassurance {
     font: var(--text-small);
     color: var(--color-paper-40);
     margin-top: var(--space-5);
   }
-  /* The Creative Week form's own lines under it (CreativeWeekForm.astro):
-     its "sent" note, and the email route when JavaScript is off. */
   .oddf-join :global(.cw-sent),
   .oddf-join :global(.cw-noscript) {
     margin-top: var(--space-5);
@@ -511,9 +340,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     }
   }
 
-  /* "Last year, this looked like…" examples chapter — lede above the grid,
-     closing line below it, spaced by the wrap's .flow. The lede belongs to
-     its heading, so it replaces the flow step with the tighter one. */
   .oddf-examples-lede {
     max-width: var(--measure-prose);
     margin-block: var(--space-4) 0;
@@ -531,8 +357,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     color: var(--color-paper-40);
   }
 
-  /* Programme highlights — a lede above AudienceList's grouped names, tucked
-     under its heading the same way as the examples lede. */
   .oddf-names-lede {
     max-width: var(--measure-prose);
     margin-block: var(--space-4) 0;
@@ -542,8 +366,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     color: var(--color-paper-60);
   }
 
-  /* "Want your event in the next one?" — centered, unboxed, with the same
-     roomier ticket Pill as "How to join" so the two asks read as one route. */
   .oddf-bring-inner {
     max-width: 40rem;
     margin-inline: auto;
