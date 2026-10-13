@@ -73,6 +73,8 @@ run it — the construction does the rest.
   web. `tokens/brand-tokens.json` mirrors them for everything else, and
   `npm run check:brand` (part of `npm run quality` and CI) fails the build if
   the two disagree.
+- No bullet dot (U+2022) anywhere ODD designs or writes (`BRAND-GUIDE.md` §3).
+  `npm run check:identity` fails the build on the glyph in any tracked file.
 - The deck generator lives in `deck/src/` with its own `package.json`. The
   website must never import it, and it must never import the website.
 - The fonts are SIL Open Font Licence 1.1. Redistribute them with their licence

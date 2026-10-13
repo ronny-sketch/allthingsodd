@@ -128,6 +128,10 @@ for uppercase Small: `--tracking-eyebrow` (0.16em) and `--tracking-caps`
 - **Measure:** running prose holds to `--measure-prose` (52ch, roughly 65
   characters of Body a line); short centred editorial intros can sit
   narrower. Paragraph spacing is margin or gap, never extra line-height.
+- **No bullet dot** (U+2022), as a glyph or as a round CSS dot. List items
+  take the 0.5rem × 1px hairline dash in `--color-paper-40` (see
+  `.odsm-list` in `src/pages/oddspace/membership.astro`); items of meta are
+  separated by "·". `npm run check:identity` fails on the glyph.
 
 ### Reuse patterns that are not new sizes
 

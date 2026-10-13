@@ -47,6 +47,12 @@ Never fix either one by adding decoration.
 - **No new colour without provenance** in the archive study, recorded in `tokens.css`.
 - **Square content, pill actions,** `--radius-panel` (10px) for floating panels only.
 - **1px hairlines.** No boxes, no shadows on content, no rounded cards.
+- **Never the bullet "•".** Not as a list marker, not as a separator, not in a
+  caption, a slide, a post, a poster, a video or an email, and not drawn in CSS
+  as a small round dot either. A list marker is the hairline dash (0.5rem × 1px,
+  `--color-paper-40`, as on `/oddspace/membership`), or no marker and a line
+  per item. A separator in a line of meta is the middle dot "·" or a line break.
+  `npm run check:identity` fails on the glyph anywhere in the repo.
 - **Every animation has a reduced-motion branch,** and animation never makes
   content visible.
 - **Photographs are real ODD moments.** No stock, no generated people, no renders.
@@ -228,10 +234,16 @@ no channel. The rules do not bend for that; these two answer it:
   text, and no grey step. Colour enters a deck through the photographs; a figure
   that needs a colour code gets a small solid marker beside the numeral, never
   coloured text.
-- The mark sits bottom-right on every content slide, large enough to read from
-  the back of the room: 80px on a 1920px slide (about 0.55in on 13.333in), 72px
-  from the right edge and 64px from the bottom. Cover and close carry it
-  top-right at 150px. Smaller, or tucked in from the corner, it disappears.
+- The mark is a 3.15 : 1 wordmark; its box keeps that ratio or it renders as a
+  strip inside a square. It sits bottom-right on every content slide at 160 ×
+  51px on a 1920px slide (about 1.1 × 0.35in on 13.333in), 72px from the right
+  edge and 56px from the bottom, so its bottom edge is on the footer's baseline.
+  Cover and close carry it top-right at 240 × 76px.
+- Two margins. Eyebrow, footer and mark live in the outer margin (56px from the
+  top and bottom edges); title and body live inside the 128px content margin.
+  A header or footer floating in the middle of the text block reads as text.
+- A cover is one title at 96px and one sentence. A 128px title over a long
+  subtitle and a two-line eyebrow is busy, not bold.
 - A deck is built words first. Titles are claims, not topics, and the deck must
   read without a presenter when it is sent ahead. The `deck-editorial-director`
   skill owns the words; `odd-deck-design` (in `~/.claude/skills`) owns this list.
@@ -367,6 +379,9 @@ transition: color var(--duration-fast) ease;
 - Heat as text on a raised card (3.75:1 on `--color-backstage`). There the text
   goes to full figure and the underline or border carries the heat instead.
 - A rounded card, a drop shadow on a photograph, an icon set.
+- A bullet "•" or a round CSS dot in front of list items, or "•" between items
+  of meta. PowerPoint, Canva and Google Docs put it there by default; take it
+  out. The hairline dash, or "·" (§3).
 - Inventing a price, a date or a speaker. ODDference prices come from the ticket
   catalog; page values are fallbacks only.
 - Typing a headline in capitals. Forta capitalises for you.
@@ -376,8 +391,11 @@ transition: color var(--duration-fast) ease;
 - **Grey text on a slide.** Secondary lines go `--color-ink-60` by habit; on a
   projector they vanish and the slide looks unfinished. In a deck every line is
   Paper or Ink at full strength (§8).
-- **A small mark hiding inside the margin.** 48px, 128px in from the corner,
-  reads as a smudge. 80px in the corner, or no mark at all (§8).
+- **The mark in a square box.** It is a wordmark, 3.15 : 1. In a square box it
+  shrinks to a strip and its edges never meet the frame; the reviewer calls it
+  "the broken logo". Keep the ratio: 160 × 51px bottom-right (§8).
+- **Header and footer inside the text block.** They belong at the edges, 56px
+  from the top and bottom, not at the content margin with the body (§8).
 
 ## 13. Where everything lives
 
