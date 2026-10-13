@@ -107,6 +107,19 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
               <h2>{page.examplesIntro.headline}</h2>
             </div>
             <p class="oddf-examples-lede reveal">{page.examplesIntro.body}</p>
+            <div class="oddf-lookback reveal">
+              <span class="oddf-lookback-label">{page.lookBack.label}</span>
+              <div class="oddf-lookback-actions">
+                <Pill
+                  href={page.lookBack.thankYou.href}
+                  variant="outline"
+                  magnetic
+                  target={page.lookBack.thankYou.external ? '_blank' : undefined}
+                >
+                  {page.lookBack.thankYou.label}
+                </Pill>
+              </div>
+            </div>
             <OddfestExamples items={page.examples} />
             <p class="oddf-examples-closing reveal">{page.examplesIntro.closing}</p>
           </div>
@@ -130,21 +143,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
     }
 
     {page.aftermovie && <AftermovieFeature {...page.aftermovie} />}
-
-    <!-- History now sits with the proof/history material instead of interrupting the 2027 model explanation. -->
-    <div class="oddf-lookback reveal">
-      <span class="oddf-lookback-label">{page.lookBack.label}</span>
-      <div class="oddf-lookback-actions">
-        <Pill
-          href={page.lookBack.thankYou.href}
-          variant="outline"
-          magnetic
-          target={page.lookBack.thankYou.external ? '_blank' : undefined}
-        >
-          {page.lookBack.thankYou.label}
-        </Pill>
-      </div>
-    </div>
 
     <section class="oddf-sub oddf-bring">
       <div class="wrap">
@@ -210,8 +208,7 @@ if (!page.heroMedia.video || !page.heroMedia.poster || !page.heroMedia.sub) {
 
   .oddf-lookback {
     max-width: 40rem;
-    margin-inline: auto;
-    margin-block: calc(var(--space-section) / 2);
+    margin: var(--space-6) auto 0;
     padding: 0 1.5rem;
     display: flex;
     flex-direction: column;
