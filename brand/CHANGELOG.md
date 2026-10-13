@@ -1,5 +1,18 @@
 # Brand system changelog
 
+## 1.7 — 2026-10-12 · Decks: the mark keeps its ratio, headers and footers go to the edges
+
+Corrections to 1.6 after the second review of the City of Helsinki deck.
+
+- **The mark is 3.15 : 1, never square.** 1.6 said "80px"; in an 80px square
+  box the wordmark rendered as a 25px strip with its edges adrift. Now 160 ×
+  51px bottom-right (72px from the right, 56px from the bottom), 240 × 76px
+  top-right on cover and close. §8 and §12.
+- **Two margins.** Eyebrow, footer and mark sit in the outer margin, 56px from
+  the top and bottom edges; title and body keep the 128px content margin. §8.
+- **Cover: 96px title, one sentence.** §8.
+- The `odd-deck-design` skill carries the same numbers.
+
 ## 1.6 — 2026-10-09 · Decks: monochrome type and a mark that can be seen
 
 Two rules added for decks, after the review of the City of Helsinki deck.
