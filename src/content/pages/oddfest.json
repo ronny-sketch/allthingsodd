@@ -37,14 +37,14 @@
   "ownership": {
     "headline": "Your event. One shared week.",
     "host": {
-      "title": "You bring the idea.",
-      "body": "Create the event, experience or programme you want to make, in your own way."
+      "title": "You make the event.",
+      "body": "You shape the idea, content and experience — and produce it in your own way."
     },
     "odd": {
-      "title": "ODD brings the week together.",
-      "body": "We build the shared identity, programme, communications, PR and map around the week — and help connect hosts with venues, partners and each other where useful."
+      "title": "ODD builds the week.",
+      "body": "We connect the events through one programme, identity and shared visibility."
     },
-    "closing": "ODDfest doesn't produce the events for you. It brings independently made events together so they're easier to discover, reach wider audiences and become part of one bigger citywide week.",
+    "closing": "",
     "stepsLabel": "From an idea to the programme"
   },
   "howItWorks": [
