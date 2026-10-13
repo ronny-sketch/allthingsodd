@@ -91,19 +91,19 @@ test('every audience split on home puts creatives before business', async ({ pag
 test('ODDfest tells its story in the order Ronny asked for', async ({ page }) => {
   await page.goto('/oddfest');
 
-  // The 2026-09-11 rebuild order: hero, what it is, how it works, how to
-  // join, FAQ ("What has happened before" sat between the last two until it
-  // was deleted on 2026-09-14). Source order, not "the section
-  // exists" — the two are exactly what a screenshot cannot tell apart once a
-  // section moves. See oddfest.astro's own section-order comment for why
-  // each one sits where it does.
+  // Aki's 2026-10-13 order: hero, what it is + how it works (one compact
+  // block), how to join, Highlights (the 2026 look-back moved in here from
+  // the top), FAQ. It replaced the 2026-09-11 rebuild order, which opened
+  // with the look-back. Source order, not "the section exists" — the two
+  // are exactly what a screenshot cannot tell apart once a section moves.
+  // See oddfest.astro's own comments for why each one sits where it does.
   const order = await page.evaluate(() => {
     const html = document.documentElement.innerHTML;
     return {
       hero: html.indexOf('oddfest-hero'),
-      whatItIs: html.indexOf('oddf-lookback'),
       howItWorks: html.indexOf('oddf-layer'),
       join: html.indexOf('id="join"'),
+      lookBack: html.indexOf('oddf-lookback'),
       faq: html.indexOf('Practical / FAQ'),
     };
   });
@@ -112,10 +112,10 @@ test('ODDfest tells its story in the order Ronny asked for', async ({ page }) =>
     expect(index, `ODDfest section "${name}" is missing`).toBeGreaterThan(-1);
   }
 
-  expect(order.hero).toBeLessThan(order.whatItIs);
-  expect(order.whatItIs).toBeLessThan(order.howItWorks);
+  expect(order.hero).toBeLessThan(order.howItWorks);
   expect(order.howItWorks).toBeLessThan(order.join);
-  expect(order.join).toBeLessThan(order.faq);
+  expect(order.join).toBeLessThan(order.lookBack);
+  expect(order.lookBack).toBeLessThan(order.faq);
 });
 
 test('ODDfest no longer promises an unbuilt shared platform', async ({ request }) => {
