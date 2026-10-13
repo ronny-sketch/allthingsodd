@@ -24,8 +24,8 @@
   },
   "whatItIs": {
     "eyebrow": "What ODDfest is",
-    "headline": "One shared week, made by Helsinki's creative communities.",
-    "body": "ODDfest is a week of independently made events across Helsinki. Artists, collectives, venues, organisations, communities and companies make and produce their own. Bring what you do best — ODDfest gives it a place in a bigger shared week.\n\nOn its own, an event reaches its own audience. Brought together with many others across one week, it becomes part of a bigger citywide moment — connecting different scenes, audiences and ideas that might not otherwise meet.\n\nIn 2027 the week runs 19–25 April. On Friday 23 April it all comes together at Tanssin talo for ODDcelebration."
+    "headline": "One shared week, made across Helsinki.",
+    "body": "ODDfest brings independently made events across Helsinki into one shared creative week.\n\nArtists, collectives, venues, organisations and companies make their own events — from exhibitions and performances to workshops, dinners, club nights and formats nobody has tried yet."
   },
   "lookBack": {
     "label": "Look back at 2026",
@@ -35,10 +35,10 @@
     }
   },
   "ownership": {
-    "headline": "Your event. One shared week.",
+    "headline": "How ODDfest works.",
     "host": {
       "title": "You make the event.",
-      "body": "You shape the idea, content and experience — and produce it in your own way."
+      "body": "You shape and produce it in your own way."
     },
     "odd": {
       "title": "ODD builds the week.",
