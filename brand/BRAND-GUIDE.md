@@ -47,6 +47,12 @@ Never fix either one by adding decoration.
 - **No new colour without provenance** in the archive study, recorded in `tokens.css`.
 - **Square content, pill actions,** `--radius-panel` (10px) for floating panels only.
 - **1px hairlines.** No boxes, no shadows on content, no rounded cards.
+- **Never the bullet "•".** Not as a list marker, not as a separator, not in a
+  caption, a slide, a post, a poster, a video or an email, and not drawn in CSS
+  as a small round dot either. A list marker is the hairline dash (0.5rem × 1px,
+  `--color-paper-40`, as on `/oddspace/membership`), or no marker and a line
+  per item. A separator in a line of meta is the middle dot "·" or a line break.
+  `npm run check:identity` fails on the glyph anywhere in the repo.
 - **Every animation has a reduced-motion branch,** and animation never makes
   content visible.
 - **Photographs are real ODD moments.** No stock, no generated people, no renders.
@@ -373,6 +379,9 @@ transition: color var(--duration-fast) ease;
 - Heat as text on a raised card (3.75:1 on `--color-backstage`). There the text
   goes to full figure and the underline or border carries the heat instead.
 - A rounded card, a drop shadow on a photograph, an icon set.
+- A bullet "•" or a round CSS dot in front of list items, or "•" between items
+  of meta. PowerPoint, Canva and Google Docs put it there by default; take it
+  out. The hairline dash, or "·" (§3).
 - Inventing a price, a date or a speaker. ODDference prices come from the ticket
   catalog; page values are fallbacks only.
 - Typing a headline in capitals. Forta capitalises for you.

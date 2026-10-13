@@ -157,7 +157,23 @@ const DEAD_ADDRESS = {
   },
 };
 
-const BINARY = /\.(png|jpe?g|gif|webp|avif|svg|ico|woff2?|ttf|otf|mp4|webm|pdf)$/i;
+/**
+ * Not a retired name but a retired glyph: ODD never sets the bullet dot,
+ * U+2022, anywhere it designs or writes (Ronny, 2026-10-13). A list marker is
+ * the hairline dash, a meta separator is "·". brand/BRAND-GUIDE.md §3.
+ */
+const BULLET = {
+  id: 'bullet',
+  re: /\u2022/,
+  reason:
+    'ODD never sets the bullet dot — a list takes the hairline dash, meta takes "·" (BRAND-GUIDE §3)',
+  allow: {
+    'brand/BRAND-GUIDE.md': 'states the rule',
+    'brand/CHANGELOG.md': 'records the rule',
+  },
+};
+
+const BINARY = /\.(png|jpe?g|gif|webp|avif|svg|ico|woff2?|ttf|otf|mp4|webm|mp3|pdf|pptx)$/i;
 
 const tracked = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' })
   .split('\0')
@@ -205,6 +221,7 @@ for (const file of tracked) {
     if (rule && !(file in rule.allow)) report(rule);
 
     if (DEAD_ADDRESS.re.test(raw) && !(file in DEAD_ADDRESS.allow)) report(DEAD_ADDRESS);
+    if (BULLET.re.test(raw) && !(file in BULLET.allow)) report(BULLET);
   });
 }
 

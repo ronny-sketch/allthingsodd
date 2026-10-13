@@ -138,6 +138,9 @@ people at Creative Week partner events, €150 / month, €20 / hour. ODDfest 20
 and ODDference 2027 dates are not announced, so no post announces them — that
 is what `post-38` is for.
 
+No bullet dot (U+2022) on a tile, in a caption or in alt text, including the
+list in a caption: one item per line, or "·" between items (BRAND-GUIDE §3).
+
 ## Optimised for the feed
 
 - 1080×1350 JPEG at quality 90, sRGB — Instagram's own ceiling; anything larger

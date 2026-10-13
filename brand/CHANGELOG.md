@@ -1,5 +1,16 @@
 # Brand system changelog
 
+## 1.8 — 2026-10-13 · No bullet dot
+
+Ronny's rule, for everything ODD designs: never the bullet "•".
+
+- **Not as a glyph and not as a round CSS dot.** A list marker is the hairline
+  dash (0.5rem × 1px, `--color-paper-40`); a meta separator is "·" or a line
+  break. §3 and §12, and the same line in `VIDEO.md`, `social/README.md`,
+  `AGENTS.md` and `docs/design-system.md`.
+- `npm run check:identity` fails on the glyph in any tracked text file.
+- The `odd-deck-design`, `odd-voice` and `ronny-voice` skills carry it.
+
 ## 1.7 — 2026-10-12 · Decks: the mark keeps its ratio, headers and footers go to the edges
 
 Corrections to 1.6 after the second review of the City of Helsinki deck.

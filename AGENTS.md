@@ -163,6 +163,11 @@ GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
    `.flow`, not by their own margins; reusable components carry no outer block
    margin; no `margin-bottom` between blocks, no negative claw-back margins.
    See `docs/design-system.md#spacing`.
+8. **No bullet dot, ever** (2026-10-13, Ronny). Not the U+2022 glyph in copy,
+   content JSON or a component, and not a round CSS dot as a list marker. A
+   list marker is the 0.5rem × 1px hairline dash (`.odsm-list li::before` in
+   `src/pages/oddspace/membership.astro`); a meta separator is "·".
+   `npm run check:identity` fails on the glyph. See `brand/BRAND-GUIDE.md` §3.
 
 ## CMS rules
 

@@ -66,6 +66,8 @@ This is the line the teasers missed first, so it is the strictest.
 - ODD in capitals, product names one word: ODDfest, ODDference, ODDspace. "All Things
   ODD" is the website's name only. British spelling.
 - Dates, prices and figures only from allthingsodd.co, and only when confirmed.
+- No bullet dot (U+2022) on screen, in a title, a lower third or an end card. Between
+  two items, "·" or a new line (BRAND-GUIDE §3).
 
 ## 6. How it is made, and checked
 
