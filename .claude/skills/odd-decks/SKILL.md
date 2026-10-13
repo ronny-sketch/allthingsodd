@@ -119,8 +119,14 @@ Kit fonts.
    - `over-full in the deck, shrunk to fit`: the slide holds more than it has room for, and the
      deck shrinks it too. Cut words on that slide in the artifact, then start step 5 again.
      Ship it shrunk only if the person says so.
+   - `joins into one text box in Canva`: two boxes in the same face sit closer than a line, so
+     Canva would make one box of them. Give them the space it names, in the artifact, then start
+     step 5 again. Every text must reach Canva as its own box.
+   - `may go into the bigger line above it in Canva`: a short line sits tight under a big one with
+     another box close below. Give the box below the space it names, then start step 5 again.
    - `breaks differently from the deck`: Forta 2.0 is narrower than Forta 1, so a line wraps in a
      different place. Look at that slide in Canva.
+   - The last line gives the text boxes a slide, for step 4.
 3. **Hop:** `node brand/deck/src/canva-hop.mjs up <pdf>` prints a link. Import it with the
    Canva connector's `import-design-from-url`:
    - name `Deck · <audience> · <title> · <d.m.yyyy>`;
@@ -132,6 +138,10 @@ Kit fonts.
    `node brand/deck/src/canva-hop.mjs check <ours.pdf> <canva.pdf> <dir>`.
    - Pages and fonts must match, and there must be no missing words.
    - Look at every `sheet-*.png` (ours left, Canva right).
+   - `read-design` (`open_transaction`, `design_content`; cancel the transaction after): every page
+     has at least as many `text` elements as the export printed for that slide (Canva splits
+     paragraphs a `<br><br>` apart, never fewer), and nothing covers the whole slide but a photo.
+     Fewer means two boxes joined: fix the space in the deck and start step 5 again.
    - A paragraph that came in **justified**: set it to left in Canva, by hand or with
      `edit-design` → `format_text` `text_align: "start"` after showing the person the preview
      and getting their OK.
@@ -152,4 +162,5 @@ Speaker notes don't travel to Canva. Offer to add them with `edit-design` →
   - facts to confirm;
   - consent;
   - slides that were over-full;
-  - anything left to fix in Canva.
+  - anything left to fix in Canva;
+  - that a photo replaced in Canva loses its scrim (swap photos in the deck instead).

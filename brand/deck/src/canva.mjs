@@ -2,11 +2,12 @@
 //   <deck>/project/deck.json, <deck>/project/slides/<id>.html, and every /_blob/<id> its slides
 //   and faces name, saved as <deck>/_blob/<id>.<ext>
 // becomes one PDF that Canva opens as an editable presentation, one page a slide:
-//   - photographs and logos as images cut to their boxes, so Canva's Replace swaps them;
-//   - the Ink scrim as a transparent overlay;
-//   - hairlines and cell grounds as one transparent overlay, under the images;
-//   - text as live Forta and Gabarito where the slide puts it, in the Brand Kit's fonts
+//   - photographs and logos as images cut to their boxes, so Canva's Replace swaps them, with the
+//     Ink scrim baked into the photo under it;
+//   - hairlines and cell grounds as vector shapes, which Canva makes its own shapes;
+//   - every text box as its own live text box, in Forta and Gabarito from the Brand Kit
 //     (../../social/src/canva-pdf.mjs), Forta in capitals.
+// Nothing lies over the slide: no full-frame overlay, no text boxes joined into one.
 //
 //   node canva.mjs --deck=<folder> --out=<file.pdf> [--forta=~/Projects/AI/Fonts/Forta-2.0.ttf]
 //
@@ -64,10 +65,7 @@ b { font-weight: 600 }
 table { border-collapse: collapse }
 td, th { padding: 0.35em 0.6em; vertical-align: top }
 html.iso body * { visibility: hidden !important }
-html.iso [data-on], html.iso [data-on] * { visibility: visible !important }
-html.rules section { background: transparent !important }
-html.rules section * { color: transparent !important }
-html.rules [data-k] { visibility: hidden !important }`;
+html.iso [data-on], html.iso [data-on] * { visibility: visible !important }`;
 // Lines of text in an element, a <br><br> gap included: first to last line, in line heights, off
 // the glyph boxes. (Not scrollHeight: Forta's glyphs stand taller than a 1.05 line and count as overflow.)
 const LINES = `window.lines = (el, lh) => {
@@ -147,25 +145,32 @@ function collect() {
   let n = 0;
   const tag = (el) => (el.dataset.k = `k${n++}`);
   const layers = [];
-  let rules = false;
   for (const el of sec.querySelectorAll('*')) {
     if (!el.getClientRects().length) continue;
     const s = getComputedStyle(el);
+    const sides = ['Top', 'Right', 'Bottom', 'Left'].map((d) =>
+      parseFloat(s[`border${d}Width`]) > 0 && s[`border${d}Style`] !== 'none'
+        ? `${s[`border${d}Width`]} solid ${s[`border${d}Color`]}`
+        : '0',
+    );
     if (el.tagName === 'IMG')
       layers.push({ kind: 'img', k: tag(el), r: R(el), png: /\.png$/i.test(el.src), alt: el.alt });
     else if (s.backgroundImage.includes('gradient'))
       layers.push({ kind: 'scrim', k: tag(el), r: R(el) });
-    else if (
-      !rules &&
-      (seen(s.backgroundColor) ||
-        ['Top', 'Right', 'Bottom', 'Left'].some(
-          (d) => parseFloat(s[`border${d}Width`]) > 0 && s[`border${d}Style`] !== 'none',
-        ))
-    ) {
-      // Every ruled or filled box goes into one overlay, painted where the first of them is.
-      rules = true;
-      layers.push({ kind: 'rules' });
-    }
+    else if (seen(s.backgroundColor) || sides.some((b) => b !== '0'))
+      // A cell ground or a hairline: drawn again as a box, it comes into Canva as a vector shape.
+      layers.push({ kind: 'box', r: R(el), bg: s.backgroundColor, sides });
+  }
+  // The scrim goes into the photo under it, so no layer lies over the photo in Canva (a photo
+  // replaced in Canva comes without one). ponytail: a scrim reaching past its photo loses that
+  // part; the decks' scrims sit on full-bleed photos.
+  const over = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+  for (const scrim of layers.filter((l) => l.kind === 'scrim')) {
+    const photos = layers
+      .slice(0, layers.indexOf(scrim))
+      .filter((l) => l.kind === 'img' && !l.png && over(l.r, scrim.r));
+    for (const img of photos) img.with = [...(img.with ?? []), scrim.k];
+    if (photos.length) scrim.baked = true;
   }
 
   const TEXT = 'h1, h2, h3, p, li, td, th';
@@ -213,18 +218,22 @@ function collect() {
       runs,
     });
   }
-  return { bg: getComputedStyle(sec).backgroundColor, layers, texts };
+  return {
+    bg: getComputedStyle(sec).backgroundColor,
+    layers: layers.filter((l) => !l.baked),
+    texts,
+  };
 }
 
-// One element alone on a transparent page (or on the slide's ground, for a JPEG), cut to its box.
-async function shot(k, r, path, ground) {
+// Elements alone on a transparent page (or on the slide's ground, for a JPEG), cut to a box.
+async function shot(ks, r, path, ground) {
   await page.evaluate(
-    ({ k, ground }) => {
+    ({ ks, ground }) => {
       document.documentElement.classList.add('iso');
       if (ground) document.documentElement.style.background = ground;
-      document.querySelector(`[data-k="${k}"]`).setAttribute('data-on', '');
+      for (const k of ks) document.querySelector(`[data-k="${k}"]`).setAttribute('data-on', '');
     },
-    { k, ground },
+    { ks, ground },
   );
   const x = Math.max(0, Math.floor(r.x)),
     y = Math.max(0, Math.floor(r.y));
@@ -239,21 +248,12 @@ async function shot(k, r, path, ground) {
     clip,
     ...(ground ? { type: 'jpeg', quality: 86 } : { type: 'png', omitBackground: true }),
   });
-  await page.evaluate((k) => {
+  await page.evaluate(() => {
     document.documentElement.classList.remove('iso');
     document.documentElement.style.removeProperty('background');
-    document.querySelector(`[data-k="${k}"]`).removeAttribute('data-on');
-  }, k);
+    for (const el of document.querySelectorAll('[data-on]')) el.removeAttribute('data-on');
+  });
   return { x: clip.x, y: clip.y, w: clip.width, h: clip.height };
-}
-
-// Every filled or ruled box, text and images hidden, full frame: an overlay edge inside the
-// page shows as a hairline once a design tool resamples it.
-async function rulesShot(path) {
-  await page.evaluate(() => document.documentElement.classList.add('rules'));
-  await page.screenshot({ path, type: 'png', omitBackground: true });
-  await page.evaluate(() => document.documentElement.classList.remove('rules'));
-  return { x: 0, y: 0, w: W, h: H };
 }
 
 const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
@@ -314,103 +314,101 @@ function textHtml(t, trail) {
   return `<div data-lines="${t.lines + (trail ? 1 : 0)}" data-lh="${t.lh}" style="position:absolute;left:${x}px;top:${t.y}px;width:${w}px"><p style="margin:0;${face(first(t))};line-height:${t.lh}px;text-align:${align}">${spans(t)}${trail ? '<br>\u00a0' : ''}</p></div>`;
 }
 
+// Boxes Canva can join: the same face, about the same size (see joins()).
+const family = (t) => (first(t).font === 'Forta' ? 'Forta' : 'Gabarito');
+const alike = (a, b) =>
+  family(a) === family(b) && Math.max(size(a), size(b)) < 1.3 * Math.min(size(a), size(b));
+
 // Under a much bigger line (a figure over its label, a cover title over its subtitle), Canva's
 // import drops a one-line box outright when it is closer than 16px and merges it into the bigger
 // box further away, which moves both (tested 13 Oct 2026; a 26px line over a 24px one comes
-// through fine). With an empty second line it stays its own box, where the deck put it, unless
-// that empty line lands on the next box down: then Canva drops lines of that box instead.
-const pad = (t, all) =>
+// through fine). With an empty second line it stays its own box, where the deck put it. That line
+// needs a free line under it too before a box Canva could join it to: without that room
+// the box goes in as it is. Half a bigger line away or more it stayed its own box anyway (a head
+// 51px under a 96px title, a year 45px under a 56px one); closer, the script names it.
+const under = (t, all, k = 1) =>
   t.lines === 1 &&
   all.some(
-    (o) => size(o) > size(t) * 1.5 && across(o, t) && t.y - foot(o) > -1 && t.y - foot(o) < o.lh,
-  ) &&
-  !all.some((o) => o !== t && across(o, t) && o.y > t.y && o.y < foot(t) + t.lh);
+    (o) =>
+      size(o) > size(t) * 1.5 && across(o, t) && t.y - foot(o) > -1 && t.y - foot(o) < k * o.lh,
+  );
+const room = (t, all) =>
+  !all.some(
+    (o) =>
+      o !== t &&
+      across(o, t) &&
+      o.y > t.y &&
+      o.y < foot(t) + t.lh + (alike(o, t) ? Math.max(o.lh, t.lh) : 0),
+  );
+const pad = (t, all) => under(t, all) && room(t, all);
 
-// Canva's import merges Gabarito paragraphs stacked in a column (a list of sources, an item and
-// its link) into one box with one line spacing, the widest gap's, so the column loosens and runs
-// out of its cell. Nothing keeps them apart (a colour step, a 1px step, the drawing order and an
-// empty last line all merge, tested 13 Oct 2026), so a column goes in as the one box Canva would
-// make, laid out so it keeps it: each item in its own size and line height, and between two items
-// an empty line in a font small enough that its line comes out exactly the deck's gap.
-function columns(texts) {
-  const left = texts
-    .filter((t) => t.runs.every((r) => r.br || r.font !== 'Forta') && place(t).align === 'left')
-    .toSorted((a, b) => a.y - b.y);
-  const done = new Set();
-  const out = [];
-  for (const t of left) {
-    if (done.has(t)) continue;
-    const col = [t];
-    done.add(t);
-    for (
-      let n;
-      (n = left.find(
-        (o) =>
-          !done.has(o) &&
-          Math.abs(o.x - col.at(-1).x) < 1 &&
-          o.y - foot(col.at(-1)) > -1 &&
-          o.y - foot(col.at(-1)) < col.at(-1).lh,
-      ));
-    ) {
-      col.push(n);
-      done.add(n);
-    }
-    if (col.length > 1) out.push(col);
-  }
-  return out;
-}
+// Canva's import makes one box of two boxes in the same face and about the same size (26px over
+// 24px joins, 60px over 44px doesn't) stacked closer than about 0.83 of a line (34px apart at a
+// 40.5px line joined, 32px at 39.2px stayed two, tested 13 Oct 2026). A colour or 1px step, the
+// drawing order, an empty last line, a copy of the font, opacity, a clip, a rule between them and
+// a 0.01deg turn all still join. Only the space keeps them apart, and that is the deck's to give:
+// name every pair closer than a line.
+const joins = (texts) =>
+  texts.flatMap((a) =>
+    texts
+      .filter(
+        (b) =>
+          b !== a &&
+          alike(a, b) &&
+          across(a, b) &&
+          b.y - foot(a) > -1 &&
+          b.y - foot(a) < Math.max(a.lh, b.lh),
+      )
+      .map((b) => [a, b]),
+  );
+const words = (t) =>
+  t.runs
+    .filter((r) => !r.br)
+    .map((r) => r.text)
+    .join('')
+    .trim()
+    .slice(0, 32);
 
-function columnHtml(col) {
-  const item = (t) =>
-    `<span data-lines="${t.lines}" data-lh="${t.lh}" style="font-size:${first(t).size}px;line-height:${t.lh}px${t.lines === 1 ? ';white-space:nowrap' : ''}">${spans(t)}</span>`;
-  let html = item(col[0]);
-  for (let i = 1; i < col.length; i++) {
-    const [a, b] = [col[i - 1], col[i]];
-    const gap = Math.max(0, b.y - foot(a));
-    const spacer =
-      gap >= 1
-        ? `<br><span style="font-size:${(gap * first(a).size) / a.lh}px;line-height:${gap}px">\u00a0</span>`
-        : '';
-    html += `${spacer}<br>${item(b)}`;
-  }
-  // The paragraphs' width (a one-line item doesn't wrap), and a 1px strut so only the items and
-  // spacers set the line heights.
-  const multi = col.filter((t) => t.lines > 1).map((t) => place(t).w);
-  const w = multi.length ? Math.min(...multi) : Math.max(...col.map((t) => place(t).w));
-  return `<div style="position:absolute;left:${col[0].x}px;top:${col[0].y}px;width:${w}px"><p style="margin:0;${face(first(col[0]))};font-size:1px;line-height:1px">${html}</p></div>`;
-}
-
-const ALT = { scrim: 'Ink scrim', rules: 'Hairlines and cell grounds' };
 const pages = [];
+const counts = [];
 for (const id of deck.order) {
   const shrunk = await load(
     local(readFileSync(join(DECK, 'project/slides', `${id}.html`), 'utf8')),
   );
   for (const s of shrunk) console.warn(`  ⚑ over-full in the deck, shrunk to fit, ${id}: ${s}`);
   const info = await page.evaluate(collect);
-  const imgs = [];
+  for (const [a, b] of joins(info.texts))
+    console.warn(
+      `  ⚑ joins into one text box in Canva, ${id}: “${words(a)}…” over “${words(b)}…”, ${Math.round(b.y - foot(a))}px apart: give them ${Math.ceil(Math.max(a.lh, b.lh))}px (a line) in the deck`,
+    );
+  for (const t of info.texts.filter((t) => under(t, info.texts, 0.5) && !room(t, info.texts)))
+    console.warn(
+      `  ⚑ may go into the bigger line above it in Canva, ${id}: “${words(t)}…”: give the box under it ${Math.ceil(2 * t.lh)}px from its top in the deck`,
+    );
+  const layers = [];
   for (const [i, l] of info.layers.entries()) {
+    if (l.kind === 'box') {
+      const [t, r, b, lt] = l.sides;
+      layers.push(
+        `<div style="position:absolute;left:${l.r.x}px;top:${l.r.y}px;width:${l.r.w}px;height:${l.r.h}px;box-sizing:border-box;background:${l.bg};border-top:${t};border-right:${r};border-bottom:${b};border-left:${lt}"></div>`,
+      );
+      continue;
+    }
     const jpeg = l.kind === 'img' && !l.png;
     const file = join(tmp, `${id}-${i}.${jpeg ? 'jpg' : 'png'}`);
-    const b =
-      l.kind === 'rules' ? await rulesShot(file) : await shot(l.k, l.r, file, jpeg && info.bg);
-    const alt = l.alt || ALT[l.kind] || 'Logo';
-    imgs.push(
+    const b = await shot([l.k, ...(l.with ?? [])], l.r, file, jpeg && info.bg);
+    const alt = l.alt || (l.kind === 'scrim' ? 'Ink scrim' : 'Logo');
+    layers.push(
       `<img src="file://${file}" alt="${esc(alt)}" style="position:absolute;left:${b.x}px;top:${b.y}px;width:${b.w}px;height:${b.h}px">`,
     );
   }
-  const cols = columns(info.texts);
-  const inCol = new Set(cols.flat());
-  const boxes = [
-    ...info.texts
-      .filter((t) => !inCol.has(t))
-      .map((t) => ({ y: t.y, html: textHtml(t, pad(t, info.texts)) })),
-    ...cols.map((c) => ({ y: c[0].y, html: columnHtml(c) })),
-  ];
   // Bottom box first, so Canva can't join a box to the bigger one above it.
-  const texts = boxes.sort((a, b) => b.y - a.y).map((b) => b.html);
+  const texts = info.texts
+    .toSorted((a, b) => b.y - a.y)
+    .map((t) => textHtml(t, pad(t, info.texts)));
+  counts.push(texts.length);
   pages.push(
-    `<section data-id="${id}" style="background:${info.bg}">${imgs.join('')}${texts.join('')}</section>`,
+    `<section data-id="${id}" style="background:${info.bg}">${layers.join('')}${texts.join('')}</section>`,
   );
 }
 
@@ -438,4 +436,4 @@ await pdfPage.pdf({
 crop(OUT, W, H);
 rmSync(tmp, { recursive: true, force: true });
 await browser.close();
-console.log(`${OUT} · ${deck.order.length} slides`);
+console.log(`${OUT} · ${deck.order.length} slides · text boxes a slide: ${counts.join(' ')}`);

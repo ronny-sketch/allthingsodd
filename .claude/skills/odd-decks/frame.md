@@ -29,7 +29,7 @@ If the guide and this file disagree, the guide wins: fix this file.
 Faces in `project/deck.json` (upload both files as assets first):
 `"faces":{"forta":{"family":"Forta","src":"/_blob/<id of brand/fonts/Forta-Regular.ttf>"},"gabarito":{"family":"Gabarito","src":"/_blob/<id of src/assets/fonts/gabarito-variable.woff2>"}}`
 
-## Cover (the close is the same: the ask or the meeting, and a contact line)
+## Cover (the close is the same: the ask or the meeting, and the contact line as its footer)
 
 ```html
 <section id="cover" data-transition="fade" style="display:flex; flex-direction:column; gap:28px; justify-content:end; padding:128px 128px 160px; background:#0e090b">
@@ -72,7 +72,7 @@ Faces in `project/deck.json` (upload both files as assets first):
         <b>Name</b> · what it is, in one or two lines.
       </p>
       <p
-        style="font-family:Gabarito, Arial, sans-serif; font-size:24px; line-height:1.3; color:#e2dfde"
+        style="padding-top:28px; font-family:Gabarito, Arial, sans-serif; font-size:24px; line-height:1.3; color:#e2dfde"
       >
         <a href="https://allthingsodd.co/...">allthingsodd.co/...</a>
       </p>
@@ -122,8 +122,8 @@ Faces in `project/deck.json` (upload both files as assets first):
   style="width:1664px; font-family:Gabarito, Arial, sans-serif; font-size:26px; line-height:1.4; color:#e2dfde; border:1px solid #2e2a2c"
 >
   <tr>
-    <td style="padding:14px 20px; width:24%">Name</td>
-    <td style="padding:14px 20px; width:76%">Where it stands, in one or two lines.</td>
+    <td style="padding:20px 20px; width:24%">Name</td>
+    <td style="padding:20px 20px; width:76%">Where it stands, in one or two lines.</td>
   </tr>
 </table>
 ```
@@ -131,7 +131,7 @@ Faces in `project/deck.json` (upload both files as assets first):
 ## Two columns of items (sources, further reading)
 
 On Paper: a two-column hairline grid as in the cells pattern, `padding:28px 32px` and
-`gap:14px` in each column, an `<h3>` at 36px for the column head, and one `<p>` an item:
+`gap:40px` in each column, an `<h3>` at 36px for the column head, and one `<p>` an item:
 `<p style="font-family:Gabarito, Arial, sans-serif; font-size:26px; line-height:1.4; color:#0e090b"><b>Title</b> · description · <a href="…">link</a></p>`
 
 ## What keeps a slide right in Canva
@@ -142,5 +142,14 @@ On Paper: a two-column hairline grid as in the cells pattern, `padding:28px 32px
 - No justified text, no rounded corners, no shadows, and no gradient except the Ink scrim.
 - Leave heights out, and don't fill a box past its room. The export shrinks an over-full box
   the way the deck does and names it: that is a slide to cut, not one to ship.
-- One-line labels under big numerals, a subtitle under the title, and items stacked in a column
-  are all fine: the exporter handles them.
+- **Every text box comes into Canva as its own text box, unless two of them in the same face and
+  about the same size sit closer than a line apart.** Then Canva makes one box of them, and
+  nothing in the file stops it. So between two Gabarito boxes, one under the other, leave at
+  least the upper one's line height: 37px under 26px text at 1.4, 41px under 30px at 1.35. A
+  Forta head over Gabarito, a big figure over its label and a title over its subtitle are fine
+  close together. The exporter names every pair that would join: fix the space in the deck.
+- Paragraphs of one text can share a `<p>` with `<br><br>` between them: Canva makes each
+  paragraph its own box.
+- Hairlines and cell grounds come into Canva as shapes, and the Ink scrim goes into the photo
+  under it, so no layer lies over a slide. Replacing that photo in Canva drops the scrim: swap
+  the photo in the deck and export again.
