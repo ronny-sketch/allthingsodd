@@ -1,0 +1,3 @@
+# Surge skips every dotfile and dot-folder by default. Let this one through
+# so /.well-known/security.txt is served. Everything else stays excluded.
+!.well-known
