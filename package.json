@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@cloudcannon/cli": "^0.0.19",
+    "@cloudcannon/cli": "^0.0.20",
     "@playwright/test": "^1.62.1",
     "@typescript-eslint/parser": "^8.67.0",
     "eslint": "^10.8.1",
