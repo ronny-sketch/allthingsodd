@@ -10,6 +10,14 @@
   "account_id": "5072bcb64fa470405bf539d4f0f4381f",
   "compatibility_date": "2026-10-01",
   "main": "worker/video-range.js",
+  // allthingsodd.co is this Worker's own domain: Cloudflare keeps its DNS
+  // record and certificate. www is not here; a redirect rule in the zone
+  // sends it to the apex. Live once the nameservers point at Cloudflare.
+  "routes": [{ "pattern": "allthingsodd.co", "custom_domain": true }],
+  // The test address (allthingsodd.ronny-507.workers.dev). A route turns it
+  // off by default; kept on until the nameserver switch is verified.
+  "workers_dev": true,
+  "preview_urls": false,
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
