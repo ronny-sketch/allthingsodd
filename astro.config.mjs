@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 
 import sitemap from '@astrojs/sitemap';
+import securityHeaders from './scripts/security-headers.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -17,6 +18,8 @@ export default defineConfig({
   site: 'https://allthingsodd.co',
 
   integrations: [
+    // dist/_headers for Cloudflare: HSTS, CSP with inline-script hashes, etc.
+    securityHeaders(),
     sitemap({
       // The two transient ticketing pages carry <meta name="robots"
       // content="noindex"> (Layout.astro's `noindex` prop) — a checkout form

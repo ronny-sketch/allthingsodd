@@ -1,0 +1,23 @@
+// allthingsodd.co on Cloudflare: the built site served as static assets.
+// The one script, worker/video-range.js, runs only for /video/* and adds the
+// Range support Safari needs to play a film. dist/_headers (scripts/security-headers.mjs) adds the
+// security headers; .assetsignore keeps Surge-only files out. The forms API
+// is a separate Worker (odd-growth-os). See docs/deployment.md.
+{
+  "$schema": "https://unpkg.com/wrangler@4.150.0/config-schema.json",
+  "name": "allthingsodd",
+  // ODD's account ("Ronny@oddfest.co's Account"); the forms Worker lives here too.
+  "account_id": "5072bcb64fa470405bf539d4f0f4381f",
+  "compatibility_date": "2026-10-01",
+  "main": "worker/video-range.js",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // Every other path is served straight from the asset store; the script
+    // never sees it, and _headers applies there.
+    "run_worker_first": ["/video/*"],
+    // /contact → /contact/, as Surge did, so every existing link still lands.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+  },
+}
