@@ -51,7 +51,7 @@ test('ticket prices and states come from the catalog, not the page', async ({ pa
   await expect(blindBird.locator('.pricing-badge')).toBeVisible();
 
   const early = page.locator('[data-ticket-slug="early-bird"]');
-  await expect(early.locator('.pricing-status')).toHaveText('Not on sale yet');
+  await expect(early.locator('.pricing-status')).toHaveText('Available after Blind Bird');
   expectPrice(await early.locator('.pricing-price').textContent(), '399');
   await expect(early.locator('.pricing-badge')).toBeHidden();
 
