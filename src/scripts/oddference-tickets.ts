@@ -61,7 +61,10 @@ function applyEditorialCopy(card: HTMLElement, tt?: CatalogTicketType): void {
 
     const benefitCopy = new Map<string, string>([
       ['The lowest price ODDference 2027 will be sold at', 'Our lowest ticket price — guaranteed'],
-      ["First to know the 2027 programme as it's confirmed", 'Programme updates as they’re announced'],
+      [
+        "First to know the 2027 programme as it's confirmed",
+        'Programme updates as they’re announced',
+      ],
     ]);
     for (const item of card.querySelectorAll('.pricing-benefits li')) {
       const replacement = benefitCopy.get(item.textContent?.trim() ?? '');
