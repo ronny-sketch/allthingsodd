@@ -1,4 +1,5 @@
-import { test, expect, type BrowserContext, type Page } from '@playwright/test';
+import { test, expect } from '../base';
+import type { BrowserContext, Page } from '@playwright/test';
 
 // Timed newsletter popup — see NewsletterPopup.astro, newsletter-popup.ts,
 // and the 2026-08-30 homepage revision brief, section 13. Each test gets a

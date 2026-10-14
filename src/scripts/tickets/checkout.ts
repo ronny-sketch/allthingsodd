@@ -8,6 +8,7 @@ import { EVENT_SLUG, STRIPE_PUBLISHABLE_KEY, salesEnabled } from './config';
 import { loadStripe, type EmbeddedCheckout } from './stripe-loader';
 import { captureSubmitSource } from '../utm';
 import { trackEvent } from '../analytics';
+import { turnstileHeaders } from '../turnstile';
 import { itemFor, toMajor } from './ecommerce';
 
 const emptyNotice = document.getElementById('tixcEmptyNotice')!;
@@ -245,7 +246,13 @@ if (
         : undefined,
     };
 
-    const result = await createCheckout(EVENT_SLUG, items, buyer, captureSubmitSource());
+    const result = await createCheckout(
+      EVENT_SLUG,
+      items,
+      buyer,
+      captureSubmitSource(),
+      await turnstileHeaders(buyerForm),
+    );
 
     if (!result.ok) {
       status.textContent = '';

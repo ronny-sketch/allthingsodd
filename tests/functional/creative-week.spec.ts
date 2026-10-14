@@ -1,4 +1,5 @@
-import { test, expect, type Page, type Route } from '@playwright/test';
+import { test, expect } from '../base';
+import type { Page, Route } from '@playwright/test';
 
 // The ODDfest 2027 Creative Week submission on /oddfest/ (2026-10-04). The
 // Worker route is mocked here, so these tests assert on what the browser

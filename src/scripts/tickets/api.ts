@@ -68,11 +68,12 @@ export async function createCheckout(
   items: CheckoutItem[],
   buyer: CheckoutBuyer,
   attribution: SubmitSource,
+  headers: Record<string, string> = {},
 ): Promise<CheckoutResponse> {
   try {
     const res = await fetch(`${API_BASE}/api/tickets/checkout`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...headers },
       body: JSON.stringify({ eventSlug, items, buyer, attribution }),
     });
     return (await res.json()) as CheckoutResponse;

@@ -15,6 +15,7 @@ import { captureSubmitSource } from './utm';
 import { API_BASE } from './api-base';
 import { trackEvent } from './analytics';
 import { postJson } from './post-json';
+import { turnstileHeaders } from './turnstile';
 
 document.querySelectorAll<HTMLFormElement>('[data-newsletter-form]').forEach((form) => {
   const status = form.parentElement?.querySelector<HTMLElement>('.nl-status');
@@ -34,10 +35,11 @@ document.querySelectorAll<HTMLFormElement>('[data-newsletter-form]').forEach((fo
     status.textContent = 'Signing up…';
 
     const payload = { ...Object.fromEntries(new FormData(form)), source };
-    const result = await postJson(`${API_BASE}/api/newsletter`, {
-      ...payload,
-      ...captureSubmitSource(),
-    });
+    const result = await postJson(
+      `${API_BASE}/api/newsletter`,
+      { ...payload, ...captureSubmitSource() },
+      await turnstileHeaders(form),
+    );
     if (result.kind === 'ok') {
       status.textContent = result.message;
       trackEvent('newsletter_signup', { signup_source: source });

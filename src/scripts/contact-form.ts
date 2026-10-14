@@ -9,6 +9,7 @@ import { API_BASE } from './api-base';
 import { captureSubmitSource } from './utm';
 import { trackEvent } from './analytics';
 import { postJson, failureText } from './post-json';
+import { turnstileHeaders } from './turnstile';
 
 const FALLBACK_EMAIL = 'hello@oddfest.co';
 
@@ -58,10 +59,11 @@ if (form instanceof HTMLFormElement) {
 
     // Same submit-source data the newsletter and enquiry forms send, so a
     // campaign that produced a message is visible in the inbox.
-    const result = await postJson(`${API_BASE}/api/contact`, {
-      ...Object.fromEntries(new FormData(form)),
-      ...captureSubmitSource(),
-    });
+    const result = await postJson(
+      `${API_BASE}/api/contact`,
+      { ...Object.fromEntries(new FormData(form)), ...captureSubmitSource() },
+      await turnstileHeaders(form),
+    );
     const topic = topicField?.value ?? 'general';
     if (result.kind === 'ok') {
       status.textContent = result.message;

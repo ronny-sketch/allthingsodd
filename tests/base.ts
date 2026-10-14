@@ -30,6 +30,10 @@ export const test = base.extend({
       /googletagmanager\.com|google-analytics\.com|analytics\.google\.com|stats\.g\.doubleclick\.net/,
       (route) => route.abort(),
     );
+    // Cloudflare Turnstile (src/scripts/turnstile.ts): refused, so every form
+    // submits at once without a token instead of waiting on Cloudflare's
+    // network. turnstile.spec.ts covers the token path with a stub.
+    await page.route(/challenges\.cloudflare\.com/, (route) => route.abort());
     await use(page);
   },
 });

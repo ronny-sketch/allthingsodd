@@ -26,6 +26,7 @@
 // ×. The answers live in the page until it is reloaded; nothing is stored in
 // the browser.
 import { API_BASE } from './api-base';
+import { turnstileHeaders } from './turnstile';
 import { captureSubmitSource } from './utm';
 import { trackEvent } from './analytics';
 import {
@@ -529,6 +530,8 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     form.setAttribute('aria-busy', 'true');
     setStatus('Sending…');
 
+    // Before the request timer starts: a visitor may be answering a challenge.
+    const verification = await turnstileHeaders(form);
     const controller = new AbortController();
     const timer = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
     let httpStatus: number | null = null;
@@ -536,7 +539,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     try {
       const res = await fetch(`${API_BASE}/api/creative-week-submission`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...verification },
         body: JSON.stringify(payload),
         signal: controller.signal,
       });
