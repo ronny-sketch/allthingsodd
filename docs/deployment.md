@@ -31,6 +31,28 @@ rm -f dist/CNAME
 npx surge dist https://odd-field-guide.surge.sh   # legacy host, kept as a redirect
 ```
 
+### Moving to Cloudflare (October 2026)
+
+Surge cannot send security headers, so the apex is moving to Cloudflare
+static assets (`wrangler.jsonc`, Worker name `allthingsodd`). Until the
+nameservers move, CI publishes the same `dist/` to both; the Cloudflare copy
+answers at `https://allthingsodd.ronny-507.workers.dev`.
+
+- `dist/_headers` is written by the build (`scripts/security-headers.mjs`):
+  HSTS, the Content-Security-Policy, framing, referrer and permissions
+  policies, and a year's cache on `/_astro/*`. The CSP allows inline scripts
+  by hash, computed from the HTML being deployed. A new third-party origin
+  goes into its `POLICY` table first, or browsers refuse it.
+- `worker/video-range.js` runs for `/video/*` only. The asset store answers a
+  `Range` request with the whole file, and Safari will not play a video from
+  a server that does, so the script serves the bytes asked for. It learns
+  each film's size from `X-Asset-Size`, which the build writes into
+  `_headers`. Its tests: `node --test scripts/security-headers.test.mjs
+worker/video-range.test.mjs` (run in CI's checks job).
+- `public/.assetsignore` keeps `CNAME` and `.surgeignore` off Cloudflare.
+- One file may be at most 25 MiB on Cloudflare. A bigger film fails the
+  deploy: re-encode it.
+
 The old single-file site's own files/repo still exist untouched at
 `../ODD NEW WEBPAGE/` — they're just no longer what's live. Don't run its
 `npx surge .` again; that would revert odd-field-guide.surge.sh back to the

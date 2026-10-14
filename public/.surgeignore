@@ -1,3 +1,6 @@
 # Surge skips every dotfile and dot-folder by default. Let this one through
 # so /.well-known/security.txt is served. Everything else stays excluded.
 !.well-known
+# Cloudflare's header rules (scripts/security-headers.mjs). Surge cannot use
+# them, so they stay off it rather than being served as a page.
+_headers

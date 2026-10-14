@@ -133,6 +133,9 @@ jobs:
       # The CI tiering rule decides what does and doesn't get tested, so it
       # gets tested itself.
       - run: node scripts/ci-scope.mjs --self-test
+      # Cloudflare hosting: the CSP and film-size header writer, and the
+      # Worker that answers video Range requests (docs/deployment.md).
+      - run: node --test scripts/security-headers.test.mjs worker/video-range.test.mjs
       - run: npm run build
 
   functional:
@@ -383,6 +386,21 @@ jobs:
           # this goes.
           rm -f dist/CNAME
           publish "https://$LEGACY_DOMAIN" surge-legacy.log "$LEGACY_DOMAIN"
+      # Cloudflare (wrangler.jsonc): the same dist/ as static assets, with
+      # dist/_headers adding HSTS, the CSP and the rest. Published alongside
+      # Surge until allthingsodd.co's nameservers move to Cloudflare; after
+      # that, Surge keeps only the legacy host. Skips with a notice while the
+      # CLOUDFLARE_API_TOKEN secret is unset (template "Edit Cloudflare
+      # Workers"), so nothing here can block a Surge deploy in the meantime.
+      - name: Publish to Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::notice::CLOUDFLARE_API_TOKEN is not set — skipped the Cloudflare publish."
+            exit 0
+          fi
+          npx -y wrangler@4.150.0 deploy
       - name: Verify production is serving this deploy
         run: |
           # Fetches the fingerprint written above from a live host and
