@@ -17,6 +17,7 @@
   // The test address (allthingsodd.ronny-507.workers.dev). A route turns it
   // off by default; kept on until the nameserver switch is verified.
   "workers_dev": true,
+  "preview_urls": false,
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
