@@ -9,6 +9,7 @@ import { captureSubmitSource } from './utm';
 import { API_BASE } from './api-base';
 import { trackEvent } from './analytics';
 import { postJson, failureText } from './post-json';
+import { turnstileHeaders } from './turnstile';
 
 // The Worker copies every enquiry to this inbox (CLAUDE.md, Growth OS).
 const FALLBACK_EMAIL = 'hello@oddfest.co';
@@ -120,7 +121,11 @@ if (form instanceof HTMLFormElement) {
     const interest = (payload as { interest?: string }).interest;
 
     // One POST: the Worker writes Attio and emails partners@ itself.
-    const result = await postJson(`${API_BASE}/api/business-enquiry`, payload);
+    const result = await postJson(
+      `${API_BASE}/api/business-enquiry`,
+      payload,
+      await turnstileHeaders(form),
+    );
     if (result.kind === 'ok') {
       status.textContent = result.message;
       trackEvent('business_enquiry_submit', { product_interest: interest });

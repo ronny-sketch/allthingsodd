@@ -22,6 +22,7 @@ export const POST_TIMEOUT_MS = 15_000;
 export async function postJson(
   url: string,
   payload: unknown,
+  headers: Record<string, string> = {},
   timeoutMs = POST_TIMEOUT_MS,
 ): Promise<PostResult> {
   const controller = new AbortController();
@@ -29,7 +30,7 @@ export async function postJson(
   try {
     const res = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...headers },
       body: JSON.stringify(payload),
       signal: controller.signal,
     });

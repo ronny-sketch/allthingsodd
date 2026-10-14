@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../base';
 
 // Real interaction/navigation QA — distinct from tests/visual/pages.spec.ts,
 // which only screenshots and checks for console errors. This file clicks

@@ -1,4 +1,5 @@
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect } from '../base';
+import type { Page } from '@playwright/test';
 
 // The contact form routes by topic: the Worker's /api/contact picks the
 // recipient group from the `topic` it receives, and a ?topic= deep link adds
