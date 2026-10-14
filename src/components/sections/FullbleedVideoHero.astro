@@ -235,21 +235,6 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
     gap: var(--space-5);
     padding: 2rem;
   }
-  /* Short viewports — landscape phones above all, but also a small laptop
-     window or a zoomed-in page.
-
-     The `min-height: 540px` floor above protects the logo/headline/meta/CTA
-     stack in portrait, but on a 375px-tall landscape phone it forces the hero
-     to 1.4x the viewport height: the CTAs end up below the fold of a hero
-     that is supposed to *be* the first screen, and the reader has to scroll a
-     full-bleed video to find the button.
-
-     Here the floor is dropped and the composition sized by its own content
-     instead: the overlay returns to normal flow so the header is exactly as
-     tall as the stack inside it needs, with the viewport height as a
-     *minimum* rather than a fixed target. The media stays absolutely
-     positioned behind it, so the full-frame effect is unchanged — the frame
-     just stops being taller than the screen. Portrait is untouched. */
   @media (max-height: 620px) {
     .oddfest-hero {
       height: auto;
@@ -264,21 +249,6 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
       padding: 1rem 1.5rem;
       gap: 0.35rem;
     }
-    /* The stack has to actually fit, not merely be content-sized. Measured on
-       the current ODDference hero at 667x375, which is the densest caller —
-       logo 80 + eyebrow 14 + h1 55 + support 71 + meta 20 + CTAs 46, plus
-       gaps and padding, came to 427px against ~310px of available height once
-       the nav is subtracted. Every element below is tightened rather than any
-       copy being dropped: a landscape phone still gets the whole message,
-       just set at the size that viewport can hold.
-
-       Sized from the content, not guessed — the logo is the biggest
-       contributor, so it takes the reduction. The type stays on its roles
-       (2026-09-13): the h1 is already Heading in this frame and Body/Small do
-       not scale. (Both rules below sit before the base .oddfest-hero-logo and
-       .oddfest-hero-support rules in this file, so at equal specificity the
-       base rules currently win — a pre-existing ordering issue, not a type
-       one.) */
     .oddfest-hero-logo {
       width: min(14.375rem, 30vw);
     }
@@ -286,9 +256,6 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
       max-width: 46ch;
     }
   }
-  /* Above 820px SubpageFrame's fixed 68px rails paint over both edges of this
-     full-bleed frame; keep the text column clear of them (same fix as
-     SpaceHero.astro). */
   @media (min-width: 821px) {
     .oddfest-hero-overlay {
       padding-inline: calc(68px + var(--space-8));
@@ -298,10 +265,6 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
     }
   }
   .oddfest-hero-logo {
-    /* min(440px, 62vw) sized the old ~3:1 generic mark; a real wordmark
-       asset (oddfest-wordmark.svg) is closer to 5:1, so it needs a wider
-       box at the same visual weight — width is the only constraint,
-       height stays auto so either asset's own aspect ratio is respected. */
     width: min(32.5rem, 78vw);
     filter: drop-shadow(0 4px 30px rgb(14 9 11 / 50%));
     color: var(--color-paper);
@@ -312,28 +275,15 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
     width: 100%;
     height: auto;
   }
-  /* Optional caption between the wordmark and the h1 (no current caller —
-     see Props comment). Reuses the sitewide `.eyebrow` utility class for
-     color/tracking, this rule only trims the spacing the flex-column gap
-     already handles for every other child. */
   .oddfest-hero-eyebrow {
     margin: 0;
   }
-  /* h1 reset — this line carries the page's only h1 (see Props comment
-     above), so it needs the same visual weight the old plain <p> had, not
-     default browser h1 sizing. */
   .oddfest-hero-sub {
     margin: 0;
-    /* Heading: in the default frame the very wide wordmark above is the hero
-       and this line is its companion. The `space` frame promotes it to
-       Display (below). */
     font: var(--text-heading);
     letter-spacing: var(--tracking-heading);
     color: var(--color-paper);
   }
-  /* Optional supporting paragraph under the h1 (no current caller) — a real
-     sentence, not another caption, so it gets body-font sizing/line-height
-     rather than the meta line's small-caps treatment. */
   .oddfest-hero-support {
     margin: 0;
     max-width: 34rem;
@@ -343,12 +293,12 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
   .oddfest-hero-meta {
     margin: 0;
     font: var(--text-small);
+    font-weight: 600;
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
-    color: var(--color-paper-60);
+    color: rgb(226 223 222 / 88%);
+    text-shadow: 0 1px 8px rgb(14 9 11 / 70%);
   }
-  /* On top of the overlay's --space-5 gap: together the hero's body →
-     actions step, --space-6 (the same pair as SpaceHero.astro). */
   .oddfest-hero-cta {
     display: flex;
     flex-wrap: wrap;
@@ -356,12 +306,6 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
     gap: var(--space-4);
     margin-top: var(--space-1);
   }
-  /* The hero's entrance, replacing the `.reveal` class this header used to
-     carry (see the markup comment above). A plain CSS animation with `both`
-     fill runs unconditionally at load and always finishes at the visible
-     state — there is no observer, no class toggle and no script that could
-     fail and leave the first screen blank. The staggered children are what
-     gives the frame the same "assembling" feel the shared reveal had. */
   @media (prefers-reduced-motion: no-preference) {
     .oddfest-hero-logo,
     .oddfest-hero-sub,
@@ -389,24 +333,6 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
       transform: none;
     }
   }
-
-  /* ── frame="space" ──────────────────────────────────────────────────────
-     ODDspace's hero proportions, applied to this video hero (2026-09-11, at
-     Ronny's request: /oddference should read as a sibling of /oddspace).
-     Every value below is lifted from SpaceHero.astro rather than re-guessed,
-     so the two frames stay literally the same size — if one is retuned, the
-     other should be changed to match.
-
-     ODDference has used this frame since 2026-09-11 and ODDfest since
-     2026-09-14; `frame="default"` inherits none of it. */
-
-  /* SpaceHero's scrim: a centred ellipse that darkens the middle of the frame
-     — where the stack actually sits — plus the bottom-weighted linear wash.
-     This hero's own Signal/Ultraviolet accent survives on top of it, since
-     that wash is this page's product identity and not part of ODDspace's
-     composition (see the .oddfest-hero--signal comment above). Layer order
-     is accent → centre ellipse → linear, so the accent stays a tint rather
-     than being flattened out by the darker layer. */
   .oddfest-hero--frame-space .oddfest-hero-scrim {
     background:
       radial-gradient(ellipse 45% 55% at 84% 14%, var(--hero-accent-wash) 0%, transparent 60%),
@@ -418,22 +344,6 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
         rgb(14 9 11 / 30%) 100%
       );
   }
-  /* Lightened 2026-09-24 (Ronny: the film was hard to see on /oddfest and
-     /oddference) — brightness(0.95) above instead of 0.8, and this scrim
-     about a third lighter. The stack keeps its text-shadow, so it still
-     reads over the brightest frames. ODDspace's SpaceHero is unchanged. */
-
-  /* min(22.5rem, 64vw), not ODDspace's min(18.75rem, 56vw): the ODDference
-     mark is 6.47:1 where the ODDspace wordmark is 5.42:1, so the same
-     *rendered height* (~56px at the default root, ~70px from 1440px) needs a
-     proportionally wider box. Matching the
-     width number instead of the height would make this wordmark visibly
-     smaller than ODDspace's, which is the thing being matched.
-
-     Those numbers are the ODDference mark's. `--logo-scale` (set on the
-     header from the wordmark's own aspect ratio — see the frontmatter)
-     carries the same rendered height to any other wordmark: it is ~1 for
-     ODDference and ~0.78 for ODDfest's squarer 5.03:1 wordmark. */
   .oddfest-hero--frame-space .oddfest-hero-logo {
     width: calc(min(22.5rem, 64vw) * var(--logo-scale, 1));
   }
@@ -445,21 +355,9 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
       0 1px 3px rgb(14 9 11 / 75%),
       0 8px 32px rgb(14 9 11 / 50%);
   }
-  /* SpaceHero has no equivalent of `support`, and the frame is tuned without
-     one — neither caller passes it (ODDference since 2026-09-11, ODDfest
-     since 2026-09-14). The rule stays so a
-     caller that does pass one still gets a legible line rather than the
-     default frame's narrower measure fighting the larger h1 above it. */
   .oddfest-hero--frame-space .oddfest-hero-support {
     max-width: 42rem;
   }
-  /* Roomier than the site's default Pill — the same override, for the same
-     reason, as SpaceHero.astro's: these sit alone under a wordmark on a
-     full-viewport moving image, where the default padding reads as a caption
-     rather than the one thing the hero is asking you to do. Padding only; the
-     label stays on the Small role like every other button (2026-09-13).
-     Pill.astro's own `(hover: none)` 0.85rem vertical padding still applies
-     on top, so the 44px mobile touch-target floor is unaffected. */
   .oddfest-hero--frame-space .oddfest-hero-cta :global(.pill) {
     padding: 0.8rem 1.9rem;
   }
@@ -468,32 +366,15 @@ const logoScale = logo ? logo.width / logo.height / SPACE_FRAME_LOGO_RATIO : 1;
       padding: 0.75rem 1.5rem;
     }
   }
-  /* SpaceHero's narrowest-phone padding, missed when this frame was first
-     copied from it: 1rem each side instead of 2rem gives the Display h1 back
-     enough measure to avoid one-word lines. At 360px wide, without it,
-     ODDfest's headline broke as "Bring / something / …" and ODDference's as
-     "… / expertise / …". It outranks the shared short-viewport block's
-     padding by specificity, so a short narrow phone gets it too — as on
-     ODDspace. */
   @media (max-width: 400px) {
     .oddfest-hero--frame-space .oddfest-hero-overlay {
       padding-inline: 1rem;
     }
   }
-  /* Short viewports (landscape phones). The shared `max-height: 620px` block
-     above was measured against the *default* frame's densest caller — with a
-     display-sized h1 and no `support` line the arithmetic is different, so
-     this frame gets its own numbers rather than inheriting ones tuned for a
-     stack it no longer has. Same approach as SpaceHero's own short-viewport
-     block: content-sized header, viewport height as a minimum. Declared after
-     that block so it wins at equal specificity. */
   @media (max-height: 620px) {
     .oddfest-hero--frame-space .oddfest-hero-logo {
       width: calc(min(15rem, 44vw) * var(--logo-scale, 1));
     }
-    /* The one place this h1 steps down a role: Display under a wordmark does
-       not fit a landscape phone's height, so it takes Heading — the next
-       step on the ladder, not a size of its own. */
     .oddfest-hero--frame-space .oddfest-hero-sub {
       font: var(--text-heading);
       letter-spacing: var(--tracking-heading);
