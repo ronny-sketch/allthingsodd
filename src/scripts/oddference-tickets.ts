@@ -41,6 +41,49 @@ function setText(el: Element | null, value: string): void {
   if (el && el.textContent !== value) el.textContent = value;
 }
 
+// Editorial wording sits on top of the catalog without changing its authority
+// over price, availability or what a ticket includes. Benefit rewrites are
+// intentionally exact-string mappings: if the backend changes an inclusion,
+// the new backend text wins instead of being hidden by stale marketing copy.
+function applyEditorialCopy(card: HTMLElement, tt?: CatalogTicketType): void {
+  const slug = card.dataset.ticketSlug;
+
+  if (slug === 'blind-bird') {
+    setText(card.querySelector('.pricing-audience'), 'The lowest price');
+    setText(
+      card.querySelector('.pricing-desc'),
+      'Commit early and get ODDference 2027 at the lowest price it will be sold for.',
+    );
+    setText(
+      card.querySelector('.pricing-note-link'),
+      'Questions before booking? Email hello@oddfest.co',
+    );
+
+    const benefitCopy = new Map<string, string>([
+      ['The lowest price ODDference 2027 will be sold at', 'Our lowest ticket price — guaranteed'],
+      ["First to know the 2027 programme as it's confirmed", 'Programme updates as they’re announced'],
+    ]);
+    for (const item of card.querySelectorAll('.pricing-benefits li')) {
+      const replacement = benefitCopy.get(item.textContent?.trim() ?? '');
+      if (replacement) setText(item, replacement);
+    }
+  }
+
+  if (slug === 'early-bird') {
+    setText(card.querySelector('.pricing-desc'), 'For those joining us a little later.');
+    if (!tt || tt.status === 'upcoming') {
+      setText(card.querySelector('.pricing-status'), 'Available after Blind Bird');
+    }
+  }
+
+  if (slug === 'regular') {
+    setText(card.querySelector('.pricing-desc'), 'The standard ODDference 2027 ticket.');
+    if (!tt || tt.status === 'upcoming') {
+      setText(card.querySelector('.pricing-status'), 'Available later');
+    }
+  }
+}
+
 function applyTier(
   card: HTMLElement,
   tt: CatalogTicketType,
@@ -134,6 +177,8 @@ function applyTier(
   // opened tells the reader they can buy until then.
   const badge = card.querySelector<HTMLElement>('.pricing-badge');
   if (badge) badge.hidden = !isActive;
+
+  applyEditorialCopy(card, tt);
 }
 
 async function sync(cards: HTMLElement[]): Promise<void> {
@@ -159,6 +204,10 @@ async function sync(cards: HTMLElement[]): Promise<void> {
 function start(): void {
   const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-ticket-slug]'));
   if (cards.length === 0) return;
+
+  // Apply purely editorial wording immediately; the live catalog still gets
+  // the final say on price, availability and inclusions when it resolves.
+  for (const card of cards) applyEditorialCopy(card);
 
   // Deferred until the ticket block is near the viewport, for the same
   // reason the ODDspace gallery is: this section is a long way below the
