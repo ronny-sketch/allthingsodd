@@ -20,6 +20,29 @@ const STATUS_LABEL: Record<CatalogTicketType['status'], string> = {
   hidden: '',
 };
 
+// Editorial wording for the three public 2027 tiers. Price, actual sale
+// state and availability remain backend-owned; this only keeps the ticket
+// storefront aligned with the wording on the ODDference landing page.
+const DESCRIPTION_BY_SLUG: Record<string, string> = {
+  'blind-bird': 'Commit early and get ODDference 2027 at the lowest price it will be sold for.',
+  'early-bird': 'For those joining us a little later.',
+  regular: 'The standard ODDference 2027 ticket.',
+};
+
+const BENEFIT_COPY = new Map<string, string>([
+  ['The lowest price ODDference 2027 will be sold at', 'Our lowest ticket price — guaranteed'],
+  ["First to know the 2027 programme as it's confirmed", 'Programme updates as they’re announced'],
+]);
+
+function descriptionFor(tt: CatalogTicketType): string {
+  return DESCRIPTION_BY_SLUG[tt.slug] ?? tt.description;
+}
+
+function benefitsFor(tt: CatalogTicketType): string[] {
+  if (tt.slug !== 'blind-bird') return tt.benefits;
+  return tt.benefits.map((benefit) => BENEFIT_COPY.get(benefit) ?? benefit);
+}
+
 // Whether this page may offer a purchase at all — see salesEnabled()'s own
 // comment in ./config.ts for why production could take an order it could
 // never charge. Read once: it cannot change while the page is open.
@@ -35,9 +58,12 @@ document.getElementById('tixClosed')?.toggleAttribute('hidden', salesOpen);
 
 // An `active` tier that cannot be bought because card payment is not open is
 // not sold out and its sale has not ended — it has not started. Every other
-// status still means what it says.
+// status still means what it says. Upcoming tiers get the same clearer
+// wording used on the ODDference landing page.
 function statusLabelFor(tt: CatalogTicketType): string {
   if (!salesOpen && tt.status === 'active') return 'Not yet on sale';
+  if (tt.status === 'upcoming' && tt.slug === 'early-bird') return 'Available after Blind Bird';
+  if (tt.status === 'upcoming' && tt.slug === 'regular') return 'Available later';
   return STATUS_LABEL[tt.status];
 }
 
@@ -116,8 +142,9 @@ if (
         const priceHtml = `<div class="tix-row-price">${formatMinor(tt.displayPriceMinor, tt.currency)}${
           vat ? `<span class="tix-row-price-vat">${vat}</span>` : ''
         }</div>`;
-        const benefitsHtml = tt.benefits.length
-          ? `<ul class="tix-row-benefits">${tt.benefits.map((b) => `<li>${escapeHtml(b)}</li>`).join('')}</ul>`
+        const benefits = benefitsFor(tt);
+        const benefitsHtml = benefits.length
+          ? `<ul class="tix-row-benefits">${benefits.map((b) => `<li>${escapeHtml(b)}</li>`).join('')}</ul>`
           : '';
         const actionHtml = isActive
           ? `<div class="tix-stepper" role="group" aria-label="Quantity of ${escapeHtml(tt.name)}">
@@ -131,7 +158,7 @@ if (
           <div class="tix-row-main">
             <div class="tix-row-info">
               <span class="tix-row-name">${escapeHtml(tt.name)}</span>
-              <p class="tix-row-desc">${escapeHtml(tt.description)}</p>
+              <p class="tix-row-desc">${escapeHtml(descriptionFor(tt))}</p>
               ${benefitsHtml}
             </div>
             ${priceHtml}
