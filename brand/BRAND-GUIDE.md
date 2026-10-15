@@ -170,7 +170,7 @@ FAQ → footer`. One primary ask per page.
   margin, no `margin-bottom`, and never a negative margin.
 - If the section needs a sixth type size, it needs different spacing or a
   different layout instead.
-- New editable fields go into `cloudcannon.config.yml` in the same commit.
+- New editable fields go into the content schema (`src/content.config.ts`) in the same commit.
 
 ## 6. When adding a campaign
 

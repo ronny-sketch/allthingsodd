@@ -18,9 +18,8 @@
     "test": "playwright test",
     "test:update-snapshots": "playwright test --update-snapshots",
     "test:contract": "CONTRACT=1 playwright test --project=contract",
-    "cc:validate": "cloudcannon validate",
     "check:identity": "node scripts/check-identity.mjs",
-    "quality": "npm run check && npm run lint && npm run format:check && npm run cc:validate && npm run check:identity && npm run check:brand && npm run check:served && npm run check:og && npm run check:credits && npm run build",
+    "quality": "npm run check && npm run lint && npm run format:check && npm run check:identity && npm run check:brand && npm run check:served && npm run check:og && npm run check:credits && npm run build",
     "check:brand": "node scripts/check-brand-tokens.mjs",
     "check:served": "node scripts/check-served-extensions.mjs",
     "measure:cwv": "node scripts/measure-cwv.mjs",
@@ -33,7 +32,6 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@cloudcannon/cli": "^0.0.20",
     "@playwright/test": "^1.62.1",
     "@typescript-eslint/parser": "^8.67.0",
     "eslint": "^10.8.1",

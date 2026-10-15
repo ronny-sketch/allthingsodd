@@ -1,27 +1,18 @@
-# Editing the site (no code)
+# Editing the site's content
 
-This is what changes on the live site without anyone touching this repo's
-code — everything here is a JSON field in `src/content/`, exposed as a real
-CloudCannon input per `cloudcannon.config.yml`.
+Everything here is a JSON field in `src/content/`. There is no CMS for now:
+CloudCannon was set up but never used, and removed on 2026-10-15. When a
+visual editor is needed, pick one then.
 
-## First-time setup
+## How an edit goes live
 
-1. Connect this GitHub repo to a new CloudCannon site.
-2. CloudCannon auto-detects the Astro build (`npm run build` → `dist/`) — spot
-   check this in the Site dashboard's build settings; adjust if it guessed
-   wrong.
-3. `cloudcannon.config.yml` at the repo root defines the editing experience
-   below. It's checked against CloudCannon's own real JSON schema — run
-   `npx @cloudcannon/cli validate` after any change to it (see
-   `.cloudcannon/migration/`, gitignored, re-download with the two `curl`
-   commands in [CloudCannon's `cloudcannon-configuration` skill][cc-skill] if
-   missing). Still worth **walking through the actual Collections view once
-   after connecting** to confirm the array "add new" buttons (news photos,
-   program cards, feature cards, timeline milestones) produce sensible blank
-   templates — the one thing genuinely easier to verify live than from a
-   schema alone.
-
-[cc-skill]: https://github.com/CloudCannon/agent-skills/blob/main/skills/cloudcannon-configuration/SKILL.md
+1. Change the JSON file in `src/content/` (by hand, in GitHub's editor, or with
+   an agent). The schema in `src/content.config.ts` says what each field may
+   hold; a wrong shape fails the build, not the live site.
+2. Run `npm run format` before committing, or CI's format check fails.
+3. Commit to `main` (or open a PR). A text-only change skips the browser
+   suite and is live on allthingsodd.co in about four minutes — see
+   [deployment.md](deployment.md). Pull first: someone else may have pushed.
 
 ## What you can edit
 
@@ -30,7 +21,7 @@ Membership, About, Media, Contact) — ten fixed pages, can't be added to or del
 (their filenames are wired to real URLs). Within each page, every section
 below is a real editable field — headlines, intro paragraphs, eyebrow labels,
 and every repeatable list (features, cases, speakers, programme items, FAQ,
-tickets, …) has an "Add new" button in CloudCannon's array editor. A few
+tickets, …) is an array: add an item by copying a neighbour. A few
 high-level notes:
 
 - SEO title/description/social image — what shows in a browser tab, a Google
@@ -146,7 +137,7 @@ high-level notes:
   **ODDspace as a venue** (`/oddspace/venue`, same date): the two pages that
   let somebody decide, or plan an event, without having to write to us
   first. Both live in `src/content/pages/oddspace-membership.json` and
-  `oddspace-venue.json`. **Neither is wired into CloudCannon yet** — the CMS
+  `oddspace-venue.json`. The editing
   side was deliberately deferred in the September review, so these two are
   edited in the repo for now, unlike every other page above.
   - The membership page's "what's not included" list is the reason it
@@ -214,7 +205,7 @@ high-level notes:
   [Contact form setup](#contact-form-setup) below for those and for where
   each topic's message goes.
 
-A field marked "optional" in `cloudcannon.config.yml`'s comments can be left
+A field marked optional (`.optional()`) in `src/content.config.ts` can be left
 out of the page's JSON entirely — the page renders correctly without it. This
 is deliberate: several V2 sections (proof numbers, a case teaser, speakers,
 membership tiers) should stay absent rather than be filled with invented
@@ -252,7 +243,7 @@ sign-up link above.
 
 The footer no longer names photographers (removed 2026-10-05); the photo
 bank card on the home page still credits its own picture. The names are kept as a
-record and are not a CloudCannon field: they live in `src/components/sections/photo-credits.json`, keyed by the
+record and are not page content: they live in `src/components/sections/photo-credits.json`, keyed by the
 image's file name without its extension (`oddfest-card`, `07-54584147091`).
 
 Adding a new photo therefore needs one line there too — the photographer's
@@ -308,22 +299,21 @@ build if one comes back.
 
 - **Layout, spacing, colors, fonts, animation.** These come from the design
   system (`src/styles/`) and the components that read this content — not from
-  CloudCannon fields. See `docs/design-system.md` for why: this keeps every
+  content fields. See `docs/design-system.md` for why: this keeps every
   page visually coherent and keeps a content edit from ever being able to
   break the layout.
 - **Which pages exist, or their URLs.** Ten pages, fixed filenames
-  (`disable_add`/`disable_file_actions` in `cloudcannon.config.yml`).
+  (the routes in `src/pages/*.astro` depend on the filenames).
 - **New button/card shapes, custom CSS.** The button and card vocabulary
   (`Pill` variants, program card, feature card, CTA) is fixed by design; a
   genuinely new shape is a code change, not a content edit.
 
 If something feels like it should be editable and isn't, that's worth raising
-— it likely means either a field is missing from `cloudcannon.config.yml`
+— it likely means either a field is missing from the content schema
 (a quick fix) or it's implementation detail nobody should need to touch
 (worth confirming which, rather than assuming).
 
 ## Publishing
 
-A save in CloudCannon is a git commit to this repo. What happens after that
-commit (automatic rebuild + deploy, or a manual step) depends on the CI/deploy
-hook set up for this repo — see [deployment.md](deployment.md).
+Every push to `main` that passes CI deploys itself — see
+[deployment.md](deployment.md).

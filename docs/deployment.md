@@ -447,7 +447,7 @@ gated off behind the `CLOUDFLARE_DEPLOY_ENABLED` repo variable.
 ## Production workflow
 
 ```
-commit to main (code, or CloudCannon content commit)
+commit to main (code, or a content edit)
   → GitHub Actions CI (.github/workflows/ci.yml): check, lint, build, test
   → on green, on main, on push (not PRs): deploy job publishes to
     allthingsodd.co (canonical) and odd-field-guide.surge.sh (retired,
@@ -649,14 +649,14 @@ curl -fsS https://odd-field-guide.surge.sh/build-info.json
 git log --format=%H -1 <that sha>   # confirm it's a real, expected commit
 ```
 
-## CloudCannon's role
+## Content edits
 
-CloudCannon commits content edits (`src/content/**/*.json`) directly to this
-repo through its own git integration. Those commits flow through the same CI
-pipeline as a code change — a content edit that somehow produces invalid data
-(rare, since the Zod schema in `src/content.config.ts` validates it at build
-time) fails CI the same way a code bug would, rather than silently breaking
-the live site.
+Content (`src/content/**/*.json`) is edited directly and committed, like code;
+CloudCannon was set up for this but never used, and removed on 2026-10-15. A
+content commit flows through the same CI pipeline as a code change — one that
+produces invalid data (the Zod schema in `src/content.config.ts` validates it
+at build time) fails CI the same way a code bug would, rather than silently
+breaking the live site.
 
 ## Local preview
 

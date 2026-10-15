@@ -19,10 +19,9 @@ import BuiltAround from '../components/sections/BuiltAround.astro';
 // 2026-09-24.)
 import talentPhoto from '../assets/hero/archive-20.jpg';
 
-// Content file is named index.json (not home.json) so CloudCannon's
-// filename-based [slug] URL placeholder resolves to "" for it, matching the
-// real "/" route — see cloudcannon.config.yml's pages.url and
-// docs/architecture.md#content-file-naming.
+// Content file is named index.json (not home.json) so a filename-based
+// [slug] URL resolves to "" for it, matching the real "/" route (it was
+// CloudCannon's convention) — see docs/architecture.md#content-file-naming.
 const entry = await getEntry('pages', 'index');
 if (!entry || entry.data._template !== 'home')
   throw new Error('index.json content entry missing or malformed');

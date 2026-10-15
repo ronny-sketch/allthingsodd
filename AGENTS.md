@@ -47,7 +47,7 @@ Ember / Field Guide 005," a co-creation platform site for New Nordic Way rf
 single 13MB hand-authored static
 `index.html` (see `../ODD NEW WEBPAGE/` — no longer deployed as of 2026-08-20,
 kept only as historical reference) into
-Astro + structured content + CloudCannon, without losing the original's visual
+Astro + structured content, without losing the original's visual
 identity, motion, or interaction design at migration time.
 
 **The site has kept evolving since — deliberately.** Preserve the current
@@ -62,7 +62,9 @@ history, not against the pre-migration single-file build.
 
 **Do not repeat the WordPress detour.** An earlier session built a _different_
 site on Next.js + headless WordPress, wired to the wrong app entirely, and it was
-scrapped. WordPress is not part of this stack. CloudCannon is the CMS.
+scrapped. WordPress is not part of this stack. There is no CMS for now:
+CloudCannon was removed on 2026-10-15 before anyone used it. Content is edited
+as JSON in `src/content/`, by hand or with an agent, and pushed to `main`.
 
 **V2 (2026-08-20 → present) rebuilt the site's architecture and content
 scaffold** — not a redesign, the visual identity above is unchanged — around
@@ -81,8 +83,8 @@ state of any given field, not this file, if in doubt.
 ```
 GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
   → Astro (production frontend, static output)
-  → CloudCannon (edits src/content/**/*.json through the git history)
-  → Surge — allthingsodd.co (production)
+  → Cloudflare — allthingsodd.co (production, since 2026-10-15)
+  → Surge — odd-field-guide.surge.sh (legacy redirect host only)
 ```
 
 - **Content** lives in `src/content/pages/*.json` (fixed pages: home,
@@ -113,7 +115,7 @@ GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
   Astro/Vite already does.
 - **Why not a generic page composer:** this is a small bespoke brand site where
   most pages' layouts are genuinely different (home ≠ subpage ≠ about). A
-  CloudCannon "drag-and-drop sections" composer would be over-engineering for
+  "drag-and-drop sections" composer would be over-engineering for
   content that doesn't actually recombine — though several section components
   (`FeatureGrid`, `ProgramGrid`, `ParticipateBand`, `SectionIntro`, `CaseGrid`,
   …) are deliberately reused across many pages where the content really is the
@@ -179,14 +181,11 @@ GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
   in it that can drift is read from `brand/tokens/brand-tokens.json` at build
   time instead of retyped. It is `noindex`, out of the nav and out of the
   sitemap.
-- `cloudcannon.config.yml` is the editing contract. If you add a new content
-  field that a real ODD editor would plausibly want to change, add it there too
-  (see `docs/editing.md`). If it's implementation detail (CSS classes, layout
-  variants, technical config), it stays out of CloudCannon on purpose — see
-  `docs/design-system.md` and cloudcannon.config.yml's own comments on why raw
-  CSS values are never exposed to editors.
-- The `pages` collection's eleven files are fixed (`disable_add: true` in
-  cloudcannon.config.yml) — the routes in `src/pages/*.astro` depend on those
+- Editable copy lives in `src/content/`; implementation detail (CSS classes,
+  layout variants, technical config) stays out of content on purpose — see
+  `docs/design-system.md` on why raw CSS values are never content.
+- The `pages` collection's eleven files are fixed — the routes in
+  `src/pages/*.astro` depend on those
   exact filenames. `privacy.json` is the one generic (`legal`) template: a
   second legal document (terms of sale, a code of conduct) is a new JSON file
   plus a two-line route, not a new schema.
@@ -274,8 +273,8 @@ GitHub — ronny-sketch/allthingsodd (canonical repo, version history)
 ## Deployment workflow
 
 See `docs/deployment.md`. Short version: GitHub is canonical, CI
-(`.github/workflows/ci.yml`) gates `main`, and CloudCannon commits content
-changes back into the same repo. **This build is live** at
+(`.github/workflows/ci.yml`) gates `main`, and content edits are ordinary
+commits to the same repo. **This build is live** at
 `https://allthingsodd.co` (domain cutover 2026-09-03; before that
 `odd-field-guide.surge.sh`, which is still published with the identical
 build so no existing link 404s, and which forwards visitors on to the
@@ -293,11 +292,11 @@ the human actions. Do not "fix" this by adding claims back to this site to
 match theirs.
 
 **Corrected 2026-08-21:** deploy is CI-automated, not manual — the `deploy`
-job in `.github/workflows/ci.yml` runs `npx surge dist` against
-`allthingsodd.co` (canonical) and `odd-field-guide.surge.sh` (retired, kept
-alive) automatically on every push to `main` that passes
-`checks`/`functional` (this is what makes a CloudCannon content commit go
-live with no one running a manual command). A prior version of this file
+job in `.github/workflows/ci.yml` publishes `allthingsodd.co` to Cloudflare
+(`npx wrangler deploy`) and `odd-field-guide.surge.sh` (retired, kept alive) to
+Surge automatically on every push to `main` that passes `checks`/`functional`
+(this is what makes a content commit go live with no one running a manual
+command). A prior version of this file
 said deploys were manual; that was stale. Treat any push to `main` as a real
 production action — it deploys automatically, there's no separate manual
 step to forget.
@@ -316,8 +315,7 @@ Growth OS side of it belongs in `../odd-growth-os`.
 
 A change is done when: `npm run quality` (which now includes the identity scan
 and `npm run check:brand`, the brand-token drift check) and `npm test` both pass; new/changed editorial content is in
-`src/content/`, not hardcoded; new CMS-relevant fields are reflected in
-`cloudcannon.config.yml`;
+`src/content/`, not hardcoded;
 and the visual result has been checked against the current live site — not
 just "looks fine in isolation," and not against the old pre-migration file
 (see "What this is" above on why that's provenance reference, not a
@@ -401,7 +399,7 @@ matching what `../odd-growth-os/worker/src/validate.ts` expects.
 
 **The one real cross-repo coupling to know about:**
 `WorkEnquiryForm.astro`'s hardcoded `PRODUCTS` array (UI copy, kept out of
-CloudCannon per the CMS rules above) must match
+`src/content/` on purpose) must match
 `../odd-growth-os/schemas/products.yml`'s enum by hand — there's no shared
 package or codegen yet (a deliberate scope decision at split time). If you
 change one, check the other. Same applies, with smaller blast radius, to
@@ -647,7 +645,7 @@ the Merge button is the deploy. Then step 5.
   idea, the seven principles and the recipes. Start here for anything visual.
   With `brand/AUDIT.md`, `brand/CHANGELOG.md` and the brand book at `/brand-book/`.
 - `docs/design-system.md` — the token/component rules, with the reasoning
-- `docs/editing.md` — what a non-developer can do in CloudCannon
+- `docs/editing.md` — what each content file controls, and how an edit goes live
 - `docs/deployment.md` — how a change reaches production
 - `docs/LAUNCH_RUNBOOK.md` — **the one authoritative launch sequence**: what to
   check before, the exact deploy order (Worker first, then a push to `main`),
@@ -665,4 +663,3 @@ the Merge button is the deploy. Then step 5.
   ([routing](https://docs.astro.build/en/guides/routing/),
   [content collections](https://docs.astro.build/en/guides/content-collections/),
   [astro:assets](https://docs.astro.build/en/guides/images/))
-- CloudCannon docs: https://cloudcannon.com/documentation/
