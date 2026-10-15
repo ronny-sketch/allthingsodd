@@ -77,8 +77,9 @@ test.describe('feed not configured', () => {
     // The "what's happening" chapter it belongs under must be untouched
     // either way. (It was the Google Calendar embed until 2026-09-11 —
     // /oddspace now publishes a hand-kept events list instead, so this
-    // asserts on that list rather than on the removed iframe.)
-    await expect(page.locator('.programme-list .programme-row').first()).toBeVisible();
+    // asserts on that list rather than on the removed iframe; since
+    // 2026-10-15 the list is the Upcoming/Past tables.)
+    await expect(page.locator('.odds-events-table tbody tr').first()).toBeVisible();
 
     const privacy = await (await request.get('/privacy')).text();
     expect(privacy, '/privacy lists a processor this build never contacts').not.toContain('Behold');

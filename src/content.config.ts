@@ -1142,9 +1142,14 @@ const pages = defineCollection({
         // tell a weekly open morning from a one-off festival, half of what
         // is on that calendar is an internal room booking nobody can
         // attend, and the embed could not load at all until the visitor
-        // accepted third-party cookies. Reuses `programmeItem` and
-        // ProgrammeList — the same shape ODDfest's programme uses — rather
-        // than a fourth list component.
+        // accepted third-party cookies.
+        //
+        // 2026-10-15: two tables side by side, Upcoming and Past, at Ronny's
+        // request — one row per event, date first, instead of ProgrammeList's
+        // description cards. `date` is the display text ("Sat 17 Oct",
+        // "Mondays"); `endsOn` (YYYY-MM-DD, the last day) is what files a row
+        // under Past once that day is over. Leave `endsOn` off a weekly
+        // thing and it stays at the top of Upcoming.
         //
         // Publish only what a stranger can actually turn up to or book,
         // and only what is confirmed: this list is edited by hand, so a
@@ -1155,7 +1160,21 @@ const pages = defineCollection({
             eyebrow: z.string(),
             title: z.string(),
             note: z.string().optional(),
-            items: z.array(programmeItem),
+            upcomingTitle: z.string(),
+            pastTitle: z.string(),
+            items: z.array(
+              z.object({
+                title: z.string(),
+                date: z.string(),
+                time: z.string().optional(),
+                endsOn: z
+                  .string()
+                  .regex(/^\d{4}-\d{2}-\d{2}$/)
+                  .optional(),
+                note: z.string().optional(),
+                href: z.string().optional(),
+              }),
+            ),
             cta: linkCta.optional(),
           })
           .optional(),
