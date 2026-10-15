@@ -117,7 +117,6 @@ jobs:
         continue-on-error: true
       - run: npm run format:check
         continue-on-error: true
-      - run: npm run cc:validate
       # The source half of the identity contract (2026-09-04) — a retired
       # project name reappearing in a doc, a package field or a deploy
       # command is invisible to every browser test in this repo. See
@@ -127,7 +126,7 @@ jobs:
       # and agents; this fails when the mirror drifts (2026-09-18).
       - run: npm run check:brand
       # Every photo a page shows has a photographer entry (or a deliberate
-      # null) in photo-credits.json — CloudCannon edits never run
+      # null) in photo-credits.json — content edits rarely run
       # `npm run quality`, so this is where a new uncredited photo is caught.
       - run: npm run check:credits
       # The CI tiering rule decides what does and doesn't get tested, so it
@@ -272,9 +271,9 @@ jobs:
       issues: write
     # Only main, and only on an actual push or the Deploy button above (a
     # green PR doesn't deploy) — a
-    # content edit from CloudCannon lands here as a normal push to main, same
-    # as a code change, so this is what actually closes the loop from "edit
-    # in CloudCannon" to "live on allthingsodd.co". See docs/deployment.md.
+    # content edit lands here as a normal push to main, same as a code
+    # change, so this is what closes the loop from "edit" to "live on
+    # allthingsodd.co". See docs/deployment.md.
     # Each dependency's result is checked by name rather than with a bare
     # `!failure()`: `functional` is skipped outright on a docs or content
     # change, and a skipped dependency would otherwise skip the deploy with

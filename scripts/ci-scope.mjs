@@ -50,11 +50,11 @@ const DOCS_ONLY = [/^docs\//, /^\.claude\//, /^[^/]+\.md$/];
 
 // Copy and content entries (2026-10-05). Rendered, but only through
 // templates the browser suite already covers, and `checks` still validates
-// them: the content schema (`astro check`, build), CloudCannon's config,
-// photo credits. No test asserts copy. So a text-only edit skips the browser
+// them: the content schema (`astro check`, build) and photo
+// credits. No test asserts copy. So a text-only edit skips the browser
 // suite and deploys in ~4 min instead of ~7. The ceiling: copy long enough to
 // break a layout on one viewport surfaces at the nightly sweep, not before
-// it is live. Most of Aki's and CloudCannon's edits land here.
+// it is live. Most of Aki's edits land here.
 const CONTENT_ONLY = [/^src\/content\//];
 
 // `mobile` is NOT in this list although it is a visual project: it is

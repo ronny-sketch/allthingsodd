@@ -1129,8 +1129,7 @@ const pages = defineCollection({
         // "Organise an event" — the page's secondary CTA, alongside
         // subpageBase's `primaryCta` ("Become a member"). Both appear in
         // the hero and again in section 6. ODDference also declares its own
-        // `secondaryCta` (a different purpose, "Partner with ODDference") —
-        // see cloudcannon.config.yml's shared `secondaryCta` _inputs entry.
+        // `secondaryCta` (a different purpose, "Partner with ODDference").
         secondaryCta: linkCta.optional(),
         // Section 7 — the bigger-picture reason ODDspace exists, kept
         // distinct from `whatItIs` (section 2's concrete "what is this

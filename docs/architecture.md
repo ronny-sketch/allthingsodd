@@ -3,9 +3,7 @@
 ## The stack
 
 ```
-GitHub  →  Astro  →  (deploy target)
-   ↑
-CloudCannon (edits content through the same git history)
+GitHub  →  Astro  →  Cloudflare (allthingsodd.co)
 ```
 
 - **GitHub** is the canonical repository. Every change — code or content —
@@ -13,7 +11,9 @@ CloudCannon (edits content through the same git history)
 - **Astro** builds the site to static HTML/CSS/JS (`astro build` → `dist/`).
   No server runtime, no database, no API routes — same deployment shape as
   the original single-file site, just generated instead of hand-written.
-- **CloudCannon** is a visual editing layer on top of the git repo. An editor's
+- **No CMS for now.** CloudCannon was set up but never used, and removed on
+  2026-10-15; content is edited as JSON and committed. Before that:
+  CloudCannon was a visual editing layer on top of the git repo. An editor's
   save becomes a git commit to `src/content/**/*.json`, which triggers a
   rebuild through whatever CI/deploy hook is wired up (see
   [deployment.md](deployment.md)).
