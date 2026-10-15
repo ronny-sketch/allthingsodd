@@ -190,6 +190,24 @@ NOTES.md in the export folder lists them per frame. Earlier passes (band
 layouts, big edge words, caption-sized type, photo-only with wordless frames,
 one text-frame shape) were rejected or superseded.
 
+On 14 Oct 2026 Aki finalised the ODDfest, ODDference and ODDspace carousels
+in Canva, and 15 Oct carried them back into the generator; where they differ
+from the paragraph above, they win. Leads, datelines and the card are Forta
+now (Gabarito is the body only); the explainer is the default text frame, its
+body two short paragraphs (`\n\n`) ending on a kicker, no bold phrase; photo
+headings are reasons to the reader, parallel across the carousel, 80px in two
+balanced lines (60px across the column when they need three), at the bottom or
+the top (`at: 'top'`), on a black-and-white photo where the set needs one
+light (`bw`). The cover title is a positioning line, sized to fill the column
+(`fit()`), with no full stop; the dateline is one fact a line. The card is the
+ask on Instagram too (product and date, the offer, the filled mark, "Read more
+at:" and the page), so there is no "Link in bio." frame. Each carousel can
+bring two 1080 × 1920 stories, `tease()` (a line that turns, top left to
+bottom right) and `ask()` (a question over the blurred photo, "See more ↓"),
+wrapped in `story()`. The profile grid has cropped 4:5 posts to 3:4 at the
+sides since January 2025, so words keep 64px from a post's edges and 250px
+from a story's top and bottom; the 148px band is gone.
+
 The same file holds the LinkedIn set (`li-` decks, 11 Oct 2026): the same
 frames for a different reader, the organisation. Each deck is seven pages
 (the drop-off studies put the fall after page six or seven), the ask and
@@ -229,7 +247,8 @@ size: every frame an artboard of its own (1080 × 1350), a flattened background
 text at the render's positions, one row a post, a note per row with the
 caption credit line, the alt texts and the flags (`flag` on a frame, `hook` on
 a LinkedIn carousel; a photo with no credit flags itself). Its `render` step is
-also the layout check: it fails on any text in the 148px clearance, past the
+also the layout check: it fails on any text within 64px of a post's top or
+bottom (250px on a story), past the
 frame edge or touching another block, and writes a contact sheet per carousel.
 The whole weekly routine, rules included, is the project skill
 `.claude/skills/odd-social-posts/SKILL.md`, so anyone's Claude Code in this
