@@ -133,6 +133,12 @@ high-level notes:
     booking calendar**, so when a date moves or an event is cancelled it
     has to be changed here, and only things a stranger can actually turn
     up to or book belong on it.
+  - 2026-10-15: `events` renders as two tables side by side, Upcoming and
+    Past. Each row is `title`, `date` (display text, e.g. "Sat 17 Oct"),
+    optional `time`, `note` and `href`, and `endsOn` (YYYY-MM-DD, the last
+    day). A row moves to Past by itself once `endsOn` is over, at the next
+    deploy; a row with no `endsOn` (the weekly things) stays at the top of
+    Upcoming. Order in the file doesn't matter.
 - **ODDspace membership** (`/oddspace/membership`, new 2026-09-11) and
   **ODDspace as a venue** (`/oddspace/venue`, same date): the two pages that
   let somebody decide, or plan an event, without having to write to us

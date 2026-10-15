@@ -179,30 +179,169 @@
     "eyebrow": "What's on",
     "title": "What's happening here.",
     "note": "Public events and open sessions in the space. Private bookings are not listed.",
+    "upcomingTitle": "Upcoming",
+    "pastTitle": "Past",
     "items": [
       {
         "title": "Coffee on the House",
-        "category": "Weekly · open to everyone",
-        "date": "Every Monday",
+        "date": "Mondays",
         "time": "09:00–10:00",
-        "venue": "ODDspace aula, Teollisuuskatu 9D",
-        "description": "Morning coffee, a deep house DJ and whoever turns up. Free, no membership needed, bring a friend. Some Mondays it travels — we host it at another Helsinki space and say so in advance."
+        "note": "Free coffee and a deep house DJ. Bring a friend. Some Mondays it pops up at another Helsinki space."
       },
       {
         "title": "ODDbachata",
-        "category": "Weekly · class and social",
-        "date": "Every Friday",
+        "date": "Fridays",
         "time": "From 17:00",
-        "venue": "ODDspace, Teollisuuskatu 9D",
-        "description": "Bachata class and practice, followed by a social night that runs late. Beginners welcome."
+        "note": "Class, then a social that runs late. Beginners welcome."
+      },
+      {
+        "title": "Helsinki Perfume Club",
+        "date": "Thu 15 Oct",
+        "time": "18:00–21:00",
+        "endsOn": "2026-10-15",
+        "note": "An evening of smelling, comparing and talking fragrance."
+      },
+      {
+        "title": "Elements: opening night",
+        "date": "Sat 17 Oct",
+        "time": "From 17:00",
+        "endsOn": "2026-10-17",
+        "note": "An immersive experience takes over the Galleria. Programme from 18:00."
+      },
+      {
+        "title": "Helsinki Perfume Club",
+        "date": "Wed 21 Oct",
+        "time": "14:00–18:00",
+        "endsOn": "2026-10-21",
+        "note": "An afternoon of scent with other noses."
+      },
+      {
+        "title": "Rolf Ekroth Sample Sale",
+        "date": "Sat 31 Oct",
+        "time": "12:00–18:00",
+        "endsOn": "2026-10-31",
+        "note": "Racks, mirrors, try things on. Open to all."
+      },
+      {
+        "title": "Toivon ja tulevaisuuden illat: Katariina Souri",
+        "date": "Tue 10 Nov",
+        "time": "18:00–21:00",
+        "endsOn": "2026-11-10",
+        "note": "Talk series on realistic utopias. In Finnish, on site and online.",
+        "href": "https://www.voimauttavavalokuva.net/arvostavan-katseen-yhteisot/#toivon-tiistait"
+      },
+      {
+        "title": "Circular Economy: a Slush side event",
+        "date": "Wed 18 Nov",
+        "endsOn": "2026-11-18",
+        "note": "Organised by The North Mix Oy."
       },
       {
         "title": "Birds Nest Ambient Festival",
-        "category": "One-off",
         "date": "Sat 21 Nov",
-        "time": "From 16:00",
-        "venue": "ODDspace, Teollisuuskatu 9D",
-        "description": "An evening and night of ambient music across the space, running from late afternoon until the early hours."
+        "time": "16:00–04:00",
+        "endsOn": "2026-11-21",
+        "note": "Ambient music across the space until the early hours."
+      },
+      {
+        "title": "Friendship Fair",
+        "date": "Thu 26 Nov",
+        "time": "17:30–21:30",
+        "endsOn": "2026-11-26",
+        "note": "Making new friends on purpose: conversation, movement, making and play. By UPWARD."
+      },
+      {
+        "title": "Toivon ja tulevaisuuden illat: Oras Tynkkynen",
+        "date": "Tue 8 Dec",
+        "time": "18:00–21:00",
+        "endsOn": "2026-12-08",
+        "note": "Talk series on realistic utopias. In Finnish, on site and online.",
+        "href": "https://www.voimauttavavalokuva.net/arvostavan-katseen-yhteisot/#toivon-tiistait"
+      },
+      {
+        "title": "Toivon ja tulevaisuuden illat: Tarja Halonen",
+        "date": "Tue 16 Feb 2027",
+        "time": "18:00–21:00",
+        "endsOn": "2027-02-16",
+        "note": "Talk series on realistic utopias. In Finnish, on site and online.",
+        "href": "https://www.voimauttavavalokuva.net/arvostavan-katseen-yhteisot/#toivon-tiistait"
+      },
+      {
+        "title": "Toivon ja tulevaisuuden illat: Annuska Dal Maso",
+        "date": "Tue 9 Mar 2027",
+        "time": "18:00–21:00",
+        "endsOn": "2027-03-09",
+        "note": "Talk series on realistic utopias. In Finnish, on site and online.",
+        "href": "https://www.voimauttavavalokuva.net/arvostavan-katseen-yhteisot/#toivon-tiistait"
+      },
+      {
+        "title": "Toivon ja tulevaisuuden illat: Dawn Prescott & Lime Art",
+        "date": "Tue 11 May 2027",
+        "time": "18:00–21:00",
+        "endsOn": "2027-05-11",
+        "note": "Talk series on realistic utopias. In Finnish, on site and online.",
+        "href": "https://www.voimauttavavalokuva.net/arvostavan-katseen-yhteisot/#toivon-tiistait"
+      },
+      {
+        "title": "Toivon ja tulevaisuuden illat: Anni Marttinen",
+        "date": "Tue 13 Oct",
+        "time": "18:00–21:00",
+        "endsOn": "2026-10-13",
+        "note": "Talk series on realistic utopias. In Finnish, on site and online.",
+        "href": "https://www.voimauttavavalokuva.net/arvostavan-katseen-yhteisot/#toivon-tiistait"
+      },
+      {
+        "title": "Ceramics workshop",
+        "date": "Mon 12–Tue 13 Oct",
+        "time": "18:00–22:00",
+        "endsOn": "2026-10-13",
+        "note": "Two hands-on evenings in English, all materials provided."
+      },
+      {
+        "title": "One Day Choir Helsinki",
+        "date": "Sat 26 Sep",
+        "time": "12:00–15:00",
+        "endsOn": "2026-09-26",
+        "note": "A choir in a day, by Creative Voice. No singing experience needed."
+      },
+      {
+        "title": "Smell The Art",
+        "date": "Thu 24 Sep",
+        "time": "18:00–00:00",
+        "endsOn": "2026-09-24"
+      },
+      {
+        "title": "Toivon ja tulevaisuuden illat: Salla Tuomivaara",
+        "date": "Tue 15 Sep",
+        "time": "18:00–21:00",
+        "endsOn": "2026-09-15",
+        "note": "Talk series on realistic utopias. In Finnish, on site and online.",
+        "href": "https://www.voimauttavavalokuva.net/arvostavan-katseen-yhteisot/#toivon-tiistait"
+      },
+      {
+        "title": "ODDrunning.club",
+        "date": "Thursdays, Aug–Sep",
+        "time": "08:00–09:00",
+        "endsOn": "2026-09-24",
+        "note": "A weekly run from the door. All paces welcome."
+      },
+      {
+        "title": "Night of the Arts: Imagine",
+        "date": "Thu 20 Aug",
+        "endsOn": "2026-08-20",
+        "note": "An installation in the Galleria for Taiteiden yö."
+      },
+      {
+        "title": "Design Pulse launch by Ornamo",
+        "date": "Thu 20 Aug",
+        "endsOn": "2026-08-20",
+        "note": "Talks, a panel and networking."
+      },
+      {
+        "title": "ODD Comedy Roast",
+        "date": "Sat 15 Aug",
+        "time": "19:00–23:00",
+        "endsOn": "2026-08-15"
       }
     ],
     "cta": {

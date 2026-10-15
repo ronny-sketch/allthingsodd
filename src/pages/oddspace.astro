@@ -33,7 +33,6 @@ import SpaceHero from '../components/sections/SpaceHero.astro';
 import SpaceShowcase from '../components/sections/SpaceShowcase.astro';
 import SectionIntro from '../components/sections/SectionIntro.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
-import ProgrammeList from '../components/sections/ProgrammeList.astro';
 import FAQList from '../components/sections/FAQList.astro';
 import InstagramGallery from '../components/sections/InstagramGallery.astro';
 import { ODDSPACE_INSTAGRAM_FEED_ID } from '../scripts/oddspace-instagram-config';
@@ -47,6 +46,29 @@ const entry = await getEntry('pages', 'oddspace');
 if (!entry || entry.data._template !== 'oddspace')
   throw new Error('oddspace.json content entry missing or malformed');
 const page = entry.data;
+
+// What's on: a row is Past once its `endsOn` day is over in Helsinki; rows
+// without one (the weekly things) head the Upcoming table. Upcoming runs
+// soonest first, Past most recent first.
+// ponytail: filed at build time, so a finished event sits under Upcoming
+// until the next deploy (any push to main; the nightly CI run doesn't
+// deploy). Let the schedule trigger deploy too if that gap ever shows.
+const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Helsinki' });
+const eventRows = page.events?.items ?? [];
+const eventTables = [
+  {
+    title: page.events?.upcomingTitle,
+    rows: eventRows
+      .filter((row) => !row.endsOn || row.endsOn >= today)
+      .sort((a, b) => (a.endsOn ?? '').localeCompare(b.endsOn ?? '')),
+  },
+  {
+    title: page.events?.pastTitle,
+    rows: eventRows
+      .filter((row) => row.endsOn && row.endsOn < today)
+      .sort((a, b) => (b.endsOn ?? '').localeCompare(a.endsOn ?? '')),
+  },
+].filter((table) => table.rows.length > 0);
 ---
 
 <Layout
@@ -189,9 +211,10 @@ const page = entry.data;
 
     <!-- 6. What's happening — a hand-kept list of the things a stranger can
          actually turn up to, replacing the consent-gated Google Calendar
-         embed (2026-09-11). Reuses ProgrammeList, the same component
-         ODDfest's programme uses. Only public, confirmed things go in;
-         private bookings stay on the internal calendar. -->
+         embed (2026-09-11). Since 2026-10-15 two tables side by side,
+         Upcoming and Past, filed by each row's `endsOn` (see frontmatter).
+         Only public, confirmed things go in; private bookings stay on the
+         internal calendar. -->
     {
       page.events && page.events.items.length > 0 && (
         <section class="odds-sub">
@@ -201,7 +224,39 @@ const page = entry.data;
               <h2>{page.events.title}</h2>
             </div>
             {page.events.note && <p class="odds-events-note reveal">{page.events.note}</p>}
-            <ProgrammeList items={page.events.items} />
+            <div class="odds-events-tables reveal">
+              {eventTables.map((table) => (
+                <table class="odds-events-table">
+                  <caption>{table.title}</caption>
+                  <thead class="sr-only">
+                    <tr>
+                      <th scope="col">Date</th>
+                      <th scope="col">Event</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {table.rows.map((row) => (
+                      <tr>
+                        <td class="odds-events-when">
+                          <span class="odds-events-date">{row.date}</span>
+                          {row.time && <span class="odds-events-time">{row.time}</span>}
+                        </td>
+                        <td>
+                          {row.href ? (
+                            <a class="odds-events-title" href={row.href}>
+                              {row.title}
+                            </a>
+                          ) : (
+                            <span class="odds-events-title">{row.title}</span>
+                          )}
+                          {row.note && <span class="odds-events-row-note">{row.note}</span>}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ))}
+            </div>
             {page.events.cta && (
               <div class="odds-events-cta reveal">
                 <Pill href={page.events.cta.href} variant="outline" magnetic>
@@ -501,5 +556,76 @@ const page = entry.data;
   .odds-events-cta {
     display: flex;
     justify-content: center;
+  }
+
+  /* Upcoming and Past side by side; the tracks' minimum stacks them, Upcoming
+     first, once there is no room for two. Rules and type are ProgrammeList's,
+     so the tables read as the same family as ODDfest's programme. */
+  .odds-events-tables {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    gap: var(--space-12) var(--space-8);
+    align-items: start;
+  }
+  .odds-events-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .odds-events-table caption {
+    text-align: left;
+    padding-bottom: var(--space-3);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .odds-events-table td {
+    padding-block: var(--space-4);
+    border-top: 1px solid var(--color-paper-12);
+    vertical-align: top;
+  }
+  .odds-events-table tr:last-child td {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .odds-events-when {
+    width: 8rem;
+    padding-right: var(--space-4);
+  }
+  .odds-events-date,
+  .odds-events-time,
+  .odds-events-row-note {
+    display: block;
+    font: var(--text-small);
+    font-variant-numeric: tabular-nums;
+  }
+  .odds-events-date {
+    font-weight: 600;
+    color: var(--color-paper);
+  }
+  .odds-events-time,
+  .odds-events-row-note {
+    color: var(--color-paper-40);
+  }
+  .odds-events-row-note {
+    margin-top: var(--space-1);
+  }
+  .odds-events-title {
+    font: var(--text-body);
+    font-weight: 600;
+    color: var(--color-paper);
+    text-decoration: none;
+  }
+  a.odds-events-title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: var(--color-paper-40);
+  }
+  @media (hover: hover) {
+    a.odds-events-title:hover {
+      color: var(--color-heat);
+      text-decoration-color: var(--color-heat);
+    }
   }
 </style>
