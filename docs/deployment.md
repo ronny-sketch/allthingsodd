@@ -2,13 +2,14 @@
 
 ## Current state
 
-**Production is `https://allthingsodd.co`.** The site is a plain static Astro
-build on Surge. Four Surge hostnames exist and each has a defined job:
+**Production is `https://allthingsodd.co`, on Cloudflare since 2026-10-15**
+(see [Cloudflare](#cloudflare) below). Surge keeps the legacy host and the
+preview host. Each hostname has a defined job:
 
 | Host                            | Role                                                                                                                                                                                                                                         |
 | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `allthingsodd.co`               | Canonical production. Every `<link rel="canonical">`, `og:url`, JSON-LD `url` and sitemap entry points here.                                                                                                                                 |
-| `www.allthingsodd.co`           | Redirects to the apex. Surge does this itself — see [Domain migration](#domain-migration).                                                                                                                                                   |
+| `www.allthingsodd.co`           | Redirects to the apex with path and query: a redirect rule in the Cloudflare zone.                                                                                                                                                           |
 | `odd-field-guide.surge.sh`      | **Legacy redirect — keep.** Retired production host, still published with the identical build so no existing link 404s, and forwarding on to the canonical domain (Layout.astro). Not a second production site, and not this project's name. |
 | `allthingsodd-preview.surge.sh` | Preview. Deliberately outside the automated pipeline; publish to it by hand to eyeball a build.                                                                                                                                              |
 
@@ -22,21 +23,24 @@ kept alive. Note that the preview host deliberately does **not** carry the
 legacy-host redirect script, since its whole job is showing a build that is
 not production.
 
-Manual publish, if CI is ever unavailable:
+Manual publish, if CI is ever unavailable (the Cloudflare token is in the
+`CLOUDFLARE_API_TOKEN` repo secret and in Ronny's Keychain as
+`odd-cloudflare-zone-token`):
 
 ```bash
 npm run build
-npx surge dist https://allthingsodd.co        # canonical (https:// forces HTTPS)
-rm -f dist/CNAME
+npx wrangler deploy                               # production, allthingsodd.co
 npx surge dist https://odd-field-guide.surge.sh   # legacy host, kept as a redirect
 ```
 
-### Moving to Cloudflare (October 2026)
+### Cloudflare
 
-Surge cannot send security headers, so the apex is moving to Cloudflare
-static assets (`wrangler.jsonc`, Worker name `allthingsodd`). Until the
-nameservers move, CI publishes the same `dist/` to both; the Cloudflare copy
-answers at `https://allthingsodd.ronny-507.workers.dev`.
+Surge could not send security headers or answer video range requests, so on
+2026-10-15 the apex moved to Cloudflare static assets (`wrangler.jsonc`,
+Worker `allthingsodd`, custom domain `allthingsodd.co`). The nameservers at
+GoDaddy are `quinton.ns.cloudflare.com` and `wren.ns.cloudflare.com`; DNS,
+the www redirect rule, HTTPS-only and TLS 1.2+ are set in the zone, and the
+Google mail records were carried over unchanged.
 
 - `dist/_headers` is written by the build (`scripts/security-headers.mjs`):
   HSTS, the Content-Security-Policy, framing, referrer and permissions
@@ -135,6 +139,10 @@ again and the canonical host is checked as strictly as the legacy one, with
 no edit needed.
 
 ### www and its certificate
+
+_History, from the Surge years. Since 2026-10-15 www is a redirect rule in
+the Cloudflare zone under Cloudflare's own certificate, and the weekly
+`www-certificate.yml` job is gone._
 
 `www.allthingsodd.co` returns a server-side **301** to the same path on the
 apex, over HTTPS, with a valid certificate. Getting there was not automatic

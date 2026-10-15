@@ -292,16 +292,10 @@ jobs:
       && needs.checks.result == 'success'
       && (needs.functional.result == 'success' || needs.functional.result == 'skipped')
     env:
-      # The canonical production host, cut over from odd-field-guide.surge.sh
-      # on 2026-09-03. Published with an explicit https:// scheme, which is
-      # how Surge is told to force HTTPS — from then on every plain-http://
-      # request to this domain answers with a redirect to the https:// URL
-      # (surge.sh/docs/platform/ssl). www.allthingsodd.co needs no publish and
-      # no DNS record of its own: Surge folds www onto whichever form of the
-      # domain you publish to, so publishing the apex makes the apex canonical
-      # and www a redirect onto it automatically (surge.sh/docs/platform/
-      # clean-urls). That is also why there is exactly one canonical URL per
-      # page here rather than an indexable duplicate on www.
+      # The canonical production host: Cloudflare static assets plus
+      # worker/video-range.js (wrangler.jsonc) since the nameservers moved
+      # from Surge on 2026-10-15. Cloudflare sends HTTP to HTTPS, and a
+      # redirect rule in the zone sends www to the apex with path and query.
       PRIMARY_DOMAIN: allthingsodd.co
       # The retired production host. Deliberately still published, with the
       # identical build, so no link anywhere on the internet 404s. See
@@ -336,7 +330,7 @@ jobs:
         run: |
           printf '{"sha":"%s","builtAt":"%s"}\n' "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > dist/build-info.json
           cat dist/build-info.json
-      - name: Publish to Surge
+      - name: Publish the legacy host to Surge
         env:
           # INTERNAL PROVIDER ACCOUNT — not this site's identity. This is the
           # email the Surge account itself was registered under; changing it
@@ -358,12 +352,11 @@ jobs:
             exit 1
           fi
 
-          # One build, published to two hosts. `publish <domain> <log>`:
-          # stdin explicitly from /dev/null so a present-but-invalid token
-          # hits an immediate EOF the CLI has to react to, rather than
-          # silently succeeding the way an empty token did; and surge's own
-          # completion line is grepped, because an exit code alone is exactly
-          # what missed the 2026-08-31 incident.
+          # `publish <domain> <log>`: stdin explicitly from /dev/null so a
+          # present-but-invalid token hits an immediate EOF the CLI has to
+          # react to, rather than silently succeeding the way an empty token
+          # did; and surge's own completion line is grepped, because an exit
+          # code alone is exactly what missed the 2026-08-31 incident.
           publish() {
             npx surge dist "$1" < /dev/null | tee "$2"
             # Domain, not an exact phrase: the published target is echoed back
@@ -374,31 +367,19 @@ jobs:
             }
           }
 
-          # Canonical host first, with the scheme, which is what enables
-          # Surge's HTTP -> HTTPS redirect for this project.
-          publish "https://$PRIMARY_DOMAIN" surge-primary.log "$PRIMARY_DOMAIN"
-
-          # A publish writes a CNAME file into the published directory
-          # recording the domain (surge.sh/docs/platform/custom-domains).
-          # Removing it before the second publish keeps that leftover out of
-          # the legacy host's build and off the CDN, and guarantees the
-          # explicit domain argument below is the only thing deciding where
-          # this goes.
-          rm -f dist/CNAME
+          # Surge now serves only the legacy host. Its publish writes a CNAME
+          # file into dist/; .assetsignore keeps that off Cloudflare.
           publish "https://$LEGACY_DOMAIN" surge-legacy.log "$LEGACY_DOMAIN"
-      # Cloudflare (wrangler.jsonc): the same dist/ as static assets, with
-      # dist/_headers adding HSTS, the CSP and the rest. Published alongside
-      # Surge until allthingsodd.co's nameservers move to Cloudflare; after
-      # that, Surge keeps only the legacy host. Skips with a notice while the
-      # CLOUDFLARE_API_TOKEN secret is unset (template "Edit Cloudflare
-      # Workers"), so nothing here can block a Surge deploy in the meantime.
+      # Production: Cloudflare (wrangler.jsonc). dist/_headers adds HSTS, the
+      # CSP and the rest. Refuses to run without its token, for the same
+      # reason the Surge step does: an empty secret must fail, not skip.
       - name: Publish to Cloudflare
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            echo "::notice::CLOUDFLARE_API_TOKEN is not set — skipped the Cloudflare publish."
-            exit 0
+            echo "::error::CLOUDFLARE_API_TOKEN is empty — production cannot be published. Set the repository secret." >&2
+            exit 1
           fi
           npx -y wrangler@4.150.0 deploy
       - name: Verify production is serving this deploy
@@ -409,31 +390,8 @@ jobs:
           # production provably serves this SHA. Retries absorb real CDN
           # propagation delay.
           #
-          # `tolerant` exists for exactly one window: allthingsodd.co is
-          # published here before its GoDaddy nameservers are delegated to
-          # Surge, so until that happens this job would be checking a host
-          # that isn't ours yet. The test for that is the domain's NS
-          # records, NOT whether it answers — a parked GoDaddy domain
-          # resolves fine and serves a valid-certificate 404, which curl
-          # reports as a plain exit 0, so no request-level heuristic can tell
-          # "not delegated yet" from "genuinely broken". Delegation is the
-          # only unambiguous signal, and it flips exactly once.
-          #
-          # Asked over DNS-over-HTTPS rather than dig, so the job depends on
-          # nothing beyond curl and jq, which it already uses.
-          delegated_to_surge() {
-            curl -fsS --max-time 20 "https://dns.google/resolve?name=$1&type=NS" \
-              | jq -r '.Answer[]?.data' | grep -qi 'surge\.world'
-          }
-
           verify() {
-            host="$1"; mode="$2"
-
-            if [ "$mode" = "tolerant" ] && ! delegated_to_surge "$host"; then
-              echo "::warning::${host} is not delegated to Surge's nameservers yet, so this deploy cannot be verified there. The publish itself succeeded and will serve as soon as DNS lands. ${LEGACY_DOMAIN} is verified strictly below and is authoritative for this deploy. See docs/deployment.md#dns-and-https."
-              return 0
-            fi
-
+            host="$1"
             for i in 1 2 3 4 5 6 7 8; do
               live="$(curl -fsS --max-time 20 "https://${host}/build-info.json?verify=$GITHUB_SHA" | jq -r .sha 2>/dev/null || true)"
               if [ "$live" = "$GITHUB_SHA" ]; then
@@ -448,26 +406,10 @@ jobs:
             return 1
           }
 
-          # www must answer HTTPS with a VALID certificate and a 301 onto the
-          # apex, carrying the path across. Both halves matter and neither is
-          # theoretical:
-          #
-          # - The 301 is Surge's automatic www-folding, which only applies
-          #   while no project is published AT www. Publishing anything there
-          #   replaces the redirect with that project's content.
-          # - The certificate is the fragile half. Surge issues certificates
-          #   per published domain, so on 2026-09-03 www had none and served
-          #   the default *.surge.sh cert — a browser-visible error on the
-          #   canonical domain's most likely typo. It was fixed by publishing
-          #   www once purely to trigger issuance, then tearing that project
-          #   down so the automatic 301 resumed; the certificate survived.
-          #   Because www is no longer a project, its auto-renewal cannot be
-          #   inspected (`surge www.<domain> debug certs` returns
-          #   Unauthorized), so whether it renews at ~90 days is genuinely
-          #   unknown rather than assumed. This check is the safety net: curl
-          #   without -k fails on an invalid certificate, so a lapse fails a
-          #   deploy loudly instead of surfacing as a security warning to a
-          #   visitor. See docs/deployment.md#www-and-its-certificate.
+          # www must answer HTTPS with a valid certificate and a 301 onto the
+          # apex, carrying the path across. On Cloudflare that is the zone's
+          # redirect rule and its universal certificate; curl without -k
+          # fails on an invalid one, so a lapse fails the deploy loudly.
           verify_www() {
             www="www.$1"
             location="$(curl -sSI --max-time 20 "https://${www}/oddfest" | tr -d '\r' | awk 'tolower($1) == "location:" { print $2 }')"
@@ -475,18 +417,13 @@ jobs:
               echo "${www} verified: 301 -> ${location}, certificate valid"
               return 0
             fi
-            echo "::error::${www} did not redirect to https://$1/oddfest as expected (got '${location:-no redirect, or the request failed}'). Either Surge's automatic www-folding stopped applying — check nothing has been published to ${www} — or its certificate has lapsed, which curl reports as a failed request. See docs/deployment.md#www-and-its-certificate." >&2
+            echo "::error::${www} did not redirect to https://$1/oddfest as expected (got '${location:-no redirect, or the request failed}'). Check the www redirect rule in the Cloudflare zone (Rules → Redirect Rules), or the certificate, which curl reports as a failed request. See docs/deployment.md." >&2
             return 1
           }
 
-          # Once the nameservers are delegated, the tolerant branch can never
-          # be taken again and the canonical host is checked as strictly as
-          # the legacy one. Nothing to edit when that happens.
-          verify "$PRIMARY_DOMAIN" tolerant
-          verify "$LEGACY_DOMAIN" strict
-          if delegated_to_surge "$PRIMARY_DOMAIN"; then
-            verify_www "$PRIMARY_DOMAIN"
-          fi
+          verify "$PRIMARY_DOMAIN"
+          verify "$LEGACY_DOMAIN"
+          verify_www "$PRIMARY_DOMAIN"
       - name: Verify the other ODD domains redirect here
         run: |
           # oddfest.co and oddspace.co are supposed to be controlled entry
@@ -497,8 +434,7 @@ jobs:
           # oddfest.co is a Vercel project on GoDaddy DNS carrying Google
           # Workspace mail, oddspace.co is WordPress on Hostinger.
           #
-          # This check adapts rather than being flipped by hand, the same way
-          # `delegated_to_surge` above does. A domain that has not been
+          # This check adapts rather than being flipped by hand. A domain that has not been
           # migrated yet warns; one that HAS been migrated is then held to it
           # forever, so a redirect that later breaks or points somewhere
           # wrong fails the deploy loudly. There is no switch to remember.
