@@ -33,7 +33,9 @@ if (process.argv[2] && !arg('out')) {
 }
 const OUT = resolve(arg('out')?.replace(/^~/, process.env.HOME) ?? '.');
 const DSF = 1.6; // 1080 → 1728px: room to zoom in on the canvas without the photo going soft
-const CLEAR = 148; // the profile grid's square crop: no word above or below it
+// The edge no word crosses: 64px on a post (the profile grid crops 4:5 to 3:4 at the sides, since Jan 2025),
+// 250px on a story (Instagram's bars at the top and the bottom).
+const clear = (h) => (h > 1350 ? 250 : 64);
 
 const keyOf = (c) =>
   (c.variant === 'A' ? c.name : `${c.name}-${c.variant.toLowerCase()}`).slice(0, 38);
@@ -69,7 +71,7 @@ async function render() {
       await page.goto(`file://${file}`, { waitUntil: 'networkidle' });
       rmSync(file);
       for (let i = 0; i < wide; i++)
-        thumbs.push(
+        thumbs.push([
           (
             await page.screenshot({
               type: 'jpeg',
@@ -77,7 +79,8 @@ async function render() {
               clip: { x: i * (w / wide), y: 0, width: w / wide, height: h },
             })
           ).toString('base64'),
-        );
+          h / (w / wide),
+        ]);
       const info = await page.evaluate(collect);
       for (const p of check(info.texts, w, h, info.centred))
         problems.push(`${key} frame ${f.n}: ${p}`);
@@ -119,10 +122,10 @@ async function render() {
     const tw = 360;
     await page.setViewportSize({
       width: thumbs.length * (tw + 16) + 16,
-      height: Math.round(tw * 1.25) + 32,
+      height: Math.round(tw * Math.max(...thumbs.map(([, r]) => r))) + 32,
     });
     await page.setContent(
-      `<body style="margin:0;padding:16px;background:#262022;display:flex;gap:16px">${thumbs.map((b) => `<img src="data:image/jpeg;base64,${b}" style="width:${tw}px;height:${tw * 1.25}px;object-fit:cover">`).join('')}</body>`,
+      `<body style="margin:0;padding:16px;background:#262022;display:flex;align-items:flex-start;gap:16px">${thumbs.map(([b, r]) => `<img src="data:image/jpeg;base64,${b}" style="width:${tw}px;height:${tw * r}px">`).join('')}</body>`,
     );
     await page.screenshot({
       path: join(OUT, `sheet-${key}.jpg`),
@@ -161,6 +164,7 @@ function check(texts, w, h, centred) {
       .join('')
       .trim()
       .slice(0, 40);
+    const CLEAR = clear(h);
     if (!centred && (t.r.y < CLEAR - 2 || t.r.y + t.r.h > h - CLEAR + 2))
       out.push(`"${words}" runs into the ${CLEAR}px top/bottom clearance`);
     if (t.r.x < 40 || t.r.x + t.r.w > w - 40 || t.scroll > t.r.w + 2)
@@ -242,7 +246,7 @@ function collect() {
     bg: rgba(getComputedStyle(root).backgroundColor),
     photo: !!root.querySelector('img, svg image'),
     pictured: !!root.querySelector('img, svg, h1'),
-    centred: root.matches('.cover, .card'), // the cover and the card centre on purpose
+    centred: root.matches('.cover, .card, .ask'), // the cover, the card and the story ask centre on purpose
     texts,
   };
 }
@@ -338,8 +342,10 @@ return {};
 const kind = (html) => {
   const ask = /Link in bio|class="url"/.test(html) ? ' · the ask' : '';
   if (/class="ph cover/.test(html)) return 'Cover';
-  if (/class="ph win"/.test(html)) return 'Photo through the mark';
-  if (/class="ph"/.test(html)) return 'Photo with heading';
+  if (/class="ph st ask/.test(html)) return 'Story · the ask';
+  if (/class="ph st/.test(html)) return 'Story · teaser';
+  if (/class="ph win/.test(html)) return 'Photo through the mark';
+  if (/class="ph( bw)?"/.test(html)) return 'Photo with heading';
   if (/class="three"/.test(html)) return 'ODD in three';
   if (/class="card"/.test(html)) return 'Card';
   if (/class="q"/.test(html)) return `Q&A${ask}`;
@@ -400,7 +406,7 @@ function design() {
   const dir = join(OUT, 'design', 'project');
   mkdirSync(dir, { recursive: true });
   const GAP = 80,
-    PITCH = 1350 + 120 + 260; // 260 above each row for its title
+    PITCH = Math.max(...frames.flatMap((c) => c.slides.map((s) => s.h))) + 120 + 260; // 260 above each row for its title
   const pages = [...new Set(frames.map((c) => c.platform))];
   const boards = {
     'Main.dc.html': { x: 0, y: 0, w: 1080, h: 1350, title: 'Read me', page: pages[0] },
@@ -455,7 +461,7 @@ function design() {
       x,
       y,
       w: 760,
-      maxH: 1350,
+      maxH: Math.max(...c.slides.map((s) => s.h)),
       page,
       text: [
         `${platform} · ${c.title} · ${c.count} frame${c.count > 1 ? 's' : ''}`,

@@ -9,7 +9,7 @@
 // frame in the same bottom-left column, an ask, the brand card).
 //
 // What is ODD's about it:
-//   1. The cover is the site's hero — the dateline in Gabarito caps over the
+//   1. The cover is the site's hero — the dateline in Forta, one fact a line, over the
 //      Forta title put through the website's warp (src/scripts/warping-text.ts:
 //      per-word blur thresholded to blobs, then displaced by three drifting
 //      radial gradients). Reproduced here as static SVG filters so Playwright
@@ -23,12 +23,12 @@
 //      explanation at the bottom, the same 64px left edge as the headings, no
 //      mark (Ronny, 11 Oct: no logo in every empty space; text should use the
 //      frame, not half of it). Four kinds, so no two text frames in a carousel
-//      look alike: the explainer (SemiBold lead + Regular body), the Q&A (a
+//      look alike: the explainer (Forta lead + two short paragraphs), the Q&A (a
 //      Forta question, the site's own FAQ answer), the number (a 200px Forta
 //      figure) and the list (Forta lines).
-//   4. Every carousel ends with the ask (last text frame, "Link in bio.") and
-//      the Paper card: the mark filled with the cover photograph, the address.
-//      Only the vision carousel's card carries the mission.
+//   4. Every carousel ends with the Paper card, which is the ask: the product,
+//      date and offer, the mark filled with a photograph, "Read more at:" and
+//      the address. Only the vision carousel's card carries the mission.
 //
 // Lines are the site's words, verbatim or trimmed; facts from allthingsodd.co
 // on 9 Oct 2026. `alt` is the alt text. Credits are "ODDfest / name" from
@@ -40,16 +40,40 @@
 //
 //   node build.mjs --only=oddfest-whats,oddference-whats,oddspace-whats,odd-vision,odd-in-three \
 //     --out=~/Projects/AI/exports/odd-social/2026-10-whats-next
+//
+// Eighth pass, 15 Oct — Aki's final templates (Canva, 14 Oct) carried back in.
+// What he changed, and what every set now does:
+//   - Every heading and lead is Forta, the brand's display face, in caps: the
+//     text frame's lead too (it was Gabarito SemiBold). Gabarito is the body only.
+//   - Text frames are one kind by default: a Forta lead that makes a claim, then
+//     two short paragraphs, the substance and a kicker line. No bold phrase.
+//   - Photo headings are reasons, written to the reader and parallel across the
+//     carousel ("Host a club night." / "Host a performance." / "Host a workshop.");
+//     a heading may sit at the top (`at: 'top'`), a photo may go black and white
+//     (`bw`) so mixed light reads as one set.
+//   - The cover's dateline is Forta, one fact a line; the title fills the
+//     column (sized to fit) and has no full stop.
+//   - The card is the ask, on Instagram too: the product and date, the offer,
+//     the mark filled with a photo, "Read more at:" and the page's address, all
+//     in Forta at a size a phone can read. No "Link in bio." frame.
+//   - Each carousel can bring two stories (1080×1920): a teaser line that turns
+//     ("ODDfest is coming back." / "Just not in the same shape.") and the ask
+//     ("Want to take part? See more ↓"), with room below for the shared post.
+//   - The profile grid crops 4:5 posts to 3:4 at the sides (since Jan 2025), not
+//     to a square, so headings sit 80px from the edge; the 148px band is gone.
 import { A, I, MARK } from './posts.mjs';
 
 export const css = `
 .ph { position: absolute; inset: 0; overflow: hidden; background: var(--color-bg); color: var(--color-paper) }
 .ph > img { width: 100%; height: 100%; object-fit: cover; display: block }
+.ph.bw > img { filter: grayscale(1) contrast(1.06) }
 .ph .scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgb(14 9 11 / 64%), rgb(14 9 11 / 0%) 44%) }
-/* The gesture: Forta, Paper, bottom left. 148px clear of the bottom keeps the profile's square crop off the words. */
-.ph .words { position: absolute; left: 64px; right: 120px; bottom: 148px; margin: 0 }
-.ph .point { font: 400 72px/1.02 var(--font-display); letter-spacing: -0.015em; margin: 0; max-width: 11ch }
-.ph .point.long { font: 400 52px/1.08 var(--font-display); letter-spacing: -0.01em; max-width: 18ch }
+.ph .scrim.top { background: linear-gradient(to bottom, rgb(14 9 11 / 64%), rgb(14 9 11 / 0%) 44%) }
+/* The gesture: Forta, Paper, bottom left (or top left), two balanced lines. The grid's 3:4 crop takes ~34px a side, never the top or bottom. */
+.ph .words { position: absolute; left: 64px; right: 64px; bottom: 80px; margin: 0 }
+.ph .words.top { top: 80px; bottom: auto }
+.ph .point { font: 400 80px/1.02 var(--font-display); letter-spacing: -0.015em; margin: 0; max-width: 760px; text-wrap: balance }
+.ph .point.long { font: 400 60px/1.06 var(--font-display); letter-spacing: -0.01em; max-width: none }
 /* The window: the mark at 2800px wide with one lobe centred in the frame, lifted so the heading lands on Ink below it. */
 .ph .window { position: absolute; inset: 0; overflow: hidden }
 .ph .window svg { position: absolute; top: 44%; transform: translateY(-50%); display: block; height: auto; max-width: none }
@@ -57,8 +81,8 @@ export const css = `
 /* The cover: the site's hero. A flat Ink veil, the dateline, the warped title, centred; the photographer up the right edge. */
 .cover .veil { position: absolute; inset: 0; background: rgb(14 9 11 / 52%) }
 .cover .head { position: absolute; left: 64px; right: 64px; top: 50%; transform: translateY(-50%); text-align: center }
-.cover .dateline { font: 600 26px/1.4 var(--font-body); letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-paper-80); margin: 0 0 26px }
-.cover h1 { font: 400 104px/0.98 var(--font-display); letter-spacing: -0.02em; margin: 0; filter: url(#wd) }
+.cover .dateline { font: 400 42px/1.45 var(--font-display); letter-spacing: 0.16em; color: var(--color-paper); margin: 0 0 48px }
+.cover h1 { font: 400 104px/0.98 var(--font-display); letter-spacing: -0.02em; margin: 0; filter: url(#wd) } /* size set per title, see fit() */
 .cover h1 span { display: inline-block }
 .cover .credit { position: absolute; right: 40px; bottom: 148px; margin: 0; writing-mode: vertical-rl; transform: rotate(180deg);
   font: 400 22px/1 var(--font-body); letter-spacing: 0.04em; color: var(--color-paper-60) }
@@ -69,34 +93,43 @@ export const css = `
 /* On Paper the window needs no scrim: the heading already sits on the ground. */
 .paper .ph.win .scrim { display: none }
 
-/* The text frame: Ink, the whole frame. The lead at the top, the explanation at the bottom, the same 64px left edge as the headings; nothing else. */
+/* The text frame: Ink, the whole frame. A Forta lead at the top, the body at the bottom (a blank line between paragraphs), the same 64px left edge as the headings; nothing else. */
 .tx { position: absolute; inset: 0; background: var(--color-bg); color: var(--color-paper) }
-.tx .top { position: absolute; left: 64px; right: 96px; top: 148px; display: grid; gap: 20px }
-.tx .bottom { position: absolute; left: 64px; right: 96px; bottom: 148px; display: grid; gap: 28px }
-.tx p { margin: 0; font: 400 50px/1.3 var(--font-body); color: var(--color-paper-80); max-width: 920px }
-.tx .lead { font: 600 64px/1.12 var(--font-body); letter-spacing: -0.01em; color: var(--color-paper) }
+.tx .top { position: absolute; left: 64px; right: 96px; top: 148px; display: grid; gap: 28px }
+.tx .bottom { position: absolute; left: 64px; right: 96px; bottom: 148px; display: grid; gap: 69px }
+.tx p { margin: 0; font: 400 50px/1.38 var(--font-body); color: var(--color-paper-80); max-width: 920px }
+.tx .lead, .tx .q { font: 400 66px/1.12 var(--font-display); letter-spacing: -0.01em; color: var(--color-paper); max-width: 880px; text-wrap: balance }
 .tx .sub { font: 600 50px/1.3 var(--font-body); color: var(--color-paper) }
-.tx p b { font-weight: 600; color: var(--color-paper) }
-.tx .q { font: 400 72px/1.04 var(--font-display); letter-spacing: -0.015em; color: var(--color-paper); max-width: 14ch }
+.tx p b { font-weight: inherit; color: inherit } /* no bold phrase (Aki, 14 Oct): <b> left in older copy reads plain */
 .tx .big { font: 400 200px/0.95 var(--font-display); letter-spacing: -0.03em; color: var(--color-paper) }
-.tx .list { display: grid; gap: 14px }
-.tx .list p { font: 400 56px/1.12 var(--font-display); letter-spacing: -0.01em; color: var(--color-paper); max-width: none }
+.tx .list { display: grid; gap: 0 }
+.tx .list p { font: 400 54px/1.1 var(--font-display); letter-spacing: -0.01em; color: var(--color-paper); max-width: none; text-wrap: balance }
+.tx .list .sp { height: 24px }
 .tx .url { font: 600 50px/1.3 var(--font-body); color: var(--color-paper) }
 
 /* The three-part post: one 3240px render, the mark across it with a lobe a frame, cut into a, b, c. */
 .three { position: absolute; inset: 0; overflow: hidden; background: var(--color-bg); color: var(--color-paper) }
 .three svg { position: absolute; top: 44%; transform: translateY(-50%); display: block; height: auto; max-width: none }
-.three .point { position: absolute; bottom: 148px; margin: 0; font: 400 72px/1.02 var(--font-display); letter-spacing: -0.015em }
+.three .point { position: absolute; bottom: 80px; margin: 0; font: 400 80px/1.02 var(--font-display); letter-spacing: -0.015em }
 
-.card { position: absolute; inset: 0; display: grid; grid-template-rows: 1fr auto 1fr; gap: 72px; align-items: center; justify-items: center;
-  padding: 148px 96px; text-align: center; background: var(--color-paper); color: var(--color-bg) }
-.card p { margin: 0; font: 400 52px/1.1 var(--font-display); letter-spacing: -0.01em; max-width: 20ch }
-.card .ct { align-self: start } .card .cb { align-self: end; min-width: min-content; font: 400 30px/1.4 var(--font-body) } /* min-content: a long address widens the box instead of spilling off-centre */
-.card .cb span { display: block; margin-top: 6px; font-size: 24px; color: rgb(14 9 11 / 60%) }
-.paper .card .cb span { color: rgb(226 223 222 / 60%) }
-.card .cb.big { font-size: 48px } .card .cb.big span { margin-top: 10px; font-size: 30px } /* the address readable at phone size (Ronny, 12 Oct) */
-.card svg { width: 132px; height: auto; fill: currentColor }
+/* The card is the ask: the product, date and offer, the mark filled with a photo, where to read more. One centred stack, Forta, readable on a phone. */
+.card { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 96px;
+  padding: 96px 64px; text-align: center; background: var(--color-paper); color: var(--color-bg) }
+.card p { margin: 0; font: 400 52px/1.36 var(--font-display); max-width: 952px; text-wrap: balance }
+.card p span { display: block }
+.card svg { width: 132px; height: auto; fill: currentColor; flex: none }
 .card svg.filled { width: 760px }
+
+/* Stories, 1080×1920. Instagram's bars cover ~250px at the top and the bottom, so nothing goes there.
+   The teaser: a line top left that turns bottom right. The ask: a question and "See more", centred high, the lower half left for the shared post. */
+.st .veil { position: absolute; inset: 0; background: linear-gradient(rgb(14 9 11 / 56%), rgb(14 9 11 / 0%) 30% 70%, rgb(14 9 11 / 56%)) }
+.st.ask .veil { background: rgb(14 9 11 / 36%) }
+.st .point { position: absolute; margin: 0; font: 400 80px/1.1 var(--font-display); letter-spacing: -0.015em; max-width: 760px; text-wrap: balance }
+.st .p-top { left: 64px; top: 250px }
+.st .p-bottom { right: 64px; bottom: 250px; text-align: right }
+.st .box { position: absolute; left: 64px; right: 64px; top: 560px; display: grid; justify-items: center; gap: 88px; text-align: center }
+.st .box .point { position: static; font-size: 88px; max-width: 700px }
+.st .box svg { width: 36px; height: 88px; margin-top: -64px; fill: none; stroke: currentColor; stroke-width: 4 }
 `;
 
 // ── The warp, frozen. Same maths as warping-text.ts at one instant t: the map is
@@ -129,21 +162,41 @@ export const warp = (title, t, fs = 104, H = 600, W = 952, p = 0) => {
 // B: the mark filled with the photograph, on Paper. C: the title alone, bigger.
 // cover() returns A and remembers its arguments, so variant() can redraw it as B or C.
 const COVERS = new Map();
+const pic = ({ img, pos = 'center', zoom = 1, blur = 0 }) =>
+  `<img src="${img}" style="object-position:${pos};transform:scale(${zoom});transform-origin:${pos}${blur ? `;filter:blur(${blur}px)` : ''}" alt="">`;
+const br = (s) => s.replaceAll('\n', '<br>');
+
+// How many lines `text` takes at `fs` px in a `W` px column, by character count.
+// ponytail: 0.62 em a character is Forta 1's caps average; canvas.mjs render catches what still overflows.
+const lines = (text, fs, W) => {
+  const per = Math.floor(W / (fs * 0.62));
+  let n = 0,
+    count = 1;
+  for (const w of text.split(' ')) {
+    n = n ? n + 1 + w.length : w.length;
+    if (n > per) (count++, (n = w.length));
+  }
+  return count;
+};
+// The title fills the column: the largest size up to 128px that sets it in three lines or fewer.
+export const fit = (title, W = 952) => {
+  for (let fs = 128; fs > 72; fs -= 2) if (lines(title, fs, W) <= 3) return fs;
+  return 72;
+};
+
 export const coverHtml = (
   { img, pos = 'center', zoom = 1, dateline, title, t = 1, credit },
   v = 'a',
 ) => {
-  const { defs, h1 } =
-    v === 'c' ? warp(title.toUpperCase(), t, 128, 900, 984, 160) : warp(title.toUpperCase(), t);
-  const photo =
-    v === 'a'
-      ? `<img src="${img}" style="object-position:${pos};transform:scale(${zoom});transform-origin:${pos}" alt=""><div class="veil"></div>`
-      : '';
+  const T = title.replace(/\.$/, '').toUpperCase(); // a title, not a sentence: no full stop
+  const fs = v === 'c' ? 128 : fit(T);
+  const { defs, h1 } = v === 'c' ? warp(T, t, 128, 900, 984, 160) : warp(T, t, fs);
+  const photo = v === 'a' ? `${pic({ img, pos, zoom })}<div class="veil"></div>` : '';
   const mk =
     v === 'b'
       ? `<svg viewBox="0 0 434.41 137.892" class="mk" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="ck"><path d="${MARK}"/></clipPath></defs><image href="${img}" width="434.41" height="137.892" preserveAspectRatio="xMidYMid slice" clip-path="url(#ck)"/></svg>`
       : '';
-  return `<div class="ph cover${v === 'a' ? '' : ` cover-${v}`}">${photo}${defs}<div class="head">${mk}<p class="dateline">${dateline}</p><h1>${h1}</h1></div>${credit && v !== 'c' ? `<p class="credit">Photo: ${credit}</p>` : ''}</div>`;
+  return `<div class="ph cover${v === 'a' ? '' : ` cover-${v}`}">${photo}${defs}<div class="head">${mk}<p class="dateline">${dateline.split(' · ').join('<br>')}</p><h1 style="font-size:${fs}px">${h1}</h1></div>${credit && v !== 'c' ? `<p class="credit">Photo: ${credit}</p>` : ''}</div>`;
 };
 const cover = (args) => {
   const html = coverHtml(args);
@@ -170,8 +223,27 @@ const window = (img, lobe = 0, width = 2800) => {
   return `<div class="window"><svg viewBox="0 0 434.41 137.892" width="${width}" style="left:${left.toFixed(0)}px" xmlns="http://www.w3.org/2000/svg">${CLIP}${inLobe(img, lobe)}</svg></div>`;
 };
 
-const ph = ({ img, win, lobe = 0, pos = 'center', zoom = 1, point, long = false }) =>
-  `<div class="ph${win ? ' win' : ''}">${win ? window(win, lobe) : `<img src="${img}" style="object-position:${pos};transform:scale(${zoom});transform-origin:${pos}" alt="">`}<div class="scrim"></div><div class="words"><p class="point${long ? ' long' : ''}">${point}</p></div></div>`;
+// A heading is 80px in two lines; one that needs three goes `long`: 60px across the column.
+const ph = ({
+  img,
+  win,
+  lobe = 0,
+  pos,
+  zoom,
+  point,
+  long = lines(strip(point), 80, 760) > 2,
+  at,
+  bw,
+}) =>
+  `<div class="ph${win ? ' win' : ''}${bw ? ' bw' : ''}">${win ? window(win, lobe) : pic({ img, pos, zoom })}<div class="scrim${at === 'top' ? ' top' : ''}"></div><div class="words${at === 'top' ? ' top' : ''}"><p class="point${long ? ' long' : ''}">${point}</p></div></div>`;
+
+// Stories (1080×1920). The teaser turns a line in two: top left, then bottom right.
+const tease = ({ top, bottom, ...p }) =>
+  `<div class="ph st">${pic(p)}<div class="veil"></div><p class="point p-top">${top}</p><p class="point p-bottom">${bottom}</p></div>`;
+// The ask: the photo blurred to a ground, a question, where to look. The lower half stays free for the shared post.
+const ARROW = '<svg viewBox="0 0 36 88"><path d="M18 0v84M4 70l14 14 14-14"/></svg>';
+const ask = ({ q, more = 'See more', ...p }) =>
+  `<div class="ph st ask">${pic({ zoom: 1.12, blur: 18, ...p })}<div class="veil"></div><div class="box"><p class="point">${q}</p><p class="point">${more}</p>${ARROW}</div></div>`;
 
 // The three-part post: the necks land at x = 1120 and 2120, so each 1080px frame holds one lobe (the O loses 112px at the left edge).
 // `single` lays the whole mark across one 1.91:1 image for LinkedIn, the names centred under each lobe.
@@ -189,49 +261,78 @@ const three = (panels, single = false) => {
 // `url` (LinkedIn only) prints the address on the frame: there is no link in bio there, the link goes in the post.
 const wrap = (top, bottom, url) =>
   `<div class="tx"><div class="top">${top}</div><div class="bottom">${bottom}${url ? `<p class="url">${url}</p>` : ''}</div></div>`;
-const tx = ({ lead, body, url }) => wrap(`<p class="lead">${lead}</p>`, `<p>${body}</p>`, url);
-const qa = ({ q, a, url }) => wrap(`<p class="q">${q}</p>`, `<p>${a}</p>`, url);
+// A blank line in a body starts a new paragraph: the substance, then the kicker.
+const paras = (s) =>
+  s
+    .split('\n\n')
+    .map((p) => `<p>${br(p)}</p>`)
+    .join('');
+const tx = ({ lead, body, url }) => wrap(`<p class="lead">${br(lead)}</p>`, paras(body), url);
+const qa = ({ q, a, url }) => wrap(`<p class="q">${br(q)}</p>`, paras(a), url);
 const num = ({ big, lead, body, url }) =>
-  wrap(`<p class="big">${big}</p><p class="sub">${lead}</p>`, `<p>${body}</p>`, url);
+  wrap(`<p class="big">${big}</p><p class="sub">${lead}</p>`, paras(body), url);
+// The list: a quiet line to start, then the items in Forta; '' leaves a breath before the last one.
 const list = ({ lead, items }) =>
   wrap(
-    `<p class="lead">${lead}</p>`,
-    `<div class="list">${items.map((i) => `<p>${i}</p>`).join('')}</div>`,
+    `<p>${lead}</p>`,
+    `<div class="list">${items.map((i) => (i ? `<p>${i}</p>` : '<div class="sp"></div>')).join('')}</div>`,
   );
 
 const MISSION =
   'ODD exists to build better conditions for creative work — and to bring creative and cultural fields closer to business and wider society.';
-const card = ({ top = '', line = '', fill, url = 'allthingsodd.co', big = false }) => `
-  <div class="card"><p class="ct">${top}</p>
+// The card is the ask: `top` (or the older `line`) is the product, date and offer, one fact a line
+// (' · ' or '\n'); then the mark; then `more` and the page's address.
+// Each line is its own block so a long one balances instead of leaving a word alone; '' is a blank line.
+const card = ({ top, line = '', fill, url = 'allthingsodd.co', more = 'Read more at:' }) => `
+  <div class="card"><p>${(top ?? line)
+    .replaceAll(' · ', '\n')
+    .split('\n')
+    .map((l) => `<span>${l || '&nbsp;'}</span>`)
+    .join('')}</p>
     <svg viewBox="0 0 434.41 137.892" class="${fill ? 'filled' : ''}" xmlns="http://www.w3.org/2000/svg">${fill ? `<defs><clipPath id="cm"><path d="${MARK}"/></clipPath></defs><image href="${fill}" width="434.41" height="137.892" preserveAspectRatio="xMidYMid slice" clip-path="url(#cm)"/>` : `<path d="${MARK}"/>`}</svg>
-    <p class="cb${big ? ' big' : ''}">${url}${line ? `<span>${line}</span>` : ''}</p></div>`;
+    <p>${more}<span style="font-size:${Math.min(52, Math.floor(952 / (url.length * 0.66)))}px">${url}</span></p></div>`; // an address can't wrap: a long one steps down
 
 const by = (name) => (name ? `ODDfest / ${name}` : null);
 const num1 = (frames) => frames.map((f, i) => ({ n: i + 1, ...f }));
-const strip = (s) => s.replace(/<[^>]+>/g, '');
+function strip(s) {
+  return s.replace(/<[^>]+>/g, '');
+}
 
-// ── ODDfest 2027: the news WAS that ideas were collected before the dates were fixed.
-// Superseded 12 Oct (dates now 19–25 April on the site): kept for the record, don't re-import.
+// ── The three news carousels, as Aki finalised them in Canva on 14 Oct 2026 (IG ODDfest,
+// ODDference, ODDspace in All Things ODD › 01 Marketing › 02 Instagram). Words are his,
+// in house style ("Blind Bird", "1 December"); photos are his where the repo has them,
+// stand-ins flagged where it doesn't (the posted Canva version keeps his photo).
+const DATES =
+  'Dates: 19–25 April 2027, as the site says (Ronny chose it 12 Oct). The event-idea form on /oddfest still says “runs 19–26 April”: fix on the site.';
+const NAMES2026 =
+  '2026 naming: the site calls the five-venue programme ODDfest 2026 and the partner events Creative Week 2026. Both names kept as the site has them.';
+const BLIND =
+  'Blind Bird: the site says until 1 December 2026 or sold out; the ticket backend’s sales end has been 1 November. Make them agree before posting.';
+const STANDIN = (what) =>
+  `Stand-in photo: Aki’s Canva version uses ${what}, which isn’t in the repo. Post from Canva, or swap the file in.`;
+
+// ODDfest 2027: a new shape. The week explained, three reasons to host, the ask.
 const festCover = `${A}/about/oddfest-2026-tavastia-crowd.jpg`;
 const oddfest = num1([
   {
-    alt: 'A packed crowd with hands in the air under red light at Tavastia. Helsinki’s creative week: ODDfest 2027 is open for ideas. Photo: Julius Töyrylä.',
+    alt: 'A packed crowd with hands in the air under red light at Tavastia. Helsinki’s creative week, 19–25 April 2027: a new shape for ODDfest. Photo: Julius Töyrylä.',
+    flag: DATES,
     credit: by('Julius Töyrylä'),
     html: cover({
       img: festCover,
       pos: 'center 40%',
-      dateline: 'Helsinki’s creative week',
-      title: 'ODDfest 2027 is open for ideas.',
+      dateline: 'Helsinki’s creative week · 19–25 April 2027',
+      title: 'A new shape for ODDfest',
       t: 1.0,
       credit: 'Julius Töyrylä',
     }),
   },
   {
-    alt: 'Text on Ink. ODDfest is a week of independently made events across Helsinki. Artists, collectives, venues, organisations, communities and companies make and produce their own. ODD brings the week together: the shared identity, the programme, communications, PR and the map.',
+    alt: 'Text on Ink. In 2027, ODDfest becomes a week of independently made events across Helsinki. Artists, collectives, venues, organisations, communities and companies are invited to create and produce their own events. ODD brings them together into one shared week.',
     credit: null,
     html: tx({
-      lead: 'ODDfest is a week of <b>independently made</b> events across Helsinki.',
-      body: 'Artists, collectives, venues, organisations, communities and companies make and produce their own. ODD brings the week together: the shared identity, the programme, communications, PR and the map.',
+      lead: 'In 2027, ODDfest becomes a week of independently made events across Helsinki.',
+      body: 'Artists, collectives, venues, organisations, communities and companies are invited to create and produce their own events. ODD brings them together into one shared week.',
     }),
   },
   {
@@ -244,16 +345,17 @@ const oddfest = num1([
     }),
   },
   {
-    alt: 'Text on Ink. Start with what you do best. An exhibition, a performance, a workshop, a screening, a dinner, an open studio, a club night, a conversation — or a format nobody has tried yet.',
+    alt: 'Text on Ink. Start with what you do best… An exhibition. A performance. A workshop. A screening. A dinner. An open studio. A club night. A conversation. Or something nobody has tried yet.',
     credit: null,
     html: list({
-      lead: 'Start with what you do best.',
+      lead: 'Start with what you do best…',
       items: [
-        'An exhibition, a performance,',
-        'a workshop, a screening,',
-        'a dinner, an open studio,',
-        'a club night, a conversation,',
-        'or a format nobody has tried yet.',
+        'An exhibition. A performance.',
+        'A workshop. A screening.',
+        'A dinner. An open studio.',
+        'A club night. A conversation.',
+        '',
+        'Or something nobody has tried yet.',
       ],
     }),
   },
@@ -263,15 +365,16 @@ const oddfest = num1([
     html: ph({ win: `${A}/oddfest-2026/aerial-duo.jpg`, lobe: 0, point: 'Host a performance.' }),
   },
   {
-    alt: 'Text on Ink. Will anyone actually come? We cannot promise you an audience, and we would not trust anyone who did. What the week does is put your event into one programme alongside everything else happening those days, and spend the week telling people the whole thing is on — so your event is not the only reason someone has to be out that night.',
+    alt: 'Text on Ink. Different events. Different people. One shared week. Different venues, disciplines, scenes and audiences become part of the same week, giving people more reasons to move between them and discover something they weren’t even looking for.',
     credit: null,
-    html: qa({
-      q: 'Will anyone actually come?',
-      a: 'We cannot promise you an audience, and we would not trust anyone who did. What the week does is put your event into one programme alongside everything else happening those days, and spend the week telling people the whole thing is on — so your event is not the only reason someone has to be out that night.',
+    html: tx({
+      lead: 'Different events. Different people. One shared week.',
+      body: 'Different venues, disciplines, scenes and audiences become part of the same week, giving people more reasons to move between them and discover something they weren’t even looking for.',
     }),
   },
   {
-    alt: 'People in a small sunlit room, one standing and speaking, the others listening around a laptop. Host a workshop.',
+    alt: 'Two people lead a session in a warm, curtained room while others listen. Host a workshop.',
+    flag: STANDIN('a blindfolded participant at a workshop'),
     credit: by('Veikka Muukkonen'),
     html: ph({
       img: `${A}/about/oddfest-2026-workshop.jpg`,
@@ -280,162 +383,235 @@ const oddfest = num1([
     }),
   },
   {
-    alt: 'Text on Ink. Event ideas for ODDfest 2027 are being collected now, before the dates are fixed. Tell us what you want to make happen, where you are with it, and what kind of connections or support would actually be useful. An idea still at the notes-on-your-phone stage is a fine thing to send. Sending it commits you to nothing. Link in bio.',
+    alt: 'Text on Ink. Each event stays on its own terms. Together, they become ODDfest. A shared programme, identity and map connect what’s happening across the city. Come do your thing.',
     credit: null,
     html: tx({
-      lead: 'Event ideas for ODDfest 2027 are being collected now, before the dates are fixed.',
-      body: 'Tell us what you want to make happen, where you are with it, and what kind of connections or support would actually be useful. An idea still at the notes-on-your-phone stage is a fine thing to send. Sending it commits you to <b>nothing</b>. Link in bio.',
+      lead: 'Each event stays on its own terms.\nTogether, they become ODDfest.',
+      body: 'A shared programme, identity and map connect what’s happening across the city. Come do your thing.',
     }),
   },
   {
-    alt: 'A Paper card: the ODD mark filled with the Tavastia crowd photo. allthingsodd.co. ODDfest 2027, Helsinki’s creative week.',
+    alt: 'A Paper card: ODDfest 2027, 19–25 April. The ODD mark filled with the Tavastia crowd photo. Read more at: allthingsodd.co/oddfest',
+    flag: DATES,
     credit: by('Julius Töyrylä'),
-    html: card({ fill: festCover, line: 'ODDfest 2027 · Helsinki’s creative week' }),
+    html: card({
+      top: 'ODDfest 2027\n19–25 April',
+      fill: festCover,
+      url: 'allthingsodd.co/oddfest',
+    }),
   },
 ]);
 
-// ── ODDference 2027: the news is Blind Bird.
-const ferCover = `${I}/oddference-audience-seats.jpg`;
+// ODDference 2027: a different kind of business conference. Three reasons, the mystery, the offer.
+const ferCover = `${A}/oddfest-2026/blomqvist-piano-beams.jpg`;
+const ferSeats = `${I}/oddference-audience-seats.jpg`; // the Bio Rex audience: LinkedIn and the three-part post
+const ferCard = `${A}/mosaic/13-55344942531.jpg`;
 const oddference = num1([
   {
-    alt: 'An audience in dark cinema seats at Bio Rex. ODDference 2027, 22–23 April, Tanssin talo: Blind Bird tickets are on sale. Photo: Yoanna Rönnqvist.',
-    credit: by('Yoanna Rönnqvist'),
+    alt: 'A pianist under beams of stage light. ODDference, 22–23 April 2027, Tanssin talo, Helsinki: a different kind of business conference. Photo: @flyingwhalefv.',
+    flag: 'Credit: the site has no credit for blomqvist-piano-beams; @flyingwhalefv shot the rest of that folder. Check before posting.',
+    credit: by('@flyingwhalefv'),
     html: cover({
       img: ferCover,
-      dateline: 'ODDference 2027 · 22–23 April · Tanssin talo',
-      title: 'Blind Bird tickets are on sale.',
+      dateline: 'ODDference · 22–23 April 2027 · Tanssin talo, Helsinki',
+      title: 'A different kind of business conference',
       t: 1.9,
-      credit: 'Yoanna Rönnqvist',
+      credit: '@flyingwhalefv',
     }),
   },
   {
-    alt: 'Text on Ink. ODDference is a business conference built around creative and cultural expertise. People who work in art, design, music, film, games and media think constantly about attention, experience, meaning, emotion and how to make something that did not exist before. ODDference brings that expertise into questions facing business and society.',
+    alt: 'Text on Ink. In 2027, we’re taking ODDference further. ODDference moves to Tanssin talo and sharpens the idea: a business conference shaped by creative expertise, both on stage and in how the whole experience is built. Fewer, stronger sessions. More deliberate encounters. And more of the conference you simply have to experience in the room.',
     credit: null,
     html: tx({
-      lead: 'ODDference is a business conference built around creative and cultural expertise.',
-      body: 'People who work in art, design, music, film, games and media think constantly about attention, experience, meaning, emotion and how to make something that did not exist before. ODDference brings that expertise into questions facing business and society.',
+      lead: 'In 2027, we’re taking ODDference further.',
+      body: 'ODDference moves to Tanssin talo and sharpens the idea: a business conference shaped by creative expertise, both on stage and in how the whole experience is built.\n\nFewer, stronger sessions. More deliberate encounters. And more of the conference you simply have to experience in the room.',
     }),
   },
   {
-    alt: 'A speaker stands at a laptop on the Bio Rex stage, arms out, seen through the middle lobe of the ODD mark. Experience it.',
-    credit: by('Yoanna Rönnqvist'),
-    html: ph({ win: `${I}/oddference-speaker-laptop.jpg`, lobe: 1, point: 'Experience it.' }),
-  },
-  {
-    alt: 'Text on Ink. If creative expertise is the point, the event itself should prove it. Artists and creative practitioners shape the spaces, scenography, performances, soundscape and other parts of how ODDference feels. It is also a place to meet people outside your usual circuit — creative leaders, business leaders, founders, policymakers, institutions and researchers.',
-    credit: null,
-    html: tx({
-      lead: 'If creative expertise is the point, the event itself should prove it.',
-      body: 'Artists and creative practitioners shape the spaces, scenography, performances, soundscape and other parts of how ODDference feels. It is also a place to meet people <b>outside your usual circuit</b> — creative leaders, business leaders, founders, policymakers, institutions and researchers.',
-    }),
-  },
-  {
-    alt: 'A speaker on the Bio Rex stage beside a stack of large labelled cubes, the audience in front under blue light. On stage as experts.',
-    credit: by('@ilmarimedia'),
-    html: ph({ img: `${A}/programs/oddference-pathway.jpg`, point: 'On stage as experts.' }),
-  },
-  {
-    alt: 'Text on Ink. What can business learn from creative expertise? Creative professionals work with attention, emotion, experience, meaning and differentiation every day. ODDference brings that expertise into the questions business and society are facing now. Creative and cultural practitioners take the stage as experts rather than as entertainment.',
-    credit: null,
-    html: qa({
-      q: 'What can business learn from creative expertise?',
-      a: 'Creative professionals work with attention, emotion, experience, meaning and differentiation every day. ODDference brings that expertise into the questions business and society are facing now. Creative and cultural practitioners take the stage as experts rather than as entertainment.',
-    }),
-  },
-  {
-    alt: 'Elisabet Lahti in a white karate gi, fists raised, in front of a pink-lit screen. Tanssin talo, 22–23 April 2027.',
-    credit: by('@flyingwhalefv'),
+    alt: 'A musician in a red jacket and sunglasses plays the flute through streaks of coloured light. Learn from people outside your field.',
+    credit: by('Remu Shemeikka'),
     html: ph({
-      img: `${A}/oddfest-2026/oddference-elisabet-lahti.jpg`,
-      pos: '60% 78%',
-      zoom: 1.3,
-      point: 'Tanssin talo, 22–23 April 2027.',
-      long: true,
+      img: `${A}/mosaic/46-54584504120.jpg`,
+      point: 'Learn from people outside your field.',
     }),
   },
   {
-    alt: 'Text on Ink. €299. Blind Bird, plus VAT 13.5 %, until 1 November 2026 or sold out. The lowest price ODDference 2027 will be sold at. Early Bird will be €399 and the regular ticket €499, so committing early is worth €200 against the full price. Ticket holders hear the programme first as it is confirmed. Link in bio.',
+    alt: 'Text on Ink. Creative expertise is useful far beyond the creative industries. Artists, designers, filmmakers, musicians and game makers work with attention, experience, narrative, behaviour, meaning and participation for a living. ODDference brings that expertise into conversations about organisations, business, brands, technology and leadership.',
     credit: null,
-    html: num({
-      big: '€299',
-      lead: 'Blind Bird, + VAT 13.5 %, until 1 November 2026 or sold out.',
-      body: 'The lowest price ODDference 2027 will be sold at. Early Bird will be €399 and the regular ticket €499, so committing early is worth <b>€200</b> against the full price. Ticket holders hear the programme first as it is confirmed. Link in bio.',
+    html: tx({
+      lead: 'Creative expertise is useful far beyond the creative industries.',
+      body: 'Artists, designers, filmmakers, musicians and game makers work with attention, experience, narrative, behaviour, meaning and participation for a living.\n\nODDference brings that expertise into conversations about organisations, business, brands, technology and leadership.',
     }),
   },
   {
-    alt: 'A Paper card: the ODD mark filled with the Bio Rex audience photo. allthingsodd.co. ODDference 2027, 22–23 April, Tanssin talo, Helsinki.',
+    alt: 'Silhouettes of people moving through warm orange light. Meet people outside your usual circles.',
     credit: by('Yoanna Rönnqvist'),
-    html: card({ fill: ferCover, line: 'ODDference 2027 · 22–23 April · Tanssin talo, Helsinki' }),
+    html: ph({
+      img: `${A}/mosaic/67-55338542944.jpg`,
+      point: 'Meet people outside your usual circles.',
+    }),
+  },
+  {
+    alt: 'Text on Ink. The people in the room are part of the programme. Creative practitioners, business leaders, founders, institutions, researchers and policymakers rarely meet in the same professional setting. ODDference is built to create those encounters.',
+    credit: null,
+    html: tx({
+      lead: 'The people in the room are part of the programme.',
+      body: 'Creative practitioners, business leaders, founders, institutions, researchers and policymakers rarely meet in the same professional setting.\n\nODDference is built to create those encounters.',
+    }),
+  },
+  {
+    alt: 'Black and white: a dark stage with bars of light and the words “Debate in the dark” projected above it. Experience a conference that doesn’t feel like one.',
+    credit: by('Sebastian Hiemann'),
+    html: ph({
+      img: `${A}/mosaic/61-54612738051.jpg`,
+      bw: true,
+      point: 'Experience a conference that doesn’t feel like one.',
+    }),
+  },
+  {
+    alt: 'Text on Ink. Some things are better left unexplained. ODDference will be more than what happens on stage. Some parts of the event are designed to be discovered in the moment. We could tell you what to expect. But that would defeat the point.',
+    credit: null,
+    html: tx({
+      lead: 'Some things are better left unexplained.',
+      body: 'ODDference will be more than what happens on stage. Some parts of the event are designed to be discovered in the moment.\n\nWe could tell you what to expect. But that would defeat the point.',
+    }),
+  },
+  {
+    alt: 'A Paper card: ODDference 2027, 22–23 April. Blind Bird tickets now available, €299 + VAT until 1 December or sold out. The ODD mark filled with a photo of people around wooden sculptures. Read more at: allthingsodd.co/oddference',
+    flag: BLIND,
+    credit: by('Julius Töyrylä'),
+    html: card({
+      top: 'ODDference 2027, 22–23 April\n\nBlind Bird tickets now available\n€299 + VAT until 1&nbsp;December or sold out',
+      fill: ferCard,
+      url: 'allthingsodd.co/oddference',
+    }),
   },
 ]);
 
-// ── ODDspace: the news is that membership and the venue are open.
+// ODDspace: a year-round home for creative work. Membership, hosting, the pilot, the ask.
 const spaceCover = `${A}/oddspace/opening-full-house.jpg`;
 const oddspace = num1([
   {
-    alt: 'A full room at the ODDspace opening in Vallila, people on sofas and chairs in daylight. ODDspace, Teollisuuskatu 9D, Vallila: a year-round home for creative work. Photo: Remu Shemeikka.',
+    alt: 'A full room at ODDspace in Vallila, someone in an ODDfest 2025 T-shirt in front. ODDspace, Teollisuuskatu 9D, Vallila: a year-round home for creative work. Photo: Remu Shemeikka.',
     credit: by('Remu Shemeikka'),
     html: cover({
-      img: spaceCover,
+      img: `${A}/programs/oddspace-card.jpg`,
       dateline: 'ODDspace · Teollisuuskatu 9D, Vallila',
-      title: 'A year-round home for creative work.',
+      title: 'A year-round home for creative work',
       t: 1.3,
       credit: 'Remu Shemeikka',
     }),
   },
   {
-    alt: 'Text on Ink. ODDspace is a workspace, event space and studio in Vallila, Helsinki. Coworking areas, meeting rooms, an event and gallery floor, an auditorium and ODDstudio, a creative music studio run with TUNEMENT and booked separately — for people working across art, culture, design, media, technology and business.',
+    alt: 'Text on Ink. Creative work needs more than events. It needs places where people can work, meet, make things and build relationships throughout the year. ODDspace is our way to co-create that kind of communal place in Helsinki.',
     credit: null,
     html: tx({
-      lead: 'ODDspace is a workspace, event space and studio in Vallila, Helsinki.',
-      body: 'Coworking areas, meeting rooms, an event and gallery floor, an auditorium and ODDstudio, a creative music studio run with TUNEMENT and booked separately — for people working across art, culture, design, media, technology and business.',
+      lead: 'Creative work needs more than events.',
+      body: 'It needs places where people can work, meet, make things and build relationships throughout the year.\n\nODDspace is our way to co-create that kind of communal place in Helsinki.',
     }),
   },
   {
-    alt: 'A person in a colourful knitted jumper works on a laptop on a grey sofa. Work.',
-    credit: by(null),
-    html: ph({ img: `${A}/oddspace/coworking-laptop-sofa.jpg`, pos: '40% center', point: 'Work.' }),
+    alt: 'Black and white: a full room of people seated under the beams at ODDspace. Make it your home base.',
+    credit: by('Remu Shemeikka'),
+    html: ph({
+      img: `${A}/oddspace/opening-crowd-dj.jpg`,
+      at: 'top',
+      bw: true,
+      point: 'Make it your home base.',
+    }),
   },
   {
-    alt: 'Text on Ink. €150 a month. One membership, the whole space, except the studio. One flat rate, no tiers. Full 24/7 access to the coworking space, shared facilities and meeting rooms, plus member rates on bookable event spaces. Rolling admission during the pilot, no long-term commitment.',
+    alt: 'Text on Ink. Work here like it’s your own. For €150 a month, members get 24/7 access to the coworking space, shared facilities and meeting rooms, plus member rates on event spaces. One membership. No tiers. No long-term commitment.',
     flag: 'Price: check with Ronny that €150 a month is still current before posting.',
     credit: null,
-    html: num({
-      big: '€150',
-      lead: 'a month. One membership, the whole space, except the studio.',
-      body: 'One flat rate, no tiers. Full 24/7 access to the coworking space, shared facilities and meeting rooms, plus member rates on bookable event spaces. <b>Rolling admission</b> during the pilot, no long-term commitment.',
+    html: tx({
+      lead: 'Work here like it’s your own.',
+      body: 'For €150 a month, members get 24/7 access to the coworking space, shared facilities and meeting rooms, plus member rates on event spaces.\n\nOne membership. No tiers. No long-term commitment.',
     }),
   },
   {
-    alt: 'People talking around tables with drinks in a bright room at ODDspace. Meet.',
-    credit: by('Remu Shemeikka'),
-    html: ph({ img: `${A}/oddspace/opening-table-conversation.jpg`, point: 'Meet.' }),
-  },
-  {
-    alt: 'Text on Ink. Can non-members organise events? Yes. Renting the gallery or auditorium doesn’t require membership. From €300 + VAT for creative organisations and cultural workers, and from €750 + VAT for companies — tell us the date and what you’re planning, and we reply with availability and a price within one working day.',
+    alt: 'Black and white: the empty gallery floor at ODDspace, pillars and open ceiling. Bring your event here.',
+    flag: STANDIN('a dark dance floor full of people'),
     credit: null,
-    html: qa({
-      q: 'Can non-members organise events?',
-      a: 'Yes. Renting the gallery or auditorium doesn’t require membership. From €300 + VAT for creative organisations and cultural workers, and from €750 + VAT for companies — tell us the date and what you’re planning, and we reply with availability and a price <b>within one working day</b>.',
+    html: ph({
+      img: `${A}/oddspace/gallery-floor.jpg`,
+      at: 'top',
+      bw: true,
+      point: 'Bring your event here.',
     }),
   },
   {
-    alt: 'People kneel on the floor painting together on large sheets of paper, seen from above through the last lobe of the ODD mark. Host.',
-    credit: by('Remu Shemeikka'),
-    html: ph({ win: `${A}/oddspace/opening-painting-floor.jpg`, lobe: 2, point: 'Host.' }),
-  },
-  {
-    alt: 'Text on Ink. Can I visit before joining? Yes — mention it in your message and we’ll set up a time to show you around. Memberships are accepted on a rolling basis as space becomes available. Link in bio.',
+    alt: 'Text on Ink. You don’t need to be a member to host events here. The gallery and auditorium are available for exhibitions, workshops, performances, talks, gatherings and other events. Tell us what you want to do and when. We’ll figure out the rest with you.',
     credit: null,
-    html: qa({
-      q: 'Can I visit before joining?',
-      a: 'Yes — mention it in your message and we’ll set up a time to show you around. Memberships are accepted on a rolling basis as space becomes available. Link in bio.',
+    html: tx({
+      lead: 'You don’t need to be a member to host events here.',
+      body: 'The gallery and auditorium are available for exhibitions, workshops, performances, talks, gatherings and other events.\n\nTell us what you want to do and when. We’ll figure out the rest with you.',
     }),
   },
   {
-    alt: 'A Paper card: the ODD mark filled with the ODDspace opening photo. allthingsodd.co. ODDspace, Teollisuuskatu 9D, Vallila.',
+    alt: 'People kneel on the floor painting together on large sheets of paper. Join the people building it.',
     credit: by('Remu Shemeikka'),
-    html: card({ fill: spaceCover, line: 'ODDspace · Teollisuuskatu 9D, Vallila' }),
+    html: ph({
+      img: `${A}/oddspace/opening-painting-floor.jpg`,
+      at: 'top',
+      point: 'Join the people building it.',
+    }),
+  },
+  {
+    alt: 'Text on Ink. This is the pilot. The ambition is bigger. We’re working towards a permanent home for Helsinki’s creative industries — a place where artists, creative professionals, companies and institutions can work, meet and build things together. Think Maria 01, but built around the creative economy.',
+    credit: null,
+    html: tx({
+      lead: 'This is the pilot.\nThe ambition is bigger.',
+      body: 'We’re working towards a permanent home for Helsinki’s creative industries — a place where artists, creative professionals, companies and institutions can work, meet and build things together.\n\nThink Maria 01, but built around the creative economy.',
+    }),
+  },
+  {
+    alt: 'A Paper card: Work here. Host events. Come build with us. The ODD mark filled with the ODDspace opening photo. Teollisuuskatu 9D, Vallila. allthingsodd.co/oddspace',
+    credit: by('Remu Shemeikka'),
+    html: card({
+      top: 'Work here.\nHost events.\nCome build with us.',
+      fill: spaceCover,
+      more: 'Teollisuuskatu 9D, Vallila',
+      url: 'allthingsodd.co/oddspace',
+    }),
+  },
+]);
+
+// Stories (1080×1920), shared alongside each post: the teaser that turns, then the ask.
+const story = (frames) => num1(frames.map((f) => ({ h: 1920, ...f })));
+const festStory = story([
+  {
+    alt: 'A guitarist in silhouette in blue stage smoke. ODDfest is coming back. Just not in the same shape.',
+    flag: STANDIN('a woman in silhouette holding up a glass in blue light'),
+    credit: by('Julius Töyrylä'),
+    html: tease({
+      img: `${A}/oddfest-2026/2026/blue-silhouette-smoke.jpg`,
+      top: 'ODDfest is coming back.',
+      bottom: 'Just not in the same shape.',
+    }),
+  },
+  {
+    alt: 'A crowd with hands up under red light, blurred. Want to take part? See more.',
+    flag: 'Aki made no ask story for ODDfest: this one follows his ODDference ask, on a photo from the repo.',
+    credit: by('Julius Töyrylä'),
+    html: ask({ img: `${A}/oddfest-2026/2026/crowd-hands-red.jpg`, q: 'Want to take part?' }),
+  },
+]);
+const ferStory = story([
+  {
+    alt: 'Two people at a table laughing in purple light. ODDference is back. And we’re taking it further.',
+    flag: `${STANDIN('a man raising his hand in purple light, a performer behind him')} audience-purple has no credit on file.`,
+    credit: null,
+    html: tease({
+      img: `${I}/audience-purple.jpg`,
+      top: 'ODDference is back.',
+      bottom: 'And we’re taking it further.',
+    }),
+  },
+  {
+    alt: 'A stage in streaks of coloured light, blurred. Want to be in the room? See more.',
+    credit: by('Remu Shemeikka'),
+    html: ask({ img: `${A}/mosaic/49-55325200328.jpg`, q: 'Want to be in the room?' }),
   },
 ]);
 
@@ -535,7 +711,7 @@ const inThree = [
     alt: 'Three frames that together form the ODD mark, each lobe filled with a photograph: a crowd at Tavastia (ODDfest), an audience at Bio Rex (ODDference), a full room at the ODDspace opening (ODDspace).',
     html: three([
       { img: festCover, point: 'ODDfest.' },
-      { img: ferCover, point: 'ODDference.' },
+      { img: ferSeats, point: 'ODDference.' },
       { img: spaceCover, point: 'ODDspace.' },
     ]),
   },
@@ -624,7 +800,7 @@ const liFerence = num1([
     alt: 'An audience in dark cinema seats at Bio Rex. ODDference 2027, 22–23 April, Tanssin talo, Helsinki: what can business learn from creative expertise? Photo: Yoanna Rönnqvist.',
     credit: by('Yoanna Rönnqvist'),
     html: cover({
-      img: ferCover,
+      img: ferSeats,
       dateline: 'ODDference 2027 · 22–23 April · Tanssin talo, Helsinki',
       title: 'What can business learn from creative expertise?',
       t: 1.9,
@@ -658,11 +834,12 @@ const liFerence = num1([
     html: ph({ win: `${I}/oddference-speaker-laptop.jpg`, lobe: 1, point: 'Experience it.' }),
   },
   {
-    alt: 'Text on Ink. €299. Blind Bird, plus VAT 13.5 %, until 1 November 2026 or sold out. The lowest price ODDference 2027 will be sold at: Early Bird will be €399, the regular ticket €499. Paid by card on the ticket page; if your organisation needs an invoice instead, email hello@oddfest.co. allthingsodd.co/tickets',
+    alt: 'Text on Ink. €299. Blind Bird, plus VAT 13.5 %, until 1 December 2026 or sold out. The lowest price ODDference 2027 will be sold at: Early Bird will be €399, the regular ticket €499. Paid by card on the ticket page; if your organisation needs an invoice instead, email hello@oddfest.co. allthingsodd.co/tickets',
+    flag: BLIND,
     credit: null,
     html: num({
       big: '€299',
-      lead: 'Blind Bird, + VAT 13.5 %, until 1 November 2026 or sold out.',
+      lead: 'Blind Bird, + VAT 13.5 %, until 1 December 2026 or sold out.',
       body: 'The lowest price ODDference 2027 will be sold at: Early Bird will be €399, the regular ticket €499. Paid by card on the ticket page; if your organisation needs an <b>invoice</b> instead, email hello@oddfest.co.',
       url: 'allthingsodd.co/tickets',
     }),
@@ -671,7 +848,7 @@ const liFerence = num1([
     alt: 'A Paper card: the ODD mark filled with the Bio Rex audience photo. allthingsodd.co/oddference. ODDference 2027, 22–23 April, Tanssin talo, Helsinki.',
     credit: by('Yoanna Rönnqvist'),
     html: card({
-      fill: ferCover,
+      fill: ferSeats,
       url: 'allthingsodd.co/oddference',
       line: 'ODDference 2027 · 22–23 April · Tanssin talo, Helsinki',
     }),
@@ -811,7 +988,7 @@ const liOdd = [
     html: three(
       [
         { img: festCover, point: 'ODDfest.' },
-        { img: ferCover, point: 'ODDference.' },
+        { img: ferSeats, point: 'ODDference.' },
         { img: spaceCover, point: 'ODDspace.' },
       ],
       true,
@@ -822,10 +999,6 @@ const liOdd = [
 // ── ODDfest 2027, what it is (12 Oct, Aki's direction): the week explained before the ask.
 // Instagram for everyone who might come, LinkedIn for organisations. Facts from /oddfest
 // and /about on 12 Oct. The page says 19–25 April; its event-idea form still says 19–26.
-const DATES =
-  'Dates: 19–25 April 2027, as the site says (Ronny chose it 12 Oct). The event-idea form on /oddfest still says “runs 19–26 April”: fix on the site.';
-const NAMES2026 =
-  '2026 naming: the site calls the five-venue programme ODDfest 2026 and the partner events Creative Week 2026. Both names kept as the site has them.';
 const whatCover = `${A}/about/oddfest-2025-love-stage-dancing.jpg`;
 const festWhat = num1([
   {
@@ -1017,18 +1190,18 @@ const variant = (frames, v) =>
 // Canva only (canva.mjs); the posts themselves are below.
 const kit = num1([
   oddfest[0], //       cover
-  oddfest[1], //       explainer
+  oddference[1], //    explainer, two paragraphs
   oddfest[2], //       photo, short heading
-  oddference[6], //    photo, long heading
+  oddference[2], //    photo, long heading
+  oddspace[2], //      photo, heading at the top, black and white
   oddfest[4], //       window, first lobe
-  oddference[2], //    window, middle lobe
-  oddspace[6], //      window, last lobe
-  oddfest[5], //       Q&A
-  oddspace[3], //      number
+  liFerence[4], //     window, middle lobe
+  liSpace[4], //       window, last lobe
+  festWhat[5], //      Q&A
+  liSpace[3], //       number
   oddfest[3], //       list
-  oddfest[7], //       the ask, Instagram (link in bio)
   liFerence[5], //     the ask, LinkedIn (the address on the frame)
-  oddfest[8], //       card, the mark filled
+  oddference[8], //    card, the ask
   vision[10], //       card, the mission
 ]);
 
@@ -1052,6 +1225,8 @@ export const carousels = [
       { name: 'oddference-whats-next', title: 'ODDference 2027', frames: oddference },
       { name: 'oddspace-whats-next', title: 'ODDspace', frames: oddspace },
       { name: 'odd-vision-mission', title: 'Why ODD exists', frames: vision },
+      { name: 'oddfest-story', title: 'ODDfest 2027 · stories', frames: festStory },
+      { name: 'oddference-story', title: 'ODDference 2027 · stories', frames: ferStory },
     ],
     'instagram',
     ['a'],
@@ -1084,7 +1259,7 @@ export const carousels = [
       },
       {
         name: 'li-oddference',
-        hook: 'What can business learn from creative expertise? Two days at Tanssin talo, 22–23 April 2027. Blind Bird €299 + VAT until 1 November or sold out; invoices on request.',
+        hook: 'What can business learn from creative expertise? Two days at Tanssin talo, 22–23 April 2027. Blind Bird €299 + VAT until 1 December or sold out; invoices on request.',
         title: 'ODDference 2027',
         frames: liFerence,
       },

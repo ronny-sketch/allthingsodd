@@ -11,7 +11,7 @@ This is the tool Ronny uses for ODD's posts, written down so that anyone's Claud
 
 For each post (a _carousel_):
 
-- **Instagram:** 1080 × 1350 JPEGs, 9 frames (up to 11 for a story that needs it).
+- **Instagram:** 1080 × 1350 JPEGs, 9 frames (up to 11 for a story that needs it), plus two **stories** at 1080 × 1920 to share alongside the post: the teaser and the ask.
 - **LinkedIn:** the same story for organisations, 7 pages, as JPEGs plus one PDF (the document post).
 - **An editable claude.ai Design canvas.** Every frame sits at 1080 × 1350 with its words as live text. A note at the end of each row holds the caption credit line, the alt texts and the flags.
 - **`NOTES.md`:** every frame with its photo and credit, the facts with their sources, and the flags.
@@ -35,20 +35,21 @@ For each post (a _carousel_):
 
 ## The model
 
-This was approved by Ronny on 9–11 Oct 2026. Do not redesign it.
+This was approved by Ronny on 9–11 Oct 2026 and finalised by Aki in Canva on 14 Oct 2026 (the IG ODDfest, ODDference and ODDspace carousels, now in `whats-next.mjs` as `oddfest`, `oddference`, `oddspace`, with their stories). Do not redesign it. When in doubt, open those three and do what they do.
 
 **News from ODD.** Every other frame is a photograph with a heading, and the text frame after it explains the heading. The reference account is Uusi Juttu (@uusijuttu.fi). Read it for the rhythm, never copy its surface.
 
 **Instagram carousel, 9 frames:**
 
-| Slot  | 1     | 2    | 3     | 4    | 5     | 6    | 7     | 8                 | 9    |
-| ----- | ----- | ---- | ----- | ---- | ----- | ---- | ----- | ----------------- | ---- |
-| Frame | Cover | Text | Photo | Text | Photo | Text | Photo | Text: **the ask** | Card |
+| Slot  | 1     | 2    | 3     | 4    | 5     | 6    | 7     | 8    | 9                 |
+| ----- | ----- | ---- | ----- | ---- | ----- | ---- | ----- | ---- | ----------------- |
+| Frame | Cover | Text | Photo | Text | Photo | Text | Photo | Text | Card: **the ask** |
 
 - Exactly one of the photo slots (3, 5 or 7) is the **window**. Move it between carousels.
 - Across the week's carousels use a different **lobe** each time: `lobe: 0` is the O, `1` the first D, `2` the last D.
-- The text frames come in four kinds: explainer, Q&A, number, list. Mix them so no two text frames in a carousel look alike, and no two carousels use the same order.
-- The ask is the last text frame. On Instagram its words end with **"Link in bio."**
+- The explainer is the default text frame. A list, Q&A or number goes in only where the content is a list, a real question or a figure the site states.
+- **The card is the ask**, on Instagram too: the product and date, the offer, the mark filled with a photo, "Read more at:" and the page's address. No "Link in bio." frame.
+- **Stories (with a news carousel):** two 1080 × 1920 frames. The teaser says one line that turns ("ODDfest is coming back." / "Just not in the same shape."). The ask puts a question to the reader over the photo blurred, with "See more ↓" and the lower half left free for the shared post.
 
 **LinkedIn deck, 7 pages.** The reader is an organisation (a partner, a company booking the space, a buyer of tickets for staff), not a visitor.
 
@@ -58,7 +59,7 @@ This was approved by Ronny on 9–11 Oct 2026. Do not redesign it.
 4. Q&A.
 5. Window.
 6. The ask, with the page URL on the frame (`url: 'allthingsodd.co/…'`).
-7. Card with the same URL.
+7. Card with the same URL, the ask again in a line.
 
 LinkedIn has no link in bio and PDF pages are not clickable, so the address is always printed. The carousel gets a `hook`: a draft of the post's first line, for the person to rewrite.
 
@@ -68,28 +69,46 @@ LinkedIn has no link in bio and PDF pages are not clickable, so the address is a
 
 The helpers in `whats-next.mjs` set every size, colour and position. Never restyle inside a frame.
 
-| Frame     | Call                                                    | What the helper draws                                                                                                                                                                           | Copy limits                                                                                                                                                 |
-| --------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Cover     | `cover({ img, pos, zoom, dateline, title, t, credit })` | The photo under a 52 % Ink veil. The dateline in Gabarito SemiBold 26 px caps, tracked, Paper 80 %. The title in Forta 104 px through the website's warp. "Photo: Name" runs up the right edge. | Dateline ≤ 45 characters. Title ≤ 45 characters, ending in a full stop. `t` is the instant of the warp: a new value (0.5–4) for every carousel in the week. |
-| Photo     | `ph({ img, pos, zoom, point })`                         | The photo full-bleed with an Ink scrim (64 % at the bottom, gone by 44 %). The heading in Forta, Paper, bottom left, 64 px from the left and 148 px from the bottom.                            | ≤ 4 words at 72 px. Longer: add `long: true` (52 px) and keep it ≤ 40 characters.                                                                           |
-| Window    | `ph({ win, lobe, point })`                              | The photo seen through one lobe of the mark, the heading on Ink below.                                                                                                                          | The subject must sit in the middle third of the photo. ≤ 4 words. Once per carousel.                                                                        |
-| Explainer | `tx({ lead, body, url })`                               | Ink. The lead in Gabarito SemiBold 64 px at the top, the body in Gabarito 50 px at Paper 80 % at the bottom.                                                                                    | Lead ≤ 90 characters. Body ≤ 340 characters with **one** `<b>…</b>` phrase.                                                                                 |
-| Q&A       | `qa({ q, a, url })`                                     | A Forta 72 px question at the top, the answer at the bottom.                                                                                                                                    | Question ≤ 50 characters, taken from the site's FAQ where one exists. Answer ≤ 340 characters.                                                              |
-| Number    | `num({ big, lead, body, url })`                         | A Forta 200 px figure with a SemiBold line under it, the body at the bottom.                                                                                                                    | Figure ≤ 6 characters (€299, 5,000+). Only a figure the site states.                                                                                        |
-| List      | `list({ lead, items })`                                 | The lead at the top, Forta 56 px lines at the bottom.                                                                                                                                           | ≤ 5 lines, each ≤ 34 characters.                                                                                                                            |
-| Card      | `card({ fill, line, url })`                             | Paper, with the mark (760 px) filled with the cover photo, the address and one line.                                                                                                            | Line ≤ 45 characters. `fill` is the cover photo.                                                                                                            |
+| Frame        | Call                                                    | What the helper draws                                                                                                                                                                                                                                                                                                                    | Copy limits                                                                                                                                                                |
+| ------------ | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cover        | `cover({ img, pos, zoom, dateline, title, t, credit })` | The photo under a 52 % Ink veil. The dateline in Forta 42 px, tracked, Paper, one fact a line (split at `·`). The title in Forta through the website's warp, sized to fill the column (128 px down, three lines at most); a final full stop is dropped. "Photo: Name" runs up the right edge.                                            | Dateline: two or three facts (product · date · place). Title ≤ 45 characters, a positioning line, not a sentence. `t`: a new value (0.5–4) for every carousel in the week. |
+| Photo        | `ph({ img, pos, zoom, point, at, bw })`                 | The photo full-bleed under an Ink scrim. The heading in Forta 80 px, Paper, two balanced lines, 64 px from the left and 80 px from the bottom. `at: 'top'` puts it 80 px from the top (the scrim follows). A heading that needs three lines at 80 px goes 60 px across the column by itself. `bw: true` turns the photo black and white. | ≤ 40 characters; aim for two lines at 80 px.                                                                                                                               |
+| Window       | `ph({ win, lobe, point })`                              | The photo seen through one lobe of the mark, the heading on Ink below.                                                                                                                                                                                                                                                                   | The subject must sit in the middle third of the photo. Once per carousel.                                                                                                  |
+| Explainer    | `tx({ lead, body, url })`                               | Ink. The lead in Forta 66 px caps at the top; the body in Gabarito 50 px, Paper 80 %, at the bottom. A blank line (`\n\n`) in the body starts the second paragraph; `\n` in the lead breaks the line.                                                                                                                                    | Lead ≤ 80 characters, a claim. Body: two short paragraphs, ≤ 320 characters in all. No bold.                                                                               |
+| Q&A          | `qa({ q, a, url })`                                     | The explainer with a question as its lead.                                                                                                                                                                                                                                                                                               | Question ≤ 50 characters, from the site's FAQ where one exists.                                                                                                            |
+| Number       | `num({ big, lead, body, url })`                         | A Forta 200 px figure with a SemiBold line under it, the body at the bottom.                                                                                                                                                                                                                                                             | Figure ≤ 6 characters (€299, 5,000+). Only a figure the site states.                                                                                                       |
+| List         | `list({ lead, items })`                                 | A quiet Gabarito line at the top, Forta 54 px lines at the bottom. An empty item (`''`) leaves a breath before the last line.                                                                                                                                                                                                            | ≤ 6 lines, each ≤ 34 characters.                                                                                                                                           |
+| Card         | `card({ top, fill, url, more })`                        | Paper, one centred stack in Forta 52 px: the `top` lines (`\n` or `·` breaks a line, `\n\n` leaves one empty), the mark (760 px) filled with a photo, then `more` ("Read more at:" by default) and the address, which steps down in size if it's long.                                                                                   | `top` ≤ 4 lines: product and date, then the offer or the invitation. `url` is the product's page.                                                                          |
+| Story teaser | `tease({ img, pos, zoom, top, bottom })`                | 1080 × 1920. Forta 80 px, Paper: `top` 250 px from the top on the left, `bottom` 250 px from the bottom on the right, a soft Ink gradient behind each.                                                                                                                                                                                   | Each line ≤ 30 characters.                                                                                                                                                 |
+| Story ask    | `ask({ img, pos, zoom, q, more })`                      | 1080 × 1920. The photo blurred under Ink; the question, "See more" and ↓ in Forta 88 px, centred, from 560 px down.                                                                                                                                                                                                                      | Question ≤ 26 characters.                                                                                                                                                  |
+
+Story frames go in their own set, wrapped in `story([...])` so they render at 1080 × 1920: see `festStory` and `ferStory`.
 
 The character limits are guides. `canvas.mjs render` checks the real layout, and its verdict is what counts.
+
+## The copy
+
+What Aki's final versions do, and every new carousel does too:
+
+1. **The cover title positions; the dateline informs.** "A different kind of business conference", "A year-round home for creative work", "A new shape for ODDfest". Product, date and place go in the dateline, one a line.
+2. **Frame 2 says what is new, then why.** "In 2027, we're taking ODDference further." "In 2027, ODDfest becomes a week of independently made events across Helsinki." "Creative work needs more than events."
+3. **Photo headings are reasons, addressed to the reader, and parallel across the carousel.** "Learn from people outside your field." / "Meet people outside your usual circles." / "Experience a conference that doesn't feel like one." Or "Host a club night." / "Host a performance." / "Host a workshop." Not labels ("Work.", "Meet.").
+4. **A text frame is a claim, the substance, then a kicker.** The lead makes the claim; the first paragraph gives the facts; the second is one short line that lands it: "ODDference is built to create those encounters." "Think Maria 01, but built around the creative economy." "Come do your thing."
+5. **Write "we" and "you".** Short sentences; fragments are fine when they count: "Fewer, stronger sessions. More deliberate encounters." "One membership. No tiers. No long-term commitment."
+6. **Leave one thing unsaid where it helps.** "Some things are better left unexplained. … We could tell you what to expect. But that would defeat the point."
+7. **A fact appears once.** The price goes on the card or in one text frame, not both.
+8. **The card ends on the ask:** the offer ("Blind Bird tickets now available / €299 + VAT until 1 December or sold out"), or an invitation in three short lines ("Work here. / Host events. / Come build with us.").
+9. **No bold phrases, no "Link in bio."** House style still applies to Aki's words: "Blind Bird", "1 December" (a no-break space, `1&nbsp;December`, keeps a date on one line).
 
 ## Non-negotiables
 
 1. **Never add a device.** No eyebrow, counter, rail, pill, grain, sticker, edge word or extra logo. If a frame needs explaining, that is the caption's job.
 2. **The mark only where it does a job:** the window, the card, the three-part post. Never as decoration in an empty corner.
-3. **Text frames use the whole frame:** the lead at the top, the explanation at the bottom. Never a small block with an empty half above it.
+3. **Text frames use the whole frame:** the lead at the top, the body at the bottom. Never a small block with an empty half above it.
 4. **On a photograph, Paper or Ink only.** No colour, no grey type on a photo. The scrim is Ink.
-5. **148 px clear at the top and bottom of every frame.** The profile grid crops posts to the centre square.
+5. **Mind the crops.** Since January 2025 the profile grid shows a 4:5 post as 3:4: it trims about 34 px off each side, not the top and bottom. Keep words 64 px from every edge of a post. On a story, keep the top and bottom 250 px clear for Instagram's bars.
 6. **One idea a frame.** The photo frame says it in a few words; the next text frame explains it.
-7. **Forta is for display, in caps:** cover titles, headings, questions, figures, list lines. Gabarito for everything else.
+7. **Forta is for display, in caps:** cover titles and datelines, headings, text-frame leads, questions, figures, list lines, the card. Gabarito is for the body only.
 8. **Take a reference's thinking, never its surface.** One pass copied another account's caption-size type and corner stickers, and was worse than the version before it.
 9. **Choose photos that survive 4:5:** a portrait, or a subject in the middle. A 3:2 photo with three people across it cannot be cropped without chopping someone.
 
@@ -138,16 +157,20 @@ Copy the closest existing carousel block, rename it, fill it in, and register it
 const weekCover = `${A}/about/<file>.jpg`;
 const weekFest = num1([
   { alt: '<what the photo shows>. <the frame’s words>. Photo: <Name>.',
-    credit: by('<Name>'), html: cover({ img: weekCover, pos: 'center 40%', dateline: '<dateline>', title: '<Title.>', t: 2.3, credit: '<Name>' }) },
+    credit: by('<Name>'), html: cover({ img: weekCover, pos: 'center 40%', dateline: '<Product> · <date> · <place>', title: '<Positioning line>', t: 2.3, credit: '<Name>' }) },
   { alt: 'Text on Ink. <lead> <body>',
-    credit: null, html: tx({ lead: '<lead>', body: '<body with one <b>phrase</b>>' }) },
-  { alt: '<photo>. <heading>', credit: by('<Name>'), html: ph({ img: `${A}/<file>.jpg`, point: '<Heading.>' }) },
-  // … text, window (ph({ win, lobe, point })), text, photo, the ask (ends 'Link in bio.')
-  { alt: 'A Paper card: the ODD mark filled with <cover photo>. allthingsodd.co. <line>.',
-    credit: by('<Name>'), html: card({ fill: weekCover, line: '<line>' }) },
+    credit: null, html: tx({ lead: '<What is new.>', body: '<The substance.>\n\n<The kicker.>' }) },
+  { alt: '<photo>. <heading>', credit: by('<Name>'), html: ph({ img: `${A}/<file>.jpg`, point: '<A reason, to the reader.>' }) },
+  // … text, window (ph({ win, lobe, point })), text, photo (at: 'top', bw: true as needed), text
+  { alt: 'A Paper card: <top lines>. The ODD mark filled with <photo>. Read more at: allthingsodd.co/<page>',
+    credit: by('<Name>'), html: card({ top: '<Product> <year>\n<date>', fill: weekCover, url: 'allthingsodd.co/<page>' }) },
+]);
+const weekStory = story([
+  { alt: '<photo>. <top> <bottom>', credit: by('<Name>'), html: tease({ img: `${A}/<file>.jpg`, top: '<Product> is back.', bottom: '<The turn.>' }) },
+  { alt: '<photo>, blurred. <q> See more.', credit: by('<Name>'), html: ask({ img: `${A}/<file>.jpg`, q: '<Want to …?>' }) },
 ]);
 // in `carousels`:
-...set([{ name: '<kebab-name>', title: '<Title>', frames: weekFest }], 'instagram', ['a']),
+...set([{ name: '<kebab-name>', title: '<Title>', frames: weekFest }, { name: '<kebab-name>-story', title: '<Title> · stories', frames: weekStory }], 'instagram', ['a']),
 ...set([{ name: 'li-<kebab-name>', hook: '<draft first line>', title: '<Title>', frames: weekLiFest }], 'linkedin', ['a']),
 ```
 
@@ -166,14 +189,16 @@ node pdf.mjs --out=$OUT/linkedin/A li-<name>
 node canvas.mjs render --only=<name>,li-<name> --out=$OUT/canvas
 ```
 
-`canvas.mjs render` has to print **`checks: ok`**. Anything it lists (text in the 148 px band, off the edge, two blocks touching) gets fixed in the copy or the photo choice, then re-rendered. Never patch it in CSS.
+`canvas.mjs render` has to print **`checks: ok`**. Anything it lists (text within 64 px of a post's top or bottom or 250 px of a story's, off the edge, two blocks touching) gets fixed in the copy or the photo choice, then re-rendered. Never patch it in CSS.
 
 Then **look**. Read every `$OUT/canvas/sheet-*.jpg`, and each cover and window at full size. Every frame has to pass:
 
 - [ ] The cover title is legible: Forta's counters are open and the warp hasn't swallowed a letter. If not, change `t`.
 - [ ] Every face and subject is uncropped and the window's subject is inside the lobe.
-- [ ] No heading wraps a single word onto its own line. Rephrase it, or use `long: true`.
-- [ ] Each text frame has its lead at the top and its body at the bottom.
+- [ ] No heading wraps a single word onto its own line. Rephrase it, or set `long` by hand.
+- [ ] The photo headings read as a set: parallel, to the reader.
+- [ ] Each text frame has its lead at the top and its body at the bottom, in two paragraphs where there is a kicker.
+- [ ] The card names the product, the date and the ask, and its address is the product's page.
 - [ ] The words on the frames match the fact table.
 - [ ] Every photo frame has a credit or a flag.
 
