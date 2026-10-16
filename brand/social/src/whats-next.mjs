@@ -130,6 +130,17 @@ export const css = `
 .st .box { position: absolute; left: 64px; right: 64px; top: 560px; display: grid; justify-items: center; gap: 88px; text-align: center }
 .st .box .point { position: static; font-size: 88px; max-width: 700px }
 .st .box svg { width: 36px; height: 88px; margin-top: -64px; fill: none; stroke: currentColor; stroke-width: 4 }
+
+/* The reel cover (1080×1920): a frame of the film where the reel shows it (1080×540 at y 690, the 2:1 film on Ink),
+   over the same frame blurred to a ground; the warped title above it, the dateline below, all inside the grid's 3:4 crop. */
+.reel .veil { background: rgb(14 9 11 / 60%) }
+.reel .band { position: absolute; left: 0; top: 690px; width: 1080px; height: 540px; overflow: hidden }
+.reel .band img { width: 100%; height: 100%; object-fit: cover; display: block }
+.reel .head { position: absolute; left: 64px; right: 64px; bottom: 1294px; text-align: center }
+.reel h1 { font: 400 104px/0.98 var(--font-display); letter-spacing: -0.02em; margin: 0; filter: url(#wd) }
+.reel h1 span { display: inline-block }
+.reel .dateline { position: absolute; left: 64px; right: 64px; top: 1294px; margin: 0; text-align: center;
+  font: 400 42px/1.45 var(--font-display); letter-spacing: 0.16em }
 `;
 
 // ── The warp, frozen. Same maths as warping-text.ts at one instant t: the map is
@@ -1171,6 +1182,307 @@ const liFestWhat = num1([
   },
 ]);
 
+// ── Week 43, 19–25 Oct 2026 (Ronny, 15 Oct): the two aftermovies as reels, ODDference's
+// venue, and a recap of ODDspace. Facts from allthingsodd.co on 16 Oct; Aki's model throughout.
+
+// ODDference × Tanssin talo. The page has the dates, the place and the premise; nothing about
+// the building itself, so nothing here either.
+const venueFlag =
+  'Venue: tell Tanssin talo before this goes up and ask for their handle and a photo of the house (with its credit). The site lists them among ODDfest 2025–26 collaborators.';
+const STAND26 = (what) =>
+  `Stand-in photo: ${what} from 2026, not Tanssin talo. Swap in a photo of the house if Tanssin talo sends one.`;
+const venueCard = `${A}/programs/oddference-card.jpg`;
+const venueFrames = {
+  cover: {
+    alt: 'An audience in dark cinema seats. ODDference, 22–23 April 2027, Tanssin talo, Helsinki: ODDference moves to Tanssin talo. Photo: Yoanna Rönnqvist.',
+    flag: `${STAND26('the ODDference audience at Bio Rex')} ${venueFlag}`,
+    credit: by('Yoanna Rönnqvist'),
+    html: cover({
+      img: ferSeats,
+      dateline: 'ODDference · 22–23 April 2027 · Tanssin talo, Helsinki',
+      title: 'ODDference moves to Tanssin talo',
+      t: 2.3,
+      credit: 'Yoanna Rönnqvist',
+    }),
+  },
+  two: {
+    alt: 'Text on Ink. Two days at Tanssin talo. Thursday 22 and Friday 23 April 2027, in the middle of ODDfest week. Creative practitioners meet business and society as experts. Not as decoration. Not as entertainment.',
+    credit: null,
+    html: tx({
+      lead: 'Two days at Tanssin talo.',
+      body: 'Thursday 22 and Friday 23 April 2027, in the middle of ODDfest week. Creative practitioners meet business and society as experts.\n\nNot as decoration. Not as entertainment.',
+    }),
+  },
+  ideas: {
+    alt: 'A full cinema facing a slide that reads “Hello, my name is Alf Rehn”. Come for the ideas.',
+    credit: by('Yoanna Rönnqvist'),
+    html: ph({ img: `${A}/oddfest-2026/oddference-alf-rehn.jpg`, point: 'Come for the ideas.' }),
+  },
+  sessions: {
+    alt: 'Text on Ink. Fewer, stronger sessions. Creative professionals work with attention, emotion, experience and meaning every day. ODDference brings that expertise into the questions business and society are facing now. The programme is still being built. Ticket holders hear first.',
+    credit: null,
+    html: tx({
+      lead: 'Fewer, stronger sessions.',
+      body: 'Creative professionals work with attention, emotion, experience and meaning every day. ODDference brings that expertise into the questions business and society are facing now.\n\nThe programme is still being built. Ticket holders hear first.',
+    }),
+  },
+  people: {
+    alt: 'A small session in a bright room: two people talk by a laptop stand while others listen. Stay for the people.',
+    credit: null,
+    html: ph({ img: `${I}/people-talking.jpg`, point: 'Stay for the people.' }),
+  },
+  room: {
+    alt: 'Text on Ink. Clients, partners and collaborators, in one room. Creative leaders, business leaders, founders, policymakers, institutions and researchers, who rarely meet at a single-industry conference. And artists shaping the spaces, the sound and how it all feels.',
+    credit: null,
+    html: tx({
+      lead: 'Clients, partners and collaborators, in one room.',
+      body: 'Creative leaders, business leaders, founders, policymakers, institutions and researchers, who rarely meet at a single-industry conference.\n\nAnd artists shaping the spaces, the sound and how it all feels.',
+    }),
+  },
+  end: {
+    alt: 'A performer spins trails of violet light under red arches, people watching. End the week here.',
+    credit: null,
+    html: ph({ img: `${I}/crowd-colour.jpg`, point: 'End the week here.' }),
+  },
+  friday: (url) => ({
+    alt: `Text on Ink. On Friday, the whole week comes together. ODDfest runs across Helsinki, 19–25 April 2027. On Friday 23 April it meets at Tanssin talo for ODDcelebration, on the second day of ODDference. One house. The whole week.${url ? ` ${url}` : ''}`,
+    flag: DATES,
+    credit: null,
+    html: tx({
+      lead: 'On Friday, the whole week comes together.',
+      body: 'ODDfest runs across Helsinki, 19–25 April 2027. On Friday 23 April it meets at Tanssin talo for ODDcelebration, on the second day of ODDference.\n\nOne house. The whole week.',
+      url,
+    }),
+  }),
+  card: {
+    alt: 'A Paper card: ODDference 2027, 22–23 April, Tanssin talo, Helsinki. Blind Bird tickets, €299 + VAT until 1 December or sold out. The ODD mark filled with a photo of a performer in a hat on a dark stage. Read more at: allthingsodd.co/oddference',
+    flag: `${BLIND} The page’s first ticket card also says “Not yet on sale” while its FAQ says Blind Bird is on sale now.`,
+    credit: by('Neea Eloranta'),
+    html: card({
+      top: 'ODDference 2027, 22–23 April\nTanssin talo, Helsinki\n\nBlind Bird tickets\n€299 + VAT until 1&nbsp;December or sold out',
+      fill: venueCard,
+      url: 'allthingsodd.co/oddference',
+    }),
+  },
+};
+const ferVenue = num1(
+  ['cover', 'two', 'ideas', 'sessions', 'people', 'room', 'end', 'friday', 'card'].map((k) =>
+    k === 'friday' ? venueFrames.friday() : venueFrames[k],
+  ),
+);
+const ferVenueStory = story([
+  {
+    alt: 'A speaker on stage beside a stack of large labelled cubes, under blue light. ODDference is moving. To Tanssin talo.',
+    credit: by('@ilmarimedia'),
+    html: tease({
+      img: `${A}/programs/oddference-pathway.jpg`,
+      top: 'ODDference is moving.',
+      bottom: 'To Tanssin talo.',
+    }),
+  },
+  {
+    alt: 'A performer in a hat on a dark stage, blurred. Coming in April? See more.',
+    credit: by('Neea Eloranta'),
+    html: ask({ img: venueCard, q: 'Coming in April?' }),
+  },
+]);
+const liVenue = num1([
+  venueFrames.cover,
+  {
+    ...venueFrames.two,
+    alt: 'Text on Ink. Two days at Tanssin talo. Thursday 22 and Friday 23 April 2027, in the middle of ODDfest week. Creative practitioners meet business leaders, founders, institutions and policymakers as experts. What can business learn from creative expertise? That is the whole question.',
+    html: tx({
+      lead: 'Two days at Tanssin talo.',
+      body: 'Thursday 22 and Friday 23 April 2027, in the middle of ODDfest week. Creative practitioners meet business leaders, founders, institutions and policymakers as experts.\n\nWhat can business learn from creative expertise? That is the whole question.',
+    }),
+  },
+  venueFrames.ideas,
+  venueFrames.room,
+  venueFrames.end,
+  venueFrames.friday('allthingsodd.co/oddference'),
+  venueFrames.card,
+]);
+
+// ODDspace: what has happened there lately. Public events only (the page lists no private
+// bookings, so neither do we); the opening's photos are the only ones the site has.
+const OPENING = (what) =>
+  `Stand-in photo: from the ODDspace opening, not ${what}. Swap in a photo from it (and its credit) if the team has one.`;
+const spaceFrames = {
+  cover: {
+    alt: 'A smiling audience packed onto sofas and chairs at ODDspace. ODDspace, Teollisuuskatu 9D, Vallila: lately at ODDspace. Photo: Remu Shemeikka.',
+    credit: by('Remu Shemeikka'),
+    html: cover({
+      img: `${A}/oddspace/opening-audience-laughing.jpg`,
+      dateline: 'ODDspace · Teollisuuskatu 9D, Vallila',
+      title: 'Lately at ODDspace',
+      t: 0.7,
+      credit: 'Remu Shemeikka',
+    }),
+  },
+  hosted: {
+    alt: 'Text on Ink. Since the doors opened, ODDspace has hosted: exhibitions, launches, workshops, talks, screenings, performances. And a lot of coffee.',
+    credit: null,
+    html: list({
+      lead: 'Since the doors opened, ODDspace has hosted',
+      items: [
+        'Exhibitions',
+        'Launches',
+        'Workshops',
+        'Talks',
+        'Screenings',
+        'Performances',
+        '',
+        'And a lot of coffee.',
+      ],
+    }),
+  },
+  doors: {
+    alt: 'Guests standing and talking in the bright ODDspace lounge. We opened the doors.',
+    credit: by('Remu Shemeikka'),
+    html: ph({ img: `${A}/oddspace/opening-mingling.jpg`, point: 'We opened the doors.' }),
+  },
+  opening: {
+    alt: 'Text on Ink. The opening filled the house. Talks, DJs, live electronics, a mural painted on the spot, and people painting together on the floor. It set the tone for what the space is for.',
+    credit: null,
+    html: tx({
+      lead: 'The opening filled the house.',
+      body: 'Talks, DJs, live electronics, a mural painted on the spot, and people painting together on the floor.\n\nIt set the tone for what the space is for.',
+    }),
+  },
+  party: {
+    alt: 'Black and white: a guest at a bar table with glasses of wine. We threw the afterparty.',
+    flag: OPENING('the afterparty'),
+    credit: by('Remu Shemeikka'),
+    html: ph({ img: `${A}/oddspace/opening-bar.jpg`, bw: true, point: 'We threw the afterparty.' }),
+  },
+  september: {
+    alt: 'Text on Ink. ODDfest ended in June. The afterparty came in September. On 26 September we opened ODDspace to artists, partners and friends: open decks, art installations and a great bunch of odd people. The non-alcoholic beer was on the house, thanks to Mikkeller.',
+    flag: 'Afterparty: these are the invitation’s own words (/oddfest-2026, now hidden). Confirm it ran as announced and that Mikkeller is happy to be named.',
+    credit: null,
+    html: tx({
+      lead: 'ODDfest ended in June. The afterparty came in September.',
+      body: 'On 26 September we opened ODDspace to artists, partners and friends: open decks, art installations and a great bunch of odd people.\n\nThe non-alcoholic beer was on the house, thanks to Mikkeller.',
+    }),
+  },
+  week: {
+    alt: 'Two DJs playing at a wooden booth by the windows. We kept the week going.',
+    flag: OPENING('Coffee on the House or ODDbachata'),
+    credit: by('Remu Shemeikka'),
+    html: ph({ img: `${A}/oddspace/opening-djs.jpg`, point: 'We kept the week going.' }),
+  },
+  weekly: {
+    alt: 'Text on Ink. Every week, something on. Coffee on the House, every Monday 09:00–10:00: morning coffee, a deep house DJ and whoever turns up. Free, no membership needed. ODDbachata, every Friday from 17:00: a class, then a social night that runs late. Beginners welcome.',
+    flag: 'ODDbachata: the site says Fridays from 17:00; older notes say Thursdays at 18:00. Check with the class before posting.',
+    credit: null,
+    html: tx({
+      lead: 'Every week, something on.',
+      body: 'Coffee on the House, every Monday 09:00–10:00: morning coffee, a deep house DJ and whoever turns up. Free, no membership needed.\n\nODDbachata, every Friday from 17:00: a class, then a social night that runs late. Beginners welcome.',
+    }),
+  },
+  next: {
+    alt: 'A Paper card: next at ODDspace, Birds Nest Ambient Festival, Saturday 21 November, from 16:00. The ODD mark filled with a photo of a musician in front of a projected forest. Read more at: allthingsodd.co/oddspace',
+    flag: 'Birds Nest: the site lists it as Sat 21 Nov from 16:00. Confirm it is still on, and get the organisers’ handle for the caption.',
+    credit: by('Remu Shemeikka'),
+    html: card({
+      top: 'Next at ODDspace\n\nBirds Nest Ambient Festival\nSaturday 21 November, from 16:00',
+      fill: `${A}/oddspace/opening-ambient-set.jpg`,
+      url: 'allthingsodd.co/oddspace',
+    }),
+  },
+};
+const spaceRecap = num1(
+  ['cover', 'hosted', 'doors', 'opening', 'party', 'september', 'week', 'weekly', 'next'].map(
+    (k) => spaceFrames[k],
+  ),
+);
+const spaceRecapStory = story([
+  {
+    alt: 'A seated crowd seen from behind, listening to a talk at the ODDspace opening. The festival may be over. The space never closes.',
+    credit: by('Remu Shemeikka'),
+    html: tease({
+      img: `${A}/oddspace/opening-talk-audience.jpg`,
+      top: 'The festival may be over.',
+      bottom: 'The space never closes.',
+    }),
+  },
+  {
+    alt: 'Guests talking around a table with drinks, blurred. Coffee on Monday? See more.',
+    credit: by('Remu Shemeikka'),
+    html: ask({ img: `${A}/oddspace/opening-table-conversation.jpg`, q: 'Coffee on Monday?' }),
+  },
+]);
+const liSpaceRecap = num1([
+  spaceFrames.cover,
+  spaceFrames.hosted,
+  spaceFrames.doors,
+  {
+    alt: 'Text on Ink. Between the big weeks, the house stays busy. An opening with talks, DJs, live electronics and a mural painted on the spot. In September, the ODDfest afterparty: open decks and art installations. Every Monday, Coffee on the House. Every Friday, ODDbachata.',
+    flag: spaceFrames.september.flag,
+    credit: null,
+    html: tx({
+      lead: 'Between the big weeks, the house stays busy.',
+      body: 'An opening with talks, DJs, live electronics and a mural painted on the spot. In September, the ODDfest afterparty: open decks and art installations.\n\nEvery Monday, Coffee on the House. Every Friday, ODDbachata.',
+    }),
+  },
+  {
+    alt: 'People kneel on the floor painting together on large sheets of paper. Bring your people here.',
+    credit: by('Remu Shemeikka'),
+    html: ph({ img: `${A}/oddspace/opening-painting-floor.jpg`, point: 'Bring your people here.' }),
+  },
+  {
+    alt: 'Text on Ink. Your event could be next. Exhibitions, launches, workshops, talks, screenings and away-days, in a working creative space in Vallila. No membership needed. Tell us the date and what you are planning; we reply with availability and a price within one working day. allthingsodd.co/oddspace/venue',
+    credit: null,
+    html: tx({
+      lead: 'Your event could be next.',
+      body: 'Exhibitions, launches, workshops, talks, screenings and away-days, in a working creative space in Vallila. No membership needed.\n\nTell us the date and what you are planning; we reply with availability and a price within one working day.',
+      url: 'allthingsodd.co/oddspace/venue',
+    }),
+  },
+  {
+    alt: 'A Paper card: host your event at ODDspace, Teollisuuskatu 9D, Vallila. The ODD mark filled with the opening photo. Read more at: allthingsodd.co/oddspace/venue',
+    credit: by('Remu Shemeikka'),
+    html: card({
+      top: 'Host your event at ODDspace\nTeollisuuskatu 9D, Vallila',
+      fill: `${A}/oddspace/opening-full-house.jpg`,
+      url: 'allthingsodd.co/oddspace/venue',
+    }),
+  },
+]);
+
+// The aftermovies go up as they are (Ronny: "just the video"); these are their reel covers.
+// The film sits where the reel shows it, so the cover is the reel's own first look.
+const FILM =
+  'Film credit: who made this aftermovie is not on the site (25films is in the 2026 credits). Credit the film-makers and the music in the caption.';
+const reelCover = ({ img, dateline, title, t }) => {
+  const T = title.toUpperCase();
+  const { defs, h1 } = warp(T, t, fit(T));
+  return `<div class="ph st reel">${pic({ img, zoom: 1.12, blur: 18 })}<div class="veil"></div>${defs}<div class="head"><h1 style="font-size:${fit(T)}px">${h1}</h1></div><div class="band">${pic({ img })}</div><p class="dateline">${dateline.split(' · ').join('<br>')}</p></div>`;
+};
+const reelCovers = story([
+  {
+    alt: 'A keytar player on stage under blue light, a frame of the film. This was ODDfest. ODDfest 2026, the aftermovie.',
+    flag: FILM,
+    credit: null,
+    html: reelCover({
+      img: `${I}/oddfest-2026-aftermovie-still.jpg`,
+      dateline: 'ODDfest 2026 · The aftermovie',
+      title: 'This was ODDfest',
+      t: 1.1,
+    }),
+  },
+  {
+    alt: 'A performer in a superhero suit with a microphone on a dark stage, a frame of the film. This was ODDference. ODDference 2026, the aftermovie.',
+    flag: FILM,
+    credit: null,
+    html: reelCover({
+      img: `${I}/oddference-2026-aftermovie-still.jpg`,
+      dateline: 'ODDference 2026 · The aftermovie',
+      title: 'This was ODDference',
+      t: 1.6,
+    }),
+  },
+]);
+
 // ── Variants. A is the approved set. B and C test the hook: B the mark filled with
 // the photograph on Paper (text frames, windows and the card go Paper too, photo
 // frames stay Ink because type on a photograph is Paper on an Ink scrim), C the
@@ -1286,6 +1598,48 @@ export const carousels = [
         hook: 'ODDfest. ODDference. ODDspace. Three things ODD, one mark.',
         title: 'ODD in three',
         frames: liOdd,
+      },
+    ],
+    'linkedin',
+    ['a'],
+  ),
+  // Week 43: node build.mjs --only=w43 (every name below starts with it)
+  ...set(
+    [
+      { name: 'w43-oddference-tanssin-talo', title: 'ODDference × Tanssin talo', frames: ferVenue },
+      {
+        name: 'w43-oddference-tanssin-talo-story',
+        title: 'ODDference × Tanssin talo · stories',
+        frames: ferVenueStory,
+      },
+      { name: 'w43-oddspace-recap', title: 'Lately at ODDspace', frames: spaceRecap },
+      {
+        name: 'w43-oddspace-recap-story',
+        title: 'Lately at ODDspace · stories',
+        frames: spaceRecapStory,
+      },
+      {
+        name: 'w43-aftermovie-reel-covers',
+        title: 'Aftermovies · reel covers',
+        frames: reelCovers,
+      },
+    ],
+    'instagram',
+    ['a'],
+  ),
+  ...set(
+    [
+      {
+        name: 'w43-li-oddference-tanssin-talo',
+        hook: 'ODDference 2027 has its venue: Tanssin talo, Helsinki, 22–23 April. Two days where creative practitioners meet business and society as experts, in the middle of ODDfest week. Blind Bird €299 + VAT until 1 December or sold out.',
+        title: 'ODDference × Tanssin talo',
+        frames: liVenue,
+      },
+      {
+        name: 'w43-li-oddspace-recap',
+        hook: 'Between the big weeks, ODDspace in Vallila keeps going: an opening that filled the house, the ODDfest afterparty in September, coffee every Monday and bachata every Friday. Next up: Birds Nest Ambient Festival, 21 November.',
+        title: 'Lately at ODDspace',
+        frames: liSpaceRecap,
       },
     ],
     'linkedin',

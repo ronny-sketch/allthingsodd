@@ -271,6 +271,7 @@ const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 function textHtml(t, info, dx) {
   const face = (r) =>
     `font-family:${r.font === 'Forta' ? 'Forta' : 'Gabarito'};font-weight:${r.weight >= 600 ? 600 : 400};font-size:${r.size}px`;
+  const first = t.paras.find((q) => q.runs.length)?.runs[0]; // a blank line ('' in a card) has no runs of its own
   const paras = t.paras
     .map((p, pi) => {
       const oneLine = p.bottom - p.top < 1.5 * p.lh;
@@ -291,7 +292,7 @@ function textHtml(t, info, dx) {
         })
         .join('');
       // The paragraph's own face too: a bare <p> sets its line strut in the default 16px font, which stretches the lines.
-      return `<p style="margin:${pi ? p.before : 0}px 0 0;${face(p.runs[0])};line-height:${p.lh}px;text-align:${p.align === 'center' ? 'center' : 'left'}">${runs}</p>`;
+      return `<p style="margin:${pi ? p.before : 0}px 0 0;${face(p.runs[0] ?? first)};line-height:${p.lh}px;text-align:${p.align === 'center' ? 'center' : 'left'}">${runs}</p>`;
     })
     .join('');
   // A vertical credit is a horizontal box turned 270°, centred where the render put it.

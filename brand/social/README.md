@@ -161,6 +161,12 @@ cd brand/social/src && node build.mjs           # everything, ~3 min
 node build.mjs --only=post-2,story-5,grid        # just these (prefix match)
 ```
 
+From week 43 (19–25 Oct 2026) a week's sets carry its number (`w43-…`) and
+build together with `--only=w43`; they are filed in Canva in that week's
+folder (`2026-W43 · 19–25 Oct`, see the skill). `reelCover()` makes the cover
+for a film posted as a reel: the 2:1 frame where the reel shows it, the title
+above, the dateline below.
+
 The week's posts live in `src/whats-next.mjs` (the four "what's next"
 carousels and the three-frame post of October 2026) and render outside
 `examples/` with `--out`. Their model, set on 9 Oct 2026 after reading Uusi
