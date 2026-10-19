@@ -191,8 +191,10 @@ test.describe('/oddference with the sale closed', () => {
     const ctx = await browser.newContext({ javaScriptEnabled: false });
     const page = await ctx.newPage();
     await page.goto('/oddference/');
+    // No status at all: the HTML can't know if the sale is open or sold out,
+    // and "Not yet on sale" was false once it opened (19.10.2026).
     const card = page.locator('[data-ticket-slug="blind-bird"]');
-    await expect(card.locator('.pricing-status')).toHaveText('Not yet on sale');
+    await expect(card.locator('.pricing-status')).toBeHidden();
     await expect(card.locator('a.pill')).toHaveText('See ticket details');
     await ctx.close();
   });
