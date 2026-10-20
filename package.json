@@ -28,7 +28,9 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
-    "astro": "^7.2.10"
+    "@google/model-viewer": "4.2.0",
+    "astro": "^7.2.10",
+    "three": "0.182.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
