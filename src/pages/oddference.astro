@@ -44,7 +44,6 @@ import SectionIntro from '../components/sections/SectionIntro.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import PersonGrid from '../components/sections/PersonGrid.astro';
 import PricingGrid from '../components/sections/PricingGrid.astro';
-import FAQList from '../components/sections/FAQList.astro';
 import Pill from '../components/primitives/Pill.astro';
 import oddferenceWordmark from '../assets/logos/oddference-wordmark.svg';
 
@@ -249,14 +248,6 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
       )
     }
 
-    <!-- 7. FAQ — same component and same position as ODDfest's and
-         ODDspace's, so the three product pages end the same way. -->
-    <section class="oddc-sub">
-      <div class="wrap flow">
-        <div class="section-head"><h2>Questions</h2></div>
-        <FAQList items={page.faq} />
-      </div>
-    </section>
   </SubpageFrame>
   {
     /* Re-reads price/status/benefits/CTA for the ticket cards above from the
