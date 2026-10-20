@@ -33,10 +33,6 @@ const saleCouldOpen = STRIPE_PUBLISHABLE_KEY?.startsWith('pk_live_') ?? false;
     <div class="wrap tix-head reveal">
       <span class="eyebrow">ODDference · 22–23 April 2027</span>
       <h1>Tickets</h1>
-      <p>
-        The three tiers, their real prices, how to get one, and the{' '}
-        <a href="/tickets/terms/">ticket terms</a>.
-      </p>
     </div>
 
     {
@@ -199,12 +195,6 @@ const saleCouldOpen = STRIPE_PUBLISHABLE_KEY?.startsWith('pk_live_') ?? false;
     color: var(--color-paper);
     margin: var(--space-3) 0 0;
   }
-  .tix-head p {
-    margin: var(--space-5) 0 0;
-    font: var(--text-body);
-    color: var(--color-paper-60);
-  }
-
   /* The not-yet-on-sale panel and the no-JS notice. Both hold content, so
      both are square (design-system rule 6), and both take the same surface
      as .tix-row so the page reads as one system. No outer block margin —
