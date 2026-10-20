@@ -13,6 +13,7 @@ import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import { GA_MEASUREMENT_ID } from '../../scripts/analytics-config';
 import { buildDeclaration } from '../../scripts/consent-config';
+import ModelViewer from '../media/ModelViewer.astro';
 
 interface Section {
   title: string;
@@ -21,6 +22,7 @@ interface Section {
   /** A photograph of what the section describes — used by the ODDspace event
    *  info pack to show each room. Privacy has nothing to photograph. */
   image?: { src: ImageMetadata; alt: string; caption?: string };
+  model?: { src: string; alt: string; caption?: string };
   links?: { label: string; href: string; note?: string }[];
   faq?: { q: string; a: string[] }[];
 }
@@ -91,6 +93,7 @@ const KIND_LABEL: Record<string, string> = {
               {section.image.caption && <figcaption>{section.image.caption}</figcaption>}
             </figure>
           )}
+          {section.model && <ModelViewer {...section.model} />}
           {section.body.map((paragraph) => (
             <p>{paragraph}</p>
           ))}

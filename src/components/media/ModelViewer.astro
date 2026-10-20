@@ -1,0 +1,72 @@
+---
+// A 3D model the reader can turn and zoom — the ODDspace event info pack
+// uses it for a model of the Gallery. <model-viewer> (three.js) is
+// about 1 MB, so it is only imported once the figure nears the viewport;
+// before that, and without JavaScript or WebGL, the box stays empty and the
+// caption still says what it is.
+//
+// Two defaults would trap a reader scrolling past: touch-action "none" (a
+// finger on the model can't scroll the page) and wheel-to-zoom (the mouse
+// wheel stops scrolling over it). So vertical swipes pass through, and the
+// wheel only zooms after the reader has clicked, touched or tabbed into the
+// model, until the pointer or focus leaves it again.
+interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+const { src, alt, caption } = Astro.props;
+---
+
+<figure class="model-figure">
+  <model-viewer
+    src={src}
+    alt={alt}
+    camera-controls
+    disable-zoom
+    touch-action="pan-y"
+    interaction-prompt="none"
+    camera-orbit="30deg 50deg 90%"
+    max-camera-orbit="auto 85deg auto"></model-viewer>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+  const viewers = document.querySelectorAll('model-viewer');
+  const io = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      import('@google/model-viewer');
+    },
+    { rootMargin: '600px' },
+  );
+  viewers.forEach((viewer) => {
+    io.observe(viewer);
+    const zoom = (on: boolean) => () => viewer.toggleAttribute('disable-zoom', !on);
+    viewer.addEventListener('pointerdown', zoom(true));
+    viewer.addEventListener('focusin', zoom(true));
+    viewer.addEventListener('pointerleave', zoom(false));
+    viewer.addEventListener('focusout', zoom(false));
+  });
+</script>
+
+<style>
+  .model-figure {
+    margin: 0 0 var(--space-4);
+  }
+  model-viewer {
+    display: block;
+    width: 100%;
+    /* model-viewer's own :host sets 150px, which would beat the ratio. */
+    height: auto;
+    aspect-ratio: 4 / 3;
+    background: var(--color-paper-12);
+    cursor: grab;
+  }
+  .model-figure figcaption {
+    font: var(--text-small);
+    color: var(--color-paper-40);
+    margin-block-start: var(--space-2);
+  }
+</style>

@@ -34,6 +34,11 @@
         "src": "../../assets/oddspace/gallery-floor.jpg",
         "alt": "The ODDspace gallery floor, an open concrete-floored hall with white columns and daylight from tall windows.",
         "caption": "The Gallery — 150 people, 320 m²."
+      },
+      "model": {
+        "src": "/oddspace/gallery.glb",
+        "alt": "A 3D model of the Gallery seen from above: the open hall with its columns and curved wall, the smaller rooms and toilets behind it, and one figure for scale.",
+        "caption": "The Gallery in 3D. Drag to turn it; click it, then scroll or pinch to zoom."
       }
     },
     {

@@ -1774,6 +1774,13 @@ const pages = defineCollection({
             image: z
               .object({ src: image(), alt: z.string(), caption: z.string().optional() })
               .optional(),
+            /** A 3D model the reader can turn and zoom, under the photograph
+             *  — the event info pack's Gallery section. `src` is a .glb in
+             *  public/ (prepared with scripts/gallery-model.mjs); `alt` is
+             *  required for the same reason as the image's. */
+            model: z
+              .object({ src: z.string(), alt: z.string(), caption: z.string().optional() })
+              .optional(),
             /** Files this section hands the reader — the ODDspace event info
              *  pack links the building's own safety documents, which live in
              *  public/oddspace/ because they are documents to download, not
