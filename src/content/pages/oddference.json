@@ -28,28 +28,28 @@
   },
   "reasonsIntro": {
     "eyebrow": "Why come",
-    "headline": "Three reasons to be in the room."
+    "headline": "The questions shaping ODDference."
   },
   "reasons": [
     {
       "number": "01",
-      "eyebrow": "Learn",
-      "title": "See familiar problems through a different lens.",
-      "body": "Creative professionals work with attention, emotion, experience, meaning and differentiation every day. ODDference brings that expertise into the questions business and society are facing now.",
+      "eyebrow": "Relevance",
+      "title": "How do you become something people genuinely care about?",
+      "body": "Attention is easy to chase and hard to earn. We’ll explore how brands, artists and cultural makers create meaning, distinction and relevance that people choose to notice, remember and care about.",
       "image": "../../assets/oddfest-2026/oddference-alf-rehn.jpg"
     },
     {
       "number": "02",
-      "eyebrow": "Meet",
-      "title": "Connect with people outside your usual circuit.",
-      "body": "ODDference brings together creative leaders, business leaders, founders, policymakers, institutions and researchers — putting potential clients, partners and collaborators in the same room who rarely meet at a single-industry conference.",
+      "eyebrow": "Belonging & participation",
+      "title": "How do you create something people want to be part of — and take part in?",
+      "body": "What makes people join, contribute and stay involved? We’ll look at what communities, games, culture and creative practice can teach us about turning passive audiences into active participants.",
       "image": "../../assets/oddfest-2026/oddference-elisabet-lahti-stage.jpg"
     },
     {
       "number": "03",
-      "eyebrow": "Experience",
-      "title": "Don't just hear the argument. Experience it.",
-      "body": "If creative expertise is the point, the event itself should prove it. Artists and creative practitioners shape the spaces, scenography, performances, soundscape and other parts of how ODDference feels."
+      "eyebrow": "Reinvention",
+      "title": "How do you see and make what does not yet exist?",
+      "body": "When familiar answers stop working, how do you create the next thing? We’ll explore how creative people experiment, challenge assumptions and turn uncertain ideas into something real."
     }
   ],
   "speakers": [
@@ -173,7 +173,9 @@
       "price": "€399",
       "priceNote": "+ VAT 13.5%",
       "status": "Not on sale yet",
-      "benefits": ["Full ODDference 2027 access"],
+      "benefits": [
+        "Full ODDference 2027 access"
+      ],
       "ctaLabel": "See tickets",
       "href": "/tickets/",
       "locked": true
@@ -186,7 +188,9 @@
       "price": "€499",
       "priceNote": "+ VAT 13.5%",
       "status": "Not on sale yet",
-      "benefits": ["Full ODDference 2027 access"],
+      "benefits": [
+        "Full ODDference 2027 access"
+      ],
       "ctaLabel": "See tickets",
       "href": "/tickets/",
       "locked": true
