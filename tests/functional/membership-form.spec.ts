@@ -19,7 +19,13 @@ test.beforeEach(async ({ context }) => {
   });
 });
 
+// The times offered depend on the hour (18 h lead for a viewing), so the
+// clock is fixed: Wednesday 08:00 in Helsinki, which makes Thursday the first
+// day and offers all fourteen of its times. Timers still run.
+const NOW = new Date('2026-10-21T08:00:00+03:00');
+
 async function load(page: Page, hash = '') {
+  await page.clock.setFixedTime(NOW);
   await page.goto(`${PAGE}${hash}`);
   await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' });
   await page.getByRole('button', { name: 'Reject all' }).click();
@@ -59,7 +65,9 @@ test('every "Apply for membership" leads to the form on this page', async ({ pag
   await load(page);
   const applies = page.locator('a[href="#join"]');
   expect(await applies.count()).toBeGreaterThanOrEqual(2);
-  await expect(page.locator('a[href*="/work-with-odd/"]')).toHaveCount(0);
+  // The nav and footer still link to Work with ODD; only the membership
+  // detour (intent=membership) is gone.
+  await expect(page.locator('a[href*="intent=membership"]')).toHaveCount(0);
 });
 
 test('picks are kept across days and capped at three', async ({ page }) => {

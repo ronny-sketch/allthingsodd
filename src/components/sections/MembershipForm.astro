@@ -353,6 +353,15 @@ const { eyebrow, headline, body } = Astro.props;
     font: var(--text-small);
     color: var(--color-paper-60);
   }
+  /* Scoped `display` rules beat the browser's own [hidden] style, so every
+     element this form hides says so explicitly (as CreativeWeekForm does). */
+  .msf-q[hidden],
+  .msf-form[hidden],
+  .msf-done[hidden],
+  .field[hidden],
+  .msf-error[hidden] {
+    display: none;
+  }
 
   /* Built by membership-form.ts after load, so these styles cannot be
      scoped to this component's markup: global, under .msf only. Same look
