@@ -8,6 +8,12 @@
 // the other in the same pull request, or the form offers a time the Worker
 // refuses.
 //
+// What is asked depends on the visit (redesign of 2026-10-21,
+// .design/membership-form): every path asks name, email, what they work on
+// and a link to their work; a trial day also needs a phone number (the host
+// lets them in); only "ready to join" is asked when to start, how they'd use
+// the space, team, studio and how they heard.
+//
 // Times are Helsinki wall-clock times, whatever the visitor's laptop says:
 //   viewing    weekdays, every half hour 10:00–16:30, at least 18 h ahead, 14 days
 //   coffee     Mondays 09:00 (Coffee on the House), at least 12 h ahead, 28 days
@@ -17,10 +23,26 @@
 export { readOutcome, type Outcome } from './submission-outcome';
 
 export const VISITS = [
-  { value: 'viewing', label: 'A 30-minute look round' },
-  { value: 'coffee', label: 'Monday coffee, 09:00' },
-  { value: 'trial_day', label: 'A free trial day' },
-  { value: 'ready', label: "I'm ready to join" },
+  {
+    value: 'viewing',
+    label: 'A 30-minute look round',
+    line: 'A weekday between 10:00 and 17:00. We show you round and answer your questions.',
+  },
+  {
+    value: 'coffee',
+    label: 'Monday coffee, 09:00',
+    line: 'Coffee on the House: free coffee and a DJ, then a look round.',
+  },
+  {
+    value: 'trial_day',
+    label: 'A free trial day',
+    line: 'Work here for a day. We meet you at 10:00 and let you in.',
+  },
+  {
+    value: 'ready',
+    label: "I'm ready to join",
+    line: 'Skip the visit. We email you about a start date and the next steps.',
+  },
 ] as const;
 export type Visit = (typeof VISITS)[number]['value'];
 export type SlotKind = Exclude<Visit, 'ready'>;
@@ -37,6 +59,9 @@ export const STARTS = [
   { value: 'later', label: 'Later this year' },
   { value: 'just_curious', label: 'Just curious' },
 ] as const;
+
+/** "Just curious" is not a start date for someone ready to join. */
+export const READY_STARTS = STARTS.filter((s) => s.value !== 'just_curious');
 
 export const HEARD = [
   { value: 'member_friend', label: 'A member or friend' },
@@ -154,12 +179,13 @@ export interface MembershipPayload {
   email: string;
   phone?: string;
   works_on: string;
-  link?: string;
-  use: string;
-  team: boolean;
+  link: string;
+  /** use, team, team_size, studio, start and heard: "ready" only. */
+  use?: string;
+  team?: boolean;
   team_size?: number;
-  studio: boolean;
-  start: string;
+  studio?: boolean;
+  start?: string;
   visit: Visit;
   times: string[];
   heard?: string;
@@ -169,6 +195,18 @@ export interface MembershipPayload {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+// A web address as people type one: "instagram.com/x" counts. The Worker
+// adds the https:// and checks it properly.
+const LINK_RE = /^(https?:\/\/)?[^\s/.]+(\.[^\s/.]+)+(\/\S*)?$/i;
+const PHONE_RE = /^[+()\d\s-]{5,30}$/;
+
+/** Which of the three steps holds a field, for showing an error there. */
+export type Step = 'visit' | 'second' | 'about';
+export function stepOf(field: string): Step {
+  if (field === 'visit') return 'visit';
+  if (['times', 'start', 'use', 'team_size', 'studio'].includes(field)) return 'second';
+  return 'about';
+}
 
 /** Every rule the form checks before sending, keyed by payload field like the Worker's errors. */
 export function validateMembership(
@@ -180,11 +218,22 @@ export function validateMembership(
   if (!p.email.trim()) errors.email = 'We need an email address to reply to.';
   else if (!EMAIL_RE.test(p.email.trim())) errors.email = 'That email address does not look right.';
   if (!p.works_on.trim()) errors.works_on = 'Tell us in a line what you work on.';
-  if (!p.use) errors.use = "Tell us roughly how you'd use the space.";
-  if (p.team && !(Number.isInteger(p.team_size) && p.team_size! >= 2 && p.team_size! <= MAX_TEAM)) {
-    errors.team_size = `How many of you? Between 2 and ${MAX_TEAM}.`;
+  if (!p.link.trim()) errors.link = 'Add a link to your work: a website, portfolio or Instagram.';
+  else if (!LINK_RE.test(p.link.trim())) errors.link = "That doesn't look like a web address.";
+  const phone = p.phone?.trim() ?? '';
+  if (phone && !PHONE_RE.test(phone)) errors.phone = 'Use digits, spaces and an optional + only.';
+  else if (!phone && p.visit === 'trial_day')
+    errors.phone = 'We need a phone number for a trial day, so whoever lets you in can reach you.';
+  if (p.visit === 'ready') {
+    if (!p.start) errors.start = 'When would you like to start?';
+    if (!p.use) errors.use = "Tell us roughly how you'd use the space.";
+    if (
+      p.team &&
+      !(Number.isInteger(p.team_size) && p.team_size! >= 2 && p.team_size! <= MAX_TEAM)
+    ) {
+      errors.team_size = `How many of you? Between 2 and ${MAX_TEAM}.`;
+    }
   }
-  if (!p.start) errors.start = 'When would you like to start?';
   if (!p.visit) errors.visit = "Pick how you'd like to see it first.";
   else if (p.visit !== 'ready') {
     if (p.times.length === 0)

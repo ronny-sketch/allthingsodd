@@ -144,13 +144,15 @@ const page = entry.data;
       </div>
     </section>
 
-    <!-- 8. The ask: the membership form itself (2026-10-21). It used to be a
+    <!-- 8. The ask: the membership enquiry (2026-10-21). It used to be a
          button to the Work with ODD form; every "Apply" and "Come and see it
-         first" on this page now lands here, at #join and #join-visit. -->
+         first" on this page now opens its dialog, from #join and
+         #join-visit. -->
     <MembershipForm
       eyebrow={page.finalCta.eyebrow}
       headline={page.finalCta.headline}
       body={page.finalCta.body}
+      ctaLabel={page.finalCta.cta.label}
     />
   </SubpageFrame>
 </Layout>
