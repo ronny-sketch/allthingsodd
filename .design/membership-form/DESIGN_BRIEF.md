@@ -104,6 +104,9 @@ claims one of their times in Slack and confirms by email.
   "We couldn't confirm this came from a person…") rather than a generic line.
   The answers stay, and Send can be pressed again with the same submission id.
 - **ODDstudio.** "What's ODDstudio?" opens a short explainer in place.
+- **No newsletter popup.** Once the enquiry has been opened, the timed
+  newsletter popup stays away for the rest of the page view (21 Oct
+  feedback); the form has its own newsletter tick.
 
 ## Responsive Behavior
 

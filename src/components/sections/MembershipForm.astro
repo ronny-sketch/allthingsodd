@@ -364,6 +364,11 @@ const { eyebrow, headline, body, ctaLabel } = Astro.props;
     <div class="msf-done" id="msf-done" tabindex="-1" hidden>
       <span class="msf-done-eyebrow">Got it</span>
       <h2 id="msf-done-title"></h2>
+      <!-- What they picked, repeated so a wrong day can be caught now. -->
+      <div class="msf-done-picks" id="msf-done-picks" hidden>
+        <p class="msf-done-picks-label" id="msf-done-picks-label">You picked</p>
+        <ul class="msf-done-list" id="msf-done-list" aria-labelledby="msf-done-picks-label"></ul>
+      </div>
       <p id="msf-done-body"></p>
       <p class="msf-ref" id="msf-done-ref"></p>
       <Pill type="button" variant="outline" class="msf-done-close">Close</Pill>
@@ -838,6 +843,41 @@ const { eyebrow, headline, body, ctaLabel } = Astro.props;
     max-width: 46ch;
     font: var(--text-body);
     color: var(--color-paper-80);
+  }
+  .msf-done-picks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .msf-done-picks[hidden] {
+    display: none;
+  }
+  .msf-done p.msf-done-picks-label {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  /* Labels, not buttons: the pill shape the site gives small tags. */
+  .msf-done-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .msf-done-list :global(li) {
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--color-paper-35);
+    border-radius: var(--radius-pill);
+    font: var(--text-small);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-paper);
   }
   .msf-done p.msf-ref {
     margin-block: var(--space-2) var(--space-4);

@@ -218,6 +218,8 @@ test('sends only what the path asks and says thank you', async ({ page }) => {
   await expect(page.locator('#msf-done')).toBeVisible();
   await expect(page.locator('#msf-done-title')).toHaveText('Thanks, TEST.');
   await expect(page.locator('#msf-done-body')).toContainText('confirm it by email');
+  // Their picks, repeated so a wrong day can be caught now.
+  await expect(page.locator('#msf-done-list li')).toHaveText(['Thu 22 Oct, 10:30']);
   await expect(page.locator('#membershipForm')).toBeHidden();
 
   expect(body).toMatchObject({
@@ -297,4 +299,20 @@ test('a network failure keeps the answers and offers the email address', async (
   await page.click(NEXT);
   await expect(page.locator('#msf-status')).toContainText('hello@oddfest.co');
   await expect(page.locator('#msf-works')).toHaveValue('Ceramics and set design');
+});
+
+test('the newsletter popup stays away once the enquiry has been opened', async ({
+  page,
+  context,
+}) => {
+  await context.addInitScript(() => localStorage.removeItem('oddNewsletterPopupSeen'));
+  await page.clock.install({ time: NOW });
+  await page.goto(PAGE);
+  await page.getByRole('button', { name: 'Reject all' }).click();
+  await expect(page.locator('#membershipForm')).toHaveAttribute('data-ready', 'true');
+  await open(page);
+  await page.keyboard.press('Escape');
+  await expect(dialog(page)).toBeHidden();
+  await page.clock.fastForward(20_000);
+  await expect(page.locator('#newsletterPopup')).toBeHidden();
 });

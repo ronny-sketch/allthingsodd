@@ -428,6 +428,15 @@ if (foundDialog && foundForm) {
     form.hidden = true;
     byId('msf-done-title').textContent = `Thanks, ${p.name.split(/\s+/)[0]}.`;
     byId('msf-done-body').textContent = DONE[p.visit];
+    const list = byId('msf-done-list');
+    list.replaceChildren(
+      ...p.times.map((t) => {
+        const li = document.createElement('li');
+        li.textContent = pickLabel(t);
+        return li;
+      }),
+    );
+    byId('msf-done-picks').hidden = p.times.length === 0;
     byId('msf-done-ref').textContent =
       `Your reference: ${ref}. If anything changes, email ${FALLBACK_EMAIL}.`;
     count.textContent = 'Sent';
@@ -613,6 +622,12 @@ if (foundDialog && foundForm) {
       onVisit('viewing');
     }
     if (dialog.open) return;
+    // Once someone has started on the enquiry, the timed newsletter popup
+    // stays away for the rest of this page view, open dialog or not
+    // (newsletter-popup.ts: a shown element carrying the attribute counts,
+    // and this section is always on the page). The form has its own
+    // newsletter tick.
+    document.getElementById('join')?.setAttribute('data-suppress-newsletter-popup', '');
     const active = document.activeElement;
     returnFocus =
       active instanceof HTMLElement && active !== document.body

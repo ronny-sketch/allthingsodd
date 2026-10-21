@@ -119,7 +119,9 @@ Next becomes **Send** on this step.
 
 ### Done (in the dialog)
 
-Eyebrow "Got it". Title "Thanks, {first name}." Body by path:
+Eyebrow "Got it". Title "Thanks, {first name}." Then, for a visit, "You
+picked" and their one to three picks as tags (21 Oct feedback: so a wrong
+day is caught now). Body by path:
 
 - Look round: "Someone from the team will take one of your times and confirm
   it by email, usually within one working day."
