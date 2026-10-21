@@ -11,11 +11,11 @@
   "meta": "€150 / month · Vallila, Helsinki",
   "primaryCta": {
     "label": "Apply for membership",
-    "href": "/work-with-odd/?interest=oddspace&intent=membership#enquiry-form"
+    "href": "#join"
   },
   "secondaryCta": {
     "label": "Come and see it first",
-    "href": "/work-with-odd/?interest=oddspace&intent=membership#enquiry-form"
+    "href": "#join-visit"
   },
   "heroMedia": {},
   "heroPhotos": [
@@ -92,7 +92,7 @@
         "Member and community events as they run"
       ],
       "ctaLabel": "Apply for membership",
-      "href": "/work-with-odd/?interest=oddspace&intent=membership#enquiry-form",
+      "href": "#join",
       "recommended": true,
       "badgeLabel": "One flat rate"
     },
@@ -136,13 +136,13 @@
   "howItWorks": [
     {
       "number": "01",
-      "title": "Tell us about you",
-      "body": "A short message about what you do and how you would use the space. Say if you want to visit first — most people do."
+      "title": "Pick a time to see it",
+      "body": "Choose two or three times for a 30-minute look round, come to Monday coffee, or ask for a free trial day. Someone from the team confirms one by email."
     },
     {
       "number": "02",
-      "title": "We check the fit and availability",
-      "body": "Memberships are accepted on a rolling basis while the pilot has room. We come back to you either way."
+      "title": "We show you round",
+      "body": "Meet someone who works here, see an ordinary working day and ask anything. Memberships are accepted on a rolling basis while the pilot has room, and we tell you straight away if it's full."
     },
     {
       "number": "03",
@@ -166,7 +166,11 @@
     },
     {
       "question": "Can I visit before joining?",
-      "answer": "Yes, and we would rather you did. Mention it in your message and we'll set up a time to show you around."
+      "answer": "Yes, and we'd rather you did. Pick two or three times in the form at the bottom of this page, or come to Coffee on the House on a Monday at 09:00, and someone from the team will show you round."
+    },
+    {
+      "question": "Can I try it before I join?",
+      "answer": "Yes. Ask for a free trial day in the form: someone from the team lets you in at 10:00, shows you round, and the working day is yours."
     },
     {
       "question": "Is it really 24/7?",
@@ -208,10 +212,10 @@
   "finalCta": {
     "eyebrow": "Ready when you are",
     "headline": "Come and see it, then decide.",
-    "body": "Tell us what you do and how you would use the space. A visit is the fastest way to know whether it's right for you.",
+    "body": "Pick a few times that suit you and someone from the team shows you round. Or try a whole working day first, for free.",
     "cta": {
       "label": "Apply for membership",
-      "href": "/work-with-odd/?interest=oddspace&intent=membership#enquiry-form"
+      "href": "#join"
     }
   },
   "railLeft": [
