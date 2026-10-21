@@ -22,7 +22,7 @@ import FAQList from '../../components/sections/FAQList.astro';
 import PhotoBreak from '../../components/sections/PhotoBreak.astro';
 import InstagramGallery from '../../components/sections/InstagramGallery.astro';
 import { ODDSPACE_INSTAGRAM_FEED_ID } from '../../scripts/oddspace-instagram-config';
-import MembershipForm from '../../components/sections/MembershipForm.astro';
+import Pill from '../../components/primitives/Pill.astro';
 
 const entry = await getEntry('pages', 'oddspace-membership');
 if (!entry || entry.data._template !== 'oddspace-membership')
@@ -144,14 +144,19 @@ const page = entry.data;
       </div>
     </section>
 
-    <!-- 8. The ask: the membership form itself (2026-10-21). It used to be a
-         button to the Work with ODD form; every "Apply" and "Come and see it
-         first" on this page now lands here, at #join and #join-visit. -->
-    <MembershipForm
-      eyebrow={page.finalCta.eyebrow}
-      headline={page.finalCta.headline}
-      body={page.finalCta.body}
-    />
+    <!-- 8. The ask. -->
+    <section class="odsm-sub odsm-final">
+      <div class="wrap">
+        <div class="odsm-final-inner reveal">
+          <span class="eyebrow">{page.finalCta.eyebrow}</span>
+          <h2>{page.finalCta.headline}</h2>
+          <p>{page.finalCta.body}</p>
+          <Pill href={page.finalCta.cta.href} variant="solid" magnetic>
+            {page.finalCta.cta.label}
+          </Pill>
+        </div>
+      </div>
+    </section>
   </SubpageFrame>
 </Layout>
 

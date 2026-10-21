@@ -148,12 +148,12 @@
   "howItWorks": [
     {
       "number": "01",
-      "title": "See it first",
-      "body": "Pick a time for a look round, come to Monday coffee or ask for a free trial day, on the membership page."
+      "title": "Apply",
+      "body": "Tell us a bit about you and how you would use the space."
     },
     {
       "number": "02",
-      "title": "We show you round",
+      "title": "We check the fit and availability",
       "body": "Memberships are accepted on a rolling basis while the pilot has capacity."
     },
     {
@@ -436,7 +436,7 @@
     },
     {
       "question": "How do I become a member?",
-      "answer": "Pick a time to see it on the membership page, or ask for a free trial day there. The same page has the price, what's included and what isn't. Memberships are accepted on a rolling basis while the pilot has room."
+      "answer": "Read the membership page — it has the price, what's included, what isn't, and how joining works — then apply from there. Memberships are accepted on a rolling basis as space becomes available during the pilot."
     },
     {
       "question": "What does membership cost?",
@@ -452,7 +452,7 @@
     },
     {
       "question": "Can I visit before joining?",
-      "answer": "Yes. Pick two or three times on the membership page, or come to Coffee on the House on a Monday at 09:00, and someone from the team will show you round."
+      "answer": "Yes — mention it in your message and we'll set up a time to show you around."
     },
     {
       "question": "Can non-members organise events?",
