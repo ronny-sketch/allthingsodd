@@ -134,7 +134,7 @@ jobs:
       - run: node scripts/ci-scope.mjs --self-test
       # Cloudflare hosting: the CSP and film-size header writer, and the
       # Worker that answers video Range requests (docs/deployment.md).
-      - run: node --test scripts/security-headers.test.mjs worker/video-range.test.mjs
+      - run: node --test scripts/security-headers.test.mjs worker/video-range.test.mjs worker/availability.test.mjs
       - run: npm run build
 
   functional:

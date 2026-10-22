@@ -139,6 +139,16 @@ high-level notes:
     day). A row moves to Past by itself once `endsOn` is over, at the next
     deploy; a row with no `endsOn` (the weekly things) stays at the top of
     Upcoming. Order in the file doesn't matter.
+  - 2026-10-22: `availability` (optional, here and in `oddspace-venue.json`)
+    is the words around the live room-availability grid: `eyebrow`,
+    `headline`, optional `note` and `cta`. The grid itself is not content.
+    It reads `/oddspace/availability.json`, the booking calendar reduced to
+    room + time per day (see `docs/deployment.md`), so a booking shows up
+    within ten minutes of going on the calendar, under the room its
+    `location` names ("Teollisuuskatu 9D, Helsinki — Galleria"); an event
+    with no room in its location shows as "ODDspace". Event names never
+    reach the site this way: `events` above stays the only place they
+    appear.
 - **ODDspace membership** (`/oddspace/membership`, new 2026-09-11) and
   **ODDspace as a venue** (`/oddspace/venue`, same date): the two pages that
   let somebody decide, or plan an event, without having to write to us

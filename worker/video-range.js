@@ -2,7 +2,7 @@
 // a Range request with 200 and the whole file, and Safari will not play a
 // video from a server that does that, so on an iPhone every film on the
 // site would stay blank. Nothing else reaches this script:
-// wrangler.jsonc sets assets.run_worker_first to ["/video/*"].
+// worker/index.js sends it only what wrangler.jsonc's run_worker_first names.
 
 /** [start, end] inclusive, null for "send the whole file", or 'invalid'. */
 export function parseRange(header, size) {

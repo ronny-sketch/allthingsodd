@@ -1,0 +1,247 @@
+---
+// Which ODDspace rooms are booked, and when: a month grid filled at runtime
+// from /oddspace/availability.json (worker/availability.js), which is the
+// public ODDspace Bookings calendar reduced to room + time per Helsinki
+// day. No event name ever reaches the browser, the browser never talks to
+// Google, and nothing is stored — which is why this is not in
+// consent-config.ts. It replaced nothing: the consent-gated Google
+// Calendar embed went on 2026-09-11, and the hand-kept `events` list
+// stayed the only place event names appear.
+//
+// Rendered server-side with its chrome (heading, month bar, weekday row,
+// status line); src/scripts/oddspace-availability.ts fills the grid.
+// Without JS, or if the Worker is down, the status line says so and the
+// CTA still routes to the enquiry form — a visitor is never left with an
+// empty box and no way forward.
+import Pill from '../primitives/Pill.astro';
+
+interface Props {
+  eyebrow: string;
+  headline: string;
+  note?: string;
+  cta?: { label: string; href: string };
+}
+const { eyebrow, headline, note, cta } = Astro.props;
+const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+---
+
+<section class="avail-section">
+  <div class="wrap flow">
+    <div class="section-head">
+      <span class="eyebrow">{eyebrow}</span>
+      <h2>{headline}</h2>
+    </div>
+    {note && <p class="avail-note reveal">{note}</p>}
+    <div
+      class="avail reveal"
+      data-availability
+      data-src="/oddspace/availability.json"
+      data-state="idle"
+    >
+      <div class="avail-bar">
+        <button type="button" class="avail-nav" data-prev aria-label="Previous month">
+          Previous
+        </button>
+        <p class="avail-month" aria-live="polite" data-month></p>
+        <button type="button" class="avail-nav" data-next aria-label="Next month">Next</button>
+      </div>
+      <ol class="avail-weekdays" aria-hidden="true">
+        {weekdays.map((d) => <li>{d}</li>)}
+      </ol>
+      <ol class="avail-grid" data-grid></ol>
+      <p class="avail-status" role="status" data-status></p>
+      <noscript>
+        <p class="avail-status">Turn on JavaScript to see the calendar, or ask us about a date.</p>
+      </noscript>
+    </div>
+    {
+      cta && (
+        <div class="avail-cta reveal">
+          <Pill href={cta.href} variant="outline" magnetic>
+            {cta.label}
+          </Pill>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<script src="../../scripts/oddspace-availability.ts"></script>
+
+<style>
+  /* The lede under the heading: same line as /oddspace's events note. */
+  .avail-note {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    margin-block: var(--space-4) 0;
+    text-align: center;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+  }
+
+  /* Month bar: two text buttons either side of the month, set in Forta. */
+  .avail-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-bottom: var(--space-4);
+  }
+  .avail-month {
+    margin: 0;
+    text-align: center;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+  }
+  .avail-nav {
+    background: none;
+    border: 0;
+    padding: var(--space-2) 0;
+    cursor: pointer;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .avail-nav:hover {
+    color: var(--color-heat);
+  }
+  .avail-nav:disabled {
+    color: var(--color-paper-20);
+    cursor: default;
+  }
+
+  /* Seven columns, hairline-ruled: the cells carry the page ground and the
+     1px gap shows the container's rule colour through, so the grid is one
+     set of lines rather than seven bordered boxes. */
+  .avail-weekdays,
+  .avail-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+  .avail-weekdays li {
+    padding-bottom: var(--space-2);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .avail-grid {
+    gap: 1px;
+    background: var(--color-paper-12);
+    border: 1px solid var(--color-paper-12);
+  }
+  /* Everything inside the grid is made by the script at runtime, so it
+     carries no scoping attribute: these rules are :global on purpose,
+     fenced in by .avail-grid. */
+  .avail-grid :global(.avail-day) {
+    background: var(--color-bg);
+    min-height: 6.5rem;
+    padding: var(--space-2) var(--space-3) var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .avail-grid :global(.is-pad) {
+    background: var(--color-paper-03);
+  }
+  .avail-grid :global(.avail-daynum) {
+    font: var(--text-small);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-paper);
+  }
+  .avail-grid :global(.is-today .avail-daynum) {
+    color: var(--color-heat);
+  }
+  /* The spoken date ("Sat 31 Oct"): off-screen on the grid, where the
+     column and the number already say it; the visible label on a phone. */
+  .avail-grid :global(.avail-daylong) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .avail-grid :global(.avail-blocks) {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .avail-grid :global(.avail-block) {
+    font: var(--text-small);
+    line-height: 1.3;
+    color: var(--color-paper-60);
+  }
+  .avail-grid :global(.avail-block b) {
+    font-weight: 600;
+    color: var(--color-paper);
+  }
+  .avail-grid :global(.is-past .avail-daynum),
+  .avail-grid :global(.is-past .avail-block),
+  .avail-grid :global(.is-past .avail-block b) {
+    color: var(--color-paper-40);
+  }
+
+  .avail-status {
+    margin: var(--space-4) 0 0;
+    text-align: center;
+    font: var(--text-small);
+    color: var(--color-paper-40);
+  }
+  .avail-status:empty {
+    display: none;
+  }
+  .avail-cta {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* A phone gets a list, not a 7-column grid: only the days with a booking,
+     each with its full date in front. */
+  @media (max-width: 760px) {
+    .avail-weekdays {
+      display: none;
+    }
+    .avail-grid {
+      grid-template-columns: 1fr;
+    }
+    .avail-grid :global(.is-pad),
+    .avail-grid :global(.is-free) {
+      display: none;
+    }
+    .avail-grid :global(.avail-day) {
+      min-height: 0;
+      flex-direction: row;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+    .avail-grid :global(.avail-daynum) {
+      display: none;
+    }
+    .avail-grid :global(.avail-daylong) {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip: auto;
+      flex: 0 0 6.5rem;
+      font: var(--text-small);
+      font-weight: 600;
+      color: var(--color-paper);
+    }
+    .avail-grid :global(.is-today .avail-daylong) {
+      color: var(--color-heat);
+    }
+  }
+</style>

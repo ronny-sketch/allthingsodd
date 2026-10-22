@@ -35,6 +35,7 @@ import SectionIntro from '../components/sections/SectionIntro.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import FAQList from '../components/sections/FAQList.astro';
 import InstagramGallery from '../components/sections/InstagramGallery.astro';
+import AvailabilityCalendar from '../components/sections/AvailabilityCalendar.astro';
 import { ODDSPACE_INSTAGRAM_FEED_ID } from '../scripts/oddspace-instagram-config';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
 import PhotoWall from '../components/sections/PhotoWall.astro';
@@ -266,6 +267,21 @@ const eventTables = [
             )}
           </div>
         </section>
+      )
+    }
+
+    <!-- 6a. Availability (2026-10-22) — which rooms are booked and when,
+         live from the booking calendar as room + time only, never who or
+         what. The list above says what you can turn up to; this says when
+         the rooms are free to book. -->
+    {
+      page.availability && (
+        <AvailabilityCalendar
+          eyebrow={page.availability.eyebrow}
+          headline={page.availability.headline}
+          note={page.availability.note}
+          cta={page.availability.cta}
+        />
       )
     }
 
