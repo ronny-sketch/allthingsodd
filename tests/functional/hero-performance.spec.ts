@@ -89,20 +89,20 @@ test.describe('without JavaScript', () => {
   });
 });
 
-// An animated SVG filter re-renders on the CPU every frame. The hero logo's
-// cost 87% of the homepage's main thread. See SteamFilters.astro. The torn
-// steam edge itself stays: the filter is still there and still applied.
-test('the hero logo keeps its steam filter, and nothing in it is animated', async ({ page }) => {
+// An animated SVG filter re-renders on the CPU every frame (87% of the
+// homepage's main thread once). See SteamFilters.astro. The hero logo no
+// longer uses it at all (2026-10-22): it is the plain ODD mark, standing still.
+test('the hero logo is the plain mark, and no filter is animated', async ({ page }) => {
+  await withMotion(page);
   await page.goto('/');
   const animated = await page.locator('filter animate, filter animateTransform').count();
   expect(animated).toBe(0);
-  await expect(page.locator('filter#steam-hero feTurbulence')).toHaveCount(2);
-  await expect(page.locator('filter#steam-hero feDisplacementMap')).toHaveCount(1);
-  const filter = await page
-    .locator('.hero-logo svg')
-    .first()
-    .evaluate((el) => getComputedStyle(el).filter);
-  expect(filter).toContain('#steam-hero');
+  const svg = page.locator('.hero-logo svg').first();
+  expect(await svg.evaluate((el) => getComputedStyle(el).filter)).toBe('none');
+  expect(await svg.evaluate((el) => getComputedStyle(el).animationName)).toBe('none');
+  await page.mouse.move(100, 100);
+  await page.mouse.move(600, 400);
+  expect(await page.locator('#heroLogo').evaluate((el) => el.style.transform)).toBe('');
 });
 
 // A swapped-in photo that fails to load must not replace the one showing.

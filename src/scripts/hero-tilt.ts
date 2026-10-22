@@ -3,15 +3,15 @@
   version of the other.
 
   **Pointer devices** get the original cursor tilt + spotlight: the mosaic
-  leans toward the cursor, the logo drifts the opposite way, and a soft radial
-  spotlight follows the pointer. Unchanged.
+  leans toward the cursor and a soft radial spotlight follows the pointer. The
+  logo stays put (2026-10-22): it used to drift the opposite way.
 
   **Touch devices** got nothing at all before 2026-09-02 — this module bailed
   on `(hover: none)` and the hero sat perfectly still, which is most of why
   the phone homepage read as a flatter copy of the desktop one rather than its
   own thing. They now get a scroll-linked equivalent built from the input they
-  actually have: the mosaic tilts and the logo counter-drifts as the hero
-  moves through the viewport, and the spotlight sweeps with it.
+  actually have: the mosaic tilts as the hero moves through the viewport, and
+  the spotlight sweeps with it.
 
   Explicitly not done here: no synthetic mouse events, and no
   DeviceOrientation (which would demand a permission prompt on iOS for a
@@ -24,14 +24,12 @@
 const hero = document.querySelector<HTMLElement>('.hero');
 const mosaic = document.getElementById('heroMosaic');
 const spotlight = document.getElementById('heroSpotlight');
-const logo = document.getElementById('heroLogo');
 
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
 const touch = window.matchMedia('(hover: none)').matches;
 
 function flatten() {
   mosaic!.style.transform = '';
-  if (logo) logo.style.transform = '';
   spotlight!.style.background = '';
 }
 
@@ -61,7 +59,6 @@ if (hero && mosaic && spotlight && touch) {
     // than a rAF loop, so nothing runs at all while the page is still.
     const tilt = progress * -2.2;
     mosaic!.style.transform = `rotateX(${tilt.toFixed(2)}deg) scale(1.03)`;
-    if (logo) logo.style.transform = `translateY(${(progress * 16).toFixed(1)}px)`;
     spotlight!.style.background = `radial-gradient(circle 60vw at 50% ${(38 + progress * 26).toFixed(1)}%, rgba(226,223,222,0.09) 0%, transparent 68%)`;
   }
 
@@ -96,8 +93,6 @@ if (hero && mosaic && spotlight && !touch) {
     tiltX += (tgtTX - tiltX) * 0.06;
     tiltY += (tgtTY - tiltY) * 0.06;
     mosaic!.style.transform = `rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) scale(1.02)`;
-    if (logo)
-      logo.style.transform = `translate(${(-tiltY * 1.4).toFixed(1)}px,${(-tiltX * 1.4).toFixed(1)}px)`;
     if (spot) spotlight!.style.background = spot;
     spot = '';
     const settled = Math.abs(tgtTX - tiltX) < 0.01 && Math.abs(tgtTY - tiltY) < 0.01;
@@ -134,7 +129,6 @@ if (hero && mosaic && spotlight && !touch) {
       tiltX = 0;
       tiltY = 0;
       mosaic!.style.transform = '';
-      if (logo) logo.style.transform = '';
     }, 600);
   });
 
