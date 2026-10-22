@@ -86,7 +86,11 @@ function render(
       const list = el('ul', 'avail-blocks');
       for (const block of blocks) {
         const item = el('li', 'avail-block');
-        item.append(el('b', '', block.space), ` ${block.time}`);
+        item.append(
+          el('span', 'sr-only', 'Booked: '),
+          el('b', '', block.space),
+          el('span', '', block.time),
+        );
         list.append(item);
       }
       day.append(list);

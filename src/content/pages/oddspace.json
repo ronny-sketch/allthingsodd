@@ -358,8 +358,8 @@
   },
   "availability": {
     "eyebrow": "Availability",
-    "headline": "Which rooms are taken, and when.",
-    "note": "Straight from our booking calendar, so it is always current. A room that is not listed on a day is free. Times are Helsinki time.",
+    "headline": "Which rooms are booked, and when.",
+    "note": "Straight from our booking calendar, so it is always current. Red means booked. A room that is not shown on a day is free. Times are Helsinki time.",
     "cta": { "label": "Ask about a date", "href": "/oddspace/venue/#booking-form" }
   },
   "gallery": {
