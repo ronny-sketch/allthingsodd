@@ -106,17 +106,20 @@ const { mosaicAlt, headline } = Astro.props;
       <Logo ariaHidden />
       {
         // The drop-to-ODD intro, cut from "Odd festin logo animaatio" (frames
-        // 2.83s-5.30s, before its splatter): Paper on transparent, plays once
-        // and lands on a frame identical to the SVG mark (IoU 0.997), which
-        // then takes over — see hero-intro.ts. Reduced motion gets a 1px
-        // placeholder instead, so it never downloads the 141 KB file.
+        // 2.83s-5.30s, before its splatter). Vector, not video: each of its 32
+        // frames is potrace'd at 4x from the source (99.5% mean overlap) and
+        // swapped by SMIL <set>, and its last frame IS the mark's own path, so
+        // it is as crisp as the SVG at any size and simply stays as the mark.
+        // The inline <Logo> is the fallback (see hero-intro.ts). Reduced motion
+        // gets a 1px placeholder instead, so it never downloads the file
+        // (47 KB gzipped).
       }
       <picture class="hero-mark-intro">
         <source
           media="(prefers-reduced-motion: reduce)"
           srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
         />
-        <img src="/odd-mark-intro.webp" alt="" width="1012" height="420" decoding="async" />
+        <img src="/odd-mark-intro.svg" alt="" width="1099" height="456" decoding="async" />
       </picture>
     </div>
     {headline && <h1 class="hero-headline">{headline}</h1>}
@@ -367,12 +370,13 @@ const { mosaicAlt, headline } = Astro.props;
   }
   /* The intro's canvas is larger than the mark (the drop rises above it and
      the blob stretches past its left edge). These are its crop, measured in
-     the source against the settled mark: 1099x456 around a 869x276 mark whose
-     top-left sits at (130, 110). So the last frame lands exactly on the SVG. */
+     the source against the settled mark: 1099x456 around an 869x275.84 mark
+     whose top-left sits at (130, 110). So the last frame lands exactly where
+     the inline mark would be, and the layout never moves. */
   .hero-mark-intro {
     position: absolute;
     left: -14.96%;
-    top: -39.86%;
+    top: -39.88%;
     width: 126.47%;
   }
   .hero-mark-intro img {
@@ -381,11 +385,11 @@ const { mosaicAlt, headline } = Astro.props;
     height: auto;
   }
   @media (prefers-reduced-motion: no-preference) {
-    .hero-mark:not(.is-settled) :global(svg) {
+    .hero-mark:not(.is-skipped) :global(svg) {
       visibility: hidden;
     }
   }
-  .hero-mark.is-settled .hero-mark-intro {
+  .hero-mark.is-skipped .hero-mark-intro {
     display: none;
   }
   @media (prefers-reduced-motion: reduce) {

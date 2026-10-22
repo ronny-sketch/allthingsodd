@@ -105,19 +105,33 @@ test('the hero logo is the plain mark, and no filter is animated', async ({ page
   expect(await page.locator('#heroLogo').evaluate((el) => el.style.transform)).toBe('');
 });
 
-// The drop-to-ODD intro plays once, then the SVG mark takes over where its
-// last frame landed. See hero-intro.ts.
-test('the hero logo intro plays, then hands over to the SVG mark', async ({ page }) => {
+// The drop-to-ODD intro plays once and stays as the mark: its last frame is
+// the mark's own path, so there is no handover. See hero-intro.ts.
+test('the hero logo intro plays and stays as the mark', async ({ page }) => {
   await withMotion(page);
+  // A busy test machine can take longer than the 2s slow-load cutoff, which
+  // would (correctly) skip the intro. The page's clock only moves when told.
+  await page.clock.install({ time: 0 });
+  await page.clock.pauseAt(1);
   await page.goto('/');
   await expectMotion(page);
   const intro = page.locator('.hero-mark-intro img');
-  const svg = page.locator('.hero-mark svg');
+  await expect
+    .poll(() => intro.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 1))
+    .toBe(true);
+  await expect(page.locator('.hero-mark svg')).toBeHidden();
+  await page.clock.fastForward(5000);
   await expect(intro).toBeVisible();
-  await expect(svg).toBeHidden();
-  await expect(page.locator('#heroMark')).toHaveClass(/is-settled/, { timeout: 6000 });
-  await expect(svg).toBeVisible();
-  await expect(intro).toBeHidden();
+  await expect(page.locator('#heroMark')).not.toHaveClass(/is-skipped/);
+});
+
+test('a failed hero logo intro falls back to the inline mark', async ({ page }) => {
+  await withMotion(page);
+  await page.route('**/odd-mark-intro.svg', (route) => route.abort());
+  await page.goto('/');
+  await expectMotion(page);
+  await expect(page.locator('.hero-mark svg')).toBeVisible();
+  await expect(page.locator('.hero-mark-intro')).toBeHidden();
 });
 
 test('reduced motion shows the SVG mark and never fetches the intro', async ({ page }) => {

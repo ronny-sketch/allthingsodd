@@ -1,39 +1,34 @@
 /*
-  Hero logo intro (2026-10-22). public/odd-mark-intro.webp plays once (its
-  loop count is 1) and holds its last frame, which is the ODD mark. This hands
-  over to the SVG mark when the intro has landed, so what stays on screen is
-  the crisp vector at any size, not a raster.
+  Hero logo intro (2026-10-22). public/odd-mark-intro.svg plays once and its
+  last <set> freezes on the ODD mark's own path, so the intro simply stays as
+  the mark: vector, as crisp as the inline SVG, and with no handover to jump.
+  (A handover to the inline mark was tried first and measured: browsers snap
+  an <img> box to the pixel grid, so the swap moved the edges by up to a third
+  of a pixel. Not swapping at all is exact.)
 
-  The handover is timed from the image's `load`, never before it: an animated
-  image starts playing no later than it finishes loading, so the SVG can only
-  appear on or after the last frame, where the two are identical. If the file
-  has not loaded within SLOW_MS (a slow connection), the intro is skipped and
-  the SVG shows at once rather than leaving an empty hole in the hero.
-
-  Without JavaScript the WebP simply plays and holds its last frame. Reduced
-  motion never gets here with a real file: Hero.astro's <picture> swaps in a
-  1px placeholder and CSS shows the SVG straight away.
+  The inline SVG mark is the fallback, and this is all that switches to it:
+  if the file has not loaded within SLOW_MS (a slow connection) or fails, the
+  intro is skipped and the mark shows at once rather than leaving an empty
+  hole in the hero. Reduced motion never gets a real file: Hero.astro's
+  <picture> swaps in a 1px placeholder and CSS shows the inline mark.
 */
-const INTRO_MS = 2471; // time to the last frame, from the encode
 const SLOW_MS = 2000;
 
 const mark = document.getElementById('heroMark');
 const intro = mark?.querySelector('img');
 
-if (mark && intro) {
-  const settle = () => mark.classList.add('is-settled');
-  const slow = setTimeout(settle, SLOW_MS);
-  const start = () => {
-    clearTimeout(slow);
-    setTimeout(settle, INTRO_MS);
-  };
-  if (intro.complete) {
-    if (intro.naturalWidth > 1) start();
-    else settle();
-  } else {
-    intro.addEventListener('load', start, { once: true });
-    intro.addEventListener('error', settle, { once: true });
-  }
+if (mark && intro && !(intro.complete && intro.naturalWidth > 1)) {
+  const skip = () => mark.classList.add('is-skipped');
+  const slow = setTimeout(skip, SLOW_MS);
+  intro.addEventListener('load', () => clearTimeout(slow), { once: true });
+  intro.addEventListener(
+    'error',
+    () => {
+      clearTimeout(slow);
+      skip();
+    },
+    { once: true },
+  );
 }
 
 export {};
