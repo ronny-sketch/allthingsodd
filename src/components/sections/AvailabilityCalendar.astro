@@ -45,6 +45,10 @@ const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
         <p class="avail-month" aria-live="polite" data-month></p>
         <button type="button" class="avail-nav" data-next aria-label="Next month">Next</button>
       </div>
+      <ul class="avail-legend">
+        <li><span class="avail-swatch is-booked"></span>Booked</li>
+        <li><span class="avail-swatch is-free"></span>Free</li>
+      </ul>
       <ol class="avail-weekdays" aria-hidden="true">
         {weekdays.map((d) => <li>{d}</li>)}
       </ol>
@@ -113,6 +117,37 @@ const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     cursor: default;
   }
 
+  /* The key to the grid: Ember means booked, an empty cell means free. */
+  .avail-legend {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 var(--space-4);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-6);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .avail-legend li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .avail-swatch {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex: none;
+  }
+  .avail-swatch.is-booked {
+    background: var(--color-heat);
+  }
+  .avail-swatch.is-free {
+    border: 1px solid var(--color-paper-20);
+  }
+
   /* Seven columns, hairline-ruled: the cells carry the page ground and the
      1px gap shows the container's rule colour through, so the grid is one
      set of lines rather than seven bordered boxes. */
@@ -157,8 +192,11 @@ const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     font-variant-numeric: tabular-nums;
     color: var(--color-paper);
   }
+  /* Today: underlined, not Ember — on this grid Ember means booked. */
   .avail-grid :global(.is-today .avail-daynum) {
-    color: var(--color-heat);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.25em;
   }
   /* The spoken date ("Sat 31 Oct"): off-screen on the grid, where the
      column and the number already say it; the visible label on a phone. */
@@ -178,19 +216,30 @@ const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     flex-direction: column;
     gap: var(--space-1);
   }
+  /* A booking is a solid Ember block with the page ground as its type:
+     the one thing on the grid in colour, so "booked" reads before any
+     word does. (--color-bg is the actual paper on these light pages, where
+     --color-paper has been re-pointed to Ink.) */
   .avail-grid :global(.avail-block) {
+    background: var(--color-heat);
+    color: var(--color-bg);
+    padding: var(--space-1) var(--space-2) calc(var(--space-1) + 1px);
     font: var(--text-small);
     line-height: 1.3;
-    color: var(--color-paper-60);
+    display: flex;
+    flex-direction: column;
   }
   .avail-grid :global(.avail-block b) {
     font-weight: 600;
-    color: var(--color-paper);
   }
-  .avail-grid :global(.is-past .avail-daynum),
-  .avail-grid :global(.is-past .avail-block),
-  .avail-grid :global(.is-past .avail-block b) {
+  /* A past booking is history, not availability: grey, so Ember only ever
+     means a room that is taken ahead. */
+  .avail-grid :global(.is-past .avail-daynum) {
     color: var(--color-paper-40);
+  }
+  .avail-grid :global(.is-past .avail-block) {
+    background: var(--color-paper-12);
+    color: var(--color-paper-60);
   }
 
   .avail-status {
@@ -241,7 +290,12 @@ const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
       color: var(--color-paper);
     }
     .avail-grid :global(.is-today .avail-daylong) {
-      color: var(--color-heat);
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 0.25em;
+    }
+    .avail-grid :global(.avail-blocks) {
+      flex: 1;
     }
   }
 </style>

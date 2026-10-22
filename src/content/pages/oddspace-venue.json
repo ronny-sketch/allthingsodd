@@ -156,7 +156,7 @@
   "availability": {
     "eyebrow": "Availability",
     "headline": "Is your date free?",
-    "note": "Booked rooms straight from our calendar, updated as bookings come in. A room that is not listed on a day is free. Times are Helsinki time."
+    "note": "Booked rooms straight from our calendar, updated as bookings come in. Red means booked. A room that is not shown on a day is free. Times are Helsinki time."
   },
   "askUs": {
     "eyebrow": "Ask us directly",
