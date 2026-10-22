@@ -47,12 +47,18 @@ Google mail records were carried over unchanged.
   policies, and a year's cache on `/_astro/*`. The CSP allows inline scripts
   by hash, computed from the HTML being deployed. A new third-party origin
   goes into its `POLICY` table first, or browsers refuse it.
-- `worker/video-range.js` runs for `/video/*` only. The asset store answers a
-  `Range` request with the whole file, and Safari will not play a video from
-  a server that does, so the script serves the bytes asked for. It learns
-  each film's size from `X-Asset-Size`, which the build writes into
-  `_headers`. Its tests: `node --test scripts/security-headers.test.mjs
-worker/video-range.test.mjs` (run in CI's checks job).
+- `worker/index.js` runs for two paths only (`run_worker_first`) and hands
+  each to its script. `/video/*` goes to `worker/video-range.js`: the asset
+  store answers a `Range` request with the whole file, and Safari will not
+  play a video from a server that does, so the script serves the bytes asked
+  for, learning each film's size from `X-Asset-Size`, which the build writes
+  into `_headers`. `/oddspace/availability.json` goes to
+  `worker/availability.js`: the public ODDspace Bookings calendar's ICS feed,
+  fetched at the edge (cached ten minutes) and reduced to room + time per
+  Helsinki day with no event names, for the availability grid on `/oddspace`
+  and `/oddspace/venue`. Tests: `node --test scripts/security-headers.test.mjs
+worker/video-range.test.mjs worker/availability.test.mjs` (run in CI's
+  checks job).
 - `public/.assetsignore` keeps `CNAME` and `.surgeignore` off Cloudflare.
 - One file may be at most 25 MiB on Cloudflare. A bigger film fails the
   deploy: re-encode it.

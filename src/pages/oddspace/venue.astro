@@ -23,6 +23,7 @@ import FeatureGrid from '../../components/sections/FeatureGrid.astro';
 import FAQList from '../../components/sections/FAQList.astro';
 import PhotoBreak from '../../components/sections/PhotoBreak.astro';
 import InstagramGallery from '../../components/sections/InstagramGallery.astro';
+import AvailabilityCalendar from '../../components/sections/AvailabilityCalendar.astro';
 import { ODDSPACE_INSTAGRAM_FEED_ID } from '../../scripts/oddspace-instagram-config';
 import Pill from '../../components/primitives/Pill.astro';
 import BookingEnquiryForm from '../../components/sections/BookingEnquiryForm.astro';
@@ -137,6 +138,20 @@ const page = entry.data;
         <FeatureGrid cards={page.howItWorks} />
       </div>
     </section>
+
+    <!-- 5b. Availability (2026-10-22): the booked rooms, live from the
+         booking calendar, so a planner can see whether a date is free
+         before writing to us. Room + time only, never who or what. -->
+    {
+      page.availability && (
+        <AvailabilityCalendar
+          eyebrow={page.availability.eyebrow}
+          headline={page.availability.headline}
+          note={page.availability.note}
+          cta={page.availability.cta}
+        />
+      )
+    }
 
     <!-- 6. The honest half. See the route comment: these are the specs a
          real event needs that this site cannot yet verify. Naming them as

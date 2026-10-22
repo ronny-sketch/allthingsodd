@@ -1,6 +1,8 @@
 // allthingsodd.co on Cloudflare: the built site served as static assets.
-// The one script, worker/video-range.js, runs only for /video/* and adds the
-// Range support Safari needs to play a film. dist/_headers (scripts/security-headers.mjs) adds the
+// worker/index.js runs for two paths only: /video/* (worker/video-range.js,
+// the Range support Safari needs to play a film) and
+// /oddspace/availability.json (worker/availability.js, the booking calendar
+// reduced to room + time). dist/_headers (scripts/security-headers.mjs) adds the
 // security headers; .assetsignore keeps Surge-only files out. The forms API
 // is a separate Worker (odd-growth-os). See docs/deployment.md.
 {
@@ -9,7 +11,7 @@
   // ODD's account ("Ronny@oddfest.co's Account"); the forms Worker lives here too.
   "account_id": "5072bcb64fa470405bf539d4f0f4381f",
   "compatibility_date": "2026-10-01",
-  "main": "worker/video-range.js",
+  "main": "worker/index.js",
   // allthingsodd.co is this Worker's own domain: Cloudflare keeps its DNS
   // record and certificate. www is not here; a redirect rule in the zone
   // sends it to the apex. Live since the nameservers moved, 2026-10-15.
@@ -22,7 +24,7 @@
     "binding": "ASSETS",
     // Every other path is served straight from the asset store; the script
     // never sees it, and _headers applies there.
-    "run_worker_first": ["/video/*"],
+    "run_worker_first": ["/video/*", "/oddspace/availability.json"],
     // /contact → /contact/, as Surge did, so every existing link still lands.
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page",

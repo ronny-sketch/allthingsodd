@@ -148,6 +148,18 @@ const instagramWall = z.object({
   ctaLabel: z.string(),
 });
 
+// The editorial framing of the live room-availability grid
+// (AvailabilityCalendar.astro, 2026-10-22) on /oddspace and /oddspace/venue.
+// The grid itself is read from /oddspace/availability.json at runtime —
+// the booking calendar reduced to room + time, no event names — so the
+// content here is only the words around it. Optional on both pages.
+const availabilityGrid = z.object({
+  eyebrow: z.string(),
+  headline: z.string(),
+  note: z.string().optional(),
+  cta: linkCta.optional(),
+});
+
 // A titled, dated, linked-out resource — Media page's whole media bank and
 // archive share this exact shape. `type`/`year` are optional small badges
 // (e.g. "Press release" / "2026") that ResourceList.astro renders next to
@@ -1201,6 +1213,9 @@ const pages = defineCollection({
         // rules in AGENTS.md. Optional so the section can be removed from
         // content without touching the page.
         instagram: instagramWall.optional(),
+        // Which rooms are booked and when, live from the booking calendar,
+        // under the events list (2026-10-22). See `availabilityGrid`.
+        availability: availabilityGrid.optional(),
         faq: z.array(faqItem),
       }),
 
@@ -1353,6 +1368,9 @@ const pages = defineCollection({
         beforeYourEvent: sectionIntro,
         resources: z.array(resourceLink),
         instagram: instagramWall.optional(),
+        // Which rooms are booked and when, live from the booking calendar,
+        // after "How it works" (2026-10-22). See `availabilityGrid`.
+        availability: availabilityGrid.optional(),
         faq: z.array(faqItem),
         finalCta: z.object({
           eyebrow: z.string(),
