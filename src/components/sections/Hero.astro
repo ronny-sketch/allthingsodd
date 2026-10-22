@@ -335,12 +335,12 @@ const { mosaicAlt, headline } = Astro.props;
     padding: 0 1.5rem;
     pointer-events: none;
   }
+  /* Just the ODD mark (2026-10-22, Ronny's call): no steam edge, no glow, no
+     rise-in, no float, no cursor drift. It sits still on the moving mosaic. */
   .hero-logo :global(svg) {
     width: min(25rem, 46vw);
     height: auto;
     color: var(--color-paper);
-    opacity: 1;
-    filter: url(#steam-hero) drop-shadow(0 0 70px rgb(226 223 222 / 18%));
   }
   .hero-headline {
     margin: 0;
@@ -393,37 +393,6 @@ const { mosaicAlt, headline } = Astro.props;
   @keyframes hero-headline-in {
     from {
       transform: translateY(10px);
-    }
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    /* The mark used to lead the headline by 0.25s. With the headline moved
-       to a 0s delay above, keeping the mark at 0.3s would have inverted that
-       order on screen. Both now rise together from the first frame, which
-       keeps the pair reading as one gesture. */
-    .hero-logo :global(svg) {
-      opacity: 0;
-      animation:
-        hero-logo-in 1.2s 0s var(--ease-out-expo) both,
-        hero-float 10s ease-in-out infinite;
-    }
-  }
-  @keyframes hero-logo-in {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  @keyframes hero-float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-2%);
     }
   }
 </style>

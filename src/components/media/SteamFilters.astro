@@ -8,8 +8,9 @@
 // displacement on the CPU every frame, for as long as the logo is on screen.
 // Measured on the homepage at 1440x900 / 4x CPU, main-thread task time over
 // 6s, median of 3: 4053ms animated, 517ms static, 547ms with no filter at all.
-// The drift was barely visible; it was 87% of the page's CPU. The torn edge
-// stays, and the logo's own float keeps it moving. Do not add <animate> back:
+// The drift was barely visible; it was 87% of the page's CPU. The homepage
+// hero logo stopped using it on 2026-10-22; the brand book still does. Do not
+// add <animate> back:
 // tests/functional/hero-performance.spec.ts fails if you do. (The unused
 // #steam-nav went too.)
 ---
