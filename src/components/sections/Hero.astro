@@ -102,13 +102,30 @@ const { mosaicAlt, headline } = Astro.props;
   <div class="hero-scrim" aria-hidden="true"></div>
 
   <div class="hero-logo" id="heroLogo">
-    <Logo ariaHidden />
+    <div class="hero-mark" id="heroMark">
+      <Logo ariaHidden />
+      {
+        // The drop-to-ODD intro, cut from "Odd festin logo animaatio" (frames
+        // 2.83s-5.30s, before its splatter): Paper on transparent, plays once
+        // and lands on a frame identical to the SVG mark (IoU 0.997), which
+        // then takes over — see hero-intro.ts. Reduced motion gets a 1px
+        // placeholder instead, so it never downloads the 141 KB file.
+      }
+      <picture class="hero-mark-intro">
+        <source
+          media="(prefers-reduced-motion: reduce)"
+          srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        />
+        <img src="/odd-mark-intro.webp" alt="" width="1012" height="420" decoding="async" />
+      </picture>
+    </div>
     {headline && <h1 class="hero-headline">{headline}</h1>}
   </div>
 </header>
 
 <script src="../../scripts/mosaic.ts"></script>
 <script src="../../scripts/hero-tilt.ts"></script>
+<script src="../../scripts/hero-intro.ts"></script>
 
 <style>
   .hero {
@@ -336,11 +353,45 @@ const { mosaicAlt, headline } = Astro.props;
     pointer-events: none;
   }
   /* Just the ODD mark (2026-10-22, Ronny's call): no steam edge, no glow, no
-     rise-in, no float, no cursor drift. It sits still on the moving mosaic. */
-  .hero-logo :global(svg) {
+     rise-in, no float, no cursor drift. It sits still on the moving mosaic,
+     once the intro below has drawn it. */
+  .hero-mark {
+    position: relative;
     width: min(25rem, 46vw);
+  }
+  .hero-mark :global(svg) {
+    display: block;
+    width: 100%;
     height: auto;
     color: var(--color-paper);
+  }
+  /* The intro's canvas is larger than the mark (the drop rises above it and
+     the blob stretches past its left edge). These are its crop, measured in
+     the source against the settled mark: 1099x456 around a 869x276 mark whose
+     top-left sits at (130, 110). So the last frame lands exactly on the SVG. */
+  .hero-mark-intro {
+    position: absolute;
+    left: -14.96%;
+    top: -39.86%;
+    width: 126.47%;
+  }
+  .hero-mark-intro img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-mark:not(.is-settled) :global(svg) {
+      visibility: hidden;
+    }
+  }
+  .hero-mark.is-settled .hero-mark-intro {
+    display: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-mark-intro {
+      display: none;
+    }
   }
   .hero-headline {
     margin: 0;

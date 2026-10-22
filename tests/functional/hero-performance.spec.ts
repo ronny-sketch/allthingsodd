@@ -105,6 +105,33 @@ test('the hero logo is the plain mark, and no filter is animated', async ({ page
   expect(await page.locator('#heroLogo').evaluate((el) => el.style.transform)).toBe('');
 });
 
+// The drop-to-ODD intro plays once, then the SVG mark takes over where its
+// last frame landed. See hero-intro.ts.
+test('the hero logo intro plays, then hands over to the SVG mark', async ({ page }) => {
+  await withMotion(page);
+  await page.goto('/');
+  await expectMotion(page);
+  const intro = page.locator('.hero-mark-intro img');
+  const svg = page.locator('.hero-mark svg');
+  await expect(intro).toBeVisible();
+  await expect(svg).toBeHidden();
+  await expect(page.locator('#heroMark')).toHaveClass(/is-settled/, { timeout: 6000 });
+  await expect(svg).toBeVisible();
+  await expect(intro).toBeHidden();
+});
+
+test('reduced motion shows the SVG mark and never fetches the intro', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const fetched: string[] = [];
+  page.on('request', (r) => {
+    if (r.url().includes('odd-mark-intro')) fetched.push(r.url());
+  });
+  await page.goto('/');
+  await expect(page.locator('.hero-mark svg')).toBeVisible();
+  await expect(page.locator('.hero-mark-intro')).toBeHidden();
+  expect(fetched).toEqual([]);
+});
+
 // A swapped-in photo that fails to load must not replace the one showing.
 // See mosaic.ts's swap(). The test proves a replacement was really attempted
 // and really failed — a run with no swap would pass without proving anything.
