@@ -28,10 +28,14 @@ test.beforeEach(async ({ context }) => {
 
 async function load(page: Page, hash = '') {
   await page.clock.setFixedTime(NOW);
-  await page.goto(`${PAGE}${hash}`);
+  await page.goto(PAGE);
   await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' });
   await page.getByRole('button', { name: 'Reject all' }).click();
   await expect(page.locator('#membershipForm')).toHaveAttribute('data-ready', 'true');
+  // Arriving with the hash opens the dialog at once, over the cookie banner
+  // (a modal dialog makes the page behind it inert), so the banner is
+  // answered first and the hash followed after, like a link on the page.
+  if (hash) await page.evaluate((h) => (window.location.hash = h), hash);
 }
 
 const dialog = (page: Page) => page.locator('#msf-dialog');
