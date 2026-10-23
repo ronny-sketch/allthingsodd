@@ -3,7 +3,7 @@
   "_slug": "oddfest",
   "seo": {
     "title": "ODDfest 2027 — Helsinki's creative week",
-    "description": "ODDfest 2027 is Helsinki's creative week, 19–25 April: independently made events across the city, coming together on Friday 23 April for ODDcelebration at Tanssin talo.",
+    "description": "ODDfest 2027 is Helsinki's creative week, 19–25 April: independently made events across the city brought together through one shared programme.",
     "ogImage": "/og/oddfest.jpg"
   },
   "eyebrow": "ODDfest · Helsinki 2027",
@@ -42,7 +42,7 @@
     },
     "odd": {
       "title": "ODD builds the week.",
-      "body": "We connect the events through one programme, identity and shared visibility."
+      "body": "We connect the events through one programme and shared identity, so they are easier to discover together."
     },
     "closing": "",
     "stepsLabel": "From an idea to the programme"
@@ -51,7 +51,7 @@
     {
       "number": "01",
       "title": "Start with what you do best",
-      "body": "An exhibition, a performance, a workshop, a screening, a dinner, an open studio, a club night, a conversation — or a format nobody has tried yet. If it belongs in Helsinki's creative life, it belongs in the week."
+      "body": "An exhibition, a performance, a workshop, a screening, a dinner, an open studio, a club night, a conversation — or a format nobody has tried yet. If it adds something to Helsinki's creative life, we want to hear about it."
     },
     {
       "number": "02",
@@ -72,8 +72,8 @@
   "join": {
     "eyebrow": "How to join",
     "headline": "Bring something to ODDfest 2027.",
-    "body": "ODDfest 2027 runs 19–25 April. We are collecting event ideas now, while the programme is still taking shape — which is the best moment to bring one. Tell us what you want to make happen, where you are with it, and what kind of connections or support would actually be useful.",
-    "reassurance": "An idea still at the notes-on-your-phone stage is a fine thing to send. Sending it commits you to nothing, and we would far rather hear it early than hear it finished and too late.",
+    "body": "ODDfest 2027 runs 19–25 April. We are collecting event ideas now. Tell us what you want to make happen, where you are with it, and what kind of connections or support would actually be useful.",
+    "reassurance": "An idea at the notes-on-your-phone stage is enough. Sending it commits you to nothing, and we'd rather hear it early than after the programme has closed.",
     "cta": {
       "label": "Submit an event idea",
       "href": "/oddfest/#creative-week-form"
@@ -87,7 +87,7 @@
   "examplesIntro": {
     "eyebrow": "Highlights",
     "headline": "One week. Many hosts.",
-    "body": "In 2026, Creative Week brought more than 1,000 people to partner events across Helsinki, while ODDfest brought more than 150 acts to five venues. A few highlights from both — each one made with someone else.",
+    "body": "In 2026, Creative Week brought more than 1,000 people to partner events across Helsinki, while ODDfest brought more than 150 acts to five venues. A few highlights from both — each built by a different host or collaboration.",
     "closing": "The point is not that these events look alike. It is that, for one week, they become easier to discover together."
   },
   "examples": [
@@ -104,7 +104,7 @@
       "category": "Creative Week 2026 · Maria 01",
       "title": "Creative x Tech: Ecosystem Convergence",
       "host": "With Junction and Maria 01",
-      "body": "Founders, artists, hackers, designers, musicians and cultural operators in one room — people who usually build in separate circles. Talks, fireside chats and participatory programme opened the week.",
+      "body": "Founders, artists, hackers, designers, musicians and cultural operators in one room — people who usually build in separate circles. Talks, fireside chats and participatory programming opened the week.",
       "image": "../../assets/examples/creative-x-tech-maria01.jpg",
       "href": "https://maria.io/events/creative-x-tech-ecosystem-convergence/",
       "external": true
@@ -166,7 +166,7 @@
   ],
   "programmeHighlights": {
     "eyebrow": "On the programme",
-    "headline": "Who has been part of it so far.",
+    "headline": "Who has joined ODDfest so far.",
     "body": "ODDfest 2025 and 2026 were made with artists, speakers, collectives and organisations like these.",
     "groups": [
       {
@@ -203,7 +203,7 @@
   },
   "hostCta": {
     "eyebrow": "ODDfest 2027",
-    "headline": "Want your event in the next one?",
+    "headline": "Want your event in ODDfest 2027?",
     "body": "An exhibition, a club night, a talk, a dinner, an open studio — or a format nobody has tried yet. We are collecting ideas for 2027 now, and yours does not need to be finished.",
     "cta": {
       "label": "Submit your event",
