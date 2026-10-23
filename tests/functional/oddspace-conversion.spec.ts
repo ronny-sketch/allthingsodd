@@ -237,15 +237,44 @@ test('ODDspace routes visitors into both journeys', async ({ page }) => {
   await expect(page.locator('a[href*="/oddspace/venue"]').first()).toBeVisible();
 });
 
-test('every event link on ODDspace goes to the Get a quote form', async ({ page }) => {
+test('ODDspace event links: browse the venue first, or go straight to a quote', async ({
+  page,
+}) => {
   await page.goto(SPACE);
   await expect(page.locator('a[href*="intent=event"]')).toHaveCount(0);
-  for (const label of [/Organise an event/, /Enquire about the gallery/, /Get a quote/]) {
+  // "Organise an event" is a first look, so it lands on the venue page with
+  // the enquiry closed: people want to see the rooms and the rates before
+  // they are asked anything (2026-10-23). The links that say they enquire
+  // or quote still open the form.
+  await expect(page.getByRole('link', { name: /Organise an event/ }).first()).toHaveAttribute(
+    'href',
+    '/oddspace/venue/',
+  );
+  for (const label of [/Enquire about the gallery/, /Get a quote/]) {
     await expect(page.getByRole('link', { name: label }).first()).toHaveAttribute(
       'href',
       '/oddspace/venue/#booking-form',
     );
   }
+});
+
+test('Organise an event lands on the venue page with the enquiry closed', async ({
+  page,
+  context,
+}) => {
+  // Keep the newsletter popup's timer and the cookie banner out of the way
+  // of the click, as booking-enquiry.spec.ts does.
+  await context.addInitScript(() => localStorage.setItem('oddNewsletterPopupSeen', '1'));
+  await page.goto(SPACE);
+  await page.getByRole('button', { name: 'Reject all' }).click();
+  await expect(page.locator('[data-consent-banner]')).not.toHaveClass(/is-visible/);
+  await page
+    .getByRole('link', { name: /Organise an event/ })
+    .first()
+    .click();
+  await expect(page).toHaveURL(/\/oddspace\/venue\/$/);
+  await expect(page.locator('#bookingEnquiryForm')).toHaveAttribute('data-ready', 'true');
+  await expect(page.locator('dialog[open]')).toHaveCount(0);
 });
 
 test('the ODDstudio card links to the studio page from both ODDspace pages', async ({ page }) => {
