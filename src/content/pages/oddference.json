@@ -173,9 +173,7 @@
       "price": "€399",
       "priceNote": "+ VAT 13.5%",
       "status": "Not on sale yet",
-      "benefits": [
-        "Full ODDference 2027 access"
-      ],
+      "benefits": ["Full ODDference 2027 access"],
       "ctaLabel": "See tickets",
       "href": "/tickets/",
       "locked": true
@@ -188,9 +186,7 @@
       "price": "€499",
       "priceNote": "+ VAT 13.5%",
       "status": "Not on sale yet",
-      "benefits": [
-        "Full ODDference 2027 access"
-      ],
+      "benefits": ["Full ODDference 2027 access"],
       "ctaLabel": "See tickets",
       "href": "/tickets/",
       "locked": true
