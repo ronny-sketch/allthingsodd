@@ -2,16 +2,16 @@
   "_template": "about",
   "seo": {
     "title": "About ODD — why we exist and what we are building",
-    "description": "ODD builds events, spaces and projects that create more continuity around creative work and stronger connections between creative and cultural fields, business and wider society.",
+    "description": "ODD builds events, spaces and projects that strengthen creative work and connect creative fields with business and wider society.",
     "ogImage": "/og/about.jpg"
   },
   "eyebrow": "About ODD",
   "title": "Creativity belongs closer to the centre.",
   "intro": "ODD grew from a simple idea: Finland has extraordinary creative talent, and more can happen when the people, places and resources around it connect.",
   "argument": [
-    "Finland already has strong artists, organisations, institutions, funding and creative communities. What is often harder is continuity: projects, spaces, networks and partnerships do not always connect in ways that let relationships, knowledge and opportunities build on each other over time.",
+    "Finland already has strong artists, organisations, institutions, funding and creative communities. The harder part is connecting them: projects, spaces, networks and partnerships often remain separate, making it harder for relationships, knowledge and opportunities to carry forward.",
     "There is also more potential in bringing creative and cultural expertise into closer contact with business, institutions and public life. Creative practice carries real expertise in attention, taste, meaning and experimentation — and in turning ideas into things people can experience. These capabilities matter far beyond the cultural sector.",
-    "ODD builds places, events and projects where those connections can happen more naturally. We do not claim to represent every creative field; we create conditions for different people and practices to meet, work together and keep going."
+    "ODD builds places, events and projects where those connections can happen more naturally. We do not claim to represent every creative field; we make it easier for different people and practices to meet, work together and keep going."
   ],
   "story": {
     "eyebrow": "Our story",
@@ -20,7 +20,7 @@
       {
         "year": "2023",
         "title": "New Nordic Way rf",
-        "body": "The association is founded in Helsinki. The idea that becomes ODD is still taking shape."
+        "body": "The association is founded in Helsinki. The first ideas behind ODD begin to form."
       },
       {
         "year": "2024",
@@ -35,7 +35,7 @@
       {
         "year": "2026",
         "title": "More than one event",
-        "body": "Creative Week expands across Helsinki. ODDference develops into a professional event built around creative expertise. ODDspace gives ODD a year-round home."
+        "body": "Creative Week expands across Helsinki. ODDference develops into a conference where creative expertise meets business and society. ODDspace gives ODD a year-round home."
       },
       {
         "year": "2027",
@@ -62,7 +62,7 @@
       },
       {
         "number": "03",
-        "title": "Projects and relationships let something continue",
+        "title": "Projects and partnerships keep collaboration going",
         "body": "Projects and partnerships give us a way to keep working together beyond ODDfest, ODDference and ODDspace — when there is a clear reason to build something together."
       }
     ],
