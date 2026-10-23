@@ -1,0 +1,1273 @@
+---
+// The ODDspace membership enquiry (2026-10-21), the last section of
+// /oddspace/membership at #join. Redesigned the same day after the first
+// test (.design/membership-form: brief, information architecture, tasks).
+//
+// One ask opens a full-screen <dialog> over the page, the same shape as the
+// venue's "Get a quote" (BookingEnquiryForm.astro, whose shell this copies,
+// as CreativeWeekForm did): a header with a progress bar, one step at a
+// time, Back and Next in a fixed footer, and the thank-you inside the sheet.
+//
+// Three steps on every path, and each path asks only what it needs:
+//   01 How would you like to see ODDspace?  four cards; a tap moves on
+//   02 a visit: when suits you (the time picker)
+//      ready to join: start, use, team and ODDstudio
+//   03 About you: name, email, what you work on and a link to your work on
+//      every path; phone required for a trial day (the host lets them in),
+//      not asked for coffee; how you heard for "ready" only
+// A teammate claims one of the times in Slack (../odd-growth-os D34).
+//
+// Any link to #join opens it at step 1, any link to #join-visit ("Come and
+// see it first") at step 2 with the look round chosen. ×, Esc and the
+// browser's back button close it; answers stay until the page is reloaded.
+//
+// Fields that belong to some paths only carry `data-paths="<visit> …"`.
+// membership-form.ts hides them on the other paths and disables their
+// inputs, so a hidden field is never sent or checked.
+//
+// membership-form.ts builds the time choices in the browser, from the rules
+// in membership-schema.ts, because they depend on today's date and this page
+// is static. Their styles are therefore global, scoped under .msf.
+import ChoiceChips from '../primitives/ChoiceChips.astro';
+import Pill from '../primitives/Pill.astro';
+import { VISITS, USES, READY_STARTS, HEARD, MAX_TEAM } from '../../scripts/membership-schema';
+
+interface Props {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  /** The opener's label, from the page's final CTA. */
+  ctaLabel: string;
+}
+const { eyebrow, headline, body, ctaLabel } = Astro.props;
+---
+
+<section class="msf" id="join" aria-labelledby="msf-heading">
+  <div class="wrap msf-inner">
+    <div class="msf-head reveal">
+      <span class="eyebrow">{eyebrow}</span>
+      <h2 id="msf-heading">{headline}</h2>
+      <p>{body}</p>
+    </div>
+
+    <noscript>
+      <p class="msf-noscript">
+        This form needs JavaScript to send. You can email the same details to{' '}
+        <a href="mailto:hello@oddfest.co">hello@oddfest.co</a> instead.
+      </p>
+      <style is:inline>
+        .msf-opener,
+        .msf-sticky {
+          display: none !important;
+        }
+      </style>
+    </noscript>
+
+    <div class="msf-opener" id="msf-opener">
+      <Pill type="button" variant="solid" id="msf-open" disabled>{ctaLabel}</Pill>
+      <p class="msf-opener-note">Three short steps. A visit costs nothing.</p>
+    </div>
+    <p class="msf-sent" id="msf-sent" role="status" tabindex="-1" hidden>
+      Your request is in, reference <strong data-sent-ref></strong>. We reply within one working
+      day.
+    </p>
+  </div>
+
+  <!-- `data-suppress-newsletter-popup`: while it is open the timed
+       newsletter popup stays away (newsletter-popup.ts). -->
+  <dialog
+    class="msf-dialog"
+    id="msf-dialog"
+    aria-labelledby="msf-dialog-title"
+    data-suppress-newsletter-popup
+  >
+    <header class="msf-dhead">
+      <div class="msf-dhead-row">
+        <p class="msf-dhead-title" id="msf-dialog-title">ODDspace membership</p>
+        <p class="msf-count" id="msf-count" aria-live="polite">Step 1 of 3</p>
+        <button type="button" class="msf-close" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <ol class="msf-progress" aria-hidden="true">
+        <li></li>
+        <li></li>
+        <li></li>
+      </ol>
+    </header>
+
+    <form class="msf-form" id="membershipForm" method="post" novalidate>
+      <div class="msf-body" id="msf-body">
+        <!-- Honeypot. A person never sees it. A non-empty value means a bot. -->
+        <div class="botcheck" aria-hidden="true">
+          <label for="msf-hp">Leave this empty</label>
+          <input id="msf-hp" name="hp_field" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <!-- 01 The visit ------------------------------------------------------ -->
+        <section class="msf-step" data-step="visit" aria-labelledby="msf-step-visit">
+          <h2 class="msf-step-head" id="msf-step-visit" tabindex="-1">
+            <span class="msf-step-num" aria-hidden="true">01</span>
+            <span>How would you like to see ODDspace?</span>
+          </h2>
+          <fieldset class="field" data-field="visit">
+            <legend class="sr-only">How would you like to see ODDspace?</legend>
+            <div class="msf-cards">
+              {
+                VISITS.map((v, i) => {
+                  const id = `msf-visit-${v.value}`;
+                  return (
+                    <label class="msf-card" for={id}>
+                      <input
+                        class="msf-card-input"
+                        id={id}
+                        type="radio"
+                        name="visit"
+                        value={v.value}
+                        required={i === 0}
+                        aria-describedby={`${id}-line`}
+                      />
+                      <span class="msf-card-name">{v.label}</span>
+                      <span class="msf-card-line" id={`${id}-line`}>
+                        {v.line}
+                      </span>
+                    </label>
+                  );
+                })
+              }
+            </div>
+            <p class="field-error" id="msf-err-visit" hidden></p>
+          </fieldset>
+        </section>
+
+        <!-- 02 When (a visit) ------------------------------------------------- -->
+        <section class="msf-step" data-step="times" aria-labelledby="msf-step-times" hidden>
+          <h2 class="msf-step-head" id="msf-step-times" tabindex="-1">
+            <span class="msf-step-num" aria-hidden="true">02</span>
+            <span id="msf-times-title">When suits you?</span>
+          </h2>
+          <fieldset class="field msf-times" data-field="times">
+            <legend class="sr-only" id="msf-times-legend">Pick up to three times</legend>
+            <p class="field-hint" id="msf-times-hint"></p>
+            <div class="msf-days" id="msf-days" role="group" aria-label="Days"></div>
+            <div class="msf-slots" id="msf-slots" role="group" aria-labelledby="msf-times-legend">
+            </div>
+            <div class="msf-picks" id="msf-picks" aria-live="polite"></div>
+            <p class="field-error" id="msf-err-times" hidden></p>
+          </fieldset>
+        </section>
+
+        <!-- 02 Your membership (ready to join) -------------------------------- -->
+        <section
+          class="msf-step"
+          data-step="membership"
+          aria-labelledby="msf-step-membership"
+          hidden
+        >
+          <h2 class="msf-step-head" id="msf-step-membership" tabindex="-1">
+            <span class="msf-step-num" aria-hidden="true">02</span>
+            <span>Your membership</span>
+          </h2>
+          <fieldset class="field" data-field="start">
+            <legend
+              >When would you like to start? <span class="req" aria-hidden="true">*</span></legend
+            >
+            <ChoiceChips name="start" options={READY_STARTS} required idPrefix="msf-start" />
+            <p class="field-error" id="msf-err-start" hidden></p>
+          </fieldset>
+          <fieldset class="field" data-field="use">
+            <legend
+              >How would you use ODDspace? <span class="req" aria-hidden="true">*</span></legend
+            >
+            <ChoiceChips name="use" options={USES} required idPrefix="msf-use" />
+            <p class="field-error" id="msf-err-use" hidden></p>
+          </fieldset>
+          <div class="field" data-field="team">
+            <label class="check" for="msf-team">
+              <input type="checkbox" id="msf-team" name="team" value="true" />
+              <span>We're a team</span>
+            </label>
+          </div>
+          <div class="field msf-narrow" data-field="team_size" hidden>
+            <label for="msf-team-size"
+              >How many of you? <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="msf-team-size"
+              name="team_size"
+              type="number"
+              min="2"
+              max={MAX_TEAM}
+              step="1"
+              inputmode="numeric"
+            />
+            <p class="field-error" id="msf-err-team_size" hidden></p>
+          </div>
+          <div class="field" data-field="studio">
+            <label class="check" for="msf-studio">
+              <input type="checkbox" id="msf-studio" name="studio" value="true" />
+              <span>I'd want ODDstudio too</span>
+            </label>
+            <details class="msf-more">
+              <summary>
+                <span class="msf-more-icon" aria-hidden="true"></span>
+                <span>What's ODDstudio?</span>
+              </summary>
+              <p>
+                The creative music studio inside ODDspace, run with TUNEMENT: Genelec monitoring,
+                mics, instruments and room to work as a group. Add full access for €100 / month on
+                top of membership, or book it at €20 / hour as a member.
+              </p>
+              <p>
+                <a href="/oddstudio/" target="_blank" rel="noopener">Read about ODDstudio</a> (opens in
+                a new tab)
+              </p>
+            </details>
+          </div>
+        </section>
+
+        <!-- 03 About you ------------------------------------------------------ -->
+        <section class="msf-step" data-step="about" aria-labelledby="msf-step-about" hidden>
+          <h2 class="msf-step-head" id="msf-step-about" tabindex="-1">
+            <span class="msf-step-num" aria-hidden="true">03</span>
+            <span>About you</span>
+          </h2>
+          <p class="msf-key">
+            Questions marked <span class="req" aria-hidden="true">*</span><span class="sr-only"
+              >with an asterisk</span
+            > need an answer.
+          </p>
+          <div class="msf-grid">
+            <div class="field" data-field="name">
+              <label for="msf-name">Your name <span class="req" aria-hidden="true">*</span></label>
+              <input id="msf-name" name="name" type="text" required autocomplete="name" />
+              <p class="field-error" id="msf-err-name" hidden></p>
+            </div>
+            <div class="field" data-field="email">
+              <label for="msf-email">Email <span class="req" aria-hidden="true">*</span></label>
+              <input
+                id="msf-email"
+                name="email"
+                type="email"
+                inputmode="email"
+                required
+                autocomplete="email"
+              />
+              <p class="field-error" id="msf-err-email" hidden></p>
+            </div>
+            <div class="field msf-wide" data-field="works_on">
+              <label for="msf-works"
+                >What do you work on? <span class="req" aria-hidden="true">*</span></label
+              >
+              <input
+                id="msf-works"
+                name="works_on"
+                type="text"
+                required
+                maxlength="200"
+                placeholder="In a line: ceramics, a game studio, film sound…"
+              />
+              <p class="field-error" id="msf-err-works_on" hidden></p>
+            </div>
+            <div class="field msf-wide" data-field="link">
+              <label for="msf-link"
+                >A link to your work <span class="req" aria-hidden="true">*</span></label
+              >
+              <input
+                id="msf-link"
+                name="link"
+                type="text"
+                inputmode="url"
+                autocomplete="url"
+                autocapitalize="off"
+                spellcheck="false"
+                required
+                aria-describedby="msf-link-hint"
+              />
+              <p class="field-hint" id="msf-link-hint">
+                Website, portfolio, Instagram, SoundCloud: whatever shows what you make.
+              </p>
+              <p class="field-error" id="msf-err-link" hidden></p>
+            </div>
+            <div class="field" data-field="phone" data-paths="viewing trial_day ready">
+              <label for="msf-phone"
+                >Phone <span class="req" data-paths="trial_day" aria-hidden="true">*</span><span
+                  class="optional"
+                  data-paths="viewing ready">(optional)</span
+                ></label
+              >
+              <input
+                id="msf-phone"
+                name="phone"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel"
+                aria-describedby="msf-phone-hint"
+              />
+              <p class="field-hint" id="msf-phone-hint" data-paths="trial_day">
+                So whoever lets you in can reach you on the day.
+              </p>
+              <p class="field-error" id="msf-err-phone" hidden></p>
+            </div>
+            <div class="field" data-field="heard" data-paths="ready">
+              <label for="msf-heard"
+                >How did you hear about us? <span class="optional">(optional)</span></label
+              >
+              <select id="msf-heard" name="heard">
+                <option value="">Choose one</option>
+                {HEARD.map((h) => <option value={h.value}>{h.label}</option>)}
+              </select>
+            </div>
+            <div class="field msf-wide" data-field="notes">
+              <label for="msf-notes">Anything else? <span class="optional">(optional)</span></label>
+              <textarea id="msf-notes" name="notes" rows="3" maxlength="2000"></textarea>
+            </div>
+          </div>
+
+          <div class="msf-ticks">
+            <div class="field" data-field="consent_privacy">
+              <label class="check msf-consent" for="msf-consent">
+                <input
+                  type="checkbox"
+                  id="msf-consent"
+                  name="consent_privacy"
+                  value="true"
+                  required
+                />
+                <span>
+                  Keep my answers so the team can reply, as the{' '}
+                  <a href="/privacy/" target="_blank" rel="noopener">privacy notice</a> describes.{
+                    ' '
+                  }
+                  <span class="req" aria-hidden="true">*</span>
+                </span>
+              </label>
+              <p class="field-error" id="msf-err-consent_privacy" hidden></p>
+            </div>
+            <label class="check" for="msf-newsletter">
+              <input type="checkbox" id="msf-newsletter" name="newsletter" value="true" />
+              <span>Also send me ODD's newsletter</span>
+            </label>
+          </div>
+        </section>
+      </div>
+
+      <footer class="msf-foot">
+        <p class="form-status" id="msf-status" role="status" aria-live="polite"></p>
+        <div class="msf-foot-actions">
+          <button type="button" class="msf-back" hidden>Back</button>
+          <Pill type="submit" variant="solid" class="msf-next">Next</Pill>
+        </div>
+      </footer>
+    </form>
+
+    <div class="msf-done" id="msf-done" tabindex="-1" hidden>
+      <span class="msf-done-eyebrow">Got it</span>
+      <h2 id="msf-done-title"></h2>
+      <!-- What they picked, repeated so a wrong day can be caught now. -->
+      <div class="msf-done-picks" id="msf-done-picks" hidden>
+        <p class="msf-done-picks-label" id="msf-done-picks-label">You picked</p>
+        <ul class="msf-done-list" id="msf-done-list" aria-labelledby="msf-done-picks-label"></ul>
+      </div>
+      <p id="msf-done-body"></p>
+      <p class="msf-ref" id="msf-done-ref"></p>
+      <Pill type="button" variant="outline" class="msf-done-close">Close</Pill>
+    </div>
+  </dialog>
+
+  <!-- Keeps the ask in reach between the hero and this section. Hidden while
+       the dialog is open, while the cookie banner is up, and once sent. -->
+  <div class="msf-sticky" id="msf-sticky">
+    <p class="msf-sticky-text">See ODDspace before you decide.</p>
+    <Pill type="button" variant="solid" class="msf-sticky-cta">Book a visit</Pill>
+  </div>
+</section>
+
+<script src="../../scripts/membership-form.ts"></script>
+
+<style>
+  /* The frame is the venue enquiry's (BookingEnquiryForm.astro): a sheet
+     holding numbered steps with a title over a hairline, underline inputs
+     with small tracked labels, pills for what you touch, square hairline
+     cells for the choices. Role tokens only, so it works on either ground.
+     .msf takes layout.css's section rhythm; nothing here redeclares it. */
+  .msf-inner {
+    display: grid;
+    gap: var(--space-content);
+    max-width: 44rem;
+    margin-inline: auto;
+    justify-items: center;
+    text-align: center;
+  }
+  .msf-head {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .msf-head p {
+    color: var(--color-paper-80);
+  }
+  .msf-opener {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .msf-opener-note,
+  .msf-sent,
+  .msf-noscript {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .msf-sent {
+    color: var(--color-paper);
+  }
+  .msf-sent:focus {
+    outline: none;
+  }
+  .msf-noscript a {
+    color: inherit;
+  }
+  .msf-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+  .msf-key {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .req {
+    color: var(--color-heat);
+    font-weight: 600;
+  }
+  .optional {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  /* ---- steps ---- */
+  .msf-step {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    min-width: 0;
+  }
+  .msf-step-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin: 0;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-paper-12);
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    text-wrap: balance;
+    color: var(--color-paper);
+  }
+  .msf-step-head:focus {
+    outline: none;
+  }
+  .msf-step-num {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--color-paper-40);
+  }
+
+  /* ---- fields ---- */
+  .msf-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6) 1.6rem;
+    align-items: start;
+  }
+  @media (min-width: 560px) {
+    .msf-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .msf-wide {
+      grid-column: 1 / -1;
+    }
+  }
+  .field {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    scroll-margin-block: var(--space-6);
+  }
+  .msf-narrow input {
+    max-width: 10rem;
+  }
+  /* Scoped `display` rules beat the browser's own [hidden] style, so every
+     element this form hides says so explicitly. */
+  .msf-opener[hidden],
+  .msf-sent[hidden],
+  .msf-step[hidden],
+  .msf-back[hidden],
+  .msf-form[hidden],
+  .msf-done[hidden],
+  .field[hidden],
+  .field-hint[hidden],
+  .field-error[hidden],
+  .req[hidden],
+  .optional[hidden] {
+    display: none;
+  }
+  .field > label:not(.check),
+  .field > legend:not(.sr-only) {
+    padding: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+    transition: color var(--duration-fast) ease;
+  }
+  .field > legend:not(.sr-only) {
+    margin-bottom: var(--space-3);
+  }
+  .field > label .req,
+  .field > legend .req,
+  .check .req {
+    letter-spacing: 0;
+  }
+  .field input:not([type='radio'], [type='checkbox']),
+  .field textarea,
+  .field select {
+    width: 100%;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-paper-20);
+    border-radius: 0;
+    padding: 0.6rem 0;
+    /* Body: its 1rem floor also stops iOS Safari zooming on focus. */
+    font: var(--text-body);
+    color: var(--color-paper);
+    outline: none;
+    resize: vertical;
+    transition: border-color var(--duration-fast) ease;
+  }
+  .field select {
+    min-height: 2.75rem;
+    appearance: none;
+    padding-right: 1.5rem;
+    background-image:
+      linear-gradient(45deg, transparent 50%, currentColor 50%),
+      linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position:
+      calc(100% - 0.55rem) 55%,
+      calc(100% - 0.25rem) 55%;
+    background-size: 0.3rem 0.3rem;
+    background-repeat: no-repeat;
+    cursor: pointer;
+  }
+  .field select option {
+    color: initial;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: var(--color-paper-40);
+  }
+  .field input:not([type='radio'], [type='checkbox']):focus-visible,
+  .field textarea:focus-visible,
+  .field select:focus-visible {
+    border-color: var(--color-paper);
+    box-shadow: inset 0 -1px 0 var(--color-paper);
+  }
+  .field-hint {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+
+  /* ---- what needs an answer: a Heat keyline in the gutter, the label and
+     line in Heat, and a message, so colour is never the only signal ---- */
+  .field::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(-1 * var(--space-4));
+    width: 2px;
+    background: var(--color-heat);
+    opacity: 0;
+    transition: opacity var(--duration-fast) ease;
+  }
+  .field.is-invalid::before {
+    opacity: 1;
+  }
+  .field.is-invalid > label:not(.check),
+  .field.is-invalid > legend {
+    color: var(--color-heat);
+  }
+  .field.is-invalid input:not([type='radio'], [type='checkbox']),
+  .field.is-invalid textarea {
+    border-bottom-color: var(--color-heat);
+    box-shadow: inset 0 -1px 0 var(--color-heat);
+  }
+  .field.is-invalid .msf-cards {
+    border-color: var(--color-heat);
+  }
+  .field-error {
+    display: flex;
+    gap: 0.4rem;
+    margin: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    color: var(--color-heat);
+  }
+  .field-error::before {
+    content: '↳';
+    flex: none;
+  }
+
+  /* ---- the four visit cards: square cells in a hairline grid; the chosen
+     one takes a figure keyline drawn inside, so the grid never moves ---- */
+  .msf-cards {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1px;
+    background: var(--color-paper-12);
+    border: 1px solid var(--color-paper-12);
+  }
+  @media (min-width: 560px) {
+    .msf-cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .msf-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-height: 2.75rem;
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-bg);
+    box-shadow: inset 0 0 0 0 var(--color-paper);
+    cursor: pointer;
+    text-align: left;
+    transition:
+      background-color var(--duration-fast) ease,
+      box-shadow var(--duration-fast) ease;
+  }
+  .msf-card:has(.msf-card-input:checked) {
+    background: var(--color-backstage);
+    box-shadow: inset 0 0 0 2px var(--color-paper);
+  }
+  @media (hover: hover) {
+    .msf-card:hover {
+      background: var(--color-backstage);
+    }
+  }
+  .msf-card:has(.msf-card-input:focus-visible) {
+    outline: 2px solid var(--color-paper);
+    outline-offset: -6px;
+  }
+  .msf-card-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .msf-card-name {
+    font-family: var(--font-display);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+    color: var(--color-paper);
+  }
+  .msf-card-line {
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .msf-card-input:checked ~ .msf-card-line {
+    color: var(--color-paper-80);
+  }
+
+  /* ---- ticks ---- */
+  .msf-ticks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .check {
+    display: inline-flex;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    align-items: center;
+    font: var(--text-body);
+    color: var(--color-paper-80);
+    cursor: pointer;
+    text-align: left;
+  }
+  .check input {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin: 0;
+    accent-color: var(--color-paper);
+  }
+  .msf-consent {
+    align-items: flex-start;
+  }
+  .msf-consent input {
+    margin-top: 0.3rem;
+  }
+  .check a,
+  .field-hint a,
+  .msf-more a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  /* ---- "What's ODDstudio?": the booking form's quiet disclosure, a +
+     that turns into a minus ---- */
+  .msf-more {
+    margin-left: calc(1.15rem + 0.75rem);
+  }
+  .msf-more summary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    font: var(--text-small);
+    font-weight: 600;
+    color: var(--color-paper-80);
+    cursor: pointer;
+    list-style: none;
+  }
+  .msf-more summary::-webkit-details-marker {
+    display: none;
+  }
+  .msf-more summary:focus-visible {
+    outline: 2px solid var(--color-paper);
+    outline-offset: 2px;
+    border-radius: var(--radius-pill);
+  }
+  .msf-more-icon {
+    position: relative;
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 1px solid var(--color-paper-35);
+    border-radius: var(--radius-pill);
+  }
+  .msf-more-icon::before,
+  .msf-more-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.55rem;
+    height: 1px;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+    transition: transform var(--duration-fast) ease;
+  }
+  .msf-more-icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+  .msf-more[open] .msf-more-icon::after {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  .msf-more p {
+    margin: 0 0 var(--space-2);
+    max-width: 52ch;
+    font: var(--text-small);
+    color: var(--color-paper-80);
+  }
+
+  .botcheck {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .form-status {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .form-status[data-error] {
+    color: var(--color-heat);
+    font-weight: 600;
+  }
+
+  /* ---- after sending ---- */
+  .msf-done {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-10) var(--space-6);
+    text-align: center;
+    overflow-y: auto;
+  }
+  .msf-done:focus {
+    outline: none;
+  }
+  .msf-done-eyebrow {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .msf-done h2 {
+    margin: 0;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+  }
+  .msf-done p {
+    margin: 0;
+    max-width: 46ch;
+    font: var(--text-body);
+    color: var(--color-paper-80);
+  }
+  .msf-done-picks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .msf-done-picks[hidden] {
+    display: none;
+  }
+  .msf-done p.msf-done-picks-label {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  /* Labels, not buttons: the pill shape the site gives small tags. */
+  .msf-done-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .msf-done-list :global(li) {
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--color-paper-35);
+    border-radius: var(--radius-pill);
+    font: var(--text-small);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-paper);
+  }
+  .msf-done p.msf-ref {
+    margin-block: var(--space-2) var(--space-4);
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+
+  /* ---- the dialog: full screen on phones; from 720px a centred sheet
+     over an Ink scrim, fixed height so steps of different lengths never
+     make it jump. Only an open dialog gets a layout. ---- */
+  .msf-dialog {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--color-bg);
+    color: var(--color-paper);
+    overflow: hidden;
+    text-align: left;
+  }
+  .msf-dialog[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  .msf-dialog::backdrop {
+    background: rgb(14 9 11 / 55%);
+  }
+  @media (min-width: 720px) {
+    .msf-dialog {
+      width: min(44rem, calc(100vw - 2 * var(--space-8)));
+      height: min(90dvh, 46rem);
+      margin: auto;
+      border-radius: var(--radius-panel);
+      box-shadow: var(--shadow-panel);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .msf-dialog[open] {
+      animation: msf-sheet-in var(--duration-base) var(--ease-out-expo);
+    }
+    .msf-dialog[open]::backdrop {
+      animation: msf-fade-in var(--duration-base) ease;
+    }
+    .msf-step.is-entering {
+      animation: msf-step-in var(--duration-base) var(--ease-out-expo);
+    }
+    .msf-step.is-entering.from-back {
+      animation-name: msf-step-in-back;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .msf-step.is-entering {
+      animation: msf-fade-in var(--duration-fast) ease;
+    }
+  }
+  @keyframes msf-sheet-in {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+  }
+  @keyframes msf-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes msf-step-in {
+    from {
+      opacity: 0;
+      transform: translateX(1.5rem);
+    }
+  }
+  @keyframes msf-step-in-back {
+    from {
+      opacity: 0;
+      transform: translateX(-1.5rem);
+    }
+  }
+  :global(html.msf-lock) {
+    overflow: hidden;
+  }
+
+  .msf-dhead {
+    flex: none;
+    padding: max(var(--space-4), env(safe-area-inset-top)) var(--space-5) var(--space-3);
+  }
+  @media (min-width: 720px) {
+    .msf-dhead {
+      padding: var(--space-5) var(--space-8) var(--space-3);
+    }
+  }
+  .msf-dhead-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .msf-dhead-title {
+    margin: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper);
+  }
+  .msf-count {
+    margin: 0 0 0 auto;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .msf-close {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: calc(-1 * var(--space-2));
+    border: none;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-paper-80);
+    font: var(--text-heading);
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) ease,
+      color var(--duration-fast) ease;
+  }
+  @media (hover: hover) {
+    .msf-close:hover {
+      background: var(--color-paper-12);
+      color: var(--color-paper);
+    }
+  }
+  .msf-progress {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-1);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .msf-progress li {
+    height: 3px;
+    background: var(--color-paper-12);
+    transition: background-color var(--duration-base) ease;
+  }
+  .msf-progress li.is-done {
+    background: var(--color-paper);
+  }
+  .msf-body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--space-8) var(--space-6) var(--space-10);
+  }
+  @media (min-width: 720px) {
+    .msf-body {
+      padding: var(--space-10) var(--space-10) var(--space-12);
+    }
+  }
+  .msf-foot {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5) max(var(--space-4), env(safe-area-inset-bottom));
+    border-top: 1px solid var(--color-paper-12);
+    background: var(--color-bg);
+  }
+  @media (min-width: 720px) {
+    .msf-foot {
+      padding: var(--space-4) var(--space-8) var(--space-5);
+    }
+  }
+  .msf-foot .form-status:empty {
+    display: none;
+  }
+  .msf-foot-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .msf-foot-actions :global(.msf-next) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-height: 2.75rem;
+    margin-left: auto;
+    text-align: center;
+  }
+  @media (min-width: 720px) {
+    .msf-foot-actions :global(.msf-next) {
+      flex: none;
+    }
+  }
+  .msf-foot-actions :global(.msf-next[disabled]) {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .msf-back {
+    min-height: 2.75rem;
+    padding: 0.55rem 1.25rem;
+    border: 1px solid var(--color-paper-35);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-paper);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color var(--duration-fast) ease;
+  }
+  @media (hover: hover) {
+    .msf-back:hover {
+      border-color: var(--color-paper);
+    }
+  }
+
+  /* ---- the sticky bar: Ink on either ground, like the venue page's ---- */
+  .msf-sticky {
+    --color-paper: var(--swatch-paper);
+    --color-ink: var(--swatch-ink);
+    position: fixed;
+    z-index: 150;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-5) max(var(--space-3), env(safe-area-inset-bottom));
+    background: var(--swatch-ink);
+    color: var(--swatch-paper);
+    box-shadow: var(--shadow-panel);
+    text-align: left;
+    transform: translateY(110%);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      transform var(--duration-base) var(--ease-out-expo),
+      opacity var(--duration-base) ease,
+      visibility 0s linear var(--duration-base);
+  }
+  .msf-sticky.is-shown {
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    transition:
+      transform var(--duration-base) var(--ease-out-expo),
+      opacity var(--duration-base) ease,
+      visibility 0s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .msf-sticky,
+    .msf-sticky.is-shown {
+      transition: none;
+    }
+  }
+  /* Phones only: on a wide screen the hero and the section are never far. */
+  @media (min-width: 720px) {
+    .msf-sticky {
+      display: none;
+    }
+  }
+  .msf-sticky-text {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font: var(--text-small);
+    color: rgb(226 223 222 / 80%);
+  }
+  .msf-sticky :global(.msf-sticky-cta) {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+  .msf-sticky :global(.msf-sticky-cta:focus-visible) {
+    outline: 2px solid var(--swatch-paper);
+    outline-offset: 2px;
+  }
+
+  /* Built by membership-form.ts after load, so these styles cannot be
+     scoped to this component's markup: global, under .msf only. Same look
+     as ChoiceChips. */
+  :global(.msf .msf-days),
+  :global(.msf .msf-slots),
+  :global(.msf .msf-picks) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  :global(.msf .msf-days) {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: var(--space-2);
+    scrollbar-width: thin;
+  }
+  :global(.msf .msf-slot) {
+    flex: none;
+    min-height: 2.75rem;
+    padding: 0.5rem 1.05rem;
+    border: 1px solid var(--color-paper-35);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-paper);
+    font: var(--text-body);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) ease,
+      color var(--duration-fast) ease,
+      border-color var(--duration-fast) ease;
+  }
+  :global(.msf .msf-slot:hover) {
+    border-color: var(--color-paper);
+  }
+  :global(.msf .msf-slot[aria-pressed='true']),
+  :global(.msf .msf-slot[aria-current='true']) {
+    background: var(--color-paper);
+    color: var(--color-bg);
+    border-color: var(--color-paper);
+  }
+  :global(.msf .msf-slot:disabled) {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  :global(.msf .msf-slot:focus-visible),
+  :global(.msf .msf-pick:focus-visible) {
+    outline: 2px solid var(--color-paper);
+    outline-offset: 2px;
+  }
+  :global(.msf .msf-day) {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    line-height: 1.2;
+    border-color: var(--color-paper-20);
+  }
+  /* A day that holds one of your picks: a full-strength outline (no dot,
+     the brand bans it). */
+  :global(.msf .msf-day.has-pick:not([aria-current='true'])) {
+    border-color: var(--color-paper);
+  }
+  :global(.msf .msf-picks-label) {
+    flex-basis: 100%;
+    margin: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  :global(.msf .msf-pick) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    padding: 0.4rem 0.6rem 0.4rem 1rem;
+    border: 1px solid var(--color-paper);
+    border-radius: var(--radius-pill);
+    background: var(--color-paper-06);
+    color: var(--color-paper);
+    font: var(--text-small);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+  }
+  :global(.msf .msf-pick-x) {
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: var(--radius-pill);
+    font-size: 1.1em;
+    line-height: 1;
+  }
+  @media (hover: hover) {
+    :global(.msf .msf-pick:hover .msf-pick-x) {
+      background: var(--color-paper-12);
+    }
+  }
+</style>
