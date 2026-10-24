@@ -3,11 +3,11 @@
   "_slug": "oddspace",
   "seo": {
     "title": "ODDspace membership — €150 / month in Vallila, Helsinki",
-    "description": "One flat membership: 24/7 access to the ODDspace co-working space, shared facilities and meeting rooms, and member rates on the event spaces and ODDstudio. Everything you need to decide, before you get in touch.",
+    "description": "One flat membership: 24/7 access to the ODDspace co-working space, shared facilities and meeting rooms, plus member rates on the event spaces and ODDstudio. Everything you need to decide before you get in touch.",
     "ogImage": "/og/oddspace.jpg"
   },
   "eyebrow": "ODDspace · Membership",
-  "title": "One membership for the workspace, meeting rooms and community.",
+  "title": "One membership. A place to work, meet and stay connected.",
   "meta": "€150 / month · Vallila, Helsinki",
   "primaryCta": {
     "label": "Apply for membership",
@@ -52,25 +52,25 @@
       "alt": "Members having lunch together around a table at ODDspace"
     }
   ],
-  "intro": "Everything you need to decide is on this page. If something isn't here, ask us — we would rather tell you than let you find out later.",
+  "intro": "The price, access, what's included and how joining works are all below. If something is unclear, ask us.",
   "whatItIs": {
     "eyebrow": "What membership is",
-    "headline": "A desk, a door code, and people who make things.",
-    "body": "Membership is day-to-day access to ODDspace: somewhere to work, meeting rooms when you need them, and a building where people from art, design, music, media, technology and business are working on their own things under one roof. One flat rate, no tiers, no long-term commitment."
+    "headline": "A desk, a door code and people working alongside you.",
+    "body": "Membership gives you day-to-day access to ODDspace: a place to work, meeting rooms when you need them, and people across art, design, music, media, technology and business working on their own projects under one roof. One flat rate, no tiers and no long-term commitment."
   },
   "included": {
     "eyebrow": "What you get",
     "headline": "What's included",
     "items": [
       "24/7 access to the co-working space",
-      "Shared working areas, WiFi, kitchen and the basics",
+      "Shared working areas, WiFi and kitchen",
       "Meeting rooms when you need them",
       "Member rates on the gallery, the auditorium and ODDstudio",
-      "Member and community events in the space, as they run"
+      "Member and community events as they happen"
     ]
   },
   "notIncluded": {
-    "eyebrow": "Be clear about this part",
+    "eyebrow": "What's not included",
     "headline": "What's not included",
     "items": [
       "ODDstudio. The creative music studio is booked separately — add full access for €100 / month on top of membership, or book it at €20 / hour as a member.",
@@ -98,13 +98,12 @@
     },
     {
       "name": "Membership + ODDstudio",
-      "audience": "For people who work in sound",
+      "audience": "For musicians, producers and people working with sound",
       "price": "€250 / month",
       "description": "Membership plus full access to ODDstudio, the creative music studio run with TUNEMENT.",
       "benefits": [
         "Everything in the membership above",
-        "Full ODDstudio access (€100 / month on top of membership)",
-        "Or book the studio at €20 / hour as a member instead"
+        "Full ODDstudio access (€100 / month on top of membership)"
       ],
       "ctaLabel": "Read about ODDstudio",
       "href": "/oddstudio"
@@ -113,19 +112,19 @@
   "ratesNote": "Member rates on the event spaces: €200 for a full day in the 1st floor gallery, €100 for a half day in the auditorium. Booking the studio by the hour does not require a membership.",
   "audiencesIntro": {
     "eyebrow": "Who it's for",
-    "headline": "Useful if you recognise yourself here."
+    "headline": "Who membership works well for"
   },
   "audiences": [
     {
       "label": "People working for themselves",
-      "description": "Freelancers, artists, designers, producers and founders who work better out of the house and want the day to have other people in it."
+      "description": "Freelancers, artists, designers, producers and founders who work better outside the house and want other people around while they work."
     },
     {
       "label": "Small teams",
       "description": "A few people who need somewhere to work together and a meeting room now and then, without signing an office lease."
     },
     {
-      "label": "Continuity between projects",
+      "label": "Between projects",
       "description": "A regular place to work can be especially useful between productions, commissions or client projects — somewhere to keep a working rhythm and stay around other people."
     },
     {
@@ -152,7 +151,7 @@
   ],
   "instagram": {
     "eyebrow": "From ODDspace",
-    "headline": "What actually goes on in here.",
+    "headline": "What happens here.",
     "ctaLabel": "Follow @oddspace.co →"
   },
   "faq": [
@@ -166,7 +165,7 @@
     },
     {
       "question": "Can I visit before joining?",
-      "answer": "Yes, and we'd rather you did. Pick two or three times in the form at the bottom of this page, or come to Coffee on the House on a Monday at 09:00, and someone from the team will show you round."
+      "answer": "Yes. Pick two or three times in the form at the bottom of this page, or come to Coffee on the House on a Monday at 09:00, and someone from the team will show you round."
     },
     {
       "question": "Can I try it before I join?",
@@ -206,7 +205,7 @@
     },
     {
       "question": "What if I have a question that isn't here?",
-      "answer": "Email hello@oddfest.co. If it is something we haven't decided yet, we'll say so rather than make something up."
+      "answer": "Email hello@oddfest.co and we'll answer it."
     }
   ],
   "finalCta": {
@@ -219,15 +218,37 @@
     }
   },
   "railLeft": [
-    { "kind": "logo" },
-    { "kind": "word", "text": "ODDspace" },
-    { "kind": "meta", "text": "Membership" },
-    { "kind": "meta", "text": "Vallila" }
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDspace"
+    },
+    {
+      "kind": "meta",
+      "text": "Membership"
+    },
+    {
+      "kind": "meta",
+      "text": "Vallila"
+    }
   ],
   "railRight": [
-    { "kind": "word", "text": "Helsinki" },
-    { "kind": "meta", "text": "24/7" },
-    { "kind": "logo" },
-    { "kind": "word", "text": "ODDspace" }
+    {
+      "kind": "word",
+      "text": "Helsinki"
+    },
+    {
+      "kind": "meta",
+      "text": "24/7"
+    },
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDspace"
+    }
   ]
 }
