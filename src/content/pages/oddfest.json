@@ -25,7 +25,7 @@
   "whatItIs": {
     "eyebrow": "What ODDfest is",
     "headline": "One shared week, made across Helsinki.",
-    "body": "ODDfest brings independently made events across Helsinki into one shared creative week.\n\nArtists, collectives, venues, organisations and companies make their own events — from exhibitions and performances to workshops, dinners, club nights and formats nobody has tried yet."
+    "body": "ODDfest is a week of independently made events happening across Helsinki.\n\nArtists, collectives, venues, organisations and companies make their own events — from exhibitions and performances to workshops, dinners, club nights and formats nobody has tried yet."
   },
   "lookBack": {
     "label": "Look back at 2026",
@@ -56,7 +56,7 @@
     {
       "number": "02",
       "title": "Tell us about it",
-      "body": "It does not have to be finished, funded or scheduled. We want to know what you are making, roughly where and when it could happen, how far along it is, and whether there is anything you are still looking for."
+      "body": "It does not have to be finished, funded or scheduled. Tell us what you are making, roughly where and when it could happen, how far along it is and what you still need to make it happen."
     },
     {
       "number": "03",
@@ -66,7 +66,7 @@
     {
       "number": "04",
       "title": "Join the shared week",
-      "body": "Your event is connected to the ODDfest identity, the public programme and the communications around the week. For a few days, independent work across Helsinki becomes easier to find as one whole."
+      "body": "Your event becomes part of the ODDfest programme and communications, making independently produced events across Helsinki easier to discover together."
     }
   ],
   "join": {
@@ -166,7 +166,7 @@
   ],
   "programmeHighlights": {
     "eyebrow": "On the programme",
-    "headline": "Who has joined ODDfest so far.",
+    "headline": "Some of the people and organisations behind ODDfest.",
     "body": "ODDfest 2025 and 2026 were made with artists, speakers, collectives and organisations like these.",
     "groups": [
       {
@@ -281,7 +281,7 @@
   "partnerCta": {
     "eyebrow": "For partners",
     "title": "Partner with ODDfest",
-    "body": "A week made by hundreds of people needs partners behind it — organisations that want to back the week itself, reach the people in it, or build something of their own inside it. Tell us what you have in mind and we will work out whether there is a real fit.",
+    "body": "A week made by hundreds of people needs partners behind it — organisations that want to support the week or build something meaningful as part of it. Tell us what you have in mind and we’ll work out whether there is a good fit.",
     "linkLabel": "Talk to us about partnering →",
     "href": "/work-with-odd/?interest=strategic_partnership#enquiry-form"
   }
