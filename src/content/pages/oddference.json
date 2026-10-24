@@ -147,21 +147,21 @@
     {
       "name": "Blind Bird",
       "syncSlug": "blind-bird",
-      "audience": "The earliest ticket",
-      "description": "The lowest-price ticket for people ready to commit before the programme is complete.",
+      "audience": "The lowest price",
+      "description": "Commit early and get ODDference 2027 at the lowest price it will be sold for.",
       "price": "€299",
       "priceNote": "+ VAT 13.5%",
       "benefits": [
         "Full ODDference 2027 access",
-        "The lowest price ODDference 2027 will be sold at",
-        "First to know the 2027 programme as it's confirmed"
+        "Our lowest ticket price — guaranteed",
+        "Programme updates as they’re announced"
       ],
       "ctaLabel": "See ticket details",
       "href": "/tickets",
       "recommended": true,
       "badgeLabel": "Until 1 Dec 2026 or sold out",
       "noteLink": {
-        "label": "Questions before you commit? Email hello@oddfest.co",
+        "label": "Questions before booking? Email hello@oddfest.co",
         "href": "mailto:hello@oddfest.co"
       }
     },
@@ -169,11 +169,13 @@
       "name": "Early Bird",
       "syncSlug": "early-bird",
       "audience": "The second tier",
-      "description": "The next ticket tier after Blind Bird.",
+      "description": "For those joining us a little later.",
       "price": "€399",
       "priceNote": "+ VAT 13.5%",
-      "status": "Not on sale yet",
-      "benefits": ["Full ODDference 2027 access"],
+      "status": "Available after Blind Bird",
+      "benefits": [
+        "Full ODDference 2027 access"
+      ],
       "ctaLabel": "See tickets",
       "href": "/tickets/",
       "locked": true
@@ -182,11 +184,13 @@
       "name": "Regular Ticket",
       "syncSlug": "regular",
       "audience": "Full price",
-      "description": "Standard ODDference 2027 ticket.",
+      "description": "The standard ODDference 2027 ticket.",
       "price": "€499",
       "priceNote": "+ VAT 13.5%",
-      "status": "Not on sale yet",
-      "benefits": ["Full ODDference 2027 access"],
+      "status": "Available later",
+      "benefits": [
+        "Full ODDference 2027 access"
+      ],
       "ctaLabel": "See tickets",
       "href": "/tickets/",
       "locked": true
@@ -199,48 +203,6 @@
     "linkLabel": "Talk to us about partnering →",
     "href": "/work-with-odd/?interest=oddference_corporate#enquiry-form"
   },
-  "faq": [
-    {
-      "question": "What is ODDference?",
-      "answer": "A business conference where creative and cultural practitioners take the stage as experts rather than as entertainment, and business leaders, founders, policymakers and institutions come to learn from them. The 2026 edition ran over two days in central Helsinki with 25 speakers and more than 30 sessions."
-    },
-    {
-      "question": "When and where is ODDference 2027?",
-      "answer": "Thursday 22 and Friday 23 April 2027, at Tanssin talo in Helsinki, in the middle of ODDfest week (19–25 April). On the Friday the whole week comes together there for ODDcelebration. The programme is still being built — ticket holders hear first as it is confirmed."
-    },
-    {
-      "question": "Is the 2027 programme published?",
-      "answer": "Not yet. Blind Bird is deliberately sold before the programme is complete, which is why it is the lowest price the event will be sold at. The 2026 speakers and sessions above are there so you can judge what the event is actually like before the next line-up exists."
-    },
-    {
-      "question": "Why buy before the programme is announced?",
-      "answer": "Price. Blind Bird is €299, Early Bird is €399 and the regular ticket is €499, each plus VAT 13.5%, so committing early is worth €200 against the full price. If you would rather wait for the line-up, the later tiers will be there."
-    },
-    {
-      "question": "Can I buy an Early Bird or regular ticket now?",
-      "answer": "No. The tiers open one at a time, and Blind Bird is the current one. The other two are shown with their real prices so you can see what waiting costs. Blind Bird is on the ticket page now, paid by card. If your organisation needs an invoice instead, email hello@oddfest.co."
-    },
-    {
-      "question": "Does an ODDference ticket include ODDfest?",
-      "answer": "ODDference 2027 takes place during ODDfest week, 19–25 April, and the 2026 ODDference Pass included ODDfest access. What the 2027 ticket includes beyond ODDference itself, ODDcelebration included, is not settled yet — the ticket page is the source of truth for what each ticket covers."
-    },
-    {
-      "question": "What language is ODDference in?",
-      "answer": "ODDference 2026 ran in English, with speakers from Finland, Denmark, Canada and the US. The working language for 2027 will be confirmed with the programme."
-    },
-    {
-      "question": "Who is it for?",
-      "answer": "Business leaders, founders, business development and partnership people, organisational leaders, policymakers and institutions, and creative leaders working beyond the cultural sector. It is built for people who want perspectives and relationships outside their own industry."
-    },
-    {
-      "question": "Can my organisation partner with ODDference?",
-      "answer": "Yes. Partnerships can be an idea, a question, expertise or resources — the ones that work improve the event for the people in the room rather than adding a logo. Use the partnership link on this page and tell us what you have in mind."
-    },
-    {
-      "question": "I have a question that isn't answered here.",
-      "answer": "Email hello@oddfest.co — including anything about an existing ticket order."
-    }
-  ],
   "railLeft": [
     {
       "kind": "logo"
