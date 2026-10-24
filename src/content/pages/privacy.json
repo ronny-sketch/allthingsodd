@@ -6,24 +6,24 @@
   },
   "eyebrow": "Legal",
   "title": "Privacy & cookies",
-  "lastUpdated": "2 October 2026",
-  "intro": "This page explains what happens to your information when you use allthingsodd.co or book ODDspace for an event — what we collect, why, who else touches it, and what you can ask us to do about it. We have tried to write it in plain language rather than the usual boilerplate, and to describe what the site actually does rather than what a template assumes.",
+  "lastUpdated": "24 October 2026",
+  "intro": "This page explains what happens to your information when you use allthingsodd.co or book ODDspace for an event — what we collect, why, who else processes it, and what you can ask us to do about it.",
   "sections": [
     {
       "title": "Who is responsible",
       "body": [
-        "New Nordic Way rf, a registered non-profit association in Finland, is the data controller for this site and for ODDfest, ODDference, ODDspace and ODD Agency. Our address is Sturenportti 3, Helsinki, Finland.",
+        "New Nordic Way rf, a registered non-profit association in Finland, is the data controller for this site and for ODDfest, ODDference, ODDspace and ODDagency. Our address is Sturenportti 3, Helsinki, Finland.",
         "If you want to reach a person about anything on this page, write to hello@oddfest.co."
       ]
     },
     {
       "title": "What we collect, and when",
       "body": [
-        "We do not ask you for anything to read this site. Information reaches us only when you choose to send it:"
+        "We do not ask you to submit personal information just to read this site. When you choose to send information to us, this is what we collect:"
       ],
       "items": [
         "Newsletter: your email address, and your name if you give it. Used to send you the ODD newsletter, and nothing else.",
-        "Business enquiries: your name, work email, organisation, what you are interested in, and what you want to achieve. We also record which page you came from and any campaign tags in the link you followed, so we know which of our own efforts actually reach people.",
+        "Business enquiries: your name, work email, organisation, what you are interested in, and what you want to achieve. We also record which page you came from and any campaign tags in the link you followed, so we can understand which ODD campaigns lead to enquiries.",
         "Contact form: your name, email and message.",
         "ODDfest event ideas: your name, email, phone number, organisation and website or portfolio, and what you tell us about the idea. We also record which page you came from and any campaign tags in the link you followed.",
         "Tickets: your name, email, phone number and — if you are buying as a company — company name, VAT number and billing country. If you ask us to put a ticket in someone else's name, we store that person's name and email so we can admit them. We never see or store your card details; Stripe handles the payment itself.",
@@ -43,7 +43,7 @@
     {
       "title": "Who else processes it",
       "body": [
-        "We use a small number of external services, each for a specific job. They act as our processors and may not use your data for their own purposes:"
+        "We use a small number of external services for specific jobs. Their roles and purposes are listed below:"
       ],
       "items": [
         "Google Analytics (Google Ireland Limited) — anonymised usage statistics. Only after you accept.",
@@ -56,8 +56,7 @@
         "Attio — our internal record of business enquiries, so an enquiry does not get lost.",
         "Notion Labs, Inc. — our internal record of ODDspace venue booking enquiries and bookings, and of ODDfest event ideas.",
         "Resend — delivering contact-form messages to our inbox, and emailing us a booking enquiry or event idea that could not be filed straight away.",
-        "Cloudflare, Inc. — runs the small service behind our forms and ticketing.",
-        "Surge — hosts this website's files."
+        "Cloudflare, Inc. — hosts the website and runs the services behind our forms and ticketing."
       ]
     },
     {
@@ -72,7 +71,7 @@
       "title": "How long we keep it",
       "body": [
         "Newsletter subscriptions: until you unsubscribe.",
-        "Enquiries and messages: for as long as the conversation is live, and up to two years afterwards so we remember who we have spoken to.",
+        "Enquiries and messages: while the matter is active and for up to two years after the last interaction.",
         "Ticket and payment records: six years, which is what Finnish accounting law requires.",
         "Analytics: for the retention period set on our Google Analytics property, currently 14 months.",
         "Venue bookings: booking records for three years after the event; invoices for six years, as Finnish accounting law requires."
@@ -102,15 +101,15 @@
     {
       "title": "Changes to this page",
       "body": [
-        "If what we do changes, this page changes with it, and the date at the top changes too. A material change to what we collect or who processes it will also reset the cookie banner, so you get to answer again rather than being carried over on an old answer."
+        "If what we do changes, this page changes with it, and the date at the top changes too. A material change to what we collect or who processes it will also reset the cookie banner so we can ask for consent again."
       ]
     }
   ],
   "cookieSection": {
     "title": "Cookies and similar storage",
     "body": [
-      "Nothing optional loads before you say so. On your first visit the banner appears and no analytics tag is requested until you answer it — not a cookieless ping, not a blocked script that loaded anyway. That is a deliberate choice: it is stricter than the usual consent-mode setup, and it is possible because this site runs one analytics tag rather than a marketing stack.",
-      "The table below is the full list. It is generated from the same configuration that the consent banner enforces, so it cannot fall out of date with what the site actually does. Storage marked local or session storage is not technically a cookie, but it is the same thing from your point of view, so we list it too."
+      "Optional analytics does not load until you consent. On your first visit the cookie banner appears and no analytics tag is requested until you make a choice.",
+      "The table below lists the cookies and similar storage used by the site. We list local and session storage alongside cookies because they serve similar purposes on this site."
     ],
     "settingsLabel": "Change your cookie choices"
   },
