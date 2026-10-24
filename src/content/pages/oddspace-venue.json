@@ -204,7 +204,7 @@
     },
     {
       "question": "What does it cost?",
-      "answer": "Members pay €100 for a half day and €200 for a full day. A creative organisation or a promoter pays €300 for the room, or nothing upfront on a revenue share where the first €350 of net ticket sales covers it. Companies and other organisations pay €750 for a half day and €1,200 for a full day or evening. All + VAT 25.5%, a house technician is €200 where you need one, and every price is open to discussion — the calculator above gives you a starting number for your own case."
+      "answer": "Members pay €100 for a half day and €200 for a full day. A creative organisation or a promoter pays €300 for the room, or nothing upfront on a revenue share where the first €350 of net ticket sales covers it. Companies and other organisations pay €750 for a half day and €1,200 for a full day or evening. All + VAT 25.5%, a house technician is €200 where you need one, and the calculator above gives you a starting number for your own case. Final pricing may vary depending on the hours, setup and production needs of the event."
     },
     {
       "question": "How many people fit?",
@@ -242,7 +242,7 @@
   "finalCta": {
     "eyebrow": "Book the space",
     "headline": "Get a quote for your event.",
-    "body": "Tell us when, roughly how many people and what you're planning. We check the date and reply with availability and a price within one working day."
+    "body": "Tell us when, roughly how many people and what you're planning. We check the date and reply with availability and a price."
   },
   "railLeft": [
     {
