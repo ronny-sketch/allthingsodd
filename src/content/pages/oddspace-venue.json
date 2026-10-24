@@ -3,7 +3,7 @@
   "_slug": "oddspace",
   "seo": {
     "title": "Host an event at ODDspace — gallery and auditorium in Vallila",
-    "description": "ODDspace as a venue: a gallery, a co-creation floor, an auditorium and a studio in Vallila, Helsinki. Exhibitions, launches, workshops, talks, screenings, shoots and performances. Member and enquiry-based rates.",
+    "description": "ODDspace as a venue: a gallery, event and workshop space, auditorium and studio in Vallila, Helsinki. For exhibitions, launches, workshops, talks, screenings, shoots and performances.",
     "ogImage": "/og/oddspace.jpg"
   },
   "eyebrow": "ODDspace · As a venue",
@@ -52,11 +52,11 @@
       "alt": "The 2nd-floor co-creation space: desks and lounge chairs by tall windows over the Konepaja chimney"
     }
   ],
-  "intro": "You do not need to be a member to book. Tell us the date and what you're planning, and we'll tell you whether the space can do it.",
+  "intro": "You do not need to be a member to book. Tell us the date and what you're planning, and we'll tell you whether the space works for it.",
   "whatItIs": {
     "eyebrow": "What it's good for",
-    "headline": "A gallery, a co-creation floor and an auditorium.",
-    "body": "ODDspace is a working creative space in Vallila with three bookable event rooms in it — a gallery at street level, a co-creation space one floor up, and an auditorium with tiered seating. Exhibitions, launches, workshops, talks, screenings, shoots, gatherings, performances and organisational events have all happened here. It does not feel like a hotel conference room — which is exactly why many choose it."
+    "headline": "A gallery, event and workshop space, and an auditorium.",
+    "body": "ODDspace is a working creative space in Vallila with three bookable event rooms — a gallery at street level, an event and workshop space one floor up, and an auditorium with tiered seating. Exhibitions, launches, workshops, talks, screenings, shoots, gatherings and performances have all happened here. It is more raw and flexible than a conventional conference venue."
   },
   "eventTypes": [
     "Exhibitions and openings",
@@ -65,7 +65,7 @@
     "Talks, panels and screenings",
     "Photo and video shoots",
     "Performances and club-style nights",
-    "Private and organisational gatherings"
+    "Private and company gatherings"
   ],
   "spacesIntro": {
     "eyebrow": "The rooms",
@@ -74,7 +74,7 @@
   "spaces": [
     {
       "name": "Gallery",
-      "body": "The big room at street level — the raised, curved floor most evenings happen on. Openings, receptions, launches, concerts, club nights and performances. Its walls are usually hung with work, so tell us early if you need them clear.",
+      "body": "The big room at street level — a raised, curved floor where most evening events take place. Openings, receptions, launches, concerts, club nights and performances. Its walls are usually hung with work, so tell us early if you need them clear.",
       "bullets": [
         "Up to 150 people, 320 m²",
         "Exhibitions, launches and receptions",
@@ -84,8 +84,8 @@
       "image": "../../assets/oddspace/gallery-floor.jpg"
     },
     {
-      "name": "Event & co-creation space",
-      "body": "One floor up, and closer to a living room than a venue: sofas, big black speakers and daylight from the windows. The room for a day-long programme rather than an evening crowd.",
+      "name": "Event & workshop space",
+      "body": "One floor up, and closer to a living room than a venue: sofas, big black speakers and daylight from the windows. It works especially well for day-long programmes, workshops and smaller gatherings.",
       "bullets": [
         "Up to 150 people, on the 2nd floor",
         "Seminars, workshops and away-days",
@@ -95,7 +95,7 @@
     },
     {
       "name": "Auditorium",
-      "body": "Tiered seating for talks, panels, screenings, presentations and smaller events — people facing one direction, without having to build a stage.",
+      "body": "Tiered seating for talks, panels, screenings, presentations and smaller events. Fixed seating keeps the focus forward without adding a stage.",
       "bullets": [
         "Tiered, fixed seating",
         "Talks, panels and screenings",
@@ -120,8 +120,8 @@
   ],
   "pricing": {
     "eyebrow": "What it costs",
-    "headline": "Pick who you are. Get a number.",
-    "body": "The price follows who is putting the event on, not how much we like the idea. Every price here is a starting price: choose the closest fit and you have a floor in a few seconds — then tell us what you are actually planning and we price that."
+    "headline": "Choose your booking type to see a starting price.",
+    "body": "Prices depend on the type of organiser and booking. Choose the closest fit for a starting price, then tell us what you're planning and we'll quote the actual event."
   },
   "memberRates": [
     {
@@ -130,11 +130,11 @@
       "note": "The studio is booked separately from the event rooms. Full rates are on the ODDstudio page."
     }
   ],
-  "ratesNote": "All prices are + VAT 25.5%, for the room across your booked hours with setup and teardown inside them. Cleaning, catering, a bar licence and anything rigged are yours or quoted separately.",
+  "ratesNote": "All prices are + VAT 25.5%, with setup and teardown included within your booked hours. Cleaning, catering, bar licensing and rigging are either arranged by you or quoted separately.",
   "whatWeCanDo": {
     "eyebrow": "Beyond the room",
     "headline": "Need more than a venue?",
-    "body": "The team behind ODDspace also develops and produces events, programmes and creative projects. If you need help with the concept, programme, production or bringing the right people together, tell us in your enquiry. We can build a wider collaboration around the event — or simply give you the room and let you run with it."
+    "body": "The team behind ODDspace also develops and produces events, programmes and creative projects. If you need help with the concept, programme, production or bringing the right people together, tell us in your enquiry. We can help with those too — or simply give you the room and let you run with it."
   },
   "howItWorks": [
     {
@@ -144,7 +144,7 @@
     },
     {
       "number": "02",
-      "title": "We come back with availability and a price",
+      "title": "We reply with availability and a price",
       "body": "Whether the date is free, which room fits, what the space can and cannot do for that plan, and what it costs."
     },
     {
@@ -160,7 +160,7 @@
   },
   "askUs": {
     "eyebrow": "Ask us directly",
-    "headline": "Things we answer per event, not on a page.",
+    "headline": "Details we confirm for your event.",
     "body": "Tell us what you're planning and when. We'll confirm the relevant capacities, technical setup, access, availability and anything else you need to know for your event.",
     "items": [
       "Exact capacities and layouts for your format",
@@ -175,8 +175,8 @@
   },
   "beforeYourEvent": {
     "eyebrow": "Before your event",
-    "headline": "Two things worth reading first.",
-    "body": "Neither one is long, and both save a phone call on the day."
+    "headline": "Before your event: two things to read.",
+    "body": "Read the event info pack and code of conduct before the day."
   },
   "resources": [
     {
@@ -208,11 +208,11 @@
     },
     {
       "question": "How many people fit?",
-      "answer": "It depends on the room and the layout, and we would rather give you a real number for your format than a flattering one on a webpage. Tell us the date and the kind of event and we'll tell you what the room actually takes."
+      "answer": "Capacity depends on the room and layout. Tell us the date and type of event and we'll confirm the right number for your format."
     },
     {
       "question": "What AV and technical equipment is there?",
-      "answer": "Ask us with your plan. What's in the building, what we can bring in and what you should bring yourself depends on what you're doing — and we are still documenting the full inventory properly rather than listing it approximately."
+      "answer": "Tell us your technical plan and we'll confirm what is available in the building, what we can bring in and what you need to bring yourself."
     },
     {
       "question": "Is the space accessible?",
@@ -224,7 +224,7 @@
     },
     {
       "question": "Can ODD help produce the event, not just rent the room?",
-      "answer": "Yes. We produce our own events here every week. Say what you have in mind and we'll tell you what we could take on and what that would cost."
+      "answer": "Yes. Tell us what you have in mind and we'll explain what we could take on and what that would cost."
     },
     {
       "question": "Can we record the event?",
