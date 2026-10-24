@@ -3,7 +3,7 @@
   "_slug": "oddstudio",
   "seo": {
     "title": "ODDstudio — a creative music studio at ODDspace, Helsinki",
-    "description": "A creative music studio at ODDspace in Vallila, Helsinki for recording, co-writing and production. Genelec monitoring, mics, instruments and room to work as a group. Bookable by the hour, or as a monthly membership.",
+    "description": "A creative music studio at ODDspace in Vallila, Helsinki for recording, co-writing and production. Genelec monitoring, mics, instruments and room to work as a group. Book by the hour, or add full studio access to an ODDspace membership.",
     "ogImage": "/og/oddspace.jpg"
   },
   "eyebrow": "ODDstudio · Inside ODDspace",
@@ -56,24 +56,32 @@
   "whatItIs": {
     "eyebrow": "What ODDstudio is",
     "headline": "A creative music studio.",
-    "body": "Record, write, produce, or gather a few people and start something from scratch. It's open, comfortable and properly equipped — the kind of room where a session can run from a first idea to a finished take without leaving. There's real space to spread out and work as a group, or to shut the door and go deep on your own. It works for recording, co-writing and songwriting sessions, production, and pretty much any creative sound or music work."
+    "body": "Record, write, produce, or gather a few people and start something from scratch. It's open, comfortable and equipped for recording, writing and production — the kind of room where a session can move from a first idea into recording without changing rooms. There's real space to spread out and work as a group, or shut the door and work alone without interruption. It works for recording, co-writing, songwriting sessions, production, podcasts, voice work and other sound-based projects."
   },
   "kit": [
     {
       "name": "Monitoring & recording",
-      "body": "An accurate, honest and comfortable listening setup to work with.",
-      "bullets": ["Genelec 8331 reference monitors", "Audient iD24 interface"],
+      "body": "An accurate, comfortable monitoring setup for recording and mixing.",
+      "bullets": [
+        "Genelec 8331 reference monitors",
+        "Audient iD24 interface"
+      ],
       "image": "../../assets/oddstudio/desk-monitors.jpg"
     },
     {
       "name": "Microphones",
       "body": "A small, deliberate set that covers voice, amps and instruments.",
-      "bullets": ["Shure SM7B", "Røde NT1-A", "Shure SM58", "Sennheiser Vintage MD 421-N"],
+      "bullets": [
+        "Shure SM7B",
+        "Røde NT1-A",
+        "Shure SM58",
+        "Sennheiser Vintage MD 421-N"
+      ],
       "image": "../../assets/oddstudio/microphone-detail.jpg"
     },
     {
       "name": "Instruments",
-      "body": "Enough in the room to start writing without carrying anything in.",
+      "body": "Enough in the room to start writing without bringing a full setup.",
       "bullets": [
         "Digital piano and Korg microKEY",
         "Four guitars — two semi-acoustics (nylon and steel), a resonator and an electric",
@@ -83,8 +91,11 @@
     },
     {
       "name": "The space",
-      "body": "A place to sit, write, play and record — comfortably, and with company if you want it.",
-      "bullets": ["Two sofas and room to spread out", "All the cables and stands you'll need"],
+      "body": "A place to sit, write, play and record, with company if you want it.",
+      "bullets": [
+        "Two sofas and room to spread out",
+        "All the cables and stands you'll need"
+      ],
       "image": "../../assets/oddstudio/studio-room-sofa.jpg"
     }
   ],
@@ -94,7 +105,7 @@
     "body": "ODDstudio is not part of the standard €150 / month ODDspace membership. You can add it to your membership as full studio access, or book it by the hour when you need it. Booking by the hour does not require an ODDspace membership."
   },
   "membership": {
-    "name": "Full studio membership",
+    "name": "ODDspace + studio membership",
     "audience": "ODDspace membership and full studio access, together.",
     "description": "€150 / month ODDspace membership plus €100 / month for the studio.",
     "price": "€250 / month",
@@ -102,7 +113,7 @@
     "benefits": [
       "Full access to ODDstudio",
       "Everything in the ODDspace membership — 24/7 workspace access and shared facilities",
-      "No hourly charge for studio use"
+      "No hourly charge for booked studio use, subject to availability"
     ],
     "ctaLabel": "Ask about studio membership",
     "href": "/work-with-odd/?interest=oddspace&intent=studio#enquiry-form",
@@ -149,10 +160,10 @@
   ],
   "houseRules": {
     "eyebrow": "House rules",
-    "headline": "Short, and all of it reasonable.",
+    "headline": "Five house rules.",
     "items": [
       "Leave it the way you found it — guitars on stands, mics where they belong, cables coiled and back in their places.",
-      "Use it like you own it. If something breaks, say so straight away so the studio stays up and running.",
+      "Treat the room and equipment like your own. If something breaks, say so straight away so the studio stays up and running.",
       "You're welcome to bring other people, as long as you're using the space together. No subletting.",
       "Keep the key with you while you're in the studio so you don't lock yourself out, and make sure the door locks behind you when you leave.",
       "Return the key to the box on your way out, set the same code it came on, and scramble the dials."
@@ -204,7 +215,7 @@
       "href": "https://www.tunement.com/privacy.html",
       "external": true
     },
-    "about": "TUNEMENT is an award-winning audio branding agency working out of the same building — sound logos, brand ambience and whole sonic identity systems, and a winner at the International Sound Awards 2026.",
+    "about": "TUNEMENT is an award-winning audio branding agency working out of the same building, creating sound logos, brand ambience and full sonic identity systems. It won at the International Sound Awards 2026.",
     "logo": "../../assets/oddstudio/tunement-logo.svg",
     "logoAlt": "TUNEMENT",
     "website": {
