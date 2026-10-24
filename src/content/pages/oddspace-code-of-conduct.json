@@ -13,13 +13,15 @@
   "sections": [
     {
       "title": "The short version",
-      "body": ["Five lines. The rest of the page is what they mean in practice."],
+      "body": [
+        "Five lines. The rest of the page is what they mean in practice."
+      ],
       "items": [
         "Leave no trace. The space goes back the way you found it, every time.",
         "Everyone here belongs. No assumptions about who does.",
         "Ask before you assume — about names, photos, hugs, anything personal.",
         "Say it early and directly, to the person, before it turns into a story.",
-        "If something happens, tell Ronny, Aki or Upi. That's the whole escalation path."
+        "If something happens, tell Ronny, Aki or Upi, or email hello@oddfest.co. Choose whichever route feels easiest."
       ]
     },
     {
@@ -45,7 +47,9 @@
     },
     {
       "title": "Safer space principles",
-      "body": ["These apply at every event in the space, whoever is hosting it."],
+      "body": [
+        "These apply at every event in the space, whoever is hosting it."
+      ],
       "items": [
         "We don't assume anyone's gender, pronouns, sexuality, background, religion, health or ability. We use the words people use for themselves.",
         "We ask before we touch anyone, and before we photograph or film them. \"No\" needs no explanation, and neither does \"stop\".",
@@ -65,14 +69,16 @@
     {
       "title": "If something happens",
       "body": [
-        "There's no committee to find and no form to fill in. We're a small team and this is deliberately the whole path: tell Ronny Eriksson (ronny@oddfest.co), Aki Pöntinen (aki@oddfest.co) or Ukko-Pekka Itäpelto (upi@oddfest.co). Pick whichever of us you're most comfortable with.",
-        "Tell us what you can: what happened, who was involved, where and when, in as much detail as you're able to give. What you tell us is confidential and is used only to resolve the matter.",
+        "Tell Ronny Eriksson (ronny@oddfest.co), Aki Pöntinen (aki@oddfest.co), Ukko-Pekka Itäpelto (upi@oddfest.co) or email hello@oddfest.co. Choose whichever route feels easiest.",
+        "Tell us what you can: what happened, who was involved, where and when, in as much detail as you're able to give. We keep reports as confidential as possible and share information only when necessary to handle the issue, protect safety or meet a legal obligation.",
         "We start straight away, and we gather the picture from the people involved rather than acting on one account. If you want support while that happens, we'll help you find it. We'd rather hear about something small and early than find out months later that someone stopped coming."
       ]
     },
     {
       "title": "What happens next",
-      "body": ["What follows depends on what happened, not on who raised it."],
+      "body": [
+        "What follows depends on what happened, not on who raised it."
+      ],
       "items": [
         "Something small, with everyone willing to sort it: a conversation with one of us in the room, and a warning. A second time ends it.",
         "Something serious: the person leaves, the event can be stopped on the spot, and the booking or membership ends.",
@@ -81,7 +87,9 @@
     },
     {
       "title": "Support beyond us",
-      "body": ["You don't have to come to us first, and some things need people trained for them."],
+      "body": [
+        "You don't have to come to us first, and some things need people trained for them."
+      ],
       "items": [
         "Emergencies: 112.",
         "Victim Support Finland (RIKU): 116 006.",
@@ -93,7 +101,7 @@
     {
       "title": "What we commit to, and what we reserve",
       "body": [
-        "We commit to answering when you raise something and telling you what we did about it, to keeping what you tell us confidential and asking before we involve anyone else, and to holding our own team, partners and members to this — not only visitors.",
+        "We commit to answering when you raise something, telling you what happens next, handling reports as confidentially as possible and holding our own team, partners and members to the same expectations.",
         "We reserve the right to decline to host, co-host or promote an event that goes against this code, to stop an event that is unsafe, over capacity or out of hand, and to end a membership or a booking after a serious breach or a second one."
       ]
     }
