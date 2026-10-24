@@ -212,44 +212,36 @@
   },
   "faq": [
     {
-      "question": "Do I need to be an established organisation to host something?",
-      "answer": "No. Artists, collectives, venues, companies, communities and people with no organisation behind them at all are all welcome to host. There is no track record you need to have and no size you need to be."
+      "question": "Who can host an event at ODDfest?",
+      "answer": "Artists, collectives, venues, cultural organisations, communities and companies can all take part. You do not need to be an established organisation or have worked with ODD before."
     },
     {
-      "question": "Is my event too small or too niche?",
-      "answer": "There is no minimum. A week made only of large events would miss the point of it. A one-room exhibition, a listening session for twenty people, or a workshop in your own studio are all the right size."
+      "question": "What kind of event can be part of ODDfest?",
+      "answer": "Almost any format can work: exhibitions, performances, screenings, workshops, talks, dinners, club nights, open studios or something we have not seen before. What matters is that it adds something to Helsinki’s creative life."
     },
     {
-      "question": "Does taking part cost anything?",
-      "answer": "The 2027 participation model is still being finalised. Before any host is asked to commit, we will publish clearly what is charged, if anything, what is included, and how any shared commercial arrangement works. Hosts keep control of their own event economics unless a separate agreement says otherwise."
+      "question": "Who produces the event?",
+      "answer": "You do. ODDfest is built from independently produced events across Helsinki. Hosts are responsible for their own concept, production, venue and finances. ODD connects the events through the shared week, programme, identity and communications."
     },
     {
-      "question": "Can my event be free, or ticketed?",
-      "answer": "Either. Hosts control their own ticketing unless a specific collaboration agreement says otherwise. There is no single central ODDfest ticket covering the distributed programme."
+      "question": "Do I need to have everything figured out before I submit?",
+      "answer": "No. You can send us an idea before the venue, funding or programme is fully confirmed. The more concrete the idea is, the easier it is for us to understand where ODD might be useful."
     },
     {
-      "question": "What if I don't have a space yet?",
-      "answer": "Tell us anyway. Events can happen in venues, studios, galleries, offices and public spaces across Helsinki. We cannot promise to find you a room, but if there is a match among other hosts, venues or partners we will make the introduction — and we would rather know what you are looking for early than hear about it too late."
+      "question": "Does it cost something to take part?",
+      "answer": "Artists, collectives and cultural organisations can submit and take part without a programme fee. Commercial collaborations with companies may work differently depending on what is being built together."
     },
     {
-      "question": "What if my event is happening anyway, with or without ODDfest?",
-      "answer": "Then it is a good candidate. Joining the week does not change what your event is. It connects something already happening to a moment when more people are looking."
+      "question": "What if I don’t have a venue?",
+      "answer": "Send the idea anyway. We cannot promise to find a space for every event, but we can make introductions where there is a useful match with venues, partners or other hosts."
     },
     {
-      "question": "Will anyone actually come?",
-      "answer": "We cannot promise you an audience, and we would not trust anyone who did. What the week does is put your event into one programme alongside everything else happening those days, and spend the week telling people the whole thing is on — so your event is not the only reason someone has to be out that night."
-    },
-    {
-      "question": "When is ODDfest 2027?",
-      "answer": "19–25 April 2027, across Helsinki. The week comes together on Friday 23 April at Tanssin talo for ODDcelebration, on the second day of ODDference. The programme is still taking shape, so send your idea now."
+      "question": "Can my event be free or ticketed?",
+      "answer": "Yes. Hosts decide how their own event works, including ticketing, unless we agree something different together."
     },
     {
       "question": "Is ODDference part of ODDfest?",
-      "answer": "They are separate things that share a week. ODDference runs on Thursday 22 and Friday 23 April 2027 at Tanssin talo, in the middle of ODDfest week. It is ODD's own professional event, about what business and the rest of society can learn from creative expertise. It is produced centrally by ODD and has its own ticket. ODDfest is the open week made by its hosts."
-    },
-    {
-      "question": "I just want to attend — how does that work?",
-      "answer": "Once the programme is published, every event carries its own time, place and ticketing information. You choose what you want to see across the week."
+      "answer": "ODDfest and ODDference are separate parts of ODD that take place during the same week. ODDfest is Helsinki’s creative week, made by hosts across the city. ODDference is ODD’s own conference at Tanssin talo on 22–23 April 2027."
     }
   ],
   "railLeft": [
