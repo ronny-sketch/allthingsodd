@@ -17,7 +17,7 @@
     "label": "Organise an event",
     "href": "/oddspace/venue/"
   },
-  "intro": "Come here to work. Meet people. Host events. Create something. Or simply have somewhere to keep going between projects.",
+  "intro": "Come here to work. Meet people. Host events. Or simply have a place to return to between projects.",
   "visit": {
     "address": "Teollisuuskatu 9D, Vallila, Helsinki",
     "directionsUrl": "https://www.google.com/maps/search/?api=1&query=Teollisuuskatu%209D%2C%20Helsinki"
@@ -60,7 +60,7 @@
   "whatItIs": {
     "eyebrow": "What is ODDspace",
     "headline": "Workspace, studios, events and community under one roof.",
-    "body": "ODDspace is a year-round workspace and event space in Vallila for people working across art, culture, design, media, technology, business and other creative fields. It includes coworking areas, meeting rooms, an event and gallery floor, an auditorium and ODDstudio.\n\nPeople can work independently, host things and cross paths with others working on very different things. The space is a pilot for something larger, and the people using it help shape what it becomes. That combination of shared space, different disciplines and active participation is what we mean by a co-creative space."
+    "body": "ODDspace is a year-round workspace and event space in Vallila for people working across art, culture, design, media, technology, business and other creative fields. It includes coworking areas, meeting rooms, an event and gallery floor, an auditorium and ODDstudio.\n\nPeople can work independently, host events and cross paths with others from very different fields. ODDspace is still evolving, and the people who use it help shape what it becomes."
   },
   "spaces": [
     {
@@ -69,7 +69,7 @@
       "bullets": [
         "24/7 access",
         "Shared working areas",
-        "WiFi, kitchen and the basics",
+        "WiFi and kitchen",
         "Meeting rooms where needed"
       ],
       "image": "../../assets/oddspace/coworking-laptop-sofa.jpg",
@@ -78,12 +78,12 @@
     },
     {
       "name": "Event & gallery space",
-      "body": "For exhibitions, launches, workshops, talks, shoots, gatherings, performances and organisational events.",
+      "body": "For exhibitions, launches, workshops, talks, shoots, gatherings, performances and company events.",
       "bullets": [
         "Exhibitions and launches",
         "Workshops and talks",
         "Shoots and performances",
-        "Private and organisational events"
+        "Private and company events"
       ],
       "image": "../../assets/oddspace/opening-full-house.jpg",
       "goLabel": "Enquire about the gallery",
@@ -92,7 +92,12 @@
     {
       "name": "Auditorium",
       "body": "Tiered seating for talks, screenings, presentations, workshops and smaller events.",
-      "bullets": ["Talks and screenings", "Presentations", "Workshops", "Smaller events"],
+      "bullets": [
+        "Talks and screenings",
+        "Presentations",
+        "Workshops",
+        "Smaller events"
+      ],
       "image": "../../assets/oddspace/auditorium-tiered.jpg",
       "goLabel": "Enquire about the auditorium",
       "href": "/oddspace/venue/#booking-form"
@@ -153,8 +158,8 @@
     },
     {
       "number": "02",
-      "title": "We show you round",
-      "body": "Memberships are accepted on a rolling basis while the pilot has capacity."
+      "title": "Join when there’s space",
+      "body": "Memberships are accepted on a rolling basis while space is available."
     },
     {
       "number": "03",
@@ -173,7 +178,7 @@
   "vision": {
     "eyebrow": "Why ODDspace",
     "headline": "Creative work needs more than moments.",
-    "body": "Great things happen in projects, events, commissions and productions. But when they end, people disperse, momentum fades and the next thing often starts from scratch.\n\nODDspace exists to give creative work somewhere to continue between those moments. A place to return to, keep making, meet people outside your own field and let ideas develop before they have a brief, budget or stage.\n\nThe ambition is bigger than providing desks or rooms. It is to build the kind of everyday infrastructure where work, relationships and opportunities can accumulate over time. ODDspace is our first real-world experiment in what that could look like."
+    "body": "Great things happen in projects, events, commissions and productions. But when they end, people disperse, momentum fades and the next thing often starts from scratch.\n\nODDspace exists to give creative work a place to continue between those moments — somewhere to return to, keep working, meet people outside your own field and develop ideas before they have a brief, budget or stage.\n\nThe ambition is bigger than providing desks or rooms. We want to create a place where work, relationships and opportunities can grow over time. ODDspace is the first working version of that idea."
   },
   "events": {
     "eyebrow": "What's on",
@@ -360,7 +365,10 @@
     "eyebrow": "Availability",
     "headline": "Which rooms are booked, and when.",
     "note": "Straight from our booking calendar, so it is always current. Red means booked. A room that is not shown on a day is free. Times are Helsinki time.",
-    "cta": { "label": "Ask about a date", "href": "/oddspace/venue/#booking-form" }
+    "cta": {
+      "label": "Ask about a date",
+      "href": "/oddspace/venue/#booking-form"
+    }
   },
   "gallery": {
     "eyebrow": "Life at ODDspace",
