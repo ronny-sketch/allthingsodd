@@ -7,7 +7,7 @@
     "ogImage": "/og/oddagency.jpg"
   },
   "eyebrow": "ODDagency · For organisations",
-  "title": "Bring us something worth figuring out.",
+  "title": "Bring us something that still needs figuring out.",
   "meta": "Project-based · Helsinki",
   "intro": "ODDagency works with companies, cities and institutions on projects that need cultural understanding, concept development and the ability to turn an idea into something real. Sometimes we lead most of the work ourselves. Sometimes the right answer is to build a wider team around it.",
   "heroMedia": {
@@ -15,7 +15,7 @@
   },
   "whenThisWorks": {
     "eyebrow": "When ODDagency makes sense",
-    "headline": "Start with the question, not the service menu.",
+    "headline": "From open brief to produced work.",
     "items": [
       {
         "number": "01",
@@ -25,16 +25,16 @@
       {
         "number": "02",
         "title": "Concept and delivery need to stay connected.",
-        "body": "You do not want a strategy handed over to a separate production machine. The same framing can stay alive through the making."
+        "body": "You want the people framing the work to stay involved through delivery. The core idea stays intact through production."
       },
       {
         "number": "03",
-        "title": "Culture is part of the problem, not just the look.",
+        "title": "Culture shapes the problem, not just the look.",
         "body": "The work depends on how people interpret, participate in or care about something — not only on how it is executed."
       },
       {
         "number": "04",
-        "title": "The project needs people who are not on one permanent roster.",
+        "title": "The project needs a team drawn from different disciplines.",
         "body": "We build the team around the work and agree roles, expectations and compensation clearly."
       }
     ]
@@ -48,7 +48,7 @@
     {
       "number": "02",
       "title": "Culture & context",
-      "body": "Understanding the people, scenes, signals and cultural context around the work — what is changing, what people care about and what would feel credible."
+      "body": "Understanding the people, communities and cultural context around the work — what is changing, what people care about and what would feel credible."
     },
     {
       "number": "03",
@@ -58,11 +58,11 @@
     {
       "number": "04",
       "title": "Participation & collaboration",
-      "body": "Building projects where organisations and creative practitioners work together with clear roles, fair expectations and a reason for everyone to be there."
+      "body": "Building projects where organisations and creative practitioners work together with clear roles, fair expectations and clear value for everyone involved."
     },
     {
       "number": "05",
-      "title": "Evidence & learning",
+      "title": "Evaluation & learning",
       "body": "When relevant, defining what the project is trying to change, documenting what happened and turning the learning into something useful after delivery."
     }
   ],
@@ -80,7 +80,7 @@
     {
       "number": "03",
       "title": "Build the team",
-      "body": "We bring in the people whose practice fits the work, agree the roles clearly and make sure the economics make sense."
+      "body": "We bring in the people whose practice fits the work and agree the budget, roles and compensation before work starts."
     },
     {
       "number": "04",
@@ -89,7 +89,7 @@
     },
     {
       "number": "05",
-      "title": "Finish and learn",
+      "title": "Deliver and learn",
       "body": "We deliver, review what happened and decide what is worth carrying into the next project."
     }
   ],
@@ -98,26 +98,48 @@
     "Brand collaborations",
     "Event & experience production",
     "Cultural strategy projects",
-    "Community activations",
+    "Community-led projects",
     "Concept development"
   ],
   "closingCta": {
     "eyebrow": "",
-    "title": "Have something worth figuring out?",
+    "title": "Have a project still taking shape?",
     "body": "Send us the brief, the problem, or the unfinished version.",
     "linkLabel": "Start a conversation →",
     "href": "/work-with-odd/?interest=oddagency#enquiry-form"
   },
   "railLeft": [
-    { "kind": "logo" },
-    { "kind": "word", "text": "ODDagency" },
-    { "kind": "meta", "text": "Project-based" },
-    { "kind": "meta", "text": "Helsinki" }
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDagency"
+    },
+    {
+      "kind": "meta",
+      "text": "Project-based"
+    },
+    {
+      "kind": "meta",
+      "text": "Helsinki"
+    }
   ],
   "railRight": [
-    { "kind": "word", "text": "Helsinki" },
-    { "kind": "meta", "text": "For business" },
-    { "kind": "logo" },
-    { "kind": "word", "text": "ODDagency" }
+    {
+      "kind": "word",
+      "text": "Helsinki"
+    },
+    {
+      "kind": "meta",
+      "text": "For business"
+    },
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDagency"
+    }
   ]
 }
