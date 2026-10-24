@@ -166,7 +166,7 @@
       "Exact capacities and layouts for your format",
       "Room dimensions and what fits in them",
       "AV, sound and lighting — what's in the building and what we bring in",
-      "Accessibility: step-free access, lifts and toilets are still being documented, so we tell you exactly what the space can do today",
+      "Accessibility — we confirm the current route, lifts and toilets for your event",
       "Load-in, parking and getting gear through the door",
       "Catering, drinks and who can serve what",
       "How late the space can run",
@@ -216,7 +216,7 @@
     },
     {
       "question": "Is the space accessible?",
-      "answer": "We do not have verified accessibility information for the building to publish yet — step-free access, lifts, accessible toilets and door widths are still being documented, and we would rather say that than reassure you about something we have not measured. If accessibility matters for your event, email hello@oddfest.co and we will tell you exactly what the space can and cannot do today."
+      "answer": "We are still verifying the building's accessibility details. If accessibility affects your event, email hello@oddfest.co before booking and we will confirm the current route, lifts and toilets."
     },
     {
       "question": "Can I bring my own caterer, DJ or production team?",
