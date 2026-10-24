@@ -5,8 +5,8 @@
     "description": "Official information about ODD for press and media use — boilerplate description, key facts, press photos, video, logos, past press releases and press contact details."
   },
   "eyebrow": "Media",
-  "title": "ODD media & press.",
-  "intro": "Official facts, boilerplate copy, photos, video, logos and press material for anyone covering ODD.",
+  "title": "Press & media resources.",
+  "intro": "Official facts, boilerplate, photos, video, logos and press contacts for anyone covering ODD.",
   "jumpLinks": [
     {
       "label": "About ODD",
@@ -28,7 +28,7 @@
   "boilerplate": {
     "eyebrow": "Boilerplate",
     "headline": "ODD in one paragraph.",
-    "body": "ODD is a Helsinki-born initiative working to strengthen creative and cultural work and bring its expertise closer to business and wider society. Its current work includes ODDfest, Helsinki's creative week bringing cultural and creative scenes together through independently made events across the city; ODDference, a conference where creative expertise meets business and society; ODDspace, a year-round workspace, studios and event space in Vallila; and project work with organisations. ODD is operated by New Nordic Way rf, a Finnish non-profit association based in Helsinki.",
+    "body": "ODD is a Helsinki-born initiative working to strengthen creative and cultural work and bring creative and cultural expertise closer to business and wider society. Its current work includes ODDfest, Helsinki's creative week of independently made events across the city; ODDference, a conference where creative expertise meets business and society; ODDspace, a year-round workspace, studio and event venue in Vallila; and projects and partnerships with organisations. ODD is operated by New Nordic Way rf, a Finnish non-profit association based in Helsinki.",
     "keyFacts": [
       {
         "label": "Based in",
@@ -55,7 +55,7 @@
     "eyebrow": "Media bank",
     "title": "Photos, video and logos.",
     "logos": {
-      "note": "Wordmarks only. For the fuller, approved kit — including dark/light variants — see the full logo folder below.",
+      "note": "Wordmarks only. For the complete approved kit — including dark and light variants — see the full logo folder below.",
       "items": [
         {
           "name": "ODD mark",
@@ -169,13 +169,13 @@
   "pressContact": {
     "eyebrow": "Press contact",
     "title": "Need something for a story?",
-    "body": "Need an interview, comment, additional material or help finding the right person? Get in touch.",
+    "body": "For interviews, comments, additional material or help finding the right person, get in touch.",
     "name": "Ronny Eriksson",
     "role": "Partnerships & Press, ODD",
     "email": "ronny@oddfest.co"
   },
   "followSocial": {
     "title": "Follow ODD",
-    "body": "News, programme announcements and things taking shape across ODD."
+    "body": "News, programme announcements and new projects across ODD."
   }
 }
