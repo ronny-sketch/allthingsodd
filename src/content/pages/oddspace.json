@@ -445,11 +445,11 @@
     },
     {
       "question": "What is ODDspace?",
-      "answer": "A workspace and event space in Vallila, Helsinki with coworking areas, meeting rooms, an event/gallery floor, an auditorium and ODDstudio, a creative music studio. People can work independently while the space also makes it easier to share work, ask for input and collaborate when useful."
+      "answer": "A workspace and event space in Vallila, Helsinki with coworking areas, meeting rooms, an event and gallery floor, an auditorium and ODDstudio, a creative music studio. People can work independently while the space also makes it easier to share work, ask for input and collaborate when it makes sense."
     },
     {
-      "question": "Do I need to be a physical member to be part of ODDspace?",
-      "answer": "Not necessarily. Day-to-day workspace access is a membership product, but ODDspace also has events, projects and collaborations that involve people outside the physical member base."
+      "question": "Do I need an ODDspace membership to take part?",
+      "answer": "Not necessarily. Day-to-day workspace access is a membership product, but ODDspace also hosts events, projects and collaborations involving people who are not members."
     },
     {
       "question": "Where is ODDspace?",
@@ -457,7 +457,7 @@
     },
     {
       "question": "How do I become a member?",
-      "answer": "Pick a time to see it on the membership page, or ask for a free trial day there. The same page has the price, what's included and what isn't. Memberships are accepted on a rolling basis while the pilot has room."
+      "answer": "Pick a time to see the space on the membership page, or ask for a free trial day there. The same page has the price, what's included and how joining works. Memberships are accepted on a rolling basis while space is available."
     },
     {
       "question": "What does membership cost?",
@@ -497,7 +497,7 @@
     },
     {
       "question": "Is ODDspace accessible?",
-      "answer": "We do not have verified accessibility information for the building to publish yet — step-free access, lifts, accessible toilets and door widths are still being documented, and we would rather say that than reassure you about something we have not measured. If accessibility matters for your visit, email hello@oddfest.co and we will tell you exactly what the space can and cannot do today."
+      "answer": "We are still verifying the building's accessibility details. If accessibility affects your visit, email hello@oddfest.co before coming and we will confirm the current route, lifts and toilets."
     }
   ],
   "railLeft": [
