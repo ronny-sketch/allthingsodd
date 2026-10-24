@@ -7,7 +7,7 @@
   },
   "eyebrow": "For organisations",
   "title": "Start with the question, not the format.",
-  "intro": "Bring us a brief, a question, an event or a partnership idea — including one that is still taking shape. ODD is most useful when the work needs creative and cultural understanding as well as strategy and production.",
+  "intro": "Bring us a brief, event or partnership idea — even if the format is still open. ODD is most useful when the work needs cultural understanding, strategy and production in the same project.",
   "heroImages": [
     "../../assets/work-with-odd/bajamyart-gold-booth.jpg",
     "../../assets/work-with-odd/oddlygood-booth.jpg",
@@ -21,7 +21,7 @@
   },
   "whenOddIsUseful": {
     "eyebrow": "When to call us",
-    "headline": "For work that needs sharp strategy, bold creativity and hands-on execution.",
+    "headline": "For projects that need concept, cultural context and delivery in one team.",
     "items": [
       {
         "number": "01",
@@ -30,27 +30,27 @@
       },
       {
         "number": "02",
-        "title": "You need cultural credibility and professional delivery in the same project.",
+        "title": "You need cultural understanding and reliable delivery in the same project.",
         "body": "ODD works inside creative and cultural contexts, but we also build and deliver work with companies, cities and institutions."
       },
       {
         "number": "03",
         "title": "You need people who don't usually end up in the same room.",
-        "body": "Sometimes the value is in creating the right conditions, roles and reason for different expertise to sit around the same table."
+        "body": "Sometimes the value is in giving people with different expertise a clear reason, role and setting in which to work together."
       }
     ]
   },
   "whatWeDo": {
     "eyebrow": "Why ODD",
-    "headline": "We work across creative practice, business and delivery.",
-    "body": "ODD runs its own events and its own space, works with artists and cultural organisations, and delivers work with companies and institutions. We know those worlds from the inside rather than describing them from a distance — and we build the team around the problem instead of around a service catalogue."
+    "headline": "We work across creative practice, cultural context and production.",
+    "body": "ODD runs its own events and its own space, works with artists and cultural organisations, and delivers work with companies and institutions. We work inside those different contexts and build the team around the work itself."
   },
   "pathways": [
     {
       "number": "01",
       "meta": "Tanssin talo · 22–23 April 2027",
       "title": "ODDference",
-      "body": "The easiest way to experience ODD professionally. Come yourself, bring colleagues, or build something around the event with us.",
+      "body": "The easiest way for organisations to step into ODD. Come yourself, bring colleagues, or build something around the event with us.",
       "goLabel": "Explore ODDference →",
       "href": "/oddference",
       "image": "../../assets/programs/oddference-pathway.jpg"
@@ -68,7 +68,7 @@
       "number": "03",
       "meta": "A concrete brief, question or idea",
       "title": "ODDagency",
-      "body": "For briefs and questions that need cultural understanding, concept development and a project-specific team.",
+      "body": "For briefs and questions that need cultural understanding, concept development and a team built for the work.",
       "goLabel": "Explore ODDagency →",
       "href": "/oddagency",
       "image": "../../assets/programs/oddagency-pathway.jpg"
@@ -122,7 +122,7 @@
   "casesIntro": {
     "eyebrow": "Selected work",
     "headline": "What we’ve built with our partners",
-    "body": "A few things from ODDfest 2025 and 2026 that only happened because partners built them with us."
+    "body": "Examples of what partners have made possible with ODD."
   },
   "cases": [
     {
@@ -235,7 +235,7 @@
   },
   "contact": {
     "eyebrow": "Get in touch",
-    "title": "What should we make happen together?",
-    "body": "Tell us the situation in your own words. You do not need to know which ODD route fits; we can work that out together."
+    "title": "What are you trying to make happen?",
+    "body": "Tell us the situation in your own words. You do not need to know where it fits inside ODD; we can work that out together."
   }
 }
