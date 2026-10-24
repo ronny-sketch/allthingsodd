@@ -7,13 +7,13 @@
   },
   "eyebrow": "ODDference 2027 · Tickets",
   "title": "Ticket terms",
-  "lastUpdated": "7 October 2026",
+  "lastUpdated": "24 October 2026",
   "intro": "The short version: change your mind within 14 days and you get your money back. After that, the ticket is yours to use or to pass on.",
   "sections": [
     {
       "title": "Who you're buying from",
       "body": [
-        "New Nordic Way rf, a Finnish non-profit association based in Helsinki, Business ID 3406363-2. We run ODD and ODDference.",
+        "New Nordic Way rf, a Finnish non-profit association based in Helsinki, Business ID 3406363-2. New Nordic Way rf operates ODD and produces ODDference.",
         "Questions about anything here go to hello@oddfest.co."
       ]
     },
@@ -41,13 +41,13 @@
     {
       "title": "Passing your ticket on",
       "body": [
-        "Can't make it? Give your ticket to someone else. Reply to your confirmation email with their name and we change it, free."
+        "Can't make it? Give your ticket to someone else. Reply to your confirmation email with the new attendee's name and we'll change it for free."
       ]
     },
     {
       "title": "If we cancel or move the event",
       "body": [
-        "If we cancel ODDference 2027 or move it to other dates, you can have a full refund. We can't cover travel or hotel costs."
+        "If we cancel ODDference 2027 or move it to different dates, you can have a full refund. We can't cover travel or hotel costs."
       ]
     },
     {
@@ -59,7 +59,7 @@
     {
       "title": "Access needs",
       "body": [
-        "Tell us what you need when you buy, or any time before the event, and we will send you Tanssin talo's access details."
+        "Email us with any access needs after purchase or at any time before the event, and we will send you Tanssin talo's access details."
       ]
     },
     {
@@ -74,10 +74,15 @@
       "body": [
         "We use buyer and attendee details to run your order and the event, as described on our Privacy & cookies page."
       ],
-      "links": [{ "label": "Privacy & cookies", "href": "/privacy/" }]
+      "links": [
+        {
+          "label": "Privacy & cookies",
+          "href": "/privacy/"
+        }
+      ]
     },
     {
-      "title": "If we disagree",
+      "title": "Disputes",
       "body": [
         "Finnish law applies. If we can't sort something out together, consumers can take it to the Consumer Disputes Board at kuluttajariita.fi."
       ]
@@ -85,7 +90,9 @@
   ],
   "contact": {
     "title": "Questions",
-    "body": ["About these terms or an existing order, write to us and a person will answer."],
+    "body": [
+      "About these terms or an existing order, write to us and a person will answer."
+    ],
     "name": "New Nordic Way rf",
     "email": "hello@oddfest.co",
     "address": "Sturenportti 3, Helsinki, Finland"
