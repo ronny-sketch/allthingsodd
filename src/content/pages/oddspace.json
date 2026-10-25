@@ -60,7 +60,7 @@
   "whatItIs": {
     "eyebrow": "What is ODDspace",
     "headline": "Workspace, studios, events and community under one roof.",
-    "body": "ODDspace is a year-round workspace and event space in Vallila for people working across art, culture, design, media, technology, business and other creative fields. It includes coworking areas, meeting rooms, an event and gallery floor, an auditorium and ODDstudio.\n\nPeople can work independently, host events and cross paths with others from very different fields. ODDspace is still evolving, and the people who use it help shape what it becomes."
+    "body": "ODDspace is a year-round workspace and event space in Vallila for people working across art, culture, design, media, technology, business and other creative fields. It includes coworking areas, meeting rooms, the Gallery, the Event & workshop space, the Auditorium and ODDstudio.\n\nPeople can work independently, host events and cross paths with others from very different fields. ODDspace is still evolving, and the people who use it help shape what it becomes."
   },
   "spaces": [
     {
@@ -77,7 +77,7 @@
       "href": "/oddspace/membership"
     },
     {
-      "name": "Event & gallery space",
+      "name": "Gallery",
       "body": "For exhibitions, launches, workshops, talks, shoots, gatherings, performances and company events.",
       "bullets": [
         "Exhibitions and launches",
@@ -211,7 +211,7 @@
         "date": "Sat 17 Oct",
         "time": "From 17:00",
         "endsOn": "2026-10-17",
-        "note": "An immersive experience takes over the Galleria. Programme from 18:00."
+        "note": "An immersive experience takes over the Gallery. Programme from 18:00."
       },
       {
         "title": "Helsinki Perfume Club",
@@ -232,7 +232,7 @@
         "date": "Sat 31 Oct",
         "time": "20:00–02:00",
         "endsOn": "2026-10-31",
-        "note": "ODDgallery's first Halloween party, in the Galleria. Tickets 5 € in advance, 10 € at the door. BYOB."
+        "note": "ODDgallery's first Halloween party, in the Gallery. Tickets €5 in advance, €10 at the door. BYOB."
       },
       {
         "title": "Toivon ja tulevaisuuden illat: Katariina Souri",
@@ -260,7 +260,7 @@
         "date": "Thu 26 Nov",
         "time": "17:30–21:30",
         "endsOn": "2026-11-26",
-        "note": "Making new friends on purpose: conversation, movement, making and play. By UPWARD."
+        "note": "Making new friends on purpose: conversation, movement, hands-on activities and play. By UPWARD."
       },
       {
         "title": "Toivon ja tulevaisuuden illat: Oras Tynkkynen",
@@ -341,7 +341,7 @@
         "title": "Night of the Arts: Imagine",
         "date": "Thu 20 Aug",
         "endsOn": "2026-08-20",
-        "note": "An installation in the Galleria for Taiteiden yö."
+        "note": "An installation in the Gallery for Taiteiden yö."
       },
       {
         "title": "Design Pulse launch by Ornamo",
@@ -445,7 +445,7 @@
     },
     {
       "question": "What is ODDspace?",
-      "answer": "A workspace and event space in Vallila, Helsinki with coworking areas, meeting rooms, an event and gallery floor, an auditorium and ODDstudio, a creative music studio. People can work independently while the space also makes it easier to share work, ask for input and collaborate when it makes sense."
+      "answer": "A workspace and event space in Vallila, Helsinki with coworking areas, meeting rooms, the Gallery, the Event & workshop space, the Auditorium and ODDstudio, a creative music studio. People can work independently while the space also makes it easier to share work, ask for input and collaborate when it makes sense."
     },
     {
       "question": "Do I need an ODDspace membership to take part?",
@@ -485,7 +485,7 @@
     },
     {
       "question": "What spaces are available?",
-      "answer": "Co-working space, an event/gallery floor, an auditorium and ODDstudio, a creative music studio."
+      "answer": "Coworking space and meeting rooms, the Gallery, the Aula, the Event & workshop space, the Auditorium and ODDstudio, a creative music studio."
     },
     {
       "question": "How much does event use cost?",
