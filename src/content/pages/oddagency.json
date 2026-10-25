@@ -3,13 +3,13 @@
   "_slug": "oddagency",
   "seo": {
     "title": "ODDagency — Creative Strategy & Production in Helsinki",
-    "description": "ODDagency works with organisations on concept development, cultural context, creative production and project-specific teams built around the question.",
+    "description": "ODDagency works with organisations on concept development, cultural context, creative production and project-specific teams built for the work.",
     "ogImage": "/og/oddagency.jpg"
   },
   "eyebrow": "ODDagency · For organisations",
   "title": "Bring us something that still needs figuring out.",
   "meta": "Project-based · Helsinki",
-  "intro": "ODDagency works with companies, cities and institutions on projects that need cultural understanding, concept development and the ability to turn an idea into something real. Sometimes we lead most of the work ourselves. Sometimes the right answer is to build a wider team around it.",
+  "intro": "ODDagency works with companies, cities and institutions on projects that need cultural understanding, concept development and the ability to carry an idea through production. Sometimes we lead most of the work ourselves. Sometimes the right answer is to build a wider team around it.",
   "heroMedia": {
     "image": "../../assets/programs/oddagency-card.jpg"
   },
@@ -25,7 +25,7 @@
       {
         "number": "02",
         "title": "Concept and delivery need to stay connected.",
-        "body": "You want the people framing the work to stay involved through delivery. The core idea stays intact through production."
+        "body": "You want the people framing the work to stay involved through delivery. The people shaping the concept stay involved through production."
       },
       {
         "number": "03",
@@ -43,12 +43,12 @@
     {
       "number": "01",
       "title": "Framing & concept",
-      "body": "Turning an open question into a clearer direction, proposition, format or concept before the project becomes production."
+      "body": "Turning an open question into a clearer direction, proposition, format or concept before production begins."
     },
     {
       "number": "02",
       "title": "Culture & context",
-      "body": "Understanding the people, communities and cultural context around the work — what is changing, what people care about and what would feel credible."
+      "body": "Understanding the people, communities and cultural context around the work — what is changing, what people care about and what would feel credible to the people the work is for."
     },
     {
       "number": "03",
@@ -58,12 +58,12 @@
     {
       "number": "04",
       "title": "Participation & collaboration",
-      "body": "Building projects where organisations and creative practitioners work together with clear roles, fair expectations and clear value for everyone involved."
+      "body": "Building projects where organisations and creative practitioners work together with clear roles, fair expectations and real value for everyone involved."
     },
     {
       "number": "05",
       "title": "Evaluation & learning",
-      "body": "When relevant, defining what the project is trying to change, documenting what happened and turning the learning into something useful after delivery."
+      "body": "When relevant, defining what the project is trying to change, documenting what worked and what didn’t, and deciding what should carry into the next phase."
     }
   ],
   "howItWorks": [
