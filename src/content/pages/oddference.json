@@ -23,8 +23,8 @@
   },
   "concept": {
     "eyebrow": "The premise",
-    "headline": "What can business and the rest of society learn from creative expertise?",
-    "body": "Creativity shapes what people notice, desire, remember and care about. Yet creative expertise is still too often treated as decoration, entertainment or inspiration — brought in after the important decisions have already been made.\n\nODDference starts from the opposite idea. For two days at Tanssin talo, creative practitioners meet business and society as experts — exploring what imagination, taste, cultural relevance and experimentation can teach us about the challenges ahead."
+    "headline": "What can business and wider society learn from creative expertise?",
+    "body": "Creativity shapes what people notice, desire, remember and care about. Yet creative expertise is often brought in late — for expression or execution rather than for the decisions themselves.\n\nODDference starts from a different premise. For two days at Tanssin talo, creative practitioners bring that expertise into the same room as leaders from business and wider society — exploring what imagination, taste, cultural relevance and experimentation can teach us about building things people care about, creating belonging and imagining what does not yet exist."
   },
   "reasonsIntro": {
     "eyebrow": "Why come",
@@ -35,21 +35,21 @@
       "number": "01",
       "eyebrow": "Relevance",
       "title": "How do you build something people genuinely care about?",
-      "body": "Attention is easy to chase and hard to earn. We’ll explore how brands, artists and cultural makers create meaning, distinction and relevance that people choose to notice, remember and care about.",
+      "body": "Attention is easy to chase and hard to earn. We’ll explore how brands, artists and cultural makers create meaning and distinction that people choose to notice and remember.",
       "image": "../../assets/oddfest-2026/oddference-alf-rehn.jpg"
     },
     {
       "number": "02",
       "eyebrow": "Belonging & participation",
-      "title": "How do you create something people want to be part of — and take part in?",
-      "body": "What makes people join, contribute and stay involved? We’ll look at what communities, games, culture and creative practice can teach us about turning passive audiences into active participants.",
+      "title": "How do you create something people want to join — and contribute to?",
+      "body": "What makes people join, contribute and stay involved? We’ll look at what communities, games, culture and creative practice can teach us about participation and belonging.",
       "image": "../../assets/oddfest-2026/oddference-elisabet-lahti-stage.jpg"
     },
     {
       "number": "03",
       "eyebrow": "Reinvention",
       "title": "How do you imagine and create what does not yet exist?",
-      "body": "When familiar answers stop working, how do you create the next new thing the world actually wants? We’ll explore how creative people experiment, challenge assumptions and turn uncertain ideas into something real."
+      "body": "When familiar answers stop working, how do you imagine something new that people will genuinely want? We’ll explore how creative practitioners experiment, challenge assumptions and develop ideas before the outcome is clear."
     }
   ],
   "speakers": [
@@ -148,12 +148,11 @@
       "name": "Blind Bird",
       "syncSlug": "blind-bird",
       "audience": "The lowest price",
-      "description": "Commit early and get ODDference 2027 at the lowest price it will be sold for.",
+      "description": "Commit early for the lowest ODDference 2027 ticket price.",
       "price": "€299",
       "priceNote": "+ VAT 13.5%",
       "benefits": [
         "Full ODDference 2027 access",
-        "Our lowest ticket price — guaranteed",
         "Programme updates as they’re announced"
       ],
       "ctaLabel": "See ticket details",
@@ -169,7 +168,7 @@
       "name": "Early Bird",
       "syncSlug": "early-bird",
       "audience": "The second tier",
-      "description": "For those joining us a little later.",
+      "description": "The next price tier after Blind Bird.",
       "price": "€399",
       "priceNote": "+ VAT 13.5%",
       "status": "Available after Blind Bird",
@@ -198,8 +197,8 @@
   ],
   "partnershipCta": {
     "eyebrow": "For partners",
-    "title": "What could your organisation enable inside ODDference?",
-    "body": "Bring an idea, a question, expertise or resources. The best partnerships should improve the event for the people in the room, not just add another logo on a wall.",
+    "title": "What could your organisation bring to ODDference?",
+    "body": "Bring an idea, expertise, resources or a question worth exploring with the people in the room. The best partnerships improve the event for the people taking part, rather than simply adding another logo.",
     "linkLabel": "Talk to us about partnering →",
     "href": "/work-with-odd/?interest=oddference_corporate#enquiry-form"
   },
