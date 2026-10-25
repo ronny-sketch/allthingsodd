@@ -8,7 +8,7 @@
   "eyebrow": "ODDspace · For organisers",
   "title": "Everything you need to run your event here.",
   "lastUpdated": "24 October 2026",
-  "intro": "This is the pack we send once your booking is agreed. It covers the Gallery, Aula, Auditorium and 2nd-floor co-creation space. Read it once, send it to your crew and ask us about anything it does not answer. ODDspace sits inside a shared office building with other tenants, a parking hall and a round-the-clock alarm system, so many of the rules below are about building safety and avoiding unnecessary alarms. This pack is Schedule 2 of your venue hire agreement: the version in force on the day you sign is the one that applies. We can update practical details before your event by telling you in writing, and if anything here conflicts with the agreement, the agreement wins.",
+  "intro": "This is the pack we send once your booking is agreed. It covers the Gallery, Aula, Auditorium and Event & workshop space. Read it before your event, share the relevant parts with your crew and ask us about anything it does not answer. ODDspace sits inside a shared office building with other tenants, a parking hall and a round-the-clock alarm system, so many of the rules below are about building safety, alarms and the other tenants. This pack is Schedule 2 of your venue hire agreement: the version in force on the day you sign is the one that applies. We can update practical details before your event by telling you in writing, and if anything here conflicts with the agreement, the agreement wins.",
   "contents": "What's in here",
   "sections": [
     {
@@ -18,9 +18,9 @@
       ],
       "items": [
         "Confirm your event details with us at least 7 days before the event.",
-        "No smoke, haze, steam, vaping or candles indoors. Each one sets off the fire alarm.",
+        "No smoke, haze, steam, vaping or candles indoors. These can trigger the fire alarm.",
         "Guests stay in the spaces you booked and on designated routes. Elevators, upper floors and the parking hall are off-limits unless access has been agreed with ODDspace.",
-        "More than 100 guests means a licensed security steward on site.",
+        "For events with more than 100 guests, ODDspace requires a licensed security steward on site.",
         "Leave it as you found it — cleaned, trash out — before your alarm window ends."
       ]
     },
@@ -65,15 +65,15 @@
       }
     },
     {
-      "title": "The 2nd-floor co-creation space",
+      "title": "The Event & workshop space",
       "body": [
         "150 people, one floor up. Seminars, workshops, away-days, dinners, smaller parties — the room that suits a day-long programme better than an evening crowd.",
         "This floor connects to the building's elevators and parking hall, which is why guest flow here needs a plan. See the house rules."
       ],
       "image": {
         "src": "../../assets/oddspace/coworking-desks.jpg",
-        "alt": "The ODDspace co-creation floor: desks and lounge chairs by tall windows looking out over the Konepaja chimney.",
-        "caption": "The 2nd-floor co-creation space — 150 people."
+        "alt": "The ODDspace Event & workshop space: desks and lounge chairs by tall windows looking out over the Konepaja chimney.",
+        "caption": "The Event & workshop space — 150 people."
       }
     },
     {
@@ -86,14 +86,14 @@
     {
       "title": "What we're not the right room for",
       "body": [
-        "Haze-heavy club shows, at least until the smoke-machine arrangement with the building is sorted. Anything needing a commercial kitchen. A 200-person standing crowd in one room. Loud bass past 22:00 without the property's approval.",
-        "Better you hear it now than after a site visit. If your concept needs one of those things, tell us early and we'll tell you honestly whether it can be arranged."
+        "Events requiring haze or smoke effects unless separately approved in advance. Anything needing a commercial kitchen. A 200-person standing crowd in one room. Loud bass past 22:00 without the property's approval.",
+        "If your concept needs one of those things, tell us early and we'll tell you whether it can be arranged."
       ]
     },
     {
       "title": "What every booking includes",
       "body": [
-        "The room, the basics that live in it, and a walkthrough before the day."
+        "The room, its standard furniture and equipment, and a walkthrough before the day."
       ],
       "items": [
         "The space during your booked hours, setup and clean-up included.",
@@ -101,14 +101,14 @@
         "House lighting and heating.",
         "Toilets and the coffee point.",
         "PA sound system and one microphone.",
-        "Wi-Fi, though it can be slow: bring a mobile hotspot for anything you're streaming.",
+        "Wi-Fi is available. For critical livestreaming or other connection-sensitive use, bring a dedicated connection or backup.",
         "A walkthrough of the room, the exits and the equipment before the day."
       ]
     },
     {
       "title": "What isn't included",
       "body": [
-        "Ask us to confirm the exact equipment for your date — the kit is shared between rooms and moves around. Anything that plugs into more than a normal socket, or that needs rigging, has to be agreed with us in advance. If you need room dimensions, ceiling height, power circuits or rigging points for a production plan, ask and we'll send the current figures."
+        "Ask us to confirm the exact equipment for your date — the kit is shared between rooms and moves around. Anything requiring higher-power supply or rigging has to be agreed with us in advance. If you need room dimensions, ceiling height, power circuits or rigging points for a production plan, ask and we'll send the current figures."
       ],
       "items": [
         "Cleaning: you clean, or you book a cleaner through us.",
@@ -116,7 +116,7 @@
         "Camera or livestream gear, and extra microphones.",
         "Catering, drinks and a bar licence.",
         "Event staff, a technician or a host, unless booked as an add-on.",
-        "A security steward for events over 100 guests.",
+        "A licensed security steward for events with more than 100 guests, as required by ODDspace.",
         "Staging, rigging, special lighting and anything power-hungry."
       ]
     },
@@ -131,13 +131,13 @@
         "Confirm: you sign the venue hire agreement and the date is held.",
         "Details, 7 days before: you confirm the final times, headcount and on-site contact. We notify the building's security company, maintenance and the owner, and book the alarms off for your window.",
         "Event day: keys are handed to you from the lobby, and someone from ODDspace is reachable throughout.",
-        "After: space cleaned and back to its original layout, trash out, keys returned, final invoice."
+        "After: clean the space, restore the original layout, take out the rubbish, return the keys and settle the final invoice."
       ]
     },
     {
       "title": "Cancellation, damage and insurance",
       "body": [
-        "Your signed venue hire agreement always takes precedence over this page. These are the standard terms behind it."
+        "Your signed venue hire agreement governs the booking. The summary below is for reference."
       ],
       "items": [
         "Cancelled 14 days or more before the event: free of charge.",
@@ -153,12 +153,12 @@
     {
       "title": "Before your event",
       "body": [
-        "One week out we need the final picture: date, the full time window from first crew in to last person out, the spaces, the largest number of people inside at once, what happens, your on-site contact person and their phone, who is cleaning, plus anything about alcohol, music after 22:00, filming or equipment you're bringing in.",
+        "Seven days before the event, send us the final details: date, the full time window from first crew in to last person out, the spaces, the largest number of people inside at once, what happens, your on-site contact person and their phone, who is cleaning, plus anything about alcohol, music after 22:00, filming or equipment you're bringing in.",
         "We pass that to the building's security company (Securitas), property maintenance (ISS) and the owner (YIT), including the names and numbers of your on-site contact and your security steward, handled under our privacy policy. If it arrives late, the building's alarms stay on and the event can't go ahead as planned."
       ],
       "items": [
         "At booking: spaces, hours and quote agreed, agreement signed. Tell us now about alcohol, music after 22:00, more than 100 guests, or anything you're rigging.",
-        "14 days before: public event? File your police notification, and for 200 or more people your event rescue plan. Sort your music licence.",
+        "Before the event: check which authority notifications, safety documents and music or alcohol licences your event requires, and file them by the relevant deadlines.",
         "7 days before: final details confirmed with us. We notify Securitas, ISS and YIT and book your alarm window.",
         "The day before: final headcount, crew briefed on the exits and house rules, cleaning sorted.",
         "On the day: keys from the lobby, walk the exits with your crew, doors open.",
@@ -176,13 +176,13 @@
     {
       "title": "What the organiser is responsible for",
       "body": [
-        "Some of this is ours to arrange and some of it is genuinely yours. This is the yours half.",
-        "Not every event needs a police notification, but a public event may need one at least 5 days ahead, or two weeks ahead if stewards or traffic control are involved. Events with 200 or more people present at once need their own rescue plan, filed with the rescue authority at least 14 days before. Indoor events here don't normally need a noise notification to the city; outdoor amplified sound at night does, 30 days ahead. Rules checked September 2026 — verify before you file. Send us a copy of any safety or rescue plan the authorities require, if we ask for it."
+        "Some responsibilities sit with ODDspace and others with the organiser. The organiser is responsible for the following.",
+        "Authority and licensing requirements depend on the event format, size and programme. Check the current requirements with the relevant authorities and rights organisations before filing or applying, and send us any safety or rescue documents required for your event if we ask for them."
       ],
       "items": [
-        "A licensed security steward for more than 100 guests, booked through a security company. Tell us who it is.",
-        "Alcohol. ODDspace holds no licence, so serving or selling it is yours, including the licence and the people checking ages. A temporary serving licence comes from Lupa- ja valvontavirasto, which took over from the regional agencies in January 2026 and asks for applications no later than a month before.",
-        "The music licence from Teosto and Gramex, if there's music of any kind — live, recorded or DJ. It's the organiser's, not the venue's.",
+        "For more than 100 guests, a licensed security steward booked through a security company. This is an ODDspace booking requirement; tell us who it is.",
+        "Alcohol. ODDspace does not provide an alcohol licence. The organiser is responsible for any permits, licensed service and age checks required for the event unless agreed otherwise in writing.",
+        "Music. The organiser is responsible for any music licences required for the event unless agreed otherwise in writing. Check the current requirements with the relevant rights organisations.",
         "Keeping guests out of the elevators, elevator lobbies, upper floors and the parking hall. Plan it: a crew member or steward at the stairwell, and clear signage.",
         "Telling us what your guests need in terms of access, so we can walk the route with you before you publish your invitation.",
         "Briefing your crew on the house rules and the code of conduct, both of which come with your booking."
@@ -192,7 +192,7 @@
       "title": "Arrival, access and getting here",
       "body": [
         "ODDspace is at Teollisuuskatu 9D in Vallila. The building is Kiinteistö Oy Sturenportti, whose official address is Sturenkatu 16 — the one to give emergency services. Trams and buses stop on Teollisuuskatu and Sturenkatu.",
-        "Tell your guests the exact entrance, and which one: the Gallery, Aula and co-creation space are entered from Teollisuuskatu 9D, while the Auditorium is reached from the Sturenkatu side through the building's main doors. People who guess end up in someone else's office building."
+        "Tell your guests the exact entrance: the Gallery, Aula and Event & workshop space are entered from Teollisuuskatu 9D, while the Auditorium is reached from the Sturenkatu side through the building's main doors. Include the correct entrance in your guest information."
       ],
       "items": [
         "Keys are handed to you from the lobby at the start of your window and returned as agreed. Don't let anyone you don't know in through the building's access-controlled doors, and tell us immediately if a key or badge goes missing. Keys, codes and alarm instructions are for your crew only and come back to us at the end of your window. A lost key or badge is yours to pay for, including new locks and any security call-out.",
@@ -205,7 +205,7 @@
     {
       "title": "House rules",
       "body": [
-        "These are the ones that cost money or stop an event when they're broken. The fire detectors react to smoke, vapour and steam, and a false alarm brings the fire brigade with the cost billed to whoever caused it."
+        "These rules protect building safety and can affect whether an event is allowed to continue. The fire detectors react to smoke, vapour and steam, and false alarms or security call-outs may be charged to the event organiser when caused by the event."
       ],
       "items": [
         "No smoke, haze, steam, vaping or candles indoors. Smoke and haze machines are not allowed for now — they need separate arrangements with building maintenance.",
@@ -339,12 +339,12 @@
     {
       "title": "Floor plan: 2nd floor",
       "body": [
-        "The co-creation space, outlined in purple: the whole floor ODDspace holds upstairs, with its own toilets and small rooms inside the outline. The building's lifts and lift lobbies sit immediately outside it, along with the numbered parking bays — which is exactly why guest flow on this floor needs a plan."
+        "The Event & workshop space is outlined in purple: the whole floor ODDspace holds upstairs, with its own toilets and small rooms inside the outline. The building's lifts and lift lobbies sit immediately outside it, along with the numbered parking bays, so guest flow on this floor needs a plan."
       ],
       "image": {
         "src": "../../assets/oddspace/floorplan-second-floor.png",
-        "alt": "Floor plan of the second floor with the ODDspace co-creation space outlined and shaded in purple, surrounded by the rest of the building's floor plate and numbered parking bays.",
-        "caption": "2nd floor — the ODDspace co-creation space in purple."
+        "alt": "Floor plan of the second floor with the ODDspace Event & workshop space outlined and shaded in purple, surrounded by the rest of the building's floor plate and numbered parking bays.",
+        "caption": "2nd floor — the Event & workshop space in purple."
       }
     },
     {
@@ -377,7 +377,7 @@
     "body": [
       "Emergencies are always 112 first. For anything else, your ODDspace contact's direct number comes with your booking confirmation, and someone from ODDspace is reachable by phone throughout your event window.",
       "Water leaks and technical faults, when you can't reach us: ISS property maintenance on 0200 15 500, weekdays 15:00–07:00 and weekends around the clock.",
-      "Anything that goes against the ODDspace code of conduct goes to Ronny, Aki or Upi directly — that's the whole escalation path, and it's in the code of conduct we send with your booking."
+      "Anything that goes against the ODDspace code of conduct can be reported to Ronny, Aki or Upi directly, or to hello@oddfest.co."
     ],
     "name": "ODDspace",
     "email": "hello@oddfest.co",
