@@ -49,14 +49,14 @@
     },
     {
       "image": "../../assets/oddspace/coworking-desks.jpg",
-      "alt": "The 2nd-floor co-creation space: desks and lounge chairs by tall windows over the Konepaja chimney"
+      "alt": "The Event & workshop space: desks and lounge chairs by tall windows over the Konepaja chimney"
     }
   ],
   "intro": "You do not need to be a member to book. Tell us the date and what you're planning, and we'll tell you whether the space works for it.",
   "whatItIs": {
     "eyebrow": "What it's good for",
-    "headline": "A gallery, event and workshop space, and an auditorium.",
-    "body": "ODDspace is a working creative space in Vallila with three bookable event rooms — a gallery at street level, an event and workshop space one floor up, and an auditorium with tiered seating. Exhibitions, launches, workshops, talks, screenings, shoots, gatherings and performances have all happened here. It is more raw and flexible than a conventional conference venue."
+    "headline": "A gallery, an event & workshop space and an auditorium.",
+    "body": "ODDspace is a working creative space in Vallila with several bookable event spaces: the Gallery, Aula, Event & workshop space and Auditorium. Exhibitions, launches, workshops, talks, screenings, shoots, gatherings and performances have all happened here. It is more raw and flexible than a conventional conference venue."
   },
   "eventTypes": [
     "Exhibitions and openings",
@@ -69,7 +69,7 @@
   ],
   "spacesIntro": {
     "eyebrow": "The rooms",
-    "headline": "Three bookable rooms, plus the studio."
+    "headline": "Choose the space that fits your event."
   },
   "spaces": [
     {
