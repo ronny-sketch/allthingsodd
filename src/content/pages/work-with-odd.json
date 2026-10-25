@@ -21,12 +21,12 @@
   },
   "whenOddIsUseful": {
     "eyebrow": "When to call us",
-    "headline": "For projects that need concept, cultural context and delivery in one team.",
+    "headline": "For projects that need cultural understanding, concept development and delivery in one team.",
     "items": [
       {
         "number": "01",
-        "title": "You have a question but not yet a format.",
-        "body": "We can help frame what the work actually needs before deciding whether the answer is an event, a project, a partnership or something else."
+        "title": "The brief is open and the right format isn’t obvious yet.",
+        "body": "We can help frame what the work actually needs before deciding whether the answer is an event, partnership, programme, campaign or something else."
       },
       {
         "number": "02",
@@ -36,30 +36,30 @@
       {
         "number": "03",
         "title": "You need people who don't usually end up in the same room.",
-        "body": "Sometimes the value is in giving people with different expertise a clear reason, role and setting in which to work together."
+        "body": "Sometimes the value is in giving people from different disciplines a clear reason, role and setting in which to work together."
       }
     ]
   },
   "whatWeDo": {
     "eyebrow": "Why ODD",
-    "headline": "We work across creative practice, cultural context and production.",
-    "body": "ODD runs its own events and its own space, works with artists and cultural organisations, and delivers work with companies and institutions. We work inside those different contexts and build the team around the work itself."
+    "headline": "We combine creative practice, cultural understanding and production.",
+    "body": "ODD runs its own events and its own space, works with artists and cultural organisations, and delivers work with companies and institutions. We build each team around the brief rather than working from a fixed roster."
   },
   "pathways": [
     {
       "number": "01",
       "meta": "Tanssin talo · 22–23 April 2027",
       "title": "ODDference",
-      "body": "The easiest way for organisations to step into ODD. Come yourself, bring colleagues, or build something around the event with us.",
+      "body": "The easiest way for organisations to experience ODD. Come yourself, bring colleagues, or build something around the event with us.",
       "goLabel": "Explore ODDference →",
       "href": "/oddference",
       "image": "../../assets/programs/oddference-pathway.jpg"
     },
     {
       "number": "02",
-      "meta": "For ODDference, ODDfest, ODDspace and beyond",
+      "meta": "Across ODDference, ODDfest and ODDspace",
       "title": "Partnerships",
-      "body": "Bring resources, expertise or an idea into ODDference, ODDfest, ODDspace or another ODD context when there is a clear reason to build something together.",
+      "body": "Bring resources, expertise or an idea into ODDference, ODDfest, ODDspace or another project where there is a clear reason to build something together.",
       "goLabel": "Explore partnerships →",
       "href": "/work-with-odd/?interest=strategic_partnership#enquiry-form",
       "image": "../../assets/programs/partnerships-card.jpg"
@@ -159,7 +159,7 @@
       "category": "Brand activation",
       "title": "Oddlygood at ODDfest",
       "partner": "Oddlygood",
-      "summary": "ODDfest has no standard brand booths, so Oddlygood didn’t bring one. Their stand handed out drinks in exchange for ideas on how to recycle better, and Skyproduction filmed the day.",
+      "summary": "ODDfest has no standard brand booths, so Oddlygood didn’t bring one. Oddlygood handed out drinks in exchange for ideas on how to recycle better, and Skyproduction filmed the day.",
       "image": "../../assets/work-with-odd/oddlygood-booth.jpg",
       "href": "https://www.linkedin.com/posts/miika-raty_skyproduction-marketing-video-activity-7339196496292052995-kWUX",
       "linkLabel": "Watch the video →",
@@ -169,7 +169,7 @@
       "category": "Guest programme",
       "title": "ODD100",
       "partner": "KULTA ry · City of Helsinki",
-      "summary": "A hundred leading voices from Finnish culture in the same room: organisation leaders, decision-makers, journalists, artists and curators. KULTA ry, the central organisation for Finnish culture and arts associations, curates the guest list with us. The City of Helsinki sponsored the tickets in 2025, and ODD100 came back in 2026.",
+      "summary": "A hundred leading voices from Finnish culture in the same room: organisation leaders, decision-makers, journalists, artists and curators. KULTA ry, the central organisation for Finnish culture and arts associations, curated the guest list with us. The City of Helsinki sponsored the tickets in 2025, and ODD100 came back in 2026.",
       "image": "../../assets/about/oddfest-2025-shared-table.jpg",
       "href": "https://issuu.com/oddfest/docs/oddfest_2025_impact_report?fr=xKAE9_zU1NQ",
       "linkLabel": "Read more in the impact report →",
@@ -179,7 +179,7 @@
       "category": "Award",
       "title": "LUO(V)UUS award 2025",
       "partner": "City of Tampere · Music x Media",
-      "summary": "The City of Tampere named ODDfest its 2025 creative-economy innovator at the Music x Media Industry Awards Gala. The jury picked us for an open-minded way of building cooperation between creative industries and the courage to try a new approach to it.",
+      "summary": "The City of Tampere named ODDfest its 2025 creative-economy innovator at the Music x Media Industry Awards Gala. The jury picked us for an open-minded way of building cooperation between creative industries and for having the courage to try a different model for that cooperation.",
       "image": "../../assets/about/oddfest-2025-main-stage-crowd.jpg",
       "href": "https://www.tampere.fi/en/current/2025/09/29/2025-tampere-music-award-lars-karlsson-and-luovuus-award-oddfest-were",
       "linkLabel": "Read the City of Tampere news →",
@@ -236,6 +236,6 @@
   "contact": {
     "eyebrow": "Get in touch",
     "title": "What are you trying to make happen?",
-    "body": "Tell us the situation in your own words. You do not need to know where it fits inside ODD; we can work that out together."
+    "body": "Tell us the situation in your own words. You do not need to know which route fits; we can work that out together."
   }
 }
