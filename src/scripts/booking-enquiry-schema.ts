@@ -105,7 +105,7 @@ export const SPACES = opts([
   ['gallery', 'Gallery'],
   ['aula', 'Aula'],
   ['auditorium', 'Auditorium'],
-  ['second_floor', '2nd-floor co-creation space'],
+  ['second_floor', 'Event & workshop space'],
   ['gallery_aula', 'Gallery + Aula'],
   ['auditorium_aula', 'Auditorium + Aula'],
   ['full_triangle', 'Gallery, Aula and Auditorium'],
@@ -471,7 +471,7 @@ export function capacityWarning(space: string, people: number | undefined): stri
   if (!info.capacity || people <= info.capacity) return null;
   const name = SPACES.find((s) => s.value === space)?.label ?? 'That space';
   if (space === 'auditorium') {
-    return `The Auditorium seats 50, and its seating is fixed. For ${people} people the Gallery or the 2nd-floor space may suit better. Send it anyway and we will suggest what fits.`;
+    return `The Auditorium seats 50, and its seating is fixed. For ${people} people the Gallery or the Event & workshop space may suit better. Send it anyway and we will suggest what fits.`;
   }
   const combined = ['gallery_aula', 'auditorium_aula', 'full_triangle'].includes(space);
   const limit = combined
