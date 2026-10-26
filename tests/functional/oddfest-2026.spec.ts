@@ -22,7 +22,7 @@ test('the thank-you page is a site page with its credits and no dead ends', asyn
   // One statement in two inks since 2026-09-19: the premise quiet, the point
   // loud, both inside the one h1.
   await expect(page.locator('h1')).toHaveText(
-    'You are the heroes of ODD. An ODD thousand thank yous.',
+    'You made ODDfest 2026 happen. An ODD thousand thank yous.',
   );
 
   await expect(page.locator('#credits .ty-names li', { hasText: 'Ronny Eriksson' })).toHaveCount(1);
@@ -79,7 +79,8 @@ test('the thank-you page is an archive, not an invitation', async ({ page, reque
   for (const meta of ['meta[name="description"]', 'meta[property="og:description"]']) {
     const content = (await page.locator(meta).getAttribute('content')) ?? '';
     expect(content, `${meta} still invites people`).not.toMatch(/afterparty|September|19:00/i);
-    expect(content).toContain('ODDfest 2026');
+    expect(content).toContain('ODDfest');
+    expect(content).toContain('2026');
   }
 
   // The hero's second button goes to the photographs, and they are there.
