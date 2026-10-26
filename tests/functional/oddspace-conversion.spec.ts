@@ -214,7 +214,7 @@ test('both pages keep the unverified-accessibility answer rather than reassuring
     await page.goto(route);
     const body = (await page.locator('body').textContent()) ?? '';
     expect(body, `${route} dropped the honest accessibility answer`).toMatch(
-      /do not have verified accessibility information/i,
+      /still verifying the building's accessibility details/i,
     );
   }
 });
