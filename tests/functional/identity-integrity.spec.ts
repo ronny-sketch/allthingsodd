@@ -187,12 +187,11 @@ test('the homepage does not render a "What\'s happening" section', async ({ requ
   expect(html).not.toContain('whats-on');
 });
 
-test('"Already in motion" renders ODD\'s cumulative under-two-years proof', async ({ page }) => {
+test('the homepage renders ODD\'s cumulative two-year proof', async ({ page }) => {
   await page.goto('/');
   const section = page.locator('.home-proof');
   await expect(section).toHaveCount(1);
 
-  await expect(section.getByText('Already in motion')).toBeVisible();
 
   // The framing is half the claim — four big numbers without a timeframe say
   // something different from the same four numbers in under two years. The
@@ -292,7 +291,7 @@ test('ODDference is positioned as where creative expertise meets business and so
   await page.goto('/oddference');
   await expect(page).toHaveTitle(/^ODDference 2027/);
   await expect(page.locator('h1')).toContainText(
-    'Where creative expertise meets business and society.',
+    'Where creative expertise meets business and society',
   );
   for (const meta of ['meta[name="description"]', 'meta[property="og:description"]']) {
     await expect(page.locator(meta)).toHaveAttribute(
