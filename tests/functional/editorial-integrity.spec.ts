@@ -145,12 +145,16 @@ test('no page still carries the superseded participation wording', async ({ page
 });
 
 test('ODDspace does not answer an accessibility question with reassurance', async ({ request }) => {
-  const body = await (await request.get('/oddspace')).text();
-  // The published answer must not imply the building has been checked. The
-  // master's rule: facts, or an honest statement that there are none yet.
-  expect(body).not.toContain("we'll make sure it works");
-  expect(body).not.toContain('we’ll make sure it works');
-  expect(body).toContain("We are still verifying the building's accessibility details");
+  const main = await (await request.get('/oddspace')).text();
+  expect(main).not.toContain("we'll make sure it works");
+  expect(main).not.toContain('we’ll make sure it works');
+
+  // The practical accessibility answer now lives on the pages where a visitor
+  // actually needs it: membership and venue booking.
+  for (const route of ['/oddspace/membership', '/oddspace/venue']) {
+    const body = await (await request.get(route)).text();
+    expect(body).toContain("We are still verifying the building's accessibility details");
+  }
 });
 
 // "The contact form names the site it actually belongs to" used to live here,

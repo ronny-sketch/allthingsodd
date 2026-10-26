@@ -223,7 +223,7 @@ test('the homepage renders ODD\'s cumulative two-year proof', async ({ page }) =
   // the scope note it needed under cumulative figures — is About's to link.
   await expect(section.locator('.section-intro a.pill')).toHaveAttribute('href', '/about');
   await expect(section.locator('.proof-follow a.pill')).toHaveAttribute('href', '/oddfest-2026/');
-  await expect(section.locator('.proof-follow-lead')).toContainText('co-created');
+  await expect(section.locator('.proof-follow-lead')).toContainText('made by hundreds of people');
   await expect(section.locator('a[href*="impact_report"]')).toHaveCount(0);
 });
 
