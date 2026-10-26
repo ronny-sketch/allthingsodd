@@ -18,7 +18,7 @@ test('home tells the story in the order the copy master specifies', async ({ pag
     return {
       whyOdd: html.indexOf('Why ODD'),
       whatWeDo: html.indexOf('What we do'),
-      proof: html.indexOf('Already in motion'),
+      proof: html.indexOf('home-proof'),
       audience: html.indexOf('Who ODD is for'),
       featuredIn: html.indexOf('Featured in'),
       workWithOdd: html.indexOf('wwo-band'),
@@ -150,7 +150,7 @@ test('ODDspace does not answer an accessibility question with reassurance', asyn
   // master's rule: facts, or an honest statement that there are none yet.
   expect(body).not.toContain("we'll make sure it works");
   expect(body).not.toContain('we’ll make sure it works');
-  expect(body).toContain('We do not have verified accessibility information');
+  expect(body).toContain("We are still verifying the building's accessibility details");
 });
 
 // "The contact form names the site it actually belongs to" used to live here,
