@@ -679,9 +679,11 @@ test('the space descriptions still match the event info pack', async ({ page }) 
   // pack. If the pack changes and the form does not, this fails.
   await page.goto('/oddspace/event-info-pack/');
   const pack = page.locator('main');
-  for (const figure of ['150 people, 320 m²', '30 people', '50 seated', '230 people', '150.2 m²']) {
+  for (const figure of ['150 people, 320 m²', '30 people', '50 seated', '150.2 m²']) {
     await expect(pack).toContainText(figure);
   }
+  await expect(pack).toContainText(/combined capacity for your event and layout/i);
+  await expect(pack).not.toContainText('230 people');
   await expect(pack).toContainText(/fixed tiered seating/i);
   await expect(pack).toContainText(/emergency exit only/i);
   await expect(pack).toContainText(/Sturenkatu/);
@@ -706,7 +708,7 @@ test('the summary shows every answer, and Edit returns to it', async ({ page }) 
     await expect(review).toContainText(text);
   }
   await expect(page.locator('#bookingEnquiryForm .form-status')).toContainText(
-    'within one working day',
+    'availability and a price',
   );
 
   await page.getByRole('button', { name: 'Edit People and room' }).click();
@@ -731,7 +733,7 @@ test('Send without consent stays on the summary and marks it', async ({ page }) 
   );
   await page.check('input[name="consent_privacy"]');
   await expect(page.locator('#bookingEnquiryForm .form-status')).toContainText(
-    'within one working day',
+    'availability and a price',
   );
 });
 
