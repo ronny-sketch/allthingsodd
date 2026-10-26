@@ -112,15 +112,10 @@ export const SPACES = opts([
   ['advise_me', 'Not sure yet'],
 ]);
 
-// What the space picker says about each room (2026-09-24). Every figure and
-// description is taken from the event info pack
-// (src/content/pages/oddspace-event-info-pack.json), never estimated.
-// `capacity` is the most people inside at once, counting guests, crew and
-// performers. For a combination it is the sum of the rooms, because the pack
-// says "capacities add up", and the pack also says the combined limits are
-// still being confirmed, which is why the combinations show their parts
-// rather than a total. tests/functional/booking-enquiry.spec.ts fails if the
-// pack stops saying these numbers, so the two cannot drift apart quietly.
+// What the space picker says about each room. Verified single-room capacities
+// come from the event info pack. Combined-room capacities are deliberately not
+// calculated here: the approved combined limit depends on the event and layout
+// and is confirmed with the property for each booking.
 export interface SpaceInfo {
   capacity?: number;
   /** Shown under the room name. */
@@ -170,29 +165,25 @@ export const SPACE_INFO: Record<(typeof SPACES)[number]['value'], SpaceInfo> = {
     ],
   },
   gallery_aula: {
-    capacity: 180,
-    meta: '150 + 30 people',
+    meta: 'Combined capacity confirmed per event',
     blurb: 'The Gallery, with the Aula for arrivals and drinks.',
     more: [
-      'Capacities add up when you book several rooms. The limits for combined use are still being confirmed with the building, so we give you the current number when you book.',
+      'We confirm the approved combined capacity for your event and layout when you book.',
     ],
   },
   auditorium_aula: {
-    capacity: 80,
-    meta: '50 seated + 30 people',
+    meta: 'Combined capacity confirmed per event',
     blurb: 'A talk in the Auditorium, with the Aula for arrivals and drinks.',
     fixedSeating: true,
     more: [
-      'Capacities add up when you book several rooms. The limits for combined use are still being confirmed with the building, so we give you the current number when you book.',
+      'We confirm the approved combined capacity for your event and layout when you book.',
     ],
   },
   full_triangle: {
-    capacity: 230,
-    meta: '230 people together',
+    meta: 'Combined capacity confirmed per event',
     blurb: 'All three rooms, for a programme that moves between them.',
     more: [
-      'Together the three rooms come to 230 people, counting guests, crew and performers.',
-      'The limits for combined use are still being confirmed with the building, so we give you the current number when you book.',
+      'We confirm the approved combined capacity for your event and layout when you book.',
     ],
   },
   advise_me: {
@@ -473,11 +464,7 @@ export function capacityWarning(space: string, people: number | undefined): stri
   if (space === 'auditorium') {
     return `The Auditorium seats 50, and its seating is fixed. For ${people} people the Gallery or the Event & workshop space may suit better. Send it anyway and we will suggest what fits.`;
   }
-  const combined = ['gallery_aula', 'auditorium_aula', 'full_triangle'].includes(space);
-  const limit = combined
-    ? `${name} together take about ${info.capacity} people, and the building is still confirming the combined limit.`
-    : `The ${name} holds ${info.capacity} people at once.`;
-  return `${limit} Send it anyway and we will suggest what fits ${people}.`;
+  return `The ${name} holds ${info.capacity} people at once. Send it anyway and we will suggest what fits ${people}.`;
 }
 
 // Every rule the form enforces. The Worker applies the same rules again,
