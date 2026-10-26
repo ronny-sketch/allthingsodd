@@ -50,8 +50,7 @@ const REQUEST_TIMEOUT_MS = 20_000;
 const FALLBACK_EMAIL = 'hello@oddfest.co';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const HASH = '#booking-form';
-const REPLY_PROMISE =
-  'We check the date and reply with availability and a price within one working day.';
+const REPLY_PROMISE = 'We check the date and reply with availability and a price.';
 
 // What the Worker answers with. `errors` carries field-level messages on a 400.
 interface ResponseBody {
