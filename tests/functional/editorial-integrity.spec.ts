@@ -153,7 +153,9 @@ test('ODDspace does not answer an accessibility question with reassurance', asyn
   // actually needs it: membership and venue booking.
   for (const route of ['/oddspace/membership', '/oddspace/venue']) {
     const body = await (await request.get(route)).text();
-    expect(body).toContain("We are still verifying the building's accessibility details");
+    // Raw HTML: Astro renders the apostrophe as &#39;, so match around it.
+    expect(body).toContain('We are still verifying the building');
+    expect(body).toContain('accessibility details');
   }
 });
 
