@@ -153,7 +153,7 @@ test('ODDspace does not answer an accessibility question with reassurance', asyn
   // actually needs it: membership and venue booking.
   for (const route of ['/oddspace/membership', '/oddspace/venue']) {
     const body = await (await request.get(route)).text();
-    expect(body).toContain("We are still verifying the building's accessibility details");
+    expect(body).toMatch(/We are still verifying the building(?:'|&#39;)s accessibility details/);
   }
 });
 
