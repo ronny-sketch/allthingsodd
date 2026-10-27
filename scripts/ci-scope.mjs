@@ -48,13 +48,16 @@ const SITE_WIDE = [
 // `brand/` is NOT here: it feeds /brand-book/ and the token drift check.
 const DOCS_ONLY = [/^docs\//, /^\.claude\//, /^[^/]+\.md$/];
 
-// Copy and content entries (2026-10-05). Rendered, but only through
-// templates the browser suite already covers, and `checks` still validates
-// them: the content schema (`astro check`, build) and photo
-// credits. No test asserts copy. So a text-only edit skips the browser
-// suite and deploys in ~4 min instead of ~7. The ceiling: copy long enough to
-// break a layout on one viewport surfaces at the nightly sweep, not before
-// it is live. Most of Aki's edits land here.
+// Copy and content entries. Most of Aki's edits land here. From 2026-10-05
+// they skipped the browser suite on the premise that no test asserts copy.
+// Wrong: the functional specs pin approved wording (editorial-integrity,
+// booking-enquiry, oddfest-2026, oddspace-conversion …). On 23–24.10 copy
+// edits went live untested, broke six of those, and the red only surfaced
+// on 25.10 when the next code push (#181) was blocked by them, along with
+// every push after it for two days. So content now runs the functional
+// specs in Chromium: a copy edit that breaks a pinned line is held on its
+// own push, and the not-live issue goes to whoever made it. Layout and
+// other engines still wait for the nightly sweep.
 const CONTENT_ONLY = [/^src\/content\//];
 
 // `mobile` is NOT in this list although it is a visual project: it is
@@ -76,7 +79,7 @@ export function scope(files) {
   if (files.every((f) => DOCS_ONLY.some((r) => r.test(f))))
     return { mode: 'docs', projects: '', browsers: 'chromium' };
   if (files.every((f) => [...DOCS_ONLY, ...CONTENT_ONLY].some((r) => r.test(f))))
-    return { mode: 'content', projects: '', browsers: 'chromium' };
+    return { mode: 'content', projects: '--project=functional-chromium', browsers: 'chromium' };
   if (files.some((f) => SITE_WIDE.some((r) => r.test(f))))
     return { mode: 'full', projects: '', browsers: ALL_ENGINES };
   return { mode: 'fast', projects: CHROMIUM_ONLY, browsers: 'chromium' };
@@ -122,6 +125,8 @@ function selfTest() {
   if (/--project=mobile(\s|$)/.test(scope(['src/pages/index.astro']).projects))
     throw new Error('fast tier must not run the WebKit `mobile` project');
   if (engines([]) !== ALL_ENGINES) throw new Error('unknown diff must install all engines');
+  if (scope(['src/content/pages/oddspace.json']).projects !== '--project=functional-chromium')
+    throw new Error('content tier must run the functional specs — they pin copy');
   console.log('ci-scope self-test: all cases pass');
 }
 

@@ -146,7 +146,8 @@ test('no page still carries the superseded participation wording', async ({ page
 
 test('ODDspace does not answer an accessibility question with reassurance', async ({ request }) => {
   const main = await (await request.get('/oddspace')).text();
-  expect(main).not.toContain("we'll make sure it works");
+  // Raw HTML: a straight apostrophe renders as &#39;.
+  expect(main).not.toMatch(/we(?:'|&#39;)ll make sure it works/);
   expect(main).not.toContain('we’ll make sure it works');
 
   // The practical accessibility answer now lives on the pages where a visitor

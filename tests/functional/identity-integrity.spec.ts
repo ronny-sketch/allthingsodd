@@ -181,17 +181,16 @@ test('the homepage does not render a "What\'s happening" section', async ({ requ
   // array. The old behaviour was `whatsHappening.items.length > 0 &&`, which
   // this asserts can never come back by asserting on the markup it produced.
   const html = await (await request.get('/')).text();
-  expect(html).not.toContain("What's happening");
+  expect(html).not.toMatch(/What(?:'|&#39;)s happening/);
   expect(html).not.toContain('What&rsquo;s happening');
   expect(html).not.toContain('whats-happening');
   expect(html).not.toContain('whats-on');
 });
 
-test('the homepage renders ODD\'s cumulative two-year proof', async ({ page }) => {
+test("the homepage renders ODD's cumulative two-year proof", async ({ page }) => {
   await page.goto('/');
   const section = page.locator('.home-proof');
   await expect(section).toHaveCount(1);
-
 
   // The framing is half the claim — four big numbers without a timeframe say
   // something different from the same four numbers in under two years. The
