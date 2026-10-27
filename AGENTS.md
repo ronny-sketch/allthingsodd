@@ -600,20 +600,29 @@ branch or a draft PR to ask again.
 
 1. `git switch main && git pull` (and `npm ci` if `node_modules` is missing).
 2. Make the edit. Copy lives in `src/content/**/*.json`, see `docs/editing.md`.
+   Changing wording? First `grep -rn "a few of the old words" tests/`. Many
+   functional tests pin approved copy; one that pins the old text must be
+   updated in the same commit, or main stops deploying for everyone after
+   you. If the test's name states a rule ("does not answer an accessibility
+   question with reassurance"), the rule stays: change the wording, not the
+   rule. Tests read raw HTML, where `'` is `&#39;` and `&` is `&amp;`, so
+   match around them (`/building(?:'|&#39;)s/`).
 3. `npm run quality`, the same gate CI's `checks` job runs. In CI, `lint`
    and `format:check` only warn; `npm run format` fixes the Prettier ones.
 4. `git commit` and `git push origin main`. For a PR instead:
    `gh pr create --fill`, then `gh pr merge --merge` once it's green.
    Merging is the deploy.
 5. `gh run watch $(gh run list --branch main --event push -L 1 --json databaseId --jq '.[0].databaseId')`.
-   Green means live: about 4 minutes when only `src/content/` changed
-   (no browser tests), about 7 with a component or page, 12 site-wide.
+   Green means live: about 7 minutes for a content or page edit (functional
+   tests in Chromium), 12 site-wide.
 6. Red means **not live**, and a later green nightly run does not deploy
-   it. A `functional` failure on a page you didn't touch is usually a
-   flake: `gh run rerun <id> --failed` (or "Re-run failed jobs" on GitHub).
-   A real failure: fix it and push again. CI opens a `not-live` issue
-   assigned to whoever pushed, so a red run is never silent; the next
-   deploy that goes live closes it. To deploy what main is now without
+   it. CI opens a `not-live` issue assigned to whoever pushed, listing the
+   failing tests and what to do; a red nightly run opens one too, because
+   it means the next push will not deploy. The next deploy that goes live
+   closes them. Read the failing test at the line shown: a test still
+   expecting wording you changed is the usual cause (see step 2). A failure
+   on something you didn't touch that passes on re-run is a flake:
+   `gh run rerun <id> --failed` (or "Re-run failed jobs" on GitHub). To deploy what main is now without
    pushing anything: GitHub -> Actions -> CI -> "Run workflow" on main
    (the Deploy button, full suite, about 12 minutes).
 7. Confirm: `curl -s https://allthingsodd.co/build-info.json` shows your

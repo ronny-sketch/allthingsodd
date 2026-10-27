@@ -10,9 +10,17 @@ visual editor is needed, pick one then.
    an agent). The schema in `src/content.config.ts` says what each field may
    hold; a wrong shape fails the build, not the live site.
 2. Run `npm run format` before committing, or CI's format check fails.
-3. Commit to `main` (or open a PR). A text-only change skips the browser
-   suite and is live on allthingsodd.co in about four minutes — see
-   [deployment.md](deployment.md). Pull first: someone else may have pushed.
+3. Commit to `main` (or open a PR). A text-only change runs the functional
+   browser tests in Chromium and is live on allthingsodd.co in about seven
+   minutes — see [deployment.md](deployment.md). Pull first: someone else
+   may have pushed.
+
+   Some tests pin approved wording. If your edit changes a line a test
+   expects, that push will not deploy, and CI opens a `not-live` issue
+   naming the test. Before changing wording, `grep -rn "old words" tests/`
+   and update any test that pins it in the same commit. A test whose name
+   states a rule (no reassurance about accessibility, no invented
+   capacities) keeps the rule: change the wording instead.
 
 ## What you can edit
 
