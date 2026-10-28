@@ -1,7 +1,7 @@
 // Script for the ODDspace booking enquiry (BookingEnquiryForm.astro). It runs
 // the guided enquiry dialog (v2, 2026-09-24): opening and closing it, one
 // step at a time with a progress bar, a "Check and send" summary, and the
-// sticky "Get a quote" bar on the venue page. Underneath it does what it
+// sticky "Plan your event" bar on the venue page. Underneath it does what it
 // always has: shows and hides conditional fields, turns the questions into
 // the spec's payload, validates with the shared rules in
 // booking-enquiry-schema.ts, and POSTs JSON to /api/booking-enquiry on the
@@ -24,10 +24,14 @@
 // still missing (or refused by the Worker) takes the visitor to the step it
 // belongs to.
 //
-// Opening and closing. Every "Get a quote" and every link to #booking-form
+// Opening and closing. Every "Plan your event" and every link to #booking-form
 // opens the dialog, and the URL gains #booking-form, so the phone's back
 // button closes it again, as do Esc and ×. The answers live in the page and
 // stay until it is reloaded; nothing is stored in the browser.
+//
+// Form v3 (2026-10-28): rooms, alcohol and music are tick boxes. "Not sure
+// yet", "No alcohol" and "No music" clear the others, and ticking anything
+// else clears them (ALONE below). The thank-you screen repeats the summary.
 import { API_BASE } from './api-base';
 import { turnstileHeaders } from './turnstile';
 import { readOutcome } from './submission-outcome';
@@ -156,14 +160,22 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
 
   const conditionals = Array.from(form.querySelectorAll<HTMLElement>('[data-show-when]'));
 
+  // `name=a|b`: any of these is ticked. `name!=a`: none is. `name==a|b`:
+  // the answers are only these (several rooms, but just the Auditorium is
+  // what hides the layout). `name!==a|b`: anything else is ticked too.
   const applies = (rule: string): boolean => {
-    const negate = rule.includes('!=');
-    const [name, wanted] = rule.split(negate ? '!=' : '=');
+    const op = ['!==', '==', '!=', '='].find((o) => rule.includes(o))!;
+    const [name, wanted] = rule.split(op);
     if (!name || wanted === undefined) return true;
     const answers = valuesOf(name);
     if (wanted === '*') return answers.length > 0;
-    const hit = wanted.split('|').some((v) => answers.includes(v));
-    return negate ? !hit : hit;
+    const list = wanted.split('|');
+    if (op === '==' || op === '!==') {
+      const only = answers.length > 0 && answers.every((v) => list.includes(v));
+      return op === '==' ? only : !only;
+    }
+    const hit = list.some((v) => answers.includes(v));
+    return op === '!=' ? !hit : hit;
   };
 
   const applyConditionals = () => {
@@ -284,7 +296,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
       is_series: bool(fd, 'is_series'),
       series_count: int(fd, 'series_count'),
 
-      space: str(fd, 'space'),
+      spaces: fd.getAll('spaces').map(String),
       layout: opt(fd, 'layout'),
       layout_custom: opt(fd, 'layout_custom'),
       support_level: str(fd, 'support_level'),
@@ -293,8 +305,8 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
       own_equipment: bool(fd, 'own_equipment'),
       own_equipment_detail: opt(fd, 'own_equipment_detail'),
 
-      alcohol: str(fd, 'alcohol'),
-      music: str(fd, 'music'),
+      alcohol: fd.getAll('alcohol').map(String),
+      music: fd.getAll('music').map(String),
       // One tick box in the form, the spec's yes/no in the payload.
       pyro_flame: bool(fd, 'has_pyro') ? 'yes' : 'no',
       pyro_flame_detail: opt(fd, 'pyro_flame_detail'),
@@ -303,6 +315,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
       media: [],
 
       notes: opt(fd, 'notes'),
+      newsletter_opt_in: bool(fd, 'newsletter_opt_in'),
     };
   };
 
@@ -494,7 +507,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     const p = readPayload();
     return {
       shortNotice: shortNoticeWarning(p, new Date()),
-      capacity: capacityWarning(p.space, p.headcount_estimate),
+      capacity: capacityWarning(p.spaces, p.headcount_estimate),
       steward: (p.headcount_estimate ?? 0) > 100,
     };
   };
@@ -568,7 +581,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     const alts = ticked('has_alt_dates')
       ? [value('alt_date_1'), value('alt_date_2')].filter(Boolean).map(formatDate)
       : [];
-    const fixed = form.querySelector<HTMLElement>('[data-show-when^="space="] .bk-fixed');
+    const fixed = form.querySelector<HTMLElement>('[data-show-when^="spaces=="] .bk-fixed');
     const layoutFixed = fixed ? !fixed.closest<HTMLElement>('.field')!.hidden : false;
     const layout = layoutFixed
       ? 'Fixed tiered seating'
@@ -601,7 +614,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
       ],
       [
         ['People', value('headcount_estimate')],
-        ['Room', choiceLabels('space')[0]],
+        [choiceLabels('spaces').length > 1 ? 'Rooms' : 'Room', choiceLabels('spaces').join(', ')],
         ['Layout', layout],
       ],
       [
@@ -615,8 +628,8 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
         ['Kit', tech.join(', ') || 'Nothing extra'],
         ['Microphones', value('mic_count') || undefined],
         ['Own equipment', ticked('own_equipment') ? value('own_equipment_detail') : undefined],
-        ['Alcohol', choiceLabels('alcohol')[0]],
-        ['Music', choiceLabels('music')[0]],
+        ['Alcohol', choiceLabels('alcohol').join(', ')],
+        ['Music', choiceLabels('music').join(', ')],
         ['Smoke or flame', ticked('has_pyro') ? value('pyro_flame_detail') : undefined],
       ],
       [
@@ -643,9 +656,8 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
 
   // Built from text nodes only, never HTML, because every value is the
   // visitor's own typing.
-  const renderReview = () => {
-    if (!review) return;
-    const groups = summaryRows().map((rows, i) => {
+  const reviewGroups = ({ editable }: { editable: boolean }) =>
+    summaryRows().map((rows, i) => {
       const group = document.createElement('section');
       group.className = 'bk-review-group';
       const head = document.createElement('div');
@@ -663,7 +675,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
         editing = true;
         showStep(i, { back: true });
       });
-      head.append(title, edit);
+      head.append(...(editable ? [title, edit] : [title]));
       const dl = document.createElement('dl');
       for (const [label, val] of rows) {
         if (!val) continue;
@@ -676,7 +688,10 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
       group.append(head, dl);
       return group;
     });
-    review.replaceChildren(...groups);
+
+  const renderReview = () => {
+    if (!review) return;
+    review.replaceChildren(...reviewGroups({ editable: true }));
 
     if (reviewNotes) {
       const w = warnings();
@@ -747,6 +762,18 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     updateNotices();
     refreshMarks();
   };
+  // The answers that cannot be combined with the others in their group.
+  const ALONE: Record<string, string> = { spaces: 'advise_me', alcohol: 'none', music: 'none' };
+  form.addEventListener('change', (ev) => {
+    const box = ev.target;
+    if (!(box instanceof HTMLInputElement) || box.type !== 'checkbox' || !box.checked) return;
+    const alone = ALONE[box.name];
+    if (alone === undefined) return;
+    form.querySelectorAll<HTMLInputElement>(`input[name="${box.name}"]`).forEach((other) => {
+      if (other === box) return;
+      if (box.value === alone || other.value === alone) other.checked = false;
+    });
+  });
   form.addEventListener('change', onEdit);
   form.addEventListener('input', onEdit);
 
@@ -803,7 +830,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
       window.clearTimeout(timer);
     }
 
-    const tracked = { space: payload.space, event_type: payload.event_type };
+    const tracked = { space: payload.spaces.join('+'), event_type: payload.event_type };
 
     // Strict (submission-outcome.ts): a 2xx counts only when the Worker says
     // it kept the enquiry and echoes this form's id. An empty or malformed
@@ -820,6 +847,10 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
       done?.querySelectorAll('[data-done-ref]').forEach((el) => {
         el.textContent = ref;
       });
+      // Their answers, as sent: the summary without its Edit buttons.
+      done
+        ?.querySelector('[data-done-review]')
+        ?.replaceChildren(...reviewGroups({ editable: false }));
       form.hidden = true;
       if (count) count.textContent = 'Sent';
       progress.forEach((li) => li.classList.add('is-done'));
@@ -1041,9 +1072,9 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     openDialog(a === heroCta ? 'hero' : a.closest('.vrc') ? 'rate-card' : 'link');
   });
 
-  // --- The sticky "Get a quote" bar ---------------------------------------
+  // --- The sticky "Plan your event" bar -----------------------------------
 
-  // Shown once the hero's "Get a quote" has scrolled away and until the
+  // Shown once the hero's "Plan your event" has scrolled away and until the
   // final section (with its own button) comes into view. Hidden while the
   // enquiry is open, while the cookie banner is up (consent comes first,
   // and both want the foot of the screen), and after an enquiry is sent.

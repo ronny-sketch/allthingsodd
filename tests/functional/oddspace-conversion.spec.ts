@@ -250,7 +250,7 @@ test('ODDspace event links: browse the venue first, or go straight to a quote', 
     'href',
     '/oddspace/venue/',
   );
-  for (const label of [/Enquire about the gallery/, /Get a quote/]) {
+  for (const label of [/Enquire about the gallery/, /Plan your event/]) {
     await expect(page.getByRole('link', { name: label }).first()).toHaveAttribute(
       'href',
       '/oddspace/venue/#booking-form',

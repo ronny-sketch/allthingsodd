@@ -20,6 +20,14 @@
 //   answer differs.
 // - `full_triangle` is labelled "Gallery, Aula and Auditorium", which is the
 //   combination the pack gives a combined capacity for.
+//
+// Form v3 (2026-10-28, Fernando): rooms, alcohol and music are lists. The
+// room picker is a set of tick boxes (`spaces`), so any combination can be
+// asked for and the old combination values are gone from the form; "Not
+// sure yet", "No alcohol" and "No music" stand alone. Times are whole hours.
+// `newsletter_opt_in` is the "Keep me posted" box. The Worker accepts both
+// this shape and the old single values, so the two can deploy in either
+// order.
 
 export interface Option<V extends string = string> {
   value: V;
@@ -101,14 +109,12 @@ export function headcountBand(n: number): (typeof HEADCOUNT_BANDS)[number]['valu
   return '200_plus';
 }
 
+// The rooms that can be ticked together, then the one answer that cannot.
 export const SPACES = opts([
   ['gallery', 'Gallery'],
   ['aula', 'Aula'],
   ['auditorium', 'Auditorium'],
   ['second_floor', 'Event & workshop space'],
-  ['gallery_aula', 'Gallery + Aula'],
-  ['auditorium_aula', 'Auditorium + Aula'],
-  ['full_triangle', 'Gallery, Aula and Auditorium'],
   ['advise_me', 'Not sure yet'],
 ]);
 
@@ -164,28 +170,6 @@ export const SPACE_INFO: Record<(typeof SPACES)[number]['value'], SpaceInfo> = {
       "The floor connects to the building's lifts and parking hall, so guest flow here needs a plan.",
     ],
   },
-  gallery_aula: {
-    meta: 'Combined capacity confirmed per event',
-    blurb: 'The Gallery, with the Aula for arrivals and drinks.',
-    more: [
-      'We confirm the approved combined capacity for your event and layout when you book.',
-    ],
-  },
-  auditorium_aula: {
-    meta: 'Combined capacity confirmed per event',
-    blurb: 'A talk in the Auditorium, with the Aula for arrivals and drinks.',
-    fixedSeating: true,
-    more: [
-      'We confirm the approved combined capacity for your event and layout when you book.',
-    ],
-  },
-  full_triangle: {
-    meta: 'Combined capacity confirmed per event',
-    blurb: 'All three rooms, for a programme that moves between them.',
-    more: [
-      'We confirm the approved combined capacity for your event and layout when you book.',
-    ],
-  },
   advise_me: {
     meta: 'We suggest one',
     blurb: 'Tell us about the event and we will suggest the room that fits.',
@@ -208,29 +192,31 @@ export const LAYOUTS = opts([
 ]);
 
 // Help levels (2026-09-24, v2). Named for what you get, not as tiers, with
-// one line each saying what that means on the day. The values are the
+// one line each saying what that means on the day. Form v3 (2026-10-28)
+// names them as packages that all start from the room, so the step from one
+// to the next reads as what is added. The values are the
 // spec's and the Worker's, unchanged. Premium stays a valid value (the
 // Worker and Notion still know it) but the form no longer offers it: five
 // levels between "just the room" and "we produce it" were more than a
 // visitor could tell apart. The descriptions are ODD's working lines, still
 // to be confirmed by the venue team; the quote spells out the detail.
 export const SUPPORT_LEVELS = opts([
-  ['raw', 'Just the room'],
+  ['raw', 'Room only'],
   ['basic_infra', 'Room + technician'],
-  ['standard', 'Help running it'],
+  ['standard', 'Room + help running it'],
   ['premium', 'Premium'],
-  ['turnkey', 'We produce it'],
+  ['turnkey', 'Room + we produce it'],
   ['advise_me', 'Not sure yet'],
 ]);
 
 export const SUPPORT_DESCRIPTIONS: Partial<
   Record<(typeof SUPPORT_LEVELS)[number]['value'], string>
 > = {
-  raw: 'Tables, chairs, the PA and one microphone. You run the day.',
-  basic_infra: 'We set up the sound and screen and stay on hand for the tech.',
-  standard: 'A host and a technician on the day, and we line up the suppliers.',
-  turnkey: 'Concept, programme and production, built with you.',
-  advise_me: 'Tell us the idea and the quote will suggest a level.',
+  raw: 'The room with its tables, chairs, PA and one microphone. You run the day.',
+  basic_infra: 'Room only, plus a technician who sets up sound and screen and stays on hand.',
+  standard: 'Room + technician, plus a host on the day. We line up the suppliers.',
+  turnkey: 'We shape the concept and programme with you and produce the event.',
+  advise_me: 'Tell us the idea and we will suggest a package.',
 };
 
 // What the form offers, in order: everything but Premium.
@@ -252,11 +238,12 @@ export const TECH_OFFERED = TECH;
 
 // Times are picked, never typed, in quarter hours: "14:42" is not a booking
 // time. 00:00 to 23:45, as HH:MM strings the datetime helpers already take.
-export const QUARTER_HOURS: string[] = Array.from({ length: 96 }, (_, i) => {
-  const h = String(Math.floor(i / 4)).padStart(2, '0');
-  const m = String((i % 4) * 15).padStart(2, '0');
-  return `${h}:${m}`;
-});
+// Whole hours only (form v3, 2026-10-28): bookings run in hours, and a
+// list of 24 is quicker to pick from than one of 96.
+export const HOURS: string[] = Array.from(
+  { length: 24 },
+  (_, h) => `${String(h).padStart(2, '0')}:00`,
+);
 
 export const CATERING = opts([
   ['none', 'None'],
@@ -349,7 +336,8 @@ export interface BookingPayload {
   is_series: boolean;
   series_count?: number;
 
-  space: string;
+  /** Rooms in SPACES order, or ['advise_me']. */
+  spaces: string[];
   layout?: string;
   layout_custom?: string;
   support_level: string;
@@ -360,8 +348,10 @@ export interface BookingPayload {
 
   catering?: string;
   caterer_name?: string;
-  alcohol: string;
-  music: string;
+  /** ['none'], or any of served and sold. */
+  alcohol: string[];
+  /** ['none'], or any of background, live and dj. */
+  music: string[];
   music_past_2200?: string;
   pyro_flame: string;
   pyro_flame_detail?: string;
@@ -372,6 +362,8 @@ export interface BookingPayload {
   budget_band?: string;
   referral_source?: string;
   notes?: string;
+  /** "Keep me posted": subscribe to the ODD newsletter. */
+  newsletter_opt_in: boolean;
 }
 
 export type FieldErrors = Partial<Record<keyof BookingPayload, string>>;
@@ -453,10 +445,13 @@ export function shortNoticeWarning(
   return null;
 }
 
-// A soft warning when the headcount is more than the chosen space holds. It
-// never blocks the enquiry: ODD may suggest a different room, and the pack
-// says the combined limits are still being confirmed.
-export function capacityWarning(space: string, people: number | undefined): string | null {
+// A soft warning when the headcount is more than the chosen room holds. It
+// never blocks the enquiry: ODD may suggest a different room. With several
+// rooms ticked there is no warning: the combined capacity is confirmed per
+// event, so the form does not state one.
+export function capacityWarning(spaces: string[], people: number | undefined): string | null {
+  if (spaces.length !== 1) return null;
+  const space = spaces[0]!;
   if (!people || !(space in SPACE_INFO)) return null;
   const info = SPACE_INFO[space as keyof typeof SPACE_INFO];
   if (!info.capacity || people <= info.capacity) return null;
@@ -531,7 +526,14 @@ export function validateBooking(p: BookingPayload, now: Date = new Date()): Fiel
   if (p.is_series === true)
     intIn('series_count', 2, LIMITS.maxSeries, 'How many events in the series? At least 2.');
 
-  oneOf('space', SPACES, 'Pick a space, or ask us to advise.');
+  // One or more rooms, or "Not sure yet" on its own.
+  if (
+    !Array.isArray(p.spaces) ||
+    p.spaces.length === 0 ||
+    !p.spaces.every((v) => has(SPACES, v)) ||
+    (p.spaces.includes('advise_me') && p.spaces.length > 1)
+  )
+    e.spaces = 'Pick at least one room, or ask us to advise.';
   // Layout, catering, cleaning, music after 22:00 and budget are optional
   // (2026-09-24): none of them changes the quote, so they are settled after
   // the booking is confirmed. The Worker applies the same rule. A value that
@@ -547,9 +549,20 @@ export function validateBooking(p: BookingPayload, now: Date = new Date()): Fiel
 
   if (p.catering) oneOf('catering', CATERING, 'Tell us about food and drink.');
   if (p.catering === 'own_caterer') req('caterer_name', 'Who is the caterer?');
-  oneOf('alcohol', ALCOHOL, 'Will there be alcohol?');
-  oneOf('music', MUSIC, 'Will there be music?');
-  if (p.music && p.music !== 'none' && p.music_past_2200)
+  // Any that apply; "No alcohol" and "No music" stand alone.
+  const someOf = (k: 'alcohol' | 'music', list: Option[], msg: string) => {
+    const v = p[k];
+    if (
+      !Array.isArray(v) ||
+      v.length === 0 ||
+      !v.every((x) => has(list, x)) ||
+      (v.includes('none') && v.length > 1)
+    )
+      e[k] = msg;
+  };
+  someOf('alcohol', ALCOHOL, 'Will there be alcohol?');
+  someOf('music', MUSIC, 'Will there be music?');
+  if (Array.isArray(p.music) && !p.music.includes('none') && p.music_past_2200)
     oneOf('music_past_2200', YES_NO_NOT_SURE, 'Will music carry on past 22:00?');
   oneOf('pyro_flame', YES_NO_NOT_SURE, 'Tell us about smoke, haze or flame.');
   if (p.pyro_flame === 'yes')
