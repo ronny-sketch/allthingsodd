@@ -49,6 +49,15 @@ import {
   type BookingPayload,
   type FieldErrors,
 } from './booking-enquiry-schema';
+// The visit times are a membership viewing's (D36): same slots, same rules,
+// so the Worker accepts exactly what this offers.
+import {
+  offeredSlots,
+  dayLabel,
+  helsinkiDay,
+  helsinkiTime,
+  MAX_CHOICES,
+} from './membership-schema';
 
 const REQUEST_TIMEOUT_MS = 20_000;
 const FALLBACK_EMAIL = 'hello@oddfest.co';
@@ -195,6 +204,113 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     }
   };
 
+  // --- The visit time picker (D36) ----------------------------------------
+  //
+  // Days as chips, the chosen day's times as chips, then the picks with an ×
+  // to take one back: the membership form's picker. Up to MAX_CHOICES.
+  const picks = new Set<string>();
+  let activeDay = '';
+  const daysEl = document.getElementById('bk-days');
+  const slotsEl = document.getElementById('bk-slots');
+  const picksEl = document.getElementById('bk-picks');
+  const visitWrap = document.getElementById('bk-visit');
+  const visitAsked = () => !!visitWrap && !visitWrap.hidden;
+  const pickLabel = (t: string) => `${dayLabel(t)}, ${helsinkiTime(new Date(t))}`;
+  const byTime = (a: string, b: string) => new Date(a).getTime() - new Date(b).getTime();
+
+  const slotButton = (label: string, pressed: boolean, extra: Record<string, string> = {}) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'bk-slot';
+    b.textContent = label;
+    b.setAttribute('aria-pressed', String(pressed));
+    for (const [k, v] of Object.entries(extra)) b.dataset[k] = v;
+    return b;
+  };
+
+  function renderPicks() {
+    if (!picksEl || !slotsEl || !daysEl) return;
+    const list = [...picks].sort(byTime);
+    picksEl.replaceChildren();
+    if (list.length > 0) {
+      const label = document.createElement('p');
+      label.className = 'bk-picks-label';
+      label.textContent = `Your picks (${list.length} of ${MAX_CHOICES})`;
+      picksEl.append(label);
+      for (const t of list) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'bk-pick';
+        b.dataset.slot = t;
+        b.setAttribute('aria-label', `Remove ${pickLabel(t)}`);
+        const name = document.createElement('span');
+        name.textContent = pickLabel(t);
+        const x = document.createElement('span');
+        x.className = 'bk-pick-x';
+        x.setAttribute('aria-hidden', 'true');
+        x.textContent = '×';
+        b.append(name, x);
+        picksEl.append(b);
+      }
+    }
+    const full = picks.size >= MAX_CHOICES;
+    slotsEl.querySelectorAll<HTMLButtonElement>('.bk-slot').forEach((b) => {
+      const on = picks.has(b.dataset.slot ?? '');
+      b.setAttribute('aria-pressed', String(on));
+      b.disabled = full && !on;
+    });
+    daysEl.querySelectorAll<HTMLButtonElement>('.bk-day').forEach((b) => {
+      b.classList.toggle(
+        'has-pick',
+        list.some((p) => helsinkiDay(new Date(p)) === b.dataset.day),
+      );
+    });
+  }
+
+  function renderSlots() {
+    if (!daysEl || !slotsEl) return;
+    const all = offeredSlots('viewing', new Date());
+    // A pick that is no longer offered (the page stayed open overnight) goes.
+    for (const p of [...picks]) if (!all.includes(p)) picks.delete(p);
+    const days = [...new Set(all.map((x) => helsinkiDay(new Date(x))))];
+    if (!days.includes(activeDay)) activeDay = days[0] ?? '';
+    daysEl.replaceChildren();
+    slotsEl.replaceChildren();
+    for (const day of days) {
+      const first = all.find((x) => helsinkiDay(new Date(x)) === day)!;
+      const b = slotButton(dayLabel(first), false, { day });
+      b.classList.add('bk-day');
+      b.removeAttribute('aria-pressed');
+      b.setAttribute('aria-current', String(day === activeDay));
+      b.addEventListener('click', () => {
+        activeDay = day;
+        renderSlots();
+      });
+      daysEl.append(b);
+    }
+    for (const x of all.filter((y) => helsinkiDay(new Date(y)) === activeDay)) {
+      slotsEl.append(slotButton(helsinkiTime(new Date(x)), picks.has(x), { slot: x }));
+    }
+    renderPicks();
+  }
+
+  slotsEl?.addEventListener('click', (ev) => {
+    const b = (ev.target as HTMLElement).closest<HTMLButtonElement>('.bk-slot');
+    const slot = b?.dataset.slot;
+    if (!b || !slot || b.disabled) return;
+    if (picks.has(slot)) picks.delete(slot);
+    else if (picks.size < MAX_CHOICES) picks.add(slot);
+    renderPicks();
+    form.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+  picksEl?.addEventListener('click', (ev) => {
+    const b = (ev.target as HTMLElement).closest<HTMLButtonElement>('.bk-pick');
+    if (!b?.dataset.slot) return;
+    picks.delete(b.dataset.slot);
+    renderPicks();
+    form.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+
   // --- From questions to payload ------------------------------------------
 
   // The date and times as Helsinki wall-clock strings, or '' while a part is
@@ -316,6 +432,13 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
 
       notes: opt(fd, 'notes'),
       newsletter_opt_in: bool(fd, 'newsletter_opt_in'),
+      // Asked of non-members only (D36). Unanswered stays unset, so the rule
+      // "tell us whether…" can fire.
+      held_event_before:
+        memberRaw === 'false' && str(fd, 'held_event_before') !== ''
+          ? str(fd, 'held_event_before') === 'true'
+          : undefined,
+      visit_times: visitAsked() ? [...picks].sort(byTime) : [],
     };
   };
 
@@ -649,6 +772,12 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
               ? 'No'
               : undefined,
         ],
+        [
+          'Visit first',
+          visitAsked() && picks.size
+            ? [...picks].sort(byTime).map(pickLabel).join('; ')
+            : undefined,
+        ],
         ['Anything else', value('notes') || undefined],
       ],
     ];
@@ -757,7 +886,9 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
   // --- Wiring -------------------------------------------------------------
 
   const onEdit = () => {
+    const wasAsked = visitAsked();
     applyConditionals();
+    if (!wasAsked && visitAsked()) renderSlots();
     syncEndMin();
     updateNotices();
     refreshMarks();
@@ -790,6 +921,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
 
   applyConditionals();
   syncEndMin();
+  renderSlots();
 
   // Sends the whole enquiry. Anything missing takes the visitor to the step
   // it belongs to, with every missing answer marked.
@@ -846,6 +978,9 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
       });
       done?.querySelectorAll('[data-done-ref]').forEach((el) => {
         el.textContent = ref;
+      });
+      done?.querySelectorAll<HTMLElement>('[data-done-visit]').forEach((el) => {
+        el.hidden = payload.visit_times.length === 0;
       });
       // Their answers, as sent: the summary without its Edit buttons.
       done

@@ -12,6 +12,11 @@
 // "Keep me posted" box at the end subscribes to the newsletter; and the
 // thank-you screen repeats the answers with what happens next.
 //
+// First visit (2026-10-28, D36): a non-member is asked whether they have
+// held an event here before; if not, they pick one to three viewing times
+// (booking-enquiry-form.ts builds the day and time chips, as the membership
+// form does), and a teammate claims one in Slack.
+//
 // One ask, "Plan your event", opens a native <dialog> over the venue page: five
 // short steps (When → People and room → The event → What you need → About
 // you), a progress bar, and a "Check and send" summary where anything can be
@@ -752,6 +757,42 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
             <p class="field-error" id="bk-tier-err" hidden></p>
           </fieldset>
 
+          <fieldset
+            class="field"
+            id="bk-before"
+            data-label="Event here before"
+            data-show-when="is_member=false"
+          >
+            <legend
+              >Have you held an event at ODDspace before? <span class="req" aria-hidden="true"
+                >*</span
+              ></legend
+            >
+            <ChoiceChips name="held_event_before" options={YES_NO} required idPrefix="bk-before" />
+            <p class="field-error" id="bk-before-err" hidden></p>
+          </fieldset>
+          <fieldset
+            class="field"
+            id="bk-visit"
+            data-label="Your visit"
+            data-show-when="held_event_before=false"
+          >
+            <legend id="bk-visit-legend"
+              >Come and see the space first <span class="req" aria-hidden="true">*</span></legend
+            >
+            <p class="field-hint" id="bk-visit-hint">
+              A first event here starts with a 30-minute look round: the rooms, the load-in, what
+              fits where. Pick one to three times that suit you, and someone from the team takes one
+              and confirms it by email.
+            </p>
+            <div class="bk-days" id="bk-days" role="group" aria-label="Days"></div>
+            <div class="bk-slots" id="bk-slots" role="group" aria-labelledby="bk-visit-legend">
+            </div>
+            <div class="bk-picks" id="bk-picks" aria-live="polite"></div>
+            <input type="hidden" name="visit_times" />
+            <p class="field-error" id="bk-visit-err" hidden></p>
+          </fieldset>
+
           <div class="field" data-label="Anything else">
             <label for="bk-notes">Anything else?</label>
             <textarea
@@ -818,6 +859,9 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
         <li>
           We reply to <strong data-done-email></strong> with availability and a price. Quote your reference
           if you write to us.
+        </li>
+        <li data-done-visit hidden>
+          We take one of your visit times and confirm it by email, then show you round.
         </li>
         <li>Nothing is booked until we confirm it in writing.</li>
       </ol>
@@ -1371,6 +1415,97 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
     border: solid var(--color-bg);
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
+  }
+  /* The visit time picker (D36), built by booking-enquiry-form.ts after
+     load: global, under .booking only. The membership form's look. */
+  :global(.booking .bk-days),
+  :global(.booking .bk-slots),
+  :global(.booking .bk-picks) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+  :global(.booking .bk-days) {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: var(--space-2);
+    scrollbar-width: thin;
+  }
+  :global(.booking .bk-slot) {
+    flex: none;
+    min-height: 2.75rem;
+    padding: 0.5rem 1.05rem;
+    border: 1px solid var(--color-paper-35);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-paper);
+    font: var(--text-body);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) ease,
+      color var(--duration-fast) ease,
+      border-color var(--duration-fast) ease;
+  }
+  :global(.booking .bk-slot:hover) {
+    border-color: var(--color-paper);
+  }
+  :global(.booking .bk-slot[aria-pressed='true']),
+  :global(.booking .bk-slot[aria-current='true']) {
+    background: var(--color-paper);
+    color: var(--color-bg);
+    border-color: var(--color-paper);
+  }
+  :global(.booking .bk-slot:disabled) {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  :global(.booking .bk-slot:focus-visible),
+  :global(.booking .bk-pick:focus-visible) {
+    outline: 2px solid var(--color-paper);
+    outline-offset: 2px;
+  }
+  :global(.booking .bk-day.has-pick:not([aria-current='true'])) {
+    border-color: var(--color-paper);
+  }
+  :global(.booking .bk-picks-label) {
+    flex-basis: 100%;
+    margin: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  :global(.booking .bk-pick) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    padding: 0.4rem 0.6rem 0.4rem 1rem;
+    border: 1px solid var(--color-paper);
+    border-radius: var(--radius-pill);
+    background: var(--color-paper-06);
+    color: var(--color-paper);
+    font: var(--text-small);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+  }
+  :global(.booking .bk-pick-x) {
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: var(--radius-pill);
+    font-size: 1.1em;
+    line-height: 1;
+  }
+  @media (hover: hover) {
+    :global(.booking .bk-pick:hover .bk-pick-x) {
+      background: var(--color-paper-12);
+    }
   }
   .bk-done-head {
     margin: var(--space-6) 0 var(--space-3);
