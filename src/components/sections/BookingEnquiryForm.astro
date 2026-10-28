@@ -5,11 +5,18 @@
 // guided enquiry in a full-screen dialog. See .design/booking-form in the
 // Claude project for the brief and the information architecture.
 //
-// One ask, "Get a quote", opens a native <dialog> over the venue page: five
+// Form v3 (2026-10-28, Fernando): the ask is "Plan your event"; times are
+// whole hours; rooms are tick boxes that combine (`spaces`), with a visible
+// tick and an "i" for each room's facts; the help levels read as packages
+// that all start from the room; alcohol and music take several answers; a
+// "Keep me posted" box at the end subscribes to the newsletter; and the
+// thank-you screen repeats the answers with what happens next.
+//
+// One ask, "Plan your event", opens a native <dialog> over the venue page: five
 // short steps (When → People and room → The event → What you need → About
 // you), a progress bar, and a "Check and send" summary where anything can be
 // edited before it goes. Each step is checked when you press Next, and only
-// that step. The page's own "Get a quote" buttons, the sticky bar and any
+// that step. The page's own "Plan your event" buttons, the sticky bar and any
 // link to `#booking-form` open it; the browser's back button, Esc and ×
 // close it, and the answers stay until the page is reloaded (nothing is
 // stored in the browser).
@@ -33,7 +40,7 @@
 // - In a space with fixed seating (the Auditorium) the layout is not asked
 //   and is sent as `theatre`. Elsewhere it is optional.
 // - The smoke, haze or flame tick box sends `pyro_flame` as yes or no.
-// - Times come from quarter-hour lists and the date from the calendar only;
+// - Times come from whole-hour lists and the date from the calendar only;
 //   nothing in "When" can be typed.
 //
 // Every option list comes from booking-enquiry-schema.ts, the same module
@@ -45,9 +52,12 @@
 // Conditional fields carry `data-show-when="<name>=<value>[|<value>]"`,
 // `<name>!=<value>` or `<name>=*` (any answer). booking-enquiry-form.ts hides
 // them until they apply and disables their inputs while hidden, so a hidden
-// field is never sent or validated. Without JavaScript the "Get a quote"
+// field is never sent or validated. Without JavaScript the "Plan your event"
 // button is hidden and the <noscript> note gives the email route, because
-// the enquiry cannot send without JavaScript.
+// the enquiry cannot send without JavaScript. Rooms, alcohol and music are
+// tick boxes; "Not sure yet", "No alcohol" and "No music" clear the others
+// (booking-enquiry-form.ts). `spaces==auditorium` (two equals signs) means
+// "only the Auditorium is ticked": the layout question needs that.
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Pill from '../primitives/Pill.astro';
@@ -66,13 +76,16 @@ import {
   TECH_OFFERED,
   ALCOHOL,
   MUSIC,
-  QUARTER_HOURS,
+  HOURS,
   LIMITS,
 } from '../../scripts/booking-enquiry-schema';
 import galleryPhoto from '../../assets/oddspace/gallery-floor.jpg';
-import aulaPhoto from '../../assets/oddspace/lounge.jpg';
+import aulaPhoto from '../../assets/oddspace/aula.jpg';
 import auditoriumPhoto from '../../assets/oddspace/auditorium.jpg';
-import secondFloorPhoto from '../../assets/oddspace/coworking-desks.jpg';
+// The venue page shows this photograph for the Event & workshop space. Until
+// form v3 it also stood in for the Aula, which now has its own (Fernando,
+// 28 Oct 2026).
+import secondFloorPhoto from '../../assets/oddspace/lounge.jpg';
 
 const FIXED = FIXED_SEATING_SPACES.join('|');
 const YES_NO = [
@@ -80,8 +93,8 @@ const YES_NO = [
   { value: 'false', label: 'No' },
 ];
 
-// One photograph per room; a combination shows each of its rooms side by
-// side. The alt text follows the info pack's, shortened.
+// One photograph per room, where one exists. The alt text follows the info
+// pack's, shortened.
 interface Photo {
   src: ImageMetadata;
   alt: string;
@@ -92,7 +105,7 @@ const GALLERY: Photo = {
 };
 const AULA: Photo = {
   src: aulaPhoto,
-  alt: 'The Aula: sofas and a round table, with artworks leaning against the wall.',
+  alt: 'The Aula: leather sofas, a coat rack and a wall of patterned discs.',
 };
 const AUDITORIUM: Photo = {
   src: auditoriumPhoto,
@@ -100,16 +113,13 @@ const AUDITORIUM: Photo = {
 };
 const SECOND_FLOOR: Photo = {
   src: secondFloorPhoto,
-  alt: 'The Event & workshop space: desks and lounge chairs by tall windows.',
+  alt: 'The Event & workshop space: sofas, big black speakers and daylight from the windows.',
 };
 const SPACE_PHOTOS: Record<string, Photo[]> = {
   gallery: [GALLERY],
   aula: [AULA],
   auditorium: [AUDITORIUM],
   second_floor: [SECOND_FLOOR],
-  gallery_aula: [GALLERY, AULA],
-  auditorium_aula: [AUDITORIUM, AULA],
-  full_triangle: [GALLERY, AULA, AUDITORIUM],
 };
 
 const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About you'];
@@ -131,13 +141,14 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
 
   <!-- The section's heading and this one button are the ask. -->
   <div class="bk-opener">
-    <Pill type="button" variant="solid" id="bk-open" class="bk-open">Get a quote</Pill>
+    <Pill type="button" variant="solid" id="bk-open" class="bk-open">Plan your event</Pill>
     <p class="bk-opener-note">
       Five short steps. Nothing is booked until we confirm it in writing.
     </p>
   </div>
   <p class="bk-sent" id="bk-sent" role="status" tabindex="-1" hidden>
-    Your enquiry is in, reference <strong data-sent-ref></strong>. We’ll reply with availability and a price.
+    Your enquiry is in, reference <strong data-sent-ref></strong>. We’ll reply with availability and
+    a price.
   </p>
 
   <!-- The enquiry. `data-suppress-newsletter-popup`: while it is open the
@@ -150,7 +161,7 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
   >
     <header class="bk-head">
       <div class="bk-head-row">
-        <p class="bk-head-title" id="bk-dialog-title">Get a quote</p>
+        <p class="bk-head-title" id="bk-dialog-title">Plan your event</p>
         <p class="bk-count" id="bk-count" aria-live="polite">Step 1 of {STEPS.length}</p>
         <button type="button" class="bk-close" data-bk-close aria-label="Close">
           <span aria-hidden="true">×</span>
@@ -199,14 +210,14 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
                 <label for="bk-from">From</label>
                 <select id="bk-from" name="time_from" required aria-describedby="bk-when-hint">
                   <option value="" selected disabled>––:––</option>
-                  {QUARTER_HOURS.map((t) => <option value={t}>{t}</option>)}
+                  {HOURS.map((t) => <option value={t}>{t}</option>)}
                 </select>
               </div>
               <div class="bk-sub">
                 <label for="bk-until">Until</label>
                 <select id="bk-until" name="time_until" required aria-describedby="bk-when-hint">
                   <option value="" selected disabled>––:––</option>
-                  {QUARTER_HOURS.map((t) => <option value={t}>{t}</option>)}
+                  {HOURS.map((t) => <option value={t}>{t}</option>)}
                 </select>
               </div>
             </div>
@@ -216,9 +227,18 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
             </p>
             <p class="bk-derived" id="bk-when-summary" aria-live="polite" hidden></p>
             <label class="check">
-              <input type="checkbox" name="multi_day" value="true" />
-              <span>It runs over more than one day</span>
+              <input
+                type="checkbox"
+                name="multi_day"
+                value="true"
+                aria-describedby="bk-multiday-hint"
+              />
+              <span>It lasts more than one day</span>
             </label>
+            <p class="field-hint" id="bk-multiday-hint">
+              A festival, say, or a build that takes two days. An evening that runs past midnight is
+              still one day: just pick the end time.
+            </p>
             <div class="bk-sub bk-sub-date" data-show-when="multi_day=true">
               <label for="bk-enddate">Last day</label>
               <input id="bk-enddate" name="end_date" type="date" required data-picker-only />
@@ -312,7 +332,11 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
           </div>
 
           <fieldset class="field" id="bk-space" data-label="Room">
-            <legend>Which room? <span class="req" aria-hidden="true">*</span></legend>
+            <legend>Which rooms? <span class="req" aria-hidden="true">*</span></legend>
+            <p class="field-hint bk-rooms-hint" id="bk-rooms-hint">
+              Pick one, or several to combine them: the Gallery with the Aula for arrivals, say. We
+              confirm the combined capacity for your event.
+            </p>
             <div class="bk-cards bk-cards-rooms">
               {
                 SPACES.map((o, i) => {
@@ -321,7 +345,7 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
                   const id = `bk-space-${o.value}`;
                   return (
                     <Fragment>
-                      {o.value === 'gallery_aula' && <p class="bk-cards-label">Or combine rooms</p>}
+                      {o.value === 'advise_me' && <p class="bk-cards-label">Or</p>}
                       <div
                         class:list={[
                           'bk-card',
@@ -333,13 +357,13 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
                           <input
                             class="bk-card-input"
                             id={id}
-                            type="radio"
-                            name="space"
+                            type="checkbox"
+                            name="spaces"
                             value={o.value}
-                            required={i === 0}
                             aria-labelledby={`${id}-name ${id}-meta`}
                             aria-describedby={`${id}-blurb`}
                           />
+                          <span class="bk-card-tick" aria-hidden="true" />
                           {photos.length > 0 && (
                             <span class="bk-card-photo" data-count={photos.length}>
                               {photos.map((ph) => (
@@ -367,8 +391,10 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
                         </label>
                         {info.more && (
                           <details class="bk-more">
-                            <summary aria-label={`More about ${o.label}`}>
-                              <span class="bk-more-icon" aria-hidden="true" />
+                            <summary aria-label={`About the ${o.label}`}>
+                              <span class="bk-more-icon" aria-hidden="true">
+                                i
+                              </span>
                               <span class="bk-more-label">More about this room</span>
                             </summary>
                             <p class="bk-more-blurb">{info.blurb}</p>
@@ -396,18 +422,18 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
             class="field"
             id="bk-layout"
             data-label="Layout"
-            data-show-when={`space!=${FIXED}`}
+            data-show-when={`spaces!==${FIXED}`}
           >
             <legend>How should the room be set up?</legend>
             <ChoiceChips name="layout" options={LAYOUTS} idPrefix="bk-layout" />
             <p class="field-hint">
-              <span data-show-when="space=full_triangle"
-                >This is for the Gallery and the Aula; the Auditorium's seats are fixed.{' '}</span
+              <span data-show-when={`spaces=${FIXED}`}
+                >This is for the other rooms; the Auditorium's seats are fixed.{' '}</span
               >If you are not sure yet, leave it. We confirm the layout with you before the event.
             </p>
             <p class="field-error" id="bk-layout-err" hidden></p>
           </fieldset>
-          <div class="field" data-show-when={`space=${FIXED}`}>
+          <div class="field" data-show-when={`spaces==${FIXED}`}>
             <p class="bk-fixed">
               The Auditorium has fixed tiered seating, so there is no layout to choose.
             </p>
@@ -491,10 +517,10 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
           </h2>
 
           <fieldset class="field" id="bk-support" data-label="Help from us">
-            <legend
-              >How much help do you want from us? <span class="req" aria-hidden="true">*</span
-              ></legend
-            >
+            <legend>Which package? <span class="req" aria-hidden="true">*</span></legend>
+            <p class="field-hint">
+              Every package starts with the room, and each one adds to the one before.
+            </p>
             <div class="bk-cards bk-cards-list">
               {
                 SUPPORT_OFFERED.map((o, i) => {
@@ -526,9 +552,7 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
                 })
               }
             </div>
-            <p class="field-hint">
-              Your quote spells out exactly what the level you pick includes.
-            </p>
+            <p class="field-hint">Your quote spells out exactly what your package includes.</p>
             <p class="field-error" id="bk-support-err" hidden></p>
           </fieldset>
 
@@ -586,7 +610,8 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
 
           <fieldset class="field" id="bk-alcohol" data-label="Alcohol">
             <legend>Alcohol <span class="req" aria-hidden="true">*</span></legend>
-            <ChoiceChips name="alcohol" options={ALCOHOL} required idPrefix="bk-alcohol" />
+            <ChoiceChips name="alcohol" options={ALCOHOL} type="checkbox" idPrefix="bk-alcohol" />
+            <p class="field-hint">Tick all that apply.</p>
             <p class="field-hint" data-show-when="alcohol=sold">
               Selling alcohol needs a licence from Lupa- ja valvontavirasto, applied for about a
               month ahead. We will talk you through it.
@@ -596,7 +621,8 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
 
           <fieldset class="field" id="bk-music" data-label="Music">
             <legend>Music <span class="req" aria-hidden="true">*</span></legend>
-            <ChoiceChips name="music" options={MUSIC} required idPrefix="bk-music" />
+            <ChoiceChips name="music" options={MUSIC} type="checkbox" idPrefix="bk-music" />
+            <p class="field-hint">Tick all that apply.</p>
             <p class="field-error" id="bk-music-err" hidden></p>
           </fieldset>
 
@@ -765,6 +791,12 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
             </label>
             <p class="field-error" id="bk-consent-err" hidden></p>
           </div>
+          <div class="field" id="bk-newsletter">
+            <label class="check">
+              <input type="checkbox" name="newsletter_opt_in" value="true" />
+              <span>Keep me posted: send me the ODD newsletter. Unsubscribe any time.</span>
+            </label>
+          </div>
         </section>
       </div>
 
@@ -779,11 +811,20 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
 
     <div class="booking-done" id="bk-done" tabindex="-1" hidden>
       <h2>Got it. Your enquiry is in.</h2>
-      <p>
-        We check the date against the building's schedule and come back to{' '}
-        <strong data-done-email></strong> with availability and a price.
-      </p>
       <p class="booking-ref">Reference <span data-done-ref></span></p>
+      <h3 class="bk-done-head">What happens now</h3>
+      <ol class="bk-done-steps">
+        <li>We check your date against the building's schedule.</li>
+        <li>
+          We reply to <strong data-done-email></strong> with availability and a price. Quote your reference
+          if you write to us.
+        </li>
+        <li>Nothing is booked until we confirm it in writing.</li>
+      </ol>
+      <details class="bk-done-answers">
+        <summary>Show your answers</summary>
+        <div class="bk-review" data-done-review></div>
+      </details>
       <Pill type="button" variant="outline" class="bk-done-close" data-bk-close>Close</Pill>
     </div>
 
@@ -794,8 +835,8 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
        final section. Hidden while the enquiry is open, while the cookie
        banner is up, and once an enquiry has been sent. -->
   <div class="bk-sticky" id="bk-sticky">
-    <p class="bk-sticky-text">Check availability and get a quote.</p>
-    <Pill type="button" variant="solid" class="bk-sticky-cta">Get a quote</Pill>
+    <p class="bk-sticky-text">Check your date and plan your event.</p>
+    <Pill type="button" variant="solid" class="bk-sticky-cta">Plan your event</Pill>
   </div>
 </div>
 
@@ -1276,36 +1317,121 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
     outline-offset: 2px;
     border-radius: var(--radius-pill);
   }
+  /* "i" for the room's facts (form v3): an info mark, not a plus, so it
+     reads as "about this room" rather than "add this room". Filled when
+     open. */
   .bk-more-icon {
-    position: relative;
+    display: inline-grid;
+    place-items: center;
     flex: none;
     width: 1.25rem;
     height: 1.25rem;
     border: 1px solid var(--color-paper-35);
     border-radius: var(--radius-pill);
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 1;
+    transition:
+      background-color var(--duration-fast) ease,
+      color var(--duration-fast) ease;
   }
-  .bk-more-icon::before,
-  .bk-more-icon::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0.55rem;
-    height: 1px;
-    background: currentColor;
-    transform: translate(-50%, -50%);
-    transition: transform var(--duration-fast) ease;
-  }
-  .bk-more-icon::after {
-    transform: translate(-50%, -50%) rotate(90deg);
-  }
-  .bk-more[open] .bk-more-icon::after {
-    transform: translate(-50%, -50%) rotate(0deg);
+  .bk-more[open] .bk-more-icon {
+    background: var(--color-paper);
+    border-color: var(--color-paper);
+    color: var(--color-bg);
   }
   @media (prefers-reduced-motion: reduce) {
-    .bk-more-icon::after {
+    .bk-more-icon {
       transition: none;
     }
+  }
+  /* The room tick (form v3): rooms combine, so each card shows a tick box
+     rather than relying on the highlight alone. */
+  .bk-card-tick {
+    position: relative;
+    flex: none;
+    align-self: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 1px solid var(--color-paper-60);
+  }
+  .bk-card-input:checked ~ .bk-card-tick {
+    background: var(--color-paper);
+    border-color: var(--color-paper);
+  }
+  .bk-card-input:checked ~ .bk-card-tick::after {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    top: 0.15rem;
+    width: 0.35rem;
+    height: 0.65rem;
+    border: solid var(--color-bg);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .bk-done-head {
+    margin: var(--space-6) 0 var(--space-3);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  /* A left-aligned list, centred as a block: centred lines under centred
+     numbers are hard to follow. */
+  .bk-done-steps {
+    width: 100%;
+    max-width: 32rem;
+    margin: 0 0 var(--space-6);
+    padding-left: 1.25rem;
+    text-align: left;
+  }
+  .bk-done-steps li + li {
+    margin-top: var(--space-2);
+  }
+  .bk-done-answers {
+    width: 100%;
+    max-width: 32rem;
+    margin: 0 0 var(--space-6);
+    text-align: left;
+  }
+  .bk-done-answers summary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+    list-style: none;
+  }
+  .bk-done-answers summary::-webkit-details-marker {
+    display: none;
+  }
+  .bk-done-answers summary::after {
+    content: '';
+    width: 0.45rem;
+    height: 0.45rem;
+    border: solid currentColor;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) translateY(-0.15rem);
+    transition: transform var(--duration-fast) ease;
+  }
+  .bk-done-answers[open] summary::after {
+    transform: rotate(225deg) translateY(-0.1rem);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bk-done-answers summary::after {
+      transition: none;
+    }
+  }
+  .bk-done-answers summary:focus-visible {
+    outline: 2px solid var(--color-paper);
+    outline-offset: 2px;
   }
   .bk-more p {
     margin: 0 0 var(--space-2);
@@ -1458,16 +1584,25 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
   }
 
   /* ---- after sending ---- */
+  /* Centred while it is short; once "Show your answers" makes it taller than
+     the dialog it scrolls from the top instead of clipping the heading (the
+     auto margins, rather than justify-content: center). */
   .booking-done {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: var(--space-2);
     padding: var(--space-10) var(--space-6);
     text-align: center;
     overflow-y: auto;
+  }
+  .booking-done > :first-child {
+    margin-top: auto;
+  }
+  .booking-done > :last-child {
+    margin-bottom: auto;
   }
   .booking-done:focus {
     outline: none;
@@ -1799,7 +1934,7 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
     gap: var(--space-2);
   }
 
-  /* ---- the sticky "Get a quote" bar ----
+  /* ---- the sticky "Plan your event" bar ----
      Ink on either ground, pinned to the swatches like NewsletterPopup, so it
      reads as something over the page. A full-width bar at the foot of the
      screen on phones; a floating panel from 720px. It slides in and out;

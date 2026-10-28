@@ -47,8 +47,8 @@
         "30 people. The room your guests arrive into: registration, coats, drinks, the conversation that spills out of a talk. Rarely booked on its own, and the reason a Gallery event feels organised rather than crowded at the door."
       ],
       "image": {
-        "src": "../../assets/oddspace/lounge.jpg",
-        "alt": "The ODDspace lounge: sofas and a round table on a concrete floor, artworks leaning against the wall, a screen and speakers at the far end.",
+        "src": "../../assets/oddspace/aula.jpg",
+        "alt": "The Aula: two leather sofas around a low table on a tiled floor, a coat rack by the door and a wall of patterned discs.",
         "caption": "The Aula — where people arrive, leave their coats and keep talking."
       }
     },
@@ -92,9 +92,7 @@
     },
     {
       "title": "What every booking includes",
-      "body": [
-        "The room, its standard furniture and equipment, and a walkthrough before the day."
-      ],
+      "body": ["The room, its standard furniture and equipment, and a walkthrough before the day."],
       "items": [
         "The space during your booked hours, setup and clean-up included.",
         "Tables and chairs, set out in the layout you ask for when you confirm your details.",

@@ -138,12 +138,12 @@ async function sendAndCapture(page: Page) {
 
 // --- Opening and closing ----------------------------------------------------
 
-test('"Get a quote" opens the enquiry, and Esc closes it where it was', async ({ page }) => {
+test('"Plan your event" opens the enquiry, and Esc closes it where it was', async ({ page }) => {
   await load(page);
   const dialog = page.locator(DIALOG);
   await expect(dialog).toBeHidden();
   const open = page.locator('#bk-open');
-  await expect(open).toHaveText('Get a quote');
+  await expect(open).toHaveText('Plan your event');
   await open.click();
   await expect(dialog).toBeVisible();
   await expect(page.locator('#bk-count')).toHaveText('Step 1 of 5');
@@ -180,10 +180,10 @@ test("the phone's back button closes the enquiry and stays on the page", async (
   expect(new URL(page.url()).pathname).toBe(VENUE);
 });
 
-test("the hero's Get a quote opens the enquiry", async ({ page }) => {
+test("the hero's Plan your event opens the enquiry", async ({ page }) => {
   await load(page);
   const heroCta = page.locator('a[href="#booking-form"]').first();
-  await expect(heroCta).toHaveText(/Get a quote/i);
+  await expect(heroCta).toHaveText(/Plan your event/i);
   await heroCta.click();
   await expect(page.locator(DIALOG)).toBeVisible();
 });
@@ -264,7 +264,7 @@ test('the ODDspace page leads straight into the enquiry', async ({ page }) => {
   // The event card's own button opens the form. ("Organise an event" in the
   // hero does not: it shows the venue first, see oddspace-conversion.spec.ts.)
   const cta = page.locator('.odds-enter-card a[href="/oddspace/venue/#booking-form"]');
-  await expect(cta).toHaveText(/Get a quote/i);
+  await expect(cta).toHaveText(/Plan your event/i);
 });
 
 test.describe('the newsletter popup', () => {
@@ -445,11 +445,17 @@ test('the rooms come with photographs, and their details open inside the card', 
   const gallery = page.locator('.bk-card:has(#bk-space-gallery)');
   await expect(gallery.locator('img')).toHaveCount(1);
   await expect(gallery.locator('img')).toHaveAttribute('alt', /Gallery/);
-  // A combination shows each of its rooms.
-  await expect(page.locator('.bk-card:has(#bk-space-full_triangle) img')).toHaveCount(3);
+  // Each room has its own photograph (form v3: the Aula's own, and the
+  // lounge photo back on the Event & workshop space where it belongs).
+  await expect(page.locator('.bk-card:has(#bk-space-aula) img')).toHaveAttribute('alt', /Aula/);
+  await expect(page.locator('.bk-card:has(#bk-space-second_floor) img')).toHaveAttribute(
+    'alt',
+    /Event & workshop space/,
+  );
   // "Not sure yet" has no photo.
   await expect(page.locator('.bk-card:has(#bk-space-advise_me) img')).toHaveCount(0);
-  // Single rooms come first, then the combinations under their own label.
+  // The rooms, then "Not sure yet" on its own under "Or". No combinations:
+  // rooms are ticked together instead.
   const order = await page
     .locator('.bk-cards-rooms > *')
     .evaluateAll((els) =>
@@ -459,20 +465,11 @@ test('the rooms come with photographs, and their details open inside the card', 
           : (el.querySelector('input') as HTMLInputElement | null)?.value,
       ),
     );
-  expect(order).toEqual([
-    'gallery',
-    'aula',
-    'auditorium',
-    'second_floor',
-    'label',
-    'gallery_aula',
-    'auditorium_aula',
-    'full_triangle',
-    'advise_me',
-  ]);
-  // The + is a real 44px button with the room's name.
+  expect(order).toEqual(['gallery', 'aula', 'auditorium', 'second_floor', 'label', 'advise_me']);
+  // The "i" is a real 44px button with the room's name.
   const summary = gallery.locator('summary');
-  await expect(summary).toHaveAttribute('aria-label', 'More about Gallery');
+  await expect(summary).toHaveAttribute('aria-label', 'About the Gallery');
+  await expect(summary.locator('.bk-more-icon')).toHaveText('i');
   const box = await summary.boundingBox();
   expect(box!.width).toBeGreaterThanOrEqual(44);
   expect(box!.height).toBeGreaterThanOrEqual(44);
@@ -484,7 +481,40 @@ test('the rooms come with photographs, and their details open inside the card', 
   await expect(page.locator('#bk-space-gallery')).not.toBeChecked();
 });
 
-test('help is offered in four plain levels and "not sure", each described', async ({ page }) => {
+test('rooms combine, and "Not sure yet" stands alone', async ({ page }) => {
+  await openForm(page);
+  await reach(page, 2);
+  await expect(page.locator('#bk-space')).toContainText('several to combine them');
+  await page.check('#bk-space-gallery');
+  await page.check('#bk-space-aula');
+  await expect(page.locator('#bk-space-gallery')).toBeChecked();
+  await expect(page.locator('#bk-space-aula')).toBeChecked();
+  await page.check('#bk-space-advise_me');
+  await expect(page.locator('#bk-space-gallery')).not.toBeChecked();
+  await expect(page.locator('#bk-space-aula')).not.toBeChecked();
+  await page.check('#bk-space-auditorium');
+  await expect(page.locator('#bk-space-advise_me')).not.toBeChecked();
+});
+
+test('alcohol and music take several answers, and "no" stands alone', async ({ page }) => {
+  await openForm(page);
+  await reach(page, 4);
+  await page.check('#bk-alcohol-served');
+  await page.check('#bk-alcohol-sold');
+  await expect(page.locator('#bk-alcohol-served')).toBeChecked();
+  await page.check('#bk-alcohol-none');
+  await expect(page.locator('#bk-alcohol-served')).not.toBeChecked();
+  await expect(page.locator('#bk-alcohol-sold')).not.toBeChecked();
+  await page.check('#bk-music-live');
+  await page.check('#bk-music-dj');
+  await expect(page.locator('#bk-music-live')).toBeChecked();
+  await page.check('#bk-music-none');
+  await expect(page.locator('#bk-music-dj')).not.toBeChecked();
+  await page.check('#bk-music-background');
+  await expect(page.locator('#bk-music-none')).not.toBeChecked();
+});
+
+test('help is offered as four packages and "not sure", each described', async ({ page }) => {
   await openForm(page);
   await reach(page, 4);
   const options = page.locator('#bk-support input[name="support_level"]');
@@ -496,7 +526,16 @@ test('help is offered in four plain levels and "not sure", each described', asyn
     'turnkey',
     'advise_me',
   ]);
-  await expect(page.locator('#bk-support')).toContainText('Just the room');
+  // Packages that all start from the room.
+  for (const name of [
+    'Room only',
+    'Room + technician',
+    'Room + help running it',
+    'Room + we produce it',
+    'Not sure yet',
+  ]) {
+    await expect(page.locator('#bk-support')).toContainText(name);
+  }
   await expect(page.locator('#bk-support')).toContainText('You run the day.');
   await expect(page.locator('#bk-support-premium')).toHaveCount(0);
 });
@@ -536,15 +575,15 @@ test('the date is picked from the calendar and cannot be typed', async ({ page }
   await expect(date).toHaveValue('');
 });
 
-test('times come in quarter hours only', async ({ page }) => {
+test('times come in whole hours only', async ({ page }) => {
   await openForm(page);
   const values = await page
     .locator('#bk-from option:not([disabled])')
     .evaluateAll((os) => os.map((o) => (o as HTMLOptionElement).value));
-  expect(values).toHaveLength(96);
+  expect(values).toHaveLength(24);
   expect(values[0]).toBe('00:00');
-  expect(values[values.length - 1]).toBe('23:45');
-  expect(values.every((v) => /^\d{2}:(00|15|30|45)$/.test(v))).toBe(true);
+  expect(values[values.length - 1]).toBe('23:00');
+  expect(values.every((v) => /^\d{2}:00$/.test(v))).toBe(true);
   expect(await page.locator('#bk-from').evaluate((el) => el.tagName)).toBe('SELECT');
 });
 
@@ -554,12 +593,11 @@ test('an end time before the start means the next day', async ({ page }) => {
   await page.selectOption('#bk-from', '20:00');
   await page.selectOption('#bk-until', '02:00');
   await expect(page.locator('#bk-when-summary')).toHaveText(/6 hours .* next day at 02:00/);
-  // Quarter hours read as hours and minutes, never as a decimal.
-  await page.selectOption('#bk-from', '09:15');
+  await page.selectOption('#bk-from', '09:00');
   await page.selectOption('#bk-until', '22:00');
-  await expect(page.locator('#bk-when-summary')).toHaveText(
-    '12 hours 45 minutes in total, until 22:00.',
-  );
+  await expect(page.locator('#bk-when-summary')).toHaveText('13 hours in total, until 22:00.');
+  // Past midnight is still one day, and the hint says so.
+  await expect(page.locator('#bk-multiday-hint')).toContainText('runs past midnight');
   await page.selectOption('#bk-from', '20:00');
   await page.selectOption('#bk-until', '02:00');
   await fillFrom(page, 1, { skipFill: true });
@@ -634,6 +672,7 @@ test('the Auditorium has fixed seating, so no layout is asked and theatre is sen
   await fillStep(page, 2);
   // A layout chosen for another room first must not leak through.
   await page.check('#bk-layout-cabaret');
+  await page.uncheck('#bk-space-gallery');
   await page.check('#bk-space-auditorium');
   await expect(page.locator('#bk-layout')).toBeHidden();
   await expect(page.locator('.bk-fixed')).toBeVisible();
@@ -642,19 +681,20 @@ test('the Auditorium has fixed seating, so no layout is asked and theatre is sen
   await fillFrom(page, 3);
   await expect(page.locator('#bk-review')).toContainText('Fixed tiered seating');
   const sent = await sendAndCapture(page);
-  expect(sent.space).toBe('auditorium');
+  expect(sent.spaces).toEqual(['auditorium']);
   expect(sent.layout).toBe('theatre');
 });
 
-test('the same holds for the Auditorium with the Aula, and returns for other rooms', async ({
+test('with the Auditorium and another room, the layout is asked for the other room', async ({
   page,
 }) => {
   await openForm(page);
   await reach(page, 2);
-  await page.check('#bk-space-auditorium_aula');
+  await page.check('#bk-space-auditorium');
   await expect(page.locator('#bk-layout')).toBeHidden();
-  await page.check('#bk-space-second_floor');
+  await page.check('#bk-space-aula');
   await expect(page.locator('#bk-layout')).toBeVisible();
+  await expect(page.locator('#bk-layout')).toContainText("the Auditorium's seats are fixed");
   await expect(page.locator('.bk-fixed')).toBeHidden();
 });
 
@@ -662,6 +702,7 @@ test('a headcount over the room shows a warning but does not block', async ({ pa
   await openForm(page);
   await reach(page, 2);
   await fillStep(page, 2);
+  await page.uncheck('#bk-space-gallery');
   await page.check('#bk-space-auditorium');
   await page.fill('#bk-estimate', '120');
   await expect(page.locator('#bk-capacity')).toContainText('seats 50');
@@ -761,11 +802,13 @@ test('a valid enquiry posts the spec payload and shows the thank-you', async ({ 
   expect(sent.get_in.slice(0, 10)).toBe(sent.get_out.slice(0, 10));
   expect(sent.headcount_estimate).toBe(80);
   expect(sent.headcount_band).toBe('51_100');
-  expect(sent.space).toBe('gallery');
+  expect(sent.spaces).toEqual(['gallery']);
+  expect(sent.space).toBeUndefined();
   expect(sent.layout).toBe('cocktail');
   expect(sent.support_level).toBe('basic_infra');
-  expect(sent.alcohol).toBe('served');
-  expect(sent.music).toBe('background');
+  expect(sent.alcohol).toEqual(['served']);
+  expect(sent.music).toEqual(['background']);
+  expect(sent.newsletter_opt_in).toBe(false);
   expect(sent.pyro_flame).toBe('no');
   // Settled after booking, so never sent.
   for (const k of ['catering', 'cleaning', 'budget_band', 'music_past_2200']) {
@@ -915,12 +958,41 @@ test('a double click sends exactly one request', async ({ page }) => {
   expect(calls).toBe(1);
 });
 
+test('the thank-you says what happens now and repeats the answers', async ({ page }) => {
+  await openForm(page);
+  await fillFrom(page, 1);
+  await sendAndCapture(page);
+  const done = page.locator('#bk-done');
+  await expect(done).toBeVisible();
+  await expect(done).toContainText('What happens now');
+  await expect(done).toContainText('Nothing is booked until we confirm it in writing.');
+  await expect(done.locator('[data-done-ref]')).toHaveText(/^[0-9A-F]{8}$/);
+  await done.locator('.bk-done-answers summary').click(); // "Show your answers"
+  await expect(done.locator('[data-done-review]')).toContainText('Autumn launch');
+  await expect(done.locator('[data-done-review]')).toContainText('Gallery');
+  // The answers as sent: no Edit buttons after sending.
+  await expect(done.locator('.bk-review-edit')).toHaveCount(0);
+});
+
+test('"Keep me posted" sends the newsletter opt-in', async ({ page }) => {
+  await openForm(page);
+  await fillFrom(page, 1);
+  await page.check('input[name="newsletter_opt_in"]');
+  const sent = await sendAndCapture(page);
+  expect(sent.newsletter_opt_in).toBe(true);
+});
+
 test('choices work from the keyboard', async ({ page }) => {
   await openForm(page);
   await reach(page, 2);
   await page.focus('#bk-space-gallery');
-  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('Space');
+  await expect(page.locator('#bk-space-gallery')).toBeChecked();
+  await page.focus('#bk-space-aula');
+  await page.keyboard.press('Space');
   await expect(page.locator('#bk-space-aula')).toBeChecked();
+  await expect(page.locator('#bk-space-gallery')).toBeChecked();
+  await page.uncheck('#bk-space-aula');
   await fillStep(page, 2);
   await next(page, 3);
   await page.focus('#bk-type-launch');

@@ -10,7 +10,7 @@
   "title": "Host your event at ODDspace.",
   "meta": "Vallila · Helsinki · No membership needed",
   "primaryCta": {
-    "label": "Get a quote",
+    "label": "Plan your event",
     "href": "#booking-form"
   },
   "secondaryCta": {
@@ -200,7 +200,7 @@
   "faq": [
     {
       "question": "Do I need to be a member to book?",
-      "answer": "No. Renting the gallery or the auditorium doesn't require a membership. Get a quote and we price your event."
+      "answer": "No. Renting the gallery or the auditorium doesn't require a membership. Plan your event with the form and we price it."
     },
     {
       "question": "What does it cost?",
@@ -241,7 +241,7 @@
   ],
   "finalCta": {
     "eyebrow": "Book the space",
-    "headline": "Get a quote for your event.",
+    "headline": "Plan your event at ODDspace.",
     "body": "Tell us when, roughly how many people and what you're planning. We check the date and reply with availability and a price."
   },
   "railLeft": [
@@ -333,7 +333,7 @@
     ],
     "note": "Every number here is a starting point, not a till receipt. We talk each event through — the room, the hours, the help you want — and price that. If your event is for a cause and the budget is not there, say so; we would rather hear it early.",
     "cta": {
-      "label": "Get a quote",
+      "label": "Plan your event",
       "href": "#booking-form"
     }
   }
