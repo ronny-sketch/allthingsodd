@@ -1,0 +1,162 @@
+---
+// The ODDfest 2026 impact report's photographs as evidence (2026-10-05).
+// Each one shows the thing its section claims, captioned with what, where
+// and when, then the photographer from photo-credits.json: the 2025
+// report's "Photo by" convention. Two shapes from one list: captions only
+// (a strip under the year and the lineup), or cards that pair a claim with
+// its photo (direct and indirect impact). Cards without a checked photo are
+// never passed in; the page sets those as a plain FeatureGrid.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { photographers } from './photo-credits';
+
+interface Item {
+  image: ImageMetadata;
+  alt: string;
+  caption: string;
+  number?: string;
+  title?: string;
+  body?: string;
+}
+interface Props {
+  items: Item[];
+}
+const { items } = Astro.props;
+const cards = items.some((i) => i.title);
+---
+
+<ul class:list={['ev reveal', { 'ev--cards': cards }]}>
+  {
+    items.map((i) => {
+      const by = photographers(i.image)[0];
+      return (
+        <li>
+          <figure>
+            <Image
+              src={i.image}
+              alt={i.alt}
+              widths={[480, 800, 1200]}
+              sizes="(min-width: 900px) 30vw, (min-width: 640px) 40vw, 100vw"
+            />
+            <figcaption>
+              {i.caption}
+              {by && <span> Photo: {by}</span>}
+            </figcaption>
+          </figure>
+          {i.title && (
+            <div class="ev-body">
+              <span class="ev-number">{i.number}</span>
+              <h3>{i.title}</h3>
+              <p>{i.body}</p>
+            </div>
+          )}
+        </li>
+      );
+    })
+  }
+</ul>
+
+<style>
+  /* A strip is one column on a phone and three from 640px. Cards stack on a
+     phone, sit photo-beside-claim on a tablet, so three never leave an
+     orphan, and go three across from 900px. The page passes three of each. */
+  .ev {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6) var(--space-grid);
+    /* No block-start margin: the caller places the list with `.flow`. */
+    margin-block-end: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ev figure {
+    margin: 0;
+  }
+  /* Portrait photos keep their top third, where the screens and the faces
+     are; a landscape photo crops only at the sides, so this changes nothing
+     there. */
+  .ev img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    object-position: 50% 30%;
+    background: var(--color-backstage);
+  }
+  .ev figcaption {
+    margin-top: var(--space-2);
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .ev figcaption span {
+    color: var(--color-paper-40);
+  }
+
+  /* Cards: the FeatureGrid surface and 1px hairline gap, the photo flush at
+     the top, the caption and the claim padded beneath it. */
+  .ev--cards {
+    gap: 1px;
+  }
+  .ev--cards > li {
+    background: var(--color-backstage);
+  }
+  .ev--cards figcaption {
+    margin: 0;
+    padding: var(--space-3) var(--space-5) 0;
+  }
+  .ev-body {
+    padding: var(--space-4) var(--space-5) var(--space-6);
+  }
+  .ev-number {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  .ev-body h3 {
+    margin: var(--space-3) 0 0;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+  }
+  .ev-body p {
+    margin: var(--space-3) 0 0;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+  }
+
+  @media (min-width: 640px) {
+    .ev {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .ev--cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .ev--cards > li {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      align-items: start;
+    }
+    .ev--cards figcaption {
+      padding-bottom: var(--space-5);
+    }
+  }
+  /* Three across at FeatureGrid's own card width, so the text cards the page
+     sets under a row of these share its edges. */
+  @media (min-width: 900px) {
+    .ev--cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      max-width: calc((var(--font-size-heading) * 9 + 3.2rem + 1px) * 3);
+      margin-inline: auto;
+    }
+    .ev--cards > li {
+      display: flex;
+      flex-direction: column;
+    }
+    .ev--cards figcaption {
+      padding-bottom: 0;
+    }
+  }
+</style>

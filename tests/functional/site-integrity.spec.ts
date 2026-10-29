@@ -28,6 +28,7 @@ const ROUTES = [
   // could catch. Its links, images, console errors and mobile overflow are
   // covered here and in tests/mobile.
   '/brand-book',
+  '/impact-report-2026',
 ];
 
 // Forces every loading="lazy" image to actually load before checking it —

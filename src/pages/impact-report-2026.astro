@@ -1,0 +1,970 @@
+---
+// ODDfest 2026 — Impact report (/impact-report-2026/, hidden). The 2025 report was a
+// 70-page PDF on issuu; this is the lighter 2026 one, as a page, in the same
+// order: letter · numbers · 2025 against 2026 · the year · the money · direct
+// impact · lineup · highlights · partners · indirect impact · press and reach
+// · voices · the year in photographs · the 2025 promises checked · lessons ·
+// 2027. Every word is in oddfest-2026-impact.json; the highlights, both
+// aftermovies and the partner names are read from oddfest.json,
+// oddference.json and oddfest-2026.json so they cannot drift apart.
+// Photographs sit next to the claims they show, as evidence (EvidenceGrid);
+// the rest of the life is the year's own pictures, given room: full-bleed
+// breaks after the letter, before the press and before 2027, and a wall.
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import SubpageFrame from '../components/sections/SubpageFrame.astro';
+import SpaceHero from '../components/sections/SpaceHero.astro';
+import ProofGrid from '../components/sections/ProofGrid.astro';
+import Timeline from '../components/sections/Timeline.astro';
+import FeatureGrid from '../components/sections/FeatureGrid.astro';
+import OddfestExamples from '../components/sections/OddfestExamples.astro';
+import AftermovieFeature from '../components/sections/AftermovieFeature.astro';
+import PhotoBreak from '../components/sections/PhotoBreak.astro';
+import SectionIntro from '../components/sections/SectionIntro.astro';
+import ParticipateBand from '../components/sections/ParticipateBand.astro';
+import EvidenceGrid from '../components/sections/EvidenceGrid.astro';
+import PhotoWall from '../components/sections/PhotoWall.astro';
+import Pill from '../components/primitives/Pill.astro';
+import { photographers } from '../components/sections/photo-credits';
+import oddfestWordmark from '../assets/logos/oddfest-wordmark.svg';
+
+const entry = await getEntry('pages', 'oddfest-2026-impact');
+if (!entry || entry.data._template !== 'impact2026')
+  throw new Error('oddfest-2026-impact.json content entry missing or malformed');
+const page = entry.data;
+
+const oddfest = await getEntry('pages', 'oddfest');
+const oddference = await getEntry('pages', 'oddference');
+if (oddfest?.data._template !== 'oddfest' || oddference?.data._template !== 'oddference')
+  throw new Error('oddfest.json or oddference.json content entry missing or malformed');
+const examples = oddfest.data.examples;
+const films = [oddfest.data.aftermovie, oddference.data.aftermovie];
+
+const thanks = await getEntry('pages', 'oddfest-2026');
+if (thanks?.data._template !== 'oddfest2026')
+  throw new Error('oddfest-2026.json content entry missing or malformed');
+const creditGroups = thanks.data.credits.lists.flatMap((list) => list.subgroups ?? []);
+const partnerGroups = page.partnerOverview.creditGroups.map((label) => {
+  const group = creditGroups.find((g) => g.label === label);
+  if (!group) throw new Error(`oddfest-2026.json credits have no "${label}" subgroup`);
+  return {
+    label,
+    names: group.items
+      .map((item) => item.name)
+      .sort((a, b) => a.localeCompare(b, 'fi', { sensitivity: 'base', numeric: true })),
+  };
+});
+const partnerCount = partnerGroups.reduce((sum, g) => sum + g.names.length, 0);
+
+const trendLabel = { up: '↑ Up', down: '↓ Down', new: '+ New' };
+const statusClass = (status: string) => `is-${status.toLowerCase().replace(' ', '-')}`;
+const share = (count: number, items: { count: number }[]) =>
+  Math.round((count / items.reduce((sum, i) => sum + i.count, 0)) * 100);
+
+// A card with a checked photo becomes an evidence card; the rest stay text
+// cards in a FeatureGrid under them.
+type Cards = typeof page.direct.items;
+const proven = (cards: Cards) => cards.flatMap((c) => (c.photo ? [{ ...c, ...c.photo }] : []));
+const unproven = (cards: Cards) => cards.filter((c) => !c.photo);
+
+// A quote with `emphasis` is set loud, above the rest: the emphasis bright,
+// the words around it dim. It must be copied exactly from the quote.
+const around = (text: string, emphasis: string) => {
+  const at = text.indexOf(emphasis);
+  if (at < 0) throw new Error(`voices: emphasis "${emphasis}" is not in its quote`);
+  return [text.slice(0, at), text.slice(at + emphasis.length)];
+};
+const loudQuotes = page.voices.quotes.filter((q) => q.emphasis);
+const quietQuotes = page.voices.quotes.filter((q) => !q.emphasis);
+const wallCredits = photographers(page.gallery.photos).join(', ');
+
+const paragraphs = (body: string) =>
+  body
+    .split(/\r?\n\s*\r?\n/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+---
+
+<Layout
+  title={page.seo.title}
+  description={page.seo.description}
+  ogImage={page.seo.ogImage}
+  noindex
+>
+  <SubpageFrame slug="oddfest" railLeft={page.railLeft} railRight={page.railRight}>
+    <SpaceHero
+      slot="hero"
+      photos={page.heroPhotos}
+      title={page.title}
+      premise={page.titlePremise}
+      opening
+      meta={page.meta}
+      logo={oddfestWordmark}
+      logoAlt="ODDfest"
+      primaryCta={page.primaryCta}
+      secondaryCta={page.secondaryCta}
+    />
+
+    <!-- The letter: one sentence in two inks, then the founder's paragraphs. -->
+    <section class="ir-letter">
+      <div class="wrap flow">
+        <p class="ir-letter-text reveal">
+          <span class="ir-dim">{page.letter.premise}</span>{' '}{page.letter.point}
+        </p>
+        <div class="ir-prose reveal">
+          {paragraphs(page.letter.body).map((p) => <p>{p}</p>)}
+          <p class="ir-sign">
+            {page.letter.signature}<span>{page.letter.role}</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {
+      page.letter.photoBreak && (
+        <PhotoBreak image={page.letter.photoBreak.image} alt={page.letter.photoBreak.alt} tall />
+      )
+    }
+
+    <div id="numbers"></div>
+    <ProofGrid
+      eyebrow={page.numbers.eyebrow}
+      title={page.numbers.title}
+      items={page.numbers.items}
+    />
+
+    <!-- 2025 against 2026: one ruled table, a tbody per group. The note sits
+         under the measure so a phone keeps three columns. -->
+    <section class="ir-sub" id="compare">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.compare.eyebrow}</span>
+          <h2>{page.compare.title}</h2>
+        </div>
+        <p class="ir-lede reveal">{page.compare.lede}</p>
+        <div class="ir-table-wrap reveal">
+          <table class="ir-table">
+            <thead>
+              <tr>
+                <th scope="col">Measure</th>
+                <th scope="col">2025</th>
+                <th scope="col">2026</th>
+              </tr>
+            </thead>
+            {
+              page.compare.areas.map((g) => (
+                <tbody>
+                  <tr class="ir-table-group">
+                    <th scope="colgroup" colspan="3">
+                      {g.title}
+                    </th>
+                  </tr>
+                  {g.rows.map((r) => (
+                    <tr>
+                      <th scope="row">
+                        {r.measure}
+                        {r.note && <span class="ir-table-note">{r.note}</span>}
+                      </th>
+                      <td>{r.y2025}</td>
+                      <td>
+                        {r.y2026}
+                        {r.trend && (
+                          <span class={`ir-trend is-${r.trend}`}>{trendLabel[r.trend]}</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              ))
+            }
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="ir-sub">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.year.eyebrow}</span>
+          <h2>{page.year.title}</h2>
+        </div>
+        <Timeline items={page.year.items} />
+        {page.year.evidence && <EvidenceGrid items={page.year.evidence} />}
+      </div>
+    </section>
+
+    <!-- The money: the total, then each grant as a cell in a hairline grid. -->
+    <section class="ir-sub" id="money">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.money.eyebrow}</span>
+          <h2>{page.money.title}</h2>
+        </div>
+        <p class="ir-lede reveal">{page.money.body}</p>
+        <p class="ir-total reveal">
+          {
+            page.money.total.srValue ? (
+              <>
+                <span aria-hidden="true">{page.money.total.value}</span>
+                <span class="sr-only">{page.money.total.srValue}</span>
+              </>
+            ) : (
+              page.money.total.value
+            )
+          }
+          <span class="ir-total-label">{page.money.total.label}</span>
+        </p>
+        <ul class="ir-grants reveal">
+          {
+            page.money.grants.map((g) => (
+              <li>
+                <span class="ir-grant-amount">{g.amount}</span>
+                <span class="ir-grant-funder">{g.funder}</span>
+                <span class="ir-grant-purpose">{g.purpose}</span>
+              </li>
+            ))
+          }
+        </ul>
+        {page.money.note && <p class="ir-note reveal">{page.money.note}</p>}
+      </div>
+    </section>
+
+    <section class="ir-sub">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.direct.eyebrow}</span>
+          <h2>{page.direct.title}</h2>
+        </div>
+        <p class="ir-lede reveal">{page.direct.body}</p>
+        <EvidenceGrid items={proven(page.direct.items)} />
+        {
+          unproven(page.direct.items).length > 0 && (
+            <FeatureGrid cards={unproven(page.direct.items)} />
+          )
+        }
+      </div>
+    </section>
+
+    <!-- The lineup: the figures as cells, then each breakdown as bars. -->
+    <section class="ir-sub" id="lineup">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.lineup.eyebrow}</span>
+          <h2>{page.lineup.title}</h2>
+        </div>
+        <p class="ir-lede reveal">{page.lineup.lede}</p>
+        <ul class="ir-scores reveal">
+          {
+            page.lineup.items.map((s) => (
+              <li>
+                <span class="ir-score-value">{s.value}</span>
+                <span class="ir-score-label">{s.label}</span>
+                {s.context && <span class="ir-score-context">{s.context}</span>}
+              </li>
+            ))
+          }
+        </ul>
+        {page.lineup.evidence && <EvidenceGrid items={page.lineup.evidence} />}
+        <div class="ir-breakdowns">
+          {
+            page.lineup.breakdowns.map((b) => (
+              <div class="reveal">
+                <h3 class="ir-breakdown-title">{b.title}</h3>
+                <ul class="ir-bars">
+                  {b.items.map((i, n) => (
+                    <li style={`--share: ${share(i.count, b.items)}%; --i: ${n}`}>
+                      <span>{i.label}</span>
+                      <span class="ir-bar-count">{share(i.count, b.items)}%</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+        {page.lineup.note && <p class="ir-note reveal">{page.lineup.note}</p>}
+      </div>
+    </section>
+
+    {films[0] && <AftermovieFeature {...films[0]} />}
+
+    {
+      examples.length > 0 && (
+        <section class="ir-sub">
+          <div class="wrap flow">
+            <div class="section-head">
+              <span class="eyebrow">{page.highlights.eyebrow}</span>
+              <h2>{page.highlights.title}</h2>
+            </div>
+            <p class="ir-lede reveal">{page.highlights.lede}</p>
+            <OddfestExamples items={examples} />
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Partners: the counted total, the credits' groups as ruled rows, then
+         what partners did. -->
+    <section class="ir-sub" id="partners">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.partnerOverview.eyebrow}</span>
+          <h2>{page.partnerOverview.title}</h2>
+        </div>
+        <p class="ir-lede reveal">{page.partnerOverview.lede}</p>
+        <p class="ir-total reveal">
+          {partnerCount}
+          <span class="ir-total-label">{page.partnerOverview.countLabel}</span>
+        </p>
+        <dl class="ir-partners reveal">
+          {
+            partnerGroups.map((g) => (
+              <div>
+                <dt>
+                  {g.label} <span>{g.names.length}</span>
+                </dt>
+                <dd>{g.names.join(' · ')}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <FeatureGrid cards={page.partnerOverview.items} />
+      </div>
+    </section>
+
+    <section class="ir-sub">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.indirect.eyebrow}</span>
+          <h2>{page.indirect.title}</h2>
+        </div>
+        <p class="ir-lede reveal">{page.indirect.lede}</p>
+        <EvidenceGrid items={proven(page.indirect.items)} />
+        {
+          unproven(page.indirect.items).length > 0 && (
+            <FeatureGrid cards={unproven(page.indirect.items)} />
+          )
+        }
+      </div>
+    </section>
+
+    <PhotoBreak image={page.photoBreak.image} alt={page.photoBreak.alt} tall />
+
+    <!-- Press: the same ruled list as Work with ODD's "In the press". -->
+    <section class="ir-sub">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.media.eyebrow}</span>
+          <h2>{page.media.title}</h2>
+        </div>
+        <p class="ir-lede reveal">{page.media.lede}</p>
+        <ul class="ir-press reveal">
+          {
+            page.media.press.map((p) => {
+              const inner = (
+                <>
+                  <span class="ir-press-outlet">
+                    {p.outlet}
+                    {p.date && ` · ${p.date}`}
+                  </span>
+                  <span class="ir-press-title">{p.title}</span>
+                </>
+              );
+              return (
+                <li>
+                  {p.href ? (
+                    <a href={p.href} target="_blank" rel="noreferrer">
+                      {inner}
+                    </a>
+                  ) : (
+                    <div>{inner}</div>
+                  )}
+                </li>
+              );
+            })
+          }
+        </ul>
+      </div>
+    </section>
+
+    <ProofGrid
+      eyebrow={page.media.owned.eyebrow}
+      title={page.media.owned.title}
+      items={page.media.owned.items}
+    />
+
+    {films[1] && <AftermovieFeature {...films[1]} />}
+
+    <!-- Voices: the scores, then anonymous lines from the feedback forms. -->
+    <section class="ir-sub">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.voices.eyebrow}</span>
+          <h2>{page.voices.title}</h2>
+        </div>
+        <p class="ir-lede reveal">{page.voices.lede}</p>
+        <ul class="ir-scores reveal">
+          {
+            page.voices.scores.map((s) => (
+              <li>
+                <span class="ir-score-value">{s.value}</span>
+                <span class="ir-score-label">{s.label}</span>
+                {s.context && <span class="ir-score-context">{s.context}</span>}
+              </li>
+            ))
+          }
+        </ul>
+        {
+          loudQuotes.map((q) => {
+            const [before, after] = around(q.text, q.emphasis!);
+            return (
+              <figure class="ir-voice reveal">
+                <blockquote>
+                  <p class="ir-letter-text">
+                    {before && <span class="ir-dim">{before}</span>}
+                    {q.emphasis}
+                    {after && <span class="ir-dim">{after}</span>}
+                  </p>
+                </blockquote>
+                <figcaption>{q.from}</figcaption>
+              </figure>
+            );
+          })
+        }
+        <ul class="ir-quotes">
+          {
+            quietQuotes.map((q) => (
+              <li class="reveal">
+                <figure>
+                  <blockquote>
+                    <p>{q.text}</p>
+                  </blockquote>
+                  <figcaption>{q.from}</figcaption>
+                </figure>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- The year in photographs: a wall from the photobank, credited from
+         photo-credits.json, then the way to all of them. -->
+    <section class="ir-sub" id="photos">
+      <div class="wrap flow">
+        <div class="section-head">
+          {page.gallery.eyebrow && <span class="eyebrow">{page.gallery.eyebrow}</span>}
+          <h2>{page.gallery.title}</h2>
+        </div>
+        <PhotoWall photos={page.gallery.photos} />
+        <p class="ir-note reveal">Photos: {wallCredits}</p>
+        <div class="ir-actions">
+          <Pill
+            href={page.gallery.link.href}
+            variant="outline"
+            magnetic
+            target={page.gallery.link.external ? '_blank' : undefined}
+          >
+            {page.gallery.link.label}
+          </Pill>
+        </div>
+      </div>
+    </section>
+
+    <!-- The 2025 promises: status, the promise in the 2025 report's words,
+         then what happened. The glyph and the word carry the status, never
+         colour alone. -->
+    <section class="ir-sub" id="promises">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.promises.eyebrow}</span>
+          <h2>{page.promises.title}</h2>
+        </div>
+        <p class="ir-lede reveal">{page.promises.lede}</p>
+        <ol class="ir-promises">
+          {
+            page.promises.items.map((p) => (
+              <li class="reveal">
+                <span class={`ir-status ${statusClass(p.status)}`}>{p.status}</span>
+                <p class="ir-said">{p.said}</p>
+                <p class="ir-did">{p.did}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section class="ir-sub">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.learned.eyebrow}</span>
+          <h2>{page.learned.title}</h2>
+        </div>
+        <FeatureGrid cards={page.learned.items} />
+      </div>
+    </section>
+
+    {
+      page.next.photoBreak && (
+        <PhotoBreak image={page.next.photoBreak.image} alt={page.next.photoBreak.alt} tall />
+      )
+    }
+
+    <SectionIntro
+      eyebrow={page.next.eyebrow}
+      headline={page.next.headline}
+      body={page.next.body}
+      cta={page.next.cta}
+    />
+
+    <ParticipateBand title={page.participateTitle} items={page.participate} />
+  </SubpageFrame>
+</Layout>
+
+<style>
+  /* The letter: the thank-you page's device — one Heading sentence in two
+     inks, centred — then the founder's paragraphs on a reading measure. */
+  .ir-letter-text {
+    max-width: 34ch;
+    margin-inline: auto;
+    margin-block: 0;
+    text-align: center;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+  }
+  .ir-dim {
+    color: var(--color-paper-40);
+  }
+  .ir-prose {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+  }
+  .ir-prose p {
+    margin: 0;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+  }
+  .ir-prose p + p {
+    margin-top: var(--space-4);
+  }
+  .ir-prose .ir-sign {
+    margin-top: var(--space-6);
+    font-weight: 600;
+    color: var(--color-paper);
+  }
+  .ir-sign span {
+    display: block;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+
+  /* A lede tucked under its section head replaces the flow step. */
+  .ir-lede {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    margin-block: var(--space-4) 0;
+    text-align: center;
+    font: var(--text-body);
+    color: var(--color-paper-60);
+  }
+  .ir-note {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+    margin-block-end: 0;
+    text-align: center;
+    font: var(--text-small);
+    color: var(--color-paper-40);
+  }
+
+  /* The money: the total at Display, then the grants as a cell grid —
+     gap 1px on a hairline ground, so the ground is the rule. */
+  .ir-total {
+    margin-block-end: 0;
+    text-align: center;
+    font: var(--text-display);
+    letter-spacing: var(--tracking-display);
+    color: var(--color-paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .ir-total-label {
+    display: block;
+    margin-top: var(--space-2);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-amber-bright);
+  }
+  .ir-grants,
+  .ir-scores {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    margin-block-end: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--color-paper-12);
+    border: 1px solid var(--color-paper-12);
+  }
+  @media (min-width: 640px) {
+    .ir-grants,
+    .ir-scores {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 820px) {
+    .ir-grants,
+    .ir-scores {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .ir-grants li,
+  .ir-scores li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-6) var(--space-5);
+    background: var(--color-bg);
+  }
+  .ir-grant-amount,
+  .ir-score-value {
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .ir-grant-funder,
+  .ir-score-label {
+    font: var(--text-body);
+    font-weight: 600;
+    color: var(--color-paper-80);
+  }
+  .ir-grant-purpose,
+  .ir-score-context {
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+
+  /* Press: Work with ODD's ruled list. Rows without a link are not links. */
+  .ir-press {
+    max-width: 46rem;
+    margin-inline: auto;
+    margin-block-end: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ir-press li {
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .ir-press li:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  .ir-press a,
+  .ir-press div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: 1.4rem 0;
+    color: inherit;
+    text-decoration: none;
+  }
+  .ir-press-outlet {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--color-paper-40);
+  }
+  .ir-press-title {
+    font: var(--text-body);
+    font-weight: 600;
+    color: var(--color-paper);
+    transition: color var(--duration-fast) ease;
+  }
+  .ir-press a:hover .ir-press-title {
+    color: var(--color-heat);
+  }
+
+  /* Voices: quotes in two columns of hairline-topped rows. */
+  .ir-quotes {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-grid);
+    margin-block-end: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 820px) {
+    .ir-quotes {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .ir-quotes figure {
+    margin: 0;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .ir-quotes blockquote {
+    margin: 0;
+  }
+  .ir-quotes p {
+    margin: 0;
+    font: var(--text-body);
+    color: var(--color-paper-80);
+  }
+  .ir-quotes p::before {
+    content: '“';
+  }
+  .ir-quotes p::after {
+    content: '”';
+  }
+  .ir-quotes figcaption,
+  .ir-voice figcaption {
+    margin-top: var(--space-3);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  /* The loud quote: the letter's sentence in two inks, said by someone else. */
+  .ir-voice {
+    margin-inline: 0;
+    margin-block-end: 0;
+    text-align: center;
+  }
+  .ir-voice blockquote {
+    margin: 0;
+  }
+  .ir-voice p::before {
+    content: '“';
+  }
+  .ir-voice p::after {
+    content: '”';
+  }
+  .ir-actions {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* 2025 against 2026: a ruled table in tabular figures, 2026 in full ink.
+     Cells wrap; the box scrolls sideways only if one cannot. */
+  .ir-table-wrap {
+    max-width: 52rem;
+    margin-inline: auto;
+    overflow-x: auto;
+  }
+  .ir-table {
+    width: 100%;
+    border-collapse: collapse;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+    font-variant-numeric: tabular-nums;
+  }
+  .ir-table th,
+  .ir-table td {
+    padding: var(--space-3) var(--space-3) var(--space-3) 0;
+    border-top: 1px solid var(--color-paper-12);
+    text-align: left;
+    vertical-align: top;
+  }
+  .ir-table thead th,
+  .ir-table-group th,
+  .ir-trend,
+  .ir-breakdown-title,
+  .ir-partners dt,
+  .ir-status {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+  }
+  .ir-table thead th {
+    border-top: none;
+    color: var(--color-paper-40);
+  }
+  .ir-table-group th {
+    padding-top: var(--space-6);
+    color: var(--color-amber-bright);
+  }
+  .ir-table tbody th[scope='row'] {
+    width: 42%;
+    font-weight: 600;
+    color: var(--color-paper);
+  }
+  .ir-table td:last-child {
+    font-weight: 600;
+    color: var(--color-paper);
+  }
+  .ir-table-note {
+    display: block;
+    margin-top: var(--space-1);
+    font-weight: 400;
+    color: var(--color-paper-60);
+  }
+  .ir-trend {
+    display: block;
+    margin-top: var(--space-1);
+    color: var(--color-paper-40);
+  }
+  .ir-trend.is-up,
+  .ir-trend.is-new {
+    color: var(--color-amber-bright);
+  }
+
+  /* The lineup's breakdowns: one bar per row, drawn to scale on a faint
+     full-width track, so every bar shares the same 0–100%. */
+  .ir-breakdowns {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8) var(--space-grid);
+  }
+  @media (min-width: 820px) {
+    .ir-breakdowns {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .ir-breakdown-title {
+    margin: 0 0 var(--space-4);
+    color: var(--color-paper-40);
+  }
+  .ir-bars {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ir-bars li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-1) var(--space-3);
+    font: var(--text-small);
+    color: var(--color-paper-80);
+  }
+  .ir-bars li::after {
+    content: '';
+    grid-column: 1 / -1;
+    height: 4px;
+    background: linear-gradient(
+      to right,
+      var(--color-amber-bright) var(--share),
+      var(--color-paper-06) var(--share)
+    );
+  }
+  .ir-bar-count {
+    color: var(--color-paper-60);
+    font-variant-numeric: tabular-nums;
+  }
+  /* Each bar draws in from the left when its breakdown scrolls into view, a
+     beat after the one above it. The figure beside it never moves, and with
+     reduced motion or no script the bars are simply drawn. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.reveal-js) .ir-bars li::after {
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--duration-reveal) ease calc(var(--i) * 60ms + 150ms);
+    }
+    :global(html.reveal-js) .reveal.in .ir-bars li::after {
+      transform: none;
+    }
+  }
+
+  /* Partners: each credits group as a ruled row, label left, names right. */
+  .ir-partners {
+    max-width: 52rem;
+    margin-inline: auto;
+    margin-block-end: 0;
+  }
+  .ir-partners div {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+    padding-block: var(--space-4);
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .ir-partners div:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  @media (min-width: 640px) {
+    .ir-partners div {
+      grid-template-columns: 11rem minmax(0, 1fr);
+      gap: var(--space-5);
+    }
+  }
+  .ir-partners dt {
+    color: var(--color-paper-40);
+  }
+  .ir-partners dt span {
+    color: var(--color-amber-bright);
+  }
+  .ir-partners dd {
+    margin: 0;
+    font: var(--text-body);
+    color: var(--color-paper-80);
+  }
+
+  /* The 2025 promises: status · what was said · what happened, stacked on a
+     phone. The glyph is decoration (empty alt text); the word is the status. */
+  .ir-promises {
+    max-width: 60rem;
+    margin-inline: auto;
+    margin-block-end: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ir-promises li {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--color-paper-12);
+  }
+  .ir-promises li:last-child {
+    border-bottom: 1px solid var(--color-paper-12);
+  }
+  @media (min-width: 820px) {
+    .ir-promises li {
+      grid-template-columns: 8rem minmax(0, 1fr) minmax(0, 1.25fr);
+      gap: var(--space-6);
+      align-items: baseline;
+    }
+  }
+  .ir-status {
+    white-space: nowrap;
+    color: var(--color-paper-80);
+  }
+  .ir-status::before {
+    margin-right: 0.5em;
+    color: var(--color-amber-bright);
+  }
+  .ir-status.is-done::before {
+    content: '●';
+    content: '●' / '';
+  }
+  .ir-status.is-partly::before {
+    content: '◐';
+    content: '◐' / '';
+  }
+  .ir-status.is-not-done::before {
+    content: '○';
+    content: '○' / '';
+    color: var(--color-paper-40);
+  }
+  .ir-said,
+  .ir-did {
+    margin: 0;
+    font: var(--text-body);
+  }
+  .ir-said {
+    font-weight: 600;
+    color: var(--color-paper);
+  }
+  .ir-did {
+    color: var(--color-paper-60);
+  }
+</style>

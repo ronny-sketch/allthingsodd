@@ -396,6 +396,19 @@ const pages = defineCollection({
       external: z.boolean().optional(),
     });
 
+    // The impact report's photographs as evidence (2026-10-05): a photo
+    // checked against what its section claims, with a caption naming what,
+    // where and when. The photographer is not typed here; the page reads it
+    // from photo-credits.json. A `proofCard` carries one as `photo`, and a
+    // card with no checked photo stays a text card rather than borrowing a
+    // picture of something else. Not `photos` or `image` at this level:
+    // CloudCannon keys inputs by field name, and both are taken.
+    const evidencePhoto = z.object({ image: image(), alt: z.string(), caption: z.string() });
+    const proofCard = featureCard.extend({ photo: evidencePhoto.optional() });
+    // A photograph shown for its own sake, alt text and no caption: a
+    // PhotoBreak, or a tile in a PhotoWall.
+    const plainPhoto = z.object({ image: image(), alt: z.string() });
+
     // Speaker/team grid shape — About's team (no photos yet) and
     // ODDference's 2026 speaker roster (real, verified photos — see
     // oddference.json and PersonGrid.astro's photo-led card). `image` needs
@@ -867,6 +880,176 @@ const pages = defineCollection({
         // own, so that a film's closing frame holds the whole invitation and
         // "Stay ODD." together.
         signoff: z.object({ title: z.string() }),
+      }),
+
+      // ODDfest 2026 — Impact report (/impact-report-2026/, hidden). The 2025 report
+      // was a 70-page PDF on issuu; this one is a page, lighter, in the same
+      // order: the year, the money, direct and indirect impact, press, voices,
+      // lessons, what's next. The highlights and both aftermovies are read
+      // from oddfest.json and oddference.json, not copied here. Every figure
+      // needs a source — see docs/architecture.md and AGENTS.md.
+      z.object({
+        _template: z.literal('impact2026'),
+        seo,
+        title: z.string(),
+        titlePremise: z.string().optional(),
+        meta: z.string(),
+        primaryCta: linkCta,
+        secondaryCta: linkCta,
+        heroPhotos: z.array(z.object({ image: image(), alt: z.string() })).length(8),
+        railLeft: z.array(railItem),
+        railRight: z.array(railItem),
+        // `body` is paragraphs separated by a blank line. `photoBreak` runs
+        // full width under the letter.
+        letter: z.object({
+          premise: z.string(),
+          point: z.string(),
+          body: z.string(),
+          signature: z.string(),
+          role: z.string(),
+          photoBreak: plainPhoto.optional(),
+        }),
+        numbers: proofSection,
+        // 2025 against 2026, one measure per row. `y2025` quotes the 2025
+        // report. Leave `trend` out where the two years did not count the same
+        // thing, and say so in `note`; a 2026 figure never counted says that
+        // in words rather than leaving the row out.
+        compare: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          lede: z.string(),
+          areas: z.array(
+            z.object({
+              title: z.string(),
+              rows: z.array(
+                z.object({
+                  measure: z.string(),
+                  y2025: z.string(),
+                  y2026: z.string(),
+                  trend: z.enum(['up', 'down', 'new']).optional(),
+                  note: z.string().optional(),
+                }),
+              ),
+            }),
+          ),
+        }),
+        year: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          items: z.array(z.object({ year: z.string(), title: z.string(), body: z.string() })),
+          evidence: z.array(evidencePhoto).optional(),
+        }),
+        // Grants as awarded, with what each was given for. Nothing here comes
+        // from the internal cash-flow: publish a figure only once it is cleared.
+        money: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          body: z.string(),
+          total: proofItem,
+          grants: z.array(
+            z.object({ funder: z.string(), amount: z.string(), purpose: z.string() }),
+          ),
+          note: z.string().optional(),
+        }),
+        direct: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          body: z.string(),
+          items: z.array(proofCard),
+        }),
+        // Counted from the stage schedules, the credits and the open-call
+        // sheets. Each breakdown renders as bars; the page works out shares.
+        lineup: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          lede: z.string(),
+          items: z.array(proofItem),
+          breakdowns: z.array(
+            z.object({
+              title: z.string(),
+              items: z.array(z.object({ label: z.string(), count: z.number().int().positive() })),
+            }),
+          ),
+          note: z.string().optional(),
+          evidence: z.array(evidencePhoto).optional(),
+        }),
+        highlights: z.object({ eyebrow: z.string(), title: z.string(), lede: z.string() }),
+        // The names come from the credits' partner subgroups in
+        // oddfest-2026.json, picked by label in the order of `creditGroups`,
+        // so the two pages cannot disagree. The total above `countLabel` is
+        // counted, not typed. `items` says what partners actually did. Not
+        // `partners` or `groups`: CloudCannon keys inputs by field name, and
+        // both already belong to other shapes.
+        partnerOverview: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          lede: z.string(),
+          countLabel: z.string(),
+          creditGroups: z.array(z.string()).min(1),
+          items: z.array(featureCard),
+        }),
+        indirect: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          lede: z.string(),
+          items: z.array(proofCard),
+        }),
+        photoBreak: z.object({ image: image(), alt: z.string() }),
+        media: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          lede: z.string(),
+          press: z.array(
+            z.object({
+              outlet: z.string(),
+              title: z.string(),
+              date: z.string().optional(),
+              href: z.string().optional(),
+            }),
+          ),
+          owned: proofSection,
+        }),
+        // Anonymous lines from the June 2026 feedback forms. `from` says which
+        // form, never who: respondents left names for follow-up, not print.
+        // A quote with `emphasis` (copied exactly from its text) is set large
+        // above the rest, that part bright and the rest dim.
+        voices: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          lede: z.string(),
+          scores: z.array(proofItem),
+          quotes: z.array(
+            z.object({ text: z.string(), from: z.string(), emphasis: z.string().optional() }),
+          ),
+        }),
+        // The year in photographs, after the voices. Same shape as the
+        // thank-you page's wall; the photographers come from
+        // photo-credits.json, never typed.
+        gallery: z.object({
+          eyebrow: z.string().optional(),
+          title: z.string(),
+          photos: z.array(plainPhoto),
+          link: linkCta,
+        }),
+        // The 2025 report's promises for 2026, in its words, each with what
+        // happened. Every promise stays on the list, kept or not.
+        promises: z.object({
+          eyebrow: z.string(),
+          title: z.string(),
+          lede: z.string(),
+          items: z.array(
+            z.object({
+              said: z.string(),
+              status: z.enum(['Done', 'Partly', 'Not done']),
+              did: z.string(),
+            }),
+          ),
+        }),
+        learned: z.object({ eyebrow: z.string(), title: z.string(), items: z.array(featureCard) }),
+        // `photoBreak` runs full width above 2027.
+        next: sectionIntro.extend({ photoBreak: plainPhoto.optional() }),
+        participateTitle: z.string(),
+        participate: z.array(cta),
       }),
 
       // The 2027 ODDference rebuild: the centrally-produced professional
