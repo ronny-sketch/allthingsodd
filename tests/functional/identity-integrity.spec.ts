@@ -281,7 +281,7 @@ test('ODDference is positioned as where creative expertise meets business and so
   // rejected; the page headline had already moved to the approved line, but
   // its SEO title and description, the homepage card and the press
   // boilerplate still said the old one. Rendered HTML, so meta tags count.
-  for (const route of [...ROUTES, '/brand-book']) {
+  for (const route of [...ROUTES, '/brand-book', '/impact-report-2026']) {
     const html = await (await request.get(route)).text();
     expect(html, `${route} still uses the rejected ODDference line`).not.toMatch(
       /powered by creative/i,
