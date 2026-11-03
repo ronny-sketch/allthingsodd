@@ -305,16 +305,22 @@ const footerLinks = nav.flatMap((item) => item.children ?? [item]);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1.5rem;
+    gap: 0.5rem 1.5rem;
   }
+  /* The funder files are 84-unit-tall frames with the mark optically
+     balanced inside (the same convention as every file in
+     src/assets/partners/), so one shared height sizes all five evenly — and
+     that height has to be the frame's, not the mark's. */
   .foot-supported-logos img {
-    height: 1.375rem;
+    height: 3rem;
     width: auto;
-    max-width: 6.875rem;
-    object-fit: contain;
     opacity: 0.6;
     filter: brightness(0) invert(1);
     transition: opacity var(--duration-fast) ease;
+  }
+  /* ODDspace's light pages: paper ground, so the silhouette stays ink. */
+  :global(.theme-light) .foot-supported-logos img {
+    filter: brightness(0);
   }
   .foot-supported-logos img:hover {
     opacity: 1;
