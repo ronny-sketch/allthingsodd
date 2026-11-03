@@ -153,7 +153,7 @@
       "logo": "../../assets/partners/logo-sanfrancisco.svg"
     },
     {
-      "name": "Tres Méder",
+      "name": "Stiftelsen Tre Smeder",
       "logo": "../../assets/partners/logo-tresmeder.svg"
     }
   ],
@@ -285,5 +285,26 @@
       }
     ]
   },
-  "supportedBy": []
+  "supportedBy": [
+    {
+      "name": "Yksityisyrittäjäin Säätiö",
+      "logo": "../../assets/partners/logo-yksityisyrittajansaatio.svg"
+    },
+    {
+      "name": "Alfred Kordelinin säätiö",
+      "logo": "../../assets/partners/logo-kordelin.svg"
+    },
+    {
+      "name": "Suomen Kulttuurirahasto",
+      "logo": "../../assets/partners/logo-suomenkulttuurirahasto.svg"
+    },
+    {
+      "name": "Stiftelsen Tre Smeder",
+      "logo": "../../assets/partners/logo-tresmeder.svg"
+    },
+    {
+      "name": "Amos Andersons fond",
+      "logo": "../../assets/partners/logo-amosandersonsfond.svg"
+    }
+  ]
 }

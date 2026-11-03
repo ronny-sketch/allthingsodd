@@ -29,7 +29,7 @@ const page = entry.data;
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { featuredIn, logoWall } = site.data;
+const { featuredIn, logoWall, supportedBy } = site.data;
 
 // Verified editorial/media coverage only (2026-08-31 final implementation
 // pass) — same `pressCoverage` distinction media.astro's own "Featured in"
@@ -213,6 +213,22 @@ const preloadImage = await mosaicImage(firstArchiveImage);
         items={homePressLogos}
         size="large"
         scroll
+        compact
+      />
+    )
+  }
+
+  {
+    /* "Supported by" — the foundations that fund ODD (site/global.json's
+       `supportedBy`, the same list the footer, the Info menu and About
+       show). Static rather than scrolling: five names a funder expects to
+       find, not a press reel. */
+    supportedBy && supportedBy.length > 0 && (
+      <LogoStrip
+        eyebrow="Foundations"
+        title="Supported by"
+        items={supportedBy}
+        size="large"
         compact
       />
     )

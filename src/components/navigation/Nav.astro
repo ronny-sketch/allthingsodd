@@ -14,7 +14,7 @@ import Pill from '../primitives/Pill.astro';
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { nav } = site.data;
+const { nav, supportedBy } = site.data;
 const path = Astro.url.pathname;
 const primaryItems = nav.filter((item) => !item.children);
 const infoItem = nav.find((item) => item.children);
@@ -90,6 +90,16 @@ const infoItem = nav.find((item) => item.children);
                   {child.label}
                 </a>
               ))}
+              {supportedBy && supportedBy.length > 0 && (
+                <div class="nav-dropdown-supported">
+                  <span class="nav-dropdown-label">Supported by</span>
+                  <div class="nav-dropdown-logos">
+                    {supportedBy.map((item) => (
+                      <img src={item.logo.src} alt={item.name} loading="lazy" />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )
@@ -260,6 +270,34 @@ const infoItem = nav.find((item) => item.children);
     padding: 0.4rem 0.8rem 0.7rem;
     margin-bottom: 0.2rem;
     border-bottom: 1px solid var(--color-ink-12);
+  }
+  /* The funders (site/global.json's `supportedBy`) close the panel: the
+     same label, ruled off above instead of below. The width is what lands
+     the five logos on two even rows at the height below. */
+  .nav-dropdown-supported {
+    width: 15rem;
+    margin-top: 0.5rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--color-ink-12);
+  }
+  .nav-dropdown-supported .nav-dropdown-label {
+    border-bottom: 0;
+    margin-bottom: 0;
+    padding-bottom: 0.2rem;
+  }
+  .nav-dropdown-logos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 0.75rem;
+    padding: 0 0.8rem 0.3rem;
+  }
+  /* 84-unit frames, as in Footer.astro: this is the frame's height. */
+  .nav-dropdown-logos img {
+    height: 3rem;
+    width: auto;
+    filter: brightness(0);
+    opacity: 0.6;
   }
   @media (prefers-reduced-motion: no-preference) {
     .nav-dropdown-menu {

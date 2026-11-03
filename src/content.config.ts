@@ -313,11 +313,12 @@ const site = defineCollection({
           ),
         })
         .optional(),
-      // Footer "Supported by" — deliberately separate from "partners" for
-      // the same reason as logoWall above: foundation/supporter status isn't
-      // recorded anywhere in this repo yet (no partner currently has
-      // `tier: "Supporter"` set). Optional and left empty until it is — see
-      // Footer.astro, which renders nothing when this is absent/empty.
+      // "Supported by" — the foundations currently funding ODD, confirmed by
+      // Ronny 2026-11-03. Deliberately separate from "partners" (a funder is
+      // not a partner tier). One list, four places: the footer, the Info
+      // dropdown + mobile menu, Home and About; each renders nothing when
+      // this is absent/empty. Logos are 84-unit-tall frames like every file
+      // in src/assets/partners/, so one height sizes them evenly.
       supportedBy: z.array(z.object({ name: z.string(), logo: image() })).optional(),
     }),
 });

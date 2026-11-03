@@ -17,7 +17,7 @@ import { socialLinkLabel } from '../primitives/social-handle';
 
 const site = await getEntry('site', 'global');
 if (!site) throw new Error('Missing site/global.json content entry');
-const { nav, social, footerTag } = site.data;
+const { nav, social, footerTag, supportedBy } = site.data;
 const menuLinks = nav.flatMap((item) => item.children ?? [item]);
 ---
 
@@ -61,6 +61,16 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
         ))
       }
     </div>
+    {
+      supportedBy && supportedBy.length > 0 && (
+        <div class="menu-supported">
+          <span class="menu-supported-label">Supported by</span>
+          {supportedBy.map((item) => (
+            <img src={item.logo.src} alt={item.name} loading="lazy" />
+          ))}
+        </div>
+      )
+    }
     <span class="menu-tag">{footerTag}</span>
   </div>
 </div>
@@ -337,6 +347,30 @@ const menuLinks = nav.flatMap((item) => item.children ?? [item]);
     font: var(--text-small);
     color: var(--color-ink-40);
     white-space: nowrap;
+  }
+  /* The funders, between the social icons and the tag: one line with them
+     on a wide window (so the menu still fits 100dvh), their own wrapped
+     line on a phone. */
+  .menu-supported {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 1rem;
+  }
+  .menu-supported-label {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-ink-40);
+    flex-basis: 100%;
+  }
+  /* 84-unit frames, as in Footer.astro: this is the frame's height. */
+  .menu-supported img {
+    height: 2.5rem;
+    width: auto;
+    filter: brightness(0);
+    opacity: 0.6;
   }
   @media (max-width: 640px) {
     .menu-links {
