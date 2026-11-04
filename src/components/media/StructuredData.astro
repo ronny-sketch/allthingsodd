@@ -14,12 +14,16 @@ const { social, contact } = site.data;
 
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
 const email = contact[0]?.email;
+const organizationId = `${siteUrl}/#organization`;
+const websiteId = `${siteUrl}/#website`;
 
 const organization = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'New Nordic Way rf',
+  '@id': organizationId,
+  name: 'All Things ODD',
   alternateName: 'ODD',
+  legalName: 'New Nordic Way rf',
   url: siteUrl,
   logo: `${siteUrl}/logo.png`,
   ...(email && { email }),
@@ -35,10 +39,12 @@ const organization = {
 const website = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
+  '@id': websiteId,
   // The website, not the brand (2026-09-04). "All Things ODD" is the name of
   // this site/project — the canonical digital home for ODD's things; `ODD`
-  // stays on as the brand's alternate name, and the Organization entity
-  // above keeps the legal publisher (New Nordic Way rf) factual.
+  // stays on as the brand's alternate name. The Organization entity above
+  // uses All Things ODD as the public identity and keeps New Nordic Way rf as
+  // its legalName, making the relationship explicit for search engines.
   name: 'All Things ODD',
   alternateName: 'ODD',
   // Same underlying factual framing as Media's boilerplate (media.json) —
@@ -49,7 +55,7 @@ const website = {
   description:
     "ODD is a Helsinki-based initiative connecting Finland's creative and cultural fields with business and wider society, through ODDfest, ODDference and ODDspace.",
   url: siteUrl,
-  publisher: { '@type': 'Organization', name: 'New Nordic Way rf' },
+  publisher: { '@id': organizationId },
 };
 ---
 
