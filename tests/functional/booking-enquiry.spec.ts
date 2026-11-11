@@ -92,6 +92,8 @@ async function fillStep(page: Page, step: number, { days = 40 } = {}) {
       await page.fill('#bk-email', 'test@example.com');
       await page.check('#bk-orgtype-company');
       await page.check('#bk-member-false');
+      // Held an event here before, so no visit is asked (D36 tests below).
+      await page.check('#bk-before-true');
       return;
   }
 }
@@ -980,6 +982,61 @@ test('"Keep me posted" sends the newsletter opt-in', async ({ page }) => {
   await page.check('input[name="newsletter_opt_in"]');
   const sent = await sendAndCapture(page);
   expect(sent.newsletter_opt_in).toBe(true);
+});
+
+// --- First visit (D36) ------------------------------------------------------
+
+test('a member is not asked about a first visit', async ({ page }) => {
+  await openForm(page);
+  await reach(page, 5);
+  await expect(page.locator('#bk-before')).toBeHidden();
+  await page.check('#bk-member-true');
+  await expect(page.locator('#bk-before')).toBeHidden();
+  await page.check('#bk-member-false');
+  await expect(page.locator('#bk-before')).toBeVisible();
+  await expect(page.locator('#bk-visit')).toBeHidden();
+});
+
+test('a first event here asks for one to three viewing times, and sends them', async ({ page }) => {
+  await openForm(page);
+  await fillFrom(page, 1);
+  // Back to "About you" and answer "no, never".
+  await page.locator('.bk-review-edit').last().click();
+  await page.check('#bk-before-false');
+  const visit = page.locator('#bk-visit');
+  await expect(visit).toBeVisible();
+  await expect(visit).toContainText('30-minute look round');
+  // Next without a time is refused, on this question.
+  await page.click(NEXT);
+  await expect(page.locator('#bk-visit-err')).toContainText('Pick one to three times');
+  // Pick three; the rest go quiet; one can be taken back.
+  // Times only: the day chips above them share the chip look.
+  const slots = visit.locator('#bk-slots .bk-slot');
+  await slots.nth(0).click();
+  await slots.nth(1).click();
+  await slots.nth(2).click();
+  await expect(visit.locator('.bk-pick')).toHaveCount(3);
+  await expect(visit.locator('.bk-picks-label')).toHaveText('Your picks (3 of 3)');
+  await expect(slots.nth(3)).toBeDisabled();
+  await visit.locator('.bk-pick').first().click();
+  await expect(visit.locator('.bk-pick')).toHaveCount(2);
+  await page.click(NEXT);
+  await expect(page.locator('#bk-review')).toContainText('Visit first');
+  const sent = await sendAndCapture(page);
+  expect(sent.held_event_before).toBe(false);
+  expect(sent.visit_times).toHaveLength(2);
+  for (const t of sent.visit_times as string[])
+    expect(t).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:(00|30):00\+0[23]:00$/);
+  await expect(page.locator('#bk-done [data-done-visit]')).toBeVisible();
+});
+
+test('someone who has held an event here sends no visit', async ({ page }) => {
+  await openForm(page);
+  await fillFrom(page, 1);
+  const sent = await sendAndCapture(page);
+  expect(sent.held_event_before).toBe(true);
+  expect(sent.visit_times).toEqual([]);
+  await expect(page.locator('#bk-done [data-done-visit]')).toBeHidden();
 });
 
 test('choices work from the keyboard', async ({ page }) => {
