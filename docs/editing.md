@@ -152,7 +152,8 @@ high-level notes:
     `headline`, optional `note` and `cta`. The grid itself is not content.
     It reads `/oddspace/availability.json`, the booking calendar reduced to
     room + time per day (see `docs/deployment.md`), so a booking shows up
-    within ten minutes of going on the calendar, under the room its
+    within a few minutes of going on the calendar (two minutes' cache since
+    2026-11-11), under the room its
     `location` names ("Teollisuuskatu 9D, Helsinki — Galleria"); an event
     with no room in its location shows as "ODDspace". Event names never
     reach the site this way: `events` above stays the only place they
@@ -164,6 +165,14 @@ high-level notes:
   `oddspace-venue.json`. The editing
   side was deliberately deferred in the September review, so these two are
   edited in the repo for now, unlike every other page above.
+  - 2026-11-11: `booking.liveAvailability` in `oddspace-venue.json` (true
+    by default) shows the booking calendar inside the enquiry's "When" step:
+    the rooms are chosen first, then a month for those rooms with free,
+    partly booked, booked and on-hold days, and start hours inside a
+    booking greyed out. Set it to `false` and the plain date field comes
+    back, with no code change: the switch to use if the calendar ever
+    misbehaves. The form also falls back on its own whenever the feed does
+    not load.
   - The membership page's "what's not included" list is the reason it
     exists. Do not quietly trim it to make the page read better: the studio
     carve-out and the absence of a private desk are what a member would

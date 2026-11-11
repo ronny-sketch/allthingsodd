@@ -32,6 +32,15 @@
 // Form v3 (2026-10-28): rooms, alcohol and music are tick boxes. "Not sure
 // yet", "No alcohol" and "No music" clear the others, and ticking anything
 // else clears them (ALONE below). The thank-you screen repeats the summary.
+//
+// Live availability (2026-11-11): the rooms come first, then "When" shows a
+// month for those rooms from /oddspace/availability.json, fetched when the
+// dialog opens and again when "When" shows if it is over two minutes old.
+// A day is a button that writes the (then hidden) date field, so the
+// payload is what it was, plus `availability_at_submit`: what the visitor
+// saw. Start hours inside a booking are greyed out, and Next refuses times
+// that run into one (booking-availability.ts has the rule). No feed, or the
+// venue page's flag off, and the plain date field comes back.
 import { API_BASE } from './api-base';
 import { turnstileHeaders } from './turnstile';
 import { readOutcome } from './submission-outcome';
@@ -40,6 +49,7 @@ import { trackEvent } from './analytics';
 import { lanePhrase } from './venue-lanes';
 import {
   AUDIENCE,
+  SPACES,
   LIMITS,
   validateBooking,
   shortNoticeWarning,
@@ -49,6 +59,21 @@ import {
   type BookingPayload,
   type FieldErrors,
 } from './booking-enquiry-schema';
+import {
+  parseFeed,
+  dayState,
+  startTaken,
+  dayLines,
+  outcome,
+  at,
+  known,
+  helsinkiDate,
+  addDays as calendarAddDays,
+  MAX_AGE_MS,
+  type Feed,
+  type DayState,
+  type Outcome,
+} from './booking-availability';
 // The visit times are a membership viewing's (D36): same slots, same rules,
 // so the Worker accepts exactly what this offers.
 import {
@@ -64,6 +89,27 @@ const FALLBACK_EMAIL = 'hello@oddfest.co';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const HASH = '#booking-form';
 const REPLY_PROMISE = 'We check the date and reply with availability and a price.';
+const FEED_URL = '/oddspace/availability.json';
+const FIRM_TEXT = 'Those hours run into a booking. Pick other hours or another day.';
+const HOLD_TEXT = 'On hold for someone else. Send it and you’re next in line.';
+
+// "2026-12-10" as "Thursday 10 December", for the calendar's own labels.
+const longDateFmt = new Intl.DateTimeFormat('en-GB', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  timeZone: 'UTC',
+});
+const monthFmt = new Intl.DateTimeFormat('en-GB', {
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+const utcOf = (date: string) => {
+  const [y, m, d] = date.split('-').map(Number) as [number, number, number];
+  return Date.UTC(y, m - 1, d);
+};
+const longDate = (date: string) => longDateFmt.format(utcOf(date));
 
 // What the Worker answers with. `errors` carries field-level messages on a 400.
 interface ResponseBody {
@@ -311,6 +357,349 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     form.dispatchEvent(new Event('change', { bubbles: true }));
   });
 
+  // --- Live availability (2026-11-11) ------------------------------------
+  //
+  // The feed is fetched when the dialog opens, never on page load, and kept
+  // in the page only. Until it arrives, and whenever it cannot be had, the
+  // plain date field shows; with it, a month of buttons replaces that field
+  // (the field stays, hidden, and holds the answer).
+
+  const liveWanted = form.dataset.liveAvailability !== 'false';
+  const calWrap = document.getElementById('bk-cal');
+  const calGrid = document.getElementById('bk-cal-grid');
+  const calMonthEl = document.getElementById('bk-cal-month');
+  const calFor = document.getElementById('bk-cal-for');
+  const calNote = document.getElementById('bk-cal-note');
+  const calDay = document.getElementById('bk-cal-day');
+  const calLegend = document.getElementById('bk-cal-legend');
+  const calFallback = document.getElementById('bk-cal-fallback');
+  const calPrev = form.querySelector<HTMLButtonElement>('[data-cal-prev]');
+  const calNext = form.querySelector<HTMLButtonElement>('[data-cal-next]');
+  const dateSub = document.getElementById('bk-date-sub');
+  const whenGrid = document.getElementById('bk-when-grid');
+  const availLine = document.getElementById('bk-avail');
+  const dateInput = form.querySelector<HTMLInputElement>('input[name="event_date"]');
+  const fromSelect = form.querySelector<HTMLSelectElement>('select[name="time_from"]');
+
+  let feed: Feed | null = null;
+  let feedAt = 0;
+  let feedFailed = false;
+  let feedLoading: Promise<void> | null = null;
+  let calMonth = '';
+  let calKey = '';
+
+  const roomName = (key: string) =>
+    key === 'all' ? 'Every room' : (SPACES.find((o) => o.value === key)?.label ?? key);
+  const isLive = () => liveWanted && feed !== null;
+  const chosenRooms = () => valuesOf('spaces');
+  const choseRoom = () => chosenRooms().some((r) => r !== 'advise_me');
+
+  const loadFeed = (): Promise<void> => {
+    if (!liveWanted) return Promise.resolve();
+    if (feedLoading) return feedLoading;
+    if (feed && Date.now() - feedAt < MAX_AGE_MS) return Promise.resolve();
+    feedLoading = fetch(FEED_URL, { headers: { Accept: 'application/json' } })
+      .then((res) => (res.ok ? res.json() : null))
+      .catch(() => null)
+      .then((json) => {
+        const parsed = parseFeed(json);
+        // A failed refetch keeps the feed already shown; only a first
+        // failure falls back to the plain field.
+        if (parsed) {
+          feed = parsed;
+          feedAt = Date.now();
+          feedFailed = false;
+        } else if (!feed) {
+          feedFailed = true;
+        }
+      })
+      .finally(() => {
+        feedLoading = null;
+        calKey = '';
+        renderCalendar();
+      });
+    return feedLoading;
+  };
+
+  // The first day a visitor can pick: tomorrow, Helsinki.
+  const firstDay = () => calendarAddDays(helsinkiDate(Date.now()), 1);
+  const lastMonth = () => calendarAddDays(firstDay(), 540).slice(0, 7);
+  const shiftMonth = (ym: string, by: number) => {
+    const [y, m] = ym.split('-').map(Number) as [number, number];
+    return new Date(Date.UTC(y, m - 1 + by, 1)).toISOString().slice(0, 7);
+  };
+
+  const STATE_WORD: Record<DayState, string> = {
+    free: '',
+    partly: 'Partly',
+    booked: 'Booked',
+    hold: 'On hold',
+    some: 'Bookings',
+    unknown: 'Ask',
+  };
+  const STATE_SPOKEN: Record<DayState, string> = {
+    free: 'free',
+    partly: 'partly booked',
+    booked: 'booked',
+    hold: 'on hold',
+    some: 'some rooms booked',
+    unknown: 'not in our calendar yet, we check it by hand',
+  };
+
+  const timePhrase = (from: string | null, until: string | null) =>
+    from && until
+      ? `${from}–${until}`
+      : from
+        ? `from ${from}`
+        : until
+          ? `until ${until}`
+          : 'all day';
+
+  const renderDay = (date: string) => {
+    if (!calDay || !feed) return;
+    if (!date) {
+      calDay.hidden = true;
+      calDay.replaceChildren();
+      return;
+    }
+    const head = document.createElement('p');
+    head.className = 'bk-cal-day-head';
+    head.textContent = longDate(date);
+    const parts: HTMLElement[] = [head];
+    const note = (text: string) => {
+      const p = document.createElement('p');
+      p.textContent = text;
+      parts.push(p);
+    };
+    if (!known(feed, date)) {
+      note('This date is past our calendar for now. We’ll check it by hand.');
+    } else {
+      const lines = dayLines(feed, date, chosenRooms());
+      if (lines.length === 0) {
+        note(choseRoom() ? 'Nothing booked in your rooms that day.' : 'Nothing booked that day.');
+      } else {
+        const ul = document.createElement('ul');
+        for (const l of lines) {
+          const li = document.createElement('li');
+          const what = l.hold ? 'on hold' : 'booked';
+          li.textContent = `${l.rooms.map(roomName).join(' and ')}: ${what} ${timePhrase(l.from, l.until)}${
+            l.hold ? ' (someone has an offer; you can still ask)' : ''
+          }`;
+          ul.append(li);
+        }
+        parts.push(ul);
+        note('Times include the hour we keep free between events.');
+      }
+    }
+    calDay.replaceChildren(...parts);
+    calDay.hidden = false;
+  };
+
+  // From hours inside a firm booking (with its hour either side) are greyed
+  // out and say so. Until is left alone: an end before the start means the
+  // next day, so the whole time is checked instead (updateAvail, Next).
+  const updateHours = () => {
+    if (!fromSelect) return;
+    const date = value('event_date');
+    const live = isLive() && date !== '' && choseRoom();
+    for (const o of Array.from(fromSelect.options)) {
+      if (!o.value) continue;
+      const taken = live && startTaken(feed!, date, Number(o.value.slice(0, 2)), chosenRooms());
+      o.disabled = taken;
+      o.textContent = taken ? `${o.value} · booked` : o.value;
+    }
+  };
+
+  // The whole time against the feed: start to end, past midnight included.
+  const checkTime = (): { kind: Outcome; clashDate?: string } | null => {
+    if (!isLive()) return null;
+    const { start, end } = localTimes();
+    const s0 = start && helsinkiLocalToISO(start);
+    const e0 = end && helsinkiLocalToISO(end);
+    if (!s0 || !e0) return null;
+    const startMs = Date.parse(s0);
+    const endMs = Date.parse(e0);
+    if (!(endMs > startMs)) return null;
+    const o = outcome(feed!, startMs, endMs, chosenRooms());
+    // The day named in the refusal: the booking's own, or the visitor's
+    // first day if the booking was already running.
+    const clashDate = o.firstFirm ? helsinkiDate(Math.max(o.firstFirm.s, startMs)) : undefined;
+    return { kind: o.kind, clashDate };
+  };
+
+  const firmText = (clashDate: string | undefined) =>
+    clashDate && (ticked('multi_day') || clashDate !== value('event_date'))
+      ? `Those hours run into a booking on ${formatDate(clashDate)}. Pick other hours or another day.`
+      : FIRM_TEXT;
+
+  const updateAvail = () => {
+    if (!availLine) return;
+    const c = checkTime();
+    const text =
+      c?.kind === 'free'
+        ? 'Free at your time.'
+        : c?.kind === 'hold'
+          ? HOLD_TEXT
+          : c?.kind === 'firm'
+            ? firmText(c.clashDate)
+            : c?.kind === 'unknown'
+              ? 'We check dates this far ahead by hand.'
+              : '';
+    // Once Next has refused the hours, this line is the question's error:
+    // it stays here, under the hours it is about, instead of the error slot
+    // at the foot of the question (design review, 11 Nov 2026).
+    const marked = c?.kind === 'firm' && !!wrapperFor('get_in')?.classList.contains('is-invalid');
+    availLine.textContent = text;
+    availLine.hidden = !text;
+    availLine.classList.toggle('is-hold', c?.kind === 'hold');
+    availLine.classList.toggle('is-firm', c?.kind === 'firm' && !marked);
+    availLine.classList.toggle('is-error', marked);
+  };
+
+  // What the visitor saw, for the team (the Worker records it).
+  const availabilityAtSubmit = (): 'free' | 'on_hold' | 'not_checked' => {
+    const c = checkTime();
+    return c?.kind === 'free' ? 'free' : c?.kind === 'hold' ? 'on_hold' : 'not_checked';
+  };
+
+  function renderCalendar() {
+    const live = isLive();
+    if (calWrap) calWrap.hidden = !live;
+    if (dateSub) dateSub.hidden = live;
+    whenGrid?.classList.toggle('is-cal', live);
+    if (calFallback) calFallback.hidden = !(liveWanted && !feed && feedFailed);
+    updateHours();
+    updateAvail();
+    if (!live || !calGrid || !feed) return;
+
+    const rooms = chosenRooms();
+    const date = value('event_date');
+    const first = firstDay();
+    if (!calMonth) calMonth = (date && date >= first ? date : first).slice(0, 7);
+    if (calMonth < first.slice(0, 7)) calMonth = first.slice(0, 7);
+    if (calMonth > lastMonth()) calMonth = lastMonth();
+    const key = JSON.stringify([rooms, date, calMonth, feedAt]);
+    if (key === calKey) return;
+    calKey = key;
+
+    const advise = !choseRoom();
+    if (calFor) {
+      const names = rooms.filter((r) => r !== 'advise_me').map(roomName);
+      calFor.textContent = advise
+        ? 'No room chosen yet, so this shows bookings in every room.'
+        : `Showing ${listPhrase(names.map((n) => `the ${n}`))}.`;
+    }
+    calLegend
+      ?.querySelectorAll<HTMLElement>('[data-key="partly"], [data-key="booked"]')
+      .forEach((li) => {
+        li.hidden = advise;
+      });
+    const holdKey = calLegend?.querySelector<HTMLElement>('[data-key="hold"]');
+    if (holdKey?.lastChild) holdKey.lastChild.textContent = advise ? 'Something booked' : 'On hold';
+
+    const [y, m] = calMonth.split('-').map(Number) as [number, number];
+    if (calMonthEl) calMonthEl.textContent = monthFmt.format(Date.UTC(y, m - 1, 1));
+    if (calPrev) calPrev.disabled = calMonth <= first.slice(0, 7);
+    if (calNext) calNext.disabled = calMonth >= lastMonth();
+
+    const daysIn = new Date(Date.UTC(y, m, 0)).getUTCDate();
+    const offset = (new Date(Date.UTC(y, m - 1, 1)).getUTCDay() + 6) % 7; // Monday first
+    const today = helsinkiDate(Date.now());
+    const cells: HTMLElement[] = [];
+    for (let i = 0; i < offset; i++) {
+      const pad = document.createElement('span');
+      pad.className = 'bk-cal-pad';
+      pad.setAttribute('aria-hidden', 'true');
+      cells.push(pad);
+    }
+    let anyUnknown = false;
+    let focusable: HTMLButtonElement | null = null;
+    for (let d = 1; d <= daysIn; d++) {
+      const day = `${calMonth}-${String(d).padStart(2, '0')}`;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'bk-cal-cell';
+      b.dataset.date = day;
+      b.tabIndex = -1;
+      const num = document.createElement('span');
+      num.className = 'bk-cal-num';
+      num.textContent = String(d);
+      num.setAttribute('aria-hidden', 'true');
+      b.append(num);
+      if (day === today) b.classList.add('is-today');
+      if (day < first) {
+        b.disabled = true;
+        b.setAttribute('aria-label', `${longDate(day)}, ${day === today ? 'today' : 'past'}`);
+      } else {
+        const state = dayState(feed, day, rooms);
+        if (state === 'unknown') anyUnknown = true;
+        b.classList.add(`is-${state}`);
+        b.dataset.state = state;
+        const word = STATE_WORD[state];
+        if (word) {
+          const w = document.createElement('span');
+          w.className = 'bk-cal-word';
+          w.textContent = word;
+          w.setAttribute('aria-hidden', 'true');
+          b.append(w);
+        }
+        b.setAttribute('aria-label', `${longDate(day)}, ${STATE_SPOKEN[state]}`);
+        b.setAttribute('aria-pressed', String(day === date));
+        // One day takes Tab (the chosen one, else the first open one); the
+        // arrow keys move from there.
+        if (day === date || (!focusable && !date.startsWith(calMonth))) focusable = b;
+      }
+      cells.push(b);
+    }
+    if (focusable) focusable.tabIndex = 0;
+    calGrid.replaceChildren(...cells);
+    if (calNote) {
+      calNote.textContent = anyUnknown
+        ? `Our calendar runs to ${formatDate(feed.to)}. Later dates say “Ask”: we check them by hand.`
+        : '';
+      calNote.hidden = !anyUnknown;
+    }
+    renderDay(date);
+  }
+
+  const pickDay = (b: HTMLButtonElement) => {
+    if (!dateInput || b.disabled || !b.dataset.date) return;
+    dateInput.value = b.dataset.date;
+    dateInput.dispatchEvent(new Event('input', { bubbles: true }));
+    dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+    calGrid?.querySelector<HTMLButtonElement>(`[data-date="${b.dataset.date}"]`)?.focus();
+  };
+  calGrid?.addEventListener('click', (ev) => {
+    const b = (ev.target as HTMLElement).closest<HTMLButtonElement>('.bk-cal-cell');
+    if (b) pickDay(b);
+  });
+  // Arrow keys move a day or a week; the month turns at its edges.
+  calGrid?.addEventListener('keydown', (ev) => {
+    const b = (ev.target as HTMLElement).closest<HTMLButtonElement>('.bk-cal-cell');
+    const step = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[ev.key];
+    if (!b?.dataset.date || step === undefined) return;
+    ev.preventDefault();
+    const target = calendarAddDays(b.dataset.date, step);
+    if (target < firstDay() || target.slice(0, 7) > lastMonth()) return;
+    if (target.slice(0, 7) !== calMonth) {
+      calMonth = target.slice(0, 7);
+      renderCalendar();
+    }
+    const next = calGrid.querySelector<HTMLButtonElement>(`[data-date="${target}"]`);
+    if (!next) return;
+    calGrid.querySelectorAll<HTMLButtonElement>('.bk-cal-cell').forEach((c) => (c.tabIndex = -1));
+    next.tabIndex = 0;
+    next.focus();
+  });
+  calPrev?.addEventListener('click', () => {
+    calMonth = shiftMonth(calMonth, -1);
+    renderCalendar();
+  });
+  calNext?.addEventListener('click', () => {
+    calMonth = shiftMonth(calMonth, 1);
+    renderCalendar();
+  });
+
   // --- From questions to payload ------------------------------------------
 
   // The date and times as Helsinki wall-clock strings, or '' while a part is
@@ -439,6 +828,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
           ? str(fd, 'held_event_before') === 'true'
           : undefined,
       visit_times: visitAsked() ? [...picks].sort(byTime) : [],
+      availability_at_submit: availabilityAtSubmit(),
     };
   };
 
@@ -462,6 +852,12 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     else if (multi && !value('end_date')) e.get_in = 'Add the last day.';
     else if (multi && value('end_date') < value('event_date'))
       e.get_in = 'The last day has to come after the first.';
+    // Hours that run into a firm booking (with the hour either side) are
+    // refused here, on Next; a hold is not (the visitor is next in line).
+    if (!e.get_in) {
+      const c = checkTime();
+      if (c?.kind === 'firm') e.get_in = firmText(c.clashDate);
+    }
     if (e.get_in) delete e.get_out;
 
     if (value('headcount_estimate') === '') {
@@ -492,16 +888,24 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
 
   const errorSlot = (wrap: HTMLElement) => wrap.querySelector<HTMLElement>(':scope > .field-error');
 
+  // Refused hours: updateAvail() shows the message under the hours instead
+  // of in the question's error slot.
+  const isClash = (wrap: HTMLElement, message: string) =>
+    !!availLine && wrap.contains(availLine) && message.startsWith('Those hours run into a booking');
+
   const mark = (wrap: HTMLElement, message: string) => {
     const err = errorSlot(wrap);
     if (!err) return;
-    err.textContent = message;
-    err.hidden = false;
+    const clash = isClash(wrap, message);
+    err.textContent = clash ? '' : message;
+    err.hidden = clash;
     wrap.classList.add('is-invalid');
+    const describedBy = clash ? availLine!.id : err.id;
     for (const c of controlsIn(wrap)) {
       c.setAttribute('aria-invalid', 'true');
       const ids = new Set((c.getAttribute('aria-describedby') ?? '').split(' ').filter(Boolean));
-      ids.add(err.id);
+      ids.delete(clash ? err.id : (availLine?.id ?? ''));
+      ids.add(describedBy);
       c.setAttribute('aria-describedby', [...ids].join(' '));
     }
   };
@@ -539,12 +943,20 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
 
   const focusQuestion = (wrap: HTMLElement) => {
     const controls = controlsIn(wrap);
-    const target =
+    let target: HTMLElement | undefined =
       controls.find((c) =>
         c instanceof HTMLInputElement && c.type === 'radio' ? c.checked : false,
       ) ??
       controls.find((c) => c.value === '' && c.type !== 'radio' && c.type !== 'checkbox') ??
       controls[0];
+    // The date field hides behind the live calendar. No date yet: the
+    // calendar takes focus. A date already (the hours clash): "From" does.
+    if (target?.closest('[hidden]') && calWrap && !calWrap.hidden && wrap.contains(calWrap)) {
+      target =
+        (value('event_date')
+          ? controls.find((c) => !c.closest('[hidden]'))
+          : calGrid?.querySelector<HTMLElement>('.bk-cal-cell[tabindex="0"]')) ?? undefined;
+    }
     wrap.scrollIntoView({ block: 'center', behavior: reducedMotion.matches ? 'auto' : 'smooth' });
     target?.focus({ preventScroll: true });
   };
@@ -567,22 +979,39 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
   // The footer's count. On the summary the button says "Send enquiry", so
   // the count says "before sending" there; the only question on that step
   // is the privacy tick box, so it names it.
-  const neededText = (n: number) => {
+  // A refused time is answered, just not possible, so the count calls the
+  // questions "things to fix" when one of them is a clash (design review,
+  // 11 Nov 2026).
+  const neededNoun = (n: number, clash: boolean) =>
+    clash
+      ? n === 1
+        ? '1 thing to fix'
+        : `${n} things to fix`
+      : n === 1
+        ? '1 answer'
+        : `${n} answers`;
+  const neededText = (n: number, clash = false) => {
     if (steps[current]?.dataset.step === 'review') {
       return n === 1 ? 'Tick the privacy box to send.' : `${n} answers needed before sending.`;
     }
-    return n === 1 ? '1 answer needed to continue.' : `${n} answers needed to continue.`;
+    return clash
+      ? `${neededNoun(n, true)} to continue.`
+      : n === 1
+        ? '1 answer needed to continue.'
+        : `${n} answers needed to continue.`;
   };
 
   // Marks each question in `entries`, says how many, and moves to the first.
   const showErrors = (entries: [HTMLElement, string][]) => {
     for (const [wrap, message] of entries) mark(wrap, message);
+    updateAvail();
     const here = entries.filter(([w]) => stepIndexOf(w) === current);
     const n = here.length;
     if (n > 0) {
-      setStatus(neededText(n), true);
+      const clash = here.some(([w, m]) => isClash(w, m));
+      setStatus(neededText(n, clash), true);
       const labels = here.map(([w]) => w.dataset.label ?? '').filter(Boolean);
-      say(`${n === 1 ? '1 answer' : `${n} answers`} needed: ${labels.join(', ')}.`);
+      say(`${neededNoun(n, clash)}${clash ? '' : ' needed'}: ${labels.join(', ')}.`);
       focusQuestion(here[0]![0]);
     }
   };
@@ -600,10 +1029,13 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     }
     // A question hidden since (its trigger changed) is not waiting any more.
     form.querySelectorAll<HTMLElement>('.field.is-invalid[hidden]').forEach(unmark);
-    const left = invalidWrappers().filter((w) => stepIndexOf(w) === current).length;
+    updateAvail();
+    const leftWraps = invalidWrappers().filter((w) => stepIndexOf(w) === current);
+    const left = leftWraps.length;
+    const clash = leftWraps.some((w) => isClash(w, now.get(w) ?? ''));
     if (status?.classList.contains('is-error') && !sending) {
       if (left === 0) setStatus(steps[current]?.dataset.step === 'review' ? REPLY_PROMISE : '');
-      else setStatus(neededText(left), true);
+      else setStatus(neededText(left, clash), true);
     }
   };
 
@@ -713,7 +1145,13 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
         : choiceLabels('layout')[0] || 'Not decided yet';
     const tech = choiceLabels('tech');
     const member = value('is_member');
+    const seen = availabilityAtSubmit();
     return [
+      [
+        ['People', value('headcount_estimate')],
+        [choiceLabels('spaces').length > 1 ? 'Rooms' : 'Room', choiceLabels('spaces').join(', ')],
+        ['Layout', layout],
+      ],
       [
         [
           multi ? 'Dates' : 'Date',
@@ -727,6 +1165,14 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
             ? `${from} to ${until}${nextDay ? ' the next day' : ''}${length && !multi ? `, ${length}` : ''}`
             : undefined,
         ],
+        [
+          'Calendar',
+          seen === 'free'
+            ? 'Free when you checked'
+            : seen === 'on_hold'
+              ? 'On hold for someone else; you’re next in line'
+              : undefined,
+        ],
         ['Other dates', alts.join(', ') || undefined],
         [
           'Series',
@@ -734,11 +1180,6 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
             ? `${value('series_count')} events`
             : undefined,
         ],
-      ],
-      [
-        ['People', value('headcount_estimate')],
-        [choiceLabels('spaces').length > 1 ? 'Rooms' : 'Room', choiceLabels('spaces').join(', ')],
-        ['Layout', layout],
       ],
       [
         ['Name', value('event_title')],
@@ -869,6 +1310,12 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     );
     if (body) body.scrollTop = 0;
 
+    // "When": the feed again if it is over two minutes old, and the month
+    // for the rooms just chosen.
+    if (calWrap && target.contains(calWrap)) {
+      void loadFeed();
+      renderCalendar();
+    }
     const atReview = isReview(i);
     if (count)
       count.textContent = atReview ? 'Ready to send' : `Step ${i + 1} of ${numbered.length}`;
@@ -891,6 +1338,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     if (!wasAsked && visitAsked()) renderSlots();
     syncEndMin();
     updateNotices();
+    renderCalendar();
     refreshMarks();
   };
   // The answers that cannot be combined with the others in their group.
@@ -922,6 +1370,7 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
   applyConditionals();
   syncEndMin();
   renderSlots();
+  renderCalendar();
 
   // Sends the whole enquiry. Anything missing takes the visitor to the step
   // it belongs to, with every missing answer marked.
@@ -1133,6 +1582,8 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
       history.pushState({ bk: true }, '', HASH);
     }
     dialog.showModal();
+    // Live availability, ready by the time "When" shows.
+    void loadFeed();
     adoptCursor();
     html.classList.add('bk-lock');
     updateSticky();

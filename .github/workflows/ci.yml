@@ -242,6 +242,20 @@ jobs:
       - run: npm install -g npm@11
       - run: npm ci
       - run: npm run build
+      # The preview is static (no Worker), so /oddspace/availability.json is
+      # the placeholder that says the calendar is not answering. Copy in the
+      # live feed instead, as it is at build time: it carries rooms and times
+      # only, never names, so the booking form's calendar can be tried with
+      # real bookings. If the copy fails the placeholder stays, and the form
+      # shows its plain date field, exactly as when the feed is down.
+      - name: Give the preview a snapshot of the live booking calendar
+        run: |
+          if curl -fsS --max-time 20 https://allthingsodd.co/oddspace/availability.json -o feed.json \
+            && node -e "const d=JSON.parse(require('fs').readFileSync('feed.json','utf8')); if (d.v !== 2 || !Array.isArray(d.blocks)) process.exit(1)"; then
+            cp feed.json dist/oddspace/availability.json
+          else
+            echo "::warning::Live availability not copied; the preview's booking form shows the plain date field."
+          fi
       - name: Mark the preview as not for search engines
         run: |
           printf 'User-agent: *\nDisallow: /\n' > dist/robots.txt

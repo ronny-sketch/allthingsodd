@@ -197,6 +197,9 @@
     "headline": "What it looks like with people in it.",
     "ctaLabel": "Follow @oddspace.co →"
   },
+  "booking": {
+    "liveAvailability": true
+  },
   "faq": [
     {
       "question": "Do I need to be a member to book?",

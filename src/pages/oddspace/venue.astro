@@ -236,7 +236,7 @@ const page = entry.data;
             )
           }
         </div>
-        <BookingEnquiryForm />
+        <BookingEnquiryForm liveAvailability={page.booking?.liveAvailability ?? true} />
       </div>
     </section>
   </SubpageFrame>
