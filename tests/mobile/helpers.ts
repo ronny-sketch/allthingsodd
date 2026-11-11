@@ -17,6 +17,7 @@ export const ROUTES = [
   '/media',
   '/contact',
   '/brand-book',
+  '/impact-report-2026',
   '/tickets',
   '/tickets/checkout',
 ];

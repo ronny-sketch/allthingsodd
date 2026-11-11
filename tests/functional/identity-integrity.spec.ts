@@ -96,16 +96,22 @@ test('the WebSite entity is named All Things ODD and keeps the publisher factual
   // rebrand, and structured data is where that distinction is machine-readable.
   expect(website!.alternateName).toBe('ODD');
   expect(website!.url).toBe(CANONICAL_ORIGIN);
-  expect((website!.publisher as Record<string, string>).name).toBe('New Nordic Way rf');
+  expect((website!.publisher as Record<string, string>)['@id']).toBe(
+    `${CANONICAL_ORIGIN}/#organization`,
+  );
 
   const organization = jsonLd(html, 'Organization');
-  expect(organization!.name).toBe('New Nordic Way rf');
+  expect(organization!['@id']).toBe(`${CANONICAL_ORIGIN}/#organization`);
+  expect(organization!.name).toBe(SITE_NAME);
   expect(organization!.alternateName).toBe('ODD');
+  expect(organization!.legalName).toBe('New Nordic Way rf');
 });
 
-test('the homepage title leads with ODD; product pages stay product-first', async ({ request }) => {
+test('the homepage title leads with All Things ODD; product pages stay product-first', async ({ request }) => {
   const home = await (await request.get('/')).text();
-  expect(home).toMatch(/<title>ODD — ODDfest, ODDference &amp; ODDspace \| Helsinki<\/title>/);
+  expect(home).toMatch(
+    /<title>All Things ODD — ODDfest, ODDference &amp; ODDspace \| Helsinki<\/title>/,
+  );
 
   // The rename must not have been swept across every page — ODDfest,
   // ODDference and ODDspace are still their own products and still lead
@@ -281,7 +287,7 @@ test('ODDference is positioned as where creative expertise meets business and so
   // rejected; the page headline had already moved to the approved line, but
   // its SEO title and description, the homepage card and the press
   // boilerplate still said the old one. Rendered HTML, so meta tags count.
-  for (const route of [...ROUTES, '/brand-book']) {
+  for (const route of [...ROUTES, '/brand-book', '/impact-report-2026']) {
     const html = await (await request.get(route)).text();
     expect(html, `${route} still uses the rejected ODDference line`).not.toMatch(
       /powered by creative/i,

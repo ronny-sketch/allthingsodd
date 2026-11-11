@@ -2,7 +2,7 @@
   "_template": "oddspace",
   "_slug": "oddspace",
   "seo": {
-    "title": "ODDspace — workspace, studios and event space in Vallila",
+    "title": "ODDspace — Workspace & Event Space in Helsinki | All Things ODD",
     "description": "ODDspace is a workspace, event space and recording/production studio in Vallila, Helsinki — for working, meeting, exhibitions, talks, events and creative projects.",
     "ogImage": "/og/oddspace.jpg"
   },
@@ -92,7 +92,12 @@
     {
       "name": "Auditorium",
       "body": "Tiered seating for talks, screenings, presentations, workshops and smaller events.",
-      "bullets": ["Talks and screenings", "Presentations", "Workshops", "Smaller events"],
+      "bullets": [
+        "Talks and screenings",
+        "Presentations",
+        "Workshops",
+        "Smaller events"
+      ],
       "image": "../../assets/oddspace/auditorium-tiered.jpg",
       "goLabel": "Enquire about the auditorium",
       "href": "/oddspace/venue/#booking-form"

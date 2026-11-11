@@ -32,13 +32,19 @@ export default defineConfig({
       // stays in. Keep in sync with the pages that pass `noindex` to Layout.
       // /brand-book/ is `noindex` for the same reason: a working document
       // for designers, partners and agents, not a page for search (2026-09-18).
+      // /impact-report-2026/ is hidden the same way (2026-10-29): `noindex`, no
+      // link from any page, shared by URL only.
       // /membership/ is a redirect stub (src/pages/membership.astro), not a page.
       // Exact pathname match: endsWith('/membership/') would also drop
       // /oddspace/membership/.
       filter: (page) =>
-        !['/tickets/checkout/', '/tickets/confirmation/', '/brand-book/', '/membership/'].includes(
-          new URL(page).pathname,
-        ),
+        ![
+          '/tickets/checkout/',
+          '/tickets/confirmation/',
+          '/brand-book/',
+          '/impact-report-2026/',
+          '/membership/',
+        ].includes(new URL(page).pathname),
     }),
   ],
 });

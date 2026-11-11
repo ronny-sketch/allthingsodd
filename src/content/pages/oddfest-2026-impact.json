@@ -1,0 +1,1135 @@
+{
+  "_template": "impact2026",
+  "seo": {
+    "title": "ODDfest 2026 — Impact report",
+    "description": "What ODDfest, ODDference and Creative Week did in 2026, set against 2025: the numbers, the grants, the lineup and partners, press, what people told us, the promises we kept and missed, and what changes for 2027.",
+    "ogImage": "/og/oddfest-2026.jpg"
+  },
+  "title": "Against all ODDs. Again.",
+  "titlePremise": "In 2026 one festival became a week, a conference and a building.",
+  "meta": "Impact report · Helsinki · 2026",
+  "primaryCta": {
+    "label": "Read the numbers",
+    "href": "#numbers"
+  },
+  "secondaryCta": {
+    "label": "Follow the money",
+    "href": "#money"
+  },
+  "heroPhotos": [
+    {
+      "image": "../../assets/oddfest-2026/2026/stage-full-crowd-front.jpg",
+      "alt": "A full band on stage seen over the heads of the crowd"
+    },
+    {
+      "image": "../../assets/oddfest-2026/2026/costumed-crowd-phones.jpg",
+      "alt": "A crowd in patterned costume filming a performance on their phones"
+    },
+    {
+      "image": "../../assets/oddfest-2026/2026/three-performers-gold.jpg",
+      "alt": "Three performers in gold and cream costume at the microphone"
+    },
+    {
+      "image": "../../assets/oddfest-2026/2026/ballroom-duo-screen.jpg",
+      "alt": "Two performers in front of a screen reading Finland Ballroom Scene"
+    },
+    {
+      "image": "../../assets/oddfest-2026/2026/ensemble-dancing.jpg",
+      "alt": "The whole ensemble dancing across the stage together"
+    },
+    {
+      "image": "../../assets/oddfest-2026/2026/street-dancer-audience.jpg",
+      "alt": "A dancer in a tulle skirt performing to passers-by on the street"
+    },
+    {
+      "image": "../../assets/oddfest-2026/2026/cloud-stage-row.jpg",
+      "alt": "A row of people sitting along the edge of a stage banked with cloud"
+    },
+    {
+      "image": "../../assets/oddfest-2026/2026/blue-crowd-hands.jpg",
+      "alt": "Hands in the air in blue and white stage light"
+    }
+  ],
+  "railLeft": [
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDfest"
+    },
+    {
+      "kind": "meta",
+      "text": "Helsinki"
+    },
+    {
+      "kind": "meta",
+      "text": "2026"
+    }
+  ],
+  "railRight": [
+    {
+      "kind": "word",
+      "text": "Impact"
+    },
+    {
+      "kind": "meta",
+      "text": "2026"
+    },
+    {
+      "kind": "logo"
+    },
+    {
+      "kind": "word",
+      "text": "ODDfest"
+    }
+  ],
+  "letter": {
+    "premise": "Nothing about 2026 was easy.",
+    "point": "Most of it worked anyway, because none of it was ours alone.",
+    "body": "We turned one festival into a week. ODDspace opened in Vallila in April. Creative Week began on 8 June at Maria 01, ODDference ran for the first time, over two days, and ODDfest filled the Friday and Saturday from Vanha Ylioppilastalo to Tavastia. On paper that's too much for one small non-profit. Some weeks it was.\n\nEveryone carried a piece of it. Partners opened their own rooms, from Maria 01 to Amos Rex and Taidehalli. 166 artists, performers, speakers and collectives brought their work and their crowds. 125 volunteers kept things calm when they weren't. The City of Helsinki and four foundations backed the year before anyone knew how it would turn out. Count everyone who had a pass, and almost a third of them were there to make it happen, not to watch it.\n\nWe also got things wrong. Too much ran at once, and some rooms were too quiet for the work in them. We missed the growth targets we set ourselves a year ago, and not by a little. People told us so, plainly, and they were right. This report puts that next to what went well, because both are true.\n\nSo 2027 changes shape. ODDfest becomes Helsinki's creative week of independently made events, and ODDference stays the room where creative expertise meets business.\n\nThank you, every one of you, from the open call in February to the last night in June. We survived this one together, again, and that's the only reason there's a next one.",
+    "signature": "Ronny Eriksson",
+    "role": "Founder, ODDfest",
+    "photoBreak": {
+      "image": "../../assets/oddfest-2026/2026/crowd-silhouettes-red.jpg",
+      "alt": "Silhouetted heads and raised arms against a red stage"
+    }
+  },
+  "numbers": {
+    "eyebrow": "2026 in numbers",
+    "title": "The year, counted.",
+    "items": [
+      {
+        "value": "3,300+",
+        "label": "visits across the week",
+        "context": "Counted per person, per day, Creative Week included"
+      },
+      {
+        "value": "1,000+",
+        "label": "people at Creative Week partner events",
+        "context": "8–14 June, across Helsinki"
+      },
+      {
+        "value": "1,150+",
+        "label": "people with a pass",
+        "context": "Visitors, artists, speakers, volunteers and the team"
+      },
+      {
+        "value": "18",
+        "label": "countries, on stage and in the crowd",
+        "context": "Where artists, speakers and visitors come from"
+      },
+      {
+        "value": "30+",
+        "label": "ODDference sessions",
+        "context": "50+ speakers from Finland, Denmark, Canada and the US"
+      },
+      {
+        "value": "166",
+        "label": "artists, performers, speakers and collectives",
+        "context": "150+ acts across five venues in central Helsinki"
+      },
+      {
+        "value": "125",
+        "label": "volunteers",
+        "context": "On tickets, stages, speakers and media"
+      },
+      {
+        "value": "64",
+        "label": "partners and collaborators",
+        "context": "Supporters, partners, media, production and programme"
+      }
+    ]
+  },
+  "compare": {
+    "eyebrow": "2025 → 2026",
+    "title": "What grew, and what didn't.",
+    "lede": "Our 2025 report is the baseline. Each row puts one of its figures next to 2026's. Where the two years counted differently, the row says so.",
+    "areas": [
+      {
+        "title": "The week",
+        "rows": [
+          {
+            "measure": "Days of programme",
+            "y2025": "2",
+            "y2026": "7",
+            "trend": "up",
+            "note": "8–14 June: Creative Week, with ODDference and ODDfest inside it"
+          },
+          {
+            "measure": "Programmes",
+            "y2025": "One festival",
+            "y2026": "Three, and a building",
+            "trend": "new",
+            "note": "Creative Week, ODDference and ODDfest, and ODDspace from 17 April"
+          },
+          {
+            "measure": "Visits",
+            "y2025": "2,600 attendees",
+            "y2026": "3,300+ visits",
+            "note": "Not like for like. 2026 counts each pass for the days it covered, artists, speakers and volunteers on both days, and 1,000+ people at Creative Week."
+          },
+          {
+            "measure": "Stages",
+            "y2025": "8, in one block",
+            "y2026": "5 venues across the centre"
+          },
+          {
+            "measure": "Programme",
+            "y2025": "83 numbers",
+            "y2026": "58 main-stage slots and 30+ ODDference sessions",
+            "note": "Creative Week's partner events come on top"
+          }
+        ]
+      },
+      {
+        "title": "People",
+        "rows": [
+          {
+            "measure": "Artists and speakers",
+            "y2025": "150+",
+            "y2026": "166 in the credits, and 50+ at ODDference",
+            "trend": "up"
+          },
+          {
+            "measure": "Contributors",
+            "y2025": "350",
+            "y2026": "389 in the credits",
+            "trend": "up",
+            "note": "Core team, artists, volunteers, partners and photographers"
+          },
+          {
+            "measure": "Core team",
+            "y2025": "8",
+            "y2026": "22 in the credits",
+            "trend": "up"
+          },
+          {
+            "measure": "Volunteers",
+            "y2025": "73, beside a crew of around 50",
+            "y2026": "125",
+            "trend": "up"
+          },
+          {
+            "measure": "Partners",
+            "y2025": "75",
+            "y2026": "64",
+            "trend": "down"
+          },
+          {
+            "measure": "Lineup from abroad",
+            "y2025": "22.9%",
+            "y2026": "31% of main-stage slots",
+            "note": "2025 counted people. 2026 counts slots with an artist from outside Finland."
+          },
+          {
+            "measure": "Audience from abroad",
+            "y2025": "Nearly 15%",
+            "y2026": "8% of those who said",
+            "note": "Fewer than one in five visitors gave a country. 16% bought their pass in English."
+          },
+          {
+            "measure": "Audience from the Helsinki region",
+            "y2025": "Two-thirds (65%)",
+            "y2026": "76% of those who said",
+            "note": "2026 counts Helsinki, Espoo and Vantaa, among visitors who gave a city: fewer than one in five did. Tampere fell from 7% to 2%, Turku from 4% to 1%."
+          },
+          {
+            "measure": "Visitors' overall rating",
+            "y2025": "3.2 out of 5",
+            "y2026": "3.1 out of 5",
+            "note": "The same question on the same scale, asked after each festival. 32 visitors answered in 2025, 21 in 2026."
+          }
+        ]
+      },
+      {
+        "title": "Money",
+        "rows": [
+          {
+            "measure": "Foundation grants",
+            "y2025": "€112,000",
+            "y2026": "€215,000",
+            "trend": "up",
+            "note": "+92%. New in 2026: Kordelin and Amos Anderson. Not in 2026: Svenska Kulturfonden, Tre Smeder and the Allan & Bo Hjelt Art Foundation."
+          },
+          {
+            "measure": "Financial backers",
+            "y2025": "6",
+            "y2026": "5",
+            "trend": "down",
+            "note": "Fewer backers, bigger grants. 2026: the City of Helsinki and four foundations."
+          }
+        ]
+      },
+      {
+        "title": "Reach",
+        "rows": [
+          {
+            "measure": "Press",
+            "y2025": "20+ media hits",
+            "y2026": "8 pieces we can list",
+            "trend": "down",
+            "note": "Six more outlets are on the media wall in the credits."
+          },
+          {
+            "measure": "Media partners",
+            "y2025": "9",
+            "y2026": "5",
+            "trend": "down"
+          },
+          {
+            "measure": "LinkedIn followers",
+            "y2025": "1,480",
+            "y2026": "3,000+",
+            "trend": "up"
+          },
+          {
+            "measure": "LinkedIn impressions, organic",
+            "y2025": "93,681",
+            "y2026": "64,167",
+            "trend": "down",
+            "note": "Both years 31 January to 14 August, the 2025 report's window."
+          },
+          {
+            "measure": "LinkedIn impressions, all",
+            "y2025": "93,681",
+            "y2026": "456,633",
+            "trend": "up",
+            "note": "86% of 2026's were paid for, four-fifths of those in May."
+          },
+          {
+            "measure": "LinkedIn engagement rate, organic",
+            "y2025": "12.7%",
+            "y2026": "16.7%",
+            "trend": "up",
+            "note": "Fewer people saw our own posts, but more of those who did clicked, reacted, commented or shared."
+          },
+          {
+            "measure": "LinkedIn followers in business development",
+            "y2025": "16.8%",
+            "y2026": "21%",
+            "trend": "up"
+          },
+          {
+            "measure": "LinkedIn followers who are directors, owners or C-level",
+            "y2025": "23%",
+            "y2026": "28%",
+            "trend": "up"
+          },
+          {
+            "measure": "Newsletter",
+            "y2025": "Not reported",
+            "y2026": "2,069 subscribers",
+            "trend": "new",
+            "note": "1,511 subscribers, plus 558 of 2026's ticket buyers who weren't on the list yet. 61% average open rate."
+          }
+        ]
+      }
+    ]
+  },
+  "year": {
+    "eyebrow": "The year",
+    "title": "From an open call to a closing party.",
+    "items": [
+      {
+        "year": "30 Jan",
+        "title": "2026 goes live",
+        "body": "The year's first newsletter: the second ODDfest is on its way."
+      },
+      {
+        "year": "26 Feb",
+        "title": "Open calls open",
+        "body": "Artists, collectives and hosts are invited to bring their own work to the week."
+      },
+      {
+        "year": "27 Mar",
+        "title": "The first lineup",
+        "body": "The first wave of names is published, followed by two more in April and May."
+      },
+      {
+        "year": "9 Apr",
+        "title": "Two years of backing",
+        "body": "The Alfred Kordelin Foundation awards ODDfest a €200,000 Major Cultural Projects grant over two years."
+      },
+      {
+        "year": "17 Apr",
+        "title": "ODDspace opens",
+        "body": "A workspace, event space and music studio in Vallila, so the work has somewhere to go between Junes."
+      },
+      {
+        "year": "29 May",
+        "title": "The schedules go live",
+        "body": "Every session, venue and time in one place, two weeks before doors open."
+      },
+      {
+        "year": "8 Jun",
+        "title": "Creative Week opens",
+        "body": "Creative x Tech at Maria 01, the Creative Capital Gathering at Amos Rex and the Soirée of Serendipity at Taidehalli open a week of partner events."
+      },
+      {
+        "year": "11–13 Jun",
+        "title": "ODDference and ODDfest",
+        "body": "ODDference on the Thursday and Friday, ODDfest on the Friday and Saturday, across central Helsinki."
+      },
+      {
+        "year": "22 Jun",
+        "title": "The photographs and the questions",
+        "body": "The 2026 photobank opens on Flickr, and the feedback forms ask what landed and what did not."
+      },
+      {
+        "year": "26 Sep",
+        "title": "After ODD",
+        "body": "The community close-out, and the afterparty June did not have, with an anonymous confession room for the feedback people won't say to your face."
+      }
+    ],
+    "evidence": [
+      {
+        "image": "../../assets/oddspace/opening-full-house.jpg",
+        "alt": "A full room at the ODDspace opening, one guest in last year's ODDfest 2025 T-shirt",
+        "caption": "17 April: the ODDspace opening in Vallila."
+      },
+      {
+        "image": "../../assets/mosaic/36-55331407300.jpg",
+        "alt": "Screens reading ODDference 2026 behind bare branches on the stage",
+        "caption": "11–12 June: the ODDference stage."
+      },
+      {
+        "image": "../../assets/mosaic/11-55343422977.jpg",
+        "alt": "A screen above the stage reading ODDfest and 13. 6. 2026",
+        "caption": "13 June: ODDfest's last night, the date on the screen."
+      }
+    ]
+  },
+  "money": {
+    "eyebrow": "The money",
+    "title": "What the grants were given for.",
+    "body": "Four foundations gave five grants in 2026, and the City of Helsinki came in as a partner. Every grant had a job. Here's what each one was for, in the foundation's own terms.",
+    "total": {
+      "value": "€215,000",
+      "label": "in foundation grants for 2026",
+      "srValue": "215,000 euros"
+    },
+    "grants": [
+      {
+        "funder": "Alfred Kordelin Foundation",
+        "amount": "€100,000",
+        "purpose": "ODDfest and ODDspace operating costs and artist fees. The 2026 share of a two-year Major Cultural Projects grant of €200,000."
+      },
+      {
+        "funder": "Yksityisyrittäjäin Säätiö",
+        "amount": "€50,000 + €10,000",
+        "purpose": "Two grants: €50,000 to grow creative entrepreneurship through ODDfest 2026 and the ODDside, and a €10,000 Moonshot grant for ODDspace."
+      },
+      {
+        "funder": "Finnish Cultural Foundation",
+        "amount": "€50,000",
+        "purpose": "The costs of artistic content."
+      },
+      {
+        "funder": "Amos Anderssons Fond",
+        "amount": "€5,000",
+        "purpose": "Producing content in Swedish."
+      }
+    ]
+  },
+  "direct": {
+    "eyebrow": "Direct impact",
+    "title": "What happened in the rooms.",
+    "body": "Three programmes in one week, each with its own job: Creative Week to open the city, ODDference to put creative expertise in front of business, ODDfest to give the work a stage.",
+    "items": [
+      {
+        "number": "01",
+        "title": "A week, not a weekend",
+        "body": "Creative Week ran from 8 to 14 June with partner-hosted events across Helsinki, from founders and artists in one room at Maria 01 to a futures salon for around 300 guests at Taidehalli.",
+        "photo": {
+          "image": "../../assets/mosaic/29-55324211489.jpg",
+          "alt": "Two speakers on stage in front of a screen reading Creative x Tech: Ecosystem Convergence, Junction, Maria 01, 8 June",
+          "caption": "Creative x Tech at Maria 01 opened the week on 8 June."
+        }
+      },
+      {
+        "number": "02",
+        "title": "Creatives as the experts",
+        "body": "ODDference ran two days: more than 50 speakers, more than 30 sessions. Ten of the fourteen attendees who answered our form gave it 4 or 5 out of 5 for showing what creative expertise is worth to business, work and society.",
+        "photo": {
+          "image": "../../assets/oddfest-2026/oddference-alf-rehn.jpg",
+          "alt": "A cinema screen reading Hello, my name is Alf Rehn, above a seated audience",
+          "caption": "Alf Rehn's talk at ODDference."
+        }
+      },
+      {
+        "number": "03",
+        "title": "Five venues, 150+ acts",
+        "body": "Theatre, ballroom, games, scent, sound and talks, from Vanha Ylioppilastalo and Tavastia to Bio Rex and Kamppi Chapel. Speakers, performers and hosts scored 4.0 out of 5, the festival's highest mark.",
+        "photo": {
+          "image": "../../assets/oddfest-2026/2026/crowd-and-stage-wide.jpg",
+          "alt": "The crowd at Tavastia filling the floor in front of a red and orange stage",
+          "caption": "A full floor at Tavastia."
+        }
+      },
+      {
+        "number": "04",
+        "title": "125 volunteers",
+        "body": "They ran tickets, stages, speakers and media, and they'd still tell a friend to do it: 8.4 out of 10 on average."
+      }
+    ]
+  },
+  "lineup": {
+    "eyebrow": "The lineup",
+    "title": "Who took part, counted.",
+    "lede": "Counted from ODDfest's printed schedules for the five main stages, the credits, the ticket list and the open-call sheets. Which discipline a slot belongs to is our call. Countries are where artists, speakers and visitors come from.",
+    "items": [
+      {
+        "value": "166",
+        "label": "artists, performers, speakers and collectives",
+        "context": "In the ODDfest credits"
+      },
+      {
+        "value": "50+",
+        "label": "speakers at ODDference",
+        "context": "From Finland, Denmark, Canada and the US"
+      },
+      {
+        "value": "18",
+        "label": "countries, on stage and in the crowd",
+        "context": "12 among artists and speakers, 9 among visitors who gave one"
+      },
+      {
+        "value": "32%",
+        "label": "of everyone with a pass was there to make it happen",
+        "context": "Artists, speakers, volunteers and the team"
+      },
+      {
+        "value": "31%",
+        "label": "of main-stage slots had an artist from abroad",
+        "context": "Artists from 10 countries outside Finland"
+      },
+      {
+        "value": "22%",
+        "label": "of main-stage slots were programmed with partners",
+        "context": "From Aavistus and RÄNDÖM to DanceWorks Helsinki"
+      },
+      {
+        "value": "35",
+        "label": "proposals to host at Creative Week",
+        "context": "Through the open call. 8 were accepted."
+      },
+      {
+        "value": "76%",
+        "label": "of visitors who gave a city live in the capital region",
+        "context": "16% bought their pass in English"
+      }
+    ],
+    "evidence": [
+      {
+        "image": "../../assets/cases/oddfest-2026-valerie-june.jpg",
+        "alt": "Valerie June playing guitar on a stage dressed with flowers",
+        "caption": "Valerie June, from the US. Almost a third of main-stage slots had an artist from abroad."
+      },
+      {
+        "image": "../../assets/oddfest-2026/2026/ballroom-runway-crowd.jpg",
+        "alt": "A performer walking a runway banked with pink cloud while the audience films from both sides",
+        "caption": "Ballroom on the runway. Dance, theatre and ballroom took 14% of main-stage slots."
+      },
+      {
+        "image": "../../assets/mosaic/38-55330058112.jpg",
+        "alt": "Perttu Pölönen on stage below a slide with his name",
+        "caption": "Perttu Pölönen, one of 50+ speakers at ODDference."
+      }
+    ],
+    "breakdowns": [
+      {
+        "title": "Everyone with a pass, by role",
+        "items": [
+          {
+            "label": "Visitors",
+            "count": 819
+          },
+          {
+            "label": "ODDfest artists and speakers",
+            "count": 166
+          },
+          {
+            "label": "Volunteers",
+            "count": 125
+          },
+          {
+            "label": "ODDference speakers",
+            "count": 68
+          },
+          {
+            "label": "Core team",
+            "count": 22
+          }
+        ]
+      },
+      {
+        "title": "Main-stage slots by stage",
+        "items": [
+          {
+            "label": "Tavastia",
+            "count": 16
+          },
+          {
+            "label": "Vanha Ylioppilastalo",
+            "count": 13
+          },
+          {
+            "label": "Bio Rex",
+            "count": 11
+          },
+          {
+            "label": "Semifinal",
+            "count": 11
+          },
+          {
+            "label": "Lasipalatsi Square",
+            "count": 7
+          }
+        ]
+      },
+      {
+        "title": "Main-stage slots by discipline",
+        "items": [
+          {
+            "label": "Music",
+            "count": 30
+          },
+          {
+            "label": "Talks and panels",
+            "count": 12
+          },
+          {
+            "label": "Dance, theatre and ballroom",
+            "count": 8
+          },
+          {
+            "label": "Film",
+            "count": 3
+          },
+          {
+            "label": "Workshops and hackathons",
+            "count": 2
+          },
+          {
+            "label": "Stand-up",
+            "count": 1
+          },
+          {
+            "label": "Games",
+            "count": 1
+          },
+          {
+            "label": "Other",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "title": "Slots with an artist from abroad, by country",
+        "items": [
+          {
+            "label": "United States",
+            "count": 5
+          },
+          {
+            "label": "Germany",
+            "count": 3
+          },
+          {
+            "label": "Chile",
+            "count": 2
+          },
+          {
+            "label": "Sweden",
+            "count": 2
+          },
+          {
+            "label": "Austria",
+            "count": 1
+          },
+          {
+            "label": "Brazil",
+            "count": 1
+          },
+          {
+            "label": "France",
+            "count": 1
+          },
+          {
+            "label": "Italy",
+            "count": 1
+          },
+          {
+            "label": "Netherlands",
+            "count": 1
+          },
+          {
+            "label": "Ukraine",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  "highlights": {
+    "eyebrow": "Highlights",
+    "title": "Eight things, each made with someone else.",
+    "lede": "Every one of these was co-produced. Partners hosted, programmed or brought the people. Our part was getting them into the same week."
+  },
+  "partnerOverview": {
+    "eyebrow": "Partners",
+    "title": "Every partner, and what they did.",
+    "lede": "Everyone the 2026 credits name as a partner, grouped by how they took part, with a few examples of what that looked like on the ground.",
+    "countLabel": "partners and collaborators in the 2026 credits",
+    "items": [
+      {
+        "number": "01",
+        "title": "On the stages",
+        "body": "Partners and collectives programmed 22% of the main-stage slots, among them Aavistus, RÄNDÖM, Avanti!, DanceWorks Helsinki, Solovey and Nordic Bridge Music."
+      },
+      {
+        "number": "02",
+        "title": "Across the city",
+        "body": "Creative Week ran in partners' rooms: Junction at Maria 01, FiBAN's angels at Amos Rex, Hanaholmen and Nordic Culture Point at Oodi, and the Soirée of Serendipity at Taidehalli."
+      },
+      {
+        "number": "03",
+        "title": "At the tables",
+        "body": "EMU Growth Partners hosted the networking space and the lunch at ODDference. Nescafé, Mikkeller and Blend Beverages brought the drinks."
+      },
+      {
+        "number": "04",
+        "title": "Behind it",
+        "body": "The City of Helsinki and four foundations backed the year. 16bit, Roudaamo, Rajupaja and ODDproduction handled production, and five media partners, from Bonnier News Finland to Radio Helsinki, took it to their audiences."
+      }
+    ],
+    "creditGroups": ["Supported by", "Partners", "Collaborators", "Media", "Production"]
+  },
+  "indirect": {
+    "eyebrow": "Indirect impact",
+    "title": "What kept going after June.",
+    "lede": "A week ends. Some of what it starts doesn't.",
+    "items": [
+      {
+        "number": "01",
+        "title": "Money met culture",
+        "body": "The Creative Capital Gathering put investors, foundations, funds and FiBAN's angels in one room at Amos Rex around one question: what does it really mean to invest in the creative industries? It was built to happen every year.",
+        "photo": {
+          "image": "../../assets/mosaic/42-55325199853.jpg",
+          "alt": "A speaker beside a screen reading Creative Capital Gathering",
+          "caption": "The Creative Capital Gathering at Amos Rex."
+        }
+      },
+      {
+        "number": "02",
+        "title": "Startups met artists",
+        "body": "Creative x Tech, with Junction and Maria 01, brought Helsinki's startup scene and its creative scene into the same evening, where they rarely are.",
+        "photo": {
+          "image": "../../assets/mosaic/56-55324404435.jpg",
+          "alt": "Five people on a panel in front of a screen reading Fireside chat: Art meets Tech",
+          "caption": "Art meets Tech, a fireside chat at Creative x Tech, Maria 01."
+        }
+      },
+      {
+        "number": "03",
+        "title": "A building to come back to",
+        "body": "ODDspace opened in Vallila on 17 April: a workspace, event space and music studio, with public events every week, from ODDrunning.club to Coffee on the House.",
+        "photo": {
+          "image": "../../assets/oddspace/opening-painting-floor.jpg",
+          "alt": "People painting together on paper spread across the floor at the ODDspace opening",
+          "caption": "Painting on the floor at the ODDspace opening, 17 April."
+        }
+      },
+      {
+        "number": "04",
+        "title": "A Nordic conversation",
+        "body": "With Hanaholmen and Nordic Culture Point, a free public panel at Oodi asked, in Swedish, whether culture is decoration, product or part of society's structure."
+      },
+      {
+        "number": "05",
+        "title": "Backing that lasts two years",
+        "body": "The Kordelin Foundation's Major Cultural Projects grant runs into 2027, to build new structures between culture and business that outlast a single event."
+      },
+      {
+        "number": "06",
+        "title": "Studied by others",
+        "body": "Two Humak cultural-management students studied participation at ODDfest 2026. They found what we found: too many programmes at once, and meeting people is not the same as belonging."
+      }
+    ]
+  },
+  "photoBreak": {
+    "image": "../../assets/oddfest-2026/2026/ensemble-wide.jpg",
+    "alt": "More than twenty musicians and dancers spread across the stage"
+  },
+  "media": {
+    "eyebrow": "Press and reach",
+    "title": "Who wrote about it, and how far it travelled.",
+    "lede": "The coverage we can link to. Wrote about ODD in 2026 and it's not here? Send it to hello@oddfest.co.",
+    "press": [
+      {
+        "outlet": "V2.fi",
+        "title": "ODDfest announces a strongly alternative lineup, with several international artists",
+        "date": "2 April 2026",
+        "href": "https://www.v2.fi/uutiset/viihde/56272/ODDfest-julkisti-vahvasti-vaihtoehtoista-artistikaartia--listalla-useita-kansainvalisia-artisteja"
+      },
+      {
+        "outlet": "Rumba",
+        "title": "ODDfest announces its programme for the summer in Helsinki",
+        "date": "6 April 2026",
+        "href": "https://www.rumba.fi/uutiset/helsingissa-jarjestettava-oddfest-julkisti-ensi-kesan-ohjelmistoaan/"
+      },
+      {
+        "outlet": "Design Forum Finland",
+        "title": "ODDfest brings international creative talent to Helsinki in June",
+        "date": "9 April 2026",
+        "href": "https://designforum.fi/uutiset/oddfest-tuo-kansainvalisen-tason-luovia-tekijoita-helsinkiin-kesakuussa/"
+      },
+      {
+        "outlet": "Radio Helsinki",
+        "title": "Valerie June interviewed in Helsinki ahead of her ODDfest show",
+        "date": "11 June 2026"
+      },
+      {
+        "outlet": "Helsingin Sanomat",
+        "title": "Opinion: Ronny Eriksson on the creative industries' place in Finland's innovation economy",
+        "href": "https://www.hs.fi/mielipide/art-2000011730682.html"
+      },
+      {
+        "outlet": "Design Forum Finland",
+        "title": "Open Call: ODDfest 2026",
+        "href": "https://designforum.fi/en/news/open-call-oddfest-2026/"
+      },
+      {
+        "outlet": "Creative Lunch Club",
+        "title": "ODDfest listed among the best conferences and festivals for creatives in 2026",
+        "href": "https://www.creativelunchclub.com/s/design-conferences-for-creatives"
+      },
+      {
+        "outlet": "MyHelsinki",
+        "title": "ODDfest 2026 in the city's event guide",
+        "href": "https://www.myhelsinki.fi/events/oddfest-2026/"
+      }
+    ],
+    "owned": {
+      "eyebrow": "Our own channels",
+      "title": "Reach we can count.",
+      "items": [
+        {
+          "value": "457K",
+          "label": "LinkedIn impressions",
+          "context": "31 Jan–14 Aug, the 2025 report's window: 392K paid, 64K organic",
+          "srValue": "456,633 LinkedIn impressions"
+        },
+        {
+          "value": "3,000+",
+          "label": "LinkedIn followers",
+          "context": "Up from 1,480 in August 2025"
+        },
+        {
+          "value": "32%",
+          "label": "of LinkedIn followers are in leadership roles",
+          "context": "Directors, VPs, owners, partners and C-level. 71% are in the Helsinki area."
+        },
+        {
+          "value": "21%",
+          "label": "of LinkedIn followers work in business development",
+          "context": "The largest group. Arts and design is next, at 13%."
+        },
+        {
+          "value": "330K",
+          "label": "TikTok impressions in one week",
+          "context": "4–10 May, a paid campaign",
+          "srValue": "330,287 TikTok impressions"
+        },
+        {
+          "value": "2,069",
+          "label": "newsletter subscribers",
+          "context": "1,511, plus 558 of 2026's ticket buyers new to the list. 61% average open rate."
+        },
+        {
+          "value": "11,987",
+          "label": "newsletter opens in 2026",
+          "context": "Across 14 sends, January to September"
+        },
+        {
+          "value": "1,478",
+          "label": "photographs in the 2026 photobank",
+          "context": "Seven albums on Flickr"
+        }
+      ]
+    }
+  },
+  "voices": {
+    "eyebrow": "Voices",
+    "title": "What people told us, in their own words.",
+    "lede": "From the forms we sent after June: 14 ODDference attendees, 6 ODDference speakers, 21 ODDfest visitors and 21 volunteers answered. That's few, so read the scores as signals, not verdicts. Quoted anonymously, trimmed, not polished.",
+    "scores": [
+      {
+        "value": "3.8",
+        "label": "out of 5 for ODDference overall",
+        "context": "14 attendees"
+      },
+      {
+        "value": "3.9",
+        "label": "out of 5 for showing what creative expertise is worth to business",
+        "context": "14 ODDference attendees"
+      },
+      {
+        "value": "4.5",
+        "label": "out of 5 from ODDference's speakers",
+        "context": "6 speakers. All six put coming back at 9 or 10 out of 10."
+      },
+      {
+        "value": "7.6",
+        "label": "out of 10, attendees likely to come back to ODDference or recommend it",
+        "context": "14 attendees"
+      },
+      {
+        "value": "3.1",
+        "label": "out of 5 for ODDfest overall",
+        "context": "21 visitors"
+      },
+      {
+        "value": "4.0",
+        "label": "out of 5 for ODDfest's speakers, performers and hosts",
+        "context": "21 visitors. ODDfest's highest mark."
+      },
+      {
+        "value": "2.5",
+        "label": "out of 5 for finding your way around ODDfest",
+        "context": "21 visitors. ODDfest's lowest mark."
+      },
+      {
+        "value": "8.4",
+        "label": "out of 10, volunteers recommending volunteering",
+        "context": "21 volunteers. Onboarding scored 3.6 out of 5."
+      }
+    ],
+    "quotes": [
+      {
+        "text": "It's ODD and something new. This is definitely something that the creative industry of Finland/Helsinki needs.",
+        "from": "Volunteer",
+        "emphasis": "It's ODD and something new."
+      },
+      {
+        "text": "I believe that you make a difference to the field, you make it visible and credible.",
+        "from": "ODDference attendee"
+      },
+      {
+        "text": "Those were poking my stiff business profile in very effective manner. I am seriously considering attending clowneria school or impromptu classes, which I would never have considered before the session.",
+        "from": "ODDference attendee"
+      },
+      {
+        "text": "As I am ‘non-creative’ business person, I felt surprisingly inclusive though not knowing anybody there.",
+        "from": "ODDference attendee"
+      },
+      {
+        "text": "Film, opera, soundscapes, textiles, toys, philosophy, festivals, installations, coaching, Ukrainian cultural forces… I can hardly weigh one against the other for inspiration and energy.",
+        "from": "ODDference attendee"
+      },
+      {
+        "text": "I came just for Mr. Dad but ended up enjoying other experiences as well.",
+        "from": "ODDfest visitor"
+      },
+      {
+        "text": "I had such a deep sense of appreciation for everyone working in arts and culture. From volunteers and sound technicians to organizers and artists.",
+        "from": "ODDfest visitor"
+      },
+      {
+        "text": "You have something golden in your hands but it suffers so much from trying to make it too large.",
+        "from": "ODDfest visitor"
+      }
+    ]
+  },
+  "gallery": {
+    "eyebrow": "In pictures",
+    "title": "1,478 photographs, plus ODDspace's opening. Here's a handful.",
+    "photos": [
+      {
+        "image": "../../assets/mosaic/15-55345154789.jpg",
+        "alt": "A band and singers crowding the stage under a glowing ODD sign"
+      },
+      {
+        "image": "../../assets/mosaic/02-55334118696.jpg",
+        "alt": "An aerial performer in a black dress and striped tights hanging from a lamppost outside a white building"
+      },
+      {
+        "image": "../../assets/mosaic/53-55343534137.jpg",
+        "alt": "A DJ in sunglasses playing under a canopy of purple and green flowers"
+      },
+      {
+        "image": "../../assets/mosaic/14-55331111877.jpg",
+        "alt": "A DJ in a black wrestling mask with both arms raised behind the decks"
+      },
+      {
+        "image": "../../assets/oddspace/opening-mural-painting.jpg",
+        "alt": "An artist in a hooded top painting a black-ink mural on a white wall"
+      },
+      {
+        "image": "../../assets/mosaic/23-55337406802.jpg",
+        "alt": "Two people in black T-shirts posing in front of a giant boombox cut-out"
+      },
+      {
+        "image": "../../assets/mosaic/40-55328381298.jpg",
+        "alt": "A cinema audience facing a slide that says always be yourself, unless you can be Batman"
+      },
+      {
+        "image": "../../assets/mosaic/67-55338542944.jpg",
+        "alt": "Dancers in silhouette against an orange haze"
+      },
+      {
+        "image": "../../assets/mosaic/69-55326902991.jpg",
+        "alt": "A dancer in white kneeling by a tall window, both arms raised"
+      },
+      {
+        "image": "../../assets/mosaic/32-55334271823.jpg",
+        "alt": "A performer in a black dress and striped tights coming down a curved stairwell"
+      },
+      {
+        "image": "../../assets/mosaic/60-55344931051.jpg",
+        "alt": "Three people in costume posing in a graffiti-covered backstage room"
+      },
+      {
+        "image": "../../assets/mosaic/51-55344585230.jpg",
+        "alt": "A three-person panel on a cinema stage, their names and portraits on the screen above"
+      },
+      {
+        "image": "../../assets/mosaic/20-55344407061.jpg",
+        "alt": "Three performers on a stage banked with pink cloud, beside a fringed umbrella"
+      },
+      {
+        "image": "../../assets/oddspace/opening-audience-laughing.jpg",
+        "alt": "An audience laughing during a talk at the ODDspace opening"
+      }
+    ],
+    "link": {
+      "label": "All ODDfest photos on Flickr",
+      "href": "https://www.flickr.com/photos/204686183@N06/",
+      "external": true
+    }
+  },
+  "promises": {
+    "eyebrow": "We said, we did",
+    "title": "What we promised in 2025, checked.",
+    "lede": "Our 2025 report ended with what 2026 would bring. Here's each promise in that report's own words, and what happened. The ones about shape we mostly kept. The ones about size we didn't.",
+    "items": [
+      {
+        "said": "Return to Lasipalatsikortteli, 11–13 June 2026.",
+        "status": "Done",
+        "did": "ODDference and ODDfest ran 11–13 June, at Bio Rex and on Lasipalatsi Square, and out across the centre to Tavastia, Vanha Ylioppilastalo and Kamppi Chapel."
+      },
+      {
+        "said": "Grow to 8,000–10,000 visitors, sell 3,000+ full-access tickets and reach 30% international attendance.",
+        "status": "Not done",
+        "did": "We didn't get close: about 3,300 visits across the week, and 16% of passes bought in English. The week grew in shape, not in size."
+      },
+      {
+        "said": "Build a week-long creative city festival around it: Helsinki Creative Week.",
+        "status": "Done",
+        "did": "Creative Week ran 8–14 June, with more than 1,000 people at partner events across Helsinki."
+      },
+      {
+        "said": "Double media reach, website traffic and partner engagement.",
+        "status": "Partly",
+        "did": "LinkedIn followers doubled and impressions grew almost five-fold, mostly through paid posts. The press we can link to fell from 20+ pieces to eight, and partners from 75 to 64."
+      },
+      {
+        "said": "Free public installations and activations across Helsinki's central areas.",
+        "status": "Partly",
+        "did": "Parts of the week were free, like the public panel at Oodi with Hanaholmen and Nordic Culture Point. There was no city-wide programme of installations."
+      },
+      {
+        "said": "More extensive open calls for artists and programme and workshop leaders.",
+        "status": "Done",
+        "did": "Open calls opened on 26 February. 35 proposals came in to host at Creative Week, 8 were accepted, and 125 people joined as volunteers."
+      },
+      {
+        "said": "A sustainability roadmap, waste-reduction targets and a full carbon and waste audit.",
+        "status": "Not done",
+        "did": "We didn't publish a roadmap, set targets or run the audit in 2026."
+      },
+      {
+        "said": "Beyond ODDfest: a professional, conference-style format during the week.",
+        "status": "Done",
+        "did": "It became ODDference: two days, 30+ sessions and 50+ speakers, with creative practitioners on stage as the experts."
+      },
+      {
+        "said": "The ODDside: year-round events, programmes and spaces, from an accelerator to residencies and masterclasses.",
+        "status": "Partly",
+        "did": "ODDspace opened in Vallila on 17 April with public events every week. The accelerator, residencies and masterclasses didn't run."
+      }
+    ]
+  },
+  "learned": {
+    "eyebrow": "What we learned",
+    "title": "What didn't work, said plainly.",
+    "items": [
+      {
+        "number": "01",
+        "title": "Too much at once",
+        "body": "Visitors, volunteers and an independent student study said the same thing: too many programmes ran in parallel, and some rooms stayed quiet. \"Less would have been more,\" one attendee wrote."
+      },
+      {
+        "number": "02",
+        "title": "Hard to find your way",
+        "body": "Finding your way around scored 2.5 out of 5. The web schedule was hard to use on a phone, signage differed from venue to venue, and the ticket types confused people."
+      },
+      {
+        "number": "03",
+        "title": "Volunteers needed more from us",
+        "body": "Volunteers rated onboarding 3.6 out of 5. They asked for one channel instead of many, roles set before the first shift, and somewhere backstage to rest and eat."
+      },
+      {
+        "number": "04",
+        "title": "Not enough people knew",
+        "body": "The most common request across all three forms: tell more people, earlier, outside Helsinki and in Finnish as well as English. Several found ODD by accident."
+      },
+      {
+        "number": "05",
+        "title": "Reach we paid for isn't reach we earned",
+        "body": "LinkedIn impressions grew almost five-fold, but 86% were paid for. Organic impressions fell by almost a third, and the press we can list fell from 20+ pieces to eight."
+      }
+    ]
+  },
+  "next": {
+    "eyebrow": "2027",
+    "headline": "A different shape for the same argument.",
+    "body": "ODDfest 2027 is Helsinki's creative week: independently made events across the city, brought together in one shared programme. ODDference 2027 takes place alongside it, where creative and cultural practitioners take the stage as experts.\n\nNo dates, venues or programme yet, because none of them are decided. We're collecting event ideas now.",
+    "cta": {
+      "label": "Bring something to 2027",
+      "href": "/contact/?topic=oddfest_2027_event"
+    },
+    "photoBreak": {
+      "image": "../../assets/oddfest-2026/2026/street-dancers-vanha.jpg",
+      "alt": "Dancers in costume performing on the steps outside Vanha Ylioppilastalo"
+    }
+  },
+  "participateTitle": "Ways to take part.",
+  "participate": [
+    {
+      "eyebrow": "Host",
+      "title": "Bring an event to ODDfest 2027",
+      "linkLabel": "Send an idea",
+      "href": "/contact/?topic=oddfest_2027_event"
+    },
+    {
+      "eyebrow": "Learn",
+      "title": "ODDference 2027",
+      "linkLabel": "See ODDference",
+      "href": "/oddference/"
+    },
+    {
+      "eyebrow": "Partner",
+      "title": "Work with ODD",
+      "linkLabel": "See how",
+      "href": "/work-with-odd/"
+    },
+    {
+      "eyebrow": "Look back",
+      "title": "Everyone who made 2026",
+      "linkLabel": "Read the credits",
+      "href": "/oddfest-2026/"
+    }
+  ]
+}

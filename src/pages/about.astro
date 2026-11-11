@@ -16,11 +16,14 @@ import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import ProofGrid from '../components/sections/ProofGrid.astro';
 import PhotoBreak from '../components/sections/PhotoBreak.astro';
 import PhotoWall from '../components/sections/PhotoWall.astro';
+import LogoStrip from '../components/sections/LogoStrip.astro';
 
 const entry = await getEntry('pages', 'about');
 if (!entry || entry.data._template !== 'about')
   throw new Error('about.json content entry missing or malformed');
 const page = entry.data;
+const site = await getEntry('site', 'global');
+const supportedBy = site?.data.supportedBy ?? [];
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={page.seo.ogImage}>
@@ -125,6 +128,14 @@ const page = entry.data;
     items={page.impact.items}
     ctas={page.impact.ctas}
   />
+
+  {
+    /* The foundations behind those figures — site/global.json's
+       `supportedBy`, the same list as Home, the Info menu and the footer. */
+    supportedBy.length > 0 && (
+      <LogoStrip eyebrow="Foundations" title="Supported by" items={supportedBy} size="large" />
+    )
+  }
 
   {
     /* The photo wall under the figures (2026-09-14): ODDfest 2025 and 2026
