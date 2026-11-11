@@ -8,10 +8,20 @@
 // the Worker. The page's script (src/scripts/oddspace-availability.ts)
 // only lays the result out as a month grid.
 //
-// Shape: { from: 'YYYY-MM-DD', to: 'YYYY-MM-DD',
-//          days: { 'YYYY-MM-DD': [{ space: 'Galleria', time: '12:00–18:00' }] } }
-// Booked rooms only; a day missing from `days` is free. An evening that
-// runs past midnight lists on the next day as "until 04:00".
+// Shape (v2, 2026-11-11):
+//   { v: 2, generated_at: ISO instant, from: 'YYYY-MM-DD', to: 'YYYY-MM-DD',
+//     days:   { 'YYYY-MM-DD': [{ space: 'Galleria', time: '12:00–18:00' }] },
+//     blocks: [{ start, end, rooms: ['gallery'], hold: false }] }
+// `days` is for people: booked rooms only, a day missing from it is free,
+// and an evening that runs past midnight lists on the next day as "until
+// 04:00". It is unchanged from v1, so the month grid on /oddspace keeps
+// working as it did.
+// `blocks` is for code: the booking form's calendar and the forms API's
+// assessment (odd-growth-os). One entry per event instance that touches
+// the window, with Helsinki ISO times (offset included) and the booking
+// form's room keys. `hold` is true for a "[TENTATIVE] …" title: someone
+// has an offer on it, and a second customer may still ask. Still no
+// titles, descriptions or people.
 
 const CALENDAR_ID =
   'c_2b949751536a12e3c8dcbe7b3ffbdd82a49ffad8bebbbb3db05365ca725975f1@group.calendar.google.com';
@@ -37,6 +47,42 @@ const ROOMS = [
 ];
 const HERE = ['teollisuuskatu', 'oddspace'];
 
+// The same location text, read as the booking form's room keys
+// (booking-enquiry-schema.ts: gallery, aula, auditorium, second_floor),
+// plus two that are not form choices:
+// - 'all': the whole space, or ODDspace with no recognisable room. It
+//   blocks every room until someone writes the room into the event.
+// - 'meeting_rooms': the 2nd-floor meeting rooms. Not bookable through the
+//   form, so they never block a room it offers.
+// Keep in step with odd-growth-os worker/src/booking (the calendar writer
+// reads events with the same rules). Tested in order: whole space, meeting
+// rooms, then every room named, so "Galleria + Auditorio" is two rooms.
+// "Main office space (upstairs)" is the 2nd-floor Event & workshop space
+// (one calendar event used it, Oct 2026; the info pack's 2nd floor is that
+// open floor).
+const ROOM_KEYS = [
+  ['galleria', 'gallery'],
+  ['gallery', 'gallery'],
+  ['auditorio', 'auditorium'],
+  ['auditorium', 'auditorium'],
+  ['aula', 'aula'],
+  ['2nd floor', 'second_floor'],
+  ['co-work', 'second_floor'],
+  ['lounge', 'second_floor'],
+  ['main office', 'second_floor'],
+];
+const ROOM_ORDER = ['gallery', 'aula', 'auditorium', 'second_floor'];
+
+export function roomsFor(location) {
+  const loc = (location ?? '').toLowerCase();
+  if (loc.includes('full space')) return ['all'];
+  if (loc.includes('meeting room')) return ['meeting_rooms'];
+  const found = new Set(ROOM_KEYS.filter(([word]) => loc.includes(word)).map(([, key]) => key));
+  if (found.size) return ROOM_ORDER.filter((key) => found.has(key));
+  if (!loc || HERE.some((w) => loc.includes(w))) return ['all'];
+  return null;
+}
+
 export function spaceFor(location) {
   const loc = (location ?? '').toLowerCase();
   for (const [word, name] of ROOMS) if (loc.includes(word)) return name;
@@ -60,6 +106,23 @@ const partsFmt = new Intl.DateTimeFormat('en-GB', {
 function local(ms) {
   const p = Object.fromEntries(partsFmt.formatToParts(ms).map((x) => [x.type, x.value]));
   return { date: `${p.year}-${p.month}-${p.day}`, time: `${p.hour}:${p.minute}` };
+}
+
+/** An instant as Helsinki ISO time with its offset: 2026-12-04T20:00:00+02:00. */
+export function helsinkiIso(ms) {
+  const l = local(ms);
+  const wall = Date.UTC(
+    Number(l.date.slice(0, 4)),
+    Number(l.date.slice(5, 7)) - 1,
+    Number(l.date.slice(8, 10)),
+    Number(l.time.slice(0, 2)),
+    Number(l.time.slice(3, 5)),
+  );
+  const offset = Math.round((wall - Math.floor(ms / 60_000) * 60_000) / 60_000);
+  const sign = offset < 0 ? '-' : '+';
+  const hh = String(Math.floor(Math.abs(offset) / 60)).padStart(2, '0');
+  const mm = String(Math.abs(offset) % 60).padStart(2, '0');
+  return `${l.date}T${l.time}:00${sign}${hh}:${mm}`;
 }
 
 /** The instant at a Helsinki wall-clock time. */
@@ -150,7 +213,7 @@ function starts(props, start, from, to) {
   return out.filter((t) => t >= from - 2 * DAY); // a booking may run into the window
 }
 
-/** The feed → { from, to, days }. `now` is the instant the window opens from. */
+/** The feed → { v, generated_at, from, to, days, blocks }. `now` is the instant the window opens from. */
 export function availability(text, now = Date.now()) {
   const today = local(now).date;
   const [y, mo] = [Number(today.slice(0, 4)), Number(today.slice(5, 7))];
@@ -172,10 +235,15 @@ export function availability(text, now = Date.now()) {
   }
 
   const days = {};
+  const blocks = [];
   for (const props of events) {
     if (first(props, 'STATUS')?.[2] === 'CANCELLED') continue;
-    const space = spaceFor(first(props, 'LOCATION')?.[2].replace(/\\,/g, ','));
+    const location = first(props, 'LOCATION')?.[2].replace(/\\,/g, ',');
+    const space = spaceFor(location);
     if (!space) continue;
+    const rooms = roomsFor(location) ?? ['all'];
+    // Read for the flag only; the title itself never leaves this function.
+    const hold = /^\s*\[tentative\]/i.test(first(props, 'SUMMARY')?.[2] ?? '');
     const dtstart = first(props, 'DTSTART');
     if (!dtstart) continue;
     const parsed = parseStamp(dtstart[2], dtstart[1]);
@@ -190,6 +258,7 @@ export function availability(text, now = Date.now()) {
       if (!isOverride && skip.has(`${uid}@${s}`)) continue;
       const e = s + length;
       if (e <= from || s >= to) continue;
+      blocks.push({ start: helsinkiIso(s), end: helsinkiIso(e), rooms, hold, _s: s, _e: e });
       // One line per Helsinki day the booking touches. The last minute,
       // not the end instant, decides the last day: a block ending at
       // midnight stays on its own day.
@@ -211,7 +280,19 @@ export function availability(text, now = Date.now()) {
     days[day].sort((a, b) => a._s - b._s);
     for (const row of days[day]) delete row._s;
   }
-  return { from: fromDay, to: toDay, days };
+  blocks.sort((a, b) => a._s - b._s || a._e - b._e);
+  for (const block of blocks) {
+    delete block._s;
+    delete block._e;
+  }
+  return {
+    v: 2,
+    generated_at: new Date(now).toISOString().replace(/\.\d{3}Z$/, 'Z'),
+    from: fromDay,
+    to: toDay,
+    days,
+    blocks,
+  };
 }
 
 /** 'YYYY-MM-DD' → the day after, by calendar date (DST-proof). */
@@ -228,10 +309,11 @@ const JSON_HEADERS = {
 export async function handleAvailability() {
   let text;
   try {
-    // ponytail: the edge caches the ICS for ten minutes, so the calendar
-    // is read at most six times an hour however busy the page gets. Add
-    // caches.default on this route's own response if that is ever too many.
-    const res = await fetch(ICS_URL, { cf: { cacheTtl: 600, cacheEverything: true } });
+    // ponytail: the edge caches the ICS for two minutes (ten before the
+    // booking form read it, 2026-11-11), so the calendar is read at most
+    // thirty times an hour however busy the page gets. Add caches.default
+    // on this route's own response if that is ever too many.
+    const res = await fetch(ICS_URL, { cf: { cacheTtl: 120, cacheEverything: true } });
     if (!res.ok) throw new Error(`calendar ${res.status}`);
     text = await res.text();
   } catch {
@@ -241,6 +323,6 @@ export async function handleAvailability() {
     });
   }
   return new Response(JSON.stringify(availability(text)), {
-    headers: { ...JSON_HEADERS, 'Cache-Control': 'public, max-age=600' },
+    headers: { ...JSON_HEADERS, 'Cache-Control': 'public, max-age=120' },
   });
 }
