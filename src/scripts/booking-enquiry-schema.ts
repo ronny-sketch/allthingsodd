@@ -28,6 +28,11 @@
 // `newsletter_opt_in` is the "Keep me posted" box. The Worker accepts both
 // this shape and the old single values, so the two can deploy in either
 // order.
+//
+// First visit (2026-10-28, D36 in odd-growth-os): a non-member says whether
+// they have held an event here before (`held_event_before`); someone who has
+// not proposes one to three viewing times (`visit_times`), offered by the
+// same rules as a membership viewing (membership-schema.ts offeredSlots).
 
 export interface Option<V extends string = string> {
   value: V;
@@ -364,6 +369,10 @@ export interface BookingPayload {
   notes?: string;
   /** "Keep me posted": subscribe to the ODD newsletter. */
   newsletter_opt_in: boolean;
+  /** Asked of non-members only. */
+  held_event_before?: boolean;
+  /** Proposed viewing times (Helsinki ISO), when held_event_before is false. */
+  visit_times: string[];
 }
 
 export type FieldErrors = Partial<Record<keyof BookingPayload, string>>;
@@ -493,6 +502,15 @@ export function validateBooking(p: BookingPayload, now: Date = new Date()): Fiel
   if (typeof p.is_member !== 'boolean') e.is_member = 'Tell us whether you are a member.';
   if (p.is_member === true)
     oneOf('membership_tier', MEMBERSHIP_TIERS, 'Which membership do you have?');
+  if (p.is_member === false) {
+    if (typeof p.held_event_before !== 'boolean')
+      e.held_event_before = 'Tell us whether you have held an event here before.';
+    else if (
+      p.held_event_before === false &&
+      (p.visit_times.length < 1 || p.visit_times.length > 3)
+    )
+      e.visit_times = 'Pick one to three times to come and see the space.';
+  }
   if (p.consent_privacy !== true)
     e.consent_privacy = 'We can only store your enquiry if you agree to this.';
 
