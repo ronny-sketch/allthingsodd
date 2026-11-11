@@ -1555,6 +1555,11 @@ const pages = defineCollection({
         // Which rooms are booked and when, live from the booking calendar,
         // after "How it works" (2026-10-22). See `availabilityGrid`.
         availability: availabilityGrid.optional(),
+        // The enquiry form (BookingEnquiryForm.astro). `liveAvailability`
+        // shows the booking calendar in its "When" step (2026-11-11); false
+        // brings back the plain date field, with no code change. It is the
+        // switch to use if the calendar ever misbehaves.
+        booking: z.object({ liveAvailability: z.boolean().default(true) }).optional(),
         faq: z.array(faqItem),
         finalCta: z.object({
           eyebrow: z.string(),

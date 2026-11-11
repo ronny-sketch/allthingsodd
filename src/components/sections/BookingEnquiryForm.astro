@@ -17,8 +17,17 @@
 // (booking-enquiry-form.ts builds the day and time chips, as the membership
 // form does), and a teammate claims one in Slack.
 //
+// Live availability (2026-11-11, calendar-availability plan Stage 2): the
+// rooms come first, then "When" shows a month calendar for those rooms, read
+// from /oddspace/availability.json (feed v2): free, partly booked, booked
+// and on-hold days, the day's bookings in words, and start hours inside a
+// booking greyed out. booking-availability.ts holds the rule (rooms, the
+// hour between events, holds). If the feed does not load, or the venue
+// page's `booking.liveAvailability` is false, the plain date field is shown
+// instead and the enquiry sends as before.
+//
 // One ask, "Plan your event", opens a native <dialog> over the venue page: five
-// short steps (When → People and room → The event → What you need → About
+// short steps (People and room → When → The event → What you need → About
 // you), a progress bar, and a "Check and send" summary where anything can be
 // edited before it goes. Each step is checked when you press Next, and only
 // that step. The page's own "Plan your event" buttons, the sticky bar and any
@@ -127,7 +136,14 @@ const SPACE_PHOTOS: Record<string, Photo[]> = {
   second_floor: [SECOND_FLOOR],
 };
 
-const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About you'];
+const STEPS = ['People and room', 'When', 'The event', 'What you need', 'About you'];
+
+interface Props {
+  /** Show the live availability calendar in "When" (venue page content, `booking.liveAvailability`). */
+  liveAvailability?: boolean;
+}
+const { liveAvailability = true } = Astro.props;
+const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 ---
 
 <div class="booking" id="booking-form">
@@ -177,7 +193,12 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
       </ol>
     </header>
 
-    <form class="booking-form" id="bookingEnquiryForm" novalidate>
+    <form
+      class="booking-form"
+      id="bookingEnquiryForm"
+      novalidate
+      data-live-availability={liveAvailability ? 'true' : 'false'}
+    >
       <div class="bk-body" id="bk-body">
         <!-- Honeypot. A person never sees it. A non-empty value means a bot. -->
         <div class="botcheck" aria-hidden="true">
@@ -185,129 +206,17 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
           <input id="bk-hp" name="hp_field" type="text" tabindex="-1" autocomplete="off" />
         </div>
 
-        <!-- 01 When ---------------------------------------------------------- -->
+        <!-- 01 People and room ---------------------------------------------- -->
         <section class="bk-step" data-step="1" aria-labelledby="bk-step-1">
           <h2 class="bk-step-head" id="bk-step-1" tabindex="-1">
             <span class="bk-step-num" aria-hidden="true">01</span>
-            <span>When</span>
+            <span>People and room</span>
           </h2>
           <p class="booking-key">
             Questions marked <span class="req" aria-hidden="true">*</span><span class="sr-only"
               >with an asterisk</span
             > need an answer. Everything else is optional.
           </p>
-
-          <fieldset class="field" id="bk-when" data-label="Date and time">
-            <legend>Date and time <span class="req" aria-hidden="true">*</span></legend>
-            <div class="bk-when-grid">
-              <div class="bk-sub bk-sub-date">
-                <label for="bk-date">Date</label>
-                <input
-                  id="bk-date"
-                  name="event_date"
-                  type="date"
-                  required
-                  data-picker-only
-                  aria-describedby="bk-when-hint"
-                />
-              </div>
-              <div class="bk-sub">
-                <label for="bk-from">From</label>
-                <select id="bk-from" name="time_from" required aria-describedby="bk-when-hint">
-                  <option value="" selected disabled>––:––</option>
-                  {HOURS.map((t) => <option value={t}>{t}</option>)}
-                </select>
-              </div>
-              <div class="bk-sub">
-                <label for="bk-until">Until</label>
-                <select id="bk-until" name="time_until" required aria-describedby="bk-when-hint">
-                  <option value="" selected disabled>––:––</option>
-                  {HOURS.map((t) => <option value={t}>{t}</option>)}
-                </select>
-              </div>
-            </div>
-            <p class="field-hint" id="bk-when-hint">
-              Helsinki time. Start from when your first person arrives to set up, and end when the
-              last person leaves after clearing up. The hire covers everything in between.
-            </p>
-            <p class="bk-derived" id="bk-when-summary" aria-live="polite" hidden></p>
-            <label class="check">
-              <input
-                type="checkbox"
-                name="multi_day"
-                value="true"
-                aria-describedby="bk-multiday-hint"
-              />
-              <span>It lasts more than one day</span>
-            </label>
-            <p class="field-hint" id="bk-multiday-hint">
-              A festival, say, or a build that takes two days. An evening that runs past midnight is
-              still one day: just pick the end time.
-            </p>
-            <div class="bk-sub bk-sub-date" data-show-when="multi_day=true">
-              <label for="bk-enddate">Last day</label>
-              <input id="bk-enddate" name="end_date" type="date" required data-picker-only />
-            </div>
-            <input type="hidden" name="get_in" />
-            <input type="hidden" name="get_out" />
-            <p class="field-error" id="bk-when-err" hidden></p>
-          </fieldset>
-
-          <p class="booking-warning" id="bk-notice" role="status" aria-live="polite" hidden></p>
-
-          <div class="field">
-            <label class="check">
-              <input type="checkbox" name="has_alt_dates" value="true" />
-              <span>Other dates would work too</span>
-            </label>
-          </div>
-          <div class="field-row" data-show-when="has_alt_dates=true">
-            <div class="field" data-label="Another date">
-              <label for="bk-alt1">Another date</label>
-              <input id="bk-alt1" name="alt_date_1" type="date" data-picker-only />
-              <p class="field-error" id="bk-alt1-err" hidden></p>
-            </div>
-            <div class="field" data-label="A third date">
-              <label for="bk-alt2">And another</label>
-              <input id="bk-alt2" name="alt_date_2" type="date" data-picker-only />
-              <p class="field-error" id="bk-alt2-err" hidden></p>
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="check">
-              <input type="checkbox" name="is_series" value="true" />
-              <span>It is one of a series of events</span>
-            </label>
-          </div>
-          <div
-            class="field bk-narrow"
-            data-label="Events in the series"
-            data-show-when="is_series=true"
-          >
-            <label for="bk-series"
-              >How many events? <span class="req" aria-hidden="true">*</span></label
-            >
-            <input
-              id="bk-series"
-              name="series_count"
-              type="number"
-              inputmode="numeric"
-              min="2"
-              max={LIMITS.maxSeries}
-              step="1"
-              required
-            />
-            <p class="field-error" id="bk-series-err" hidden></p>
-          </div>
-        </section>
-
-        <!-- 02 People and room ---------------------------------------------- -->
-        <section class="bk-step" data-step="2" aria-labelledby="bk-step-2" hidden>
-          <h2 class="bk-step-head" id="bk-step-2" tabindex="-1">
-            <span class="bk-step-num" aria-hidden="true">02</span>
-            <span>People and room</span>
-          </h2>
 
           <div class="field bk-narrow" data-label="Number of people">
             <label for="bk-estimate"
@@ -456,6 +365,156 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
               required
             />
             <p class="field-error" id="bk-layout-detail-err" hidden></p>
+          </div>
+        </section>
+
+        <!-- 01 When ---------------------------------------------------------- -->
+        <section class="bk-step" data-step="2" aria-labelledby="bk-step-2" hidden>
+          <h2 class="bk-step-head" id="bk-step-2" tabindex="-1">
+            <span class="bk-step-num" aria-hidden="true">02</span>
+            <span>When</span>
+          </h2>
+
+          <fieldset class="field" id="bk-when" data-label="Date and time">
+            <legend>Date and time <span class="req" aria-hidden="true">*</span></legend>
+            <!-- Live availability (booking-enquiry-form.ts fills it from the
+                 feed; hidden until the feed has loaded). Each day is a button
+                 that writes the date field below, which then stays hidden. -->
+            <div class="bk-cal" id="bk-cal" hidden>
+              <p class="bk-cal-for" id="bk-cal-for"></p>
+              <div class="bk-cal-bar">
+                <button type="button" class="bk-cal-nav" data-cal-prev aria-label="Previous month">
+                  Previous
+                </button>
+                <p class="bk-cal-month" id="bk-cal-month" aria-live="polite"></p>
+                <button type="button" class="bk-cal-nav" data-cal-next aria-label="Next month">
+                  Next
+                </button>
+              </div>
+              <ul class="bk-cal-legend" id="bk-cal-legend">
+                <li><span class="bk-cal-key is-free" aria-hidden="true"></span>Free</li>
+                <li data-key="partly">
+                  <span class="bk-cal-key is-partly" aria-hidden="true"></span>Partly booked
+                </li>
+                <li data-key="booked">
+                  <span class="bk-cal-key is-booked" aria-hidden="true"></span>Booked
+                </li>
+                <li data-key="hold">
+                  <span class="bk-cal-key is-hold" aria-hidden="true"></span>On hold
+                </li>
+              </ul>
+              <ol class="bk-cal-weekdays" aria-hidden="true">
+                {WEEKDAYS.map((d) => <li>{d}</li>)}
+              </ol>
+              <div class="bk-cal-grid" id="bk-cal-grid" role="group" aria-labelledby="bk-cal-month">
+              </div>
+              <p class="bk-cal-note" id="bk-cal-note" hidden></p>
+              <div class="bk-cal-day" id="bk-cal-day" aria-live="polite" hidden></div>
+            </div>
+            <p class="field-hint bk-cal-fallback" id="bk-cal-fallback" hidden>
+              We couldn’t load live availability. Pick your date and we’ll check it.
+            </p>
+            <div class="bk-when-grid" id="bk-when-grid">
+              <div class="bk-sub bk-sub-date" id="bk-date-sub">
+                <label for="bk-date">Date</label>
+                <input
+                  id="bk-date"
+                  name="event_date"
+                  type="date"
+                  required
+                  data-picker-only
+                  aria-describedby="bk-when-hint"
+                />
+              </div>
+              <div class="bk-sub">
+                <label for="bk-from">From</label>
+                <select id="bk-from" name="time_from" required aria-describedby="bk-when-hint">
+                  <option value="" selected disabled>––:––</option>
+                  {HOURS.map((t) => <option value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div class="bk-sub">
+                <label for="bk-until">Until</label>
+                <select id="bk-until" name="time_until" required aria-describedby="bk-when-hint">
+                  <option value="" selected disabled>––:––</option>
+                  {HOURS.map((t) => <option value={t}>{t}</option>)}
+                </select>
+              </div>
+            </div>
+            <p class="field-hint" id="bk-when-hint">
+              Helsinki time. Start from when your first person arrives to set up, and end when the
+              last person leaves after clearing up. The hire covers everything in between.
+            </p>
+            <p class="bk-derived" id="bk-when-summary" aria-live="polite" hidden></p>
+            <p class="bk-avail" id="bk-avail" role="status" aria-live="polite" hidden></p>
+            <label class="check">
+              <input
+                type="checkbox"
+                name="multi_day"
+                value="true"
+                aria-describedby="bk-multiday-hint"
+              />
+              <span>It lasts more than one day</span>
+            </label>
+            <p class="field-hint" id="bk-multiday-hint">
+              A festival, say, or a build that takes two days. An evening that runs past midnight is
+              still one day: just pick the end time.
+            </p>
+            <div class="bk-sub bk-sub-date" data-show-when="multi_day=true">
+              <label for="bk-enddate">Last day</label>
+              <input id="bk-enddate" name="end_date" type="date" required data-picker-only />
+            </div>
+            <input type="hidden" name="get_in" />
+            <input type="hidden" name="get_out" />
+            <p class="field-error" id="bk-when-err" hidden></p>
+          </fieldset>
+
+          <p class="booking-warning" id="bk-notice" role="status" aria-live="polite" hidden></p>
+
+          <div class="field">
+            <label class="check">
+              <input type="checkbox" name="has_alt_dates" value="true" />
+              <span>Other dates would work too</span>
+            </label>
+          </div>
+          <div class="field-row" data-show-when="has_alt_dates=true">
+            <div class="field" data-label="Another date">
+              <label for="bk-alt1">Another date</label>
+              <input id="bk-alt1" name="alt_date_1" type="date" data-picker-only />
+              <p class="field-error" id="bk-alt1-err" hidden></p>
+            </div>
+            <div class="field" data-label="A third date">
+              <label for="bk-alt2">And another</label>
+              <input id="bk-alt2" name="alt_date_2" type="date" data-picker-only />
+              <p class="field-error" id="bk-alt2-err" hidden></p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="check">
+              <input type="checkbox" name="is_series" value="true" />
+              <span>It is one of a series of events</span>
+            </label>
+          </div>
+          <div
+            class="field bk-narrow"
+            data-label="Events in the series"
+            data-show-when="is_series=true"
+          >
+            <label for="bk-series"
+              >How many events? <span class="req" aria-hidden="true">*</span></label
+            >
+            <input
+              id="bk-series"
+              name="series_count"
+              type="number"
+              inputmode="numeric"
+              min="2"
+              max={LIMITS.maxSeries}
+              step="1"
+              required
+            />
+            <p class="field-error" id="bk-series-err" hidden></p>
           </div>
         </section>
 
@@ -1156,6 +1215,272 @@ const STEPS = ['When', 'People and room', 'The event', 'What you need', 'About y
     font: var(--text-small);
     font-weight: 600;
     color: var(--color-paper);
+  }
+
+  /* ---- live availability (2026-11-11) ----
+     The month for the rooms chosen in step 1, in the language of the venue
+     page's own grid (AvailabilityCalendar.astro): a hairline-ruled month,
+     Ember for booked. Each day is a button; the chosen one inverts, like the
+     visit time chips. State is never colour alone: every day that is not
+     free carries its word. Built at runtime, so :global under .booking. */
+  .bk-cal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+  }
+  .bk-cal[hidden],
+  .bk-cal-fallback[hidden],
+  .bk-cal-note[hidden],
+  .bk-cal-day[hidden],
+  .bk-avail[hidden] {
+    display: none;
+  }
+  .bk-cal-for {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .bk-cal-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+  .bk-cal-month {
+    margin: 0;
+    text-align: center;
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+  }
+  .bk-cal-nav {
+    background: none;
+    border: 0;
+    min-height: 2.75rem;
+    padding: 0;
+    cursor: pointer;
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .bk-cal-nav:hover {
+    color: var(--color-heat);
+  }
+  .bk-cal-nav:disabled {
+    color: var(--color-paper-20);
+    cursor: default;
+  }
+  .bk-cal-nav:focus-visible {
+    outline: 2px solid var(--color-paper);
+    outline-offset: 2px;
+  }
+  .bk-cal-legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-60);
+  }
+  .bk-cal-legend li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .bk-cal-legend li[hidden] {
+    display: none;
+  }
+  .bk-cal-key {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex: none;
+    border: 1px solid var(--color-paper-20);
+  }
+  .bk-cal-key.is-partly {
+    border: 0;
+    background: linear-gradient(to top, var(--color-heat) 0 35%, transparent 35%);
+    box-shadow: inset 0 0 0 1px var(--color-paper-20);
+  }
+  .bk-cal-key.is-booked {
+    border: 0;
+    background: var(--color-heat);
+  }
+  .bk-cal-key.is-hold {
+    border: 1px dashed var(--color-paper-60);
+  }
+  .bk-cal-weekdays,
+  :global(.booking .bk-cal-grid) {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+  .bk-cal-weekdays li {
+    font: var(--text-small);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-paper-40);
+  }
+  :global(.booking .bk-cal-grid) {
+    gap: 1px;
+    background: var(--color-paper-12);
+    border: 1px solid var(--color-paper-12);
+  }
+  :global(.booking .bk-cal-pad) {
+    background: var(--color-paper-03);
+  }
+  :global(.booking .bk-cal-cell) {
+    position: relative;
+    min-height: 3.5rem;
+    min-width: 0;
+    margin: 0;
+    padding: var(--space-2) var(--space-1) var(--space-1) var(--space-2);
+    border: 0;
+    border-radius: 0;
+    background: var(--color-bg);
+    color: var(--color-paper);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2px;
+    text-align: left;
+    cursor: pointer;
+    font: var(--text-small);
+    transition:
+      background-color var(--duration-fast) ease,
+      color var(--duration-fast) ease;
+  }
+  :global(.booking .bk-cal-num) {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  :global(.booking .bk-cal-word) {
+    font-size: 0.6875rem;
+    line-height: 1.15;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  /* A phone's day is about 2.9rem wide: the word goes to sentence case at a
+     smaller size so "Partly" and "Booked" fit on one line ("On hold" takes
+     two). */
+  @media (max-width: 520px) {
+    :global(.booking .bk-cal-cell) {
+      min-height: 3.25rem;
+      padding: var(--space-1) 2px 3px var(--space-1);
+    }
+    :global(.booking .bk-cal-word) {
+      font-size: 0.625rem;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .bk-cal-weekdays li {
+      letter-spacing: 0;
+      font-size: 0.6875rem;
+    }
+  }
+  :global(.booking .bk-cal-cell:hover:not(:disabled)) {
+    box-shadow: inset 0 0 0 1px var(--color-paper);
+  }
+  :global(.booking .bk-cal-cell:focus-visible) {
+    outline: 2px solid var(--color-paper);
+    outline-offset: -2px;
+    z-index: 1;
+  }
+  :global(.booking .bk-cal-cell:disabled) {
+    cursor: default;
+    color: var(--color-paper-20);
+  }
+  :global(.booking .bk-cal-cell.is-today .bk-cal-num) {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.25em;
+  }
+  /* Partly booked: an Ember band along the foot of the day. */
+  :global(.booking .bk-cal-cell.is-partly) {
+    box-shadow: inset 0 -0.3rem 0 var(--color-heat);
+  }
+  :global(.booking .bk-cal-cell.is-partly:hover) {
+    box-shadow:
+      inset 0 -0.3rem 0 var(--color-heat),
+      inset 0 0 0 1px var(--color-paper);
+  }
+  /* Booked: the venue grid's solid Ember. */
+  :global(.booking .bk-cal-cell.is-booked) {
+    background: var(--color-heat);
+    color: var(--color-bg);
+  }
+  /* On hold: a dashed keyline; someone has an offer, you can still ask. */
+  :global(.booking .bk-cal-cell.is-hold),
+  :global(.booking .bk-cal-cell.is-some) {
+    outline: 1px dashed var(--color-paper-60);
+    outline-offset: -4px;
+  }
+  :global(.booking .bk-cal-cell.is-unknown .bk-cal-word) {
+    color: var(--color-paper-40);
+  }
+  :global(.booking .bk-cal-cell[aria-pressed='true']) {
+    background: var(--color-paper);
+    color: var(--color-bg);
+    outline: none;
+  }
+  .bk-cal-note {
+    margin: 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .bk-cal-day {
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-paper-03);
+    border-left: 2px solid var(--color-paper);
+  }
+  :global(.booking .bk-cal-day-head) {
+    margin: 0 0 var(--space-1);
+    font: var(--text-small);
+    font-weight: 600;
+    color: var(--color-paper);
+  }
+  :global(.booking .bk-cal-day ul) {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font: var(--text-small);
+    color: var(--color-paper-80);
+  }
+  :global(.booking .bk-cal-day p:not(.bk-cal-day-head)) {
+    margin: var(--space-1) 0 0;
+    font: var(--text-small);
+    color: var(--color-paper-60);
+  }
+  .bk-when-grid.is-cal {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    max-width: 26rem;
+  }
+  .bk-avail {
+    margin: 0;
+    font: var(--text-small);
+    font-weight: 600;
+    color: var(--color-paper);
+  }
+  .bk-avail.is-hold,
+  .bk-avail.is-firm {
+    padding: var(--space-2) var(--space-3);
+    border-left: 2px solid var(--color-heat);
+    background: var(--color-paper-03);
   }
 
   /* ---- choice cards: the rooms and the help levels ----

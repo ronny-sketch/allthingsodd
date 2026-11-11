@@ -373,6 +373,9 @@ export interface BookingPayload {
   held_event_before?: boolean;
   /** Proposed viewing times (Helsinki ISO), when held_event_before is false. */
   visit_times: string[];
+  /** What the live calendar showed for the chosen time (2026-11-11). Optional;
+   *  the Worker records it from the calendar-availability plan's Stage 3. */
+  availability_at_submit?: 'free' | 'on_hold' | 'not_checked';
 }
 
 export type FieldErrors = Partial<Record<keyof BookingPayload, string>>;

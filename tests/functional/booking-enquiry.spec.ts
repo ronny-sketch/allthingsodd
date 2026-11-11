@@ -17,6 +17,10 @@ const SUBMIT = '**/api/booking-enquiry';
 const NEXT = '#bookingEnquiryForm .bk-next';
 const BACK = '#bookingEnquiryForm .bk-back';
 const DIALOG = '#bk-dialog';
+// The step numbers (2026-11-11, live availability: the rooms come first, so
+// "When" can show the calendar for them).
+const ROOMS = 1;
+const WHEN = 2;
 
 test.beforeEach(async ({ context }) => {
   // Same reason as interactions.spec.ts: keep the newsletter popup's real
@@ -65,15 +69,18 @@ function dateIn(days: number) {
 // Valid answers for one step, on the step that is showing.
 async function fillStep(page: Page, step: number, { days = 40 } = {}) {
   switch (step) {
-    case 1:
-      await page.fill('#bk-date', dateIn(days));
-      await page.selectOption('#bk-from', '14:00');
-      await page.selectOption('#bk-until', '22:00');
-      return;
-    case 2:
+    case ROOMS:
       await page.fill('#bk-estimate', '80');
       await page.check('#bk-space-gallery');
       await page.check('#bk-layout-cocktail');
+      return;
+    case WHEN:
+      // The test servers have no live feed (public/oddspace/availability.json
+      // is the placeholder), so this is the plain date field. The calendar
+      // has its own tests, with the feed mocked: booking-calendar.spec.ts.
+      await page.fill('#bk-date', dateIn(days));
+      await page.selectOption('#bk-from', '14:00');
+      await page.selectOption('#bk-until', '22:00');
       return;
     case 3:
       await page.fill('#bk-title', 'Autumn launch');
@@ -163,16 +170,17 @@ test('"Plan your event" opens the enquiry, and Esc closes it where it was', asyn
 
 test('× closes it too, and the answers are still there when it reopens', async ({ page }) => {
   await openForm(page);
-  await fillStep(page, 1);
-  await next(page, 2);
   await page.fill('#bk-estimate', '64');
+  await page.check('#bk-space-gallery');
+  await next(page, WHEN);
+  await page.selectOption('#bk-from', '14:00');
   await page.click('#bk-dialog .bk-close');
   await expect(page.locator(DIALOG)).toBeHidden();
   await page.click('#bk-open');
   await expect(page.locator('#bk-count')).toHaveText('Step 2 of 5');
-  await expect(page.locator('#bk-estimate')).toHaveValue('64');
-  await page.click(BACK);
   await expect(page.locator('#bk-from')).toHaveValue('14:00');
+  await page.click(BACK);
+  await expect(page.locator('#bk-estimate')).toHaveValue('64');
 });
 
 test("the phone's back button closes the enquiry and stays on the page", async ({ page }) => {
@@ -331,13 +339,12 @@ test('the sticky bar stays down while the cookie banner is up', async ({ page })
 test('required questions are marked, and the key says what the mark means', async ({ page }) => {
   await openForm(page);
   await expect(page.locator('[data-step="1"] .booking-key')).toContainText('need an answer');
-  await expect(page.locator('#bk-when .req').first()).toBeVisible();
-  await next(page);
-  await fillStep(page, 1);
-  await next(page, 2);
   await expect(page.locator('#bk-space .req').first()).toBeVisible();
   // Layout is optional: no mark.
   await expect(page.locator('#bk-layout .req')).toHaveCount(0);
+  await fillStep(page, ROOMS);
+  await next(page, WHEN);
+  await expect(page.locator('#bk-when .req').first()).toBeVisible();
 });
 
 test('Next checks the current step only, and sends nothing', async ({ page }) => {
@@ -347,8 +354,9 @@ test('Next checks the current step only, and sends nothing', async ({ page }) =>
     posted = true;
     return ok(r);
   });
+  await reach(page, WHEN);
   await next(page);
-  await expect(stepHead(page, 1)).toBeVisible();
+  await expect(stepHead(page, WHEN)).toBeVisible();
   await expect(page.locator('#bk-when')).toHaveClass(/is-invalid/);
   await expect(page.locator('#bk-when-err')).toHaveText(
     /Add the date, a start time and an end time/,
@@ -360,13 +368,13 @@ test('Next checks the current step only, and sends nothing', async ({ page }) =>
   // Nothing on a later step is marked yet.
   await expect(page.locator('#bookingEnquiryForm .field.is-invalid')).toHaveCount(1);
   // Answering clears the mark and the count straight away.
-  await fillStep(page, 1);
+  await fillStep(page, WHEN);
   await expect(page.locator('#bk-when-err')).toBeHidden();
   await expect(page.locator('#bookingEnquiryForm .form-status')).toHaveText('');
-  await next(page, 2);
-  await expect(page.locator('#bk-count')).toHaveText('Step 2 of 5');
-  await expect(page.locator('.bk-progress li.is-done')).toHaveCount(2);
-  await expect(stepHead(page, 2)).toBeFocused();
+  await next(page, 3);
+  await expect(page.locator('#bk-count')).toHaveText('Step 3 of 5');
+  await expect(page.locator('.bk-progress li.is-done')).toHaveCount(3);
+  await expect(stepHead(page, 3)).toBeFocused();
   expect(posted).toBe(false);
 });
 
@@ -400,7 +408,13 @@ test('a wrong email address is flagged on leaving the field', async ({ page }) =
 
 test('conditional questions appear only when they apply', async ({ page }) => {
   await openForm(page);
-  // Step 1
+  // People and room
+  await expect(page.locator('input[name="layout_custom"]')).toBeHidden();
+  await page.check('#bk-layout-custom');
+  await expect(page.locator('input[name="layout_custom"]')).toBeVisible();
+  await fillStep(page, ROOMS);
+  await next(page, WHEN);
+  // When
   await expect(page.locator('#bk-alt1')).toBeHidden();
   await page.check('input[name="has_alt_dates"]');
   await expect(page.locator('#bk-alt1')).toBeVisible();
@@ -409,13 +423,7 @@ test('conditional questions appear only when they apply', async ({ page }) => {
   await page.check('input[name="multi_day"]');
   await expect(page.locator('#bk-enddate')).toBeVisible();
   await page.uncheck('input[name="multi_day"]');
-  await fillStep(page, 1);
-  await next(page, 2);
-  // Step 2
-  await expect(page.locator('input[name="layout_custom"]')).toBeHidden();
-  await page.check('#bk-layout-custom');
-  await expect(page.locator('input[name="layout_custom"]')).toBeVisible();
-  await fillStep(page, 2);
+  await fillStep(page, WHEN);
   await next(page, 3);
   await fillStep(page, 3);
   await next(page, 4);
@@ -443,7 +451,6 @@ test('the rooms come with photographs, and their details open inside the card', 
   page,
 }) => {
   await openForm(page);
-  await reach(page, 2);
   const gallery = page.locator('.bk-card:has(#bk-space-gallery)');
   await expect(gallery.locator('img')).toHaveCount(1);
   await expect(gallery.locator('img')).toHaveAttribute('alt', /Gallery/);
@@ -485,7 +492,6 @@ test('the rooms come with photographs, and their details open inside the card', 
 
 test('rooms combine, and "Not sure yet" stands alone', async ({ page }) => {
   await openForm(page);
-  await reach(page, 2);
   await expect(page.locator('#bk-space')).toContainText('several to combine them');
   await page.check('#bk-space-gallery');
   await page.check('#bk-space-aula');
@@ -571,6 +577,7 @@ test('questions that do not change the quote are not asked', async ({ page }) =>
 
 test('the date is picked from the calendar and cannot be typed', async ({ page }) => {
   await openForm(page);
+  await reach(page, WHEN);
   const date = page.locator('#bk-date');
   await date.focus();
   await page.keyboard.type('12122026');
@@ -591,7 +598,8 @@ test('times come in whole hours only', async ({ page }) => {
 
 test('an end time before the start means the next day', async ({ page }) => {
   await openForm(page);
-  await fillStep(page, 1);
+  await reach(page, WHEN);
+  await fillStep(page, WHEN);
   await page.selectOption('#bk-from', '20:00');
   await page.selectOption('#bk-until', '02:00');
   await expect(page.locator('#bk-when-summary')).toHaveText(/6 hours .* next day at 02:00/);
@@ -602,7 +610,7 @@ test('an end time before the start means the next day', async ({ page }) => {
   await expect(page.locator('#bk-multiday-hint')).toContainText('runs past midnight');
   await page.selectOption('#bk-from', '20:00');
   await page.selectOption('#bk-until', '02:00');
-  await fillFrom(page, 1, { skipFill: true });
+  await fillFrom(page, WHEN, { skipFill: true });
   await expect(page.locator('#bk-review')).toContainText('20:00 to 02:00 the next day, 6 hours');
   const sent = await sendAndCapture(page);
   const start = new Date(sent.get_in).getTime();
@@ -612,22 +620,24 @@ test('an end time before the start means the next day', async ({ page }) => {
 
 test('a multi-day event needs a last day after the first', async ({ page }) => {
   await openForm(page);
-  await fillStep(page, 1);
+  await reach(page, WHEN);
+  await fillStep(page, WHEN);
   await page.check('input[name="multi_day"]');
   await next(page);
   await expect(page.locator('#bk-when-err')).toHaveText(/last day/i);
   await page.fill('#bk-enddate', dateIn(42));
   await expect(page.locator('#bk-when-err')).toBeHidden();
-  await next(page, 2);
+  await next(page, 3);
 });
 
 test('a date inside 5 working days shows the lead-time warning but still sends', async ({
   page,
 }) => {
   await openForm(page);
-  await fillStep(page, 1, { days: 2 });
+  await reach(page, WHEN);
+  await fillStep(page, WHEN, { days: 2 });
   await expect(page.locator('#bk-notice')).toContainText(/5 working days/);
-  await fillFrom(page, 1, { skipFill: true, days: 2 });
+  await fillFrom(page, WHEN, { skipFill: true, days: 2 });
   // The summary repeats it, next to Send.
   await expect(page.locator('#bk-review-notes')).toContainText(/5 working days/);
   await page.route(SUBMIT, (r) => ok(r));
@@ -639,11 +649,10 @@ test('a date inside 5 working days shows the lead-time warning but still sends',
 
 test('an enquiry without a layout, other dates or smoke still sends', async ({ page }) => {
   await openForm(page);
-  await reach(page, 2);
   await page.fill('#bk-estimate', '80');
   await page.check('#bk-space-gallery');
-  await next(page, 3);
-  await fillFrom(page, 3);
+  await next(page, WHEN);
+  await fillFrom(page, WHEN);
   await expect(page.locator('#bk-review')).toContainText('Not decided yet');
   const sent = await sendAndCapture(page);
   expect(sent.layout).toBeUndefined();
@@ -670,8 +679,7 @@ test('the Auditorium has fixed seating, so no layout is asked and theatre is sen
   page,
 }) => {
   await openForm(page);
-  await reach(page, 2);
-  await fillStep(page, 2);
+  await fillStep(page, ROOMS);
   // A layout chosen for another room first must not leak through.
   await page.check('#bk-layout-cabaret');
   await page.uncheck('#bk-space-gallery');
@@ -679,8 +687,8 @@ test('the Auditorium has fixed seating, so no layout is asked and theatre is sen
   await expect(page.locator('#bk-layout')).toBeHidden();
   await expect(page.locator('.bk-fixed')).toBeVisible();
   await page.fill('#bk-estimate', '40');
-  await next(page, 3);
-  await fillFrom(page, 3);
+  await next(page, WHEN);
+  await fillFrom(page, WHEN);
   await expect(page.locator('#bk-review')).toContainText('Fixed tiered seating');
   const sent = await sendAndCapture(page);
   expect(sent.spaces).toEqual(['auditorium']);
@@ -691,7 +699,6 @@ test('with the Auditorium and another room, the layout is asked for the other ro
   page,
 }) => {
   await openForm(page);
-  await reach(page, 2);
   await page.check('#bk-space-auditorium');
   await expect(page.locator('#bk-layout')).toBeHidden();
   await page.check('#bk-space-aula');
@@ -702,15 +709,14 @@ test('with the Auditorium and another room, the layout is asked for the other ro
 
 test('a headcount over the room shows a warning but does not block', async ({ page }) => {
   await openForm(page);
-  await reach(page, 2);
-  await fillStep(page, 2);
+  await fillStep(page, ROOMS);
   await page.uncheck('#bk-space-gallery');
   await page.check('#bk-space-auditorium');
   await page.fill('#bk-estimate', '120');
   await expect(page.locator('#bk-capacity')).toContainText('seats 50');
   await expect(page.locator('#bk-steward')).toBeVisible();
-  await next(page, 3);
-  await fillFrom(page, 3);
+  await next(page, WHEN);
+  await fillFrom(page, WHEN);
   await expect(page.locator('#bk-review-notes')).toContainText('seats 50');
   const sent = await sendAndCapture(page);
   expect(sent.headcount_estimate).toBe(120);
@@ -755,7 +761,7 @@ test('the summary shows every answer, and Edit returns to it', async ({ page }) 
   );
 
   await page.getByRole('button', { name: 'Edit People and room' }).click();
-  await expect(stepHead(page, 2)).toBeVisible();
+  await expect(stepHead(page, ROOMS)).toBeVisible();
   await expect(page.locator(NEXT)).toHaveText('Back to summary');
   await page.fill('#bk-estimate', '95');
   await next(page, 'review');
@@ -812,6 +818,8 @@ test('a valid enquiry posts the spec payload and shows the thank-you', async ({ 
   expect(sent.music).toEqual(['background']);
   expect(sent.newsletter_opt_in).toBe(false);
   expect(sent.pyro_flame).toBe('no');
+  // What the live calendar showed; no feed on the test server, so unchecked.
+  expect(sent.availability_at_submit).toBe('not_checked');
   // Settled after booking, so never sent.
   for (const k of ['catering', 'cleaning', 'budget_band', 'music_past_2200']) {
     expect(sent[k], k).toBeUndefined();
@@ -937,8 +945,8 @@ test("the Worker's 400 takes the visitor to the step it belongs to", async ({ pa
     }),
   );
   await page.click(NEXT);
-  // The first one is on step 1, so that is where it goes.
-  await expect(stepHead(page, 1)).toBeVisible();
+  // The first one is on "When", so that is where it goes.
+  await expect(stepHead(page, WHEN)).toBeVisible();
   // Payload fields the form asks as a different question land on that one.
   await expect(page.locator('#bk-when')).toHaveClass(/is-invalid/);
   await expect(page.locator('#bk-date')).toBeFocused();
@@ -1041,7 +1049,6 @@ test('someone who has held an event here sends no visit', async ({ page }) => {
 
 test('choices work from the keyboard', async ({ page }) => {
   await openForm(page);
-  await reach(page, 2);
   await page.focus('#bk-space-gallery');
   await page.keyboard.press('Space');
   await expect(page.locator('#bk-space-gallery')).toBeChecked();
@@ -1050,7 +1057,9 @@ test('choices work from the keyboard', async ({ page }) => {
   await expect(page.locator('#bk-space-aula')).toBeChecked();
   await expect(page.locator('#bk-space-gallery')).toBeChecked();
   await page.uncheck('#bk-space-aula');
-  await fillStep(page, 2);
+  await fillStep(page, ROOMS);
+  await next(page, WHEN);
+  await fillStep(page, WHEN);
   await next(page, 3);
   await page.focus('#bk-type-launch');
   await page.keyboard.press('ArrowRight');
