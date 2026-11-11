@@ -133,23 +133,30 @@ export type DayState = 'free' | 'hold' | 'partly' | 'booked' | 'some' | 'unknown
 export const known = (feed: Feed, date: string) => date >= feed.from && date <= feed.to;
 
 /**
- * One day, for these rooms. "partly": firm bookings, but at least one whole
- * hour free between 08:00 and 23:00. "booked": none. "hold": only holds.
- * "some": the visitor has not chosen a room, and something is on that day.
- * "unknown": past the feed's window, checked by hand.
+ * One day, for these rooms, judged on the hours people book (08:00–23:00).
+ * "partly": firm bookings, but at least one whole hour free in those hours.
+ * "booked": none. "hold": only holds. "some": the visitor has not chosen a
+ * room, and something is on in those hours. "unknown": past the feed's
+ * window, checked by hand.
+ *
+ * Only the label is judged on 08:00–23:00 (design review, 11 Nov 2026): a
+ * club night ending at 04:00, or the hour kept free before a booking that
+ * starts at midnight, no longer marks a day that is free all day. The day
+ * panel still lists those hours, and startTaken() and outcome() still refuse
+ * them, so nothing that clashes gets through.
  */
 export function dayState(feed: Feed, date: string, rooms: string[]): DayState {
   if (!known(feed, date)) return 'unknown';
-  const d0 = at(date, 0);
-  const d1 = at(date, 24);
+  const o0 = at(date, OPEN_HOUR);
+  const o1 = at(date, CLOSE_HOUR);
   const q = realRooms(rooms);
   if (q.length === 0) {
     const any = feed.blocks.some(
-      (b) => b.s < d1 && d0 < b.e && !(b.rooms.length === 1 && b.rooms[0] === 'meeting_rooms'),
+      (b) => b.s < o1 && o0 < b.e && !(b.rooms.length === 1 && b.rooms[0] === 'meeting_rooms'),
     );
     return any ? 'some' : 'free';
   }
-  const { firm, hold } = clashes(feed, d0, d1, q);
+  const { firm, hold } = clashes(feed, o0, o1, q);
   if (firm.length === 0) return hold.length ? 'hold' : 'free';
   const only = { ...feed, blocks: firm };
   for (let h = OPEN_HOUR; h < CLOSE_HOUR; h++) {
@@ -181,14 +188,16 @@ export interface DayLine {
 /**
  * What is taken on a day, in the order it happens: for the chosen rooms, or
  * every room when none is chosen. Times include the hour kept between
- * events, because that is what the visitor cannot have.
+ * events, because that is what the visitor cannot have. Periods for the same
+ * rooms that overlap or touch once those hours are added read as one line
+ * ("booked from 13:00", not "13:00–19:00" and "from 17:00").
  */
 export function dayLines(feed: Feed, date: string, rooms: string[]): DayLine[] {
   if (!known(feed, date)) return [];
   const d0 = at(date, 0);
   const d1 = at(date, 24);
   const q = realRooms(rooms);
-  const lines: DayLine[] = [];
+  const spans: { rooms: string[]; hold: boolean; s: number; e: number }[] = [];
   for (const b of [...feed.blocks].sort((a, z) => a.s - z.s)) {
     const r = reach(b);
     if (!(r.s < d1 && d0 < r.e)) continue;
@@ -202,14 +211,17 @@ export function dayLines(feed: Feed, date: string, rooms: string[]): DayLine[] {
       shown = b.rooms.filter((x) => q.includes(x));
       if (shown.length === 0) continue;
     }
-    lines.push({
-      rooms: shown,
-      hold: b.hold,
-      from: r.s <= d0 ? null : helsinkiClock(r.s),
-      until: r.e >= d1 ? null : helsinkiClock(r.e),
-    });
+    const key = shown.join('+');
+    const same = spans.find((x) => x.hold === b.hold && x.rooms.join('+') === key && r.s <= x.e);
+    if (same) same.e = Math.max(same.e, r.e);
+    else spans.push({ rooms: shown, hold: b.hold, s: r.s, e: r.e });
   }
-  return lines;
+  return spans.map((x) => ({
+    rooms: x.rooms,
+    hold: x.hold,
+    from: x.s <= d0 ? null : helsinkiClock(x.s),
+    until: x.e >= d1 ? null : helsinkiClock(x.e),
+  }));
 }
 
 export type Outcome = 'free' | 'hold' | 'firm' | 'unknown' | 'unchecked';

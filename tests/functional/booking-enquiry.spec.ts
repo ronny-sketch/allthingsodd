@@ -28,6 +28,10 @@ test.beforeEach(async ({ context }) => {
   await context.addInitScript(() => {
     localStorage.setItem('oddNewsletterPopupSeen', '1');
   });
+  // These tests answer "When" with the plain date field, so no live feed,
+  // whatever the server serves (wrangler dev serves the real one). The
+  // calendar has its own tests, with the feed mocked: booking-calendar.spec.ts.
+  await context.route('**/oddspace/availability.json', (r) => r.fulfill({ status: 404 }));
 });
 
 async function load(page: Page, { keepConsentBanner = false, url = VENUE } = {}) {
@@ -75,9 +79,8 @@ async function fillStep(page: Page, step: number, { days = 40 } = {}) {
       await page.check('#bk-layout-cocktail');
       return;
     case WHEN:
-      // The test servers have no live feed (public/oddspace/availability.json
-      // is the placeholder), so this is the plain date field. The calendar
-      // has its own tests, with the feed mocked: booking-calendar.spec.ts.
+      // No live feed in these tests (see beforeEach), so this is the plain
+      // date field.
       await page.fill('#bk-date', dateIn(days));
       await page.selectOption('#bk-from', '14:00');
       await page.selectOption('#bk-until', '22:00');

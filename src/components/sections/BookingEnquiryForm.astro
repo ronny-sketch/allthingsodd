@@ -1365,29 +1365,45 @@ const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
+  /* The day's word is Small, like every other label: the site sets nothing
+     below 14px (design review, 11 Nov 2026). */
   :global(.booking .bk-cal-word) {
-    font-size: 0.6875rem;
-    line-height: 1.15;
+    font: var(--text-small);
     font-weight: 600;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
   }
-  /* A phone's day is about 2.9rem wide: the word goes to sentence case at a
-     smaller size so "Partly" and "Booked" fit on one line ("On hold" takes
-     two). */
+  /* A phone's day is about 2.9rem wide, too narrow for "Partly" in Small.
+     There the shape carries the state, and none of the shapes is colour
+     alone: a band along the foot is partly booked, a fill is booked, a dashed
+     keyline is on hold. The legend names them, and every day's accessible
+     name and the day panel still say the word. "Ask" (past the calendar's
+     window) has no shape, so it keeps its word. The weekdays drop to
+     sentence case without tracking so "Mon" fits at Small. The month takes
+     its own row so it never wraps between Previous and Next. */
   @media (max-width: 520px) {
     :global(.booking .bk-cal-cell) {
       min-height: 3.25rem;
-      padding: var(--space-1) 2px 3px var(--space-1);
     }
-    :global(.booking .bk-cal-word) {
-      font-size: 0.625rem;
-      letter-spacing: 0;
-      text-transform: none;
+    :global(.booking .bk-cal-cell:not(.is-unknown) .bk-cal-word) {
+      display: none;
     }
     .bk-cal-weekdays li {
       letter-spacing: 0;
-      font-size: 0.6875rem;
+      text-transform: none;
+    }
+    .bk-cal-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      row-gap: var(--space-2);
+    }
+    .bk-cal-month {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+    .bk-cal-nav[data-cal-prev] {
+      justify-self: start;
+    }
+    .bk-cal-nav[data-cal-next] {
+      justify-self: end;
     }
   }
   :global(.booking .bk-cal-cell:hover:not(:disabled)) {
@@ -1481,6 +1497,17 @@ const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     padding: var(--space-2) var(--space-3);
     border-left: 2px solid var(--color-heat);
     background: var(--color-paper-03);
+  }
+  /* Next refused the hours: the same line, now the question's error, set
+     like every other .field-error so it reads as one. */
+  .bk-avail.is-error:not([hidden]) {
+    display: flex;
+    gap: 0.4rem;
+    color: var(--color-heat);
+  }
+  .bk-avail.is-error::before {
+    content: '↳';
+    flex: none;
   }
 
   /* ---- choice cards: the rooms and the help levels ----

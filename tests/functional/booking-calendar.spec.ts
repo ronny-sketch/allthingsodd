@@ -38,7 +38,8 @@ const DAY = (n: number) => dateIn(20 + n);
 // The fixture. Gallery booked 12:00–17:00 on D; a Gallery hold the next
 // evening; the whole space all day on D+8; a Gallery morning on D+11 (for
 // the evening before that runs past midnight); the 2nd-floor meeting rooms
-// on D+13. Rooms and times only, as the real feed.
+// on D+13; on D+15 a Gallery afternoon straight into a club night that
+// ends 04:00 on D+16. Rooms and times only, as the real feed.
 function feedBody() {
   return {
     v: 2,
@@ -57,6 +58,8 @@ function feedBody() {
         rooms: ['meeting_rooms'],
         hold: false,
       },
+      { start: at(DAY(15), '14:00'), end: at(DAY(15), '18:00'), rooms: ['gallery'], hold: false },
+      { start: at(DAY(15), '20:00'), end: at(DAY(16), '04:00'), rooms: ['gallery'], hold: false },
     ],
   };
 }
@@ -228,14 +231,24 @@ test('hours inside a booking cannot be picked, and the hour between events is ke
   await expect(page.locator('#bk-avail')).toHaveText(/run into a booking/);
   await page.click(NEXT);
   await expect(page.locator('#bk-step-2')).toBeVisible();
-  await expect(page.locator('#bk-when-err')).toHaveText(
+  // The refusal stays under the hours it is about, as the question's error,
+  // and the footer counts it as something to fix, not an answer needed.
+  await expect(page.locator('#bk-avail')).toHaveText(
     'Those hours run into a booking. Pick other hours or another day.',
   );
-  await expect(page.locator('#bk-avail')).toBeHidden();
+  await expect(page.locator('#bk-avail')).toHaveClass(/is-error/);
+  await expect(page.locator('#bk-when-err')).toBeHidden();
+  await expect(page.locator('#bk-from')).toHaveAttribute('aria-describedby', /bk-avail/);
+  await expect(page.locator('#bookingEnquiryForm .form-status')).toHaveText(
+    '1 thing to fix to continue.',
+  );
   await expect(page.locator('#bk-from')).toBeFocused();
   // Picking other hours clears it.
   await page.selectOption('#bk-until', '11:00');
+  await expect(page.locator('#bk-avail')).toHaveText('Free at your time.');
+  await expect(page.locator('#bk-avail')).not.toHaveClass(/is-error/);
   await expect(page.locator('#bk-when-err')).toBeHidden();
+  await expect(page.locator('#bookingEnquiryForm .form-status')).toHaveText('');
   await page.click(NEXT);
   await expect(page.locator('#bk-step-3')).toBeVisible();
 });
@@ -282,7 +295,8 @@ test('an evening past midnight that runs into the next morning is refused, by da
   await hours(page, '20:00', '08:00');
   await expect(page.locator('#bk-avail')).toContainText('run into a booking on');
   await page.click(NEXT);
-  await expect(page.locator('#bk-when-err')).toContainText('run into a booking on');
+  await expect(page.locator('#bk-avail')).toContainText('run into a booking on');
+  await expect(page.locator('#bk-avail')).toHaveClass(/is-error/);
   await page.selectOption('#bk-until', '06:00');
   await expect(page.locator('#bk-avail')).toHaveText('Free at your time.');
   await page.click(NEXT);
@@ -303,9 +317,32 @@ test('a multi-day event across a booked day is refused, naming the day', async (
     month: 'short',
     year: 'numeric',
   }).format(new Date(`${DAY(8)}T12:00:00`));
-  await expect(page.locator('#bk-when-err')).toHaveText(
+  await expect(page.locator('#bk-avail')).toHaveText(
     `Those hours run into a booking on ${named}. Pick other hours or another day.`,
   );
+});
+
+test('a day is judged on the hours people book, and back-to-back bookings read as one', async ({
+  page,
+}) => {
+  await load(page);
+  await rooms(page, 'gallery');
+  // The club night ends 04:00 (05:00 with the gap): the next day is free
+  // from 08:00, so it is not marked, but its early hours still cannot start.
+  expect(await state(page, DAY(16))).toBe('free');
+  await pickDay(page, DAY(16));
+  await expect(page.locator('#bk-cal-day')).toContainText('Gallery: booked until 05:00');
+  await expect(page.locator('#bk-from option[value="04:00"]')).toBeDisabled();
+  await expect(page.locator('#bk-from option[value="08:00"]')).toBeEnabled();
+  // The day before it: 14:00–18:00 then 20:00 onwards overlap once the
+  // hour between them is added, so the panel says it once.
+  expect(await state(page, DAY(15))).toBe('partly');
+  await pickDay(page, DAY(15));
+  await expect(page.locator('#bk-cal-day li')).toHaveCount(1);
+  await expect(page.locator('#bk-cal-day')).toContainText('Gallery: booked from 13:00');
+  // The whole space all day on D+8 no longer spills onto the evening before.
+  expect(await state(page, DAY(7))).toBe('free');
+  expect(await state(page, DAY(8))).toBe('booked');
 });
 
 test('no date yet: Next points at the calendar', async ({ page }) => {
@@ -402,4 +439,41 @@ test('on a phone the calendar fits without sideways scrolling', async ({ page })
   expect(overflow.page).toBeLessThanOrEqual(0);
   expect(overflow.dialog).toBeLessThanOrEqual(0);
   expect(overflow.cell).toBeGreaterThanOrEqual(44);
+  expect(await state(page, D)).toBe('partly');
+  // Nothing in the calendar is set below the site's 14px floor. On a phone
+  // the shape carries the day's state; its word is in the accessible name.
+  const smallest = await page.evaluate(() =>
+    Math.min(
+      ...Array.from(document.querySelectorAll<HTMLElement>('#bk-cal *'))
+        .filter((e) => e.offsetParent && e.childNodes.length && e.innerText?.trim())
+        .map((e) => parseFloat(getComputedStyle(e).fontSize)),
+    ),
+  );
+  expect(smallest).toBeGreaterThanOrEqual(14);
+  await expect(cell(page, D).locator('.bk-cal-word')).toBeHidden();
+  await expect(cell(page, D)).toHaveAttribute('aria-label', /partly booked$/);
+  // The month has its own row: one line, above Previous and Next.
+  const bar = await page.evaluate(() => {
+    const r = (s: string) => document.querySelector(s)!.getBoundingClientRect();
+    const month = r('#bk-cal-month');
+    const lh = parseFloat(getComputedStyle(document.getElementById('bk-cal-month')!).lineHeight);
+    return {
+      lines: Math.round(month.height / lh),
+      above: month.bottom <= r('[data-cal-prev]').top,
+    };
+  });
+  expect(bar.lines).toBe(1);
+  expect(bar.above).toBe(true);
+});
+
+test('on a wider screen the day says its state in a word, at the Small size', async ({ page }) => {
+  await load(page);
+  await rooms(page, 'gallery');
+  expect(await state(page, D)).toBe('partly');
+  await expect(cell(page, D).locator('.bk-cal-word')).toBeVisible();
+  await expect(cell(page, D).locator('.bk-cal-word')).toHaveText('Partly');
+  const size = await cell(page, D)
+    .locator('.bk-cal-word')
+    .evaluate((e) => parseFloat(getComputedStyle(e).fontSize));
+  expect(size).toBeGreaterThanOrEqual(14);
 });

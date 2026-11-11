@@ -545,12 +545,15 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
             : c?.kind === 'unknown'
               ? 'We check dates this far ahead by hand.'
               : '';
-    // Once Next has marked the question, its own message says this.
+    // Once Next has refused the hours, this line is the question's error:
+    // it stays here, under the hours it is about, instead of the error slot
+    // at the foot of the question (design review, 11 Nov 2026).
     const marked = c?.kind === 'firm' && !!wrapperFor('get_in')?.classList.contains('is-invalid');
     availLine.textContent = text;
-    availLine.hidden = !text || marked;
+    availLine.hidden = !text;
     availLine.classList.toggle('is-hold', c?.kind === 'hold');
-    availLine.classList.toggle('is-firm', c?.kind === 'firm');
+    availLine.classList.toggle('is-firm', c?.kind === 'firm' && !marked);
+    availLine.classList.toggle('is-error', marked);
   };
 
   // What the visitor saw, for the team (the Worker records it).
@@ -885,16 +888,24 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
 
   const errorSlot = (wrap: HTMLElement) => wrap.querySelector<HTMLElement>(':scope > .field-error');
 
+  // Refused hours: updateAvail() shows the message under the hours instead
+  // of in the question's error slot.
+  const isClash = (wrap: HTMLElement, message: string) =>
+    !!availLine && wrap.contains(availLine) && message.startsWith('Those hours run into a booking');
+
   const mark = (wrap: HTMLElement, message: string) => {
     const err = errorSlot(wrap);
     if (!err) return;
-    err.textContent = message;
-    err.hidden = false;
+    const clash = isClash(wrap, message);
+    err.textContent = clash ? '' : message;
+    err.hidden = clash;
     wrap.classList.add('is-invalid');
+    const describedBy = clash ? availLine!.id : err.id;
     for (const c of controlsIn(wrap)) {
       c.setAttribute('aria-invalid', 'true');
       const ids = new Set((c.getAttribute('aria-describedby') ?? '').split(' ').filter(Boolean));
-      ids.add(err.id);
+      ids.delete(clash ? err.id : (availLine?.id ?? ''));
+      ids.add(describedBy);
       c.setAttribute('aria-describedby', [...ids].join(' '));
     }
   };
@@ -968,11 +979,26 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
   // The footer's count. On the summary the button says "Send enquiry", so
   // the count says "before sending" there; the only question on that step
   // is the privacy tick box, so it names it.
-  const neededText = (n: number) => {
+  // A refused time is answered, just not possible, so the count calls the
+  // questions "things to fix" when one of them is a clash (design review,
+  // 11 Nov 2026).
+  const neededNoun = (n: number, clash: boolean) =>
+    clash
+      ? n === 1
+        ? '1 thing to fix'
+        : `${n} things to fix`
+      : n === 1
+        ? '1 answer'
+        : `${n} answers`;
+  const neededText = (n: number, clash = false) => {
     if (steps[current]?.dataset.step === 'review') {
       return n === 1 ? 'Tick the privacy box to send.' : `${n} answers needed before sending.`;
     }
-    return n === 1 ? '1 answer needed to continue.' : `${n} answers needed to continue.`;
+    return clash
+      ? `${neededNoun(n, true)} to continue.`
+      : n === 1
+        ? '1 answer needed to continue.'
+        : `${n} answers needed to continue.`;
   };
 
   // Marks each question in `entries`, says how many, and moves to the first.
@@ -982,9 +1008,10 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     const here = entries.filter(([w]) => stepIndexOf(w) === current);
     const n = here.length;
     if (n > 0) {
-      setStatus(neededText(n), true);
+      const clash = here.some(([w, m]) => isClash(w, m));
+      setStatus(neededText(n, clash), true);
       const labels = here.map(([w]) => w.dataset.label ?? '').filter(Boolean);
-      say(`${n === 1 ? '1 answer' : `${n} answers`} needed: ${labels.join(', ')}.`);
+      say(`${neededNoun(n, clash)}${clash ? '' : ' needed'}: ${labels.join(', ')}.`);
       focusQuestion(here[0]![0]);
     }
   };
@@ -1003,10 +1030,12 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     // A question hidden since (its trigger changed) is not waiting any more.
     form.querySelectorAll<HTMLElement>('.field.is-invalid[hidden]').forEach(unmark);
     updateAvail();
-    const left = invalidWrappers().filter((w) => stepIndexOf(w) === current).length;
+    const leftWraps = invalidWrappers().filter((w) => stepIndexOf(w) === current);
+    const left = leftWraps.length;
+    const clash = leftWraps.some((w) => isClash(w, now.get(w) ?? ''));
     if (status?.classList.contains('is-error') && !sending) {
       if (left === 0) setStatus(steps[current]?.dataset.step === 'review' ? REPLY_PROMISE : '');
-      else setStatus(neededText(left), true);
+      else setStatus(neededText(left, clash), true);
     }
   };
 
