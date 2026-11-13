@@ -19,16 +19,14 @@
 // the way Canva lists it ("IG · ODDfest 2027 · A"). Import with the Canva
 // connector's import-design-from-url (Surge serves .PDF, not .pdf) or drag in.
 //
-// Fonts (tested 12 Oct 2026): Canva's PDF import matches an embedded font to the
-// Brand Kit by the font file's own name; its PowerPoint import never does. The
-// Brand Kit's Forta is Forta 2.0 (internal name "Forta"; the renders' OFL Forta 1
-// says "FORTA" and lands elsewhere). Forta 2.0 is under a commercial EULA, so it
-// stays out of the repository: --forta points at it.
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+// Fonts: see canva-pdf.mjs. Canva's PowerPoint import never uses the Brand Kit's;
+// its PDF import does. --forta points at Forta 2.0.
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '../../../node_modules/@playwright/test/index.mjs';
+import { crop, pdfDoc } from './canva-pdf.mjs';
 import { page as pageHtml } from './page.mjs';
 import { carousels, templates, warp } from './whats-next.mjs';
 
@@ -38,7 +36,6 @@ const OUT = resolve((arg('out') ?? '.').replace(/^~/, process.env.HOME));
 const FORTA2 = resolve(
   (arg('forta') ?? '~/Projects/AI/Fonts/Forta-2.0.ttf').replace(/^~/, process.env.HOME),
 );
-const FONTS = resolve(HERE, '../../fonts');
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ deviceScaleFactor: 2 });
@@ -308,21 +305,6 @@ function textHtml(t, info, dx) {
   return `<div data-h="${r0.h}" style="position:absolute;left:${x}px;top:${r0.y}px;width:${r0.w + slack}px;${t.vertical ? 'transform:rotate(-90deg);' : ''}">${paras}</div>`;
 }
 
-// Chrome sizes a PDF page in 1/75-inch steps, so 1350px comes out 1350.72 and Canva makes the
-// design 1351 tall. Crop the page box to the exact size, from the bottom (pages are laid out from
-// the top), padded to its old length so the file's byte offsets still hold.
-function crop(file, w, h) {
-  const s = readFileSync(file, 'latin1').replace(
-    /\/MediaBox \[0 0 [\d.]+ ([\d.]+)\]/g,
-    (box, H) => {
-      const fit = `/MediaBox [0 ${+(H - h * 0.75).toFixed(2)} ${w * 0.75} ${+(+H).toFixed(2)}]`;
-      if (fit.length > box.length) throw new Error(`canva.mjs: can't crop ${box}`);
-      return fit.padEnd(box.length);
-    },
-  );
-  writeFileSync(file, s, 'latin1');
-}
-
 const pdfPage = await browser.newPage();
 async function design(c, file) {
   if (arg('only') && !file.includes(arg('only'))) return;
@@ -355,19 +337,7 @@ async function design(c, file) {
     }
   }
   const html = join(dir, 'design.html');
-  writeFileSync(
-    html,
-    `<!doctype html><html><head><meta charset="utf-8"><style>
-@font-face { font-family: 'Forta'; src: url('file://${FORTA2}') }
-@font-face { font-family: 'Gabarito'; src: url('file://${FONTS}/Gabarito-Regular.ttf'); font-weight: 400 }
-@font-face { font-family: 'Gabarito'; src: url('file://${FONTS}/Gabarito-SemiBold.ttf'); font-weight: 600 }
-@page { size: ${pw}px ${ph}px; margin: 0 }
-html, body { margin: 0 }
-/* No kerning: kerned glyphs with negative tracking read to Canva as word gaps ("1 ,000 +"). */
-body { font-kerning: none }
-section { position: relative; width: ${pw}px; height: ${ph}px; overflow: hidden; break-after: page }
-</style></head><body>${pages.join('')}</body></html>`,
-  );
+  writeFileSync(html, pdfDoc(FORTA2, pw, ph, pages.join('')));
   await pdfPage.goto(`file://${html}`, { waitUntil: 'networkidle' });
   await pdfPage.evaluate(() => document.fonts.ready);
   // Every box must wrap as the render does: a box taller or shorter than its source re-wrapped.

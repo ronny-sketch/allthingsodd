@@ -46,6 +46,7 @@ brand/
 | The app icon / favicon                      | `logos/svg/odd-icon.svg`              |
 | Fonts to install                            | everything in `fonts/`                |
 | A deck to start from                        | `deck/all-things-odd-template.pptx`   |
+| A deck from notes, into Canva               | the `odd-decks` skill (`/odd-decks`)  |
 | The colours and sizes, as data              | `tokens/brand-tokens.json`            |
 | The rules                                   | `BRAND-GUIDE.md`, or `/brand-book/`   |
 
