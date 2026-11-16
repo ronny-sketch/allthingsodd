@@ -277,11 +277,6 @@ if (foundDialog && foundForm) {
       legend: 'Pick up to three times',
       hint: 'Pick up to three. Helsinki time. Someone from the team takes one of them and confirms it by email.',
     },
-    coffee: {
-      title: 'Which Mondays could you come?',
-      legend: 'Pick up to three Mondays',
-      hint: "Coffee runs 09:00–10:00. Now and then it pops up at another Helsinki space; if your Monday is one of those, we'll tell you and suggest another.",
-    },
     trial_day: {
       title: 'Which days could you come?',
       legend: 'Pick up to three days',
@@ -383,7 +378,7 @@ if (foundDialog && foundForm) {
   function readPayload(): MembershipPayload {
     const joining = visit === 'ready';
     const size = Number.parseInt(text('team_size'), 10);
-    const phone = visit === 'coffee' ? '' : text('phone');
+    const phone = text('phone');
     return {
       submission_id: submissionId,
       locale: 'en',
@@ -415,8 +410,6 @@ if (foundDialog && foundForm) {
   const DONE: Record<Visit, string> = {
     viewing:
       'Someone from the team will take one of your times and confirm it by email, usually within one working day.',
-    coffee:
-      'Someone from the team will confirm which Monday by email, look out for you at coffee and show you round.',
     trial_day:
       'Someone from the team will confirm one of your days by email, then meet you at 10:00 to let you in.',
     ready:

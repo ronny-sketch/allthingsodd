@@ -16,7 +16,6 @@
 //
 // Times are Helsinki wall-clock times, whatever the visitor's laptop says:
 //   viewing    weekdays, every half hour 10:00–16:30, at least 18 h ahead, 14 days
-//   coffee     Mondays 09:00 (Coffee on the House), at least 12 h ahead, 28 days
 //   trial day  weekdays from 10:00, at least 40 h ahead, 21 days
 // Finnish public holidays are left out.
 
@@ -27,11 +26,6 @@ export const VISITS = [
     value: 'viewing',
     label: 'A 30-minute look round',
     line: 'A weekday between 10:00 and 17:00. We show you round and answer your questions.',
-  },
-  {
-    value: 'coffee',
-    label: 'Monday coffee, 09:00',
-    line: 'Coffee on the House: free coffee and a DJ, then a look round.',
   },
   {
     value: 'trial_day',
@@ -85,7 +79,6 @@ const RULES: Record<
   { horizonDays: number; weekdays: number[]; times: string[]; minLeadHours: number }
 > = {
   viewing: { horizonDays: 14, weekdays: [1, 2, 3, 4, 5], times: VIEWING_TIMES, minLeadHours: 18 },
-  coffee: { horizonDays: 28, weekdays: [1], times: ['09:00'], minLeadHours: 12 },
   trial_day: { horizonDays: 21, weekdays: [1, 2, 3, 4, 5], times: ['10:00'], minLeadHours: 40 },
 };
 

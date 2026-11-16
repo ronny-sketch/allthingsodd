@@ -9,12 +9,12 @@
 // time, Back and Next in a fixed footer, and the thank-you inside the sheet.
 //
 // Three steps on every path, and each path asks only what it needs:
-//   01 How would you like to see ODDspace?  four cards; a tap moves on
+//   01 How would you like to see ODDspace?  three cards; a tap moves on
 //   02 a visit: when suits you (the time picker)
 //      ready to join: start, use, team and ODDstudio
 //   03 About you: name, email, what you work on and a link to your work on
-//      every path; phone required for a trial day (the host lets them in),
-//      not asked for coffee; how you heard for "ready" only
+//      every path; phone required for a trial day (the host lets them in);
+//      how you heard for "ready" only
 // A teammate claims one of the times in Slack (../odd-growth-os D34).
 //
 // Any link to #join opens it at step 1, any link to #join-visit ("Come and
@@ -631,7 +631,7 @@ const { eyebrow, headline, body, ctaLabel } = Astro.props;
     flex: none;
   }
 
-  /* ---- the four visit cards: square cells in a hairline grid; the chosen
+  /* ---- the three visit cards: square cells in a hairline grid; the chosen
      one takes a figure keyline drawn inside, so the grid never moves ---- */
   .msf-cards {
     display: grid;
@@ -643,6 +643,10 @@ const { eyebrow, headline, body, ctaLabel } = Astro.props;
   @media (min-width: 560px) {
     .msf-cards {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    /* an odd card out takes the full row, so no empty cell shows */
+    .msf-card:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
     }
   }
   .msf-card {

@@ -154,7 +154,7 @@
     {
       "number": "01",
       "title": "See it first",
-      "body": "Pick a time for a look round, come to Monday coffee or ask for a free trial day, on the membership page."
+      "body": "Pick a time for a look round or ask for a free trial day, on the membership page."
     },
     {
       "number": "02",
@@ -187,12 +187,6 @@
     "upcomingTitle": "Upcoming",
     "pastTitle": "Past",
     "items": [
-      {
-        "title": "Coffee on the House",
-        "date": "Mondays",
-        "time": "09:00–10:00",
-        "note": "Free coffee and a deep house DJ. Bring a friend. Some Mondays it pops up at another Helsinki space."
-      },
       {
         "title": "ODDbachata",
         "date": "Fridays",
@@ -474,7 +468,7 @@
     },
     {
       "question": "Can I visit before joining?",
-      "answer": "Yes. Pick two or three times on the membership page, or come to Coffee on the House on a Monday at 09:00, and someone from the team will show you round."
+      "answer": "Yes. Pick two or three times on the membership page and someone from the team will show you round."
     },
     {
       "question": "Can non-members organise events?",

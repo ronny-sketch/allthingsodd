@@ -153,16 +153,6 @@ test('a trial day offers days and needs a phone number', async ({ page }) => {
   expect(posted).toBe(false);
 });
 
-test('coffee does not ask for a phone number', async ({ page }) => {
-  await load(page);
-  await open(page);
-  await chooseVisit(page, 'coffee');
-  await expect(page.locator('#msf-times-title')).toHaveText('Which Mondays could you come?');
-  await slots(page).first().click();
-  await page.click(NEXT);
-  await expect(page.locator('#msf-phone')).toBeHidden();
-});
-
 test('"ready to join" asks start, use, team and studio, and explains ODDstudio', async ({
   page,
 }) => {
