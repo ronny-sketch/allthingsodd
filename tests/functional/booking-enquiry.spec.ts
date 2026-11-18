@@ -1022,6 +1022,9 @@ test('a first event here asks for one to three viewing times, and sends them', a
   await expect(page.locator('#bk-visit-err')).toContainText('Pick one to three times');
   // Pick three; the rest go quiet; one can be taken back.
   // Times only: the day chips above them share the chip look.
+  // The second day: late in the evening the 18-hour lead leaves the first day
+  // with fewer than four times; every later day has all of them.
+  await visit.locator('#bk-days .bk-day').nth(1).click();
   const slots = visit.locator('#bk-slots .bk-slot');
   await slots.nth(0).click();
   await slots.nth(1).click();
