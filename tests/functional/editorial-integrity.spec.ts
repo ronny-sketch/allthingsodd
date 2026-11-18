@@ -31,25 +31,18 @@ test('home tells the story in the order the copy master specifies', async ({ pag
     expect(index, `home section "${name}" is missing`).toBeGreaterThan(-1);
   }
 
-  // Order set by the 2026-09-11 reorg, replacing the 2026-09-03 contract this
-  // test was written against. It moves two sections, both deliberately and
-  // both back to where an earlier pass had them — the reasoning is in
-  // index.astro's own section-order comment, which is the place to read
-  // before changing any of this. In short: the page answers the reader's
-  // questions in the order they arrive, and "is this for me?" arrives before
-  // three product names mean anything.
+  // 2026-11-18: the audience/product pathways now come before "Why ODD".
+  // The hero already states the purpose; visitors should first learn whom
+  // ODD serves and what it does, then encounter the deeper mission.
+  // Keep the Work with ODD band immediately below the programme cards.
   //
-  // "What's happening" used to sit in this sequence too; it was removed
-  // outright on 2026-09-04 (see identity-integrity.spec.ts, which asserts it
-  // stays gone).
-  expect(order.whyOdd).toBeLessThan(order.audience);
+  // "What's happening" was removed on 2026-09-04 (see
+  // identity-integrity.spec.ts), and must not drift back in.
   expect(order.audience).toBeLessThan(order.whatWeDo);
-  // The organisational band sits directly under the three product cards, and
-  // has to stay there: its question ("something bigger than those three?")
-  // only lands while they are still on screen.
   expect(order.whatWeDo).toBeLessThan(order.workWithOdd);
-  // One social-proof chapter, numbers then logos — not two separated ones.
-  expect(order.workWithOdd).toBeLessThan(order.proof);
+  expect(order.workWithOdd).toBeLessThan(order.whyOdd);
+  // The mission is followed by evidence, then by logos.
+  expect(order.whyOdd).toBeLessThan(order.proof);
   expect(order.proof).toBeLessThan(order.featuredIn);
   // The video is the break between the argument and the ask. Asserted so a
   // later pass can't quietly move the page's only moving image above the
