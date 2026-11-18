@@ -334,6 +334,7 @@ export interface BookingPayload {
   event_access: string;
   get_in: string;
   get_out: string;
+  /** No longer sent (18 Nov 2026); the Worker still accepts them from older pages. */
   alt_date_1?: string;
   alt_date_2?: string;
   headcount_band: string;
@@ -532,13 +533,6 @@ export function validateBooking(p: BookingPayload, now: Date = new Date()): Fiel
   else if (!e.get_in && getOut <= getIn) e.get_out = 'The end has to be after the start.';
   else if (!e.get_in && getOut.getTime() - getIn.getTime() > 7 * 86_400_000)
     e.get_out = 'For more than a week, send the first day and tell us the rest in the notes.';
-
-  for (const k of ['alt_date_1', 'alt_date_2'] as const) {
-    const v = p[k];
-    if (!v) continue;
-    if (!DATE_RE.test(v) || Number.isNaN(new Date(v).getTime())) e[k] = 'Use a real date.';
-    else if (new Date(`${v}T23:59:59`) < now) e[k] = 'Pick a date in the future.';
-  }
 
   oneOf('headcount_band', HEADCOUNT_BANDS, 'Roughly how many people?');
   if (p.headcount_estimate !== undefined)

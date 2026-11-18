@@ -418,10 +418,10 @@ test('conditional questions appear only when they apply', async ({ page }) => {
   await fillStep(page, ROOMS);
   await next(page, WHEN);
   // When
-  await expect(page.locator('#bk-alt1')).toBeHidden();
-  await page.check('input[name="has_alt_dates"]');
-  await expect(page.locator('#bk-alt1')).toBeVisible();
-  await expect(page.locator('#bk-alt2')).toBeVisible();
+  // "Other dates would work too" is gone (18 Nov 2026: unused, and the live
+  // calendar shows what is free).
+  await expect(page.locator('input[name="has_alt_dates"]')).toHaveCount(0);
+  await expect(page.locator('#bk-alt1')).toHaveCount(0);
   await expect(page.locator('#bk-enddate')).toBeHidden();
   await page.check('input[name="multi_day"]');
   await expect(page.locator('#bk-enddate')).toBeVisible();
@@ -650,7 +650,9 @@ test('a date inside 5 working days shows the lead-time warning but still sends',
 
 // --- Rooms and layouts ----------------------------------------------------------
 
-test('an enquiry without a layout, other dates or smoke still sends', async ({ page }) => {
+test('an enquiry without a layout or smoke still sends, and never other dates', async ({
+  page,
+}) => {
   await openForm(page);
   await page.fill('#bk-estimate', '80');
   await page.check('#bk-space-gallery');
