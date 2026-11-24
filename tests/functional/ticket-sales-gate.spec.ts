@@ -77,7 +77,7 @@ const CATALOG = {
       status: 'active',
       currency: 'EUR',
       displayPriceMinor: 29900,
-      taxRateBps: 1350,
+      taxRateBps: 2550,
       maxPerOrder: 10,
       admissionsPerUnit: 1,
       benefits: ['Full ODDference 2027 access'],
@@ -123,10 +123,10 @@ test.describe('/tickets with the sale closed', () => {
   test('still publishes the real price, because that is the useful part', async ({ page }) => {
     const row = page.locator('.tix-row').first();
     await expect(row).toContainText('Blind Bird');
-    // .tix-row-price wraps the "+ VAT 13.5%" span, so this is a containment
+    // .tix-row-price wraps the "+ VAT 25.5%" span, so this is a containment
     // check and the VAT suffix is asserted separately below.
     await expect(row.locator('.tix-row-price')).toContainText('299');
-    await expect(row.locator('.tix-row-price-vat')).toHaveText('+ VAT 13.5%');
+    await expect(row.locator('.tix-row-price-vat')).toHaveText('+ VAT 25.5%');
     // "Not yet on sale" — not "sold out", not "sale ended". The tier is fine;
     // the checkout is what is not ready.
     await expect(row.locator('.tix-status-badge')).toHaveText('Not yet on sale');
