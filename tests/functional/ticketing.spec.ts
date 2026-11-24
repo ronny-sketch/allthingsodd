@@ -144,26 +144,26 @@ test.describe('/tickets — catalog', () => {
   test('an ex-VAT price shows VAT added on top, matching what checkout charges', async ({
     page,
   }) => {
-    // ODDference 2027 since 2026-09-14: €299 + VAT 13.5%. The Worker charges
-    // 29900 + round(29900 × 13.5%) = 33937 per ticket, and the summary has
+    // ODDference 2027 since 2026-09-14: €299 + VAT 25.5%. The Worker charges
+    // 29900 + round(29900 × 25.5%) = 37525 per ticket, and the summary has
     // to show that same number, not the bare price.
     await mockCatalog(page, {
       ...CATALOG_OK,
       event: { ...CATALOG_OK.event, pricesIncludeTax: false },
-      ticketTypes: [{ ...CATALOG_OK.ticketTypes[0], displayPriceMinor: 29900, taxRateBps: 1350 }],
+      ticketTypes: [{ ...CATALOG_OK.ticketTypes[0], displayPriceMinor: 29900, taxRateBps: 2550 }],
     });
     await page.goto('/tickets');
     await page.waitForLoadState('load');
 
-    await expect(page.locator('.tix-row-price-vat')).toHaveText('+ VAT 13.5%');
+    await expect(page.locator('.tix-row-price-vat')).toHaveText('+ VAT 25.5%');
     await page.locator('[data-action="increase"]').first().click();
 
     // #tixSummary is display:none below 900px (the mobile sheet takes over),
     // so these read text rather than visibility.
     const summary = page.locator('#tixSummary');
-    await expect(summary.locator('.tix-summary-vat')).toContainText('VAT 13.5%');
-    await expect(summary.locator('.tix-summary-vat')).toContainText(/40[.,]37/);
-    await expect(summary.locator('.tix-summary-total-row')).toContainText(/339[.,]37/);
+    await expect(summary.locator('.tix-summary-vat')).toContainText('VAT 25.5%');
+    await expect(summary.locator('.tix-summary-vat')).toContainText(/76[.,]25/);
+    await expect(summary.locator('.tix-summary-total-row')).toContainText(/375[.,]25/);
     await expect(summary.locator('.tix-summary-vat-note')).toHaveCount(0);
   });
 
