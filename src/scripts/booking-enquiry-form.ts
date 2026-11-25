@@ -794,8 +794,6 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
       event_access: audience?.access ?? '',
       get_in: (times.start && helsinkiLocalToISO(times.start)) || '',
       get_out: (times.end && helsinkiLocalToISO(times.end)) || '',
-      alt_date_1: opt(fd, 'alt_date_1'),
-      alt_date_2: opt(fd, 'alt_date_2'),
       headcount_band: n === undefined ? '' : headcountBand(n),
       headcount_estimate: n,
       is_series: bool(fd, 'is_series'),
@@ -1133,9 +1131,6 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
     const from = value('time_from');
     const until = value('time_until');
     const length = lengthText();
-    const alts = ticked('has_alt_dates')
-      ? [value('alt_date_1'), value('alt_date_2')].filter(Boolean).map(formatDate)
-      : [];
     const fixed = form.querySelector<HTMLElement>('[data-show-when^="spaces=="] .bk-fixed');
     const layoutFixed = fixed ? !fixed.closest<HTMLElement>('.field')!.hidden : false;
     const layout = layoutFixed
@@ -1173,7 +1168,6 @@ if (form instanceof HTMLFormElement && dialog instanceof HTMLDialogElement) {
               ? 'On hold for someone else; you’re next in line'
               : undefined,
         ],
-        ['Other dates', alts.join(', ') || undefined],
         [
           'Series',
           ticked('is_series') && value('series_count')
