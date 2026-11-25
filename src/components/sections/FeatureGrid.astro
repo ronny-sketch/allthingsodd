@@ -3,6 +3,10 @@ interface Card {
   number: string;
   title: string;
   body: string;
+  // Optional link under the body (2026-11-25: each speaker on
+  // /oddference/speakers/ links to their own site). Off-site links open in a
+  // new tab, same rule as Pill.
+  link?: { label: string; href: string };
 }
 interface Props {
   cards: Card[];
@@ -28,6 +32,16 @@ const perRow = cards.length === 4 ? 2 : Math.min(cards.length, 3);
         <div class="band-meta">{c.number}</div>
         <Heading>{c.title}</Heading>
         <p>{c.body}</p>
+        {c.link && (
+          <a
+            class="oddf-grid-link"
+            href={c.link.href}
+            target={c.link.href.startsWith('http') ? '_blank' : undefined}
+            rel={c.link.href.startsWith('http') ? 'noreferrer' : undefined}
+          >
+            {c.link.label}
+          </a>
+        )}
       </div>
     ))
   }
@@ -114,6 +128,24 @@ const perRow = cards.length === 4 ? 2 : Math.min(cards.length, 3);
     font: var(--text-body);
     color: var(--color-paper-60);
     margin: var(--space-3) 0 0;
+  }
+  /* Paper text on the raised card; only the underline warms on hover —
+     Heat as text measures 3.75:1 on --color-backstage (tokens.css). */
+  .oddf-grid-link {
+    display: inline-block;
+    margin-top: var(--space-3);
+    font: var(--text-small);
+    font-weight: 600;
+    color: var(--color-paper);
+    text-decoration: underline;
+    text-decoration-color: var(--color-signal-bright);
+    text-underline-offset: 0.25em;
+    overflow-wrap: anywhere;
+  }
+  @media (hover: hover) {
+    .oddf-grid-link:hover {
+      text-decoration-color: var(--color-heat);
+    }
   }
   @media (prefers-reduced-motion: no-preference) {
     :global(html.reveal-js) .oddf-grid > div {

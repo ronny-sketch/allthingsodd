@@ -94,8 +94,10 @@ high-level notes:
 - **ODDference for speakers** (`oddference-speakers.json`, added 2026-11-25)
   at `/oddference/speakers/`: the home page for confirmed 2027 speakers,
   shared by link (noindex, not in the nav or sitemap). Welcome, the speaker
-  form link, the confirmed line-up (`lineup.speakers`, add a name only once
-  the speaker has said yes), photos, the venue, what is coming to the page and
+  form link, the confirmed line-up (`lineup.speakers`, each with an optional
+  `link`; add a name only once
+  the speaker has said yes), photos, the venue and its photos (`venuePhotos`),
+  what is coming to the page and
   the team's contacts. The hero video, the premise, the three questions and
   the 2026 speakers are read from `oddference.json`, so edit those there.
 - **ODDference** (restructured 2026-09-11, cut down 2026-09-17 — seven

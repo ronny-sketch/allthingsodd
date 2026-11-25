@@ -30,8 +30,6 @@ if (!fer || fer.data._template !== 'oddference')
 const odd = fer.data;
 if (!odd.heroMedia.video || !odd.heroMedia.poster)
   throw new Error('oddference.json is missing required fullbleed-video hero fields');
-
-const tel = (phone: string) => `tel:${phone.replace(/[^+\d]/g, '')}`;
 ---
 
 <Layout title={page.seo.title} description={page.seo.description} ogImage={odd.seo.ogImage} noindex>
@@ -140,6 +138,17 @@ const tel = (phone: string) => `tel:${phone.replace(/[^+\d]/g, '')}`;
           <p class="spk-note">{page.venue.body}</p>
         </div>
         <FeatureGrid cards={page.venue.cards} />
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.venuePhotos.eyebrow}</span>
+          <h2>{page.venuePhotos.headline}</h2>
+        </div>
+        <PhotoWall photos={page.venuePhotos.items} />
+        <p class="spk-credit">{page.venuePhotos.credit}</p>
         <div class="spk-center">
           <Pill
             href={page.venue.cta.href}
@@ -177,7 +186,6 @@ const tel = (phone: string) => `tel:${phone.replace(/[^+\d]/g, '')}`;
                 <h3>{p.name}</h3>
                 <p class="spk-role">{p.role}</p>
                 <a href={`mailto:${p.email}`}>{p.email}</a>
-                {p.phone && <a href={tel(p.phone)}>{p.phone}</a>}
                 {p.linkedin && (
                   <a href={p.linkedin} target="_blank" rel="noreferrer">
                     LinkedIn
@@ -223,6 +231,13 @@ const tel = (phone: string) => `tel:${phone.replace(/[^+\d]/g, '')}`;
   .spk-form p,
   .spk-note {
     max-width: var(--measure-prose);
+    margin: 0;
+  }
+
+  .spk-credit {
+    font: var(--text-small);
+    color: var(--color-clay-read);
+    text-align: center;
     margin: 0;
   }
 
