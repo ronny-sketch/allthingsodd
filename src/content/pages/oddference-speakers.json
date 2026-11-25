@@ -39,22 +39,61 @@
   "lineup": {
     "eyebrow": "ODDference 2027",
     "headline": "You’re in good company.",
-    "note": "The first three names are in. More are on their way, yours among them.",
+    "note": "Here’s who you’ll share the house with so far. More are on their way.",
     "speakers": [
       {
         "number": "01",
         "title": "Henry De Sio",
-        "body": "COO of Barack Obama’s 2008 presidential campaign, then Deputy Assistant to the President in the White House."
+        "body": "Chief operating officer of Barack Obama’s 2008 presidential campaign, then Deputy Assistant to the President in the White House.",
+        "link": {
+          "label": "henrydesio.com",
+          "href": "https://www.henrydesio.com/"
+        }
       },
       {
         "number": "02",
         "title": "Tim Leberecht",
-        "body": "Co-founder of the House of Beautiful Business, author of The Business Romantic and a TED speaker."
+        "body": "Co-founder of the House of Beautiful Business, author of The Business Romantic and a TED speaker.",
+        "link": {
+          "label": "timleberecht.com",
+          "href": "https://www.timleberecht.com/"
+        }
       },
       {
         "number": "03",
-        "title": "Adah Parris",
-        "body": "Artist, futurist and author of Leadership Legacy (Wiley, 2026). Her work has taken her to Google, Unilever and Tate Modern."
+        "title": "Ada Parris",
+        "body": "Artist, futurist and author of Leadership Legacy (Wiley, 2026).",
+        "link": {
+          "label": "adahparris.com",
+          "href": "https://adahparris.com/"
+        }
+      },
+      {
+        "number": "04",
+        "title": "Elsa Saisio",
+        "body": "Finnish actor, on screen in Whiskey on the Rocks and Stop Nyqvist, and on stage at the Finnish National Theatre.",
+        "link": {
+          "label": "Filmmakers Europe",
+          "href": "https://www.filmmakers.eu/en/actors/elsa-saisio"
+        }
+      },
+      {
+        "number": "05",
+        "title": "Ferdinando Buscema",
+        "body": "Magician and magic experience designer, creating experiences of wonder for personal and organisational change.",
+        "link": {
+          "label": "Magical Wisdom",
+          "href": "https://www.magicalwisdom.com/teachers/view/ferdinando-buscema"
+        }
+      },
+      {
+        "number": "06",
+        "title": "Ida Faldbakken",
+        "body": "Norwegian digital culturist, curator and essayist working across technology and culture. Founder of Lineage Foresight.",
+        "link": {
+          "label": "LinkedIn",
+          "href": "https://no.linkedin.com/in/idafaldbakken"
+        }
       }
     ]
   },
@@ -98,11 +137,6 @@
         "number": "Where",
         "title": "Kaapeliaukio 3",
         "body": "00180 Helsinki, inside the Cable Factory (Kaapelitehdas)."
-      },
-      {
-        "number": "Getting there",
-        "title": "Tram 5 or the metro",
-        "body": "Tram 5 stops at Kaapelitehdas, 100 metres away. Ruoholahti metro station is a 600-metre walk."
       }
     ],
     "cta": {
@@ -110,6 +144,41 @@
       "href": "https://www.tanssintalo.fi/en",
       "external": true
     }
+  },
+  "venuePhotos": {
+    "eyebrow": "Tanssin talo",
+    "headline": "Feel the venue.",
+    "credit": "Photos: Peter Vuorenrinne, Hannu Rytky, Annukka Pakarinen and Tuomas Uusiheimo / Tanssin talo.",
+    "items": [
+      {
+        "image": "../../assets/tanssin-talo/tanssin-talo-erkko.jpg",
+        "alt": "Erkko, the main hall: rows of red seats rising towards a black stage under an open lighting grid."
+      },
+      {
+        "image": "../../assets/tanssin-talo/tanssin-talo-lobby-window.jpg",
+        "alt": "Board-marked concrete and a round window in the Lobby."
+      },
+      {
+        "image": "../../assets/tanssin-talo/tanssin-talo-facade-snow.jpg",
+        "alt": "Snow on a bare tree against the building’s copper-coloured panels."
+      },
+      {
+        "image": "../../assets/tanssin-talo/tanssin-talo-exterior.jpg",
+        "alt": "Tanssin talo from outside in winter: a black cube patterned with white circles."
+      },
+      {
+        "image": "../../assets/tanssin-talo/tanssin-talo-glass-courtyard.jpg",
+        "alt": "The Glass Courtyard entrance from Kaapeliaukio, under the dotted facade."
+      },
+      {
+        "image": "../../assets/tanssin-talo/tanssin-talo-lobby-seminar.jpg",
+        "alt": "The Lobby set up for a seminar, the audience facing a screen and a small stage."
+      },
+      {
+        "image": "../../assets/tanssin-talo/tanssin-talo-cellar.jpg",
+        "alt": "The Cellar: bare concrete columns, a polished concrete floor and two performers in white."
+      }
+    ]
   },
   "coming": {
     "eyebrow": "Coming to this page",
@@ -157,19 +226,19 @@
         "name": "Ronny Eriksson",
         "role": "Founder, ODD",
         "email": "ronny@oddfest.co",
-        "phone": "+358 50 517 7908",
         "linkedin": "https://www.linkedin.com/in/ronnytheodd"
       },
       {
         "name": "Ukko-Pekka “Upi” Itäpelto",
         "role": "Chief ODDness Officer",
         "email": "upi@oddfest.co",
-        "phone": "+358 40 867 9973"
+        "linkedin": "https://www.linkedin.com/in/ukkopekka"
       },
       {
         "name": "Aki Pöntinen",
-        "role": "Co-founder, ODD",
-        "email": "aki@oddfest.co"
+        "role": "COO, ODD",
+        "email": "aki@oddfest.co",
+        "linkedin": "https://www.linkedin.com/in/akipontinen"
       }
     ],
     "general": {

@@ -1232,10 +1232,20 @@ const pages = defineCollection({
           eyebrow: z.string(),
           headline: z.string(),
           note: z.string(),
-          speakers: z.array(featureCard),
+          speakers: z.array(
+            featureCard.extend({
+              link: z.object({ label: z.string(), href: z.string().url() }).optional(),
+            }),
+          ),
         }),
         pastStage: z.object({ eyebrow: z.string(), headline: z.string() }),
         photos: z.object({ eyebrow: z.string(), headline: z.string(), items: z.array(plainPhoto) }),
+        venuePhotos: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          credit: z.string(),
+          items: z.array(plainPhoto),
+        }),
         venue: z.object({
           eyebrow: z.string(),
           headline: z.string(),
@@ -1258,7 +1268,6 @@ const pages = defineCollection({
               name: z.string(),
               role: z.string(),
               email: z.string(),
-              phone: z.string().optional(),
               linkedin: z.string().url().optional(),
             }),
           ),
