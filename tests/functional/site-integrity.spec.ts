@@ -47,104 +47,123 @@ async function scrollThroughPage(page: Page) {
   await page.waitForTimeout(150);
 }
 
-test('every internal link on every route resolves to a real page or in-page anchor', async ({
-  page,
-  request,
-}) => {
-  const brokenLinks: string[] = [];
-  const checkedPaths = new Map<string, number>(); // path -> status, avoid re-requesting the same path
+// One test per route, not one test looping over every route (2026-11-25).
+// Both checks used to be a single 30 s test each that crawled all of ROUTES,
+// and in WebKit on CI (Desktop Safari, two workers per shard) they had crept
+// up to ~30 s as pages were added: /brand-book alone scrolls for ~5 s and
+// /impact-report-2026 for ~3.5 s. Main went red four times in November on
+// "Test timeout of 30000ms exceeded" with nothing actually broken. Split per
+// route, every route still gets the identical check, each with its own full
+// timeout, and a new route adds a test rather than eating into a shared
+// budget. Slowest single route in WebKit on CI is ~7 s.
 
+test.describe('every internal link resolves to a real page or in-page anchor', () => {
   for (const route of ROUTES) {
-    await page.goto(route);
-    await page.waitForLoadState('load');
+    test(route, async ({ page, request }) => {
+      const brokenLinks: string[] = [];
+      const statusByPath = new Map<string, number>(); // path -> status, request each path once
+      // path -> every id in that page's rendered DOM. Collected once per page
+      // instead of navigating to the target and back for every cross-page
+      // anchor: /oddspace has five links into /oddspace/venue/ and /oddfest
+      // six into /oddfest/, and that back-and-forth was ~40 of the old test's
+      // ~70 navigations.
+      const idsByPath = new Map<string, Set<string>>();
+      const idsOnPage = async () =>
+        new Set(
+          await page.evaluate(() => Array.from(document.querySelectorAll('[id]'), (el) => el.id)),
+        );
 
-    const hrefs = await page.evaluate(() =>
-      Array.from(document.querySelectorAll('a[href]'))
-        .map((a) => a.getAttribute('href') || '')
-        // Same-origin only — external links (social, Flickr, YouTube, etc.)
-        // aren't this site's responsibility to keep alive.
-        .filter((href) => href.startsWith('/') || href.startsWith('#')),
-    );
+      await page.goto(route);
+      await page.waitForLoadState('load');
 
-    for (const href of hrefs) {
-      const [rawPath, hash] = href.split('#');
-      const path = rawPath || route; // "#foo" alone means "this page"
+      const hrefs = await page.evaluate(() =>
+        Array.from(document.querySelectorAll('a[href]'))
+          .map((a) => a.getAttribute('href') || '')
+          // Same-origin only — external links (social, Flickr, YouTube, etc.)
+          // aren't this site's responsibility to keep alive.
+          .filter((href) => href.startsWith('/') || href.startsWith('#')),
+      );
+      idsByPath.set(route, await idsOnPage());
 
-      if (path === route || path === '') {
-        // In-page anchor — the target id must exist on the page we're
-        // already on (no navigation needed).
-        if (hash) {
-          const exists = await page.evaluate((id) => !!document.getElementById(id), hash);
-          if (!exists) brokenLinks.push(`${route}: anchor "#${hash}" has no matching id`);
+      for (const href of hrefs) {
+        const [rawPath, hash] = href.split('#');
+        const path = rawPath || route; // "#foo" alone means "this page"
+
+        if (path === route || path === '') {
+          // In-page anchor — the target id must exist on this route's page.
+          if (hash && !idsByPath.get(route)!.has(hash)) {
+            brokenLinks.push(`${route}: anchor "#${hash}" has no matching id`);
+          }
+          continue;
         }
-        continue;
+
+        // A different route — check it actually resolves (once per unique path).
+        if (!statusByPath.has(path)) {
+          const res = await request.get(path);
+          statusByPath.set(path, res.status());
+        }
+        const status = statusByPath.get(path)!;
+        if (status >= 400) {
+          brokenLinks.push(`${route}: href "${href}" -> ${path} returned ${status}`);
+        } else if (hash) {
+          // Cross-page anchor — load the target in the browser (ids can be
+          // rendered client-side) and check the id exists there.
+          if (!idsByPath.has(path)) {
+            await page.goto(path);
+            await page.waitForLoadState('load');
+            idsByPath.set(path, await idsOnPage());
+          }
+          if (!idsByPath.get(path)!.has(hash))
+            brokenLinks.push(`${route}: href "${href}" -> #${hash} has no matching id on ${path}`);
+        }
       }
 
-      // A different route — check it actually resolves (once per unique path).
-      if (!checkedPaths.has(path)) {
-        const res = await request.get(path);
-        checkedPaths.set(path, res.status());
-      }
-      const status = checkedPaths.get(path)!;
-      if (status >= 400) {
-        brokenLinks.push(`${route}: href "${href}" -> ${path} returned ${status}`);
-      } else if (hash) {
-        // Cross-page anchor — actually navigate and check the id exists there.
-        await page.goto(path);
-        await page.waitForLoadState('load');
-        const exists = await page.evaluate((id) => !!document.getElementById(id), hash);
-        if (!exists)
-          brokenLinks.push(`${route}: href "${href}" -> #${hash} has no matching id on ${path}`);
-        await page.goto(route);
-        await page.waitForLoadState('load');
-      }
-    }
+      expect(brokenLinks, brokenLinks.join('\n')).toEqual([]);
+    });
   }
-
-  expect(brokenLinks, brokenLinks.join('\n')).toEqual([]);
 });
 
-test('every same-origin image on every route actually loads', async ({ page }) => {
-  // Real `error` events, not naturalWidth === 0 — an SVG with no intrinsic
-  // width/height/viewBox can legitimately report naturalWidth 0 while having
-  // loaded and rendered correctly (confirmed: this exact false positive fired
-  // on every logo-*.svg on first draft of this test), so that check can't
-  // distinguish "loaded, sizeless format" from "actually failed to load."
-  // The `error` event only fires on genuine load failure, for any format.
-  await page.addInitScript(() => {
-    (window as unknown as { __imgErrors: string[] }).__imgErrors = [];
-    window.addEventListener(
-      'error',
-      (e) => {
-        const target = e.target as HTMLElement | null;
-        if (target?.tagName === 'IMG') {
-          (window as unknown as { __imgErrors: string[] }).__imgErrors.push(
-            (target as HTMLImageElement).src,
-          );
-        }
-      },
-      true, // capture — image error events don't bubble
-    );
-  });
-
-  const broken: string[] = [];
-
+test.describe('every same-origin image actually loads', () => {
   for (const route of ROUTES) {
-    await page.goto(route);
-    await page.waitForLoadState('load');
-    await scrollThroughPage(page);
+    test(route, async ({ page }) => {
+      // Real `error` events, not naturalWidth === 0 — an SVG with no intrinsic
+      // width/height/viewBox can legitimately report naturalWidth 0 while having
+      // loaded and rendered correctly (confirmed: this exact false positive fired
+      // on every logo-*.svg on first draft of this test), so that check can't
+      // distinguish "loaded, sizeless format" from "actually failed to load."
+      // The `error` event only fires on genuine load failure, for any format.
+      await page.addInitScript(() => {
+        (window as unknown as { __imgErrors: string[] }).__imgErrors = [];
+        window.addEventListener(
+          'error',
+          (e) => {
+            const target = e.target as HTMLElement | null;
+            if (target?.tagName === 'IMG') {
+              (window as unknown as { __imgErrors: string[] }).__imgErrors.push(
+                (target as HTMLImageElement).src,
+              );
+            }
+          },
+          true, // capture — image error events don't bubble
+        );
+      });
 
-    const errorsOnRoute = await page.evaluate(
-      () => (window as unknown as { __imgErrors: string[] }).__imgErrors,
-    );
-    // Same-origin only — third-party embeds (Flickr, in Media's press
-    // gallery) are outside this repo's control; their availability isn't a
-    // website defect to assert on here.
-    const origin = new URL(page.url()).origin;
-    broken.push(
-      ...errorsOnRoute.filter((src) => src.startsWith(origin)).map((src) => `${route}: ${src}`),
-    );
+      await page.goto(route);
+      await page.waitForLoadState('load');
+      await scrollThroughPage(page);
+
+      const errorsOnRoute = await page.evaluate(
+        () => (window as unknown as { __imgErrors: string[] }).__imgErrors,
+      );
+      // Same-origin only — third-party embeds (Flickr, in Media's press
+      // gallery) are outside this repo's control; their availability isn't a
+      // website defect to assert on here.
+      const origin = new URL(page.url()).origin;
+      const broken = errorsOnRoute
+        .filter((src) => src.startsWith(origin))
+        .map((src) => `${route}: ${src}`);
+
+      expect(broken, broken.join('\n')).toEqual([]);
+    });
   }
-
-  expect(broken, broken.join('\n')).toEqual([]);
 });
