@@ -33,7 +33,8 @@ export default defineConfig({
       // /brand-book/ is `noindex` for the same reason: a working document
       // for designers, partners and agents, not a page for search (2026-09-18).
       // /impact-report-2026/ is hidden the same way (2026-10-29): `noindex`, no
-      // link from any page, shared by URL only.
+      // link from any page, shared by URL only. /oddference/speakers/ the same
+      // way (2026-11-25): the speakers' own page, shared with them by link.
       // /membership/ is a redirect stub (src/pages/membership.astro), not a page.
       // Exact pathname match: endsWith('/membership/') would also drop
       // /oddspace/membership/.
@@ -44,6 +45,7 @@ export default defineConfig({
           '/brand-book/',
           '/impact-report-2026/',
           '/membership/',
+          '/oddference/speakers/',
         ].includes(new URL(page).pathname),
     }),
   ],
