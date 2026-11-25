@@ -1,0 +1,180 @@
+{
+  "_template": "oddference-speakers",
+  "seo": {
+    "title": "ODDference 2027 for speakers | All Things ODD",
+    "description": "Your home as an ODDference 2027 speaker: the brief, the speaker form, the venue, the team and, soon, every guide and material you need."
+  },
+  "hero": {
+    "sub": "Thank you for saying yes.",
+    "meta": "For our speakers · Tanssin talo · 22–23 April 2027",
+    "primaryCta": {
+      "label": "Fill in the speaker form",
+      "href": "#speaker-form"
+    },
+    "secondaryCta": {
+      "label": "Meet the team",
+      "href": "#team"
+    }
+  },
+  "welcome": {
+    "eyebrow": "Welcome",
+    "headline": "This is your home for ODDference.",
+    "body": "You said yes to two days in a room full of people who believe creative expertise belongs where the decisions get made. We don’t take that lightly. Thank you.\n\nEverything you need as a speaker will live on this page: the brief, guides, your session, travel, tech and materials. Keep the link. When something new lands here, we’ll email you, so you never have to come back just to check."
+  },
+  "form": {
+    "eyebrow": "Start here",
+    "headline": "One form, then we take it from there.",
+    "body": "The speaker form tells us who you are, what you’d like to bring into the room and what you need from us. Your answers are where we start building your part of the programme. If a question doesn’t fit you, tell us that. It helps too.",
+    "cta": {
+      "label": "Open the speaker form",
+      "href": "https://docs.google.com/forms/d/1fr31L9igYtj3VE9VV9gMneq9npPwP2jWMK2rDL2w9_Q/viewform",
+      "external": true
+    }
+  },
+  "brief": {
+    "eyebrow": "The brief",
+    "questionsHeadline": "Three questions shape the programme.",
+    "questionsNote": "Your session doesn’t have to answer all three. Bring the one that’s yours."
+  },
+  "lineup": {
+    "eyebrow": "ODDference 2027",
+    "headline": "You’re in good company.",
+    "note": "The first three names are in. More are on their way, yours among them.",
+    "speakers": [
+      {
+        "number": "01",
+        "title": "Henry De Sio",
+        "body": "COO of Barack Obama’s 2008 presidential campaign, then Deputy Assistant to the President in the White House."
+      },
+      {
+        "number": "02",
+        "title": "Tim Leberecht",
+        "body": "Co-founder of the House of Beautiful Business, author of The Business Romantic and a TED speaker."
+      },
+      {
+        "number": "03",
+        "title": "Adah Parris",
+        "body": "Artist, futurist and author of Leadership Legacy (Wiley, 2026). Her work has taken her to Google, Unilever and Tate Modern."
+      }
+    ]
+  },
+  "pastStage": {
+    "eyebrow": "ODDference 2026",
+    "headline": "Who spoke last time."
+  },
+  "photos": {
+    "eyebrow": "ODDference 2026",
+    "headline": "What the room feels like.",
+    "items": [
+      {
+        "image": "../../assets/oddfest-2026/oddference-elisabet-lahti-stage.jpg",
+        "alt": "Elisabet Lahti in a white karate gi, fist raised, on stage at ODDference 2026."
+      },
+      {
+        "image": "../../assets/programs/oddference-card.jpg",
+        "alt": "A speaker in a black hat talks from the front of a cinema hall, the audience seated at small tables."
+      },
+      {
+        "image": "../../assets/oddfest-2026/oddference-alf-rehn.jpg",
+        "alt": "Alf Rehn’s opening slide, “Hello, my name is Alf Rehn”, on the screen of a red-curtained hall."
+      },
+      {
+        "image": "../../assets/programs/oddference-pathway.jpg",
+        "alt": "A speaker stands among the audience’s tables, with play boxes lined up under the screen."
+      }
+    ]
+  },
+  "venue": {
+    "eyebrow": "The venue",
+    "headline": "Tanssin talo, Helsinki’s house for dance.",
+    "body": "ODDference 2027 happens at Tanssin talo, the Dance House inside the Cable Factory in Ruoholahti. Its main hall, Erkko, seats 700. A building made for stages, bodies and nerve felt like the right place for two days about what creative expertise can do.",
+    "cards": [
+      {
+        "number": "When",
+        "title": "22–23 April 2027",
+        "body": "Thursday and Friday. Your exact session time comes with the programme."
+      },
+      {
+        "number": "Where",
+        "title": "Kaapeliaukio 3",
+        "body": "00180 Helsinki, inside the Cable Factory (Kaapelitehdas)."
+      },
+      {
+        "number": "Getting there",
+        "title": "Tram 5 or the metro",
+        "body": "Tram 5 stops at Kaapelitehdas, 100 metres away. Ruoholahti metro station is a 600-metre walk."
+      }
+    ],
+    "cta": {
+      "label": "Visit tanssintalo.fi",
+      "href": "https://www.tanssintalo.fi/en",
+      "external": true
+    }
+  },
+  "coming": {
+    "eyebrow": "Coming to this page",
+    "headline": "Everything else will land here.",
+    "body": "We’ll add these as they’re ready and email you each time. For now, the form is the only thing to do.",
+    "cards": [
+      {
+        "number": "01",
+        "title": "Speaker guide",
+        "body": "How ODDference works, who will be in the room and how to make your session land."
+      },
+      {
+        "number": "02",
+        "title": "Your session",
+        "body": "Your slot, the format, the stage and the people you share it with."
+      },
+      {
+        "number": "03",
+        "title": "Travel and stay",
+        "body": "Getting to Helsinki, where you’ll sleep and how to find us."
+      },
+      {
+        "number": "04",
+        "title": "Tech and slides",
+        "body": "Screens, sound, microphones and when to send your slides."
+      },
+      {
+        "number": "05",
+        "title": "On the day",
+        "body": "Arrival, the green room, the running order and what else is on during ODDfest week."
+      },
+      {
+        "number": "06",
+        "title": "Materials to share",
+        "body": "Images, texts and links for telling your people you’re speaking."
+      }
+    ]
+  },
+  "team": {
+    "eyebrow": "The team",
+    "headline": "The people looking after you.",
+    "body": "Write to any of us, about anything. No question is too small.",
+    "people": [
+      {
+        "name": "Ronny Eriksson",
+        "role": "Founder, ODD",
+        "email": "ronny@oddfest.co",
+        "phone": "+358 50 517 7908",
+        "linkedin": "https://www.linkedin.com/in/ronnytheodd"
+      },
+      {
+        "name": "Ukko-Pekka “Upi” Itäpelto",
+        "role": "Chief ODDness Officer",
+        "email": "upi@oddfest.co",
+        "phone": "+358 40 867 9973"
+      },
+      {
+        "name": "Aki Pöntinen",
+        "role": "Co-founder, ODD",
+        "email": "aki@oddfest.co"
+      }
+    ],
+    "general": {
+      "label": "Or write to the whole team",
+      "email": "hello@oddfest.co"
+    }
+  }
+}

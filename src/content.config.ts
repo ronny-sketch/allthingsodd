@@ -1202,6 +1202,69 @@ const pages = defineCollection({
       // extend (not worth forking the base type over); they're no longer
       // rendered on this specific page — don't be surprised editing one of
       // them has no visible effect here.
+      // /oddference/speakers/ — the speakers' own home page (2026-11-25):
+      // welcome, the speaker form, the brief, who else is coming, the venue,
+      // what will appear here later and the team. Shared by link, noindex.
+      // The hero video, rails and the brief itself are read from
+      // oddference.json, so they never drift from the public page.
+      z.object({
+        _template: z.literal('oddference-speakers'),
+        seo,
+        hero: z.object({
+          sub: z.string(),
+          meta: z.string(),
+          primaryCta: linkCta,
+          secondaryCta: linkCta,
+        }),
+        welcome: sectionIntro,
+        form: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          cta: linkCta,
+        }),
+        brief: z.object({
+          eyebrow: z.string(),
+          questionsHeadline: z.string(),
+          questionsNote: z.string(),
+        }),
+        lineup: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          note: z.string(),
+          speakers: z.array(featureCard),
+        }),
+        pastStage: z.object({ eyebrow: z.string(), headline: z.string() }),
+        photos: z.object({ eyebrow: z.string(), headline: z.string(), items: z.array(plainPhoto) }),
+        venue: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          cards: z.array(featureCard),
+          cta: linkCta,
+        }),
+        coming: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          cards: z.array(featureCard),
+        }),
+        team: z.object({
+          eyebrow: z.string(),
+          headline: z.string(),
+          body: z.string(),
+          people: z.array(
+            z.object({
+              name: z.string(),
+              role: z.string(),
+              email: z.string(),
+              phone: z.string().optional(),
+              linkedin: z.string().url().optional(),
+            }),
+          ),
+          general: z.object({ label: z.string(), email: z.string() }),
+        }),
+      }),
       subpageBase.extend({
         _template: z.literal('oddagency'),
         intro: z.string(),

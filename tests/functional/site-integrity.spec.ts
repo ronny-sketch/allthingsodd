@@ -29,6 +29,8 @@ const ROUTES = [
   // covered here and in tests/mobile.
   '/brand-book',
   '/impact-report-2026',
+  // The speakers' page (2026-11-25): noindex, shared by link only.
+  '/oddference/speakers',
 ];
 
 // Forces every loading="lazy" image to actually load before checking it —

@@ -1,0 +1,284 @@
+---
+// /oddference/speakers/ — the home page for ODDference 2027 speakers
+// (2026-11-25, Ronny): a welcome, the speaker form, who else is coming, the
+// brief, the venue, what will appear here later, and the team. Shared by
+// link with speakers, so it is `noindex`, out of the nav and out of the
+// sitemap (astro.config.mjs), like /impact-report-2026/.
+//
+// Built only from existing sections. The hero video, rails, premise, three
+// questions and 2026 speaker roster are read from oddference.json, so this
+// page can never contradict the public /oddference page.
+import { getEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SubpageFrame from '../../components/sections/SubpageFrame.astro';
+import FullbleedVideoHero from '../../components/sections/FullbleedVideoHero.astro';
+import SectionIntro from '../../components/sections/SectionIntro.astro';
+import FeatureGrid from '../../components/sections/FeatureGrid.astro';
+import PersonGrid from '../../components/sections/PersonGrid.astro';
+import PhotoWall from '../../components/sections/PhotoWall.astro';
+import Pill from '../../components/primitives/Pill.astro';
+import oddferenceWordmark from '../../assets/logos/oddference-wordmark.svg';
+
+const entry = await getEntry('pages', 'oddference-speakers');
+if (!entry || entry.data._template !== 'oddference-speakers')
+  throw new Error('oddference-speakers.json content entry missing or malformed');
+const page = entry.data;
+
+const fer = await getEntry('pages', 'oddference');
+if (!fer || fer.data._template !== 'oddference')
+  throw new Error('oddference.json content entry missing or malformed');
+const odd = fer.data;
+if (!odd.heroMedia.video || !odd.heroMedia.poster)
+  throw new Error('oddference.json is missing required fullbleed-video hero fields');
+
+const tel = (phone: string) => `tel:${phone.replace(/[^+\d]/g, '')}`;
+---
+
+<Layout title={page.seo.title} description={page.seo.description} ogImage={odd.seo.ogImage} noindex>
+  <SubpageFrame slug="oddference" railLeft={odd.railLeft} railRight={odd.railRight}>
+    <FullbleedVideoHero
+      slot="hero"
+      video={odd.heroMedia.video}
+      poster={odd.heroMedia.poster}
+      sub={page.hero.sub}
+      meta={page.hero.meta}
+      logo={oddferenceWordmark}
+      logoAlt="ODDference"
+      primaryCta={page.hero.primaryCta}
+      secondaryCta={page.hero.secondaryCta}
+      accent="signal"
+      frame="space"
+    />
+
+    <SectionIntro
+      eyebrow={page.welcome.eyebrow}
+      headline={page.welcome.headline}
+      body={page.welcome.body}
+      lead
+    />
+
+    <section id="speaker-form" class="spk-anchor">
+      <div class="wrap">
+        <div class="spk-form reveal">
+          <span class="eyebrow">{page.form.eyebrow}</span>
+          <h2>{page.form.headline}</h2>
+          <p>{page.form.body}</p>
+          <Pill
+            href={page.form.cta.href}
+            variant="ticket"
+            magnetic
+            target={page.form.cta.external ? '_blank' : undefined}
+          >
+            {page.form.cta.label}
+          </Pill>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.lineup.eyebrow}</span>
+          <h2>{page.lineup.headline}</h2>
+          <p class="spk-note">{page.lineup.note}</p>
+        </div>
+        <FeatureGrid cards={page.lineup.speakers} />
+      </div>
+    </section>
+
+    <SectionIntro
+      eyebrow={page.brief.eyebrow}
+      headline={odd.concept.headline}
+      body={odd.concept.body}
+    />
+
+    <section>
+      <div class="wrap flow">
+        <div class="section-head">
+          <h2>{page.brief.questionsHeadline}</h2>
+          <p class="spk-note">{page.brief.questionsNote}</p>
+        </div>
+        <FeatureGrid
+          cards={odd.reasons.map((r) => ({
+            number: r.eyebrow ? `${r.number} · ${r.eyebrow}` : r.number,
+            title: r.title,
+            body: r.body,
+          }))}
+        />
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.photos.eyebrow}</span>
+          <h2>{page.photos.headline}</h2>
+        </div>
+        <PhotoWall photos={page.photos.items} />
+      </div>
+    </section>
+
+    {
+      odd.speakers && odd.speakers.length > 0 && (
+        <section>
+          <div class="wrap flow">
+            <div class="section-head">
+              <span class="eyebrow">{page.pastStage.eyebrow}</span>
+              <h2>{page.pastStage.headline}</h2>
+            </div>
+            <PersonGrid items={odd.speakers} />
+          </div>
+        </section>
+      )
+    }
+
+    <section>
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.venue.eyebrow}</span>
+          <h2>{page.venue.headline}</h2>
+          <p class="spk-note">{page.venue.body}</p>
+        </div>
+        <FeatureGrid cards={page.venue.cards} />
+        <div class="spk-center">
+          <Pill
+            href={page.venue.cta.href}
+            variant="outline"
+            target={page.venue.cta.external ? '_blank' : undefined}
+          >
+            {page.venue.cta.label}
+          </Pill>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.coming.eyebrow}</span>
+          <h2>{page.coming.headline}</h2>
+          <p class="spk-note">{page.coming.body}</p>
+        </div>
+        <FeatureGrid cards={page.coming.cards} />
+      </div>
+    </section>
+
+    <section id="team" class="spk-anchor">
+      <div class="wrap flow">
+        <div class="section-head">
+          <span class="eyebrow">{page.team.eyebrow}</span>
+          <h2>{page.team.headline}</h2>
+          <p class="spk-note">{page.team.body}</p>
+        </div>
+        <ul class="spk-team reveal">
+          {
+            page.team.people.map((p) => (
+              <li class="spk-person">
+                <h3>{p.name}</h3>
+                <p class="spk-role">{p.role}</p>
+                <a href={`mailto:${p.email}`}>{p.email}</a>
+                {p.phone && <a href={tel(p.phone)}>{p.phone}</a>}
+                {p.linkedin && (
+                  <a href={p.linkedin} target="_blank" rel="noreferrer">
+                    LinkedIn
+                  </a>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="spk-general">
+          {page.team.general.label}:{' '}
+          <a href={`mailto:${page.team.general.email}`}>{page.team.general.email}</a>
+        </p>
+      </div>
+    </section>
+  </SubpageFrame>
+</Layout>
+
+<style>
+  /* The hero's two CTAs jump to these; keep the heading clear of the top. */
+  .spk-anchor {
+    scroll-margin-top: var(--space-4);
+  }
+
+  /* The one thing a speaker has to do, so it gets its own raised block
+     rather than another centred section head. Square: it holds content. */
+  .spk-form {
+    background: var(--color-backstage);
+    border-top: 2px solid var(--color-signal);
+    padding: var(--space-6) var(--space-4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-3);
+  }
+  .spk-form h2 {
+    font: var(--text-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-paper);
+    margin: 0;
+  }
+  .spk-form p,
+  .spk-note {
+    max-width: var(--measure-prose);
+    margin: 0;
+  }
+
+  .spk-center {
+    display: flex;
+    justify-content: center;
+  }
+
+  .spk-team {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+  }
+  @media (max-width: 720px) {
+    .spk-team {
+      grid-template-columns: 1fr;
+    }
+  }
+  .spk-person {
+    background: var(--color-backstage);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+  .spk-person h3 {
+    font: var(--text-body);
+    font-family: var(--font-display);
+    color: var(--color-paper);
+    margin: 0;
+    overflow-wrap: break-word;
+  }
+  .spk-role {
+    margin: 0;
+    color: var(--color-clay-read);
+  }
+  .spk-person a,
+  .spk-general a {
+    color: var(--color-paper);
+    text-decoration: underline;
+    text-decoration-color: var(--color-signal-bright);
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
+  }
+  @media (hover: hover) {
+    .spk-person a:hover,
+    .spk-general a:hover {
+      text-decoration-color: var(--color-heat);
+    }
+  }
+  .spk-general {
+    text-align: center;
+    margin: 0;
+  }
+</style>
