@@ -150,7 +150,7 @@
       "audience": "The lowest price",
       "description": "Commit early for the lowest ODDference 2027 ticket price.",
       "price": "€299",
-      "priceNote": "+ VAT 13.5%",
+      "priceNote": "+ VAT 25.5%",
       "benefits": [
         "Full ODDference 2027 access",
         "Our lowest ticket price — guaranteed",
@@ -171,7 +171,7 @@
       "audience": "The second tier",
       "description": "The next price tier after Blind Bird.",
       "price": "€399",
-      "priceNote": "+ VAT 13.5%",
+      "priceNote": "+ VAT 25.5%",
       "status": "Available after Blind Bird",
       "benefits": [
         "Full ODDference 2027 access"
@@ -186,7 +186,7 @@
       "audience": "Full price",
       "description": "The standard ODDference 2027 ticket.",
       "price": "€499",
-      "priceNote": "+ VAT 13.5%",
+      "priceNote": "+ VAT 25.5%",
       "status": "Available later",
       "benefits": [
         "Full ODDference 2027 access"

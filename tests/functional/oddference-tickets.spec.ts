@@ -45,7 +45,7 @@ test('ticket prices and states come from the catalog, not the page', async ({ pa
   const blindBird = page.locator('[data-ticket-slug="blind-bird"]');
   await expect(blindBird.locator('.pricing-status')).toHaveText('On sale now');
   expectPrice(await blindBird.locator('.pricing-price').textContent(), '299');
-  await expect(blindBird.locator('.pricing-price-note')).toHaveText('+ VAT 13.5%');
+  await expect(blindBird.locator('.pricing-price-note')).toHaveText('+ VAT 25.5%');
   await expect(blindBird.locator('a.pill')).toHaveText('Buy Blind Bird');
   await expect(blindBird.locator('a.pill')).toHaveClass(/pill-solid/);
   await expect(blindBird.locator('.pricing-badge')).toBeVisible();
@@ -242,7 +242,7 @@ test('an unreachable backend leaves an honest page, not a broken one', async ({ 
   // content, so it is the literal string an editor wrote, not Intl output.
   await expect(page.locator('[data-ticket-slug="blind-bird"] .pricing-price')).toHaveText('€299');
   await expect(page.locator('[data-ticket-slug="blind-bird"] .pricing-price-note')).toHaveText(
-    '+ VAT 13.5%',
+    '+ VAT 25.5%',
   );
   await expect(page.locator('[data-ticket-slug="blind-bird"] a.pill')).toBeVisible();
 });

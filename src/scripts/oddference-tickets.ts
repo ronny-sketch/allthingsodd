@@ -96,7 +96,7 @@ function applyTier(
 
   setText(card.querySelector('.pricing-price'), formatMinor(tt.displayPriceMinor, tt.currency));
 
-  // "+ VAT 13.5%" beside an ex-VAT price. A catalog that does not say
+  // "+ VAT 25.5%" beside an ex-VAT price. A catalog that does not say
   // whether its prices include VAT (a Worker older than 2026-09-14) leaves
   // the content's own priceNote alone rather than guessing either way.
   const priceNote = card.querySelector<HTMLElement>('.pricing-price-note');
