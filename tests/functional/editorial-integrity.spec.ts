@@ -173,8 +173,9 @@ test('nothing user-facing still advertises the retired production domain', async
   }
 });
 
-
-test('ODDference shows its approved eight-question FAQ after tickets and partnerships', async ({ page }) => {
+test('ODDference shows its approved eight-question FAQ after tickets and partnerships', async ({
+  page,
+}) => {
   await page.goto('/oddference');
 
   const faq = page.locator('#faq');
