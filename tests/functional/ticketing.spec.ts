@@ -144,7 +144,7 @@ test.describe('/tickets — catalog', () => {
   test('an ex-VAT price shows VAT added on top, matching what checkout charges', async ({
     page,
   }) => {
-    // ODDference 2027 target: €299 + VAT 25.5%. Once updated, the Worker charges
+    // ODDference 2027 since 2026-11-26: €299 + VAT 25.5%. The Worker charges
     // 29900 + round(29900 × 25.5%) = 37525 per ticket, and the summary has
     // to show that same number, not the bare price.
     await mockCatalog(page, {
