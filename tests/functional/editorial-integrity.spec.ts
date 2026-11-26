@@ -172,3 +172,36 @@ test('nothing user-facing still advertises the retired production domain', async
     );
   }
 });
+
+
+test('ODDference shows its approved eight-question FAQ after tickets and partnerships', async ({ page }) => {
+  await page.goto('/oddference');
+
+  const faq = page.locator('#faq');
+  await expect(faq.getByRole('heading', { name: 'Frequently asked questions' })).toBeVisible();
+  await expect(faq.locator('details')).toHaveCount(8);
+
+  const questions = [
+    'Who is ODDference for?',
+    'Why is ODDference relevant to my work?',
+    'What will I take back to my organisation?',
+    'How is ODDference different from other business conferences?',
+    'Who will I meet?',
+    'What can I expect from the programme?',
+    'Why buy a ticket before the full programme is announced?',
+    'Where and when does ODDference take place?',
+  ];
+  await expect(faq.locator('summary')).toHaveText(questions);
+
+  const positions = await page.evaluate(() => ({
+    tickets: document.getElementById('tickets')?.getBoundingClientRect().top,
+    faq: document.getElementById('faq')?.getBoundingClientRect().top,
+  }));
+  expect(positions.faq).toBeGreaterThan(positions.tickets ?? Infinity);
+
+  const firstItem = faq.locator('details').first();
+  await expect(firstItem).not.toHaveAttribute('open', '');
+  await firstItem.locator('summary').click();
+  await expect(firstItem).toHaveAttribute('open', '');
+  await expect(firstItem).toContainText('decision-makers who recognise');
+});
