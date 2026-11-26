@@ -88,11 +88,18 @@ async function rooms(page: Page, ...keys: string[]) {
 
 const cell = (page: Page, date: string) => page.locator(`.bk-cal-cell[data-date="${date}"]`);
 
+// Turns the month, back or forward, until the day shows. Back matters:
+// a test that has turned to January must still reach 31 December.
+async function showDay(page: Page, date: string) {
+  for (let i = 0; i < 12 && (await cell(page, date).count()) === 0; i++) {
+    const shown = await page.locator('.bk-cal-cell[data-date]').first().getAttribute('data-date');
+    await page.click(shown! > date ? '[data-cal-prev]' : '[data-cal-next]');
+  }
+}
+
 // Turns the month until the day shows, then picks it.
 async function pickDay(page: Page, date: string) {
-  for (let i = 0; i < 6 && (await cell(page, date).count()) === 0; i++) {
-    await page.click('[data-cal-next]');
-  }
+  await showDay(page, date);
   await cell(page, date).click();
   await expect(page.locator('#bk-date')).toHaveValue(date);
 }
@@ -142,9 +149,7 @@ async function send(page: Page) {
 }
 
 const state = async (page: Page, date: string) => {
-  for (let i = 0; i < 6 && (await cell(page, date).count()) === 0; i++) {
-    await page.click('[data-cal-next]');
-  }
+  await showDay(page, date);
   return cell(page, date).getAttribute('data-state');
 };
 
