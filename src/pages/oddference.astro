@@ -44,6 +44,7 @@ import SectionIntro from '../components/sections/SectionIntro.astro';
 import FeatureGrid from '../components/sections/FeatureGrid.astro';
 import PersonGrid from '../components/sections/PersonGrid.astro';
 import PricingGrid from '../components/sections/PricingGrid.astro';
+import FAQList from '../components/sections/FAQList.astro';
 import Pill from '../components/primitives/Pill.astro';
 import oddferenceWordmark from '../assets/logos/oddference-wordmark.svg';
 
@@ -243,6 +244,20 @@ if (!page.heroMedia.video || !page.heroMedia.poster)
                 <Image src={p.logo} alt={p.name} width={200} />
               ))}
             </div>
+          </div>
+        </section>
+      )
+    }
+    <!-- 7. Frequently asked questions: business relevance, attendee mix,
+         programme expectations and practical purchasing details. -->
+    {
+      page.faq && page.faq.length > 0 && (
+        <section class="oddc-sub" id="faq">
+          <div class="wrap flow">
+            <div class="section-head">
+              <h2>Frequently asked questions</h2>
+            </div>
+            <FAQList items={page.faq} />
           </div>
         </section>
       )

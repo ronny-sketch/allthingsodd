@@ -24,12 +24,12 @@ export function formatMinor(amountMinor: number, currency: string): string {
   return symbol ? `${sign}${symbol}${amount}` : `${sign}${amount} ${code}`;
 }
 
-/** 1350 → "13.5%". */
+/** 2550 → "25.5%". */
 export function formatRate(rateBps: number): string {
   return `${rateBps / 100}%`;
 }
 
-/** "+ VAT 13.5%" for an ex-VAT price, "" when VAT is included or unknown. */
+/** "+ VAT 25.5%" for an ex-VAT price, "" when VAT is included or unknown. */
 export function vatSuffix(tt: CatalogTicketType, pricesIncludeTax: boolean): string {
   return !pricesIncludeTax && tt.taxRateBps ? `+ VAT ${formatRate(tt.taxRateBps)}` : '';
 }

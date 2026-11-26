@@ -150,7 +150,7 @@
       "audience": "The lowest price",
       "description": "Commit early for the lowest ODDference 2027 ticket price.",
       "price": "€299",
-      "priceNote": "+ VAT 13.5%",
+      "priceNote": "+ VAT 25.5%",
       "benefits": [
         "Full ODDference 2027 access",
         "Our lowest ticket price — guaranteed",
@@ -171,7 +171,7 @@
       "audience": "The second tier",
       "description": "The next price tier after Blind Bird.",
       "price": "€399",
-      "priceNote": "+ VAT 13.5%",
+      "priceNote": "+ VAT 25.5%",
       "status": "Available after Blind Bird",
       "benefits": [
         "Full ODDference 2027 access"
@@ -186,7 +186,7 @@
       "audience": "Full price",
       "description": "The standard ODDference 2027 ticket.",
       "price": "€499",
-      "priceNote": "+ VAT 13.5%",
+      "priceNote": "+ VAT 25.5%",
       "status": "Available later",
       "benefits": [
         "Full ODDference 2027 access"
@@ -237,5 +237,38 @@
       "text": "ODDference"
     }
   ],
-  "faq": []
+  "faq": [
+    {
+      "question": "Who is ODDference for?",
+      "answer": "ODDference is for people shaping the future of businesses, organisations and society. From CEOs and leaders in brand, strategy, innovation and people to influential voices in culture and the creative industries.\n\nIt's for decision-makers who recognise that the most interesting answers don't always come from within their own field."
+    },
+    {
+      "question": "Why is ODDference relevant to my work?",
+      "answer": "Every organisation faces questions of relevance, connection and reinvention.\n\nHow do you create something people genuinely care about? What makes people trust, participate and feel they belong? How do you challenge established thinking and find new ways forward?\n\nODDference explores these challenges through the perspectives and practices of people who work with creativity every day."
+    },
+    {
+      "question": "What will I take back to my organisation?",
+      "answer": "Fresh perspectives on familiar challenges, examples of how creative professionals approach complex questions and new connections beyond your usual professional circles.\n\nYou might discover a different way to approach your brand, lead your team or develop an idea. The value isn't a ready-made playbook, but new ways of thinking you can put to work."
+    },
+    {
+      "question": "How is ODDference different from other business conferences?",
+      "answer": "Most business conferences bring business experts together to discuss business challenges. ODDference takes a different approach.\n\nWe put creative practitioners at the centre of the conversation and bring them together with decision-makers from business and society.\n\nRather than hearing more of the same perspectives, you'll encounter people who think, create and solve problems in fundamentally different ways."
+    },
+    {
+      "question": "Who will I meet?",
+      "answer": "We're bringing together decision-makers from business, culture, the creative industries and wider society.\n\nThe ambition is a room where a business leader might find themselves in conversation with an artist, a cultural institution director, a designer or someone shaping public policy.\n\nPeople whose paths rarely cross, but who might have more to learn from each other than they expect."
+    },
+    {
+      "question": "What can I expect from the programme?",
+      "answer": "ODDference 2027 is built around three themes: Relevance, Connection and Reinvention.\n\nWe'll explore them through the experiences, ideas and expertise of creative practitioners and leaders working across different fields. Expect specific questions, real experiences and perspectives that challenge conventional thinking.\n\nThe programme is still taking shape. You can explore highlights from ODDference 2026 to get a sense of the conversations we've brought to the stage before."
+    },
+    {
+      "question": "Why buy a ticket before the full programme is announced?",
+      "answer": "Blind Bird offers our lowest ticket price to those who want to commit early.\n\nWe understand that some participants need to see confirmed speakers and sessions before making a decision, particularly when attending through their organisation. We'll announce more of the programme as it develops, with later ticket tiers available at higher prices."
+    },
+    {
+      "question": "Where and when does ODDference take place?",
+      "answer": "ODDference takes place on 22–23 April 2027 at Tanssin talo (Dance House Helsinki).\n\nYour ticket gives you access to both conference days. You can find the current ticket options and purchasing details on our ticket page. For organisational bookings or invoicing, contact hello@oddfest.co."
+    }
+  ]
 }

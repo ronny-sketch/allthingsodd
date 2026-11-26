@@ -13,7 +13,7 @@ export interface CatalogTicketType {
   status: 'upcoming' | 'active' | 'sold_out' | 'sale_ended' | 'hidden';
   currency: string;
   displayPriceMinor: number;
-  // VAT in basis points (1350 = 13.5%). Optional only because a Worker
+  // VAT in basis points (2550 = 25.5%). Optional only because a Worker
   // older than 2026-09-14 does not send it.
   taxRateBps?: number;
   maxPerOrder: number;
@@ -25,7 +25,7 @@ export interface CatalogTicketType {
 export interface CatalogResponse {
   ok: true;
   // `pricesIncludeTax: false` means displayPriceMinor is ex-VAT and VAT is
-  // added on top at checkout ("€299 + VAT 13.5%"). Absent = included.
+  // added on top at checkout ("€299 + VAT 25.5%"). Absent = included.
   event: { slug: string; name: string; currency: string; pricesIncludeTax?: boolean };
   ticketTypes: CatalogTicketType[];
 }
